@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3042002388432384745
+--- !u!1 &7382637240654205874
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,36 +8,36 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6137131915602275861}
-  - component: {fileID: 8256072396031948699}
-  m_Layer: 8
-  m_Name: GroundTile
+  - component: {fileID: 7382637240654205876}
+  - component: {fileID: 7382637240654205875}
+  m_Layer: 0
+  m_Name: PathDotSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6137131915602275861
+--- !u!4 &7382637240654205876
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3042002388432384745}
+  m_GameObject: {fileID: 7382637240654205874}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 12.139483, y: 8.244613, z: -0.43861365}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8256072396031948699
+--- !u!212 &7382637240654205875
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3042002388432384745}
+  m_GameObject: {fileID: 7382637240654205874}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -67,10 +67,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -186776217
-  m_SortingLayer: 1
+  m_SortingLayerID: 348863665
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3714409817710726143, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+  m_Sprite: {fileID: -3869193028180267778, guid: 4217c177a8765284bbc93344b3e9736f,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

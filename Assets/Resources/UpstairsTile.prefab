@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3042002388432384745
+--- !u!1 &3365362761807111511
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6137131915602275861}
-  - component: {fileID: 8256072396031948699}
+  - component: {fileID: 5883968727038196139}
+  - component: {fileID: 8507300305599569957}
   m_Layer: 8
-  m_Name: GroundTile
+  m_Name: UpstairsTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6137131915602275861
+--- !u!4 &5883968727038196139
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3042002388432384745}
+  m_GameObject: {fileID: 3365362761807111511}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8256072396031948699
+--- !u!212 &8507300305599569957
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3042002388432384745}
+  m_GameObject: {fileID: 3365362761807111511}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -70,7 +70,7 @@ SpriteRenderer:
   m_SortingLayerID: -186776217
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3714409817710726143, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+  m_Sprite: {fileID: 7406130750607033256, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

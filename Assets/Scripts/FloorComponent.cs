@@ -9,14 +9,17 @@ public class FloorComponent : MonoBehaviour
 {
 
     public Floor floor;
-    private GameObject wallPrefab;
-    private GameObject groundPrefab;
+    private Dictionary<System.Type, GameObject> prefabs;
     
     // Start is called before the first frame update
     void Start()
     {
-        wallPrefab = Resources.Load<GameObject>("WallTile");
-        groundPrefab = Resources.Load<GameObject>("GroundTile");
+        prefabs = new Dictionary<System.Type, GameObject>();
+        System.Type[] tileTypes = new System.Type[]{ typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs) };
+        foreach (System.Type t in tileTypes) {
+            string resourceName = $"{t.Name}Tile";
+            prefabs.Add(t, Resources.Load<GameObject>(resourceName));
+        }
         this.instantiateGameObjectsToMatchFloor();
     }
 
@@ -25,11 +28,12 @@ public class FloorComponent : MonoBehaviour
             for (int y = 0; y < floor.height; y++) {
                 Tile tile = floor.tiles[x, y];
                 if (tile != null) {
+                    GameObject prefab;
                     Vector3Int pos = new Vector3Int(tile.pos.x, tile.pos.y, 0);
-                    if (tile is Ground) {
-                        Instantiate(groundPrefab, pos, Quaternion.identity, this.transform);
-                    } else if (tile is Wall) {
-                        Instantiate(wallPrefab, pos, Quaternion.identity, this.transform);
+                    if (this.prefabs.TryGetValue(tile.GetType(), out prefab)) {
+                        Instantiate(prefab, pos, Quaternion.identity, this.transform);
+                    } else {
+                        Debug.LogError($"Couldn't find prefab for {tile.GetType()}");
                     }
                 }
             }

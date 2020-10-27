@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-  public Floor floor;
   private GameObject floorPrefab;
+  public GameObject player;
 
   // Start is called before the first frame update
   void Start()
   {
-    floor = Floor.generateRandomLevel();
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     GameObject floorInstance = Instantiate(floorPrefab);
     FloorComponent floorComponent = floorInstance.GetComponent<FloorComponent>();
-    floorComponent.floor = floor;
+    floorComponent.floor = GameModel.model.floors[0];
+
+    // GameObject playerPrefab = Resources.Load<GameObject>("Player");
+    // GameObject player = Instantiate(playerPrefab);
   }
 
   void Awake()

@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
-{
+public class GameManager : MonoBehaviour {
   private GameObject floorPrefab;
   public GameObject player;
 
   // Start is called before the first frame update
-  void Start()
-  {
+  void Start() {
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     GameObject floorInstance = Instantiate(floorPrefab);
     FloorComponent floorComponent = floorInstance.GetComponent<FloorComponent>();
@@ -19,13 +17,11 @@ public class GameManager : MonoBehaviour
     // GameObject player = Instantiate(playerPrefab);
   }
 
-  void Awake()
-  {
+  void Awake() {
   }
 
   // Update is called once per frame
-  void Update()
-  {
+  void Update() {
 
   }
 }

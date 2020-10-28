@@ -35,7 +35,7 @@ public class TouchToMove : MonoBehaviour {
     if (this.target == null) {
       return;
     }
-    if (Time.frameCount % 50 == 0) {
+    if (Time.frameCount % 20 == 0) {
       Vector2Int target = this.target.Value;
       Floor floor = GameModel.model.floors[GameModel.model.activeFloorIndex];
       if (this.currentPath == null) {

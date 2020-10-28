@@ -10,5 +10,9 @@ public class Util {
     return new Vector3(vector2.x, vector2.y, z);
   }
 
+  public static int manhattanDistance(Vector2Int vector) {
+    return Mathf.Abs(vector.x) + Mathf.Abs(vector.y);
+  }
+
   private Util() { }
 }

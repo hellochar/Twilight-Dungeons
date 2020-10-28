@@ -164,10 +164,29 @@ public class Floor {
       }
     });
 
-    // add an upstairs at (2, height/2)
-    // add a downstairs a (width - 3, height/2)
-    floor.tiles[2, HEIGHT / 2] = new Upstairs(new Vector2Int(2, HEIGHT / 2));
-    floor.tiles[WIDTH - 3, HEIGHT / 2] = new Downstairs(new Vector2Int(WIDTH - 3, HEIGHT / 2));
+
+    // sort by distance to top-left.
+    Vector2Int topLeft = new Vector2Int(0, floor.height);
+    rooms.Sort((a, b) => {
+      int aDist2 = Util.manhattanDistance(a.getTopLeft() - topLeft);
+      int bDist2 = Util.manhattanDistance(b.getTopLeft() - topLeft);
+
+      if (aDist2 < bDist2) {
+        return -1;
+      } else if (aDist2 > bDist2) {
+        return 1;
+      }
+      return 0;
+    });
+    BSPNode upstairsRoom = rooms.First();
+    // 1-px padding from the top-left of the room
+    Vector2Int upstairsPos = new Vector2Int(upstairsRoom.min.x + 1, upstairsRoom.max.y - 1);
+    floor.tiles[upstairsPos.x, upstairsPos.y] = new Upstairs(upstairsPos);
+
+    BSPNode downstairsRoom = rooms.Last();
+    // 1-px padding from the bottom-right of the room
+    Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
+    floor.tiles[downstairsPos.x, downstairsPos.y] = new Downstairs(downstairsPos);
 
     return floor;
   }
@@ -238,12 +257,10 @@ class BSPNode {
     int startX = Random.Range(min.x, max.x - roomWidth + 1);
     int startY = Random.Range(min.y, max.y - roomHeight + 1);
 
-    this.min.x = startX;
-    this.min.y = startY;
+    this.min = new Vector2Int(startX, startY);
 
     // subtract 1 from width/height since max is inclusive
-    this.max.x = startX + roomWidth - 1;
-    this.max.y = startY + roomHeight - 1;
+    this.max = new Vector2Int(startX + roomWidth - 1, startY + roomHeight - 1);
   }
 
   public bool randomlySplit() {
@@ -339,5 +356,9 @@ class BSPNode {
 
   internal Vector2Int getCenter() {
     return (this.max + this.min) / 2;
+  }
+
+  internal Vector2Int getTopLeft() {
+    return new Vector2Int(this.min.x, this.max.y);
   }
 }

@@ -93,7 +93,6 @@ public class Floor {
     cb(endPoint);
   }
 
-
   public static Floor generateFloor0() {
     Floor f = new Floor();
 
@@ -146,17 +145,12 @@ public class Floor {
     // for tunnels
     rooms.ForEach(room => room.randomlyShrink());
 
-    // draw a path connecting siblings together (guarantees connectedness)
-    root.Traverse(node => {
-      if (!node.isTerminal) {
-        Vector2Int aCenter = node.split.Value.a.getCenter();
-        Vector2Int bCenter = node.split.Value.b.getCenter();
-        floor.ForEachLine(aCenter, bCenter, point => floor.tiles[point.x, point.y] = new Dirt(point));
-      }
-    });
+    foreach (var (a, b) in ConnectRooms(rooms, root)) {
+      floor.ForEachLine(a, b, point => floor.tiles[point.x, point.y] = new Ground(point));
+    }
 
-    // fill each room with floor
     rooms.ForEach(room => {
+      // fill each room with floor
       for (int x = room.min.x; x <= room.max.x; x++) {
         for (int y = room.min.y; y <= room.max.y; y++) {
           floor.tiles[x, y] = new Ground(new Vector2Int(x, y));
@@ -164,6 +158,9 @@ public class Floor {
       }
     });
 
+    // apply a natural look across the floor by smoothing both wall corners and space corners
+    SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);
+    SMOOTH_WALL_EDGES.ApplyWithRotations(floor);
 
     // sort by distance to top-left.
     Vector2Int topLeft = new Vector2Int(0, floor.height);
@@ -189,6 +186,170 @@ public class Floor {
     floor.tiles[downstairsPos.x, downstairsPos.y] = new Downstairs(downstairsPos);
 
     return floor;
+  }
+
+  /// Connect all the rooms together with at least one through-path
+  static List<(Vector2Int, Vector2Int)> ConnectRooms(List<BSPNode> rooms, BSPNode root) {
+    return ConnectRoomsBSPSiblings(rooms, root);
+  }
+
+  /// draw a path connecting siblings together, including intermediary nodes (guarantees connectedness)
+  /// this tends to draw long lines that cut right through single thickness walls
+  static List<(Vector2Int, Vector2Int)> ConnectRoomsBSPSiblings(List<BSPNode> rooms, BSPNode root) {
+    List<(Vector2Int, Vector2Int)> paths = new List<(Vector2Int, Vector2Int)>();
+    root.Traverse(node => {
+      if (!node.isTerminal) {
+        Vector2Int aCenter = node.split.Value.a.getCenter();
+        Vector2Int bCenter = node.split.Value.b.getCenter();
+        paths.Add((aCenter, bCenter));
+      }
+    });
+    return paths;
+  }
+
+  static ShapeTransform SMOOTH_WALL_EDGES = new ShapeTransform(
+    new int[3, 3] {
+      {1, 1, 1},
+      {0, 0, 1},
+      {0, 0, 1},
+    },
+    new int[3, 3] {
+      {1, 1, 1},
+      {0, 1, 1},
+      {0, 0, 1},
+    }
+  );
+
+  static ShapeTransform SMOOTH_ROOM_EDGES = new ShapeTransform(
+    new int[3, 3] {
+      {0, 0, 0},
+      {1, 1, 0},
+      {1, 1, 0},
+    },
+    new int[3, 3] {
+      {0, 0, 0},
+      {1, 0, 0},
+      {1, 1, 0}
+    }
+  );
+}
+
+class ShapeTransform {
+  /// Each number is a pathfinding weight (0 means infinity)
+  public int[,] input;
+  public int[,] output;
+
+  private ShapeTransform rot90;
+  private ShapeTransform rot180;
+  private ShapeTransform rot270;
+
+  public ShapeTransform(int[,] input, int[,] output) {
+    this.input = input;
+    this.output = output;
+  }
+
+  /// Apply this transform to the floor. Accounts for all 4 rotations as well.
+  public void ApplyWithRotations(Floor floor) {
+    if (rot90 == null) {
+      rot90 = new ShapeTransform(Rotate90(input), Rotate90(output));
+    }
+    if (rot180 == null) {
+      rot180 = new ShapeTransform(Rotate90(rot90.input), Rotate90(rot90.output));
+    }
+    if (rot270 == null) {
+      rot270 = new ShapeTransform(Rotate90(rot180.input), Rotate90(rot180.output));
+    }
+    Apply(floor);
+    rot90.Apply(floor);
+    rot180.Apply(floor);
+    rot270.Apply(floor);  
+    // ApplyChunkToFloor(floor);
+    // List<(int, int)> placesToChange = getPlacesToChange(floor);
+    // placesToChange.Concat(rot90.getPlacesToChange(floor));
+    // placesToChange.Concat(rot180.getPlacesToChange(floor));
+    // placesToChange.Concat(rot270.getPlacesToChange(floor));
+    // ApplyPlacesToChange(floor, placesToChange);
+  }
+
+  /// Create a new chunk that's the old one rotated 90 degrees counterclockwise (because we're in a right-handed coordinate system)
+  private int[,] Rotate90(int[, ] chunk) {
+    int i1 = chunk[0, 0];
+    int i2 = chunk[0, 1];
+    int i3 = chunk[0, 2];
+
+    int i4 = chunk[1, 0];
+    int i5 = chunk[1, 1];
+    int i6 = chunk[1, 2];
+
+    int i7 = chunk[2, 0];
+    int i8 = chunk[2, 1];
+    int i9 = chunk[2, 2];
+
+    return new int[3, 3] {
+      {i3, i6, i9},
+      {i2, i5, i8},
+      {i1, i4, i7}
+    };
+  }
+
+  private void Apply(Floor floor) {
+    ApplyPlacesToChange(floor, getPlacesToChange(floor));
+  }
+
+  private void ApplyPlacesToChange(Floor floor, List<(int, int)> placesToChange) {
+    foreach (var (x, y) in placesToChange) {
+      ApplyChunkToFloor(floor, x, y, output);
+    }
+  }
+
+  private List<(int, int)> getPlacesToChange(Floor floor) {
+    int[,] chunk = new int[3, 3];
+    List<(int, int)> placesToChange = new List<(int, int)>();
+    for (int x = 1; x < floor.width - 2; x++) {
+      for (int y = 1; y < floor.height - 2; y++) {
+        // iterate through every 3x3 block and try to match 
+        Fill3x3CenteredAt(floor, x, y, ref chunk);
+
+        if (ChunkEquals(chunk, input)) {
+          placesToChange.Add((x, y));
+        }
+      }
+    }
+    return placesToChange;
+  }
+
+  /// We turn each tile into its pathfinding weight
+  private void Fill3x3CenteredAt(Floor floor, int x, int y, ref int[,] chunk) {
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dy = -1; dy <= 1; dy++) {
+        chunk[dx + 1, dy + 1] = (int)floor.tiles[x + dx, y + dy].GetPathfindingWeight();
+      }
+    }
+  }
+
+  private bool ChunkEquals(int[,] a, int[,] b) {
+    return a.Cast<int>().SequenceEqual(b.Cast<int>());
+  }
+
+  /// only construct new tiles if the weight is different
+  private void ApplyChunkToFloor(Floor floor, int x, int y, int[,] chunk) {
+    // HACK - convert chunks to tiles: 0 -> Wall, 1 -> Ground
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dy = -1; dy <= 1; dy++) {
+        Vector2Int pos = new Vector2Int(x + dx, y + dy);
+        int newValue = chunk[dx + 1, dy + 1];
+        Tile currentTile = floor.tiles[pos.x, pos.y];
+        if (currentTile.GetPathfindingWeight() != newValue) {
+          Tile newTile;
+          if (newValue == 0) {
+            newTile = new Wall(pos);
+          } else {
+            newTile = new Dirt(pos);
+          }
+          floor.tiles[pos.x, pos.y] = newTile;
+        }
+      }
+    }
   }
 }
 

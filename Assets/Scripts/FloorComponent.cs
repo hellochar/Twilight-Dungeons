@@ -13,7 +13,7 @@ public class FloorComponent : MonoBehaviour {
   // Start is called before the first frame update
   void Start() {
     prefabs = new Dictionary<System.Type, GameObject>();
-    System.Type[] tileTypes = new System.Type[] { typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs) };
+    System.Type[] tileTypes = new System.Type[] { typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs), typeof(Dirt) };
     foreach (System.Type t in tileTypes) {
       string resourceName = $"{t.Name}Tile";
       prefabs.Add(t, Resources.Load<GameObject>(resourceName));

@@ -83,6 +83,16 @@ public class Floor {
     }
   }
 
+  public void ForEachLine(Vector2Int startPoint, Vector2Int endPoint, System.Action<Vector2Int> cb) {
+    Vector2 offset = endPoint - startPoint;
+    for (float t = 0; t <= offset.magnitude; t += 0.5f) {
+      Vector2 point = startPoint + offset.normalized * t;
+      Vector2Int p = new Vector2Int(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y));
+      cb(p);
+    }
+    cb(endPoint);
+  }
+
 
   public static Floor generateFloor0() {
     Floor f = new Floor();
@@ -109,14 +119,13 @@ public class Floor {
   }
 
   public static Floor generateRandomFloor() {
-    Floor f = new Floor();
+    Floor floor = new Floor();
 
     // fill with wall
-    f.ForEachLocation(p => f.tiles[p.x, p.y] = new Wall(p));
+    floor.ForEachLocation(p => floor.tiles[p.x, p.y] = new Wall(p));
 
-
-    // add rooms randomly
-    BSPNode root = new BSPNode(new Vector2Int(1, 1), new Vector2Int(f.width - 2, f.height - 2));
+    // randomly partition space into 20 rooms
+    BSPNode root = new BSPNode(null, new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
     for (int i = 0; i < 20; i++) {
       bool success = root.randomlySplit();
       if (!success) {
@@ -124,25 +133,46 @@ public class Floor {
         break;
       }
     }
+
+    // collect all rooms
+    List<BSPNode> rooms = new List<BSPNode>();
     root.Traverse(node => {
-      // fill node with floor
       if (node.isTerminal) {
-        for (int x = node.min.x; x <= node.max.x; x++) {
-          for (int y = node.min.y; y <= node.max.y; y++) {
-            f.tiles[x, y] = new Ground(new Vector2Int(x, y));
-          }
+        rooms.Add(node);
+      }
+    });
+
+    // shrink it into a subset of the space available; adds more 'emptiness' to allow
+    // for tunnels
+    rooms.ForEach(room => room.randomlyShrink());
+
+    // draw a path connecting siblings together (guarantees connectedness)
+    root.Traverse(node => {
+      if (!node.isTerminal) {
+        Vector2Int aCenter = node.split.Value.a.getCenter();
+        Vector2Int bCenter = node.split.Value.b.getCenter();
+        floor.ForEachLine(aCenter, bCenter, point => floor.tiles[point.x, point.y] = new Dirt(point));
+      }
+    });
+
+    // fill each room with floor
+    rooms.ForEach(room => {
+      for (int x = room.min.x; x <= room.max.x; x++) {
+        for (int y = room.min.y; y <= room.max.y; y++) {
+          floor.tiles[x, y] = new Ground(new Vector2Int(x, y));
         }
       }
     });
 
     // add an upstairs at (2, height/2)
     // add a downstairs a (width - 3, height/2)
-    f.tiles[2, HEIGHT / 2] = new Upstairs(new Vector2Int(2, HEIGHT / 2));
-    f.tiles[WIDTH - 3, HEIGHT / 2] = new Downstairs(new Vector2Int(WIDTH - 3, HEIGHT / 2));
+    floor.tiles[2, HEIGHT / 2] = new Upstairs(new Vector2Int(2, HEIGHT / 2));
+    floor.tiles[WIDTH - 3, HEIGHT / 2] = new Downstairs(new Vector2Int(WIDTH - 3, HEIGHT / 2));
 
-    return f;
+    return floor;
   }
 }
+
 enum SplitDirection { Vertical, Horizontal }
 
 struct BSPSplit {
@@ -167,29 +197,53 @@ class BSPNode {
   public Vector2Int min, max;
 
   public BSPSplit? split;
+  public BSPNode parent;
+
   public bool isTerminal {
     get {
       return this.split == null;
     }
   }
 
-  public BSPNode(Vector2Int min, Vector2Int max) {
+  public BSPNode(BSPNode parent, Vector2Int min, Vector2Int max) {
+    this.parent = parent;
     this.min = min;
     this.max = max;
   }
 
-  public float width {
+  public int width {
     get {
       // add one because max is inclusive
       return max.x - min.x + 1;
     }
   }
 
-  public float height {
+  public int height {
     get {
       // add one because max is inclusive
       return max.y - min.y + 1;
     }
+  }
+
+  public void randomlyShrink() {
+    if (!this.isTerminal) {
+      throw new System.Exception("Tried shinking a non-terminal BSPNode.");
+    }
+    // randomly decide a new width and height that's within the alloted space
+    // 5
+    int roomWidth = Random.Range(BSPNode.MIN_ROOM_SIZE, width + 1);
+    int roomHeight = Random.Range(BSPNode.MIN_ROOM_SIZE, height + 1);
+
+    // min.x = 1, max.x = 5, 5 - 5 + 1 = 1
+    int startX = Random.Range(min.x, max.x - roomWidth + 1);
+    int startY = Random.Range(min.y, max.y - roomHeight + 1);
+
+    this.min.x = startX;
+    this.min.y = startY;
+
+    // subtract 1 from width/height since max is inclusive
+    this.max.x = startX + roomWidth - 1;
+    this.max.y = startY + roomHeight - 1;
   }
 
   public bool randomlySplit() {
@@ -200,12 +254,12 @@ class BSPNode {
       BSPNode a = this.split.Value.a;
       BSPNode b = this.split.Value.b;
 
-      var (firstChoice, secondChoice) = Random.value < 0.5 ? (a, b) : (b, a); 
+      var (firstChoice, secondChoice) = Random.value < 0.5 ? (a, b) : (b, a);
 
       if (firstChoice.randomlySplit()) {
         return true;
       } else {
-        return secondChoice.randomlySplit(); 
+        return secondChoice.randomlySplit();
       }
     }
   }
@@ -226,7 +280,7 @@ class BSPNode {
   private bool canSplit {
     get {
       if (isTerminal) {
-        return canSplitVertical || canSplitHorizontal;  
+        return canSplitVertical || canSplitHorizontal;
       }
       return isTerminal && (canSplitVertical || canSplitHorizontal);
     }
@@ -261,8 +315,8 @@ class BSPNode {
     int splitMax = max.x - MIN_ROOM_SIZE;
     int splitMin = min.x + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
-    BSPNode a = new BSPNode(this.min, new Vector2Int(splitPoint - 1, this.max.y));
-    BSPNode b = new BSPNode(new Vector2Int(splitPoint + 1, this.min.y), this.max);
+    BSPNode a = new BSPNode(this, this.min, new Vector2Int(splitPoint - 1, this.max.y));
+    BSPNode b = new BSPNode(this, new Vector2Int(splitPoint + 1, this.min.y), this.max);
     this.split = new BSPSplit(a, b, SplitDirection.Horizontal, splitPoint);
   }
 
@@ -270,8 +324,8 @@ class BSPNode {
     int splitMax = max.y - MIN_ROOM_SIZE;
     int splitMin = min.y + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
-    BSPNode a = new BSPNode(this.min, new Vector2Int(this.max.x, splitPoint - 1));
-    BSPNode b = new BSPNode(new Vector2Int(this.min.x, splitPoint + 1), this.max);
+    BSPNode a = new BSPNode(this, this.min, new Vector2Int(this.max.x, splitPoint - 1));
+    BSPNode b = new BSPNode(this, new Vector2Int(this.min.x, splitPoint + 1), this.max);
     this.split = new BSPSplit(a, b, SplitDirection.Vertical, splitPoint);
   }
 
@@ -281,5 +335,9 @@ class BSPNode {
       this.split.Value.a.Traverse(action);
       this.split.Value.b.Traverse(action);
     }
+  }
+
+  internal Vector2Int getCenter() {
+    return (this.max + this.min) / 2;
   }
 }

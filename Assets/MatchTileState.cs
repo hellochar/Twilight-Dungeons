@@ -16,15 +16,18 @@ public class MatchTileState : MonoBehaviour {
     switch (owner.visiblity) {
       case TileVisiblity.Unexplored:
         renderer.enabled = false;
+        renderer.color = Color.black;
         break;
       case TileVisiblity.Visible:
         renderer.enabled = true;
-        renderer.color = new Color32(255, 255, 255, 255);
+        renderer.color = Color.Lerp(renderer.color, Color.white, 0.2f);
         break;
       case TileVisiblity.Explored:
         renderer.enabled = true;
-        renderer.color = new Color32(255, 255, 255, 90);
+        renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
         break;
     }
   }
+
+  private static Color exploredMask = new Color(1, 1, 1, 0.3f);
 }

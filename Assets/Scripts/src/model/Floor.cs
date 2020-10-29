@@ -249,9 +249,11 @@ public class Floor {
     List<(Vector2Int, Vector2Int)> paths = new List<(Vector2Int, Vector2Int)>();
     root.Traverse(node => {
       if (!node.isTerminal) {
+        Vector2Int nodeCenter = node.getCenter();
         Vector2Int aCenter = node.split.Value.a.getCenter();
         Vector2Int bCenter = node.split.Value.b.getCenter();
-        paths.Add((aCenter, bCenter));
+        paths.Add((nodeCenter, aCenter));
+        paths.Add((nodeCenter, bCenter));
       }
     });
     return paths;
@@ -355,8 +357,8 @@ class ShapeTransform {
   private List<(int, int)> getPlacesToChange(Floor floor) {
     int[,] chunk = new int[3, 3];
     List<(int, int)> placesToChange = new List<(int, int)>();
-    for (int x = 1; x < floor.width - 2; x++) {
-      for (int y = 1; y < floor.height - 2; y++) {
+    for (int x = 1; x < floor.width - 1; x++) {
+      for (int y = 1; y < floor.height - 1; y++) {
         // iterate through every 3x3 block and try to match 
         Fill3x3CenteredAt(floor, x, y, ref chunk);
 

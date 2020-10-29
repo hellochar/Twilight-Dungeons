@@ -8,6 +8,13 @@ public class GameModel {
   public int activeFloorIndex = 0;
 
   public static GameModel main = GameModel.generateGameModel(); //new GameModel();
+
+  public Floor currentFloor {
+    get {
+      return floors[activeFloorIndex];
+    }
+  }
+
   public static GameModel generateGameModel() {
     GameModel model = new GameModel();
     model.floors = new Floor[] {

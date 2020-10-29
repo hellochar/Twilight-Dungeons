@@ -77,12 +77,16 @@ public class TouchToMove : MonoBehaviour {
 
   private void setTarget(Vector3 screenPoint) {
     Vector3 worldTarget = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    target = new Vector2Int(Mathf.RoundToInt(worldTarget.x), Mathf.RoundToInt(worldTarget.y));
-    // clear existing path
-    this.currentPath = null;
-    if (this.currentPathSprites != null) {
-      this.currentPathSprites.ForEach(sprite => Destroy(sprite));
-      this.currentPathSprites = null;
+    Vector2Int target = new Vector2Int(Mathf.RoundToInt(worldTarget.x), Mathf.RoundToInt(worldTarget.y));
+    Tile tile = GameModel.main.currentFloor.tiles[target.x, target.y];
+    if (tile.visiblity != TileVisiblity.Unexplored) {
+      this.target = target;
+      // clear existing path
+      this.currentPath = null;
+      if (this.currentPathSprites != null) {
+        this.currentPathSprites.ForEach(sprite => Destroy(sprite));
+        this.currentPathSprites = null;
+      }
     }
   }
 

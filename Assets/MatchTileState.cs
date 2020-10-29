@@ -23,7 +23,7 @@ public class MatchTileState : MonoBehaviour {
         break;
       case TileVisiblity.Explored:
         renderer.enabled = true;
-        renderer.color = new Color32(128, 128, 128, 255);
+        renderer.color = new Color32(255, 255, 255, 90);
         break;
     }
   }

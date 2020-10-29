@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     GameObject floorInstance = Instantiate(floorPrefab);
     FloorComponent floorComponent = floorInstance.GetComponent<FloorComponent>();
-    floorComponent.floor = GameModel.model.floors[0];
+    floorComponent.floor = GameModel.main.floors[0];
 
     // GameObject playerPrefab = Resources.Load<GameObject>("Player");
     // GameObject player = Instantiate(playerPrefab);

@@ -20,7 +20,7 @@ public class TouchToMove : MonoBehaviour {
     this.pathDotPrefab = Resources.Load<GameObject>("PathDotSprite");
     reticle.SetActive(false);
     // hard code for now
-    this.entity = GameModel.model.player;
+    this.entity = GameModel.main.player;
   }
 
   // Update is called once per frame
@@ -37,7 +37,7 @@ public class TouchToMove : MonoBehaviour {
     }
     if (Time.frameCount % 20 == 0) {
       Vector2Int target = this.target.Value;
-      Floor floor = GameModel.model.floors[GameModel.model.activeFloorIndex];
+      Floor floor = GameModel.main.floors[GameModel.main.activeFloorIndex];
       if (this.currentPath == null) {
         this.currentPath = floor.FindPath(this.entity.pos, target);
         this.currentPathSprites = currentPath.Select(pos => Instantiate(pathDotPrefab, Util.withZ(pos, 0), Quaternion.identity)).ToList();
@@ -48,7 +48,9 @@ public class TouchToMove : MonoBehaviour {
         currentPath.RemoveAt(0);
         Destroy(this.currentPathSprites[0]);
         this.currentPathSprites.RemoveAt(0);
+        floor.RemoveVisibility(this.entity);
         this.entity.pos = nextPosition;
+        floor.AddVisibility(this.entity);
       }
       if (currentPath.Count == 0) {
         currentPath = null;
@@ -60,14 +62,14 @@ public class TouchToMove : MonoBehaviour {
   // Set target on mouse click or mobile touch
   void UpdateSetTarget() {
     // mouse click
-    if (Input.GetMouseButtonDown(0)) {
+    if (Input.GetMouseButtonUp(0)) {
       // set target
       setTarget(Input.mousePosition);
     }
     // mobile touch
     if (Input.touchCount > 0) {
       Touch t = Input.GetTouch(0);
-      if (t.phase == TouchPhase.Began) {
+      if (t.phase == TouchPhase.Ended) {
         setTarget(t.position);
       }
     }

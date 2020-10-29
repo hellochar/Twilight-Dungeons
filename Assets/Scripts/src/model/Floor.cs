@@ -9,11 +9,15 @@ public class Floor {
 
   public Tile[,] tiles;
 
-  public List<Entity> entities;
+  internal List<Entity> entities;
+
+  public Vector2Int boundsMin, boundsMax;
 
   public Floor() {
     this.tiles = new Tile[WIDTH, HEIGHT];
     this.entities = new List<Entity>();
+    boundsMin = new Vector2Int(0, 0);
+    boundsMax = new Vector2Int(width, height);
   }
 
   public Tile upstairs {
@@ -75,14 +79,60 @@ public class Floor {
     return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
   }
 
-  public void ForEachLocation(System.Action<Vector2Int> callback) {
-    for (int x = 0; x < this.width; x++) {
-      for (int y = 0; y < this.height; y++) {
+  internal void RemoveVisibility(Entity entity) {
+    ForEachLocation((pos) => {
+      Tile t = tiles[pos.x, pos.y];
+      if (t.visiblity == TileVisiblity.Visible) {
+        t.visiblity = TileVisiblity.Explored;
+      }
+    },
+      entity.pos - new Vector2Int(entity.visibilityRange, entity.visibilityRange),
+      entity.pos + new Vector2Int(entity.visibilityRange + 1, entity.visibilityRange + 1)
+    );
+  }
+
+  internal void AddVisibility(Entity entity) {
+    ForEachLocation((pos) => {
+      Tile t = tiles[pos.x, pos.y];
+      bool isVisible = TestVisibility(entity.pos, pos);
+      if (isVisible) {
+        t.visiblity = TileVisiblity.Visible;
+      }
+    },
+      entity.pos - new Vector2Int(entity.visibilityRange, entity.visibilityRange),
+      entity.pos + new Vector2Int(entity.visibilityRange + 1, entity.visibilityRange + 1)
+    );
+  }
+
+  /// returns true if the points have line of sight to each other
+  public bool TestVisibility(Vector2Int start, Vector2Int end) {
+    bool isVisible = true;
+    ForEachLine(start, end, (pos) => {
+      if (pos == start || pos == end) {
+        return;
+      }
+      Tile t = tiles[pos.x, pos.y];
+      isVisible = isVisible && !t.ObstructsVision();
+    });
+    return isVisible;
+  }
+
+  /// max is exclusive
+  public void ForEachLocation(System.Action<Vector2Int> callback, Vector2Int min, Vector2Int max) {
+    min = Vector2Int.Max(min, boundsMin);
+    max = Vector2Int.Min(max, boundsMax);
+    for (int x = min.x; x < max.x; x++) {
+      for (int y = min.y; y < max.y; y++) {
         callback(new Vector2Int(x, y));
       }
     }
   }
 
+  public void ForEachLocation(System.Action<Vector2Int> callback) {
+    this.ForEachLocation(callback, boundsMin, boundsMax);
+  }
+
+  /// always starts right on the startPoint, and always ends right on the endPoint
   public void ForEachLine(Vector2Int startPoint, Vector2Int endPoint, System.Action<Vector2Int> cb) {
     Vector2 offset = endPoint - startPoint;
     for (float t = 0; t <= offset.magnitude; t += 0.5f) {
@@ -262,7 +312,7 @@ class ShapeTransform {
     Apply(floor);
     rot90.Apply(floor);
     rot180.Apply(floor);
-    rot270.Apply(floor);  
+    rot270.Apply(floor);
     // ApplyChunkToFloor(floor);
     // List<(int, int)> placesToChange = getPlacesToChange(floor);
     // placesToChange.Concat(rot90.getPlacesToChange(floor));
@@ -272,7 +322,7 @@ class ShapeTransform {
   }
 
   /// Create a new chunk that's the old one rotated 90 degrees counterclockwise (because we're in a right-handed coordinate system)
-  private int[,] Rotate90(int[, ] chunk) {
+  private int[,] Rotate90(int[,] chunk) {
     int i1 = chunk[0, 0];
     int i2 = chunk[0, 1];
     int i3 = chunk[0, 2];
@@ -344,7 +394,7 @@ class ShapeTransform {
           if (newValue == 0) {
             newTile = new Wall(pos);
           } else {
-            newTile = new Dirt(pos);
+            newTile = new Ground(pos);
           }
           floor.tiles[pos.x, pos.y] = newTile;
         }

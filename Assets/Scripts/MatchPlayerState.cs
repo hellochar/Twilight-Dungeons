@@ -7,7 +7,7 @@ public class MatchPlayerState : MonoBehaviour {
 
   // Start is called before the first frame update
   void Start() {
-    this.player = GameModel.model.player;
+    this.player = GameModel.main.player;
     this.transform.position = Util.withZ(this.player.pos);
   }
 

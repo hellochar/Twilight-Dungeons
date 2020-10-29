@@ -2,6 +2,7 @@ using UnityEngine;
 
 public abstract class Tile {
   public readonly Vector2Int pos;
+  public TileVisiblity visiblity = TileVisiblity.Unexplored;
   public Tile(Vector2Int pos) {
     this.pos = pos;
   }
@@ -11,6 +12,14 @@ public abstract class Tile {
   public virtual float GetPathfindingWeight() {
     return 1;
   }
+
+  public virtual bool ObstructsVision() {
+    return GetPathfindingWeight() == 0;
+  }
+}
+
+public enum TileVisiblity {
+  Unexplored, Visible, Explored
 }
 
 public class Ground : Tile {

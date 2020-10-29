@@ -29,7 +29,8 @@ public class FloorComponent : MonoBehaviour {
           GameObject prefab;
           Vector3Int pos = new Vector3Int(tile.pos.x, tile.pos.y, 0);
           if (this.prefabs.TryGetValue(tile.GetType(), out prefab)) {
-            Instantiate(prefab, pos, Quaternion.identity, this.transform);
+            GameObject tileObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
+            tileObject.GetComponent<MatchTileState>().owner = tile;
           } else {
             Debug.LogError($"Couldn't find prefab for {tile.GetType()}");
           }

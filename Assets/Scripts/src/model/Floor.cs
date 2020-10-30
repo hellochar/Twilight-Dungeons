@@ -3,9 +3,8 @@ using System.Linq;
 using UnityEngine;
 
 public class Floor {
-  public static readonly int WIDTH = 60;
-
-  public static readonly int HEIGHT = 20;
+  // public static readonly int WIDTH = 60;
+  // public static readonly int HEIGHT = 20;
 
   public Tile[,] tiles;
 
@@ -13,8 +12,8 @@ public class Floor {
 
   public Vector2Int boundsMin, boundsMax;
 
-  public Floor() {
-    this.tiles = new Tile[WIDTH, HEIGHT];
+  public Floor(int width, int height) {
+    this.tiles = new Tile[width, height];
     this.entities = new List<Entity>();
     boundsMin = new Vector2Int(0, 0);
     boundsMax = new Vector2Int(width, height);
@@ -144,31 +143,31 @@ public class Floor {
   }
 
   public static Floor generateFloor0() {
-    Floor f = new Floor();
+    Floor f = new Floor(10, 10);
 
     // fill with floor tiles by default
     f.ForEachLocation(p => f.tiles[p.x, p.y] = new Ground(p));
 
     // surround floor with walls
-    for (int x = 0; x < WIDTH; x++) {
+    for (int x = 0; x < f.width; x++) {
       f.tiles[x, 0] = new Wall(new Vector2Int(x, 0));
-      f.tiles[x, HEIGHT - 1] = new Wall(new Vector2Int(x, HEIGHT - 1));
+      f.tiles[x, f.height - 1] = new Wall(new Vector2Int(x, f.height - 1));
     }
-    for (int y = 0; y < HEIGHT; y++) {
+    for (int y = 0; y < f.height; y++) {
       f.tiles[0, y] = new Wall(new Vector2Int(0, y));
-      f.tiles[WIDTH - 1, y] = new Wall(new Vector2Int(WIDTH - 1, y));
+      f.tiles[f.width - 1, y] = new Wall(new Vector2Int(f.width - 1, y));
     }
 
     // add an upstairs at (2, height/2)
     // add a downstairs a (width - 3, height/2)
-    f.tiles[2, HEIGHT / 2] = new Upstairs(new Vector2Int(2, HEIGHT / 2));
-    f.tiles[WIDTH - 3, HEIGHT / 2] = new Downstairs(new Vector2Int(WIDTH - 3, HEIGHT / 2));
+    f.tiles[2, f.height / 2] = new Upstairs(new Vector2Int(2, f.height / 2));
+    f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
 
     return f;
   }
 
   public static Floor generateRandomFloor() {
-    Floor floor = new Floor();
+    Floor floor = new Floor(60, 20);
 
     // fill with wall
     floor.ForEachLocation(p => floor.tiles[p.x, p.y] = new Wall(p));

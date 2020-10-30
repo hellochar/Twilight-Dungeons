@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Entity {
-  public Vector2Int pos;
+  public virtual Vector2Int pos { get; set; }
   public int age = 0;
   public int nextActionTime = 0;
   public List<Action> actions;

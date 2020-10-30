@@ -48,9 +48,7 @@ public class TouchToMove : MonoBehaviour {
         currentPath.RemoveAt(0);
         Destroy(this.currentPathSprites[0]);
         this.currentPathSprites.RemoveAt(0);
-        floor.RemoveVisibility(this.entity);
         this.entity.pos = nextPosition;
-        floor.AddVisibility(this.entity);
       }
       if (currentPath.Count == 0) {
         currentPath = null;

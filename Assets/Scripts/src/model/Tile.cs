@@ -16,6 +16,8 @@ public abstract class Tile {
   public virtual bool ObstructsVision() {
     return GetPathfindingWeight() == 0;
   }
+
+  public virtual void OnPlayerEnter() {}
 }
 
 public enum TileVisiblity {
@@ -36,10 +38,24 @@ public class Wall : Tile {
 public class Upstairs : Tile {
   public Upstairs(Vector2Int pos) : base(pos) {
   }
+
+  public override void OnPlayerEnter() {
+    Floor prevFloor = GameModel.main.floors[GameModel.main.activeFloorIndex - 1];
+    if (prevFloor != null) {
+      GameModel.main.PutPlayerAt(prevFloor, true);
+    }
+  }
 }
 
 public class Downstairs : Tile {
   public Downstairs(Vector2Int pos) : base(pos) { }
+
+  public override void OnPlayerEnter() {
+    Floor nextFloor = GameModel.main.floors[GameModel.main.activeFloorIndex + 1];
+    if (nextFloor != null) {
+      GameModel.main.PutPlayerAt(nextFloor, false);
+    }
+  }
 }
 
 public class Dirt : Tile {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// disallow camera from seeing "outside" the edge of the map
 public class BoundCameraToFloor : MonoBehaviour {
-  public Bounds bounds = new Bounds(new Vector3(Floor.WIDTH / 2 - 0.5f, Floor.HEIGHT / 2 - 0.5f, 0), new Vector3(Floor.WIDTH, Floor.HEIGHT, 1));
+  public Bounds bounds = new Bounds(new Vector3(60 / 2 - 0.5f, 20 / 2 - 0.5f, 0), new Vector3(60, 20, 1));
   new private Camera camera;
 
   // Start is called before the first frame update

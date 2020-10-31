@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public class Player : Actor {
+  public int hp = 9;
+  public int hpMax = 12;
   public Player(Vector2Int pos) : base(pos) {
   }
 

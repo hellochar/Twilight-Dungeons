@@ -14,10 +14,10 @@ public class MatchPlayerState : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     // sync positions
-    if (Vector2.Distance(Util.getXY(this.transform.position), this.player.pos) > 2) {
+    if (Vector2.Distance(Util.getXY(this.transform.position), this.player.pos) > 3) {
       this.transform.position = Util.withZ(this.player.pos, this.transform.position.z);
     } else {
-      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), player.pos, 10f * Time.deltaTime));
+      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), player.pos, 20f * Time.deltaTime));
     }
   }
 }

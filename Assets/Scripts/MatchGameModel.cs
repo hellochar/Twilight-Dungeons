@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class MatchGameModel : MonoBehaviour {
   private GameObject floorPrefab;
 
-  private Dictionary<Floor, FloorComponent> floorComponents = new Dictionary<Floor, FloorComponent>();
+  private Dictionary<Floor, MatchFloorState> floorComponents = new Dictionary<Floor, MatchFloorState>();
 
-  private FloorComponent currentFloorComponent;
+  private MatchFloorState currentFloorComponent;
 
   // Start is called before the first frame update
   void Start() {
@@ -15,10 +15,10 @@ public class GameManager : MonoBehaviour {
     currentFloorComponent = GetOrCreateFloorComponent(GameModel.main.currentFloor);
   }
 
-  private FloorComponent GetOrCreateFloorComponent(Floor floor) {
+  private MatchFloorState GetOrCreateFloorComponent(Floor floor) {
     if (!floorComponents.ContainsKey(floor)) {
       GameObject floorInstance = Instantiate(floorPrefab);
-      FloorComponent floorComponent = floorInstance.GetComponent<FloorComponent>();
+      MatchFloorState floorComponent = floorInstance.GetComponent<MatchFloorState>();
       floorComponent.floor = floor;
       floorComponents.Add(floor, floorComponent);
     }
@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
     if (GameModel.main.currentFloor != currentFloorComponent.floor) {
       currentFloorComponent.gameObject.SetActive(false);
 
-      FloorComponent newFloorComponent = GetOrCreateFloorComponent(GameModel.main.currentFloor);
+      MatchFloorState newFloorComponent = GetOrCreateFloorComponent(GameModel.main.currentFloor);
       newFloorComponent.gameObject.SetActive(true);
       currentFloorComponent = newFloorComponent;
     }

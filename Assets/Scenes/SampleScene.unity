@@ -163,6 +163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 2052630406}
   followSpeed: 4
+  jumpThreshold: 10
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -270,7 +271,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea5f5cf5d303297448165116907fcb11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 2052630406}
 --- !u!4 &1948086390
 Transform:
   m_ObjectHideFlags: 0

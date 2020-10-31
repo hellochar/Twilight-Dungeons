@@ -1,11 +1,9 @@
 using UnityEngine;
 
-public abstract class Tile {
-  public readonly Vector2Int pos;
+public abstract class Tile : Entity {
+  public Vector2Int pos { get; }
   public TileVisiblity visiblity = TileVisiblity.Unexplored;
-  public Tile(Vector2Int pos) {
-    this.pos = pos;
-  }
+  public Tile(Vector2Int pos) => this.pos = pos;
 
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.

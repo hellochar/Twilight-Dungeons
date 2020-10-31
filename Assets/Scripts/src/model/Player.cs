@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : Entity {
+public class Player : Actor {
   public Player(Vector2Int pos) : base(pos) {
   }
 

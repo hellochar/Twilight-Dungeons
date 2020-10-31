@@ -8,13 +8,13 @@ public class Floor {
 
   public Tile[,] tiles;
 
-  internal List<Entity> entities;
+  internal List<Actor> actors;
 
   public Vector2Int boundsMin, boundsMax;
 
   public Floor(int width, int height) {
     this.tiles = new Tile[width, height];
-    this.entities = new List<Entity>();
+    this.actors = new List<Actor>();
     boundsMin = new Vector2Int(0, 0);
     boundsMax = new Vector2Int(width, height);
   }
@@ -78,7 +78,7 @@ public class Floor {
     return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
   }
 
-  internal void RemoveVisibility(Entity entity) {
+  internal void RemoveVisibility(Actor entity) {
     ForEachLocation((pos) => {
       Tile t = tiles[pos.x, pos.y];
       if (t.visiblity == TileVisiblity.Visible) {
@@ -90,7 +90,7 @@ public class Floor {
     );
   }
 
-  internal void AddVisibility(Entity entity) {
+  internal void AddVisibility(Actor entity) {
     ForEachLocation((pos) => {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(entity.pos, pos);
@@ -162,6 +162,8 @@ public class Floor {
     // add a downstairs a (width - 3, height/2)
     f.tiles[2, f.height / 2] = new Upstairs(new Vector2Int(2, f.height / 2));
     f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
+
+    f.actors.Add(new BerryBush(new Vector2Int(f.width/2, f.height/2)));
 
     return f;
   }

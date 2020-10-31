@@ -29,7 +29,7 @@ public class GameModel {
 
     Tile floor0Upstairs = model.floors[0].upstairs;
     model.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
-    model.floors[0].entities.Add(model.player);
+    // model.floors[0].actors.Add(model.player);
     model.floors[0].AddVisibility(model.player);
     return model;
   }

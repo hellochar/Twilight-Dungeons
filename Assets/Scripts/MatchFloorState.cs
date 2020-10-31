@@ -33,28 +33,27 @@ public class MatchFloorState : MonoBehaviour {
         }
       }
     }
-    foreach (Entity e in floor.entities) {
-      GameObject prefab;
-      Vector3Int pos = new Vector3Int(e.pos.x, e.pos.y, 0);
-      // if (this.)
+    foreach (Actor actor in floor.actors) {
+      InstantiateGameObjectForEntity(actor);
     }
   }
 
-  private void InstantiateGameObjectForEntity(Tile tile) {
+  private void InstantiateGameObjectForEntity(Entity entity) {
     GameObject prefab;
-    Vector3Int pos = new Vector3Int(tile.pos.x, tile.pos.y, 0);
-    if (this.prefabs.TryGetValue(tile.GetType(), out prefab)) {
-      GameObject tileObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
-      if (tile is Tile) {
-        tileObject.GetComponent<MatchTileState>().owner = tile;
+    Vector3Int pos = new Vector3Int(entity.pos.x, entity.pos.y, 0);
+    if (this.prefabs.TryGetValue(entity.GetType(), out prefab)) {
+      GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
+      if (entity is Tile) {
+        gameObject.GetComponent<MatchTileState>().owner = (Tile) entity;
+      } else if (entity is BerryBush) {
+        gameObject.GetComponent<MatchPlantState>().plant = (BerryBush) entity;
       }
     } else {
-      Debug.LogError($"Couldn't find prefab for {tile.GetType()}");
+      Debug.LogError($"Couldn't find prefab for {entity.GetType()}");
     }
   }
 
-  // Update is called once per frame
   void Update() {
-
+    // TODO delete and add new game objects as the board changes
   }
 }

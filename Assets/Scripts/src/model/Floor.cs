@@ -79,41 +79,71 @@ public class Floor {
   }
 
   internal void RemoveVisibility(Actor entity) {
-    ForEachLocation((pos) => {
+    ForEachLocationCircle((pos) => {
       Tile t = tiles[pos.x, pos.y];
       if (t.visiblity == TileVisiblity.Visible) {
         t.visiblity = TileVisiblity.Explored;
       }
     },
-      entity.pos - new Vector2Int(entity.visibilityRange, entity.visibilityRange),
-      entity.pos + new Vector2Int(entity.visibilityRange + 1, entity.visibilityRange + 1)
+      entity.pos,
+      entity.visibilityRange
     );
   }
 
   internal void AddVisibility(Actor entity) {
-    ForEachLocation((pos) => {
+    ForEachLocationCircle((pos) => {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(entity.pos, pos);
       if (isVisible) {
         t.visiblity = TileVisiblity.Visible;
       }
     },
-      entity.pos - new Vector2Int(entity.visibilityRange, entity.visibilityRange),
-      entity.pos + new Vector2Int(entity.visibilityRange + 1, entity.visibilityRange + 1)
+      entity.pos,
+      entity.visibilityRange
     );
   }
 
   /// returns true if the points have line of sight to each other
-  public bool TestVisibility(Vector2Int start, Vector2Int end) {
+  public bool TestVisibility(Vector2Int source, Vector2Int end) {
     bool isVisible = true;
-    ForEachLine(start, end, (pos) => {
-      if (pos == start || pos == end) {
+    if (tiles[end.x, end.y].ObstructsVision()) {
+      var possibleEnds = GetNeighborhoodTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {
+        return Vector2Int.Distance(source, tile.pos);
+      });
+      /// find the closest neighbor that doesn't obstruct vision and go off that
+      end = possibleEnds.FirstOrDefault()?.pos ?? end;
+    }
+    ForEachLine(source, end, (pos) => {
+      if (pos == source || pos == end) {
         return;
       }
       Tile t = tiles[pos.x, pos.y];
       isVisible = isVisible && !t.ObstructsVision();
     });
     return isVisible;
+  }
+
+  private List<Tile> GetNeighborhoodTiles(Vector2Int pos) {
+    List<Tile> list = new List<Tile>();
+    int xMin = Mathf.Clamp(pos.x - 1, 0, width - 1);
+    int xMax = Mathf.Clamp(pos.x + 1, 0, width - 1);
+    int yMin = Mathf.Clamp(pos.y - 1, 0, height - 1);
+    int yMax = Mathf.Clamp(pos.y + 1, 0, height - 1);
+    for (int x = xMin; x <= xMax; x++) {
+      for (int y = yMin; y <= yMax; y++) {
+        list.Add(tiles[x, y]);
+      }
+    }
+    return list;
+  }
+
+  public void ForEachLocationCircle(System.Action<Vector2Int> callback, Vector2Int center, float radius) {
+    Vector2Int extent = new Vector2Int(Mathf.CeilToInt(radius), Mathf.CeilToInt(radius));
+    ForEachLocation((pos) => {
+      if (Vector2Int.Distance(pos, center) <= radius) {
+        callback(pos);
+      }
+    }, center - extent, center + extent);
   }
 
   /// max is exclusive
@@ -164,7 +194,7 @@ public class Floor {
     f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
     // f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
 
-    f.actors.Add(new BerryBush(new Vector2Int(f.width/2, f.height/2)));
+    f.actors.Add(new BerryBush(new Vector2Int(f.width / 2, f.height / 2)));
 
     return f;
   }

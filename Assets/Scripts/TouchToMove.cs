@@ -81,7 +81,7 @@ public class TouchToMove : MonoBehaviour {
     Vector3 worldTarget = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     Vector2Int target = new Vector2Int(Mathf.RoundToInt(worldTarget.x), Mathf.RoundToInt(worldTarget.y));
     Floor currentFloor = GameModel.main.currentFloor;
-    target.Clamp(currentFloor.boundsMin, currentFloor.boundsMax);
+    target.Clamp(currentFloor.boundsMin, currentFloor.boundsMax - new Vector2Int(1, 1));
     Tile tile = currentFloor.tiles[target.x, target.y];
     if (tile.visiblity != TileVisiblity.Unexplored) {
       this.target = target;

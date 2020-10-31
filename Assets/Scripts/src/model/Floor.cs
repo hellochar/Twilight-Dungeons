@@ -160,12 +160,40 @@ public class Floor {
 
     // add an upstairs at (2, height/2)
     // add a downstairs a (width - 3, height/2)
-    f.tiles[2, f.height / 2] = new Upstairs(new Vector2Int(2, f.height / 2));
-    f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
+    f.PlaceUpstairs(new Vector2Int(1, f.height / 2));
+    f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
+    // f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
 
     f.actors.Add(new BerryBush(new Vector2Int(f.width/2, f.height/2)));
 
     return f;
+  }
+
+  private void PlaceUpstairs(Vector2Int pos) {
+    // surround sides with wall, but ensure right tile is open
+    tiles[pos.x - 1, pos.y - 1] = new Wall(pos + new Vector2Int(-1, -1));
+    tiles[pos.x - 1, pos.y] = new Wall(pos + new Vector2Int(-1, 0));
+    tiles[pos.x - 1, pos.y + 1] = new Wall(pos + new Vector2Int(-1, 1));
+
+    tiles[pos.x, pos.y - 1] = new Wall(pos + new Vector2Int(0, -1));
+    tiles[pos.x, pos.y] = new Upstairs(pos);
+    tiles[pos.x, pos.y + 1] = new Wall(pos + new Vector2Int(0, 1));
+
+    tiles[pos.x + 1, pos.y] = new Ground(pos + new Vector2Int(1, 0));
+  }
+
+  private void PlaceDownstairs(Vector2Int pos) {
+    // surround sides with wall, but ensure left tile is open
+    tiles[pos.x - 1, pos.y] = new Ground(pos + new Vector2Int(-1, 0));
+
+    tiles[pos.x, pos.y - 1] = new Wall(pos + new Vector2Int(0, -1));
+    tiles[pos.x, pos.y] = new Downstairs(pos);
+    tiles[pos.x, pos.y + 1] = new Wall(pos + new Vector2Int(0, 1));
+
+    tiles[pos.x + 1, pos.y - 1] = new Wall(pos + new Vector2Int(1, -1));
+    tiles[pos.x + 1, pos.y] = new Wall(pos + new Vector2Int(1, 0));
+    tiles[pos.x + 1, pos.y + 1] = new Wall(pos + new Vector2Int(1, 1));
+
   }
 
   public static Floor generateRandomFloor() {
@@ -229,12 +257,14 @@ public class Floor {
     BSPNode upstairsRoom = rooms.First();
     // 1-px padding from the top-left of the room
     Vector2Int upstairsPos = new Vector2Int(upstairsRoom.min.x + 1, upstairsRoom.max.y - 1);
-    floor.tiles[upstairsPos.x, upstairsPos.y] = new Upstairs(upstairsPos);
+    floor.PlaceUpstairs(upstairsPos);
+    // floor.tiles[upstairsPos.x, upstairsPos.y] = new Upstairs(upstairsPos);
 
     BSPNode downstairsRoom = rooms.Last();
     // 1-px padding from the bottom-right of the room
     Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
-    floor.tiles[downstairsPos.x, downstairsPos.y] = new Downstairs(downstairsPos);
+    floor.PlaceDownstairs(downstairsPos);
+    // floor.tiles[downstairsPos.x, downstairsPos.y] = new Downstairs(downstairsPos);
 
     return floor;
   }

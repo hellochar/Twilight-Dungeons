@@ -173,7 +173,7 @@ public class Floor {
   }
 
   public static Floor generateFloor0() {
-    Floor f = new Floor(10, 10);
+    Floor f = new Floor(30, 20);
 
     // fill with floor tiles by default
     f.ForEachLocation(p => f.tiles[p.x, p.y] = new Ground(p));
@@ -187,6 +187,10 @@ public class Floor {
       f.tiles[0, y] = new Wall(new Vector2Int(0, y));
       f.tiles[f.width - 1, y] = new Wall(new Vector2Int(f.width - 1, y));
     }
+
+    SMOOTH_ROOM_EDGES.ApplyWithRotations(f);
+    SMOOTH_WALL_EDGES.ApplyWithRotations(f);
+    MAKE_WALL_BUMPS.ApplyWithRotations(f);
 
     // add an upstairs at (2, height/2)
     // add a downstairs a (width - 3, height/2)
@@ -270,6 +274,7 @@ public class Floor {
     // apply a natural look across the floor by smoothing both wall corners and space corners
     SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);
     SMOOTH_WALL_EDGES.ApplyWithRotations(floor);
+    MAKE_WALL_BUMPS.ApplyWithRotations(floor);
 
     // sort by distance to top-left.
     Vector2Int topLeft = new Vector2Int(0, floor.height);
@@ -326,11 +331,7 @@ public class Floor {
       {0, 0, 1},
       {0, 0, 1},
     },
-    new int[3, 3] {
-      {1, 1, 1},
-      {0, 1, 1},
-      {0, 0, 1},
-    }
+    1
   );
 
   static ShapeTransform SMOOTH_ROOM_EDGES = new ShapeTransform(
@@ -339,38 +340,49 @@ public class Floor {
       {1, 1, 0},
       {1, 1, 0},
     },
+    0
+  );
+
+  static ShapeTransform MAKE_WALL_BUMPS = new ShapeTransform(
     new int[3, 3] {
       {0, 0, 0},
-      {1, 0, 0},
-      {1, 1, 0}
-    }
+      {1, 1, 1},
+      {1, 1, 1},
+    },
+    0,
+    // 50% chance to make a 2-run
+    1 - Mathf.Sqrt(0.5f)
+    // 0.33f
   );
 }
 
 class ShapeTransform {
   /// Each number is a pathfinding weight (0 means infinity)
   public int[,] input;
-  public int[,] output;
+  public int output;
+  /// only do the transform this % of the time
+  public float probability { get; }
 
   private ShapeTransform rot90;
   private ShapeTransform rot180;
   private ShapeTransform rot270;
 
-  public ShapeTransform(int[,] input, int[,] output) {
+  public ShapeTransform(int[,] input, int output, float probability = 1) {
     this.input = input;
     this.output = output;
+    this.probability = probability;
   }
 
   /// Apply this transform to the floor. Accounts for all 4 rotations as well.
   public void ApplyWithRotations(Floor floor) {
     if (rot90 == null) {
-      rot90 = new ShapeTransform(Rotate90(input), Rotate90(output));
+      rot90 = new ShapeTransform(Rotate90(input), output, probability);
     }
     if (rot180 == null) {
-      rot180 = new ShapeTransform(Rotate90(rot90.input), Rotate90(rot90.output));
+      rot180 = new ShapeTransform(Rotate90(rot90.input), output, probability);
     }
     if (rot270 == null) {
-      rot270 = new ShapeTransform(Rotate90(rot180.input), Rotate90(rot180.output));
+      rot270 = new ShapeTransform(Rotate90(rot180.input), output, probability);
     }
     Apply(floor);
     rot90.Apply(floor);
@@ -411,7 +423,9 @@ class ShapeTransform {
 
   private void ApplyPlacesToChange(Floor floor, List<(int, int)> placesToChange) {
     foreach (var (x, y) in placesToChange) {
-      ApplyChunkToFloor(floor, x, y, output);
+      if (Random.value <= this.probability) {
+        ApplyOutputAt(floor, x, y, output);
+      }
     }
   }
 
@@ -445,23 +459,18 @@ class ShapeTransform {
   }
 
   /// only construct new tiles if the weight is different
-  private void ApplyChunkToFloor(Floor floor, int x, int y, int[,] chunk) {
+  private void ApplyOutputAt(Floor floor, int x, int y, int newValue) {
     // HACK - convert chunks to tiles: 0 -> Wall, 1 -> Ground
-    for (int dx = -1; dx <= 1; dx++) {
-      for (int dy = -1; dy <= 1; dy++) {
-        Vector2Int pos = new Vector2Int(x + dx, y + dy);
-        int newValue = chunk[dx + 1, dy + 1];
-        Tile currentTile = floor.tiles[pos.x, pos.y];
-        if (currentTile.GetPathfindingWeight() != newValue) {
-          Tile newTile;
-          if (newValue == 0) {
-            newTile = new Wall(pos);
-          } else {
-            newTile = new Ground(pos);
-          }
-          floor.tiles[pos.x, pos.y] = newTile;
-        }
+    Vector2Int pos = new Vector2Int(x, y);
+    Tile currentTile = floor.tiles[pos.x, pos.y];
+    if (currentTile.GetPathfindingWeight() != newValue) {
+      Tile newTile;
+      if (newValue == 0) {
+        newTile = new Wall(pos);
+      } else {
+        newTile = new Ground(pos);
       }
+      floor.tiles[pos.x, pos.y] = newTile;
     }
   }
 }

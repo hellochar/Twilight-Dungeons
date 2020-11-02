@@ -78,6 +78,13 @@ public class Floor {
     return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
   }
 
+  internal void CatchUpStep(int time) {
+    // step all plants until they're at the current time
+    foreach (BerryBush plant in actors.Where(a => a is BerryBush)) {
+      plant.CatchUpStep(time);
+    }
+  }
+
   internal void RemoveVisibility(Actor entity) {
     ForEachLocationCircle((pos) => {
       Tile t = tiles[pos.x, pos.y];
@@ -199,6 +206,11 @@ public class Floor {
     // f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
 
     f.actors.Add(new BerryBush(new Vector2Int(f.width / 2, f.height / 2)));
+    f.actors.Add(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
+    f.actors.Add(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
+    f.actors.Add(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
+    f.actors.Add(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
+    f.actors.ForEach(a => a.floor = f);
 
     return f;
   }
@@ -352,7 +364,7 @@ public class Floor {
     0,
     // 50% chance to make a 2-run
     1 - Mathf.Sqrt(0.5f)
-    // 0.33f
+  // 0.33f
   );
 }
 

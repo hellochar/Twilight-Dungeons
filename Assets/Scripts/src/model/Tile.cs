@@ -1,19 +1,41 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 public abstract class Tile : Entity {
   public Vector2Int pos { get; }
   public TileVisiblity visiblity = TileVisiblity.Unexplored;
+
+  /// TODO set this when this tile gets assigned
+  Floor floor;
+
+  Actor occupant {
+    get => floor.actors.Single(a => a.pos == this.pos);
+  }
+
   public Tile(Vector2Int pos) => this.pos = pos;
 
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
-  public virtual float GetPathfindingWeight() {
+  public float GetPathfindingWeight() {
+    // if (occupant != null) {
+    //   return 0;
+    // }
+    return BasePathfindingWeight();
+  }
+
+  protected virtual float BasePathfindingWeight() {
     return 1;
   }
 
   public virtual bool ObstructsVision() {
     return GetPathfindingWeight() == 0;
   }
+
+  internal bool CanBeOccupied() {
+    return GetPathfindingWeight() != 0;
+  }
+
 
   public virtual void OnPlayerEnter() {}
 }
@@ -28,7 +50,7 @@ public class Ground : Tile {
 
 public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
-  public override float GetPathfindingWeight() {
+  protected override float BasePathfindingWeight() {
     return 0;
   }
 }

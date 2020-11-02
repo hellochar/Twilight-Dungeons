@@ -35,7 +35,6 @@ public class HeartsUpdate : MonoBehaviour {
       RectTransform rt = heart.GetComponent<RectTransform>();
       float width = rt.rect.width;
       rt.anchoredPosition = new Vector2((width + padding) * i, 0);
-      Debug.Log(heart);
     }
     // TODO delete extra hearts
   }

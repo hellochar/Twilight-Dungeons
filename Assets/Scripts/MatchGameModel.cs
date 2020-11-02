@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MatchGameModel : MonoBehaviour {
+  GameModel model;
   private GameObject floorPrefab;
 
   private Dictionary<Floor, MatchFloorState> floorComponents = new Dictionary<Floor, MatchFloorState>();
@@ -11,8 +12,15 @@ public class MatchGameModel : MonoBehaviour {
 
   // Start is called before the first frame update
   void Start() {
+    this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
-    currentFloorComponent = GetOrCreateFloorComponent(GameModel.main.currentFloor);
+    currentFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
+    Player player = model.player;
+    player.OnSetPlayerAction.AddListener(HandleSetPlayerAction);
+  }
+
+  public void HandleSetPlayerAction() {
+    StartCoroutine(model.StepUntilPlayerChoice());
   }
 
   private MatchFloorState GetOrCreateFloorComponent(Floor floor) {
@@ -28,10 +36,10 @@ public class MatchGameModel : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     // when the GameModel's current floor has changed, update the renderer to match
-    if (GameModel.main.currentFloor != currentFloorComponent.floor) {
+    if (model.currentFloor != currentFloorComponent.floor) {
       currentFloorComponent.gameObject.SetActive(false);
 
-      MatchFloorState newFloorComponent = GetOrCreateFloorComponent(GameModel.main.currentFloor);
+      MatchFloorState newFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
       newFloorComponent.gameObject.SetActive(true);
       currentFloorComponent = newFloorComponent;
     }

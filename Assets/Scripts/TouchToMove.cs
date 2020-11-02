@@ -5,14 +5,12 @@ using System.Linq;
 using UnityEngine;
 
 public class TouchToMove : MonoBehaviour {
-  public Vector2Int? target;
   public GameObject reticle;
   public GameObject pathDotPrefab;
 
   // Get the entity represented by this GameObject
-  public Actor entity;
+  public Actor actor;
 
-  public List<Vector2Int> currentPath;
   public List<GameObject> currentPathSprites;
 
   // Start is called before the first frame update
@@ -20,49 +18,36 @@ public class TouchToMove : MonoBehaviour {
     this.pathDotPrefab = Resources.Load<GameObject>("PathDotSprite");
     reticle.SetActive(false);
     // hard code for now
-    this.entity = GameModel.main.player;
+    this.actor = GameModel.main.player;
   }
 
   // Update is called once per frame
   void Update() {
-    UpdateSetTarget();
-    UpdateRemoveTarget();
-    UpdateMove();
+    MaybeSetTarget();
+    UpdatePathSprites();
     UpdateReticle();
   }
 
-  void UpdateMove() {
-    if (this.target == null) {
+  void UpdatePathSprites() {
+    if (!(actor.action is MoveToTargetAction)) {
+      if (currentPathSprites != null) {
+        this.ResetPathSprites();
+      }
       return;
     }
-    if (Time.frameCount % 20 == 0) {
-      Vector2Int target = this.target.Value;
-      Floor floor = GameModel.main.currentFloor;
-      if (this.currentPath == null) {
-        this.currentPath = floor.FindPath(this.entity.pos, target);
-        this.currentPathSprites = currentPath.Select(pos => Instantiate(pathDotPrefab, Util.withZ(pos, 0), Quaternion.identity)).ToList();
-      }
-      if (this.currentPath.Count > 0) {
-        // take the next direction off the path and move in that direction
-        Vector2Int nextPosition = currentPath[0];
-        currentPath.RemoveAt(0);
-        Destroy(this.currentPathSprites[0]);
-        this.currentPathSprites.RemoveAt(0);
-        // TODO refactor this into actor actions
-        this.entity.pos = nextPosition;
-        foreach (Actor a in floor.actors) {
-          a.Step();
-        }
-      }
-      if (currentPath.Count == 0) {
-        currentPath = null;
-        this.target = null;
-      }
+    MoveToTargetAction action = (MoveToTargetAction) actor.action;
+    if (currentPathSprites == null) {
+      this.currentPathSprites = action.path.Select(pos => Instantiate(pathDotPrefab, Util.withZ(pos, 0), Quaternion.identity)).ToList();
+    }
+    // remove paths as they're tackled
+    while(currentPathSprites.Count > action.path.Count) {
+      Destroy(currentPathSprites[0]);
+      currentPathSprites.RemoveAt(0);
     }
   }
 
   // Set target on mouse click or mobile touch
-  void UpdateSetTarget() {
+  void MaybeSetTarget() {
     // mouse click
     if (Input.GetMouseButtonUp(0)) {
       // set target
@@ -84,27 +69,23 @@ public class TouchToMove : MonoBehaviour {
     target.Clamp(currentFloor.boundsMin, currentFloor.boundsMax - new Vector2Int(1, 1));
     Tile tile = currentFloor.tiles[target.x, target.y];
     if (tile.visiblity != TileVisiblity.Unexplored) {
-      this.target = target;
+      actor.action = new MoveToTargetAction(actor, target);
       // clear existing path
-      this.currentPath = null;
       if (this.currentPathSprites != null) {
-        this.currentPathSprites.ForEach(sprite => Destroy(sprite));
-        this.currentPathSprites = null;
+        ResetPathSprites();
       }
     }
   }
 
-  // remove target if we're close enough
-  void UpdateRemoveTarget() {
-    if (Util.getXY(this.transform.position).Equals(target)) {
-      target = null;
-    }
+  private void ResetPathSprites() {
+    this.currentPathSprites.ForEach(sprite => Destroy(sprite));
+    this.currentPathSprites = null;
   }
 
   void UpdateReticle() {
-    if (target != null) {
+    if (actor.action is MoveToTargetAction) {
       reticle.SetActive(true);
-      reticle.transform.position = Util.withZ(target.Value, reticle.transform.position.z);
+      reticle.transform.position = Util.withZ(( (MoveToTargetAction) actor.action).target, reticle.transform.position.z);
     } else {
       reticle.SetActive(false);
     }

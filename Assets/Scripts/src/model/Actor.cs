@@ -4,32 +4,53 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Actor : Entity {
-  public virtual Vector2Int pos { get; set; }
+  private Vector2Int _pos;
+  public virtual Vector2Int pos {
+    get => _pos;
+    set {
+      Floor floor = this.floor;
+      if (floor == null || floor.tiles[value.x, value.y].CanBeOccupied()) {
+        _pos = value;
+      }
+    }
+  }
+  public int baseActionCost { get => 1; }
+  public int timeCreated { get; }
   /// how many turns this Entity has been alive for
-  public int age = 0;
-  // public int nextActionTime = 0;
-  public List<ActorAction> actions;
+  public int age { get => GameModel.main.time - timeCreated; }
+  public int timeNextAction;
+  public virtual ActorAction action { get; set; }
   public int visibilityRange = 7;
+  /// TODO update floor reference
+  public Floor floor;
+
+  /// This number allows tweaking of Actor order when they would otherwise be scheduled
+  /// at the same time. This offset gets added to the timeNextAction, so higher numbers
+  /// will come after lower numbers. This does *NOT* actually modify "time" which the
+  /// actor takes the action. Player has offset 0 (aka always goes first). This number should
+  /// be < 1.
+  internal virtual float queueOrderOffset { get => 0.5f; }
 
   public Actor(Vector2Int pos) {
+    this.timeCreated = GameModel.main.time;
+    this.timeNextAction = this.timeCreated;
     this.pos = pos;
-    this.actions = new List<ActorAction>();
   }
 
   public virtual void Step() {
-    ActorAction action = this.actions[0];
     if (action == null) {
-      action = ActorAction.DoNothing;
-    }
-    this.age += action.Perform(this);
-    if (action.IsDone()) {
-      this.actions.Remove(action);
-    }
-  }
-
-  public int baseActionCost {
-    get {
-      return 1;
+      this.timeNextAction += baseActionCost;
+    } else {
+      if (action.IsDone()) {
+        this.action = null;
+        this.timeNextAction += baseActionCost;
+      } else {
+        int timeCost = action.Perform();
+        this.timeNextAction += timeCost;
+        if (action.IsDone()) {
+          this.action = null;
+        }
+      }
     }
   }
 }
@@ -62,13 +83,22 @@ public class BerryBush : Actor {
 
   public PlantStage<BerryBush> currentStage;
 
+  internal override float queueOrderOffset => 0.4f;
+
   public BerryBush(Vector2Int pos) : base(pos) {
     currentStage = new BerrySeed(this);
   }
 
   public override void Step() {
-    this.age += this.baseActionCost;
     this.currentStage.Step();
+    this.timeNextAction = GameModel.main.time + baseActionCost;
+  }
+
+  internal void CatchUpStep(int time) {
+    Debug.Log("catching up " + this + " from " + this.timeNextAction + " to " + time);
+    while (this.timeNextAction < time) {
+      this.Step();
+    }
   }
 }
 
@@ -85,44 +115,82 @@ public class PlantStage<T> where T : Actor {
   }
 
   public virtual void Step() {}
+}
 
+public class Bat : Actor {
+  class BatAIAction : ActorAction {
+    internal BatAIAction(Bat bat) : base(bat) {}
+
+    public override int Perform() {
+      // randomly move 
+      Vector2Int dir = (new Vector2Int[] {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right,
+      })[UnityEngine.Random.Range(0, 4)];
+      actor.pos += dir;
+      return actor.baseActionCost;
+    }
+
+    public override bool IsDone() {
+      return false;
+    }
+  }
+
+  public Bat(Vector2Int pos) : base(pos) {
+    this.action = new BatAIAction(this);
+  }
 }
 
 public abstract class ActorAction {
-  public static DoNothingAction DoNothing = new DoNothingAction();
+  public virtual Actor actor { get; }
+
+  protected ActorAction(Actor actor) { this.actor = actor; }
 
   /// return the number of ticks it took to perform this action
-  public abstract int Perform(Actor entity);
+  public abstract int Perform();
 
   public virtual bool IsDone() {
     return true;
   }
 }
 
-public class DoNothingAction : ActorAction {
-  public override int Perform(Actor entity) {
-    return entity.baseActionCost;
-  }
-}
-
 public class TeleportAction : ActorAction {
   Vector2Int target;
-  public TeleportAction(Vector2Int target) {
+  public TeleportAction(Actor actor, Vector2Int target) : base(actor) {
     this.target = target;
   }
 
-  public override int Perform(Actor entity) {
-    entity.pos = target;
-    return entity.baseActionCost;
+  public override int Perform() {
+    actor.pos = target;
+    return actor.baseActionCost;
   }
 }
 
-// public class FollowPathAction : Action {
-//   public List<Vector2Int> path;
-//   public FollowPathAction(List<Vector2Int> path) {
-//     this.path = path;
-//   }
-// }
+public class MoveToTargetAction : ActorAction {
+  public Vector2Int target { get; }
+  public readonly List<Vector2Int> path;
+
+  public MoveToTargetAction(Actor actor, Vector2Int target) : base(actor) {
+    this.target = target;
+    Floor floor = GameModel.main.currentFloor;
+    this.path = floor.FindPath(actor.pos, target);
+  }
+
+  public override int Perform() {
+    if (path.Count > 0) {
+      Vector2Int nextPosition = path[0];
+      path.RemoveAt(0);
+      actor.pos = nextPosition;
+    }
+    return actor.baseActionCost;
+  }
+
+  public override bool IsDone() {
+    return actor.pos == target;
+  }
+}
 
 // public class MoveAction {
 //   public int Perform(Entity entity) {

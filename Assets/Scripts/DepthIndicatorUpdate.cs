@@ -12,6 +12,9 @@ public class DepthIndicatorUpdate : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     int depth = GameModel.main.activeFloorIndex;
-    this.tmpComponent.text = "Depth " + (depth + 1);
+    this.tmpComponent.text = "Depth " + (depth + 1) + "\nTime " + GameModel.main.time;
+    if (GameModel.main.turnManager != null) {
+      this.tmpComponent.text += "\nTurn order: " + GameModel.main.turnManager.ToString();
+    }
   }
 }

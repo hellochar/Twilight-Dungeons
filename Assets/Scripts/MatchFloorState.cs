@@ -16,6 +16,8 @@ public class MatchFloorState : MonoBehaviour {
       typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs), typeof(Dirt),
       // Plants
       typeof(BerryBush),
+      // Enemies
+      typeof(Bat)
     };
     foreach (System.Type t in types) {
       string resourceName = t.Name;
@@ -47,6 +49,8 @@ public class MatchFloorState : MonoBehaviour {
         gameObject.GetComponent<MatchTileState>().owner = (Tile) entity;
       } else if (entity is BerryBush) {
         gameObject.GetComponent<MatchPlantState>().plant = (BerryBush) entity;
+      } else if (entity is Bat) {
+        gameObject.GetComponent<MatchActorPosition>().actor = (Bat) entity;
       }
     } else {
       Debug.LogError($"Couldn't find prefab for {entity.GetType()}");

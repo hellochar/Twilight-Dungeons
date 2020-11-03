@@ -59,6 +59,7 @@ public class GameModel {
       newPlayerPosition = this.currentFloor.upstairs.pos + new Vector2Int(1, 0);
     }
     player.pos = newPlayerPosition;
+    // player.action = null;
     player.floor = nextFloor;
     player.floor.CatchUpStep(this.time);
     this.turnManager.AddFloor(player.floor);

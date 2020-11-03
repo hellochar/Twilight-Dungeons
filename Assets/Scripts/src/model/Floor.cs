@@ -189,28 +189,28 @@ public class Floor {
 
   public void PlaceUpstairs(Vector2Int pos) {
     // surround sides with wall, but ensure right tile is open
-    tiles[pos.x - 1, pos.y - 1] = new Wall(pos + new Vector2Int(-1, -1));
-    tiles[pos.x - 1, pos.y] = new Wall(pos + new Vector2Int(-1, 0));
-    tiles[pos.x - 1, pos.y + 1] = new Wall(pos + new Vector2Int(-1, 1));
+    tiles.Put(new Wall(pos + new Vector2Int(-1, -1)));
+    tiles.Put(new Wall(pos + new Vector2Int(-1, 0)));
+    tiles.Put(new Wall(pos + new Vector2Int(-1, 1)));
 
-    tiles[pos.x, pos.y - 1] = new Wall(pos + new Vector2Int(0, -1));
-    tiles[pos.x, pos.y] = new Upstairs(pos);
-    tiles[pos.x, pos.y + 1] = new Wall(pos + new Vector2Int(0, 1));
+    tiles.Put(new Wall(pos + new Vector2Int(0, -1)));
+    tiles.Put(new Upstairs(pos));
+    tiles.Put(new Wall(pos + new Vector2Int(0, 1)));
 
-    tiles[pos.x + 1, pos.y] = new Ground(pos + new Vector2Int(1, 0));
+    tiles.Put(new Ground(pos + new Vector2Int(1, 0)));
   }
 
   public void PlaceDownstairs(Vector2Int pos) {
     // surround sides with wall, but ensure left tile is open
-    tiles[pos.x - 1, pos.y] = new Ground(pos + new Vector2Int(-1, 0));
+    tiles.Put(new Ground(pos + new Vector2Int(-1, 0)));
 
-    tiles[pos.x, pos.y - 1] = new Wall(pos + new Vector2Int(0, -1));
-    tiles[pos.x, pos.y] = new Downstairs(pos);
-    tiles[pos.x, pos.y + 1] = new Wall(pos + new Vector2Int(0, 1));
+    tiles.Put(new Wall(pos + new Vector2Int(0, -1)));
+    tiles.Put(new Downstairs(pos));
+    tiles.Put(new Wall(pos + new Vector2Int(0, 1)));
 
-    tiles[pos.x + 1, pos.y - 1] = new Wall(pos + new Vector2Int(1, -1));
-    tiles[pos.x + 1, pos.y] = new Wall(pos + new Vector2Int(1, 0));
-    tiles[pos.x + 1, pos.y + 1] = new Wall(pos + new Vector2Int(1, 1));
+    tiles.Put(new Wall(pos + new Vector2Int(1, -1)));
+    tiles.Put(new Wall(pos + new Vector2Int(1, 0)));
+    tiles.Put(new Wall(pos + new Vector2Int(1, 1)));
   }
 }
 
@@ -218,16 +218,20 @@ public class TileStore : IEnumerable<Tile> {
   private Tile[, ] tiles;
   public Tile this[int x, int y] {
     get => tiles[x, y];
-    set {
-      tiles[x, y] = value;
-      value.floor = floor;
-    }
+    // set {
+    //   tiles[x, y] = value;
+    //   value.floor = floor;
+    // }
   }
   public int width => tiles.GetLength(0);
   public int height => tiles.GetLength(1);
-
   
   public Floor floor { get; }
+
+  public void Put(Tile tile) {
+    tiles[tile.pos.x, tile.pos.y] = tile;
+    tile.floor = floor;
+  }
 
   public TileStore(Floor floor, int width, int height) {
     this.floor = floor;

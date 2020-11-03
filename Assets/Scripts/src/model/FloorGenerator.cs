@@ -7,16 +7,16 @@ public class FloorGenerator {
     Floor f = new Floor(30, 20);
 
     // fill with floor tiles by default
-    f.ForEachLocation(p => f.tiles[p.x, p.y] = new Ground(p));
+    f.ForEachLocation(p => f.tiles.Put(new Ground(p)));
 
     // surround floor with walls
     for (int x = 0; x < f.width; x++) {
-      f.tiles[x, 0] = new Wall(new Vector2Int(x, 0));
-      f.tiles[x, f.height - 1] = new Wall(new Vector2Int(x, f.height - 1));
+      f.tiles.Put(new Wall(new Vector2Int(x, 0)));
+      f.tiles.Put(new Wall(new Vector2Int(x, f.height - 1)));
     }
     for (int y = 0; y < f.height; y++) {
-      f.tiles[0, y] = new Wall(new Vector2Int(0, y));
-      f.tiles[f.width - 1, y] = new Wall(new Vector2Int(f.width - 1, y));
+      f.tiles.Put(new Wall(new Vector2Int(0, y)));
+      f.tiles.Put(new Wall(new Vector2Int(f.width - 1, y)));
     }
 
     SMOOTH_ROOM_EDGES.ApplyWithRotations(f);
@@ -27,15 +27,12 @@ public class FloorGenerator {
     // add a downstairs a (width - 3, height/2)
     f.PlaceUpstairs(new Vector2Int(1, f.height / 2));
     f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
-    // f.tiles[f.width - 3, f.height / 2] = new Downstairs(new Vector2Int(f.width - 3, f.height / 2));
 
     f.AddActor(new BerryBush(new Vector2Int(f.width / 2, f.height / 2)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
-
-    f.BacklinkTiles();
     return f;
   }
 
@@ -43,7 +40,7 @@ public class FloorGenerator {
     Floor floor = new Floor(60, 20);
 
     // fill with wall
-    floor.ForEachLocation(p => floor.tiles[p.x, p.y] = new Wall(p));
+    floor.ForEachLocation(p => floor.tiles.Put(new Wall(p)));
 
     // randomly partition space into 20 rooms
     BSPNode root = new BSPNode(null, new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
@@ -68,14 +65,14 @@ public class FloorGenerator {
     rooms.ForEach(room => room.randomlyShrink());
 
     foreach (var (a, b) in ConnectRooms(rooms, root)) {
-      floor.ForEachLine(a, b, point => floor.tiles[point.x, point.y] = new Ground(point));
+      floor.ForEachLine(a, b, point => floor.tiles.Put(new Ground(point)));
     }
 
     rooms.ForEach(room => {
       // fill each room with floor
       for (int x = room.min.x; x <= room.max.x; x++) {
         for (int y = room.min.y; y <= room.max.y; y++) {
-          floor.tiles[x, y] = new Ground(new Vector2Int(x, y));
+          floor.tiles.Put(new Ground(new Vector2Int(x, y)));
         }
       }
     });
@@ -102,17 +99,13 @@ public class FloorGenerator {
     // 1-px padding from the top-left of the room
     Vector2Int upstairsPos = new Vector2Int(upstairsRoom.min.x + 1, upstairsRoom.max.y - 1);
     floor.PlaceUpstairs(upstairsPos);
-    // floor.tiles[upstairsPos.x, upstairsPos.y] = new Upstairs(upstairsPos);
 
     BSPNode downstairsRoom = rooms.Last();
     // 1-px padding from the bottom-right of the room
     Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
     floor.PlaceDownstairs(downstairsPos);
-    // floor.tiles[downstairsPos.x, downstairsPos.y] = new Downstairs(downstairsPos);
 
     floor.AddActor(new Bat(new Vector2Int(floor.width/2, floor.height / 2)));
-
-    floor.BacklinkTiles();
     return floor;
   }
 
@@ -284,7 +277,7 @@ class ShapeTransform {
       } else {
         newTile = new Ground(pos);
       }
-      floor.tiles[pos.x, pos.y] = newTile;
+      floor.tiles.Put(newTile);
     }
   }
 }

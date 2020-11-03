@@ -19,7 +19,6 @@ public class Player : Actor {
       if (value != null) {
         OnSetPlayerAction.Invoke();
       }
-      // GameModel.main.OnSetPlayerAction();
     }
   }
 

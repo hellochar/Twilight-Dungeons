@@ -27,16 +27,11 @@ public class GameModel {
     return turnManager.StepUntilPlayerChoice();
   }
 
-  // TODO make all floor sets use this method
-  public void ActivateFloor(Floor floor) {
-    floor.CatchUpStep(this.time);
-  }
-
   public void generateGameModel() {
     this.floors = new Floor[] {
-      Floor.generateFloor0(),
-      Floor.generateRandomFloor(),
-      Floor.generateRandomFloor(),
+      FloorGenerator.generateFloor0(),
+      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateRandomFloor(),
       // Floor.generateRandomFloor(),
       // Floor.generateRandomFloor(),
       // Floor.generateRandomFloor(),
@@ -52,7 +47,9 @@ public class GameModel {
   internal void PutPlayerAt(Floor nextFloor, bool isGoingUpstairs) {
     // Update active floor index
     // Put Player in new position after finding the connecting downstairs/upstairs
-    // deactivate current floor
+    // deactivate old floor
+    this.turnManager.RemoveFloor(player.floor);
+
     int newIndex = Array.FindIndex(floors, f => f == nextFloor);
     this.activeFloorIndex = newIndex;
     Vector2Int newPlayerPosition;
@@ -63,6 +60,8 @@ public class GameModel {
     }
     player.pos = newPlayerPosition;
     player.floor = nextFloor;
+    player.floor.CatchUpStep(this.time);
+    this.turnManager.AddFloor(player.floor);
   }
 }
 
@@ -88,27 +87,29 @@ public class TurnManager {
     }
     float shiftedSchedule = actor.timeNextAction + actor.queueOrderOffset;
     queue.Enqueue(actor, shiftedSchedule);
-    Debug.Log(actor + " scheduled at " + shiftedSchedule + ". Queue is now " + this);
+    // Debug.Log(actor + " scheduled at " + shiftedSchedule + ". Queue is now " + this);
   }
 
   public void RemoveActor(Actor actor) {
     queue.Remove(actor);
   }
 
-  private void AddFloor(Floor floor) {
-    foreach (Actor a in floor.actors) {
+  public void AddFloor(Floor floor) {
+    foreach (Actor a in floor.Actors()) {
       AddActor(a);
     }
   }
 
   public void RemoveFloor(Floor floor) {
-    foreach (Actor a in floor.actors) {
+    foreach (Actor a in floor.Actors()) {
       RemoveActor(a);
     }
   }
 
+  /// TODO - fix bug - multiple of these coroutines may be running at once!
   internal IEnumerator<object> StepUntilPlayerChoice() {
     // int nextYieldTime = time + 1;
+    bool isFirstIteration = true;
     do {
       if (queue.First == model.player && model.player.action == null) {
         yield break;
@@ -120,21 +121,23 @@ public class TurnManager {
       }
 
       if (model.time != actor.timeNextAction) {
-        Debug.Log("Progressing time from " + model.time + " to " + actor.timeNextAction);
+        // Debug.Log("Progressing time from " + model.time + " to " + actor.timeNextAction);
+        // The first iteration will usually be right after the user's set an action.
+        // Do *not* pause in that situation to allow the game to respond instantly.
+        if (!isFirstIteration) {
+          yield return new WaitForSeconds((actor.timeNextAction - model.time) * 0.2f);
+        }
         // move game time up to now
         model.time = actor.timeNextAction;
       }
 
       // move forward
       actor.Step();
-      Debug.Log(actor + " acted!");
+      // Debug.Log(actor + " acted!");
 
       // Put actor back in queue
       AddActor(actor);
-      // Debug.Log($"Stepped {actor}: " + String.Join(", ", queue.Select(a => $"[{a} ({a.timeNextAction}) - {queue.GetPriority(a)}]")));
-      // if (time > nextYieldTime) {
-        // nextYieldTime = time + 1;
-      yield return new WaitForSeconds(0.5f);
+      isFirstIteration = false;
     } while (true);
   }
 }

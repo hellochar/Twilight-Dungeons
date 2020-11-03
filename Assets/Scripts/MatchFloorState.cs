@@ -35,7 +35,7 @@ public class MatchFloorState : MonoBehaviour {
         }
       }
     }
-    foreach (Actor actor in floor.actors) {
+    foreach (Actor actor in floor.Actors()) {
       InstantiateGameObjectForEntity(actor);
     }
   }

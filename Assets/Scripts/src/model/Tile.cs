@@ -7,10 +7,10 @@ public abstract class Tile : Entity {
   public TileVisiblity visiblity = TileVisiblity.Unexplored;
 
   /// TODO set this when this tile gets assigned
-  Floor floor;
+  internal Floor floor;
 
   Actor occupant {
-    get => floor.actors.Single(a => a.pos == this.pos);
+    get => floor.ActorAt(pos);
   }
 
   public Tile(Vector2Int pos) => this.pos = pos;

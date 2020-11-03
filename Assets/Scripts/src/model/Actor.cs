@@ -53,6 +53,11 @@ public class Actor : Entity {
       }
     }
   }
+
+  public virtual void CatchUpStep(int newTime) {
+    // by default actors don't do anything; they just act as if they were paused
+    this.timeNextAction = newTime;
+  }
 }
 
 public class BerryBush : Actor {
@@ -94,7 +99,7 @@ public class BerryBush : Actor {
     this.timeNextAction = GameModel.main.time + baseActionCost;
   }
 
-  internal void CatchUpStep(int time) {
+  public override void CatchUpStep(int time) {
     Debug.Log("catching up " + this + " from " + this.timeNextAction + " to " + time);
     while (this.timeNextAction < time) {
       this.Step();
@@ -188,7 +193,8 @@ public class MoveToTargetAction : ActorAction {
   }
 
   public override bool IsDone() {
-    return actor.pos == target;
+    return path.Count == 0;
+    // return actor.pos == target;
   }
 }
 

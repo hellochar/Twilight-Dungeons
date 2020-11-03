@@ -13,8 +13,8 @@ public class DepthIndicatorUpdate : MonoBehaviour {
   void Update() {
     int depth = GameModel.main.activeFloorIndex;
     this.tmpComponent.text = "Depth " + (depth + 1) + "\nTime " + GameModel.main.time;
-    if (GameModel.main.turnManager != null) {
-      this.tmpComponent.text += "\nTurn order: " + GameModel.main.turnManager.ToString();
-    }
+    // if (GameModel.main.turnManager != null) {
+    //   this.tmpComponent.text += "\nTurn order: " + GameModel.main.turnManager.ToString();
+    // }
   }
 }

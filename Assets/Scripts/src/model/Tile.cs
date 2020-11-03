@@ -5,8 +5,6 @@ using UnityEngine;
 public abstract class Tile : Entity {
   public Vector2Int pos { get; }
   public TileVisiblity visiblity = TileVisiblity.Unexplored;
-
-  /// TODO set this when this tile gets assigned
   internal Floor floor;
 
   Actor occupant {
@@ -18,9 +16,9 @@ public abstract class Tile : Entity {
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
   public float GetPathfindingWeight() {
-    // if (occupant != null) {
-    //   return 0;
-    // }
+    if (occupant != null) {
+      return 0;
+    }
     return BasePathfindingWeight();
   }
 
@@ -29,7 +27,7 @@ public abstract class Tile : Entity {
   }
 
   public virtual bool ObstructsVision() {
-    return GetPathfindingWeight() == 0;
+    return BasePathfindingWeight() == 0;
   }
 
   internal bool CanBeOccupied() {

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class Floor {
   // public static readonly int WIDTH = 60;
   // public static readonly int HEIGHT = 20;
 
-  public Tile[,] tiles;
+  public TileStore tiles;
 
   private List<Actor> actors;
 
@@ -33,28 +34,19 @@ public class Floor {
     }
   }
 
-  public int width {
-    get {
-      return tiles.GetLength(0);
-    }
-  }
+  public int width => tiles.width;
 
-  public int height {
-    get {
-      return tiles.GetLength(1);
-    }
-  }
-
+  public int height => tiles.height;
 
   public Floor(int width, int height) {
-    this.tiles = new Tile[width, height];
+    this.tiles = new TileStore(this, width, height);
     this.actors = new List<Actor>();
     boundsMin = new Vector2Int(0, 0);
     boundsMax = new Vector2Int(width, height);
   }
 
   public Actor ActorAt(Vector2Int pos) {
-    return this.actors.Single(a => a.pos == pos);
+    return this.actors.FirstOrDefault(a => a.pos == pos);
   }
 
   public void AddActor(Actor actor) {
@@ -195,12 +187,6 @@ public class Floor {
     cb(endPoint);
   }
 
-  public void BacklinkTiles() {
-    foreach (var t in tiles) {
-      t.floor = this;
-    }
-  }
-
   public void PlaceUpstairs(Vector2Int pos) {
     // surround sides with wall, but ensure right tile is open
     tiles[pos.x - 1, pos.y - 1] = new Wall(pos + new Vector2Int(-1, -1));
@@ -225,5 +211,38 @@ public class Floor {
     tiles[pos.x + 1, pos.y - 1] = new Wall(pos + new Vector2Int(1, -1));
     tiles[pos.x + 1, pos.y] = new Wall(pos + new Vector2Int(1, 0));
     tiles[pos.x + 1, pos.y + 1] = new Wall(pos + new Vector2Int(1, 1));
+  }
+}
+
+public class TileStore : IEnumerable<Tile> {
+  private Tile[, ] tiles;
+  public Tile this[int x, int y] {
+    get => tiles[x, y];
+    set {
+      tiles[x, y] = value;
+      value.floor = floor;
+    }
+  }
+  public int width => tiles.GetLength(0);
+  public int height => tiles.GetLength(1);
+
+  
+  public Floor floor { get; }
+
+  public TileStore(Floor floor, int width, int height) {
+    this.floor = floor;
+    this.tiles = new Tile[width, height];
+  }
+
+  public IEnumerator<Tile> GetEnumerator() {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        yield return tiles[x, y];
+      }
+    }
+  }
+
+  IEnumerator IEnumerable.GetEnumerator() {
+    return (IEnumerator) GetEnumerator();
   }
 }

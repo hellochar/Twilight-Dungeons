@@ -51,6 +51,10 @@ public class Floor {
   }
 
   public void AddActor(Actor actor) {
+    // remove actor from old floor
+    if (actor.floor != null) {
+      actor.floor.actors.Remove(actor);
+    }
     this.actors.Add(actor);
     actor.floor = this;
   }

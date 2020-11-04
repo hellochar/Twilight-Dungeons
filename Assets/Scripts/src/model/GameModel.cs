@@ -73,8 +73,10 @@ public class GameModel {
   }
 
   internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {
+    Floor oldFloor = player.floor;
     /// Stop stepping old floor
-    this.turnManager.RemoveFloor(player.floor);
+    this.turnManager.RemoveFloor(oldFloor);
+    oldFloor.RemoveVisibility(player);
 
     int newIndex = Array.FindIndex(floors, f => f == newFloor);
     this.activeFloorIndex = newIndex;
@@ -87,9 +89,10 @@ public class GameModel {
     player.pos = newPlayerPosition;
     // Add player. Important to do this before CatchUpStep because actors may move over player position
     newFloor.AddActor(player);
+    newFloor.AddVisibility(player);
 
     player.floor.CatchUpStep(this.time);
-    this.turnManager.AddFloor(player.floor);
+    this.turnManager.AddFloor(newFloor);
   }
 }
 

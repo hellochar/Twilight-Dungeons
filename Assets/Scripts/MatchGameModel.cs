@@ -19,8 +19,15 @@ public class MatchGameModel : MonoBehaviour {
     player.OnSetPlayerAction.AddListener(HandleSetPlayerAction);
   }
 
+  private Coroutine gameLoop;
   public void HandleSetPlayerAction() {
-    StartCoroutine(model.StepUntilPlayerChoice());
+    if (gameLoop == null) {
+      gameLoop = StartCoroutine(model.StepUntilPlayerChoice(HandleGameLoopEnd));
+    }
+  }
+
+  private void HandleGameLoopEnd() {
+    gameLoop = null;
   }
 
   private MatchFloorState GetOrCreateFloorComponent(Floor floor) {

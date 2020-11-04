@@ -18,7 +18,7 @@ public class GameModel {
   public static GameModel main = new GameModel(); //new GameModel();
   static GameModel() {
     main.generateGameModel();
-    var step = main.StepUntilPlayerChoice();
+    var step = main.StepUntilPlayerChoice(() => {});
     // execute them all immediately
     do {} while (step.MoveNext());
   }
@@ -49,11 +49,11 @@ public class GameModel {
     throw new System.Exception("Reached max event queue generations!");
   }
 
-  public IEnumerator<object> StepUntilPlayerChoice() {
+  public IEnumerator<object> StepUntilPlayerChoice(Action onEnd) {
     if (turnManager == null) {
       turnManager = new TurnManager(this);
     }
-    return turnManager.StepUntilPlayerChoice();
+    return turnManager.StepUntilPlayerChoice(onEnd);
   }
 
   public void generateGameModel() {
@@ -137,13 +137,13 @@ public class TurnManager {
   }
 
   /// TODO - fix bug - multiple of these coroutines may be running at once!
-  internal IEnumerator<object> StepUntilPlayerChoice() {
+  internal IEnumerator<object> StepUntilPlayerChoice(Action onEnd) {
     model.DrainEventQueue();
     // int nextYieldTime = time + 1;
     bool isFirstIteration = true;
     do {
       if (queue.First == model.player && model.player.action == null) {
-        yield break;
+        break;
       }
       Actor actor = queue.Dequeue();
 
@@ -171,5 +171,7 @@ public class TurnManager {
       model.DrainEventQueue();
       isFirstIteration = false;
     } while (true);
+
+    onEnd();
   }
 }

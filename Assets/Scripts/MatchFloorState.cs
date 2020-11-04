@@ -51,10 +51,8 @@ public class MatchFloorState : MonoBehaviour {
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile) {
         gameObject.GetComponent<MatchTileState>().owner = (Tile) entity;
-      } else if (entity is BerryBush) {
-        gameObject.GetComponent<MatchPlantState>().plant = (BerryBush) entity;
-      } else if (entity is Bat) {
-        gameObject.GetComponent<MatchActorPosition>().actor = (Bat) entity;
+      } else if (entity is Actor) {
+        gameObject.GetComponent<MatchActorState>().actor = (Actor) entity;
       }
     } else {
       Debug.LogError($"Couldn't find prefab for {entity.GetType()}");

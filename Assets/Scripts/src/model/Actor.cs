@@ -21,8 +21,9 @@ public class Actor : Entity {
   public int timeNextAction;
   public virtual ActorAction action { get; set; }
   public int visibilityRange = 7;
-  /// TODO update floor reference
   public Floor floor;
+  public Tile currentTile => floor.tiles[pos.x, pos.y];
+  public bool visible => currentTile.visiblity == TileVisiblity.Visible;
 
   /// This number allows tweaking of Actor order when they would otherwise be scheduled
   /// at the same time. This offset gets added to the timeNextAction, so higher numbers

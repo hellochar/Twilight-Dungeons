@@ -43,6 +43,10 @@ public class MatchFloorState : MonoBehaviour {
   private void InstantiateGameObjectForEntity(Entity entity) {
     GameObject prefab;
     Vector3Int pos = new Vector3Int(entity.pos.x, entity.pos.y, 0);
+    /// Player is Instantiated separately; not responsible here
+    if (entity is Player) {
+      return;
+    }
     if (this.prefabs.TryGetValue(entity.GetType(), out prefab)) {
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile) {

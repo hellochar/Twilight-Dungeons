@@ -68,18 +68,15 @@ public class GameModel {
 
     Tile floor0Upstairs = floors[0].upstairs;
     this.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
-    player.floor = floors[0];
-    // model.floors[0].actors.Add(model.player);
+    floors[0].AddActor(this.player);
     floors[0].AddVisibility(player);
   }
 
-  internal void PutPlayerAt(Floor nextFloor, bool isGoingUpstairs) {
-    // Update active floor index
-    // Put Player in new position after finding the connecting downstairs/upstairs
-    // deactivate old floor
+  internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {
+    /// Stop stepping old floor
     this.turnManager.RemoveFloor(player.floor);
 
-    int newIndex = Array.FindIndex(floors, f => f == nextFloor);
+    int newIndex = Array.FindIndex(floors, f => f == newFloor);
     this.activeFloorIndex = newIndex;
     Vector2Int newPlayerPosition;
     if (isGoingUpstairs) {
@@ -88,8 +85,9 @@ public class GameModel {
       newPlayerPosition = this.currentFloor.upstairs.pos + new Vector2Int(1, 0);
     }
     player.pos = newPlayerPosition;
-    // player.action = null;
-    player.floor = nextFloor;
+    // Add player. Important to do this before CatchUpStep because actors may move over player position
+    newFloor.AddActor(player);
+
     player.floor.CatchUpStep(this.time);
     this.turnManager.AddFloor(player.floor);
   }

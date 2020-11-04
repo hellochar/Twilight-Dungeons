@@ -9,6 +9,7 @@ public class Floor {
 
   public TileStore tiles;
 
+  /// All actors in this floor, including the Player
   private List<Actor> actors;
 
   public Vector2Int boundsMin, boundsMax;

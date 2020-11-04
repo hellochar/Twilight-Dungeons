@@ -23,8 +23,9 @@ public class MatchActorState : MonoBehaviour {
     } else {
       this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, 20f * Time.deltaTime));
     }
-    if (renderer != null) {
-      renderer.enabled = actor.visible;
-    }
+    // don't need this because the renderer is sprite-masked
+    // if (renderer != null) {
+    //   renderer.enabled = actor.visible;
+    // }
   }
 }

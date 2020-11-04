@@ -6,9 +6,13 @@ public class MatchTileState : MonoBehaviour {
   public Tile owner;
   private new SpriteRenderer renderer;
   private SpriteMask mask;
+  private int sortingLayerEntity; 
+  private int sortingLayerDefault;
 
   // Start is called before the first frame update
   void Start() {
+    sortingLayerEntity = SortingLayer.NameToID("Entity");
+    sortingLayerDefault = SortingLayer.NameToID("Default");
     this.renderer = GetComponent<SpriteRenderer>();
     this.mask = GetComponent<SpriteMask>();
   }
@@ -19,15 +23,25 @@ public class MatchTileState : MonoBehaviour {
       case TileVisiblity.Unexplored:
         renderer.enabled = false;
         renderer.color = Color.black;
-        if (mask != null) { mask.enabled = false; }
+        if (mask != null) {
+          mask.enabled = false;
+        }
         break;
       case TileVisiblity.Visible:
-        if (mask != null) { mask.enabled = true; }
+        if (mask != null) {
+          mask.enabled = true;
+          // show all
+          mask.backSortingLayerID = sortingLayerDefault;
+        }
         renderer.enabled = true;
         renderer.color = Color.Lerp(renderer.color, Color.white, 0.2f);
         break;
       case TileVisiblity.Explored:
-        if (mask != null) { mask.enabled = true; }
+        if (mask != null) {
+          mask.enabled = true;
+          // don't show entities
+          mask.backSortingLayerID = sortingLayerEntity;
+        }
         renderer.enabled = true;
         renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
         break;

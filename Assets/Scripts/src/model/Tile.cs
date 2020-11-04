@@ -34,7 +34,6 @@ public abstract class Tile : Entity {
     return GetPathfindingWeight() != 0;
   }
 
-
   public virtual void OnPlayerEnter() {}
 }
 

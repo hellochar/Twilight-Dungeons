@@ -28,14 +28,15 @@ public class Player : Actor {
     }
 
     set {
-      if (GameModel.main != null) {
-        GameModel.main.currentFloor.RemoveVisibility(this);
+      GameModel model = GameModel.main;
+      if (model != null) {
+        model.currentFloor.RemoveVisibility(this);
       }
       base.pos = value;
-      if (GameModel.main != null) {
-        GameModel.main.currentFloor.AddVisibility(this);
-        Tile t = GameModel.main.currentFloor.tiles[value.x, value.y];
-        t.OnPlayerEnter();
+      if (model != null) {
+        model.currentFloor.AddVisibility(this);
+        Tile t = model.currentFloor.tiles[value.x, value.y];
+        model.EnqueueEvent(() => t.OnPlayerEnter());
       }
     }
   }

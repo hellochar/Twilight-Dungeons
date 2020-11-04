@@ -12,12 +12,41 @@ public class GameModel {
   public TurnManager turnManager;
   public Floor currentFloor { get => floors[activeFloorIndex]; }
 
+  /// Events to process in response to state changes
+  public List<Action> eventQueue = new List<Action>();
+
   public static GameModel main = new GameModel(); //new GameModel();
   static GameModel() {
     main.generateGameModel();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately
     do {} while (step.MoveNext());
+  }
+
+  public void EnqueueEvent(Action cb) {
+    eventQueue.Add(cb);
+  }
+
+  internal void DrainEventQueue() {
+    // take care - events could add more events, which then add more events
+    // guard against infinite events
+    int maxEventGenerations = 32;
+    for (int generation = 0; generation < maxEventGenerations; generation++) {
+      // clone event queue
+      List<Action> queue = new List<Action>(eventQueue);
+
+      // free up global event queue to capture new events
+      eventQueue.Clear();
+
+      // invoke actions in this generation
+      queue.ForEach(a => a());
+
+      // if no more triggers, we're done
+      if (eventQueue.Count == 0) {
+        return;
+      }
+    }
+    throw new System.Exception("Reached max event queue generations!");
   }
 
   public IEnumerator<object> StepUntilPlayerChoice() {
@@ -109,6 +138,7 @@ public class TurnManager {
 
   /// TODO - fix bug - multiple of these coroutines may be running at once!
   internal IEnumerator<object> StepUntilPlayerChoice() {
+    model.DrainEventQueue();
     // int nextYieldTime = time + 1;
     bool isFirstIteration = true;
     do {
@@ -138,6 +168,7 @@ public class TurnManager {
 
       // Put actor back in queue
       AddActor(actor);
+      model.DrainEventQueue();
       isFirstIteration = false;
     } while (true);
   }

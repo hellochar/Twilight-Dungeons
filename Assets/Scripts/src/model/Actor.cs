@@ -106,6 +106,10 @@ public class BerryBush : Actor {
       this.Step();
     }
   }
+
+  internal void Harvest() {
+    floor.RemoveActor(this);
+  }
 }
 
 public class PlantStage<T> where T : Actor {

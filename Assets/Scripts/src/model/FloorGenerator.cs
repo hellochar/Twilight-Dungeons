@@ -26,7 +26,7 @@ public class FloorGenerator {
     f.PlaceUpstairs(new Vector2Int(1, f.height / 2));
     f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
 
-    f.AddActor(new BerryBush(new Vector2Int(4, f.height / 2 + 3)));
+    f.AddActor(new BerryBush(new Vector2Int(4, f.height / 2 - 2)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));

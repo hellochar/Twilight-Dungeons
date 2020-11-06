@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class MatchPlantState : MatchActorState, IPointerClickHandler {
+public class MatchPlantState : MatchActorState, IClickHandler {
   public BerryBush plant => (BerryBush)actor;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
@@ -30,17 +30,14 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
       activePlantStageObject = plantStageObjects[plant.currentStage.name];
       activePlantStageObject.SetActive(true);
     }
-    if (Input.GetMouseButtonDown(0)) {
-      Tile t = Util.GetVisibleTileAt(Input.mousePosition);
-      if (t.pos == plant.pos && t.visiblity == TileVisiblity.Visible) {
-        popupOpen = !popupOpen;
-      }
-    }
     UpdatePopup();
   }
 
-  public void OnPointerClick(PointerEventData pointerEventData) {
-    Debug.Log("point click happened");
+  public void OnClick(PointerEventData pointerEventData) {
+      Tile t = plant.currentTile;
+      if (t.visiblity == TileVisiblity.Visible) {
+        popupOpen = !popupOpen;
+      }
   }
 
   void UpdatePopup() {

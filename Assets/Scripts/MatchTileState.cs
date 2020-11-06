@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class MatchTileState : MonoBehaviour {
+public class MatchTileState : MonoBehaviour, IClickHandler {
   public Tile owner;
   private new SpriteRenderer renderer;
   private SpriteMask mask;
@@ -46,6 +47,10 @@ public class MatchTileState : MonoBehaviour {
         renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
         break;
     }
+  }
+
+  public void OnClick(PointerEventData pointerEventData) {
+    GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
   }
 
   private static Color exploredMask = new Color(1, 1, 1, 0.3f);

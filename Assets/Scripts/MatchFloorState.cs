@@ -21,7 +21,7 @@ public class MatchFloorState : MonoBehaviour {
     };
     foreach (System.Type t in types) {
       string resourceName = t.Name;
-      prefabs.Add(t, Resources.Load<GameObject>(resourceName));
+      prefabs.Add(t, Resources.Load<GameObject>("Entities/" + resourceName));
     }
     this.instantiateGameObjectsToMatchFloor();
     // TODO do the same thing for tile changes

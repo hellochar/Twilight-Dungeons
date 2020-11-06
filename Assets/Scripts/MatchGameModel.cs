@@ -20,8 +20,8 @@ public class MatchGameModel : MonoBehaviour {
   }
 
   private Coroutine gameLoop;
-  public void HandleSetPlayerAction() {
-    if (gameLoop == null) {
+  public void HandleSetPlayerAction(ActorAction action) {
+    if (gameLoop == null && action != null) {
       gameLoop = StartCoroutine(model.StepUntilPlayerChoice(HandleGameLoopEnd));
     }
   }

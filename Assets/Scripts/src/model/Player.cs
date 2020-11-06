@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+public class UnityEventContainingAction : UnityEvent<ActorAction> {}
+
 public class Player : Actor {
   public int hp = 9;
   public int hpMax = 12;
   /// called when the player's action is set to something not null
-  public UnityEvent OnSetPlayerAction = new UnityEvent();
+  public UnityEventContainingAction OnSetPlayerAction = new UnityEventContainingAction();
   internal override float queueOrderOffset => 0f;
 
   public Player(Vector2Int pos) : base(pos) {
@@ -16,9 +18,7 @@ public class Player : Actor {
     get => base.action;
     set {
       base.action = value;
-      if (value != null) {
-        OnSetPlayerAction.Invoke();
-      }
+      OnSetPlayerAction.Invoke(value);
     }
   }
 

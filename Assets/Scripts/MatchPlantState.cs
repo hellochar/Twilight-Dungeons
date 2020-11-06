@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class MatchPlantState : MatchActorState, IClickHandler {
+public class MatchPlantState : MatchActorState, IPointerClickHandler {
   public BerryBush plant => (BerryBush)actor;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
@@ -33,11 +33,14 @@ public class MatchPlantState : MatchActorState, IClickHandler {
     UpdatePopup();
   }
 
-  public void OnClick(PointerEventData pointerEventData) {
-      Tile t = plant.currentTile;
-      if (t.visiblity == TileVisiblity.Visible) {
-        popupOpen = !popupOpen;
-      }
+  public void OnPointerClick(PointerEventData pointerEventData) {
+    // Both the popup and plant stage child components will trigger this since they're children.
+    // We *do* want them to capture pointer events (to hide tiles underneath), so raycasting must be
+    // enabled for them. Instead we check if the clicked location is in the tile.
+    Tile t = Util.GetVisibleTileAt(pointerEventData.position);
+    if (t != null && t == plant.currentTile && t.visiblity == TileVisiblity.Visible) {
+      popupOpen = !popupOpen;
+    }
   }
 
   void UpdatePopup() {

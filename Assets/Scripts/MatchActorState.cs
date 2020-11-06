@@ -21,7 +21,7 @@ public class MatchActorState : MonoBehaviour {
     if (Vector2.Distance(Util.getXY(this.transform.position), this.actor.pos) > 3) {
       this.transform.position = Util.withZ(this.actor.pos, this.transform.position.z);
     } else {
-      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, 20f * Time.deltaTime));
+      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, 20f * Time.deltaTime), this.transform.position.z);
     }
     // don't need this because the renderer is sprite-masked
     // if (renderer != null) {

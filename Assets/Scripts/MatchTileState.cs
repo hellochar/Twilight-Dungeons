@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MatchTileState : MonoBehaviour, IClickHandler {
+public class MatchTileState : MonoBehaviour, IPointerClickHandler {
   public Tile owner;
   private new SpriteRenderer renderer;
   private SpriteMask mask;
@@ -49,7 +49,7 @@ public class MatchTileState : MonoBehaviour, IClickHandler {
     }
   }
 
-  public void OnClick(PointerEventData pointerEventData) {
+  public void OnPointerClick(PointerEventData pointerEventData) {
     GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
   }
 

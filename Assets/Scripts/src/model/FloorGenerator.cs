@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorGenerator {
   public static Floor generateFloor0() {
-    Floor f = new Floor(30, 20);
+    Floor f = new Floor(20, 12);
 
     // fill with floor tiles by default
     f.ForEachLocation(p => f.tiles.Put(new Ground(p)));
@@ -23,12 +23,10 @@ public class FloorGenerator {
     SMOOTH_WALL_EDGES.ApplyWithRotations(f);
     MAKE_WALL_BUMPS.ApplyWithRotations(f);
 
-    // add an upstairs at (2, height/2)
-    // add a downstairs a (width - 3, height/2)
     f.PlaceUpstairs(new Vector2Int(1, f.height / 2));
     f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
 
-    f.AddActor(new BerryBush(new Vector2Int(f.width / 2, f.height / 2)));
+    f.AddActor(new BerryBush(new Vector2Int(4, f.height / 2 + 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));

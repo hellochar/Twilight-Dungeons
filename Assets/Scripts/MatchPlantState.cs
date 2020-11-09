@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -34,19 +36,33 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
   }
 
   public void OnPointerClick(PointerEventData pointerEventData) {
-    // Both the popup and plant stage child components will trigger this since they're children.
-    // We *do* want them to capture pointer events (to hide tiles underneath), so raycasting must be
-    // enabled for them. Instead we check if the clicked location is in the tile.
-
-    // we clicked the overlay
+    // Clicking the overlay will trigger this method since the overlay is a child
     if (pointerEventData.pointerEnter.name == "Overlay") {
       popupOpen = false;
       return;
     }
+
+    if (!GameModel.main.player.IsNextTo(plant)) {
+      MoveNextToTargetAction action = new MoveNextToTargetAction(GameModel.main.player, plant.pos);
+      GameModel.main.player.action = action;
+      GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
+      return;
+    }
+    // Clicking inside the popup will trigger this method; account for that by checking if the clicked location is in the tile.
     Tile t = Util.GetVisibleTileAt(pointerEventData.position);
     if (t != null && t == plant.currentTile && t.visiblity == TileVisiblity.Visible) {
-      popupOpen = !popupOpen;
+      TogglePopup();
     }
+  }
+
+  public async void HandlePlayersChoice() {
+      GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
+      await Task.Delay(100);
+      TogglePopup();
+  }
+
+  public void TogglePopup() {
+    popupOpen = !popupOpen;
   }
 
   void UpdatePopup() {

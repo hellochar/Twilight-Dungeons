@@ -5,9 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class UnityEventContainingActor : UnityEvent<Actor> {}
-
 public class Floor {
   // public static readonly int WIDTH = 60;
   // public static readonly int HEIGHT = 20;
@@ -17,8 +14,8 @@ public class Floor {
   /// All actors in this floor, including the Player
   private List<Actor> actors;
 
-  public UnityEventContainingActor OnActorAdded = new UnityEventContainingActor();
-  public UnityEventContainingActor OnActorRemoved = new UnityEventContainingActor();
+  public event Action<Actor> OnActorAdded;
+  public event Action<Actor> OnActorRemoved;
 
   public Vector2Int boundsMin, boundsMax;
 
@@ -65,13 +62,13 @@ public class Floor {
     }
     this.actors.Add(actor);
     actor.floor = this;
-    this.OnActorAdded.Invoke(actor);
+    this.OnActorAdded?.Invoke(actor);
   }
 
   public void RemoveActor(Actor actor) {
     this.actors.Remove(actor);
     actor.floor = null;
-    this.OnActorRemoved.Invoke(actor);
+    this.OnActorRemoved?.Invoke(actor);
   }
 
   /// returns a list of adjacent positions that form the path, or an empty list if no path is found

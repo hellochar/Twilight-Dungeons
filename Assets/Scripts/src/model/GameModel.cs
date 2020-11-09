@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Priority_Queue;
+using UnityEngine.Events;
 
 public class GameModel {
   public Player player;
   public Floor[] floors;
   public int activeFloorIndex = 0;
   public int time;
-  public TurnManager turnManager;
+  private TurnManager _turnManager;
+  public TurnManager turnManager {
+    get {
+      if (_turnManager == null) {
+        _turnManager = new TurnManager(this);
+      }
+      return _turnManager;
+    }
+  }
   public Floor currentFloor { get => floors[activeFloorIndex]; }
 
   /// Events to process in response to state changes
@@ -18,9 +27,9 @@ public class GameModel {
   public static GameModel main = new GameModel(); //new GameModel();
   static GameModel() {
     main.generateGameModel();
-    var step = main.StepUntilPlayerChoice(() => {});
+    var step = main.StepUntilPlayerChoice(() => { });
     // execute them all immediately
-    do {} while (step.MoveNext());
+    do { } while (step.MoveNext());
   }
 
   public void EnqueueEvent(Action cb) {
@@ -50,10 +59,7 @@ public class GameModel {
   }
 
   public IEnumerator<object> StepUntilPlayerChoice(Action onEnd) {
-    if (turnManager == null) {
-      turnManager = new TurnManager(this);
-    }
-    return turnManager.StepUntilPlayerChoice(onEnd);
+    return turnManager.StepUntilPlayersChoice(onEnd);
   }
 
   public void generateGameModel() {
@@ -99,6 +105,7 @@ public class GameModel {
 public class TurnManager {
   private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
+  public event Action OnPlayersChoice;
   public TurnManager(GameModel model) {
     this.model = model;
     AddFloor(model.currentFloor);
@@ -138,7 +145,10 @@ public class TurnManager {
   }
 
   /// TODO - fix bug - multiple of these coroutines may be running at once!
-  internal IEnumerator<object> StepUntilPlayerChoice(Action onEnd) {
+  internal IEnumerator<object> StepUntilPlayersChoice(Action onEnd) {
+    // skip one frame so whatever's currently running can finish (in response to player.action = xxx)
+    yield return null;
+
     model.DrainEventQueue();
     // int nextYieldTime = time + 1;
     bool isFirstIteration = true;
@@ -163,6 +173,10 @@ public class TurnManager {
         model.time = actor.timeNextAction;
       }
 
+      // if (actor == model.player) {
+      //   await model.player.WaitUntilActionIsDecided();
+      // }
+
       // move forward
       actor.Step();
       // Debug.Log(actor + " acted!");
@@ -173,6 +187,7 @@ public class TurnManager {
       isFirstIteration = false;
     } while (true);
 
+    OnPlayersChoice?.Invoke();
     onEnd();
   }
 }

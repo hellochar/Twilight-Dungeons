@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Actor : Entity {
@@ -43,16 +41,22 @@ public class Actor : Entity {
       this.timeNextAction += baseActionCost;
     } else {
       if (action.IsDone()) {
+        action.Finish();
         this.action = null;
         this.timeNextAction += baseActionCost;
       } else {
         int timeCost = action.Perform();
         this.timeNextAction += timeCost;
         if (action.IsDone()) {
+          action.Finish();
           this.action = null;
         }
       }
     }
+  }
+
+  public bool IsNextTo(Entity other) {
+    return Math.Abs(pos.x - other.pos.x) <= 1 && Math.Abs(pos.y - other.pos.y) <= 1;
   }
 
   public virtual void CatchUpStep(int newTime) {

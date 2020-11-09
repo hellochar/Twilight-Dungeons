@@ -25,8 +25,8 @@ public class MatchFloorState : MonoBehaviour {
     }
     this.instantiateGameObjectsToMatchFloor();
     // TODO do the same thing for tile changes
-    floor.OnActorAdded.AddListener(HandleActorAdded);
-    floor.OnActorRemoved.AddListener(HandleActorRemoved);
+    floor.OnActorAdded += HandleActorAdded;
+    floor.OnActorRemoved += HandleActorRemoved;
   }
 
   void HandleActorAdded(Actor a) {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoveToTargetUI : MonoBehaviour {
+public class FollowPathUI : MonoBehaviour {
   private GameObject reticle;
   private GameObject pathDotPrefab;
   private Player player;
@@ -16,11 +16,11 @@ public class MoveToTargetUI : MonoBehaviour {
     reticle = Instantiate(Resources.Load<GameObject>("UI/Reticle"), new Vector3(), Quaternion.identity, transform);
     reticle.SetActive(false);
     player = GameModel.main.player;
-    player.OnSetPlayerAction.AddListener(HandleSetPlayerAction);
+    player.OnSetPlayerAction += HandleSetPlayerAction;
   }
 
   void HandleSetPlayerAction(ActorAction action) {
-    if (action is MoveToTargetAction) {
+    if (action is FollowPathAction) {
       this.ResetPathDots();
     }
   }
@@ -33,13 +33,13 @@ public class MoveToTargetUI : MonoBehaviour {
   }
 
   void UpdatePathSprites() {
-    if (!(player.action is MoveToTargetAction)) {
+    if (!(player.action is FollowPathAction)) {
       if (pathDots != null) {
         this.ResetPathDots();
       }
       return;
     }
-    MoveToTargetAction action = (MoveToTargetAction) player.action;
+    FollowPathAction action = (FollowPathAction) player.action;
     if (pathDots == null) {
       this.pathDots = action.path.Select(pos => Instantiate(pathDotPrefab, Util.withZ(pos, 0), Quaternion.identity, transform)).ToList();
     }
@@ -58,9 +58,9 @@ public class MoveToTargetUI : MonoBehaviour {
   }
 
   void UpdateReticle() {
-    if (player.action is MoveToTargetAction) {
+    if (player.action is FollowPathAction) {
       reticle.SetActive(true);
-      reticle.transform.position = Util.withZ(( (MoveToTargetAction) player.action).target, reticle.transform.position.z);
+      reticle.transform.position = Util.withZ(( (FollowPathAction) player.action).target, reticle.transform.position.z);
     } else {
       reticle.SetActive(false);
     }

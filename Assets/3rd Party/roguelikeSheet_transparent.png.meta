@@ -4201,13 +4201,13 @@ TextureImporter:
     second: roguelikeSheet_transparent_1398
   - first:
       213: -791707607476371628
-    second: roguelikeSheet_transparent_1399
+    second: button-brown
   - first:
       213: -7090191454247911482
     second: roguelikeSheet_transparent_1400
   - first:
       213: 2721462656526381566
-    second: roguelikeSheet_transparent_1401
+    second: button-brown-pressed
   - first:
       213: 6245445251656856403
     second: roguelikeSheet_transparent_1402
@@ -4369,7 +4369,7 @@ TextureImporter:
     second: roguelikeSheet_transparent_1454
   - first:
       213: -430232906884186649
-    second: grey_button
+    second: button-grey
   - first:
       213: 791588190345248990
     second: roguelikeSheet_transparent_1456
@@ -16386,7 +16386,7 @@ TextureImporter:
       name: roguelikeSheet_transparent_532
       rect:
         serializedVersion: 2
-        x: 576
+        x: 575
         y: 336
         width: 16
         height: 16
@@ -34254,37 +34254,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_1398
+      name: button-brown
       rect:
         serializedVersion: 2
         x: 384
         y: 80
-        width: 16
+        width: 48
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 66c3a0c875181cb30800000000000000
-      internalID: 4305864931754523750
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1399
-      rect:
-        serializedVersion: 2
-        x: 400
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 4, y: 4, z: 4, w: 4}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -34296,85 +34275,22 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_1400
-      rect:
-        serializedVersion: 2
-        x: 416
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6cffa0410749a9d90800000000000000
-      internalID: -7090191454247911482
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1401
+      name: button-brown-pressed
       rect:
         serializedVersion: 2
         x: 432
         y: 80
-        width: 16
+        width: 48
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 4, y: 4, z: 4, w: 4}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: ef1febffdd394c520800000000000000
       internalID: 2721462656526381566
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1402
-      rect:
-        serializedVersion: 2
-        x: 448
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3533829dd574ca650800000000000000
-      internalID: 6245445251656856403
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1403
-      rect:
-        serializedVersion: 2
-        x: 464
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6cd0a72c944aff910800000000000000
-      internalID: 1873396606711762374
       vertices: []
       indices: 
       edges: []
@@ -35010,7 +34926,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: grey_button
+      name: button-grey
       rect:
         serializedVersion: 2
         x: 384
@@ -35019,7 +34935,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 1, y: 1, z: 1, w: 2}
+      border: {x: 4, y: 4, z: 4, w: 4}
       outline: []
       physicsShape: []
       tessellationDetail: 0

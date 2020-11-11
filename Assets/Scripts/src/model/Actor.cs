@@ -73,9 +73,9 @@ public class Actor : Entity {
     return Math.Abs(pos.x - other.pos.x) <= 1 && Math.Abs(pos.y - other.pos.y) <= 1;
   }
 
-  public virtual void CatchUpStep(int newTime) {
+  public void CatchUpStep(int newTime) {
     // by default actors don't do anything; they just act as if they were paused
-    this.timeNextAction = newTime;
+    this.timeNextAction = Mathf.Max(this.timeNextAction, newTime);
   }
 
   public override string ToString() {

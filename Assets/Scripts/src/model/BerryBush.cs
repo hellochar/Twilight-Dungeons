@@ -54,12 +54,12 @@ public class BerryBush : Actor {
     this.timeNextAction += baseActionCost;
   }
 
-  public override void CatchUpStep(int time) {
-    Debug.Log("catching up " + this + " from " + this.timeNextAction + " to " + time);
-    while (this.timeNextAction < time) {
-      this.Step();
-    }
-  }
+  // public override void CatchUpStep(int time) {
+  //   Debug.Log("catching up " + this + " from " + this.timeNextAction + " to " + time);
+  //   while (this.timeNextAction < time) {
+  //     this.Step();
+  //   }
+  // }
 
   internal void Harvest() {
     floor.RemoveActor(this);

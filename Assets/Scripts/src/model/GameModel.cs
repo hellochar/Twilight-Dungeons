@@ -96,6 +96,21 @@ public class GameModel {
 
     player.floor.CatchUpStep(this.time);
   }
+
+  /// Get all actors that should be simulated, in no order. This includes: 
+  /// Actors on the current floor, and
+  /// Plants on any floor
+  internal IEnumerable<Actor> GetAllActorsInPlay() {
+    IEnumerable<Actor> enumerable = Enumerable.Empty<Actor>();
+    foreach (var f in floors) {
+      if (f == currentFloor) {
+        enumerable = enumerable.Concat(f.Actors());
+      } else {
+        enumerable = enumerable.Concat(f.Actors().Where((a) => a is BerryBush));
+      }
+    }
+    return enumerable;
+  }
 }
 
 public class TurnManager {
@@ -141,7 +156,8 @@ public class TurnManager {
 
   /// The actor whose turn it is
   private Actor FindActiveActor() {
-    return model.currentFloor.Actors().Aggregate((a1, a2) => a1.timeNextAction < a2.timeNextAction ? a1 : a2);
+    var allActorsInPlay = model.GetAllActorsInPlay();
+    return allActorsInPlay.Aggregate((a1, a2) => a1.timeNextAction < a2.timeNextAction ? a1 : a2);
   }
 
   internal IEnumerator<object> StepUntilPlayersChoice(Action onEnd) {

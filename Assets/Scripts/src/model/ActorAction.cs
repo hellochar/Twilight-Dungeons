@@ -7,14 +7,18 @@ using UnityEngine.Events;
 public abstract class ActorAction {
   public virtual Actor actor { get; }
   public event Action OnDone;
+  private bool hasPerformedOnce = false;
 
   protected ActorAction(Actor actor) { this.actor = actor; }
 
   /// return the number of ticks it took to perform this action
-  public abstract int Perform();
+  public virtual int Perform() {
+    hasPerformedOnce = true;
+    return actor.baseActionCost;
+  }
 
   public virtual bool IsDone() {
-    return true;
+    return hasPerformedOnce;
   }
 
   internal void Finish() {
@@ -36,7 +40,7 @@ public class FollowPathAction : ActorAction {
       path.RemoveAt(0);
       actor.pos = nextPosition;
     }
-    return actor.baseActionCost;
+    return base.Perform();
   }
 
   public override bool IsDone() {
@@ -71,5 +75,18 @@ public class MoveNextToTargetAction : FollowPathAction {
     adjacent.Sort((a, b) => Math.Sign(Vector2Int.Distance(pos, a) - Vector2Int.Distance(pos, b)));
     var paths = adjacent.Select(x => GameModel.main.currentFloor.FindPath(pos, x)).Where(list => list.Count > 0);
     return paths.FirstOrDefault() ?? new List<Vector2Int>();
+  }
+}
+
+public class GenericAction : ActorAction {
+  public GenericAction(Actor actor, Action action) : base(actor) {
+    Action = action;
+  }
+
+  public Action Action { get; }
+
+  public override int Perform() {
+    Action.Invoke();
+    return base.Perform();
   }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BerryBush : Actor {
   class Seed : PlantStage<BerryBush> {
-    public Seed(BerryBush plant) : base(plant) {}
+    public Seed(BerryBush plant) : base(plant) { }
     public override void Step() {
       if (this.age >= 15) {
         plant.currentStage = new Young(plant);
@@ -13,7 +13,7 @@ public class BerryBush : Actor {
   }
 
   class Young : PlantStage<BerryBush> {
-    public Young(BerryBush plant) : base(plant) {}
+    public Young(BerryBush plant) : base(plant) { }
     public override void Step() {
       if (this.age >= 15) {
         plant.currentStage = new Mature(plant);
@@ -25,7 +25,7 @@ public class BerryBush : Actor {
 
   class Mature : PlantStage<BerryBush> {
     public int numBerries = 0;
-    public Mature(BerryBush plant) : base(plant) {}
+    public Mature(BerryBush plant) : base(plant) { }
 
     public override void Step() {
       int turnsPerBerry = 15;
@@ -46,6 +46,7 @@ public class BerryBush : Actor {
 
   public BerryBush(Vector2Int pos) : base(pos) {
     currentStage = new Seed(this);
+    Debug.Log("Creating " + this);
   }
 
   public override void Step() {
@@ -77,7 +78,7 @@ public class PlantStage<T> where T : Actor {
     this.ageEntered = plant.age;
   }
 
-  public virtual void Step() {}
+  public virtual void Step() { }
 
   public virtual string getUIText() { return ""; }
 }

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 public class Actor : Entity {
+  public Guid guid { get; }
   private Vector2Int _pos;
   public virtual Vector2Int pos {
     get => _pos;
@@ -12,6 +13,8 @@ public class Actor : Entity {
       }
     }
   }
+  public int hp { get; set; }
+  public int hpMax { get; set; }
   public int baseActionCost { get => 1; }
   public int timeCreated { get; }
   /// how many turns this Entity has been alive for
@@ -32,9 +35,18 @@ public class Actor : Entity {
   internal virtual float queueOrderOffset { get => 0.5f; }
 
   public Actor(Vector2Int pos) {
+    guid = System.Guid.NewGuid();
     this.timeCreated = GameModel.main.time;
-    this.timeNextAction = this.timeCreated;
+    this.timeNextAction = this.timeCreated + baseActionCost;
     this.pos = pos;
+  }
+
+  internal void Heal(int amount) {
+    if (amount <= 0) {
+      Debug.Log("tried healing <= 0");
+      return;
+    }
+    hp = Mathf.Clamp(hp + amount, 0, hpMax);
   }
 
   public virtual void Step() {
@@ -46,11 +58,12 @@ public class Actor : Entity {
         this.action = null;
         this.timeNextAction += baseActionCost;
       } else {
+        var action = this.action;
         int timeCost = action.Perform();
         this.timeNextAction += timeCost;
         if (action.IsDone()) {
-          action.Finish();
           this.action = null;
+          action.Finish();
         }
       }
     }
@@ -63,5 +76,9 @@ public class Actor : Entity {
   public virtual void CatchUpStep(int newTime) {
     // by default actors don't do anything; they just act as if they were paused
     this.timeNextAction = newTime;
+  }
+
+  public override string ToString() {
+    return $"{base.ToString()} ({guid.ToString().Substring(0, 6)})";
   }
 }

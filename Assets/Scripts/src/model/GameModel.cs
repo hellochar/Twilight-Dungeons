@@ -80,8 +80,6 @@ public class GameModel {
 
   internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {
     Floor oldFloor = player.floor;
-    /// Stop stepping old floor
-    this.turnManager.RemoveFloor(oldFloor);
 
     int newIndex = Array.FindIndex(floors, f => f == newFloor);
     this.activeFloorIndex = newIndex;
@@ -97,65 +95,66 @@ public class GameModel {
     newFloor.AddActor(player);
 
     player.floor.CatchUpStep(this.time);
-    this.turnManager.AddFloor(newFloor);
   }
 }
 
 public class TurnManager {
-  private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
+  // private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
   public event Action OnPlayersChoice;
   public TurnManager(GameModel model) {
     this.model = model;
-    AddFloor(model.currentFloor);
-    AddActor(model.player);
+    // AddFloor(model.currentFloor);
+    // AddActor(model.player);
   }
 
-  public override string ToString() {
-    return String.Join(", ", queue.Select(a => {
-      float shiftedPriority = queue.GetPriority(a);
-      return $"{shiftedPriority} - {a}";
-    }));
+  // public override string ToString() {
+  //   return String.Join(", ", queue.Select(a => {
+  //     float shiftedPriority = queue.GetPriority(a);
+  //     return $"{shiftedPriority} - {a}";
+  //   }));
+  // }
+
+  // public void AddActor(Actor actor) {
+  //   if (queue.Contains(actor)) {
+  //     queue.Remove(actor);
+  //   }
+  //   float shiftedSchedule = actor.timeNextAction + actor.queueOrderOffset;
+  //   queue.Enqueue(actor, shiftedSchedule);
+  // }
+
+  // public void RemoveActor(Actor actor) {
+  //   queue.Remove(actor);
+  // }
+
+  // public void AddFloor(Floor floor) {
+  //   foreach (Actor a in floor.Actors()) {
+  //     AddActor(a);
+  //   }
+  // }
+
+  // public void RemoveFloor(Floor floor) {
+  //   foreach (Actor a in floor.Actors()) {
+  //     RemoveActor(a);
+  //   }
+  // }
+
+  /// The actor whose turn it is
+  private Actor FindActiveActor() {
+    return model.currentFloor.Actors().Aggregate((a1, a2) => a1.timeNextAction < a2.timeNextAction ? a1 : a2);
   }
 
-  public void AddActor(Actor actor) {
-    if (queue.Contains(actor)) {
-      queue.Remove(actor);
-    }
-    float shiftedSchedule = actor.timeNextAction + actor.queueOrderOffset;
-    queue.Enqueue(actor, shiftedSchedule);
-    // Debug.Log(actor + " scheduled at " + shiftedSchedule + ". Queue is now " + this);
-  }
-
-  public void RemoveActor(Actor actor) {
-    queue.Remove(actor);
-  }
-
-  public void AddFloor(Floor floor) {
-    foreach (Actor a in floor.Actors()) {
-      AddActor(a);
-    }
-  }
-
-  public void RemoveFloor(Floor floor) {
-    foreach (Actor a in floor.Actors()) {
-      RemoveActor(a);
-    }
-  }
-
-  /// TODO - fix bug - multiple of these coroutines may be running at once!
   internal IEnumerator<object> StepUntilPlayersChoice(Action onEnd) {
     // skip one frame so whatever's currently running can finish (in response to player.action = xxx)
     yield return null;
 
     model.DrainEventQueue();
-    // int nextYieldTime = time + 1;
     bool isFirstIteration = true;
     do {
-      if (queue.First == model.player && model.player.action == null) {
+      Actor actor = FindActiveActor(); //queue.Dequeue();
+      if (actor == model.player && model.player.action == null) {
         break;
       }
-      Actor actor = queue.Dequeue();
 
       if (model.time > actor.timeNextAction) {
         throw new Exception("time is " + model.time + " but " + actor + " had a turn at " + actor.timeNextAction);
@@ -178,10 +177,8 @@ public class TurnManager {
 
       // move forward
       actor.Step();
-      // Debug.Log(actor + " acted!");
 
-      // Put actor back in queue
-      AddActor(actor);
+      // drain events
       model.DrainEventQueue();
       isFirstIteration = false;
     } while (true);

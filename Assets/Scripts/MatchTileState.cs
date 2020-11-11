@@ -55,7 +55,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  public void OnPointerClick(PointerEventData pointerEventData) {
+  public virtual void OnPointerClick(PointerEventData pointerEventData) {
     GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
   }
 

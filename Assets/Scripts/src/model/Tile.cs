@@ -11,7 +11,12 @@ public abstract class Tile : Entity {
     get => floor.ActorAt(pos);
   }
 
-  public Tile(Vector2Int pos) => this.pos = pos;
+  public Guid guid { get; }
+
+  public Tile(Vector2Int pos) {
+    guid = Guid.NewGuid();
+    this.pos = pos;
+  }
 
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.

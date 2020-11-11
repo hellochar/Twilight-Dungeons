@@ -56,6 +56,9 @@ public class Floor {
   }
 
   public void AddActor(Actor actor) {
+    if (!tiles[actor.pos.x, actor.pos.y].CanBeOccupied()) {
+      Debug.LogWarning("Adding " + actor + " over a tile that cannot be occupied!");
+    }
     // remove actor from old floor
     if (actor.floor != null) {
       actor.floor.RemoveActor(actor);

@@ -78,3 +78,7 @@ public class Downstairs : Tile {
 public class Dirt : Tile {
   public Dirt(Vector2Int pos) : base(pos) { }
 }
+
+public class Soil : Tile {
+  public Soil(Vector2Int pos) : base(pos) {}
+}

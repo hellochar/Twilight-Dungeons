@@ -82,20 +82,19 @@ public class GameModel {
     Floor oldFloor = player.floor;
     /// Stop stepping old floor
     this.turnManager.RemoveFloor(oldFloor);
-    oldFloor.RemoveVisibility(player);
 
     int newIndex = Array.FindIndex(floors, f => f == newFloor);
     this.activeFloorIndex = newIndex;
     Vector2Int newPlayerPosition;
     if (isGoingUpstairs) {
-      newPlayerPosition = this.currentFloor.downstairs.pos + new Vector2Int(-1, 0);
+      newPlayerPosition = newFloor.downstairs.pos + new Vector2Int(-1, 0);
     } else {
-      newPlayerPosition = this.currentFloor.upstairs.pos + new Vector2Int(1, 0);
+      newPlayerPosition = newFloor.upstairs.pos + new Vector2Int(1, 0);
     }
+    oldFloor.RemoveActor(player);
     player.pos = newPlayerPosition;
     // Add player. Important to do this before CatchUpStep because actors may move over player position
     newFloor.AddActor(player);
-    newFloor.AddVisibility(player);
 
     player.floor.CatchUpStep(this.time);
     this.turnManager.AddFloor(newFloor);

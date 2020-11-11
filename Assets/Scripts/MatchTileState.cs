@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class MatchTileState : MonoBehaviour, IPointerClickHandler {
   public Tile owner;
-  private new SpriteRenderer renderer;
+  private SpriteRenderer[] renderers;
   private SpriteMask mask;
   private int sortingLayerEntity; 
   private int sortingLayerDefault;
@@ -14,7 +14,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
   void Start() {
     sortingLayerEntity = SortingLayer.NameToID("Entity");
     sortingLayerDefault = SortingLayer.NameToID("Default");
-    this.renderer = GetComponent<SpriteRenderer>();
+    this.renderers = GetComponentsInChildren<SpriteRenderer>();
     this.mask = GetComponent<SpriteMask>();
   }
 
@@ -22,8 +22,10 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
   void Update() {
     switch (owner.visiblity) {
       case TileVisiblity.Unexplored:
-        renderer.enabled = false;
-        renderer.color = Color.black;
+        foreach (var renderer in renderers) {
+          renderer.enabled = false;
+          renderer.color = Color.black;
+        }
         if (mask != null) {
           mask.enabled = false;
         }
@@ -34,8 +36,10 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
           // show all
           mask.backSortingLayerID = sortingLayerDefault;
         }
-        renderer.enabled = true;
-        renderer.color = Color.Lerp(renderer.color, Color.white, 0.2f);
+        foreach (var renderer in renderers) {
+          renderer.enabled = true;
+          renderer.color = Color.Lerp(renderer.color, Color.white, 0.2f);
+        }
         break;
       case TileVisiblity.Explored:
         if (mask != null) {
@@ -43,8 +47,10 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
           // don't show entities
           mask.backSortingLayerID = sortingLayerEntity;
         }
-        renderer.enabled = true;
-        renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
+        foreach (var renderer in renderers) {
+          renderer.enabled = true;
+          renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
+        }
         break;
     }
   }

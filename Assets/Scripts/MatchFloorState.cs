@@ -13,7 +13,7 @@ public class MatchFloorState : MonoBehaviour {
   void Start() {
     System.Type[] types = new System.Type[] {
       // Tiles
-      typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs), typeof(Dirt),
+      typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs), typeof(Dirt), typeof(Soil),
       // Plants
       typeof(BerryBush),
       // Enemies
@@ -34,6 +34,9 @@ public class MatchFloorState : MonoBehaviour {
   }
 
   void HandleActorRemoved(Actor a) {
+    if (a == GameModel.main.player) {
+      return;
+    }
     GameObject currentObject = gameObjectMap[a];
     if (currentObject == null) {
       Debug.LogWarning("" + a + " was removed from floor " + floor + " but didn't have a GameObject.");

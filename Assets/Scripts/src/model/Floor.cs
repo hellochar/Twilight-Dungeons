@@ -61,12 +61,18 @@ public class Floor {
       actor.floor.RemoveActor(actor);
     }
     this.actors.Add(actor);
+    if (actor == GameModel.main.player) {
+      AddVisibility(actor);
+    }
     actor.floor = this;
     this.OnActorAdded?.Invoke(actor);
   }
 
   public void RemoveActor(Actor actor) {
     this.actors.Remove(actor);
+    if (actor == GameModel.main.player) {
+      RemoveVisibility(actor);
+    }
     actor.floor = null;
     this.OnActorRemoved?.Invoke(actor);
   }

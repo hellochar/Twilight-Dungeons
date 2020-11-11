@@ -29,13 +29,13 @@ public class Player : Actor {
 
     set {
       GameModel model = GameModel.main;
-      if (model != null) {
-        model.currentFloor.RemoveVisibility(this);
+      if (floor != null) {
+        floor.RemoveVisibility(this);
       }
       base.pos = value;
-      if (model != null) {
-        model.currentFloor.AddVisibility(this);
-        Tile t = model.currentFloor.tiles[value.x, value.y];
+      if (floor != null) {
+        floor.AddVisibility(this);
+        Tile t = floor.tiles[value.x, value.y];
         model.EnqueueEvent(() => t.OnPlayerEnter());
       }
     }

@@ -4,23 +4,23 @@ public class BerryBush : Actor {
   class Seed : PlantStage<BerryBush> {
     public Seed(BerryBush plant) : base(plant) {}
     public override void Step() {
-      if (this.age >= 5) {
+      if (this.age >= 15) {
         plant.currentStage = new Young(plant);
       }
     }
 
-    public override string getUIText() => $"Grows in {5 - this.age} turns.";
+    public override string getUIText() => $"Grows in {15 - this.age} turns.";
   }
 
   class Young : PlantStage<BerryBush> {
     public Young(BerryBush plant) : base(plant) {}
     public override void Step() {
-      if (this.age >= 5) {
+      if (this.age >= 15) {
         plant.currentStage = new Mature(plant);
       }
     }
 
-    public override string getUIText() => $"Grows in {5 - this.age} turns.";
+    public override string getUIText() => $"Grows in {15 - this.age} turns.";
   }
 
   class Mature : PlantStage<BerryBush> {
@@ -28,7 +28,7 @@ public class BerryBush : Actor {
     public Mature(BerryBush plant) : base(plant) {}
 
     public override void Step() {
-      int turnsPerBerry = 9;
+      int turnsPerBerry = 15;
       /// TODO this only works because Step() gets called for every single consecutive age.
       if (this.age >= turnsPerBerry && this.age % turnsPerBerry == 0) {
         numBerries++;
@@ -50,7 +50,7 @@ public class BerryBush : Actor {
 
   public override void Step() {
     this.currentStage.Step();
-    this.timeNextAction = GameModel.main.time + baseActionCost;
+    this.timeNextAction += baseActionCost;
   }
 
   public override void CatchUpStep(int time) {

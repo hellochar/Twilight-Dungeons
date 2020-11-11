@@ -15,6 +15,7 @@ public class Actor : Entity {
   public int baseActionCost { get => 1; }
   public int timeCreated { get; }
   /// how many turns this Entity has been alive for
+  /// this has a bug with CatchUpStep - age will jump
   public int age { get => GameModel.main.time - timeCreated; }
   public int timeNextAction;
   public virtual ActorAction action { get; set; }

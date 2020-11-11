@@ -12,9 +12,11 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
   private GameObject activePlantStageObject;
   private GameObject uiChild;
   private bool popupOpen = false;
+  private float originalCameraOrthographicSize { get; set; }
 
   // Start is called before the first frame update
   public override void Start() {
+    originalCameraOrthographicSize = Camera.main.orthographicSize;
     base.Start();
     uiChild = transform.Find("Canvas").gameObject;
     uiChild.SetActive(false);
@@ -66,6 +68,8 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
   }
 
   void UpdatePopup() {
+    // float targetOrthographicSize = popupOpen ? originalCameraOrthographicSize * 0.5f : originalCameraOrthographicSize;
+    // Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetOrthographicSize, 2f * Time.deltaTime);
     uiChild.SetActive(popupOpen);
   }
 

@@ -4,7 +4,10 @@ using UnityEngine;
 
 /// disallow camera from seeing "outside" the edge of the map
 public class BoundCameraToFloor : MonoBehaviour {
-  public Bounds bounds = new Bounds(new Vector3(60 / 2 - 0.5f, 20 / 2 - 0.5f, 0), new Vector3(60, 20, 1));
+  private Bounds bounds = new Bounds(new Vector3(-999, -999), new Vector3(999, 999));
+  /// Allow camera bounds to go beyond the map bounds.
+  /// Set to 2 to allow the bottom-left corner (where the backpack is) to not be blocked
+  public float padding = 2;
   new private Camera camera;
 
   // Start is called before the first frame update
@@ -14,18 +17,34 @@ public class BoundCameraToFloor : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
+    /// bug - if the current floor is less than 1 bounds, the camera shakes
+
+    bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-padding, -padding, 0);
+    bounds.max = Util.withZ(GameModel.main.currentFloor.boundsMax) + new Vector3(padding, padding, 0);
+
     Bounds cameraBounds = OrthographicBounds(this.camera);
+    bool constrainX = bounds.extents.x > cameraBounds.extents.x;
+    bool constrainY = bounds.extents.y > cameraBounds.extents.y;
     float newX = this.transform.position.x;
     float newY = this.transform.position.y;
-    if (cameraBounds.min.x < bounds.min.x) {
-      newX += bounds.min.x - cameraBounds.min.x;
-    } else if (cameraBounds.max.x > bounds.max.x) {
-      newX += bounds.max.x - cameraBounds.max.x;
+    if (constrainX) {
+      if (cameraBounds.min.x < bounds.min.x) {
+        newX += bounds.min.x - cameraBounds.min.x;
+      } else if (cameraBounds.max.x > bounds.max.x) {
+        newX += bounds.max.x - cameraBounds.max.x;
+      }
+    } else {
+      // otherwise, set to center
+      newX = bounds.center.x;
     }
-    if (cameraBounds.min.y < bounds.min.y) {
-      newY += bounds.min.y - cameraBounds.min.y;
-    } else if (cameraBounds.max.y > bounds.max.y) {
-      newY += bounds.max.y - cameraBounds.max.y;
+    if (constrainY) {
+      if (cameraBounds.min.y < bounds.min.y) {
+        newY += bounds.min.y - cameraBounds.min.y;
+      } else if (cameraBounds.max.y > bounds.max.y) {
+        newY += bounds.max.y - cameraBounds.max.y;
+      }
+    } else {
+      newY = bounds.center.y;
     }
     this.transform.position = new Vector3(newX, newY, this.transform.position.z);
   }

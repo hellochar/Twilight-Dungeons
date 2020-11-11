@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorGenerator {
   public static Floor generateFloor0() {
-    Floor f = new Floor(20, 12);
+    Floor f = new Floor(22, 14);
 
     // fill with floor tiles by default
     f.ForEachLocation(p => f.tiles.Put(new Ground(p)));
@@ -26,7 +26,7 @@ public class FloorGenerator {
     f.PlaceUpstairs(new Vector2Int(1, f.height / 2));
     f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
 
-    for (int x = 4; x < f.width; x += 4) {
+    for (int x = 4; x < f.width - 4; x += 4) {
       int y = f.height / 2 - 2;
       if (f.tiles[x, y] is Ground) {
         f.tiles.Put(new Soil(new Vector2Int(x, y)));
@@ -38,10 +38,6 @@ public class FloorGenerator {
     }
 
     // f.AddActor(new BerryBush(new Vector2Int(4, f.height / 2 - 2)));
-    f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
-    f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
-    f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
-    f.AddActor(new Bat(new Vector2Int(f.width / 3, f.height / 3)));
     return f;
   }
 
@@ -115,6 +111,10 @@ public class FloorGenerator {
     floor.PlaceDownstairs(downstairsPos);
 
     floor.AddActor(new Bat(new Vector2Int(floor.width/2, floor.height / 2)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
     return floor;
   }
 

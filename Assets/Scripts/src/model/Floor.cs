@@ -17,6 +17,7 @@ public class Floor {
   public event Action<Actor> OnActorAdded;
   public event Action<Actor> OnActorRemoved;
 
+  /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin, boundsMax;
 
   public Tile upstairs {

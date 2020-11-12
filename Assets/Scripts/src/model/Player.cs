@@ -7,7 +7,6 @@ using UnityEngine.Events;
 
 public class Player : Actor {
   /// called when the player's action is set to something not null
-  public event Action<ActorAction> OnSetPlayerAction;
   public Inventory inventory { get; }
   public Equipment equipment { get; }
 
@@ -19,15 +18,6 @@ public class Player : Actor {
     inventory.AddItem(new ItemSeed());
     hp = 9;
     hpMax = 12;
-  }
-
-
-  public override ActorAction action {
-    get => base.action;
-    set {
-      base.action = value;
-      OnSetPlayerAction?.Invoke(value);
-    }
   }
 
   public override Vector2Int pos {

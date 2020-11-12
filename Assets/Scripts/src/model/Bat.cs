@@ -12,8 +12,8 @@ public class Bat : Actor {
   protected override void RemoveDoneActions() {
     base.RemoveDoneActions();
     if (action == null) {
-      action = actionGenerator.Current;
       actionGenerator.MoveNext();
+      action = actionGenerator.Current;
     }
   }
 

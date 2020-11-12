@@ -58,6 +58,9 @@ public class MoveNextToTargetAction : FollowPathAction {
   public MoveNextToTargetAction(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor.pos, target)) { }
 
   private static List<Vector2Int> FindBestAdjacentPath(Vector2Int pos, Vector2Int target) {
+    if (pos == target) {
+      return new List<Vector2Int>();
+    }
     /// TODO optimize: https://zach.se/a-star-search-with-multiple-targets-and-sources/
     var adjacent = new List<Vector2Int>();
     adjacent.Add(target + new Vector2Int(-1, -1));

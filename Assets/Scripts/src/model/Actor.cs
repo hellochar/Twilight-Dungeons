@@ -25,14 +25,10 @@ public class Actor : Entity {
   public int timeNextAction;
   public virtual ActorAction action {
     get => actionQueue.FirstOrDefault();
-    set {
-      actionQueue.Clear();
-      if (value != null) {
-        actionQueue.Add(value);
-      }
-    }
+    set => SetActions(value);
   }
-  protected List<ActorAction> actionQueue = new List<ActorAction>();
+  private List<ActorAction> actionQueue = new List<ActorAction>();
+  public event Action<ActorAction> OnSetPlayerAction;
 
   public int visibilityRange = 7;
   public Floor floor;
@@ -91,8 +87,14 @@ public class Actor : Entity {
   }
 
   public void SetActions(params ActorAction[] actions) {
+    if (actions.Where((a) => a == null).Count() > 0) {
+      throw new Exception("Setting a null action!");
+    }
     actionQueue.Clear();
     actionQueue.AddRange(actions);
+    if (actions.Length > 0) {
+      OnSetPlayerAction?.Invoke(actionQueue[0]);
+    }
   }
 
   public virtual void Step() {
@@ -111,15 +113,8 @@ public class Actor : Entity {
     while (actionQueue.Count > 0 && actionQueue[0].IsDone()) {
       ActorAction finishedAction = actionQueue[0];
       actionQueue.RemoveAt(0);
+      OnSetPlayerAction?.Invoke(actionQueue.FirstOrDefault());
       finishedAction.Finish();
-    }
-  }
-
-  private void PopActionQueue() {
-    if (actionQueue.Count > 1) {
-      actionQueue.RemoveAt(0);
-    } else {
-      actionQueue.Clear();
     }
   }
 

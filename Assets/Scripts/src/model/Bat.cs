@@ -23,9 +23,9 @@ public class Bat : Actor {
       // hack - start attacking you once the player has vision
       if (canSeePlayer) {
         if (IsNextTo(GameModel.main.player)) {
-          yield return new AttackAction(this, GameModel.main.player);
+          yield return new AttackGroundAction(this, GameModel.main.player.pos);
         } else {
-          yield return new MoveNextToTargetAction(this, GameModel.main.player.pos);
+          yield return new ChaseTargetAction(this, GameModel.main.player);
         }
       } else {
         yield return new MoveRandomlyAction(this);

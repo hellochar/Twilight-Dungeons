@@ -15,6 +15,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     }
     actor.OnTakeDamage += HandleTakeDamage;
     actor.OnAttack += HandleAttack;
+    actor.OnAttackGround += HandleAttackGround;
     this.renderer = GetComponent<SpriteRenderer>();
     this.transform.position = Util.withZ(this.actor.pos);
   }
@@ -40,8 +41,12 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   }
 
   private void HandleAttack(int damage, Actor target) {
+    /// do nothing for now
+  }
+
+  private void HandleAttackGround(Vector2Int targetPosition, Actor occupant) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("UI/Attack Sprite");
-    GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(target.pos), Quaternion.identity);
+    GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(targetPosition), Quaternion.identity);
   }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
@@ -74,6 +79,22 @@ public class AttackAction : ActorAction {
   public override int Perform() {
     if (actor.IsNextTo(target)) {
       actor.Attack(target);
+    }
+    return base.Perform();
+  }
+}
+
+public class AttackGroundAction : ActorAction {
+
+  public AttackGroundAction(Actor actor, Vector2Int targetPosition) : base(actor) {
+    TargetPosition = targetPosition;
+  }
+
+  public Vector2Int TargetPosition { get; }
+
+  public override int Perform() {
+    if (actor.IsNextTo(TargetPosition)) {
+      actor.AttackGround(TargetPosition);
     }
     return base.Perform();
   }

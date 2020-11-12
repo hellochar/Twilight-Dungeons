@@ -74,7 +74,7 @@ public class Floor {
 
   internal bool AreStairsConnected() {
     var path = FindPath(downstairs.pos, upstairs.pos);
-    return path.Count > 0;
+    return path.Any();
   }
 
   public void RemoveActor(Actor actor) {
@@ -87,7 +87,9 @@ public class Floor {
   }
 
   /// returns a list of adjacent positions that form the path, or an empty list if no path is found
-  internal List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target) {
+  /// if pretendTargetEmpty is true, override the target tile to be walkable. You can then trim off
+  /// the very end.
+  internal List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty = false) {
     float[,] tilesmap = new float[width, height];
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
@@ -95,6 +97,9 @@ public class Floor {
         float weight = tile.GetPathfindingWeight();
         tilesmap[x, y] = weight;
       }
+    }
+    if (pretendTargetEmpty) {
+      tilesmap[target.x, target.y] = 1f;
     }
     // every float in the array represent the cost of passing the tile at that position.
     // use 0.0f for blocking tiles.

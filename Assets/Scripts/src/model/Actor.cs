@@ -43,7 +43,10 @@ public class Actor : Entity {
   internal virtual float queueOrderOffset { get => 0.5f; }
   public Faction faction = Faction.Neutral;
   public event Action<int, int, Actor> OnTakeDamage;
+  /// gets called on a successful hit on a target
   public event Action<int, Actor> OnAttack;
+  /// gets called on any ground targeted attack
+  public event Action<Vector2Int, Actor> OnAttackGround;
 
   public Actor(Vector2Int pos) {
     hp = 8;
@@ -66,6 +69,14 @@ public class Actor : Entity {
     int damage = UnityEngine.Random.Range(1, 3);
     OnAttack?.Invoke(damage, target);
     target.TakeDamage(damage, this);
+  }
+
+  internal void AttackGround(Vector2Int targetPosition) {
+    Actor target = floor.tiles[targetPosition.x, targetPosition.y].occupant;
+    OnAttackGround?.Invoke(targetPosition, target);
+    if (target != null) {
+      Attack(target);
+    }
   }
 
   private void TakeDamage(int damage, Actor source) {
@@ -110,7 +121,7 @@ public class Actor : Entity {
   }
 
   protected virtual void RemoveDoneActions() {
-    while (actionQueue.Count > 0 && actionQueue[0].IsDone()) {
+    while (actionQueue.Any() && actionQueue[0].IsDone()) {
       ActorAction finishedAction = actionQueue[0];
       actionQueue.RemoveAt(0);
       OnSetPlayerAction?.Invoke(actionQueue.FirstOrDefault());

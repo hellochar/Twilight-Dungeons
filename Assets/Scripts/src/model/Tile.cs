@@ -7,7 +7,7 @@ public abstract class Tile : Entity {
   public TileVisiblity visiblity = TileVisiblity.Unexplored;
   internal Floor floor;
 
-  Actor occupant {
+  public Actor occupant {
     get => floor.ActorAt(pos);
   }
 

@@ -28,15 +28,15 @@ public abstract class ActorAction {
 
 public class FollowPathAction : ActorAction {
   public Vector2Int target { get; }
-  public readonly List<Vector2Int> path;
+  public List<Vector2Int> path;
   public FollowPathAction(Actor actor, Vector2Int target, List<Vector2Int> path) : base(actor) {
     this.target = target;
     this.path = path;
   }
 
   public override int Perform() {
-    if (path.Count > 0) {
-      Vector2Int nextPosition = path[0];
+    if (path.Any()) {
+      Vector2Int nextPosition = path.First();
       path.RemoveAt(0);
       actor.pos = nextPosition;
     }
@@ -57,30 +57,29 @@ public class MoveToTargetAction : FollowPathAction {
 public class MoveNextToTargetAction : FollowPathAction {
   public MoveNextToTargetAction(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor.pos, target)) { }
 
-  private static List<Vector2Int> FindBestAdjacentPath(Vector2Int pos, Vector2Int target) {
+  public static List<Vector2Int> FindBestAdjacentPath(Vector2Int pos, Vector2Int target) {
     if (pos == target) {
       return new List<Vector2Int>();
     }
-    /// TODO optimize: https://zach.se/a-star-search-with-multiple-targets-and-sources/
-    var adjacent = new List<Vector2Int>();
-    adjacent.Add(target + new Vector2Int(-1, -1));
-    adjacent.Add(target + new Vector2Int(-1, 0));
-    adjacent.Add(target + new Vector2Int(-1, 1));
-
-    adjacent.Add(target + new Vector2Int(0, -1));
-    // adjacent.Add(target + new Vector2Int(0, 0));
-    adjacent.Add(target + new Vector2Int(0, 1));
-
-    adjacent.Add(target + new Vector2Int(1, -1));
-    adjacent.Add(target + new Vector2Int(1, 0));
-    adjacent.Add(target + new Vector2Int(1, 1));
-
-    adjacent.Sort((a, b) => Math.Sign(Vector2Int.Distance(pos, a) - Vector2Int.Distance(pos, b)));
-    if (adjacent[0] == pos) {
-      return new List<Vector2Int>();
+    var path = GameModel.main.currentFloor.FindPath(pos, target, true);
+    if (path.Any()) {
+      path.RemoveAt(path.Count - 1);
     }
-    var paths = adjacent.Select(x => GameModel.main.currentFloor.FindPath(pos, x)).Where(list => list.Count > 0);
-    return paths.FirstOrDefault() ?? new List<Vector2Int>();
+    return path;
+  }
+}
+
+public class ChaseTargetAction : MoveNextToTargetAction {
+  private readonly Actor targetActor;
+
+  public ChaseTargetAction(Actor actor, Actor targetActor) : base(actor, targetActor.pos) {
+    this.targetActor = targetActor;
+  }
+
+  public override int Perform() {
+    /// recompute the path
+    this.path = FindBestAdjacentPath(actor.pos, targetActor.pos);
+    return base.Perform();
   }
 }
 

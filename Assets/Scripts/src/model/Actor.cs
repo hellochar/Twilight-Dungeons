@@ -91,15 +91,13 @@ public class Actor : Entity {
   }
 
   public void SetActions(params ActorAction[] actions) {
-    action = actions[0];
-    for (int i = 1; i < actions.Length; i++) {
-      actionQueue.Add(actions[i]);
-    }
+    actionQueue.Clear();
+    actionQueue.AddRange(actions);
   }
 
   public virtual void Step() {
     RemoveDoneActions();
-    ActorAction currentAction = actionQueue[0];
+    ActorAction currentAction = this.action;
     if (currentAction == null) {
       this.timeNextAction += baseActionCost;
     } else {
@@ -109,7 +107,7 @@ public class Actor : Entity {
     }
   }
 
-  private void RemoveDoneActions() {
+  protected virtual void RemoveDoneActions() {
     while (actionQueue.Count > 0 && actionQueue[0].IsDone()) {
       ActorAction finishedAction = actionQueue[0];
       actionQueue.RemoveAt(0);

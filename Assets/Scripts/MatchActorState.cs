@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +14,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
       actor = GameModel.main.player;
     }
     actor.OnTakeDamage += HandleTakeDamage;
+    actor.OnAttack += HandleAttack;
     this.renderer = GetComponent<SpriteRenderer>();
     this.transform.position = Util.withZ(this.actor.pos);
   }
@@ -37,6 +39,10 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     damageText.GetComponentInChildren<TMPro.TMP_Text>().text = $"-{damage}";
   }
 
+  private void HandleAttack(int damage, Actor target) {
+    GameObject attackSpritePrefab = Resources.Load<GameObject>("UI/Attack Sprite");
+    GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(target.pos), Quaternion.identity);
+  }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
     // depending on the faction:

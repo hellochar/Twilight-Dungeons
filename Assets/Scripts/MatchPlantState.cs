@@ -37,7 +37,7 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
     UpdatePopup();
   }
 
-  public void OnPointerClick(PointerEventData pointerEventData) {
+  public override void OnPointerClick(PointerEventData pointerEventData) {
     // Clicking the overlay will trigger this method since the overlay is a child
     if (pointerEventData.pointerEnter.name == "Overlay") {
       popupOpen = false;

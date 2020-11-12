@@ -22,6 +22,7 @@ public class Bat : Actor {
   }
 
   public Bat(Vector2Int pos) : base(pos) {
+    faction = Faction.Enemy;
     this.action = new BatAIAction(this);
   }
 }

@@ -4,44 +4,60 @@ using UnityEngine;
 
 public class FloorGenerator {
   public static Floor generateFloor0() {
-    Floor f = new Floor(22, 14);
+    Floor floor = new Floor(22, 14);
 
     // fill with floor tiles by default
-    f.ForEachLocation(p => f.tiles.Put(new Ground(p)));
+    floor.ForEachLocation(p => floor.tiles.Put(new Ground(p)));
 
     // surround floor with walls
-    for (int x = 0; x < f.width; x++) {
-      f.tiles.Put(new Wall(new Vector2Int(x, 0)));
-      f.tiles.Put(new Wall(new Vector2Int(x, f.height - 1)));
+    for (int x = 0; x < floor.width; x++) {
+      floor.tiles.Put(new Wall(new Vector2Int(x, 0)));
+      floor.tiles.Put(new Wall(new Vector2Int(x, floor.height - 1)));
     }
-    for (int y = 0; y < f.height; y++) {
-      f.tiles.Put(new Wall(new Vector2Int(0, y)));
-      f.tiles.Put(new Wall(new Vector2Int(f.width - 1, y)));
+    for (int y = 0; y < floor.height; y++) {
+      floor.tiles.Put(new Wall(new Vector2Int(0, y)));
+      floor.tiles.Put(new Wall(new Vector2Int(floor.width - 1, y)));
     }
 
-    SMOOTH_ROOM_EDGES.ApplyWithRotations(f);
-    SMOOTH_WALL_EDGES.ApplyWithRotations(f);
-    MAKE_WALL_BUMPS.ApplyWithRotations(f);
+    SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);
+    SMOOTH_WALL_EDGES.ApplyWithRotations(floor);
+    MAKE_WALL_BUMPS.ApplyWithRotations(floor);
 
-    f.PlaceUpstairs(new Vector2Int(1, f.height / 2));
-    f.PlaceDownstairs(new Vector2Int(f.width - 2, f.height / 2));
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
-    for (int x = 4; x < f.width - 4; x += 4) {
-      int y = f.height / 2 - 2;
-      if (f.tiles[x, y] is Ground) {
-        f.tiles.Put(new Soil(new Vector2Int(x, y)));
+    for (int x = 4; x < floor.width - 4; x += 4) {
+      int y = floor.height / 2 - 2;
+      if (floor.tiles[x, y] is Ground) {
+        floor.tiles.Put(new Soil(new Vector2Int(x, y)));
       }
-      y = f.height / 2 + 2;
-      if (f.tiles[x, y] is Ground) {
-        f.tiles.Put(new Soil(new Vector2Int(x, y)));
+      y = floor.height / 2 + 2;
+      if (floor.tiles[x, y] is Ground) {
+        floor.tiles.Put(new Soil(new Vector2Int(x, y)));
       }
     }
 
     // f.AddActor(new BerryBush(new Vector2Int(4, f.height / 2 - 2)));
-    return f;
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 2, floor.height / 2)));
+    return floor;
   }
 
   public static Floor generateRandomFloor() {
+    Floor floor;
+    do {
+      floor = tryGenerateRandomFloor();
+    } while (!floor.AreStairsConnected());
+
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 2, floor.height / 2)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    return floor;
+  }
+
+  /// connectivity is not guaranteed
+  private static Floor tryGenerateRandomFloor() {
     Floor floor = new Floor(60, 20);
 
     // fill with wall
@@ -109,12 +125,6 @@ public class FloorGenerator {
     // 1-px padding from the bottom-right of the room
     Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
     floor.PlaceDownstairs(downstairsPos);
-
-    floor.AddActor(new Bat(new Vector2Int(floor.width/2, floor.height / 2)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
     return floor;
   }
 

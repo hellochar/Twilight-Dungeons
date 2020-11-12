@@ -14,6 +14,7 @@ public class Player : Actor {
   internal override float queueOrderOffset => 0f;
 
   public Player(Vector2Int pos) : base(pos) {
+    faction = Faction.Ally;
     inventory = new Inventory(this, 12);
     inventory.AddItem(new ItemSeed());
     hp = 9;

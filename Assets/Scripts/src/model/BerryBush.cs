@@ -39,14 +39,12 @@ public class BerryBush : Actor {
   }
 
   public PlantStage<BerryBush> currentStage;
-
   internal override float queueOrderOffset => 0.4f;
-
   public string displayName => $"Berry Bush ({currentStage.name})";
 
   public BerryBush(Vector2Int pos) : base(pos) {
+    faction = Faction.Ally;
     currentStage = new Seed(this);
-    Debug.Log("Creating " + this);
   }
 
   public override void Step() {
@@ -62,7 +60,7 @@ public class BerryBush : Actor {
   // }
 
   internal void Harvest() {
-    floor.RemoveActor(this);
+    this.Kill();
   }
 }
 

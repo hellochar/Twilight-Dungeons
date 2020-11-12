@@ -20,21 +20,21 @@ public class Floor {
   /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin, boundsMax;
 
-  public Tile upstairs {
+  public Upstairs upstairs {
     get {
       foreach (Tile t in this.tiles) {
         if (t is Upstairs) {
-          return t;
+          return (Upstairs)t;
         }
       }
       return null;
     }
   }
-  public Tile downstairs {
+  public Downstairs downstairs {
     get {
       foreach (Tile t in this.tiles) {
         if (t is Downstairs) {
-          return t;
+          return (Downstairs)t;
         }
       }
       return null;
@@ -70,6 +70,11 @@ public class Floor {
     }
     actor.floor = this;
     this.OnActorAdded?.Invoke(actor);
+  }
+
+  internal bool AreStairsConnected() {
+    var path = FindPath(downstairs.pos, upstairs.pos);
+    return path.Count > 0;
   }
 
   public void RemoveActor(Actor actor) {

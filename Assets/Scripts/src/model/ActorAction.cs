@@ -73,6 +73,9 @@ public class MoveNextToTargetAction : FollowPathAction {
     adjacent.Add(target + new Vector2Int(1, 1));
 
     adjacent.Sort((a, b) => Math.Sign(Vector2Int.Distance(pos, a) - Vector2Int.Distance(pos, b)));
+    if (adjacent[0] == pos) {
+      return new List<Vector2Int>();
+    }
     var paths = adjacent.Select(x => GameModel.main.currentFloor.FindPath(pos, x)).Where(list => list.Count > 0);
     return paths.FirstOrDefault() ?? new List<Vector2Int>();
   }

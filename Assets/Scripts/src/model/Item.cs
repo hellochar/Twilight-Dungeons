@@ -1,7 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Item {
-  public virtual string displayName => GetType().Name;
+  public virtual string displayName {
+    get {
+      /// get rid of the "Item" prefix
+      var typeNameNoSpaces = GetType().Name.Substring(4);
+      // add spaces
+      var name = string.Concat(typeNameNoSpaces.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+      return name;
+    }
+  }
+
   public Inventory inventory;
   /// remove this item from the inventory
   public void Destroy() {
@@ -9,10 +20,12 @@ public class Item {
       inventory.RemoveItem(this);
     }
   }
+
+  internal virtual string GetStatsString() => "No stats.";
 }
 
 interface IStackable {
-  int stacks {get; set; }
+  int stacks { get; set; }
   int stacksMax { get; }
 }
 

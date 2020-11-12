@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Util {
+public static class Util {
 
   public static Vector2 getXY(Vector3 v3) {
     return new Vector2(v3.x, v3.y);
@@ -28,6 +28,4 @@ public class Util {
     }
     return null;
   }
-
-  private Util() { }
 }

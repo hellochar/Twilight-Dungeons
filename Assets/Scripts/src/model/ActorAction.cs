@@ -11,6 +11,8 @@ public abstract class ActorAction {
 
   protected ActorAction(Actor actor) { this.actor = actor; }
 
+  public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Action", ""));
+
   /// return the number of ticks it took to perform this action
   public virtual int Perform() {
     hasPerformedOnce = true;
@@ -84,14 +86,16 @@ public class ChaseTargetAction : MoveNextToTargetAction {
 }
 
 public class GenericAction : ActorAction {
-  public GenericAction(Actor actor, Action action) : base(actor) {
+  public GenericAction(Actor actor, Action<Actor> action) : base(actor) {
     Action = action;
   }
 
-  public Action Action { get; }
+  public Action<Actor> Action { get; }
 
   public override int Perform() {
-    Action.Invoke();
+    Action.Invoke(actor);
     return base.Perform();
   }
+
+  public override string displayName => Util.WithSpaces(Action.Method.Name);
 }

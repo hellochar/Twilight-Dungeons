@@ -60,7 +60,21 @@ public class BerryBush : Actor {
   // }
 
   internal void Harvest() {
-    this.Kill();
+    Player player = GameModel.main.player;
+    var stacks = currentStage is Mature ? ((Mature) currentStage).numBerries : 0;
+    if (stacks > 0) {
+      var item = new ItemBerries(stacks);
+      player.inventory.AddItem(item);
+      ((Mature) currentStage).numBerries = 0;
+    }
+  }
+
+  internal void Cull() {
+    Harvest();
+    Player player = GameModel.main.player;
+    player.inventory.AddItem(new ItemSeed());
+    player.inventory.AddItem(new ItemSeed());
+    Kill();
   }
 }
 

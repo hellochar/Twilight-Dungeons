@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PopupMatchItem : MonoBehaviour {
   public Item item;
@@ -24,12 +25,25 @@ public class PopupMatchItem : MonoBehaviour {
 
     title.text = item.displayName;
 
+    Player player = GameModel.main.player;
+    List<ActorAction> actions = item.GetAvailableActions(player);
+    // put more fundamental actions later
+    actions.Reverse();
+    foreach (var action in actions) {
+      var actionButton = Instantiate(itemActionButtonPrefab, new Vector3(), Quaternion.identity, actionsContainer.transform);
+      actionButton.GetComponentInChildren<TMPro.TMP_Text>().text = action.displayName;
+      actionButton.GetComponent<Button>().onClick.AddListener(() => {
+        player.action = action;
+        Close();
+        CloseInventory();
+      });
+    }
+
     Instantiate(spriteBase, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
 
-    stats.text = item.GetStatsString();
+    stats.text = item.GetStats();
 
     flavorText.text = GetFlavorTextFor(item);
-
   }
 
   private string GetFlavorTextFor(Item item) {
@@ -38,7 +52,7 @@ public class PopupMatchItem : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    stats.text = item.GetStatsString();
+    stats.text = item.GetStats();
     // if it's been removed
     if (item.inventory == null) {
       Debug.LogWarning("Item Details popup is being run on an item that's been removed from the inventory!");
@@ -50,5 +64,10 @@ public class PopupMatchItem : MonoBehaviour {
   /// call to close the popup
   public void Close() {
     Destroy(gameObject);
+  }
+
+  public void CloseInventory() {
+    var inventoryContainer = transform.parent.gameObject;
+    inventoryContainer.SetActive(false);
   }
 }

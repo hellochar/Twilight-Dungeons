@@ -74,7 +74,10 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
   }
 
   public void Harvest() {
-    Debug.Log("Harvesting" + plant);
     plant.Harvest();
+  }
+
+  public void Cull() {
+    plant.Cull();
   }
 }

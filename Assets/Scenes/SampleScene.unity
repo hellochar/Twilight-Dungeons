@@ -28243,7 +28243,7 @@ GameObject:
   - component: {fileID: 1037329651}
   - component: {fileID: 1037329650}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: Floor Floaty Dots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66448,6 +66448,80 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bea7f195d0184914a80f86f6a801568c, type: 3}
+--- !u!1001 &2568258535207032085
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4712886567019974494, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_Name
+      value: Heal Effect
+      objectReference: {fileID: 0}
+    - target: {fileID: 4712886567019974494, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.2033741
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.37230116
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.09701765
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880360265810433451, guid: cbe46e6dd9263ab45a29ac8a27c1cd95,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cbe46e6dd9263ab45a29ac8a27c1cd95, type: 3}
 --- !u!1001 &5110184452481419883
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -43,6 +43,7 @@ public class Actor : Entity {
   internal virtual float queueOrderOffset { get => 0.5f; }
   public Faction faction = Faction.Neutral;
   public event Action<int, int, Actor> OnTakeDamage;
+  public event Action<int, int> OnHeal;
   /// gets called on a successful hit on a target
   public event Action<int, Actor> OnAttack;
   /// gets called on any ground targeted attack
@@ -62,7 +63,9 @@ public class Actor : Entity {
       Debug.Log("tried healing <= 0");
       return;
     }
-    hp = Mathf.Clamp(hp + amount, 0, hpMax);
+    amount = Mathf.Clamp(amount, 0, hpMax - hp);
+    hp += amount;
+    OnHeal?.Invoke(amount, hp);
   }
 
   internal void Attack(Actor target) {

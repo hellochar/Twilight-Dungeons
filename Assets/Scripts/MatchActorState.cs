@@ -14,6 +14,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
       actor = GameModel.main.player;
     }
     actor.OnTakeDamage += HandleTakeDamage;
+    actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
     this.renderer = GetComponent<SpriteRenderer>();
@@ -39,6 +40,19 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     GameObject damageText = Instantiate(damageTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
     damageText.GetComponentInChildren<TMPro.TMP_Text>().text = $"-{damage}";
   }
+
+  void HandleHeal(int amount, int newHp) {
+    GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");
+    GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity);
+
+    GameObject damageTextPrefab = Resources.Load<GameObject>("UI/Damage Text");
+    GameObject damageText = Instantiate(damageTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
+    TMPro.TMP_Text text = damageText.GetComponentInChildren<TMPro.TMP_Text>();
+    text.text = $"{amount}";
+    text.color = HealTextColor;
+  }
+
+  public readonly static Color HealTextColor = new Color(0.109082f, 0.9803922f, 0.04313723f);
 
   private void HandleAttack(int damage, Actor target) {
     /// do nothing for now

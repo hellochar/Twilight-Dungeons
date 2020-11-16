@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -63,6 +64,18 @@ public class Inventory : IEnumerable<Item> {
   public Item this[int i] => items[i];
 
   internal bool AddItem(Item item, int? slotArg = null) {
+    if (slotArg == null && item is IStackable stackable) {
+      // go through existing stacks and add as much as possible
+      foreach (IStackable i in ItemsNonNull().Where(i => i.GetType() == item.GetType())) {
+        bool isConsumed = i.Merge(stackable);
+        if (isConsumed) {
+          item.Destroy(null);
+          return true;
+        }
+      }
+      // if we still exist, then continue
+    }
+
     int slot = slotArg ?? GetFirstFreeSlot();
     if (items[slot] != null) {
       return false;
@@ -99,5 +112,13 @@ public class Inventory : IEnumerable<Item> {
 
   IEnumerator IEnumerable.GetEnumerator() {
     return items.GetEnumerator();
+  }
+
+  public IEnumerable<Item> ItemsNonNull() {
+    foreach (var item in this) {
+      if (item != null) {
+        yield return item;
+      }
+    }
   }
 }

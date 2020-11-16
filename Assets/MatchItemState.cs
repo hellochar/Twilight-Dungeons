@@ -28,8 +28,8 @@ public class MatchItemState : MonoBehaviour {
   }
 
   private void HandleItemClicked() {
-    GameObject canvas = GetComponentInParent<Canvas>().gameObject;
-    var detailsPopup = Instantiate(detailsPopupPrefab, new Vector3(), Quaternion.identity, canvas.transform);
+    GameObject inventoryContainer = GetComponentInParent<Canvas>().transform.Find("Inventory Container").gameObject;
+    var detailsPopup = Instantiate(detailsPopupPrefab, new Vector3(), Quaternion.identity, inventoryContainer.transform);
     var popupMatchItem = detailsPopup.GetComponent<PopupMatchItem>();
     popupMatchItem.item = item;
     popupMatchItem.spriteBase = image.gameObject;
@@ -54,5 +54,9 @@ public class MatchItemState : MonoBehaviour {
   }
 
   // Update is called once per frame
-  void Update() { }
+  void Update() {
+    if (stacksText.isActiveAndEnabled) {
+      stacksText.text = ((IStackable) item).stacks.ToString();
+    }
+  }
 }

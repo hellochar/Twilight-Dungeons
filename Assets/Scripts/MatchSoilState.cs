@@ -12,8 +12,8 @@ public class MatchSoilState : MatchTileState {
     if (seed != null) {
       player.SetActions(
         new MoveNextToTargetAction(player, owner.pos),
-        new GenericAction(player, () => {
-          if (player.IsNextTo(owner)) {
+        new GenericAction(player, (p) => {
+          if (p.IsNextTo(owner)) {
             seed.Plant((Soil)owner);
           }
         })

@@ -31,7 +31,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
-    totalSpriteSurfaceArea: 111137041
+    totalSpriteSurfaceArea: 111136465
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -3287,7 +3287,6 @@ SpriteAtlas:
   - {fileID: -5118211221450531878, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 9160647132686863015, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 2664044766101820138, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
-  - {fileID: 3448022259866776825, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 7200495763156271715, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7206625948498287222, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7175514472820690552, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -3296,12 +3295,10 @@ SpriteAtlas:
   - {fileID: -6704642026530111701, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -6122654643175542973, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -983827515394959260, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
-  - {fileID: -5790619268941518410, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 4006178066595381542, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 8404187732818449434, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -402734581111482751, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 7555993957945501364, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
-  - {fileID: 200272672140858822, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 5038009692488143297, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7718452097945280381, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7830210110557234799, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -3867,6 +3864,7 @@ SpriteAtlas:
   - {fileID: -3612634501884796995, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 4464582344924425882, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 1637987767364200998, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
+  - {fileID: -5790619268941518410, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 1211363318566547975, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -309861879933820237, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7031683794561228514, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -3922,18 +3920,15 @@ SpriteAtlas:
   - {fileID: -7721749599887495880, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -1205012658301354740, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7019257085425329009, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
-  - {fileID: 6363251848182350291, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 6024584324103862986, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 2721462656526381566, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 6154897405694906052, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -5572870512181196493, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -3931811076258612523, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 8266602021422899226, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
-  - {fileID: -7422235480027562595, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7561324752023307174, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7041628472161050422, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -1714830702831665088, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
-  - {fileID: 6724644980177977970, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -706140499805194598, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 7417738084484474540, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 5009653331151573681, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -4360,6 +4355,7 @@ SpriteAtlas:
   - {fileID: 7129645933316122244, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -2878047328689262441, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -5409797611274324117, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
+  - {fileID: 6363251848182350291, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -8772478922978236315, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 4690871972598837727, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -6087004363210336751, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -9462,7 +9458,6 @@ SpriteAtlas:
   - roguelikeSheet_transparent_549
   - roguelikeSheet_transparent_515
   - roguelikeSheet_transparent_1482
-  - roguelikeSheet_transparent_1462
   - roguelikeSheet_transparent_1327
   - roguelikeSheet_transparent_1357
   - roguelikeSheet_transparent_514
@@ -9471,12 +9466,10 @@ SpriteAtlas:
   - roguelikeSheet_transparent_1326
   - roguelikeSheet_transparent_1350
   - roguelikeSheet_transparent_513
-  - roguelikeSheet_transparent_1460
   - roguelikeSheet_transparent_1329
   - roguelikeSheet_transparent_1351
   - roguelikeSheet_transparent_512
   - roguelikeSheet_transparent_528
-  - roguelikeSheet_transparent_1461
   - roguelikeSheet_transparent_1328
   - roguelikeSheet_transparent_1352
   - roguelikeSheet_transparent_559
@@ -10042,6 +10035,7 @@ SpriteAtlas:
   - roguelikeSheet_transparent_150
   - roguelikeSheet_transparent_15
   - roguelikeSheet_transparent_65
+  - ui-bar-green-empty
   - roguelikeSheet_transparent_1538
   - roguelikeSheet_transparent_16
   - roguelikeSheet_transparent_36
@@ -10097,18 +10091,15 @@ SpriteAtlas:
   - roguelikeSheet_transparent_1517
   - roguelikeSheet_transparent_31
   - roguelikeSheet_transparent_89
-  - roguelikeSheet_transparent_1404
   - roguelikeSheet_transparent_447
   - button-brown-pressed
   - roguelikeSheet_transparent_763
   - roguelikeSheet_transparent_773
   - roguelikeSheet_transparent_1514
   - roguelikeSheet_transparent_88
-  - roguelikeSheet_transparent_1405
   - roguelikeSheet_transparent_446
   - roguelikeSheet_transparent_772
   - roguelikeSheet_transparent_1515
-  - roguelikeSheet_transparent_1406
   - roguelikeSheet_transparent_449
   - roguelikeSheet_transparent_771
   - roguelikeSheet_transparent_90
@@ -10535,6 +10526,7 @@ SpriteAtlas:
   - roguelikeSheet_transparent_1199
   - roguelikeSheet_transparent_336
   - roguelikeSheet_transparent_384
+  - ui-bar-green-filled
   - roguelikeSheet_transparent_943
   - roguelikeSheet_transparent_953
   - roguelikeSheet_transparent_1104

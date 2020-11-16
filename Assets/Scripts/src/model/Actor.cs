@@ -48,6 +48,7 @@ public class Actor : Entity {
   public event Action<int, Actor> OnAttack;
   /// gets called on any ground targeted attack
   public event Action<Vector2Int, Actor> OnAttackGround;
+  public event Action<ActorAction, int> OnStepped;
 
   public Actor(Vector2Int pos) {
     hp = 8;
@@ -82,7 +83,7 @@ public class Actor : Entity {
     }
   }
 
-  private void TakeDamage(int damage, Actor source) {
+  public void TakeDamage(int damage, Actor source) {
     if (damage < 0) {
       Debug.LogWarning("Cannot take negative damage!");
       return;
@@ -114,13 +115,15 @@ public class Actor : Entity {
   public virtual void Step() {
     RemoveDoneActions();
     ActorAction currentAction = this.action;
+    int timeCost;
     if (currentAction == null) {
-      this.timeNextAction += baseActionCost;
+      timeCost = baseActionCost;
     } else {
-      int timeCost = currentAction.Perform();
-      this.timeNextAction += timeCost;
+      timeCost = currentAction.Perform();
       RemoveDoneActions();
     }
+    this.timeNextAction += timeCost;
+    OnStepped?.Invoke(currentAction, timeCost);
   }
 
   protected virtual void RemoveDoneActions() {

@@ -71,6 +71,9 @@ class ItemBerries : Item, IStackable {
 
   public void Use(Actor a) {
     a.Heal(3);
+    if (a is Player player) {
+      player.IncreaseFullness(0.05f);
+    }
     stacks--;
     if (stacks == 0) {
       Destroy(a);
@@ -83,7 +86,7 @@ class ItemBerries : Item, IStackable {
     return actions;
   }
 
-  internal override string GetStats() => "Heals 3 HP.";
+  internal override string GetStats() => "Heals 3 HP.\nRecover 5% hunger.";
 }
 
 public interface IEquippable {

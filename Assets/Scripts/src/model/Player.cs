@@ -7,9 +7,11 @@ using UnityEngine.Events;
 
 
 public class Player : Actor {
-  /// called when the player's action is set to something not null
+  public static readonly int MAX_FULLNESS = 1000;
   public Inventory inventory { get; }
   public Equipment equipment { get; }
+  /// 1000 is max fullness
+  public int fullness = MAX_FULLNESS;
 
   internal override float queueOrderOffset => 0f;
 
@@ -23,6 +25,15 @@ public class Player : Actor {
     inventory.AddItem(new ItemSeed(), 8);
     hp = 9;
     hpMax = 12;
+    OnStepped += HandleStepped;
+  }
+
+  void HandleStepped(ActorAction action, int timeCost) {
+    fullness = Math.Max(fullness - timeCost, 0);
+    // you are now starving
+    if (fullness <= 0) {
+      this.TakeDamage(1, this);
+    }
   }
 
   public override Vector2Int pos {
@@ -44,12 +55,10 @@ public class Player : Actor {
     }
   }
 
-  // internal async Task WaitUntilActionIsDecided() {
-  //   while(action == null) {
-  //     await Task.Delay(16);
-  //   }
-  //   return;
-  // }
+  internal void IncreaseFullness(float v) {
+    int amount = (int) (v * MAX_FULLNESS);
+    fullness = Mathf.Clamp(fullness + amount, 0, MAX_FULLNESS);
+  }
 }
 
 public class Inventory : IEnumerable<Item> {

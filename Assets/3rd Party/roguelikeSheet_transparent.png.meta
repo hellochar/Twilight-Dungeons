@@ -4216,7 +4216,7 @@ TextureImporter:
     second: roguelikeSheet_transparent_1403
   - first:
       213: 6363251848182350291
-    second: roguelikeSheet_transparent_1404
+    second: ui-bar-green-filled
   - first:
       213: -7422235480027562595
     second: roguelikeSheet_transparent_1405
@@ -4384,7 +4384,7 @@ TextureImporter:
     second: roguelikeSheet_transparent_1459
   - first:
       213: -5790619268941518410
-    second: roguelikeSheet_transparent_1460
+    second: ui-bar-green-empty
   - first:
       213: 200272672140858822
     second: roguelikeSheet_transparent_1461
@@ -34296,64 +34296,22 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_1404
+      name: ui-bar-green-filled
       rect:
         serializedVersion: 2
         x: 480
-        y: 80
-        width: 16
-        height: 16
+        y: 83
+        width: 48
+        height: 10
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 2, y: 2, z: 2, w: 2}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 3d1c14b87dfce4850800000000000000
       internalID: 6363251848182350291
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1405
-      rect:
-        serializedVersion: 2
-        x: 496
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d9df7a5d72ceef890800000000000000
-      internalID: -7422235480027562595
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1406
-      rect:
-        serializedVersion: 2
-        x: 512
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2724f141bfcb25d50800000000000000
-      internalID: 6724644980177977970
       vertices: []
       indices: 
       edges: []
@@ -35010,64 +34968,22 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_1460
+      name: ui-bar-green-empty
       rect:
         serializedVersion: 2
         x: 480
-        y: 64
-        width: 16
-        height: 16
+        y: 67
+        width: 48
+        height: 10
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 2, y: 2, z: 2, w: 2}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 6b96535747693afa0800000000000000
       internalID: -5790619268941518410
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1461
-      rect:
-        serializedVersion: 2
-        x: 496
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6c59c292fe287c200800000000000000
-      internalID: 200272672140858822
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: roguelikeSheet_transparent_1462
-      rect:
-        serializedVersion: 2
-        x: 512
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9f4bff81af5d9df20800000000000000
-      internalID: 3448022259866776825
       vertices: []
       indices: 
       edges: []

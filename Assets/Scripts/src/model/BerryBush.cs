@@ -4,7 +4,7 @@ public class BerryBush : Actor {
   class Seed : PlantStage<BerryBush> {
     public Seed(BerryBush plant) : base(plant) { }
     public override void Step() {
-      if (this.age >= 15) {
+      if (this.age >= 500) {
         plant.currentStage = new Young(plant);
       }
     }
@@ -15,7 +15,7 @@ public class BerryBush : Actor {
   class Young : PlantStage<BerryBush> {
     public Young(BerryBush plant) : base(plant) { }
     public override void Step() {
-      if (this.age >= 15) {
+      if (this.age >= 500) {
         plant.currentStage = new Mature(plant);
       }
     }
@@ -28,7 +28,7 @@ public class BerryBush : Actor {
     public Mature(BerryBush plant) : base(plant) { }
 
     public override void Step() {
-      int turnsPerBerry = 15;
+      int turnsPerBerry = 300;
       /// TODO this only works because Step() gets called for every single consecutive age.
       if (this.age >= turnsPerBerry && this.age % turnsPerBerry == 0) {
         numBerries++;

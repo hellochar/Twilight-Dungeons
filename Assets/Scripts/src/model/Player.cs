@@ -18,13 +18,10 @@ public class Player : Actor {
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(this, 12);
-    inventory.AddItem(new ItemSeed(), 4);
-    inventory.AddItem(new ItemBarkShield(), 5);
-    inventory.AddItem(new ItemSeed(), 6);
-    inventory.AddItem(new ItemBerries(3), 7);
-    inventory.AddItem(new ItemSeed(), 8);
-    hp = 9;
-    hpMax = 12;
+    inventory.AddItem(new ItemBarkShield());
+    inventory.AddItem(new ItemBerries(3));
+    inventory.AddItem(new ItemSeed());
+    hp = hpMax = 12;
     OnStepped += HandleStepped;
   }
 

@@ -6,16 +6,17 @@ using UnityEngine.UI;
 
 public abstract class MatchItemSlotState : MonoBehaviour {
   private Shadow shadow;
+  /// the ragged border/fill representing the slot
   private Image image;
-  private GameObject itemChild;
-  private GameObject itemPrefab;
+  protected GameObject itemChild;
+  protected GameObject itemPrefab;
   public abstract Item item { get; }
 
   public virtual void Start() {
     itemPrefab = Resources.Load<GameObject>("UI/Item");
     shadow = GetComponent<Shadow>();
     image = GetComponent<Image>();
-    itemChild = transform.Find("Item")?.gameObject;
+    itemChild = transform.Find("Item")?.gameObject ?? transform.Find("ItemOnPlayer")?.gameObject;
   }
 
   public virtual void Update() {

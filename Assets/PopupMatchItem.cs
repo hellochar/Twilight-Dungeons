@@ -43,11 +43,7 @@ public class PopupMatchItem : MonoBehaviour {
 
     stats.text = item.GetStats();
 
-    flavorText.text = GetFlavorTextFor(item);
-  }
-
-  private string GetFlavorTextFor(Item item) {
-    return ItemInfo.FlavorText[item.GetType()];
+    flavorText.text = ItemInfo.GetFlavorTextForItem(item);
   }
 
   // Update is called once per frame

@@ -91,11 +91,9 @@ public class Actor : Entity {
     damage = ModifyDamage(damage);
     damage = Math.Max(damage, 0);
     hp -= damage;
-    if (damage > 0) {
-      OnTakeDamage?.Invoke(damage, hp, source);
-      if (hp <= 0) {
-        Kill();
-      }
+    OnTakeDamage?.Invoke(damage, hp, source);
+    if (hp <= 0) {
+      Kill();
     }
   }
 

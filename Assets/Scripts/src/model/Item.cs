@@ -164,6 +164,8 @@ public class Equipment : Inventory {
   public Equipment(Player player) : base(player, 5) {
   }
 
+  public Item this[EquipmentSlot e] => this[(int) e];
+
   internal override bool AddItem(Item item, int? slotArg = null) {
     if (item is IEquippable equippable) {
       var slot = (int) equippable.slot;

@@ -98,7 +98,7 @@ public interface IDurable {
   int maxDurability { get; }
 }
 
-public class ItemBarkShield : Item, IEquippable, IDurable {
+public class ItemBarkShield : Item, IEquippable, IDurable, IDamageModifier {
   public EquipmentSlot slot => EquipmentSlot.Shield;
 
   public int durability { get; set; }
@@ -107,6 +107,18 @@ public class ItemBarkShield : Item, IEquippable, IDurable {
   public ItemBarkShield() {
     this.maxDurability = 10;
     this.durability = maxDurability;
+  }
+
+  public int ModifyDamage(int damage) {
+    this.ReduceDurability();
+    return damage - 2;
+  }
+
+  public void ReduceDurability() {
+    this.durability--;
+    if (durability <= 0) {
+      this.Destroy(null);
+    }
   }
 
   public void Equip(Actor a) {

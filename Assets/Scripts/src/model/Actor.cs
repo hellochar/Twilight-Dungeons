@@ -88,11 +88,19 @@ public class Actor : Entity {
       Debug.LogWarning("Cannot take negative damage!");
       return;
     }
+    damage = ModifyDamage(damage);
+    damage = Math.Max(damage, 0);
     hp -= damage;
-    OnTakeDamage?.Invoke(damage, hp, source);
-    if (hp <= 0) {
-      Kill();
+    if (damage > 0) {
+      OnTakeDamage?.Invoke(damage, hp, source);
+      if (hp <= 0) {
+        Kill();
+      }
     }
+  }
+
+  protected virtual int ModifyDamage(int damage) {
+    return damage;
   }
 
   public void Kill() {

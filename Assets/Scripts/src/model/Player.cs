@@ -55,4 +55,13 @@ public class Player : Actor {
     int amount = (int) (v * MAX_FULLNESS);
     fullness = Mathf.Clamp(fullness + amount, 0, MAX_FULLNESS);
   }
+
+  protected override int ModifyDamage(int damage) {
+    foreach (var item in equipment.ItemsNonNull()) {
+      if (item is IDamageModifier damageModifier && damage > 0) {
+        damage = damageModifier.ModifyDamage(damage);
+      }
+    }
+    return damage;
+  }
 }

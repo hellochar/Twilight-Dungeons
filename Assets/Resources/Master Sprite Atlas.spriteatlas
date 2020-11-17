@@ -31,7 +31,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
-    totalSpriteSurfaceArea: 111136465
+    totalSpriteSurfaceArea: 111794949
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -62,6 +62,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b0a5e842717cc40439946c2bd6d5dce9, type: 3}
   - {fileID: 21300000, guid: 337fd852d9783e844abb0a766b5bb6d9, type: 3}
   - {fileID: 21300000, guid: 8516dc520c3d16644b9e1f9413b87d6e, type: 3}
+  - {fileID: 21300000, guid: e35e6092607d0b643a2586cf8046491d, type: 3}
   - {fileID: 21300000, guid: 2bac31b2ba963144cb8a86c1df86b822, type: 3}
   - {fileID: 21300000, guid: 3cd78eb269f373346bb5daf62817905d, type: 3}
   - {fileID: 21300000, guid: 63d183c26455d4348bf2f3ef8958ce7f, type: 3}
@@ -72,6 +73,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0389c4835e143234eba009df68d7904f, type: 3}
   - {fileID: 21300000, guid: 078581a3de6e8a34e9d62a53b1c5c858, type: 3}
   - {fileID: 21300000, guid: 765d39a388dc9cc4ab1cfea5cb592163, type: 3}
+  - {fileID: 5553966007552175125, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
+  - {fileID: 7291669002186980028, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
+  - {fileID: 2324588936072700796, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
+  - {fileID: 3957641884665371023, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
+  - {fileID: -9134983481026892119, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
+  - {fileID: -1820778394629667666, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
   - {fileID: 21300000, guid: 42ffc1b305d2ff843a8a7d9eb5acc25c, type: 3}
   - {fileID: 21300000, guid: f51502b3dfe5065458caead59d1eab9d, type: 3}
   - {fileID: 21300000, guid: 716343b3561bd354390f39c9c8d129fa, type: 3}
@@ -464,6 +471,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 29a78e362a5727c408a84c36beb648e0, type: 3}
   - {fileID: 21300000, guid: defc0366bb4088d4296a2a77c562db49, type: 3}
   - {fileID: 21300000, guid: 1ec907663e138004e966ad527d9273f3, type: 3}
+  - {fileID: 21300000, guid: 396f1eb6e89dcc74e9f7be972dcbb64b, type: 3}
   - {fileID: 21300000, guid: 0a9b4cc61a4bd9342bcda456c93c7dc0, type: 3}
   - {fileID: 21300000, guid: 8f31b8d6e13b2d545a95481918d68abe, type: 3}
   - {fileID: 21300000, guid: 2dc79de697444004394be436c3a75d16, type: 3}
@@ -2968,6 +2976,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e510284afbb38354c8320489cddb8af5, type: 3}
   - {fileID: 21300000, guid: da981d4a1fb8d4141b5cc9cca211b593, type: 3}
   - {fileID: 21300000, guid: 9fe7727ae5173c04bbcd8ebd142dbee2, type: 3}
+  - {fileID: 21300000, guid: 200082aa28057f847883a607c8f82be6, type: 3}
   - {fileID: 21300000, guid: e25116ba1f11158458db3344153bfc53, type: 3}
   - {fileID: 21300000, guid: 272b9bca8cdcf6440a56b21122fcc86e, type: 3}
   - {fileID: 21300000, guid: 302cefcae7cc2c8438b8762025c5c509, type: 3}
@@ -4584,6 +4593,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c563486b68657fa428ce0660ff2a2099, type: 3}
   - {fileID: 21300000, guid: 1b618a6bdd7c7df48b0ca163ac197837, type: 3}
   - {fileID: 21300000, guid: 33f24bab28add434f88c2ec741a80e50, type: 3}
+  - {fileID: 21300000, guid: bee8f60c7fb13ce4d92888b0cde0746f, type: 3}
   - {fileID: 21300000, guid: f1d2c92ce14e6c246949567e517ff810, type: 3}
   - {fileID: 21300000, guid: 68e50b2c14934f645add3b45ea3e0050, type: 3}
   - {fileID: 21300000, guid: 32d6fb5c079f8d14f80c66248b48637e, type: 3}
@@ -5671,6 +5681,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c6d55faee5b8ec84494a802751838a2b, type: 3}
   - {fileID: 21300000, guid: c87b69eeeb4926d498a1f51a2bd74586, type: 3}
   - {fileID: 21300000, guid: bd57620f9df86c94eb5d48d30ce5ba2b, type: 3}
+  - {fileID: 21300000, guid: f7aac50f633140940b092ed05755b914, type: 3}
   - {fileID: 21300000, guid: 22e4301f8765cef4bb29cb2069f98477, type: 3}
   - {fileID: 21300000, guid: c942671fe91d2694f98504b7340669fd, type: 3}
   - {fileID: 21300000, guid: 2a4cdd4f11143bb44b1ef5f7784fb4e0, type: 3}
@@ -6233,6 +6244,7 @@ SpriteAtlas:
   - sprite_0084
   - Seed
   - sprite_0059
+  - outdoor_32x32
   - sprite_0036
   - sprite_0032
   - 1Blue
@@ -6243,6 +6255,12 @@ SpriteAtlas:
   - sprite_0057
   - sprite_0029
   - sprite_0093
+  - helmet-placeholder
+  - ui-bar-gold
+  - feet-placeholder
+  - armor-placeholder
+  - weapon-placeholder
+  - shield-placeholder
   - PinkFlower
   - sprite_0005
   - sprite_0053
@@ -6635,6 +6653,7 @@ SpriteAtlas:
   - sprite_0045
   - sprite_0064
   - 3Orange
+  - cute-dungeon
   - sprite_0048
   - colored_packed
   - sprite_0038
@@ -9139,6 +9158,7 @@ SpriteAtlas:
   - sprite_0041
   - sprite_0054
   - sprite_0079
+  - floating_island_packed
   - heart_animated_1
   - Sample
   - sprite_0100
@@ -10755,6 +10775,7 @@ SpriteAtlas:
   - sprite_0067
   - sprite_0091
   - sprite_0001
+  - ui_split
   - FlowerPot
   - sprite_0099
   - health_bar
@@ -11842,6 +11863,7 @@ SpriteAtlas:
   - sprite_0072
   - heart
   - sprite_0092
+  - happyland
   - sprite_0063
   - WateringCan
   - sprite_0083

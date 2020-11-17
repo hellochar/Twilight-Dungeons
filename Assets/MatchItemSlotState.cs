@@ -4,25 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MatchItemSlotState : MonoBehaviour {
-  int slotIndex;
-  private Inventory inventory;
+public abstract class MatchItemSlotState : MonoBehaviour {
   private Shadow shadow;
   private Image image;
   private GameObject itemChild;
   private GameObject itemPrefab;
+  public abstract Item item { get; }
 
-  void Start() {
-    inventory = GameModel.main.player.inventory;
-    slotIndex = transform.GetSiblingIndex();
+  public virtual void Start() {
     itemPrefab = Resources.Load<GameObject>("UI/Item");
     shadow = GetComponent<Shadow>();
     image = GetComponent<Image>();
     itemChild = transform.Find("Item")?.gameObject;
   }
 
-  void Update() {
-    Item item = inventory[slotIndex];
+  public virtual void Update() {
     if (item == null && itemChild != null) {
       UpdateUnused();
     } else if (item != null && itemChild == null) {
@@ -30,7 +26,7 @@ public class MatchItemSlotState : MonoBehaviour {
     }
   }
 
-  private void UpdateUnused() {
+  protected virtual void UpdateUnused() {
     shadow.enabled = false;
     image.fillCenter = false;
     image.color = UnusedColor;
@@ -39,7 +35,7 @@ public class MatchItemSlotState : MonoBehaviour {
     itemChild = null;
   }
 
-  private void UpdateInUse(Item item) {
+  protected virtual void UpdateInUse(Item item) {
     shadow.enabled = true;
     image.fillCenter = true;
     image.color = InUseColor;
@@ -51,5 +47,4 @@ public class MatchItemSlotState : MonoBehaviour {
 
   public static Color UnusedColor = new Color(0.1882353f, 0.2039216f, 0.227451f, 0.2470588f);
   public static Color InUseColor = new Color(0.1882353f, 0.2039216f, 0.227451f, 1f);
-
 }

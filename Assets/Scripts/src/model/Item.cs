@@ -110,12 +110,20 @@ public class ItemBarkShield : Item, IEquippable, IDurable {
   }
 
   public void Equip(Actor a) {
-    ((Player)a).equipment.Equip(this);
+    ((Player)a).equipment.AddItem(this);
+  }
+
+  public void Unequip(Actor a) {
+    ((Player)a).inventory.AddItem(this);
   }
 
   public override List<ActorAction> GetAvailableActions(Player actor) {
     var actions = base.GetAvailableActions(actor);
-    actions.Add(new GenericAction(actor, Equip));
+    if (actor.inventory.HasItem(this)) {
+      actions.Add(new GenericAction(actor, Equip));
+    } else if (actor.equipment.HasItem(this)) {
+      actions.Add(new GenericAction(actor, Unequip));
+    }
     return actions;
   }
 
@@ -130,17 +138,26 @@ public class ItemSeed : Item {
   }
 }
 
-public enum EquipmentSlot { Head, Shield, Weapon, Body, Feet }
+public enum EquipmentSlot {
+  Head = 0,
+  Weapon = 1,
+  Body = 2, 
+  Shield = 3,
+  Feet = 4
+}
 
-public class Equipment {
-  public Dictionary<EquipmentSlot, IEquippable> items = new Dictionary<EquipmentSlot, IEquippable>();
+/// Equipment is a more specialized inventory where only certain
+/// items, namely, IEquippable's, can be AddItem()-ed. 
+public class Equipment : Inventory {
+  public Equipment(Player player) : base(player, 5) {
+  }
 
-  internal void Equip(IEquippable equippable) {
-    var oldItem = items[equippable.slot];
-    if (oldItem != null) {
-      /// TODO implement
-      throw new System.Exception("not implemented");
+  internal override bool AddItem(Item item, int? slotArg = null) {
+    if (item is IEquippable equippable) {
+      var slot = (int) equippable.slot;
+      return base.AddItem(item, slot);
+    } else {
+      return false;
     }
-    items[equippable.slot] = equippable;
   }
 }

@@ -31,7 +31,8 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
-    totalSpriteSurfaceArea: 111794949
+    - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
+    totalSpriteSurfaceArea: 111796158
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -56,6 +57,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c8d8f861179b3a242a58e869d7b9ca96, type: 3}
   - {fileID: 21300000, guid: 507b1c710be949443be7900876a5331a, type: 3}
   - {fileID: 21300000, guid: f59ebba156c520146aa03cafefc5fbc6, type: 3}
+  - {fileID: 21300000, guid: 08508fb1398e67849aee030fc1035f23, type: 3}
   - {fileID: 21300000, guid: fd63afb1f40e7e346b955e16684037dc, type: 3}
   - {fileID: 21300000, guid: 1c380de13ce26b6418610ed9d1825b50, type: 3}
   - {fileID: 21300000, guid: e7267d12202b8a844a52554e24d48b63, type: 3}
@@ -91,6 +93,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5125e084925cd574d8c58bc179e10716, type: 3}
   - {fileID: 21300000, guid: 66f9c8a49a89aa64bb3f58f25c9efc53, type: 3}
   - {fileID: 21300000, guid: 52fe2ea4c529318468cfba1baa0529c0, type: 3}
+  - {fileID: -4533687649513996969, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
+  - {fileID: -398975762361691103, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
+  - {fileID: 6074143898205005808, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
+  - {fileID: 2398009223125789384, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 21300000, guid: 6ffafbe415926c54c97d5aa43c875e5f, type: 3}
   - {fileID: 21300000, guid: 84f3dce4ce4b8074c8bd5cd3e164ec2c, type: 3}
   - {fileID: 21300000, guid: 781cacf45650eee47b21cf9f6aed98bc, type: 3}
@@ -2964,6 +2970,7 @@ SpriteAtlas:
   - {fileID: 6563706456983634568, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: 1590791566266478632, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: -4281434945241030948, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
+  - {fileID: 21300000, guid: c4ccea09c2c32fb4ebd2b98cd3e42318, type: 3}
   - {fileID: 21300000, guid: 32d2f319d49357448906f59d6ae1dd78, type: 3}
   - {fileID: 21300000, guid: f8f40929a1c91704a830f448213b0f7a, type: 3}
   - {fileID: 21300000, guid: 52742049ba5821943bfe9386e27ce910, type: 3}
@@ -5689,6 +5696,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 96f66e7f6f7b7f24eb49009ec6455de2, type: 3}
   - {fileID: 21300000, guid: 14e4778f48b2d8b4e8372b86de098c5d, type: 3}
   - {fileID: 21300000, guid: 6de7cb8fd77c5564789ef8ff00452a52, type: 3}
+  - {fileID: 21300000, guid: 4c795eafbe0b47f4ba29ac7c9d34ee6c, type: 3}
   - {fileID: 21300000, guid: 88e010cff6fc158409fc344c6f635065, type: 3}
   - {fileID: 21300000, guid: 061382cffd764e94d839d1f29e4b9c70, type: 3}
   - {fileID: -1831654172775069049, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
@@ -6238,6 +6246,7 @@ SpriteAtlas:
   - sprite_0058
   - sprite_0015
   - sprite_0016
+  - Path Dot
   - SeedPack
   - sprite_0007
   - sprite_0021
@@ -6273,6 +6282,10 @@ SpriteAtlas:
   - sprite_0012
   - monochrome_transparent
   - sprite_0047
+  - sprite-line-diagonal-dotted
+  - pixel-line-diagonal
+  - pixel-line-horizontal-dotted
+  - pixel-line-horizontal
   - sprite_0098
   - RoseRed
   - sprite_0022
@@ -9146,6 +9159,7 @@ SpriteAtlas:
   - pixeland_81
   - pixeland_80
   - pixeland_166
+  - Circle5
   - sprite_0097
   - sprite_0069
   - Pink
@@ -11871,6 +11885,7 @@ SpriteAtlas:
   - Preview
   - Preview
   - sprite_0094
+  - Square
   - AloeVera
   - sprite_0033
   - roguelikeDungeon_transparent_269

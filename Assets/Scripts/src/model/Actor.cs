@@ -28,7 +28,7 @@ public class Actor : Entity {
     set => SetActions(value);
   }
   private List<ActorAction> actionQueue = new List<ActorAction>();
-  public event Action<ActorAction> OnSetPlayerAction;
+  public event Action<ActorAction> OnSetAction;
 
   public int visibilityRange = 7;
   public Floor floor;
@@ -49,6 +49,7 @@ public class Actor : Entity {
   /// gets called on any ground targeted attack
   public event Action<Vector2Int, Actor> OnAttackGround;
   public event Action<ActorAction, int> OnStepped;
+  public event Action OnPreStep;
 
   public Actor(Vector2Int pos) {
     hp = 8;
@@ -114,12 +115,13 @@ public class Actor : Entity {
     actionQueue.Clear();
     actionQueue.AddRange(actions);
     if (actions.Length > 0) {
-      OnSetPlayerAction?.Invoke(actionQueue[0]);
+      OnSetAction?.Invoke(actionQueue[0]);
     }
   }
 
   public virtual void Step() {
     RemoveDoneActions();
+    OnPreStep?.Invoke();
     ActorAction currentAction = this.action;
     int timeCost;
     if (currentAction == null) {
@@ -136,7 +138,7 @@ public class Actor : Entity {
     while (actionQueue.Any() && actionQueue[0].IsDone()) {
       ActorAction finishedAction = actionQueue[0];
       actionQueue.RemoveAt(0);
-      OnSetPlayerAction?.Invoke(actionQueue.FirstOrDefault());
+      OnSetAction?.Invoke(actionQueue.FirstOrDefault());
       finishedAction.Finish();
     }
   }

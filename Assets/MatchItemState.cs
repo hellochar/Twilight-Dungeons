@@ -24,7 +24,8 @@ public class MatchItemState : MonoBehaviour {
     image.rectTransform.sizeDelta = image.sprite.rect.size * 3;
 
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
-    stacksText.gameObject.SetActive(item is IStackable);
+    // stacksText.gameObject.SetActive(item is IStackable);
+    Update();
   }
 
   private void HandleItemClicked() {
@@ -42,8 +43,16 @@ public class MatchItemState : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    if (stacksText.isActiveAndEnabled) {
-      stacksText.text = ((IStackable) item).stacks.ToString();
+    if (item is IStackable i) {
+      stacksText.text = i.stacks.ToString();
+    } else if (item is IDurable d) {
+      if (d.durability < d.maxDurability) {
+        stacksText.text = $"{d.durability}/{d.maxDurability}";
+      } else {
+        stacksText.text = "";
+      }
+    } else {
+      stacksText.gameObject.SetActive(false);
     }
   }
 }

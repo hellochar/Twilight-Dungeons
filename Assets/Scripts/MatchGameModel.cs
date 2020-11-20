@@ -16,7 +16,7 @@ public class MatchGameModel : MonoBehaviour {
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     currentFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
     Player player = model.player;
-    player.OnSetPlayerAction += HandleSetPlayerAction;
+    player.OnSetAction += HandleSetPlayerAction;
   }
 
   private Coroutine gameLoop;

@@ -17,6 +17,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
+    actor.OnSetAction += HandleSetAction;
     this.renderer = GetComponent<SpriteRenderer>();
     this.transform.position = Util.withZ(this.actor.pos);
   }
@@ -33,6 +34,27 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     // if (renderer != null) {
     //   renderer.enabled = actor.visible;
     // }
+  }
+
+  private void HandleSetAction(ActorAction obj) {
+    if (obj != null) {
+      GameObject prefab = GetPrefabForAction(obj);
+      if (prefab != null) {
+        Instantiate(prefab, transform.position, Quaternion.identity, transform);
+      }
+    }
+  }
+
+  private static Dictionary<Type, GameObject> actionPrefabCache = new Dictionary<Type, GameObject>();
+  private GameObject GetPrefabForAction(ActorAction obj) {
+    var type = obj.GetType();
+    if (!actionPrefabCache.ContainsKey(type)) {
+      // attempt to load it
+      var name = type.Name;
+      var prefabOrNull = Resources.Load<GameObject>($"UI/Actions/{name}");
+      actionPrefabCache.Add(type, prefabOrNull);
+    }
+    return actionPrefabCache[type];
   }
 
   void HandleTakeDamage(int damage, int newHp, Actor source) {
@@ -100,16 +122,26 @@ public class AttackAction : ActorAction {
 
 public class AttackGroundAction : ActorAction {
 
-  public AttackGroundAction(Actor actor, Vector2Int targetPosition) : base(actor) {
+  public AttackGroundAction(Actor actor, Vector2Int targetPosition, int turnsTelegraphed = 0) : base(actor) {
     TargetPosition = targetPosition;
+    TurnsTelegraphed = turnsTelegraphed;
   }
 
   public Vector2Int TargetPosition { get; }
+  public int TurnsTelegraphed { get; set; }
 
   public override int Perform() {
+    TurnsTelegraphed--;
+    if (TurnsTelegraphed >= 0) {
+      return actor.baseActionCost;
+    }
     if (actor.IsNextTo(TargetPosition)) {
       actor.AttackGround(TargetPosition);
     }
     return base.Perform();
+  }
+
+  public override bool IsDone() {
+    return TurnsTelegraphed < 0;
   }
 }

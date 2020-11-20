@@ -16,7 +16,7 @@ public class FollowPathUI : MonoBehaviour {
     reticle = Instantiate(Resources.Load<GameObject>("UI/Reticle"), new Vector3(), Quaternion.identity, transform);
     reticle.SetActive(false);
     player = GameModel.main.player;
-    player.OnSetPlayerAction += HandleSetPlayerAction;
+    player.OnSetAction += HandleSetPlayerAction;
   }
 
   void HandleSetPlayerAction(ActorAction action) {

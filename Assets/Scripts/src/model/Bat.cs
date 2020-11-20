@@ -3,32 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Bat : Actor {
-  private IEnumerator<ActorAction> actionGenerator;
+  private IEnumerator<ActorAction[]> actionGenerator;
   public Bat(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     actionGenerator = ActionGenerator().GetEnumerator();
+    OnPreStep += HandlePreStep;
   }
 
-  protected override void RemoveDoneActions() {
-    base.RemoveDoneActions();
+  void HandlePreStep() {
     if (action == null) {
       actionGenerator.MoveNext();
-      action = actionGenerator.Current;
+      SetActions(actionGenerator.Current);
     }
   }
 
-  private IEnumerable<ActorAction> ActionGenerator() {
+  private IEnumerable<ActorAction[]> ActionGenerator() {
     while (true) {
       bool canSeePlayer = currentTile.visiblity == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision
       if (canSeePlayer) {
         if (IsNextTo(GameModel.main.player)) {
-          yield return new AttackGroundAction(this, GameModel.main.player.pos);
+          yield return new ActorAction[] {
+            new AttackGroundAction(this, GameModel.main.player.pos, 1),
+          };
         } else {
-          yield return new ChaseTargetAction(this, GameModel.main.player);
+          yield return new ActorAction[] {
+            new ChaseTargetAction(this, GameModel.main.player)
+          };
         }
       } else {
-        yield return new MoveRandomlyAction(this);
+        yield return new ActorAction[] {
+          new MoveRandomlyAction(this)
+        };
       }
     }
   }

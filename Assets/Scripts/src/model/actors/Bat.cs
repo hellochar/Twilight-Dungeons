@@ -2,39 +2,41 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bat : Actor {
-  private IEnumerator<ActorAction[]> actionGenerator;
-  public Bat(Vector2Int pos) : base(pos) {
-    faction = Faction.Enemy;
-    actionGenerator = ActionGenerator().GetEnumerator();
+/// An actor whose actions are controlled by some sort of AI.
+/// This AI decides what actions the actor takes.
+/// TODO we should use composition for this instead, eventually
+public class AIActor : Actor {
+  protected IEnumerator<ActorAction> ai;
+  public AIActor(Vector2Int pos) : base(pos) {
     OnPreStep += HandlePreStep;
   }
 
   void HandlePreStep() {
     if (action == null) {
-      actionGenerator.MoveNext();
-      SetActions(actionGenerator.Current);
+      ai.MoveNext();
+      SetActions(ai.Current);
     }
   }
+}
 
-  private IEnumerable<ActorAction[]> ActionGenerator() {
+public class Bat : AIActor {
+  public Bat(Vector2Int pos) : base(pos) {
+    faction = Faction.Enemy;
+    ai = ActionGenerator().GetEnumerator();
+  }
+
+  private IEnumerable<ActorAction> ActionGenerator() {
     while (true) {
       bool canSeePlayer = currentTile.visiblity == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision
       if (canSeePlayer) {
         if (IsNextTo(GameModel.main.player)) {
-          yield return new ActorAction[] {
-            new AttackGroundAction(this, GameModel.main.player.pos, 1),
-          };
+          yield return new AttackGroundAction(this, GameModel.main.player.pos, 1);
         } else {
-          yield return new ActorAction[] {
-            new ChaseTargetAction(this, GameModel.main.player)
-          };
+          yield return new ChaseTargetAction(this, GameModel.main.player);
         }
       } else {
-        yield return new ActorAction[] {
-          new MoveRandomlyAction(this)
-        };
+        yield return new MoveRandomlyAction(this);
       }
     }
   }

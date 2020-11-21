@@ -1,9 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
 public class Actor : Entity {
+  public static IDictionary<Type, float> ActionCosts = new ReadOnlyDictionary<Type, float>(
+    new Dictionary<Type, float> {
+      {typeof(ActorAction), 1}
+    }
+  );
+
   public Guid guid { get; }
   private Vector2Int _pos;
   public virtual Vector2Int pos {
@@ -17,16 +24,12 @@ public class Actor : Entity {
   }
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
-  public virtual float baseActionCost => 1;
+  public virtual IDictionary<Type, float> actionCosts => Actor.ActionCosts;
+  protected float baseActionCost => GetActionCost(typeof(ActorAction));
   public float timeCreated { get; }
   /// how many turns this Entity has been alive for
   public float age => GameModel.main.time - timeCreated;
-  private float _timeNextAction;
-  public float timeNextAction {
-    get => _timeNextAction;
-    // force at most 2 decimal places so that queueOffset never "bleeds through"
-    set => _timeNextAction = (float) Math.Round(value, 2);
-  }
+  public float timeNextAction;
   public virtual ActorAction action {
     get => actionQueue.FirstOrDefault();
     set => SetActions(value);
@@ -37,13 +40,14 @@ public class Actor : Entity {
   public int visibilityRange = 7;
   public Floor floor;
   public Tile currentTile => floor.tiles[pos.x, pos.y];
-  public bool visible => currentTile.visiblity == TileVisiblity.Visible;
+  public bool visible => currentTile.visibility == TileVisiblity.Visible;
 
   /// Determines Actor order when multiple have the same timeNextAction.
   /// Lower numbers go first.
   /// Player has offset 10 (usually goes first).
   /// Generally ranges in [0, 100].
   internal virtual float turnPriority => 50;
+
   public Faction faction = Faction.Neutral;
   public event Action<int, int, Actor> OnTakeDamage;
   public event Action<int, int> OnHeal;
@@ -122,6 +126,22 @@ public class Actor : Entity {
     }
   }
 
+  public float GetActionCost(Type t) {
+    while (t != typeof(object)) {
+      if (actionCosts.ContainsKey(t)) {
+        return actionCosts[t];
+      } else {
+        // walk up the type hierarchy
+        t = t.BaseType;
+      }
+    }
+    return actionCosts[typeof(ActorAction)];
+  }
+
+  public float GetActionCost(ActorAction action) {
+    return GetActionCost(action.GetType());
+  }
+
   public virtual void Step() {
     RemoveDoneActions();
     OnPreStep?.Invoke();
@@ -130,7 +150,8 @@ public class Actor : Entity {
     if (currentAction == null) {
       timeCost = baseActionCost;
     } else {
-      timeCost = currentAction.Perform();
+      timeCost = GetActionCost(currentAction);
+      currentAction.Perform();
       RemoveDoneActions();
     }
     this.timeNextAction += timeCost;

@@ -52,7 +52,7 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
     }
     // Clicking inside the popup will trigger this method; account for that by checking if the clicked location is in the tile.
     Tile t = Util.GetVisibleTileAt(pointerEventData.position);
-    if (t != null && t == plant.currentTile && t.visiblity == TileVisiblity.Visible) {
+    if (t != null && t == plant.currentTile && t.visibility == TileVisiblity.Visible) {
       TogglePopup();
     }
   }

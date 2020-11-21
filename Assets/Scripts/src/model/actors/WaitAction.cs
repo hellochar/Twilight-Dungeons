@@ -9,9 +9,8 @@ public class WaitAction : ActorAction {
     this.turns = turns;
   }
 
-  public override float Perform() {
+  public override void Perform() {
     turns--;
-    return base.Perform();
   }
 
   public override bool IsDone() {

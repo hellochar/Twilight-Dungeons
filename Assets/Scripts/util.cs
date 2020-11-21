@@ -25,7 +25,7 @@ public static class Util {
     Floor currentFloor = GameModel.main.currentFloor;
     target.Clamp(currentFloor.boundsMin, currentFloor.boundsMax - new Vector2Int(1, 1));
     Tile tile = currentFloor.tiles[target.x, target.y];
-    if (tile != null && tile.visiblity != TileVisiblity.Unexplored) {
+    if (tile != null && tile.visibility != TileVisiblity.Unexplored) {
       return tile;
     }
     return null;

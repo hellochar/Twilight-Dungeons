@@ -5,9 +5,9 @@ public class ChaseTargetAction : MoveNextToTargetAction {
     this.targetActor = targetActor;
   }
 
-  public override float Perform() {
+  public override void Perform() {
     /// recompute the path
     this.path = FindBestAdjacentPath(actor.pos, targetActor.pos);
-    return base.Perform();
+    base.Perform();
   }
 }

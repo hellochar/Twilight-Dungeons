@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Tile : Entity {
   public Vector2Int pos { get; }
-  public TileVisiblity visiblity = TileVisiblity.Unexplored;
+  public TileVisiblity visibility = TileVisiblity.Unexplored;
   internal Floor floor;
 
   public Actor occupant {

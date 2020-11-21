@@ -133,8 +133,8 @@ public class Floor {
   internal void RemoveVisibility(Actor entity) {
     ForEachLocationCircle((pos) => {
       Tile t = tiles[pos.x, pos.y];
-      if (t.visiblity == TileVisiblity.Visible) {
-        t.visiblity = TileVisiblity.Explored;
+      if (t.visibility == TileVisiblity.Visible) {
+        t.visibility = TileVisiblity.Explored;
       }
     },
       entity.pos,
@@ -147,7 +147,7 @@ public class Floor {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(entity.pos, pos);
       if (isVisible) {
-        t.visiblity = TileVisiblity.Visible;
+        t.visibility = TileVisiblity.Visible;
       }
     },
       entity.pos,

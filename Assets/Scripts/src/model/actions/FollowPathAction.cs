@@ -10,17 +10,15 @@ public class FollowPathAction : ActorAction {
     this.path = path;
   }
 
-  public override float Perform() {
+  public override void Perform() {
     if (path.Any()) {
       Vector2Int nextPosition = path.First();
       path.RemoveAt(0);
       actor.pos = nextPosition;
     }
-    return base.Perform();
   }
 
   public override bool IsDone() {
     return path.Count == 0;
-    // return actor.pos == target;
   }
 }

@@ -7,9 +7,9 @@ public class GenericAction : ActorAction {
 
   public Action<Actor> Action { get; }
 
-  public override float Perform() {
+  public override void Perform() {
     Action.Invoke(actor);
-    return base.Perform();
+    base.Perform();
   }
 
   public override string displayName => Util.WithSpaces(Action.Method.Name);

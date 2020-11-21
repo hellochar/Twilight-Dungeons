@@ -10,15 +10,14 @@ public class AttackGroundAction : ActorAction {
   public Vector2Int TargetPosition { get; }
   public int TurnsTelegraphed { get; set; }
 
-  public override float Perform() {
+  public override void Perform() {
     TurnsTelegraphed--;
     if (TurnsTelegraphed >= 0) {
-      return actor.baseActionCost;
+      return;
     }
     if (actor.IsNextTo(TargetPosition)) {
       actor.AttackGround(TargetPosition);
     }
-    return base.Perform();
   }
 
   public override bool IsDone() {

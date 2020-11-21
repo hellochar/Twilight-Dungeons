@@ -6,23 +6,20 @@ using UnityEngine;
 public class MatchFloorState : MonoBehaviour {
 
   public Floor floor;
-  private Dictionary<System.Type, GameObject> prefabs = new Dictionary<System.Type, GameObject>();
+  private Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
   private Dictionary<Entity, GameObject> gameObjectMap = new Dictionary<Entity, GameObject>();
+
+  public GameObject GetEntityPrefab(Entity e) {
+    var type = e.GetType();
+    if (!EntityPrefabs.ContainsKey(type)) {
+      string resourcePath = $"Entities/{type.Name}";
+      EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));
+    }
+    return EntityPrefabs[type];
+  }
 
   // Start is called before the first frame update
   void Start() {
-    System.Type[] types = new System.Type[] {
-      // Tiles
-      typeof(Ground), typeof(Wall), typeof(Downstairs), typeof(Upstairs), typeof(Dirt), typeof(Soil),
-      // Plants
-      typeof(BerryBush),
-      // Enemies
-      typeof(Bat)
-    };
-    foreach (System.Type t in types) {
-      string resourceName = t.Name;
-      prefabs.Add(t, Resources.Load<GameObject>("Entities/" + resourceName));
-    }
     this.instantiateGameObjectsToMatchFloor();
     // TODO do the same thing for tile changes
     floor.OnActorAdded += HandleActorAdded;
@@ -63,13 +60,13 @@ public class MatchFloorState : MonoBehaviour {
     if (gameObjectMap.ContainsKey(entity)) {
       throw new System.Exception("Creating gameObject for entity that already has one" + entity);
     }
-    GameObject prefab;
-    Vector3Int pos = new Vector3Int(entity.pos.x, entity.pos.y, 0);
     /// Player is Instantiated separately; not responsible here
     if (entity is Player) {
       return;
     }
-    if (this.prefabs.TryGetValue(entity.GetType(), out prefab)) {
+    Vector3Int pos = new Vector3Int(entity.pos.x, entity.pos.y, 0);
+    GameObject prefab = GetEntityPrefab(entity);
+    if (prefab != null) {
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile) {
         gameObject.GetComponent<MatchTileState>().owner = (Tile) entity;

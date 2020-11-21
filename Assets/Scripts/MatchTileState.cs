@@ -20,7 +20,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
 
   // Update is called once per frame
   void Update() {
-    switch (owner.visiblity) {
+    switch (owner.visibility) {
       case TileVisiblity.Unexplored:
         foreach (var renderer in renderers) {
           renderer.enabled = false;

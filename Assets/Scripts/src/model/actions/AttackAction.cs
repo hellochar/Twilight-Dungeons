@@ -5,10 +5,10 @@ public class AttackAction : ActorAction {
 
   public Actor target { get; }
 
-  public override float Perform() {
+  public override void Perform() {
     if (actor.IsNextTo(target)) {
       actor.Attack(target);
     }
-    return base.Perform();
+    base.Perform();
   }
 }

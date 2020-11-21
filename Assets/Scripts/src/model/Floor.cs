@@ -56,6 +56,10 @@ public class Floor {
     return this.actors.FirstOrDefault(a => a.pos == pos);
   }
 
+  internal IEnumerable<Actor> AdjacentActors(Vector2Int pos) {
+    return GetNeighborhoodTiles(pos).Select(x => x.occupant).Where(x => x != null);
+  }
+
   internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
     var actors = new List<Actor>();
     ForEachLocationCircle((pos) => {

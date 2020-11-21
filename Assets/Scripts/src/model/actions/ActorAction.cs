@@ -5,7 +5,7 @@ using UnityEngine.Events;
 public abstract class ActorAction {
   public virtual Actor actor { get; }
   public event Action OnDone;
-  private bool hasPerformedOnce = false;
+  protected bool hasPerformedOnce = false;
 
   protected ActorAction(Actor actor) { this.actor = actor; }
 

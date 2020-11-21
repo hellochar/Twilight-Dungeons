@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 111796158
+    totalSpriteSurfaceArea: 112100153
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -5681,6 +5681,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 81a677eda21d4924aa7fb652e9173826, type: 3}
   - {fileID: 21300000, guid: 2fa87cfdd2c774f49a4c28a619b82d63, type: 3}
   - {fileID: 21300000, guid: 9ba46ffd80c9047468df6aee42256b61, type: 3}
+  - {fileID: 21300000, guid: 62d7722e2d7563b468471d867555b6cb, type: 3}
   - {fileID: 21300000, guid: 849e2c3e58750e6449ab63ca4a501409, type: 3}
   - {fileID: 21300000, guid: 871dc66e9c5ac3346b7c8e9ffbc407f5, type: 3}
   - {fileID: 21300000, guid: c5e7538eb488a8940a986caf0183294e, type: 3}
@@ -11870,6 +11871,7 @@ SpriteAtlas:
   - sprite_0039
   - Lavender
   - sprite_0090
+  - colored_original
   - sprite_0004
   - sprite_0006
   - sprite_0040

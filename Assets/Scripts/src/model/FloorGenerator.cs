@@ -37,13 +37,8 @@ public class FloorGenerator {
       }
     }
 
-    // f.AddActor(new BerryBush(new Vector2Int(4, f.height / 2 - 2)));
-    // floor.AddActor(new Bat(new Vector2Int(floor.width / 2, floor.height / 2)));
+    floor.AddActor(new Blob(new Vector2Int(floor.width / 2, floor.height / 2)));
     floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2 + 1)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2 - 1)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 2, floor.height / 2)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 2, floor.height / 2 + 1)));
     return floor;
   }
 
@@ -53,11 +48,16 @@ public class FloorGenerator {
       floor = tryGenerateRandomFloor();
     } while (!floor.AreStairsConnected());
 
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 2, floor.height / 2)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Bat(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2 + 1)));
+    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2 - 1)));
+    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 2, floor.height / 2)));
+    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 2, floor.height / 2 + 1)));
+
+    floor.AddActor(new Blob(new Vector2Int(floor.width / 2, floor.height / 2)));
+    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
+    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
     return floor;
   }
 

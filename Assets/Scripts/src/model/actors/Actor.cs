@@ -61,8 +61,7 @@ public class Actor : Entity {
   public event Action OnDeath;
 
   public Actor(Vector2Int pos) {
-    hp = 8;
-    hpMax = 8;
+    hp = hpMax = 8;
     guid = System.Guid.NewGuid();
     this.timeCreated = GameModel.main.time;
     this.timeNextAction = this.timeCreated + baseActionCost;

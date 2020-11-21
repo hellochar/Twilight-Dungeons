@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 public static class AIs {
-  public static IEnumerable<ActorAction> BatAI(Actor actor) {
+  public static IEnumerable<ActorAction> BlobAI(Actor actor) {
     while (true) {
       bool canSeePlayer = actor.currentTile.visibility == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision

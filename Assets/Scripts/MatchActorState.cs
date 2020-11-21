@@ -76,9 +76,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
 
   public readonly static Color HealTextColor = new Color(0.109082f, 0.9803922f, 0.04313723f);
 
-  private void HandleAttack(int damage, Actor target) {
-    /// do nothing for now
-  }
+  private void HandleAttack(int damage, Actor target) {}
 
   private void HandleAttackGround(Vector2Int targetPosition, Actor occupant) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("UI/Attack Sprite");

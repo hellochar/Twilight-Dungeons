@@ -1,5 +1,5 @@
 public class ChaseTargetAction : MoveNextToTargetAction {
-  private readonly Actor targetActor;
+  protected Actor targetActor;
 
   public ChaseTargetAction(Actor actor, Actor targetActor) : base(actor, targetActor.pos) {
     this.targetActor = targetActor;

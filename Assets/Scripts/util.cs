@@ -31,6 +31,23 @@ public static class Util {
     return null;
   }
 
+  private static Vector2Int[] AdjacentDirections = new Vector2Int[] {
+    new Vector2Int(-1, -1),
+    new Vector2Int(-1,  0),
+    new Vector2Int(-1, +1),
+
+    new Vector2Int(0, -1),
+    // new Vector2Int(0,  0),
+    new Vector2Int(0, +1),
+
+    new Vector2Int(+1, -1),
+    new Vector2Int(+1,  0),
+    new Vector2Int(+1, +1),
+  };
+  internal static Vector2Int RandomAdjacentDirection() {
+    return AdjacentDirections[UnityEngine.Random.Range(0, 8)];
+  }
+
   public static string WithSpaces(string capitalCaseString) {
     return string.Concat(capitalCaseString.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
   }

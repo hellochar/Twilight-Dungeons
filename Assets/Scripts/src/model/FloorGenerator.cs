@@ -37,6 +37,8 @@ public class FloorGenerator {
       }
     }
 
+    floor.AddActor(new Bat(new Vector2Int(4, floor.height / 2 + 3)));
+    floor.AddActor(new Bat(new Vector2Int(5, floor.height / 2 - 1)));
     floor.AddActor(new Blob(new Vector2Int(floor.width / 2, floor.height / 2)));
     floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2)));
     return floor;

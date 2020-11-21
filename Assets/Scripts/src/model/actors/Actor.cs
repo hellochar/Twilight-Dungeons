@@ -25,6 +25,11 @@ public class Actor : Entity {
   }
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
+
+  internal float DistanceTo(Actor other) {
+    return Vector2Int.Distance(pos, other.pos);
+  }
+
   public virtual IDictionary<Type, float> actionCosts => Actor.ActionCosts;
   protected float baseActionCost => GetActionCost(typeof(ActorAction));
   public float timeCreated { get; }

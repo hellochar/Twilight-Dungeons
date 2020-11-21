@@ -10,7 +10,7 @@ public class FollowPathAction : ActorAction {
     this.path = path;
   }
 
-  public override int Perform() {
+  public override float Perform() {
     if (path.Any()) {
       Vector2Int nextPosition = path.First();
       path.RemoveAt(0);

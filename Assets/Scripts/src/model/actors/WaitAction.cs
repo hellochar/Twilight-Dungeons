@@ -9,7 +9,7 @@ public class WaitAction : ActorAction {
     this.turns = turns;
   }
 
-  public override int Perform() {
+  public override float Perform() {
     turns--;
     return base.Perform();
   }

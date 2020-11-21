@@ -5,7 +5,7 @@ public class AttackAction : ActorAction {
 
   public Actor target { get; }
 
-  public override int Perform() {
+  public override float Perform() {
     if (actor.IsNextTo(target)) {
       actor.Attack(target);
     }

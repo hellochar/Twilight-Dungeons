@@ -123,7 +123,7 @@ public class Floor {
     }
   }
 
-  internal void CatchUpStep(int time) {
+  internal void CatchUpStep(float time) {
     // step all actors until they're up to speed
     foreach (Actor a in actors) {
       a.CatchUpStep(time);

@@ -12,7 +12,7 @@ public abstract class ActorAction {
   public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Action", ""));
 
   /// return the number of ticks it took to perform this action
-  public virtual int Perform() {
+  public virtual float Perform() {
     hasPerformedOnce = true;
     return actor.baseActionCost;
   }

@@ -7,7 +7,7 @@ public class GenericAction : ActorAction {
 
   public Action<Actor> Action { get; }
 
-  public override int Perform() {
+  public override float Perform() {
     Action.Invoke(actor);
     return base.Perform();
   }

@@ -39,7 +39,7 @@ public class BerryBush : Actor {
   }
 
   public PlantStage<BerryBush> currentStage;
-  internal override float queueOrderOffset => 0.4f;
+  internal override float turnPriority => 40;
   public string displayName => $"Berry Bush ({currentStage.name})";
 
   public BerryBush(Vector2Int pos) : base(pos) {
@@ -51,13 +51,6 @@ public class BerryBush : Actor {
     this.currentStage.Step();
     this.timeNextAction += baseActionCost;
   }
-
-  // public override void CatchUpStep(int time) {
-  //   Debug.Log("catching up " + this + " from " + this.timeNextAction + " to " + time);
-  //   while (this.timeNextAction < time) {
-  //     this.Step();
-  //   }
-  // }
 
   internal void Harvest() {
     Player player = GameModel.main.player;
@@ -80,10 +73,10 @@ public class BerryBush : Actor {
 
 public class PlantStage<T> where T : Actor {
   public T plant;
-  public int ageEntered { get; }
+  public float ageEntered { get; }
   /// how long the plant has been in this stage specifically
-  public int age { get => plant.age - ageEntered; }
-  public string name { get => GetType().Name; }
+  public float age => plant.age - ageEntered;
+  public string name => GetType().Name;
 
   public PlantStage(T plant) {
     this.plant = plant;

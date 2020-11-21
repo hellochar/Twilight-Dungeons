@@ -9,7 +9,7 @@ public class GameModel {
   public Player player;
   public Floor[] floors;
   public int activeFloorIndex = 0;
-  public int time;
+  public float time;
   private TurnManager _turnManager;
   public TurnManager turnManager {
     get {
@@ -91,7 +91,6 @@ public class GameModel {
     }
     oldFloor.RemoveActor(player);
     player.pos = newPlayerPosition;
-    // Add player. Important to do this before CatchUpStep because actors may move over player position
     newFloor.AddActor(player);
 
     player.floor.CatchUpStep(this.time);
@@ -119,45 +118,17 @@ public class TurnManager {
   public event Action OnPlayersChoice;
   public TurnManager(GameModel model) {
     this.model = model;
-    // AddFloor(model.currentFloor);
-    // AddActor(model.player);
   }
-
-  // public override string ToString() {
-  //   return String.Join(", ", queue.Select(a => {
-  //     float shiftedPriority = queue.GetPriority(a);
-  //     return $"{shiftedPriority} - {a}";
-  //   }));
-  // }
-
-  // public void AddActor(Actor actor) {
-  //   if (queue.Contains(actor)) {
-  //     queue.Remove(actor);
-  //   }
-  //   float shiftedSchedule = actor.timeNextAction + actor.queueOrderOffset;
-  //   queue.Enqueue(actor, shiftedSchedule);
-  // }
-
-  // public void RemoveActor(Actor actor) {
-  //   queue.Remove(actor);
-  // }
-
-  // public void AddFloor(Floor floor) {
-  //   foreach (Actor a in floor.Actors()) {
-  //     AddActor(a);
-  //   }
-  // }
-
-  // public void RemoveFloor(Floor floor) {
-  //   foreach (Actor a in floor.Actors()) {
-  //     RemoveActor(a);
-  //   }
-  // }
 
   /// The actor whose turn it is
   private Actor FindActiveActor() {
     var allActorsInPlay = model.GetAllActorsInPlay();
-    return allActorsInPlay.Aggregate((a1, a2) => a1.timeNextAction < a2.timeNextAction ? a1 : a2);
+    return allActorsInPlay.Aggregate((a1, a2) => {
+      if (a1.timeNextAction == a2.timeNextAction) {
+        return a1.turnPriority < a2.turnPriority ? a1 : a2;
+      }
+      return a1.timeNextAction < a2.timeNextAction ? a1 : a2;
+    });
   }
 
   internal IEnumerator<object> StepUntilPlayersChoice(Action onEnd) {
@@ -167,7 +138,7 @@ public class TurnManager {
     model.DrainEventQueue();
     bool isFirstIteration = true;
     do {
-      Actor actor = FindActiveActor(); //queue.Dequeue();
+      Actor actor = FindActiveActor();
       if (actor == model.player && model.player.action == null) {
         break;
       }
@@ -187,14 +158,8 @@ public class TurnManager {
         model.time = actor.timeNextAction;
       }
 
-      // if (actor == model.player) {
-      //   await model.player.WaitUntilActionIsDecided();
-      // }
-
-      // move forward
       actor.Step();
 
-      // drain events
       model.DrainEventQueue();
       isFirstIteration = false;
     } while (true);

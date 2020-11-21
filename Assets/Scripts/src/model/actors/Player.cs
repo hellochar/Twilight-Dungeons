@@ -11,7 +11,7 @@ public class Player : Actor {
   /// 1000 is max fullness
   public int fullness = MAX_FULLNESS;
 
-  internal override float queueOrderOffset => 0f;
+  internal override float turnPriority => 10;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
@@ -24,8 +24,8 @@ public class Player : Actor {
     OnStepped += HandleStepped;
   }
 
-  void HandleStepped(ActorAction action, int timeCost) {
-    fullness = Math.Max(fullness - timeCost, 0);
+  void HandleStepped(ActorAction action, float timeCost) {
+    fullness = Math.Max(fullness--, 0);
     // you are now starving
     if (fullness <= 0) {
       this.TakeDamage(1, this);

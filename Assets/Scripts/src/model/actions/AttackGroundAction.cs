@@ -10,7 +10,7 @@ public class AttackGroundAction : ActorAction {
   public Vector2Int TargetPosition { get; }
   public int TurnsTelegraphed { get; set; }
 
-  public override int Perform() {
+  public override float Perform() {
     TurnsTelegraphed--;
     if (TurnsTelegraphed >= 0) {
       return actor.baseActionCost;

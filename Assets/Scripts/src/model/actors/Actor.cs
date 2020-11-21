@@ -17,12 +17,16 @@ public class Actor : Entity {
   }
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
-  public int baseActionCost => 1;
-  public int timeCreated { get; }
+  public virtual float baseActionCost => 1;
+  public float timeCreated { get; }
   /// how many turns this Entity has been alive for
-  /// this has a bug with CatchUpStep - age will jump
-  public int age => GameModel.main.time - timeCreated;
-  public int timeNextAction;
+  public float age => GameModel.main.time - timeCreated;
+  private float _timeNextAction;
+  public float timeNextAction {
+    get => _timeNextAction;
+    // force at most 2 decimal places so that queueOffset never "bleeds through"
+    set => _timeNextAction = (float) Math.Round(value, 2);
+  }
   public virtual ActorAction action {
     get => actionQueue.FirstOrDefault();
     set => SetActions(value);
@@ -35,12 +39,11 @@ public class Actor : Entity {
   public Tile currentTile => floor.tiles[pos.x, pos.y];
   public bool visible => currentTile.visiblity == TileVisiblity.Visible;
 
-  /// This number allows tweaking of Actor order when they would otherwise be scheduled
-  /// at the same time. This offset gets added to the timeNextAction, so higher numbers
-  /// will come after lower numbers. This does *NOT* actually modify "time" which the
-  /// actor takes the action. Player has offset 0 (aka always goes first). This number should
-  /// be < 1.
-  internal virtual float queueOrderOffset { get => 0.5f; }
+  /// Determines Actor order when multiple have the same timeNextAction.
+  /// Lower numbers go first.
+  /// Player has offset 10 (usually goes first).
+  /// Generally ranges in [0, 100].
+  internal virtual float turnPriority => 50;
   public Faction faction = Faction.Neutral;
   public event Action<int, int, Actor> OnTakeDamage;
   public event Action<int, int> OnHeal;
@@ -48,7 +51,7 @@ public class Actor : Entity {
   public event Action<int, Actor> OnAttack;
   /// gets called on any ground targeted attack
   public event Action<Vector2Int, Actor> OnAttackGround;
-  public event Action<ActorAction, int> OnStepped;
+  public event Action<ActorAction, float> OnStepped;
   public event Action OnPreStep;
 
   public Actor(Vector2Int pos) {
@@ -123,7 +126,7 @@ public class Actor : Entity {
     RemoveDoneActions();
     OnPreStep?.Invoke();
     ActorAction currentAction = this.action;
-    int timeCost;
+    float timeCost;
     if (currentAction == null) {
       timeCost = baseActionCost;
     } else {
@@ -151,7 +154,7 @@ public class Actor : Entity {
     return Math.Abs(pos.x - other.x) <= 1 && Math.Abs(pos.y - other.y) <= 1;
   }
 
-  public void CatchUpStep(int newTime) {
+  public void CatchUpStep(float newTime) {
     // by default actors don't do anything; they just act as if they were paused
     this.timeNextAction = Mathf.Max(this.timeNextAction, newTime);
   }

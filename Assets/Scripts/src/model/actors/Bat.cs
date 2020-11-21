@@ -13,7 +13,9 @@ public class AIActor : Actor {
 
   void HandlePreStep() {
     if (action == null) {
-      ai.MoveNext();
+      do {
+        ai.MoveNext();
+      } while (ai.Current.IsDone());
       SetActions(ai.Current);
     }
   }
@@ -22,22 +24,38 @@ public class AIActor : Actor {
 public class Bat : AIActor {
   public Bat(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    ai = ActionGenerator().GetEnumerator();
+    ai = AIs.BatAI(this).GetEnumerator();
   }
+}
 
-  private IEnumerable<ActorAction> ActionGenerator() {
+// run fast
+public class Jackal : AIActor {
+  public Jackal(Vector2Int pos) : base(pos) {
+    faction = Faction.Enemy;
+    ai = AIs.JackalAI(this).GetEnumerator();
+  }
+}
+
+public static class AIs {
+  public static IEnumerable<ActorAction> BatAI(Actor actor) {
     while (true) {
-      bool canSeePlayer = currentTile.visiblity == TileVisiblity.Visible;
+      bool canSeePlayer = actor.currentTile.visiblity == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision
       if (canSeePlayer) {
-        if (IsNextTo(GameModel.main.player)) {
-          yield return new AttackGroundAction(this, GameModel.main.player.pos, 1);
+        if (actor.IsNextTo(GameModel.main.player)) {
+          yield return new AttackGroundAction(actor, GameModel.main.player.pos, 1);
         } else {
-          yield return new ChaseTargetAction(this, GameModel.main.player);
+          yield return new ChaseTargetAction(actor, GameModel.main.player);
         }
       } else {
-        yield return new MoveRandomlyAction(this);
+        yield return new MoveRandomlyAction(actor);
       }
+    }
+  }
+
+  public static IEnumerable<ActorAction> JackalAI(Actor actor) {
+    while (true) {
+
     }
   }
 }

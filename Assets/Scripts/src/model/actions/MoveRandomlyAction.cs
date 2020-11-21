@@ -3,7 +3,7 @@ using UnityEngine;
 class MoveRandomlyAction : ActorAction {
   public MoveRandomlyAction(Actor actor) : base(actor) { }
 
-  public override int Perform() {
+  public override float Perform() {
     Vector2Int dir = (new Vector2Int[] {
       Vector2Int.up,
       Vector2Int.down,

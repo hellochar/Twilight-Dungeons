@@ -160,6 +160,11 @@ public class TurnManager {
 
       actor.Step();
 
+      if (!isFirstIteration) {
+        // stagger actors just a bit for juice
+        yield return new WaitForSeconds(.016f);
+      }
+
       model.DrainEventQueue();
       isFirstIteration = false;
     } while (true);

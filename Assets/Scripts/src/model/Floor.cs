@@ -56,6 +56,16 @@ public class Floor {
     return this.actors.FirstOrDefault(a => a.pos == pos);
   }
 
+  internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
+    var actors = new List<Actor>();
+    ForEachLocationCircle((pos) => {
+      if (tiles[pos] != null && tiles[pos].occupant != null) {
+        actors.Add(tiles[pos].occupant);
+      }
+    }, center, radius);
+    return actors;
+  }
+
   public void AddActor(Actor actor) {
     if (!tiles[actor.pos.x, actor.pos.y].CanBeOccupied()) {
       Debug.LogWarning("Adding " + actor + " over a tile that cannot be occupied!");
@@ -175,7 +185,7 @@ public class Floor {
     return isVisible;
   }
 
-  private List<Tile> GetNeighborhoodTiles(Vector2Int pos) {
+  public List<Tile> GetNeighborhoodTiles(Vector2Int pos) {
     List<Tile> list = new List<Tile>();
     int xMin = Mathf.Clamp(pos.x - 1, 0, width - 1);
     int xMax = Mathf.Clamp(pos.x + 1, 0, width - 1);
@@ -255,10 +265,9 @@ public class TileStore : IEnumerable<Tile> {
   private Tile[, ] tiles;
   public Tile this[int x, int y] {
     get => tiles[x, y];
-    // set {
-    //   tiles[x, y] = value;
-    //   value.floor = floor;
-    // }
+  }
+  public Tile this[Vector2Int vector] {
+    get => this[vector.x, vector.y];
   }
   public int width => tiles.GetLength(0);
   public int height => tiles.GetLength(1);

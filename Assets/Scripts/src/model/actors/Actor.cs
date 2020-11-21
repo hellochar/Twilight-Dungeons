@@ -10,6 +10,7 @@ public class Actor : Entity {
       {typeof(ActorAction), 1}
     }
   );
+  public bool IsDead { get; private set; }
 
   public Guid guid { get; }
   private Vector2Int _pos;
@@ -57,6 +58,7 @@ public class Actor : Entity {
   public event Action<Vector2Int, Actor> OnAttackGround;
   public event Action<ActorAction, float> OnStepped;
   public event Action OnPreStep;
+  public event Action OnDeath;
 
   public Actor(Vector2Int pos) {
     hp = 8;
@@ -111,6 +113,8 @@ public class Actor : Entity {
 
   public void Kill() {
     /// TODO remove references to this Actor if needed
+    IsDead = true;
+    OnDeath?.Invoke();
     hp = Math.Max(hp, 0);
     floor.RemoveActor(this);
   }

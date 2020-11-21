@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchAttackGroundAction : MonoBehaviour {
-  public Actor actor;
-  public AttackGroundAction action;
+public class MatchAttackGroundAction : MatchActorAction<AttackGroundAction> {
 
-  void Start() {
-    actor = GetComponentInParent<MatchActorState>().actor;
-    action = (AttackGroundAction) actor.action;
-
+  public override void Start() {
+    base.Start();
     var straight = transform.Find("Connector Straight").gameObject;
     var diagonal = transform.Find("Connector Diagonal").gameObject;
 
@@ -24,14 +20,10 @@ public class MatchAttackGroundAction : MonoBehaviour {
       var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
       straight.transform.rotation = Quaternion.Euler(0, 0, rotZ);
     }
-    Update();
   }
 
-  void Update() {
-    if (actor.action != action) {
-      Destroy(this.gameObject);
-      return;
-    }
+  public override void Update() {
+    base.Update();
     Transform reticle = transform.Find("Reticle");
     reticle.position = Util.withZ(action.TargetPosition, reticle.position.z);
   }

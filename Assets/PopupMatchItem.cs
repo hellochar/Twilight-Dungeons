@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,16 +28,20 @@ public class PopupMatchItem : MonoBehaviour {
 
     Player player = GameModel.main.player;
     List<ActorAction> actions = item.GetAvailableActions(player);
-    // put more fundamental actions later
-    actions.Reverse();
-    foreach (var action in actions) {
-      var actionButton = Instantiate(itemActionButtonPrefab, new Vector3(), Quaternion.identity, actionsContainer.transform);
-      actionButton.GetComponentInChildren<TMPro.TMP_Text>().text = action.displayName;
-      actionButton.GetComponent<Button>().onClick.AddListener(() => {
-        player.action = action;
-        Close();
-        CloseInventory();
-      });
+    if (actions.Any()) {
+      // put more fundamental actions later
+      actions.Reverse();
+      foreach (var action in actions) {
+        var actionButton = Instantiate(itemActionButtonPrefab, new Vector3(), Quaternion.identity, actionsContainer.transform);
+        actionButton.GetComponentInChildren<TMPro.TMP_Text>().text = action.displayName;
+        actionButton.GetComponent<Button>().onClick.AddListener(() => {
+          player.action = action;
+          Close();
+          CloseInventory();
+        });
+      }
+    } else {
+      actionsContainer.SetActive(false);
     }
 
     Instantiate(spriteBase, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
@@ -48,7 +53,15 @@ public class PopupMatchItem : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    stats.text = item.GetStats();
+    var text = item.GetStats();
+    if (item is IDurable d) {
+      text += $"\nDurability: {d.durability}/{d.maxDurability}.";
+    }
+    if (item is IWeapon w) {
+      var (min, max) = w.AttackSpread;
+      text += $"\n{min} - {max} damage.";
+    }
+    stats.text = text.Trim();
     // if it's been removed
     if (item.inventory == null) {
       Debug.LogWarning("Item Details popup is being run on an item that's been removed from the inventory!");

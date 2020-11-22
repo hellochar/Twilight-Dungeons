@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class Player : Actor {
   public static readonly int MAX_FULLNESS = 1000;
+  internal readonly Item Hands;
+
   public Inventory inventory { get; }
   public Equipment equipment { get; }
   /// 1000 is max fullness
@@ -20,6 +22,7 @@ public class Player : Actor {
     inventory.AddItem(new ItemBerries(3));
     inventory.AddItem(new ItemSeed());
     equipment = new Equipment(this);
+    Hands = new ItemHands(this);
     hp = hpMax = 12;
     OnStepped += HandleStepped;
   }
@@ -63,5 +66,16 @@ public class Player : Actor {
       }
     }
     return damage;
+  }
+
+  internal override int GetAttackDamage() {
+    var item = equipment[EquipmentSlot.Weapon];
+    if (item is IWeapon w) {
+      var (min, max) = w.AttackSpread;
+      return UnityEngine.Random.Range(min, max + 1);
+    } else {
+      Debug.Log("Attacking with a non-weapon in the weapon slot: " + item);
+      return 1;
+    }
   }
 }

@@ -13,4 +13,8 @@ public class Bat : AIActor {
   private void HandleAttack(int dmg, Actor target) {
     Heal(1);
   }
+
+  internal override int GetAttackDamage() {
+    return UnityEngine.Random.Range(1, 3);
+  }
 }

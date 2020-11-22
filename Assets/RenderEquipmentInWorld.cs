@@ -18,8 +18,11 @@ public class RenderEquipmentInWorld : MatchEquipmentSlotState {
   /// TODO this is copy/pasted of part of MatchItemSlotState. Eventually 
   /// refactor this logic into its own location (move image/shadow out to a separate level)
   protected override void UpdateInUse(Item item) {
-    itemChild = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
-    itemChild.transform.localPosition = new Vector3(0, 0, 0);
-    itemChild.GetComponent<SpriteRenderer>().sprite = ItemInfo.GetSpriteForItem(item);
+    var showOnPlayer = ItemInfo.InfoFor(item).showOnPlayer;
+    if (showOnPlayer) {
+      itemChild = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
+      itemChild.transform.localPosition = new Vector3(0, 0, 0);
+      itemChild.GetComponent<SpriteRenderer>().sprite = ItemInfo.GetSpriteForItem(item);
+    }
   }
 }

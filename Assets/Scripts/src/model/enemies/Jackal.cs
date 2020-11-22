@@ -24,4 +24,8 @@ public class Jackal : AIActor {
       jackal.SetActions(new RunAwayAction(jackal, pos, 6));
     }
   }
+
+  internal override int GetAttackDamage() {
+    return UnityEngine.Random.Range(1, 3);
+  }
 }

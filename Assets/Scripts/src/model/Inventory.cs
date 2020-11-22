@@ -12,7 +12,7 @@ public class Inventory : IEnumerable<Item> {
   private Item[] items;
   public Player Player { get; }
   public int capacity => items.Length;
-  public Item this[int i] => items[i];
+  public virtual Item this[int i] => items[i];
 
   internal virtual bool AddItem(Item item, int? slotArg = null) {
     if (slotArg == null && item is IStackable stackable) {

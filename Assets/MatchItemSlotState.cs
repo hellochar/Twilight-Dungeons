@@ -20,6 +20,7 @@ public abstract class MatchItemSlotState : MonoBehaviour {
   }
 
   public virtual void Update() {
+    /// TODO this won't update properly if the item is swapped
     if (item == null && itemChild != null) {
       UpdateUnused();
     } else if (item != null && itemChild == null) {

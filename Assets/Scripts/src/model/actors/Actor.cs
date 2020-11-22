@@ -84,9 +84,15 @@ public class Actor : Entity {
   }
 
   internal void Attack(Actor target) {
-    int damage = UnityEngine.Random.Range(1, 3);
+    int damage = GetAttackDamage();
     OnAttack?.Invoke(damage, target);
     target.TakeDamage(damage, this);
+  }
+
+  /// get one instance of an attack damage from this Actor
+  internal virtual int GetAttackDamage() {
+    Debug.LogWarning(this + " using base GetAttackDamage");
+    return UnityEngine.Random.Range(1, 3);
   }
 
   internal void AttackGround(Vector2Int targetPosition) {

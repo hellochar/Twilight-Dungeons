@@ -7,4 +7,8 @@ public class Blob : AIActor {
     faction = Faction.Enemy;
     ai = AIs.BlobAI(this).GetEnumerator();
   }
+
+  internal override int GetAttackDamage() {
+    return UnityEngine.Random.Range(2, 4);
+  }
 }

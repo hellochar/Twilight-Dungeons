@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct ItemInfo {
+public class ItemInfo {
   private static ItemInfo DEFAULT = new ItemInfo {
     spriteName = "colored_transparent_packed_1046",
     flavorText = "Missing Item info!"
@@ -21,6 +21,11 @@ public struct ItemInfo {
       spriteName = "roguelikeSheet_transparent_532",
       flavorText = "But where shall I be,\nWhen this little Seed is a tall green Tree?"
     },
+    [typeof(ItemHands)] = new ItemInfo {
+      showOnPlayer = false,
+      spriteName = "colored_transparent_packed_40",
+      flavorText = "Years of botany leave you with calloused, work-ready hands."
+    }
   };
   public static ItemInfo InfoFor(Item item) {
     return Infos.ContainsKey(item.GetType()) ? Infos[item.GetType()] : DEFAULT;
@@ -34,6 +39,7 @@ public struct ItemInfo {
     return Infos[item.GetType()].flavorText;
   }
 
+  public bool showOnPlayer = true;
   public string spriteName;
   public string flavorText;
   private Sprite _sprite;

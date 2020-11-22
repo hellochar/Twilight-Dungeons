@@ -7,7 +7,7 @@ public class Item {
   /// get rid of the "Item" prefix
     Util.WithSpaces(GetType().Name.Substring(4));
 
-  public Inventory inventory;
+  public virtual Inventory inventory { get; set; }
   /// remove this item from the inventory
   public void Destroy(Actor a) {
     if (inventory != null) {
@@ -15,7 +15,7 @@ public class Item {
     }
   }
 
-  internal virtual string GetStats() => "No stats.";
+  internal virtual string GetStats() => "";
 
   public virtual List<ActorAction> GetAvailableActions(Player player) {
     return new List<ActorAction> {
@@ -98,6 +98,10 @@ public interface IDurable {
   int maxDurability { get; }
 }
 
+public interface IWeapon {
+  (int, int) AttackSpread { get; }
+}
+
 public class ItemBarkShield : Item, IEquippable, IDurable, IDamageModifier {
   public EquipmentSlot slot => EquipmentSlot.Shield;
 
@@ -139,7 +143,7 @@ public class ItemBarkShield : Item, IEquippable, IDurable, IDamageModifier {
     return actions;
   }
 
-  internal override string GetStats() => $"Blocks 2 Damage per hit.\nDurability: {durability}/{maxDurability}.";
+  internal override string GetStats() => "Blocks 2 Damage per hit.";
 }
 
 public class ItemSeed : Item {
@@ -147,6 +151,28 @@ public class ItemSeed : Item {
     /// consume this item somehow
     soil.floor.AddActor(new BerryBush(soil.pos));
     Destroy(null);
+  }
+}
+
+public class ItemHands : Item, IEquippable, IWeapon {
+  private Player player;
+
+  public ItemHands(Player player) {
+    this.player = player;
+  }
+
+  public override Inventory inventory {
+    get => player.equipment;
+    // no op. 
+    set {}
+  }
+
+  public EquipmentSlot slot => EquipmentSlot.Weapon;
+
+  public (int, int) AttackSpread => (1, 2);
+
+  public override List<ActorAction> GetAvailableActions(Player player) {
+    return new List<ActorAction>();
   }
 }
 
@@ -162,6 +188,16 @@ public enum EquipmentSlot {
 /// items, namely, IEquippable's, can be AddItem()-ed. 
 public class Equipment : Inventory {
   public Equipment(Player player) : base(player, 5) {
+  }
+
+  public override Item this[int i] {
+    get {
+      // handle the weapon slot specially - if 
+      if (i == (int) EquipmentSlot.Weapon) {
+        return base[i] ?? Player.Hands;
+      }
+      return base[i];
+    }
   }
 
   public Item this[EquipmentSlot e] => this[(int) e];

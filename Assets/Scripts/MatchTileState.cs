@@ -24,7 +24,8 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
       case TileVisiblity.Unexplored:
         foreach (var renderer in renderers) {
           renderer.enabled = false;
-          renderer.color = Color.black;
+          unexploredMask.a = renderer.color.a;
+          renderer.color = unexploredMask;
         }
         if (mask != null) {
           mask.enabled = false;
@@ -38,7 +39,8 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
         }
         foreach (var renderer in renderers) {
           renderer.enabled = true;
-          renderer.color = Color.Lerp(renderer.color, Color.white, 0.2f);
+          visibleMask.a = renderer.color.a;
+          renderer.color = Color.Lerp(renderer.color, visibleMask, 0.2f);
         }
         break;
       case TileVisiblity.Explored:
@@ -49,6 +51,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
         }
         foreach (var renderer in renderers) {
           renderer.enabled = true;
+          exploredMask.a = renderer.color.a;
           renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
         }
         break;
@@ -59,5 +62,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
     GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
   }
 
-  private static Color exploredMask = new Color(1, 1, 1, 0.3f);
+  private static Color unexploredMask = new Color(0, 0, 0);
+  private static Color exploredMask = new Color(0.3f, 0.3f, 0.3f);
+  private static Color visibleMask = new Color(1, 1, 1);
 }

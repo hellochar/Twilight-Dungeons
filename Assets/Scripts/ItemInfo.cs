@@ -23,7 +23,7 @@ public class ItemInfo {
     },
     [typeof(ItemHands)] = new ItemInfo {
       showOnPlayer = false,
-      spriteName = "colored_transparent_packed_40",
+      spriteName = "Hands",
       flavorText = "Years of botany leave you with calloused, work-ready hands."
     }
   };

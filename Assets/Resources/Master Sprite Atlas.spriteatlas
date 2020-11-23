@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 112536377
+    totalSpriteSurfaceArea: 112536889
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -1801,6 +1801,7 @@ SpriteAtlas:
   - {fileID: -398975762361691103, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 6074143898205005808, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 2398009223125789384, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
+  - {fileID: 21300000, guid: 684dd2d49b97ae3419bbaee4cf6b1856, type: 3}
   - {fileID: 21300000, guid: 6ffafbe415926c54c97d5aa43c875e5f, type: 3}
   - {fileID: 21300000, guid: 84f3dce4ce4b8074c8bd5cd3e164ec2c, type: 3}
   - {fileID: 21300000, guid: 781cacf45650eee47b21cf9f6aed98bc, type: 3}
@@ -2185,6 +2186,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0a9b4cc61a4bd9342bcda456c93c7dc0, type: 3}
   - {fileID: 21300000, guid: 8f31b8d6e13b2d545a95481918d68abe, type: 3}
   - {fileID: 21300000, guid: 2dc79de697444004394be436c3a75d16, type: 3}
+  - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
   - {fileID: -8003984343227876427, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
   - {fileID: 1396870407149786483, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
   - {fileID: 8130288210367746631, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
@@ -9695,6 +9697,7 @@ SpriteAtlas:
   - pixel-line-diagonal
   - pixel-line-horizontal-dotted
   - pixel-line-horizontal
+  - Hands
   - sprite_0098
   - RoseRed
   - sprite_0022
@@ -10079,6 +10082,7 @@ SpriteAtlas:
   - sprite_0048
   - colored_packed
   - sprite_0038
+  - Player
   - UI_Elements02_19
   - UI_Elements02_18
   - UI_Elements02_78

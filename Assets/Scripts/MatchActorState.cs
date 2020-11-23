@@ -61,6 +61,11 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     GameObject damageTextPrefab = Resources.Load<GameObject>("UI/Damage Text");
     GameObject damageText = Instantiate(damageTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
     damageText.GetComponentInChildren<TMPro.TMP_Text>().text = $"-{damage}";
+
+    if(damage > 0) {
+      GameObject damagedSpritePrefab = Resources.Load<GameObject>("UI/Damaged Sprite");
+      Instantiate(damagedSpritePrefab, Util.withZ(actor.pos), Quaternion.identity);
+    }
   }
 
   void HandleHeal(int amount, int newHp) {

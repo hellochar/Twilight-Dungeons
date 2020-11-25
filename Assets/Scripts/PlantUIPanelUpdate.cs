@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 
 public class PlantUIPanelUpdate : MonoBehaviour {
-  private BerryBush plant;
+  private Plant plant;
   private TMP_Text uiName;
   private TMP_Text uiInfo;
   void Start() {
@@ -15,6 +15,6 @@ public class PlantUIPanelUpdate : MonoBehaviour {
 
   void Update() {
     uiName.text = plant.displayName;
-    uiInfo.text = plant.currentStage.getUIText();
+    uiInfo.text = plant.stage.getUIText();
   }
 }

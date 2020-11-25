@@ -54,12 +54,12 @@ public class PopupMatchItem : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     var text = item.GetStats();
-    if (item is IDurable d) {
-      text += $"\nDurability: {d.durability}/{d.maxDurability}.";
-    }
     if (item is IWeapon w) {
       var (min, max) = w.AttackSpread;
       text += $"\n{min} - {max} damage.";
+    }
+    if (item is IDurable d) {
+      text += $"\nDurability: {d.durability}/{d.maxDurability}.";
     }
     stats.text = text.Trim();
     // if it's been removed

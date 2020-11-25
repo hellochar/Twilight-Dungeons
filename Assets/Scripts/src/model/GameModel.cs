@@ -105,7 +105,7 @@ public class GameModel {
       if (f == currentFloor) {
         enumerable = enumerable.Concat(f.Actors());
       } else {
-        enumerable = enumerable.Concat(f.Actors().Where((a) => a is BerryBush));
+        enumerable = enumerable.Concat(f.Actors().Where((a) => a is Plant));
       }
     }
     return enumerable;

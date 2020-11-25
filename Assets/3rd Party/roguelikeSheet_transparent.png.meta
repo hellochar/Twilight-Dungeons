@@ -1867,7 +1867,7 @@ TextureImporter:
     second: roguelikeSheet_transparent_620
   - first:
       213: -5380556929042734470
-    second: roguelikeSheet_transparent_621
+    second: wildwood
   - first:
       213: -4255780223614810826
     second: roguelikeSheet_transparent_622
@@ -17118,27 +17118,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_567
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 320
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 37ef81d6453e3ef50800000000000000
-      internalID: 6909616205063585395
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: roguelikeSheet_transparent_568
       rect:
         serializedVersion: 2
@@ -18252,15 +18231,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_621
+      name: wildwood
       rect:
         serializedVersion: 2
         x: 240
         y: 304
         width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 32
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

@@ -23,8 +23,14 @@ public abstract class MatchItemSlotState : MonoBehaviour {
     /// TODO this won't update properly if the item is swapped
     if (item == null && itemChild != null) {
       UpdateUnused();
-    } else if (item != null && itemChild == null) {
-      UpdateInUse(item);
+    } else if (item != null) {
+      if (itemChild == null) {
+        UpdateInUse(item);
+      } else if (itemChild.GetComponent<MatchItemState>().item != item) {
+        // if the item has been swapped
+        UpdateUnused();
+        UpdateInUse(item);
+      }
     }
   }
 

@@ -20,11 +20,14 @@ public class Player : Actor {
     inventory = new Inventory(this, 12);
     inventory.AddItem(new ItemBarkShield());
     inventory.AddItem(new ItemBerries(3));
-    inventory.AddItem(new ItemSeed());
+    inventory.AddItem(new ItemSeed(typeof(BerryBush)));
+    inventory.AddItem(new ItemSeed(typeof(Wildwood)));
+    inventory.AddItem(new ItemStick());
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
     hp = hpMax = 12;
     OnStepped += HandleStepped;
+    OnAttack += HandleAttack;
   }
 
   void HandleStepped(ActorAction action, float timeCost) {
@@ -32,6 +35,13 @@ public class Player : Actor {
     // you are now starving
     if (fullness <= 0) {
       this.TakeDamage(1, this);
+    }
+  }
+
+  void HandleAttack(int damage, Actor target) {
+    var item = equipment[EquipmentSlot.Weapon];
+    if (item is IDurable durable) {
+      Durables.ReduceDurability(durable);
     }
   }
 

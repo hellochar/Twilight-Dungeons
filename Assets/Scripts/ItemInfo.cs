@@ -25,6 +25,10 @@ public class ItemInfo {
       showOnPlayer = false,
       spriteName = "Hands",
       flavorText = "Years of botany leave you with calloused, work-ready hands."
+    },
+    [typeof(ItemStick)] = new ItemInfo {
+      spriteName = "Stick",
+      flavorText = "Stiff but brittle, this won't last long."
     }
   };
   public static ItemInfo InfoFor(Item item) {
@@ -36,7 +40,7 @@ public class ItemInfo {
   }
 
   public static string GetFlavorTextForItem(Item item) {
-    return Infos[item.GetType()].flavorText;
+    return InfoFor(item).flavorText;
   }
 
   public bool showOnPlayer = true;

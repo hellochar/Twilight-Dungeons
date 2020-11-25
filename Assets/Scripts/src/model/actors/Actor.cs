@@ -83,6 +83,7 @@ public class Actor : Entity {
     OnHeal?.Invoke(amount, hp);
   }
 
+  /// create an Attack and execute it
   internal void Attack(Actor target) {
     int damage = GetAttackDamage();
     OnAttack?.Invoke(damage, target);
@@ -200,3 +201,29 @@ public class Actor : Entity {
 }
 
 public enum Faction { Ally, Neutral, Enemy }
+
+// /// First we create an attack "instance", and
+// /// fill it up with info.
+// /// Then we "execute" the attack
+// public class AttackInstance {
+//   public AttackInstance(Actor source, Actor target) {
+//     this.source = source;
+//     this.target = target;
+//   }
+
+//   public Actor source { get; }
+//   // source's weapon
+//   public Item weapon { get; set; }
+//   public Actor target { get; }
+//   // target's armor
+//   public Item armor { get; set; }
+
+//   void Execute() {
+//     int damage = source.GetAttackDamage();
+//     if (damage < 0) {
+//       Debug.LogWarning("Cannot take negative damage!");
+//       return;
+//     }
+//     target.TakeDamage(damage, source);
+//   }
+// }

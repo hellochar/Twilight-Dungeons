@@ -7,31 +7,34 @@ using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
 public class MatchPlantState : MatchActorState, IPointerClickHandler {
-  public BerryBush plant => (BerryBush)actor;
+  public Plant plant => (Plant) actor;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
   private GameObject uiChild;
   private bool popupOpen = false;
-  private float originalCameraOrthographicSize { get; set; }
 
   // Start is called before the first frame update
   public override void Start() {
-    originalCameraOrthographicSize = Camera.main.orthographicSize;
     base.Start();
     uiChild = transform.Find("Canvas").gameObject;
     uiChild.SetActive(false);
-    foreach (Transform t in GetComponentInChildren<Transform>(true)) {
-      plantStageObjects.Add(t.gameObject.name, t.gameObject);
+    foreach (Transform t in transform) {
+      // don't include the built-in canvas
+      if (t.GetComponent<Canvas>() == null) {
+        plantStageObjects.Add(t.gameObject.name, t.gameObject);
+        t.gameObject.SetActive(false);
+        t.localPosition = new Vector3(0, 0, t.localPosition.z);
+      }
     }
-    activePlantStageObject = plantStageObjects[plant.currentStage.name];
+    activePlantStageObject = plantStageObjects[plant.stage.name];
     activePlantStageObject.SetActive(true);
   }
 
   public override void Update() {
     base.Update();
-    if (activePlantStageObject.name != plant.currentStage.name) {
+    if (activePlantStageObject.name != plant.stage.name) {
       activePlantStageObject.SetActive(false);
-      activePlantStageObject = plantStageObjects[plant.currentStage.name];
+      activePlantStageObject = plantStageObjects[plant.stage.name];
       activePlantStageObject.SetActive(true);
     }
     UpdatePopup();
@@ -68,8 +71,6 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
   }
 
   void UpdatePopup() {
-    // float targetOrthographicSize = popupOpen ? originalCameraOrthographicSize * 0.5f : originalCameraOrthographicSize;
-    // Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetOrthographicSize, 2f * Time.deltaTime);
     uiChild.SetActive(popupOpen);
   }
 

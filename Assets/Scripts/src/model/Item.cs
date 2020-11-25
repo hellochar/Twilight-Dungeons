@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class Item {
   public virtual string displayName =>
@@ -21,6 +22,28 @@ public class Item {
     return new List<ActorAction> {
       new GenericAction(player, Destroy)
     };
+  }
+}
+
+public abstract class EquippableItem : Item {
+  public abstract EquipmentSlot slot { get; }
+
+  public void Equip(Actor a) {
+    ((Player)a).equipment.AddItem(this);
+  }
+
+  public void Unequip(Actor a) {
+    ((Player)a).inventory.AddItem(this);
+  }
+
+  public override List<ActorAction> GetAvailableActions(Player actor) {
+    var actions = base.GetAvailableActions(actor);
+    if (actor.inventory.HasItem(this)) {
+      actions.Add(new GenericAction(actor, Equip));
+    } else if (actor.equipment.HasItem(this)) {
+      actions.Add(new GenericAction(actor, Unequip));
+    }
+    return actions;
   }
 }
 
@@ -89,8 +112,17 @@ class ItemBerries : Item, IStackable {
   internal override string GetStats() => "Heals 3 HP.\nRecover 5% hunger.";
 }
 
-public interface IEquippable {
-  EquipmentSlot slot { get; }
+class ItemStick : EquippableItem, IDurable, IWeapon {
+  public override EquipmentSlot slot => EquipmentSlot.Weapon;
+  public int durability { get; set; }
+
+  public int maxDurability => 3;
+
+  public (int, int) AttackSpread => (2, 4);
+
+  public ItemStick() {
+    this.durability = maxDurability;
+  }
 }
 
 public interface IDurable {
@@ -98,12 +130,21 @@ public interface IDurable {
   int maxDurability { get; }
 }
 
+public static class Durables {
+  public static void ReduceDurability(IDurable durable) {
+    durable.durability--;
+    if (durable.durability <= 0 && durable is Item i) {
+      i.Destroy(null);
+    }
+  }
+}
+
 public interface IWeapon {
   (int, int) AttackSpread { get; }
 }
 
-public class ItemBarkShield : Item, IEquippable, IDurable, IDamageModifier {
-  public EquipmentSlot slot => EquipmentSlot.Shield;
+public class ItemBarkShield : EquippableItem, IDurable, IDamageModifier {
+  public override EquipmentSlot slot => EquipmentSlot.Shield;
 
   public int durability { get; set; }
   public int maxDurability { get; protected set; }
@@ -114,47 +155,34 @@ public class ItemBarkShield : Item, IEquippable, IDurable, IDamageModifier {
   }
 
   public int ModifyDamage(int damage) {
-    this.ReduceDurability();
+    Durables.ReduceDurability(this);
     return damage - 2;
   }
 
-  public void ReduceDurability() {
-    this.durability--;
-    if (durability <= 0) {
-      this.Destroy(null);
-    }
-  }
-
-  public void Equip(Actor a) {
-    ((Player)a).equipment.AddItem(this);
-  }
-
-  public void Unequip(Actor a) {
-    ((Player)a).inventory.AddItem(this);
-  }
-
-  public override List<ActorAction> GetAvailableActions(Player actor) {
-    var actions = base.GetAvailableActions(actor);
-    if (actor.inventory.HasItem(this)) {
-      actions.Add(new GenericAction(actor, Equip));
-    } else if (actor.equipment.HasItem(this)) {
-      actions.Add(new GenericAction(actor, Unequip));
-    }
-    return actions;
-  }
 
   internal override string GetStats() => "Blocks 2 Damage per hit.";
 }
 
 public class ItemSeed : Item {
+  public Type plantType;
+
+  public ItemSeed(Type plantType) {
+    this.plantType = plantType;
+  }
+
   public void Plant(Soil soil) {
     /// consume this item somehow
-    soil.floor.AddActor(new BerryBush(soil.pos));
+    var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
+    var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
+    soil.floor.AddActor(plant);
     Destroy(null);
   }
+
+  public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 }
 
-public class ItemHands : Item, IEquippable, IWeapon {
+public class ItemHands : EquippableItem, IWeapon {
+  public override EquipmentSlot slot => EquipmentSlot.Weapon;
   private Player player;
 
   public ItemHands(Player player) {
@@ -166,8 +194,6 @@ public class ItemHands : Item, IEquippable, IWeapon {
     // no op. 
     set {}
   }
-
-  public EquipmentSlot slot => EquipmentSlot.Weapon;
 
   public (int, int) AttackSpread => (1, 2);
 
@@ -203,7 +229,7 @@ public class Equipment : Inventory {
   public Item this[EquipmentSlot e] => this[(int) e];
 
   internal override bool AddItem(Item item, int? slotArg = null) {
-    if (item is IEquippable equippable) {
+    if (item is EquippableItem equippable) {
       var slot = (int) equippable.slot;
       return base.AddItem(item, slot);
     } else {

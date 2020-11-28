@@ -30,7 +30,7 @@ public class PlantStage {
 
 class Seed : PlantStage {
   public override void Step() {
-    if (this.age >= 5) {
+    if (this.age >= 500) {
       plant.stage = NextStage;
     }
   }
@@ -40,7 +40,7 @@ class Seed : PlantStage {
 
 class Young : PlantStage {
   public override void Step() {
-    if (this.age >= 5) {
+    if (this.age >= 500) {
       plant.stage = NextStage;
     }
   }
@@ -50,7 +50,7 @@ class Young : PlantStage {
 
 class Sapling : PlantStage {
   public override void Step() {
-    if (this.age >= 5) {
+    if (this.age >= 500) {
       plant.stage = NextStage;
     }
   }

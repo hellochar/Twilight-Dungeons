@@ -160,7 +160,7 @@ public class TurnManager {
 
       actor.Step();
 
-      if (!isFirstIteration) {
+      if (!isFirstIteration && actor.currentTile.visibility == TileVisiblity.Visible) {
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(.016f);
       }

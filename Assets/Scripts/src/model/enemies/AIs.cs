@@ -15,17 +15,23 @@ public static class AIs {
       return null;
     };
 
-    // first, go to a nearby corner
-    yield return new RunAwayAction(actor, actor.pos + Util.RandomAdjacentDirection(), 7);
     var roost = actor.pos;
-    bool isHungry = false;
+    bool isHungry = true;
     actor.OnAttack += (int dmg, Actor target) => {
       isHungry = false;
     };
+
+    yield return new SleepAction(actor);
     while (true) {
       if (!isHungry) {
         while (actor.pos != roost) {
-          yield return new MoveToTargetAction(actor, roost);
+          var moveToTarget = new MoveToTargetAction(actor, roost);
+          // this means there's no path forward right now
+          if (moveToTarget.IsDone()) {
+            yield return new WaitAction(actor, 1);
+          } else {
+            yield return moveToTarget;
+          }
         }
         yield return new WaitAction(actor, 7);
         isHungry = true;
@@ -63,8 +69,11 @@ public static class AIs {
     while (true) {
       bool canSeePlayer = actor.currentTile.visibility == TileVisiblity.Visible;
       if (canSeePlayer) {
-        yield return new ChaseTargetAction(actor, GameModel.main.player);
-        yield return new AttackAction(actor, GameModel.main.player);
+        if (actor.IsNextTo(GameModel.main.player)) {
+          yield return new AttackAction(actor, GameModel.main.player);
+        } else {
+          yield return new ChaseTargetAction(actor, GameModel.main.player);
+        }
       } else {
         yield return new MoveRandomlyAction(actor);
       }

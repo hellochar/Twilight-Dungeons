@@ -9,12 +9,21 @@ public class AIActor : Actor {
     OnPreStep += HandlePreStep;
   }
 
+  private static int MaxSkippedActions = 20;
+
   void HandlePreStep() {
     if (action == null) {
+      var i = 0;
       do {
         ai.MoveNext();
-      } while (ai.Current.IsDone());
-      SetActions(ai.Current);
+        i++;
+      } while (ai.Current.IsDone() && i < MaxSkippedActions);
+      if (i == MaxSkippedActions) {
+        Debug.LogWarning("" + this + " reached MaxSkippedActions!");
+        SetActions(new WaitAction(this, 1));
+      } else {
+        SetActions(ai.Current);
+      }
     }
   }
 }

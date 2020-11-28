@@ -7,7 +7,7 @@ using UnityEngine;
 public class Jackal : AIActor {
   public static new IDictionary<Type, float> ActionCosts = new ReadOnlyDictionary<Type, float>(
     new Dictionary<Type, float>(Actor.ActionCosts) {
-      {typeof(FollowPathAction), 0.67f},
+      {typeof(FollowPathAction), 0.5f},
     }
   );
 

@@ -1,15 +1,16 @@
 
 using UnityEngine;
 
-class BSPNode {
+/// Represents a room in a floor; internally implements a BSP tree
+public class Room {
   /// rooms are at least 3x3
   public readonly static int MIN_ROOM_SIZE = 3;
 
   /// max is inclusive
   public Vector2Int min, max;
 
-  public BSPSplit? split;
-  public BSPNode parent;
+  public RoomSplit? split;
+  public Room parent;
 
   public bool isTerminal {
     get {
@@ -17,7 +18,9 @@ class BSPNode {
     }
   }
 
-  public BSPNode(BSPNode parent, Vector2Int min, Vector2Int max) {
+  public Vector2Int center => (min + max) / 2;
+
+  public Room(Room parent, Vector2Int min, Vector2Int max) {
     this.parent = parent;
     this.min = min;
     this.max = max;
@@ -43,8 +46,8 @@ class BSPNode {
     }
     // randomly decide a new width and height that's within the alloted space
     // 5
-    int roomWidth = Random.Range(BSPNode.MIN_ROOM_SIZE, width + 1);
-    int roomHeight = Random.Range(BSPNode.MIN_ROOM_SIZE, height + 1);
+    int roomWidth = Random.Range(Room.MIN_ROOM_SIZE, width + 1);
+    int roomHeight = Random.Range(Room.MIN_ROOM_SIZE, height + 1);
 
     // min.x = 1, max.x = 5, 5 - 5 + 1 = 1
     int startX = Random.Range(min.x, max.x - roomWidth + 1);
@@ -61,8 +64,8 @@ class BSPNode {
       return this.doSplit();
     } else {
       // randomly pick a child and split it. If not successful, try the other one.
-      BSPNode a = this.split.Value.a;
-      BSPNode b = this.split.Value.b;
+      Room a = this.split.Value.a;
+      Room b = this.split.Value.b;
 
       var (firstChoice, secondChoice) = Random.value < 0.5 ? (a, b) : (b, a);
 
@@ -125,21 +128,21 @@ class BSPNode {
     int splitMax = max.x - MIN_ROOM_SIZE;
     int splitMin = min.x + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
-    BSPNode a = new BSPNode(this, this.min, new Vector2Int(splitPoint - 1, this.max.y));
-    BSPNode b = new BSPNode(this, new Vector2Int(splitPoint + 1, this.min.y), this.max);
-    this.split = new BSPSplit(a, b, SplitDirection.Horizontal, splitPoint);
+    Room a = new Room(this, this.min, new Vector2Int(splitPoint - 1, this.max.y));
+    Room b = new Room(this, new Vector2Int(splitPoint + 1, this.min.y), this.max);
+    this.split = new RoomSplit(a, b, SplitDirection.Horizontal, splitPoint);
   }
 
   private void doSplitVertical() {
     int splitMax = max.y - MIN_ROOM_SIZE;
     int splitMin = min.y + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
-    BSPNode a = new BSPNode(this, this.min, new Vector2Int(this.max.x, splitPoint - 1));
-    BSPNode b = new BSPNode(this, new Vector2Int(this.min.x, splitPoint + 1), this.max);
-    this.split = new BSPSplit(a, b, SplitDirection.Vertical, splitPoint);
+    Room a = new Room(this, this.min, new Vector2Int(this.max.x, splitPoint - 1));
+    Room b = new Room(this, new Vector2Int(this.min.x, splitPoint + 1), this.max);
+    this.split = new RoomSplit(a, b, SplitDirection.Vertical, splitPoint);
   }
 
-  public void Traverse(System.Action<BSPNode> action) {
+  public void Traverse(System.Action<Room> action) {
     action(this);
     if (!this.isTerminal) {
       this.split.Value.a.Traverse(action);
@@ -156,19 +159,19 @@ class BSPNode {
   }
 }
 
-struct BSPSplit {
+public struct RoomSplit {
 
-  public BSPSplit(BSPNode a, BSPNode b, SplitDirection direction, int coordinate) {
+  public RoomSplit(Room a, Room b, SplitDirection direction, int coordinate) {
     this.a = a;
     this.b = b;
     this.direction = direction;
     this.coordinate = coordinate;
   }
-  public BSPNode a { get; }
-  public BSPNode b { get; }
+  public Room a { get; }
+  public Room b { get; }
   public SplitDirection direction { get; }
   public int coordinate { get; }
 }
 
-enum SplitDirection { Vertical, Horizontal }
+public enum SplitDirection { Vertical, Horizontal }
 

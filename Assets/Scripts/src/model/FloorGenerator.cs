@@ -7,7 +7,9 @@ public static class FloorGenerator {
     Floor floor = new Floor(22, 14);
 
     // fill with floor tiles by default
-    floor.ForEachLocation(p => floor.tiles.Put(new Ground(p)));
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.tiles.Put(new Ground(p));
+    }
 
     // surround floor with walls
     for (int x = 0; x < floor.width; x++) {
@@ -40,36 +42,82 @@ public static class FloorGenerator {
     return floor;
   }
 
+  class Encounter {
+    public Encounter(System.Action<Floor, Room> apply) {
+      this.Apply = apply;
+    }
+
+    public System.Action<Floor, Room> Apply { get; }
+  }
+
+  // no op
+  static Encounter Encounter0 = new Encounter((Floor, Room) => {});
+
+  static Encounter Encounter1 = new Encounter((floor, room) => {
+    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
+    foreach (var tile in emptyTilesInRoom.Take(3)) {
+      floor.AddActor(new Blob(tile.pos));
+    }
+  });
+
+  static Encounter Encounter2 = new Encounter((floor, room) => {
+    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
+    var numJackals = Random.Range(4, 7);
+    foreach (var tile in emptyTilesInRoom.Take(numJackals)) {
+      floor.AddActor(new Jackal(tile.pos));
+    }
+  });
+
+  /// bats line the edges
+  static Encounter Encounter3 = new Encounter((floor, room) => {
+    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    // Put left-most rooms first
+    emptyTilesInRoom.Sort((a, b) => a.pos.x - b.pos.x);
+    // Because sort is stable we can do a second sort by Y to get what we want
+    // bottom-left
+    emptyTilesInRoom.Sort((a, b) => a.pos.y - b.pos.y);
+    var bottomLeft = emptyTilesInRoom.FirstOrDefault();
+
+    emptyTilesInRoom.Sort((a, b) => b.pos.y - a.pos.y);
+    var topLeft = emptyTilesInRoom.FirstOrDefault();
+
+    // now go right
+    emptyTilesInRoom.Sort((a, b) => b.pos.x - a.pos.x);
+    var topRight = emptyTilesInRoom.FirstOrDefault();
+
+    emptyTilesInRoom.Sort((a, b) => a.pos.y - b.pos.y);
+    var bottomRight = emptyTilesInRoom.FirstOrDefault();
+
+    var tilesThatExist = new List<Tile> { topLeft, bottomLeft, topRight, bottomRight };
+    
+    foreach (var tile in tilesThatExist) {
+      if (tile != null) {
+        floor.AddActor(new Bat(tile.pos));
+      }
+    }
+  });
+
+  static WeightedRandomBag<Encounter> Encounters = new WeightedRandomBag<Encounter> {
+    { 2, Encounter0 },
+    { 1, Encounter1 },
+    { 1, Encounter2 },
+    { 1, Encounter3 },
+  };
+
   public static Floor generateRandomFloor() {
     Floor floor;
     do {
       floor = tryGenerateRandomFloor();
     } while (!floor.AreStairsConnected());
 
-    // foreach (var room in floor.rooms) {
-    //   // spawn a random encounter
-    //   var encounterType = Random.Range(0, 5);
-    //   switch (encounterType) {
-    //     case 0:
+    foreach (var room in floor.rooms) {
+      // spawn a random encounter
+      var encounter = Encounters.GetRandom();
+      encounter.Apply(floor, room);
+    }
 
-    //     break;
-    //     case 1:
-    //     break;
-    //     case 2:
-    //     break;
-    //   }
-    // }
-
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2 + 1)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 1, floor.height / 2 - 1)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 2, floor.height / 2)));
-    floor.AddActor(new Jackal(new Vector2Int(floor.width / 2 + 2, floor.height / 2 + 1)));
-
-    floor.AddActor(new Blob(new Vector2Int(floor.width / 2, floor.height / 2)));
-    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
-    floor.AddActor(new Blob(new Vector2Int(floor.width / 3, floor.height / 3)));
     return floor;
   }
 
@@ -78,10 +126,12 @@ public static class FloorGenerator {
     Floor floor = new Floor(60, 20);
 
     // fill with wall
-    floor.ForEachLocation(p => floor.tiles.Put(new Wall(p)));
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.tiles.Put(new Wall(p));
+    }
 
     // randomly partition space into 20 rooms
-    BSPNode root = new BSPNode(null, new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
+    Room root = new Room(null, new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
     for (int i = 0; i < 20; i++) {
       bool success = root.randomlySplit();
       if (!success) {
@@ -91,7 +141,7 @@ public static class FloorGenerator {
     }
 
     // collect all rooms
-    List<BSPNode> rooms = new List<BSPNode>();
+    List<Room> rooms = new List<Room>();
     root.Traverse(node => {
       if (node.isTerminal) {
         rooms.Add(node);
@@ -103,7 +153,9 @@ public static class FloorGenerator {
     rooms.ForEach(room => room.randomlyShrink());
 
     foreach (var (a, b) in ConnectRooms(rooms, root)) {
-      floor.ForEachLine(a, b, point => floor.tiles.Put(new Ground(point)));
+      foreach (var point in floor.EnumerateLine(a, b)) {
+        floor.tiles.Put(new Ground(point));
+      }
     }
 
     rooms.ForEach(room => {
@@ -133,27 +185,28 @@ public static class FloorGenerator {
       }
       return 0;
     });
-    BSPNode upstairsRoom = rooms.First();
+    Room upstairsRoom = rooms.First();
     // 1-px padding from the top-left of the room
     Vector2Int upstairsPos = new Vector2Int(upstairsRoom.min.x + 1, upstairsRoom.max.y - 1);
     floor.PlaceUpstairs(upstairsPos);
 
-    BSPNode downstairsRoom = rooms.Last();
+    Room downstairsRoom = rooms.Last();
     // 1-px padding from the bottom-right of the room
     Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
     floor.PlaceDownstairs(downstairsPos);
+    floor.root = root;
     floor.rooms = rooms;
     return floor;
   }
 
   /// Connect all the rooms together with at least one through-path
-  static List<(Vector2Int, Vector2Int)> ConnectRooms(List<BSPNode> rooms, BSPNode root) {
+  static List<(Vector2Int, Vector2Int)> ConnectRooms(List<Room> rooms, Room root) {
     return ConnectRoomsBSPSiblings(rooms, root);
   }
 
   /// draw a path connecting siblings together, including intermediary nodes (guarantees connectedness)
   /// this tends to draw long lines that cut right through single thickness walls
-  static List<(Vector2Int, Vector2Int)> ConnectRoomsBSPSiblings(List<BSPNode> rooms, BSPNode root) {
+  static List<(Vector2Int, Vector2Int)> ConnectRoomsBSPSiblings(List<Room> rooms, Room root) {
     List<(Vector2Int, Vector2Int)> paths = new List<(Vector2Int, Vector2Int)>();
     root.Traverse(node => {
       if (!node.isTerminal) {

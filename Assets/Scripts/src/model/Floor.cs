@@ -19,7 +19,11 @@ public class Floor {
 
   /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin, boundsMax;
-  internal List<BSPNode> rooms;
+
+  /// abstract bsp root
+  internal Room root;
+  /// all rooms (terminal bsp nodes)
+  internal List<Room> rooms;
 
   public Upstairs upstairs {
     get {
@@ -63,11 +67,11 @@ public class Floor {
 
   internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
     var actors = new List<Actor>();
-    ForEachLocationCircle((pos) => {
+    foreach (var pos in EnumerateCircle(center, radius)) {
       if (tiles[pos] != null && tiles[pos].occupant != null) {
         actors.Add(tiles[pos].occupant);
       }
-    }, center, radius);
+    }
     return actors;
   }
 
@@ -146,28 +150,22 @@ public class Floor {
   }
 
   internal void RemoveVisibility(Actor entity) {
-    ForEachLocationCircle((pos) => {
+    foreach (var pos in EnumerateCircle(entity.pos, entity.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       if (t.visibility == TileVisiblity.Visible) {
         t.visibility = TileVisiblity.Explored;
       }
-    },
-      entity.pos,
-      entity.visibilityRange
-    );
+    }
   }
 
   internal void AddVisibility(Actor entity) {
-    ForEachLocationCircle((pos) => {
+    foreach (var pos in EnumerateCircle(entity.pos, entity.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(entity.pos, pos);
       if (isVisible) {
         t.visibility = TileVisiblity.Visible;
       }
-    },
-      entity.pos,
-      entity.visibilityRange
-    );
+    }
   }
 
   /// returns true if the points have line of sight to each other
@@ -180,13 +178,13 @@ public class Floor {
       /// find the closest neighbor that doesn't obstruct vision and go off that
       end = possibleEnds.FirstOrDefault()?.pos ?? end;
     }
-    ForEachLine(source, end, (pos) => {
+    foreach (var pos in EnumerateLine(source, end)) {
       if (pos == source || pos == end) {
-        return;
+        continue;
       }
       Tile t = tiles[pos.x, pos.y];
       isVisible = isVisible && !t.ObstructsVision();
-    });
+    }
     return isVisible;
   }
 
@@ -204,39 +202,43 @@ public class Floor {
     return list;
   }
 
-  public void ForEachLocationCircle(System.Action<Vector2Int> callback, Vector2Int center, float radius) {
+  public IEnumerable<Vector2Int> EnumerateCircle(Vector2Int center, float radius) {
     Vector2Int extent = new Vector2Int(Mathf.CeilToInt(radius), Mathf.CeilToInt(radius));
-    ForEachLocation((pos) => {
+    foreach (var pos in EnumerateRectangle(center - extent, center + extent)) {
       if (Vector2Int.Distance(pos, center) <= radius) {
-        callback(pos);
+        yield return pos;
       }
-    }, center - extent, center + extent);
+    }
   }
 
   /// max is exclusive
-  public void ForEachLocation(System.Action<Vector2Int> callback, Vector2Int min, Vector2Int max) {
+  public IEnumerable<Vector2Int> EnumerateRectangle(Vector2Int min, Vector2Int max) {
     min = Vector2Int.Max(min, boundsMin);
     max = Vector2Int.Min(max, boundsMax);
     for (int x = min.x; x < max.x; x++) {
       for (int y = min.y; y < max.y; y++) {
-        callback(new Vector2Int(x, y));
+        yield return new Vector2Int(x, y);
       }
     }
   }
 
-  public void ForEachLocation(System.Action<Vector2Int> callback) {
-    this.ForEachLocation(callback, boundsMin, boundsMax);
+  public IEnumerable<Tile> EnumerateRoomTiles(Room room) {
+    return EnumerateRectangle(room.min, room.max - new Vector2Int(1, 1)).Select(x => tiles[x]);
+  }
+
+  public IEnumerable<Vector2Int> EnumerateFloor() {
+    return this.EnumerateRectangle(boundsMin, boundsMax);
   }
 
   /// always starts right on the startPoint, and always ends right on the endPoint
-  public void ForEachLine(Vector2Int startPoint, Vector2Int endPoint, System.Action<Vector2Int> cb) {
+  public IEnumerable<Vector2Int> EnumerateLine(Vector2Int startPoint, Vector2Int endPoint) {
     Vector2 offset = endPoint - startPoint;
     for (float t = 0; t <= offset.magnitude; t += 0.5f) {
       Vector2 point = startPoint + offset.normalized * t;
       Vector2Int p = new Vector2Int(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y));
-      cb(p);
+      yield return p;
     }
-    cb(endPoint);
+    yield return endPoint;
   }
 
   public void PlaceUpstairs(Vector2Int pos) {

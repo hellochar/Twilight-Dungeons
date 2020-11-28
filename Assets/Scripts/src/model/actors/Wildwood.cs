@@ -23,6 +23,6 @@ public class Wildwood : Plant {
   public override void Cull() {
     Player player = GameModel.main.player;
     player.inventory.AddItem(new ItemSeed(typeof(Wildwood)));
-    /// do NOT kill
+    Kill();
   }
 }

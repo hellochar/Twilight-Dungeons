@@ -4,10 +4,10 @@ using UnityEngine;
 public class BerryBush : Plant {
 
   class Mature : PlantStage {
-    public int numBerries = 0;
+    public int numBerries = 1;
 
     public override void Step() {
-      int turnsPerBerry = 300;
+      int turnsPerBerry = 250;
       /// TODO this only works because Step() gets called for every single consecutive age.
       if (this.age >= turnsPerBerry && this.age % turnsPerBerry == 0) {
         numBerries++;

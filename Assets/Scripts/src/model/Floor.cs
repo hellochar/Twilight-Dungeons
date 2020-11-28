@@ -19,6 +19,7 @@ public class Floor {
 
   /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin, boundsMax;
+  internal List<BSPNode> rooms;
 
   public Upstairs upstairs {
     get {

@@ -3,26 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// similar to MatchEquipmentSlot except it doesn't do the image/shadow stuff
-public class RenderEquipmentInWorld : MatchEquipmentSlotState {
-  public override void Start() {
-    base.Start();
+public class RenderEquipmentInWorld : MatchItemSlot {
+  private GameObject itemPrefab;
+
+  public EquipmentSlot slot;
+  public override Item item => GameModel.main.player.equipment[slot];
+
+  void Start() {
     itemPrefab = Resources.Load<GameObject>("UI/ItemOnPlayer");
+    itemChild = transform.Find("ItemOnPlayer")?.gameObject;
   }
 
-  protected override void UpdateUnused() {
-    Destroy(itemChild);
-    itemChild = null;
-  }
-
-  /// TODO this is copy/pasted of part of MatchItemSlotState. Eventually 
-  /// refactor this logic into its own location (move image/shadow out to a separate level)
-  protected override void UpdateInUse(Item item) {
+  protected override GameObject UpdateInUse(Item item) {
     var showOnPlayer = ItemInfo.InfoFor(item).showOnPlayer;
     if (showOnPlayer) {
-      itemChild = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
-      itemChild.transform.localPosition = new Vector3(0, 0, 0);
-      itemChild.GetComponent<SpriteRenderer>().sprite = ItemInfo.GetSpriteForItem(item);
+      var child = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
+      child.transform.localPosition = new Vector3(0, 0, 0);
+      child.GetComponent<SpriteRenderer>().sprite = ItemInfo.GetSpriteForItem(item);
+      return child;
     }
+    return null;
   }
 }

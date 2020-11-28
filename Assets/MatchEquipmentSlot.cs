@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MatchEquipmentSlotState : MatchItemSlotState {
+public class MatchEquipmentSlot : MatchInventorySlot {
   public EquipmentSlot slot;
-  private Equipment equipment;
   public GameObject placeholder;
-  public override Item item => equipment[slot];
 
   public override void Start() {
-    equipment = GameModel.main.player.equipment;
-    placeholder = transform.Find("Placeholder")?.gameObject;
     base.Start();
+    slotIndex = (int) slot;
+    inventory = GameModel.main.player.equipment;
+    placeholder = transform.Find("Placeholder")?.gameObject;
   }
 
   protected override void UpdateUnused() {
@@ -21,8 +20,8 @@ public class MatchEquipmentSlotState : MatchItemSlotState {
     base.UpdateUnused();
   }
 
-  protected override void UpdateInUse(Item item) {
+  protected override GameObject UpdateInUse(Item item) {
     placeholder?.SetActive(false);
-    base.UpdateInUse(item);
+    return base.UpdateInUse(item);
   }
 }

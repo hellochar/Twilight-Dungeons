@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.U2D;
 using UnityEngine.UI;
 
-public class MatchItemState : MonoBehaviour {
+/// Renders one Item in the UI.
+public class MatchItem : MonoBehaviour {
   public Item item;
   private Button button;
   private Image image;

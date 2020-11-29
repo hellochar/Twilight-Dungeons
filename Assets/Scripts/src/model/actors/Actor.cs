@@ -131,14 +131,10 @@ public class Actor : Entity {
   }
 
   public void SetActions(params ActorAction[] actions) {
-    if (actions.Where((a) => a == null).Count() > 0) {
-      throw new Exception("Setting a null action!");
-    }
     actionQueue.Clear();
     actionQueue.AddRange(actions);
-    if (actions.Length > 0) {
-      OnSetAction?.Invoke(actionQueue[0]);
-    }
+    OnSetAction?.Invoke(actionQueue[0]);
+    RemoveDoneActions();
   }
 
   public float GetActionCost(Type t) {

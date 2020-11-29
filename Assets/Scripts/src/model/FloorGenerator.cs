@@ -64,6 +64,7 @@ public static class FloorGenerator {
   static Encounter Encounter2 = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
     emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
+    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
     var numJackals = Random.Range(4, 7);
     foreach (var tile in emptyTilesInRoom.Take(numJackals)) {
       floor.AddActor(new Jackal(tile.pos));
@@ -73,29 +74,25 @@ public static class FloorGenerator {
   /// bats line the edges
   static Encounter Encounter3 = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    // Put left-most rooms first
-    emptyTilesInRoom.Sort((a, b) => a.pos.x - b.pos.x);
-    // Because sort is stable we can do a second sort by Y to get what we want
-    // bottom-left
-    emptyTilesInRoom.Sort((a, b) => a.pos.y - b.pos.y);
-    var bottomLeft = emptyTilesInRoom.FirstOrDefault();
+    // sort by farthest distance to center to nearest
+    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? 1 : -1);
+    foreach (var tile in emptyTilesInRoom.Take(4)) {
+      floor.AddActor(new Bat(tile.pos));
+    }
+  });
 
-    emptyTilesInRoom.Sort((a, b) => b.pos.y - a.pos.y);
-    var topLeft = emptyTilesInRoom.FirstOrDefault();
+  static Encounter Encounter4 = new Encounter((floor, room) => {
+    // add a soil at the center
+    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
+    var emptyTileNearestCenter = emptyTilesInRoom.FirstOrDefault();
 
-    // now go right
-    emptyTilesInRoom.Sort((a, b) => b.pos.x - a.pos.x);
-    var topRight = emptyTilesInRoom.FirstOrDefault();
-
-    emptyTilesInRoom.Sort((a, b) => a.pos.y - b.pos.y);
-    var bottomRight = emptyTilesInRoom.FirstOrDefault();
-
-    var tilesThatExist = new List<Tile> { topLeft, bottomLeft, topRight, bottomRight };
-    
-    foreach (var tile in tilesThatExist) {
-      if (tile != null) {
-        floor.AddActor(new Bat(tile.pos));
-      }
+    if (emptyTileNearestCenter != null && !(emptyTileNearestCenter is Downstairs || emptyTileNearestCenter is Upstairs)) {
+      floor.tiles.Put(new Soil(emptyTileNearestCenter.pos));
+      var bush = new BerryBush(emptyTileNearestCenter.pos);
+      // jump to Mature
+      bush.stage = bush.stage.NextStage.NextStage;
+      floor.AddActor(bush);
     }
   });
 
@@ -104,6 +101,7 @@ public static class FloorGenerator {
     { 1, Encounter1 },
     { 1, Encounter2 },
     { 1, Encounter3 },
+    { 1, Encounter4 },
   };
 
   public static Floor generateRandomFloor() {

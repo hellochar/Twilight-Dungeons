@@ -43,6 +43,9 @@ public class Player : Actor {
     if (item is IDurable durable) {
       Durables.ReduceDurability(durable);
     }
+    if (action is FollowPathAction) {
+      action = null;
+    }
   }
 
   public override Vector2Int pos {

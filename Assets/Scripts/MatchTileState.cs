@@ -16,6 +16,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
     sortingLayerDefault = SortingLayer.NameToID("Default");
     this.renderers = GetComponentsInChildren<SpriteRenderer>();
     this.mask = GetComponent<SpriteMask>();
+    Update();
   }
 
   // Update is called once per frame
@@ -59,7 +60,9 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
   }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
-    GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
+    if (owner.visibility != TileVisiblity.Unexplored) {
+      GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
+    }
   }
 
   private static Color unexploredMask = new Color(0, 0, 0);

@@ -35,7 +35,9 @@ public class BerryBush : Plant {
   public override void Cull() {
     Player player = GameModel.main.player;
     player.inventory.AddItem(new ItemSeed(typeof(BerryBush)));
-    player.inventory.AddItem(new ItemSeed(typeof(BerryBush)));
+    if (stage is Mature) {
+      player.inventory.AddItem(new ItemSeed(typeof(BerryBush)));
+    }
     this.Harvest();
     this.Kill();
   }

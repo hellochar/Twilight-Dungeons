@@ -37,7 +37,7 @@ public class PopupMatchItem : MonoBehaviour {
         actionButton.GetComponent<Button>().onClick.AddListener(() => {
           player.action = action;
           Close();
-          CloseInventory();
+          // CloseInventory();
         });
       }
     } else {

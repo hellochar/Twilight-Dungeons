@@ -36,9 +36,9 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     // }
   }
 
-  private void HandleSetAction(ActorAction obj) {
-    if (obj != null) {
-      GameObject prefab = GetPrefabForAction(obj);
+  private void HandleSetAction(ActorAction action) {
+    if (action != null) {
+      GameObject prefab = GetPrefabForAction(action);
       if (prefab != null) {
         Instantiate(prefab, transform.position, Quaternion.identity, transform);
       }
@@ -89,10 +89,15 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
+    Player player = GameModel.main.player;
+    // on clicking self, wait for 1 turn
+    if (actor == player) {
+      player.action = new WaitAction(player, 1);
+      return;
+    }
     // depending on the faction:
     // (1) ally or neutral - walk to
     // (2) enemy - attack
-    Player player = GameModel.main.player;
     switch (actor.faction) {
       case Faction.Ally:
       case Faction.Neutral:

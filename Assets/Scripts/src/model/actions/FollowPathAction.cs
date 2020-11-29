@@ -15,6 +15,10 @@ public class FollowPathAction : ActorAction {
       Vector2Int nextPosition = path.First();
       path.RemoveAt(0);
       actor.pos = nextPosition;
+      // if it failed for any reason, cancel the move
+      if (actor.pos != nextPosition) {
+        path.Clear();
+      }
     }
   }
 

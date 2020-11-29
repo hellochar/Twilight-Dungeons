@@ -17,7 +17,6 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>> {
   public void Add(float weight, T item) {
     accumulatedWeight += weight;
     entries.Add(new Entry { item = item, accumulatedWeight = accumulatedWeight });
-    UnityEngine.Debug.Log(entries);
   }
 
   public T GetRandom() {

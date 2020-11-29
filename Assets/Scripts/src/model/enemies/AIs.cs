@@ -72,7 +72,9 @@ public static class AIs {
         if (actor.IsNextTo(GameModel.main.player)) {
           yield return new AttackAction(actor, GameModel.main.player);
         } else {
-          yield return new ChaseTargetAction(actor, GameModel.main.player);
+          while (!actor.IsNextTo(GameModel.main.player)) {
+            yield return new ChaseTargetAction(actor, GameModel.main.player);
+          }
         }
       } else {
         yield return new MoveRandomlyAction(actor);

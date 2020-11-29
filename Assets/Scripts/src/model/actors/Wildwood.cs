@@ -12,17 +12,20 @@ public class Wildwood : Plant {
   }
 
   public override void Harvest() {
-    stage = new Sapling();
-    stage.NextStage = new Mature();
-    Player player = GameModel.main.player;
-    player.inventory.AddItem(new ItemStick());
-    player.inventory.AddItem(new ItemStick());
-    player.inventory.AddItem(new ItemStick());
+    if (stage is Mature) {
+      stage = new Sapling();
+      stage.NextStage = new Mature();
+      Player player = GameModel.main.player;
+      player.inventory.AddItem(new ItemStick());
+      player.inventory.AddItem(new ItemStick());
+      player.inventory.AddItem(new ItemStick());
+    }
   }
 
   public override void Cull() {
     Player player = GameModel.main.player;
     player.inventory.AddItem(new ItemSeed(typeof(Wildwood)));
+    Harvest();
     Kill();
   }
 }

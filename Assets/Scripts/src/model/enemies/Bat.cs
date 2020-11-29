@@ -8,13 +8,27 @@ public class Bat : AIActor {
     faction = Faction.Enemy;
     ai = AIs.BatAI(this).GetEnumerator();
     OnAttack += HandleAttack;
+    OnTakeDamage += HandleTakeDamage;
+  }
+
+  private void HandleTakeDamage(int dmg, int hp, Actor source) {
+    SetActions(
+      new ChaseTargetAction(this, source),
+      new AttackAction(this, source),
+      new ChaseTargetAction(this, source),
+      new AttackAction(this, source),
+      new ChaseTargetAction(this, source),
+      new AttackAction(this, source)
+    );
   }
 
   private void HandleAttack(int dmg, Actor target) {
-    Heal(1);
+    if (dmg > 0) {
+      Heal(1);
+    }
   }
 
   internal override int GetAttackDamage() {
-    return UnityEngine.Random.Range(1, 3);
+    return 1;
   }
 }

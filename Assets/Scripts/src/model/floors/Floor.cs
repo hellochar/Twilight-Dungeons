@@ -62,14 +62,14 @@ public class Floor {
   }
 
   internal IEnumerable<Actor> AdjacentActors(Vector2Int pos) {
-    return GetAdjacentTiles(pos).Select(x => x.occupant).Where(x => x != null);
+    return GetAdjacentTiles(pos).Select(x => x.actor).Where(x => x != null);
   }
 
   internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
     var actors = new List<Actor>();
     foreach (var pos in EnumerateCircle(center, radius)) {
-      if (tiles[pos] != null && tiles[pos].occupant != null) {
-        actors.Add(tiles[pos].occupant);
+      if (tiles[pos] != null && tiles[pos].actor != null) {
+        actors.Add(tiles[pos].actor);
       }
     }
     return actors;

@@ -12,9 +12,8 @@ public class Actor : Entity {
   );
   public bool IsDead { get; private set; }
 
-  public Guid guid { get; }
   private Vector2Int _pos;
-  public virtual Vector2Int pos {
+  public override Vector2Int pos {
     get => _pos;
     set {
       Floor floor = this.floor;
@@ -26,15 +25,9 @@ public class Actor : Entity {
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
 
-  internal float DistanceTo(Actor other) {
-    return Vector2Int.Distance(pos, other.pos);
-  }
-
   public virtual IDictionary<Type, float> actionCosts => Actor.ActionCosts;
   protected float baseActionCost => GetActionCost(typeof(ActorAction));
-  public float timeCreated { get; }
   /// how many turns this Entity has been alive for
-  public float age => GameModel.main.time - timeCreated;
   public float timeNextAction;
   public virtual ActorAction action {
     get => actionQueue.FirstOrDefault();
@@ -44,7 +37,6 @@ public class Actor : Entity {
   public event Action<ActorAction> OnSetAction;
 
   public int visibilityRange = 7;
-  public Floor floor;
   public Tile currentTile => floor.tiles[pos.x, pos.y];
   public bool visible => currentTile.visibility == TileVisiblity.Visible;
 
@@ -54,9 +46,8 @@ public class Actor : Entity {
   /// Generally ranges in [0, 100].
   internal virtual float turnPriority => 50;
 
-  public event Action<int, Actor> OnDealDamage;
-
   public Faction faction = Faction.Neutral;
+  public event Action<int, Actor> OnDealDamage;
   public event Action<int, int, Actor> OnTakeDamage;
   public event Action<int, int> OnHeal;
   /// gets called on a successful hit on a target
@@ -67,10 +58,8 @@ public class Actor : Entity {
   public event Action OnPreStep;
   public event Action OnDeath;
 
-  public Actor(Vector2Int pos) {
+  public Actor(Vector2Int pos) : base() {
     hp = hpMax = 8;
-    guid = System.Guid.NewGuid();
-    this.timeCreated = GameModel.main.time;
     this.timeNextAction = this.timeCreated + baseActionCost;
     this.pos = pos;
   }
@@ -99,7 +88,7 @@ public class Actor : Entity {
   }
 
   internal void AttackGround(Vector2Int targetPosition) {
-    Actor target = floor.tiles[targetPosition.x, targetPosition.y].occupant;
+    Actor target = floor.tiles[targetPosition.x, targetPosition.y].actor;
     OnAttackGround?.Invoke(targetPosition, target);
     if (target != null) {
       Attack(target);
@@ -179,14 +168,6 @@ public class Actor : Entity {
       OnSetAction?.Invoke(actionQueue.FirstOrDefault());
       finishedAction.Finish();
     }
-  }
-
-  public bool IsNextTo(Entity other) {
-    return IsNextTo(other.pos);
-  }
-
-  public bool IsNextTo(Vector2Int other) {
-    return Math.Abs(pos.x - other.x) <= 1 && Math.Abs(pos.y - other.y) <= 1;
   }
 
   public void CatchUpStep(float newTime) {

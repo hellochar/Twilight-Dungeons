@@ -3,21 +3,23 @@ using System.Linq;
 using UnityEngine;
 
 public abstract class Tile : Entity {
-  public Vector2Int pos { get; }
   public TileVisiblity visibility = TileVisiblity.Unexplored;
-  internal Floor floor;
-  public Actor occupant => floor.ActorAt(pos);
-  public Guid guid { get; }
+  public Actor actor => floor.ActorAt(pos);
+  private Vector2Int _pos;
+  public override Vector2Int pos {
+    get => _pos;
+    /// do not allow moving tiles
+    set { }
+  }
 
-  public Tile(Vector2Int pos) {
-    guid = Guid.NewGuid();
-    this.pos = pos;
+  public Tile(Vector2Int pos) : base() {
+    this._pos = pos;
   }
 
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
   public float GetPathfindingWeight() {
-    if (occupant != null) {
+    if (actor != null) {
       return 0;
     }
     return BasePathfindingWeight();
@@ -35,7 +37,7 @@ public abstract class Tile : Entity {
     return GetPathfindingWeight() != 0;
   }
 
-  public virtual void OnPlayerEnter() {}
+  public virtual void OnPlayerEnter() { }
 }
 
 public enum TileVisiblity {
@@ -81,5 +83,5 @@ public class Dirt : Tile {
 }
 
 public class Soil : Tile {
-  public Soil(Vector2Int pos) : base(pos) {}
+  public Soil(Vector2Int pos) : base(pos) { }
 }

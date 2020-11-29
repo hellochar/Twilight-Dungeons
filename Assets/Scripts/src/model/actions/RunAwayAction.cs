@@ -12,10 +12,12 @@ public class RunAwayAction : ActorAction {
 
   public override void Perform() {
     turns--;
-    var adjacentTiles = actor.floor.GetNeighborhoodTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
-    var furthestTile = adjacentTiles.Aggregate((t1, t2) =>
-      Vector2Int.Distance(fearPoint, t1.pos) > Vector2Int.Distance(fearPoint, t2.pos) ? t1 : t2);
-    actor.pos = furthestTile.pos;
+    var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
+    if (adjacentTiles.Any()) {
+      var furthestTile = adjacentTiles.Aggregate((t1, t2) =>
+        Vector2Int.Distance(fearPoint, t1.pos) > Vector2Int.Distance(fearPoint, t2.pos) ? t1 : t2);
+      actor.pos = furthestTile.pos;
+    }
   }
 
   public override bool IsDone() {

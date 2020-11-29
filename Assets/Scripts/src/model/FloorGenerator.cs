@@ -42,67 +42,7 @@ public static class FloorGenerator {
     return floor;
   }
 
-  class Encounter {
-    public Encounter(System.Action<Floor, Room> apply) {
-      this.Apply = apply;
-    }
 
-    public System.Action<Floor, Room> Apply { get; }
-  }
-
-  // no op
-  static Encounter Encounter0 = new Encounter((Floor, Room) => {});
-
-  static Encounter Encounter1 = new Encounter((floor, room) => {
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
-    foreach (var tile in emptyTilesInRoom.Take(3)) {
-      floor.AddActor(new Blob(tile.pos));
-    }
-  });
-
-  static Encounter Encounter2 = new Encounter((floor, room) => {
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
-    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
-    var numJackals = Random.Range(4, 7);
-    foreach (var tile in emptyTilesInRoom.Take(numJackals)) {
-      floor.AddActor(new Jackal(tile.pos));
-    }
-  });
-
-  /// bats line the edges
-  static Encounter Encounter3 = new Encounter((floor, room) => {
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    // sort by farthest distance to center to nearest
-    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? 1 : -1);
-    foreach (var tile in emptyTilesInRoom.Take(4)) {
-      floor.AddActor(new Bat(tile.pos));
-    }
-  });
-
-  static Encounter Encounter4 = new Encounter((floor, room) => {
-    // add a soil at the center
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
-    var emptyTileNearestCenter = emptyTilesInRoom.FirstOrDefault();
-
-    if (emptyTileNearestCenter != null && !(emptyTileNearestCenter is Downstairs || emptyTileNearestCenter is Upstairs)) {
-      floor.tiles.Put(new Soil(emptyTileNearestCenter.pos));
-      var bush = new BerryBush(emptyTileNearestCenter.pos);
-      // jump to Mature
-      bush.stage = bush.stage.NextStage.NextStage;
-      floor.AddActor(bush);
-    }
-  });
-
-  static WeightedRandomBag<Encounter> Encounters = new WeightedRandomBag<Encounter> {
-    { 2, Encounter0 },
-    { 1, Encounter1 },
-    { 1, Encounter2 },
-    { 1, Encounter3 },
-    { 1, Encounter4 },
-  };
 
   public static Floor generateRandomFloor() {
     Floor floor;
@@ -112,7 +52,7 @@ public static class FloorGenerator {
 
     foreach (var room in floor.rooms) {
       // spawn a random encounter
-      var encounter = Encounters.GetRandom();
+      var encounter = Encounters.CavesStandard.GetRandom();
       encounter.Apply(floor, room);
     }
 
@@ -129,7 +69,7 @@ public static class FloorGenerator {
     }
 
     // randomly partition space into 20 rooms
-    Room root = new Room(null, new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
+    Room root = new Room(new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
     for (int i = 0; i < 20; i++) {
       bool success = root.randomlySplit();
       if (!success) {
@@ -158,10 +98,8 @@ public static class FloorGenerator {
 
     rooms.ForEach(room => {
       // fill each room with floor
-      for (int x = room.min.x; x <= room.max.x; x++) {
-        for (int y = room.min.y; y <= room.max.y; y++) {
-          floor.tiles.Put(new Ground(new Vector2Int(x, y)));
-        }
+      foreach (var pos in floor.EnumerateRoom(room)) {
+        floor.tiles.Put(new Ground(pos));
       }
     });
 
@@ -247,4 +185,42 @@ public static class FloorGenerator {
     1 - Mathf.Sqrt(0.5f)
   // 0.33f
   );
+
+  public static Floor EncounterTester() {
+    var floor = new Floor(60, 20);
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.tiles.Put(new Wall(p));
+    }
+
+    List<Room> rooms = new List<Room>();
+    var encounters = Encounters.CavesStandard.Select((tuple) => tuple.Value).ToList();
+
+    var encounterIndex = 0;
+    var roomSize = 6;
+    for (int x = 1; x < floor.width; x += roomSize + 1) {
+      for (int y = 1 ; y < floor.height; y += roomSize + 1) {
+        var room = new Room(new Vector2Int(x, y), new Vector2Int(x + roomSize - 1, y + roomSize - 1));
+        rooms.Add(room);
+        foreach (var pos in floor.EnumerateRoom(room)) {
+          floor.tiles.Put(new Ground(pos));
+        }
+        
+        if (encounterIndex < encounters.Count) {
+          var encounter = encounters[encounterIndex];
+          encounter.Apply(floor, room);
+          encounterIndex++;
+        }
+      }
+    }
+
+    floor.PlaceUpstairs(new Vector2Int(2, 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
+
+    // make them all visible
+    foreach (var pos in floor.EnumerateFloor()) {
+      floor.tiles[pos].visibility = TileVisiblity.Visible;
+    }
+
+    return floor;
+  }
 }

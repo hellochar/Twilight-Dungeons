@@ -54,6 +54,8 @@ public class Actor : Entity {
   /// Generally ranges in [0, 100].
   internal virtual float turnPriority => 50;
 
+  public event Action<int, Actor> OnDealDamage;
+
   public Faction faction = Faction.Neutral;
   public event Action<int, int, Actor> OnTakeDamage;
   public event Action<int, int> OnHeal;
@@ -112,6 +114,7 @@ public class Actor : Entity {
     damage = ModifyDamage(damage);
     damage = Math.Max(damage, 0);
     hp -= damage;
+    source.OnDealDamage?.Invoke(damage, this);
     OnTakeDamage?.Invoke(damage, hp, source);
     if (hp <= 0) {
       Kill();

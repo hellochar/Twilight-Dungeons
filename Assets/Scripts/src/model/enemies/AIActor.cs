@@ -9,7 +9,7 @@ public class AIActor : Actor {
     OnPreStep += HandlePreStep;
   }
 
-  private static int MaxSkippedActions = 20;
+  private static int MaxSkippedActions = 3;
 
   void HandlePreStep() {
     if (action == null) {

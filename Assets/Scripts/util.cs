@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ public static class Util {
     return null;
   }
 
-  private static Vector2Int[] AdjacentDirections = new Vector2Int[] {
+  public static Vector2Int[] AdjacentDirections = new Vector2Int[] {
     new Vector2Int(-1, -1),
     new Vector2Int(-1,  0),
     new Vector2Int(-1, +1),
@@ -44,8 +45,13 @@ public static class Util {
     new Vector2Int(+1,  0),
     new Vector2Int(+1, +1),
   };
+
   internal static Vector2Int RandomAdjacentDirection() {
-    return AdjacentDirections[UnityEngine.Random.Range(0, 8)];
+    return RandomPick(AdjacentDirections);
+  }
+
+  public static T RandomPick<T>(IEnumerable<T> items) {
+    return items.ElementAt(UnityEngine.Random.Range(0, items.Count()));
   }
 
   public static string WithSpaces(string capitalCaseString) {

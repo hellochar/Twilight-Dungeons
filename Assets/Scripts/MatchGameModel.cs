@@ -17,16 +17,17 @@ public class MatchGameModel : MonoBehaviour {
     currentFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
     Player player = model.player;
     player.OnSetAction += HandleSetPlayerAction;
+    model.turnManager.OnPlayersChoice += HandlePlayersChoice;
   }
 
   private Coroutine gameLoop;
   public void HandleSetPlayerAction(ActorAction action) {
     if (gameLoop == null && action != null) {
-      gameLoop = StartCoroutine(model.StepUntilPlayerChoice(HandleGameLoopEnd));
+      gameLoop = StartCoroutine(model.StepUntilPlayerChoice());
     }
   }
 
-  private void HandleGameLoopEnd() {
+  private void HandlePlayersChoice() {
     gameLoop = null;
   }
 

@@ -22,7 +22,7 @@ public class TurnManager {
     });
   }
 
-  internal IEnumerator<object> StepUntilPlayersChoice(Action onEnd) {
+  internal IEnumerator<object> StepUntilPlayersChoice() {
     // skip one frame so whatever's currently running can finish (in response to player.action = xxx)
     yield return null;
 
@@ -61,6 +61,5 @@ public class TurnManager {
     } while (true);
 
     OnPlayersChoice?.Invoke();
-    onEnd();
   }
 }

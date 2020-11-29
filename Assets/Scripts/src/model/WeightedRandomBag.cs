@@ -12,7 +12,6 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>> {
 
   private List<Entry> entries = new List<Entry>();
   private float accumulatedWeight;
-  private Random rand = new Random();
 
   public void Add(float weight, T item) {
     accumulatedWeight += weight;
@@ -20,7 +19,7 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>> {
   }
 
   public T GetRandom() {
-    float r = (float)rand.NextDouble() * accumulatedWeight;
+    float r = UnityEngine.Random.value * accumulatedWeight;
 
     foreach (Entry entry in entries) {
       if (entry.accumulatedWeight >= r) {

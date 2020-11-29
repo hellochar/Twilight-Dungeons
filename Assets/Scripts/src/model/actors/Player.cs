@@ -31,7 +31,7 @@ public class Player : Actor {
   }
 
   void HandleStepped(ActorAction action, float timeCost) {
-    fullness = Math.Max(fullness--, 0);
+    fullness = Math.Max(fullness - 1, 0);
     // you are now starving
     if (fullness <= 0) {
       this.TakeDamage(1, this);

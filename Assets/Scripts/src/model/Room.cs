@@ -19,12 +19,15 @@ public class Room {
   }
 
   public Vector2Int center => (min + max) / 2;
+  public Vector2 centerFloat => new Vector2((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f);
 
   public Room(Room parent, Vector2Int min, Vector2Int max) {
     this.parent = parent;
     this.min = min;
     this.max = max;
   }
+
+  public Room(Vector2Int min, Vector2Int max) : this(null, min, max) {}
 
   public int width {
     get {

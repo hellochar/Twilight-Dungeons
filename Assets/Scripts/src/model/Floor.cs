@@ -62,7 +62,7 @@ public class Floor {
   }
 
   internal IEnumerable<Actor> AdjacentActors(Vector2Int pos) {
-    return GetNeighborhoodTiles(pos).Select(x => x.occupant).Where(x => x != null);
+    return GetAdjacentTiles(pos).Select(x => x.occupant).Where(x => x != null);
   }
 
   internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
@@ -172,7 +172,7 @@ public class Floor {
   public bool TestVisibility(Vector2Int source, Vector2Int end) {
     bool isVisible = true;
     if (tiles[end.x, end.y].ObstructsVision()) {
-      var possibleEnds = GetNeighborhoodTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {
+      var possibleEnds = GetAdjacentTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {
         return Vector2Int.Distance(source, tile.pos);
       });
       /// find the closest neighbor that doesn't obstruct vision and go off that
@@ -188,7 +188,7 @@ public class Floor {
     return isVisible;
   }
 
-  public List<Tile> GetNeighborhoodTiles(Vector2Int pos) {
+  public List<Tile> GetAdjacentTiles(Vector2Int pos) {
     List<Tile> list = new List<Tile>();
     int xMin = Mathf.Clamp(pos.x - 1, 0, width - 1);
     int xMax = Mathf.Clamp(pos.x + 1, 0, width - 1);
@@ -223,8 +223,13 @@ public class Floor {
   }
 
   public IEnumerable<Tile> EnumerateRoomTiles(Room room) {
-    return EnumerateRectangle(room.min, room.max - new Vector2Int(1, 1)).Select(x => tiles[x]);
+    return EnumerateRoom(room).Select(x => tiles[x]);
   }
+
+  public IEnumerable<Vector2Int> EnumerateRoom(Room room) {
+    return EnumerateRectangle(room.min, room.max + new Vector2Int(1, 1));
+  }
+
 
   public IEnumerable<Vector2Int> EnumerateFloor() {
     return this.EnumerateRectangle(boundsMin, boundsMax);

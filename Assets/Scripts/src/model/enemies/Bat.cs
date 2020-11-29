@@ -7,22 +7,10 @@ public class Bat : AIActor {
     hp = hpMax = 5;
     faction = Faction.Enemy;
     ai = AIs.BatAI(this).GetEnumerator();
-    OnAttack += HandleAttack;
-    OnTakeDamage += HandleTakeDamage;
+    OnDealDamage += HandleDealDamage;
   }
 
-  private void HandleTakeDamage(int dmg, int hp, Actor source) {
-    SetActions(
-      new ChaseTargetAction(this, source),
-      new AttackAction(this, source),
-      new ChaseTargetAction(this, source),
-      new AttackAction(this, source),
-      new ChaseTargetAction(this, source),
-      new AttackAction(this, source)
-    );
-  }
-
-  private void HandleAttack(int dmg, Actor target) {
+  private void HandleDealDamage(int dmg, Actor target) {
     if (dmg > 0) {
       Heal(1);
     }

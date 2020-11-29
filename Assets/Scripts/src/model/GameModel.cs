@@ -26,8 +26,9 @@ public class GameModel {
 
   public static GameModel main = new GameModel(); //new GameModel();
   static GameModel() {
+    // UnityEngine.Random.InitState(10000);
     main.generateGameModel();
-    var step = main.StepUntilPlayerChoice(() => { });
+    var step = main.StepUntilPlayerChoice();
     // execute them all immediately
     do { } while (step.MoveNext());
   }
@@ -58,12 +59,13 @@ public class GameModel {
     throw new System.Exception("Reached max event queue generations!");
   }
 
-  public IEnumerator<object> StepUntilPlayerChoice(Action onEnd) {
-    return turnManager.StepUntilPlayersChoice(onEnd);
+  public IEnumerator<object> StepUntilPlayerChoice() {
+    return turnManager.StepUntilPlayersChoice();
   }
 
   public void generateGameModel() {
     this.floors = new Floor[] {
+      // FloorGenerator.EncounterTester(),
       FloorGenerator.generateFloor0(),
       FloorGenerator.generateRandomFloor(),
       FloorGenerator.generateRandomFloor(),

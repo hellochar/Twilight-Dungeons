@@ -174,7 +174,7 @@ public class ItemSeed : Item {
     /// consume this item somehow
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
-    soil.floor.AddActor(plant);
+    soil.floor.Add(plant);
     Destroy(null);
   }
 

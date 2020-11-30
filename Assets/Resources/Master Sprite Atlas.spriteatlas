@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 112537145
+    totalSpriteSurfaceArea: 111093634
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -1775,7 +1775,6 @@ SpriteAtlas:
   - {fileID: 7790373916559887256, guid: bb8b3e336c594944391cf23a2c1df40a, type: 3}
   - {fileID: -4710064956068553156, guid: bb8b3e336c594944391cf23a2c1df40a, type: 3}
   - {fileID: -2360735047313757442, guid: bb8b3e336c594944391cf23a2c1df40a, type: 3}
-  - {fileID: 21300000, guid: 0759a243ef3283b468c677e31f7eed08, type: 3}
   - {fileID: 21300000, guid: 0389c4835e143234eba009df68d7904f, type: 3}
   - {fileID: 21300000, guid: 078581a3de6e8a34e9d62a53b1c5c858, type: 3}
   - {fileID: 21300000, guid: 765d39a388dc9cc4ab1cfea5cb592163, type: 3}
@@ -1791,11 +1790,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 31ba47d3bd1c7124da4338ce8faba00a, type: 3}
   - {fileID: 21300000, guid: 7be121f37dc99bb46b8b8765178b7c1b, type: 3}
   - {fileID: 21300000, guid: 0eefdc047e4da064c866ea900ee95c24, type: 3}
-  - {fileID: 21300000, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: 21300000, guid: 081aab545ef338f4bba6ea5a6f4fb330, type: 3}
   - {fileID: 21300000, guid: 32b28b642befe144d9ed4c293e42378d, type: 3}
   - {fileID: 21300000, guid: 5125e084925cd574d8c58bc179e10716, type: 3}
-  - {fileID: 21300000, guid: 66f9c8a49a89aa64bb3f58f25c9efc53, type: 3}
   - {fileID: 21300000, guid: 52fe2ea4c529318468cfba1baa0529c0, type: 3}
   - {fileID: -4533687649513996969, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: -398975762361691103, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
@@ -2174,7 +2171,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6fcde895555f7c94ba5cffcc6b1c1b02, type: 3}
   - {fileID: 21300000, guid: 317b34a5d0a9bd84f99ad97f43312600, type: 3}
   - {fileID: 21300000, guid: 066f68d5ba4f82444bd020aaad4badc9, type: 3}
-  - {fileID: 21300000, guid: 995129e591d090b43a702bc314eb8fb3, type: 3}
   - {fileID: 21300000, guid: 5dcab6f5d8fa57845bdc11624214302f, type: 3}
   - {fileID: 21300000, guid: b41e5c161dc15b24484f706f30e4dc68, type: 3}
   - {fileID: 21300000, guid: 29851636278df0144bffa163b77d211a, type: 3}
@@ -4390,7 +4386,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3a1dac6807a730844a863ed9a9ffb539, type: 3}
   - {fileID: 21300000, guid: e819e7d830cef084f9dfb385dc8a67e0, type: 3}
   - {fileID: 21300000, guid: 9ca0ded86497a3d44a59122f8dccd75c, type: 3}
-  - {fileID: 21300000, guid: d5191fd89d788e04aaeef31ab124a7ea, type: 3}
   - {fileID: -5750959877437155064, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: 1123546238895616638, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: -9128439656174682321, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
@@ -9671,7 +9666,6 @@ SpriteAtlas:
   - roguelikeSheet_transparent_desaturated_1589
   - roguelikeSheet_transparent_desaturated_1210
   - roguelikeSheet_transparent_desaturated_1504
-  - monochrome_packed
   - sprite_0057
   - sprite_0029
   - sprite_0093
@@ -9687,11 +9681,9 @@ SpriteAtlas:
   - sprite_0076
   - sprite_0030
   - sprite_0060
-  - monochrome_transparent_packed
   - sprite_0028
   - 3Red
   - sprite_0012
-  - monochrome_transparent
   - sprite_0047
   - sprite-line-diagonal-dotted
   - pixel-line-diagonal
@@ -10070,7 +10062,6 @@ SpriteAtlas:
   - OrangeTree
   - sprite_0026
   - sprite_0089
-  - monochrome
   - sprite_0044
   - sprite_0070
   - sprite_0061
@@ -12286,7 +12277,6 @@ SpriteAtlas:
   - sprite_0031
   - sprite_0014
   - sprite_0011
-  - tileset_legacy
   - pixeland_167
   - pixeland_164
   - pixeland_165

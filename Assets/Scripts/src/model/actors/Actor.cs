@@ -4,21 +4,27 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
-public class Actor : Entity {
+public class Actor : SteppableEntity {
   public static IDictionary<Type, float> ActionCosts = new ReadOnlyDictionary<Type, float>(
     new Dictionary<Type, float> {
       {typeof(ActorAction), 1}
     }
   );
-  public bool IsDead { get; private set; }
 
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
     set {
-      Floor floor = this.floor;
-      if (floor == null || floor.tiles[value.x, value.y].CanBeOccupied()) {
+      if (floor == null) {
         _pos = value;
+      } else {
+        if (floor.tiles[value.x, value.y].CanBeOccupied()) {
+          var oldTile = floor.tiles[_pos];
+          oldTile.ActorLeft(this);
+          _pos = value;
+          Tile newTile = floor.tiles[_pos];
+          newTile.ActorEntered(this);
+        }
       }
     }
   }
@@ -28,7 +34,6 @@ public class Actor : Entity {
   public virtual IDictionary<Type, float> actionCosts => Actor.ActionCosts;
   protected float baseActionCost => GetActionCost(typeof(ActorAction));
   /// how many turns this Entity has been alive for
-  public float timeNextAction;
   public virtual ActorAction action {
     get => actionQueue.FirstOrDefault();
     set => SetActions(value);
@@ -37,15 +42,6 @@ public class Actor : Entity {
   public event Action<ActorAction> OnSetAction;
 
   public int visibilityRange = 7;
-  public Tile currentTile => floor.tiles[pos.x, pos.y];
-  public bool visible => currentTile.visibility == TileVisiblity.Visible;
-
-  /// Determines Actor order when multiple have the same timeNextAction.
-  /// Lower numbers go first.
-  /// Player has offset 10 (usually goes first).
-  /// Generally ranges in [0, 100].
-  internal virtual float turnPriority => 50;
-
   public Faction faction = Faction.Neutral;
   public event Action<int, Actor> OnDealDamage;
   public event Action<int, int, Actor> OnTakeDamage;
@@ -54,24 +50,33 @@ public class Actor : Entity {
   public event Action<int, Actor> OnAttack;
   /// gets called on any ground targeted attack
   public event Action<Vector2Int, Actor> OnAttackGround;
-  public event Action<ActorAction, float> OnStepped;
-  public event Action OnPreStep;
-  public event Action OnDeath;
 
   public Actor(Vector2Int pos) : base() {
     hp = hpMax = 8;
     this.timeNextAction = this.timeCreated + baseActionCost;
     this.pos = pos;
+    OnEnterFloor += HandleEnterFloor;
+    OnLeaveFloor += HandleLeaveFloor;
   }
 
-  internal void Heal(int amount) {
+  private void HandleLeaveFloor() {
+    tile.ActorLeft(this);
+  }
+
+  private void HandleEnterFloor() {
+    tile.ActorEntered(this);
+  }
+
+  /// returns how much it actually healed
+  internal int Heal(int amount) {
     if (amount <= 0) {
       Debug.Log("tried healing <= 0");
-      return;
+      return 0;
     }
     amount = Mathf.Clamp(amount, 0, hpMax - hp);
     hp += amount;
     OnHeal?.Invoke(amount, hp);
+    return amount;
   }
 
   /// create an Attack and execute it
@@ -114,12 +119,10 @@ public class Actor : Entity {
     return damage;
   }
 
-  public void Kill() {
-    /// TODO remove references to this Actor if needed
-    IsDead = true;
-    OnDeath?.Invoke();
+  public override void Kill() {
     hp = Math.Max(hp, 0);
-    floor.RemoveActor(this);
+    base.Kill();
+    /// TODO remove references to this Actor if needed
   }
 
   public void SetActions(params ActorAction[] actions) {
@@ -145,9 +148,8 @@ public class Actor : Entity {
     return GetActionCost(action.GetType());
   }
 
-  public virtual void Step() {
+  protected override float Step() {
     RemoveDoneActions();
-    OnPreStep?.Invoke();
     ActorAction currentAction = this.action;
     float timeCost;
     if (currentAction == null) {
@@ -157,8 +159,7 @@ public class Actor : Entity {
       currentAction.Perform();
       RemoveDoneActions();
     }
-    this.timeNextAction += timeCost;
-    OnStepped?.Invoke(currentAction, timeCost);
+    return timeCost;
   }
 
   protected virtual void RemoveDoneActions() {
@@ -168,15 +169,6 @@ public class Actor : Entity {
       OnSetAction?.Invoke(actionQueue.FirstOrDefault());
       finishedAction.Finish();
     }
-  }
-
-  public void CatchUpStep(float newTime) {
-    // by default actors don't do anything; they just act as if they were paused
-    this.timeNextAction = Mathf.Max(this.timeNextAction, newTime);
-  }
-
-  public override string ToString() {
-    return $"{base.ToString()} ({guid.ToString().Substring(0, 6)})";
   }
 }
 

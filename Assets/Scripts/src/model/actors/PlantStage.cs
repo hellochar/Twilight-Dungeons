@@ -23,36 +23,41 @@ public class PlantStage {
     ageEntered = plant.age;
   }
 
-  public virtual void Step() { }
+  public virtual float Step() {
+    return 1;
+  }
 
   public virtual string getUIText() { return ""; }
 }
 
 class Seed : PlantStage {
-  public override void Step() {
+  public override float Step() {
     if (this.age >= 500) {
       plant.stage = NextStage;
     }
+    return 1;
   }
 
   public override string getUIText() => $"Grows in {500 - this.age} turns.";
 }
 
 class Young : PlantStage {
-  public override void Step() {
+  public override float Step() {
     if (this.age >= 500) {
       plant.stage = NextStage;
     }
+    return 1;
   }
 
   public override string getUIText() => $"Grows in {500 - this.age} turns.";
 }
 
 class Sapling : PlantStage {
-  public override void Step() {
+  public override float Step() {
     if (this.age >= 500) {
       plant.stage = NextStage;
     }
+    return 1;
   }
 
   public override string getUIText() => $"Grows in {500 - this.age} turns.";

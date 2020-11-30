@@ -10,7 +10,7 @@ class SleepAction : ActorAction {
       base.Perform();
       return;
     }
-    bool canSeePlayer = actor.currentTile.visibility == TileVisiblity.Visible;
+    bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
     if (!canSeePlayer) {
       return;
     } else {

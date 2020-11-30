@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class Wildwood : Plant {
   class Mature : PlantStage {
-    public override void Step() {}
+    public override float Step() {
+      return 9999;
+    }
     public override string getUIText() => $"Ready to harvest.";
   }
 

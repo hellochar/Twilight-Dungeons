@@ -12,6 +12,9 @@ public abstract class Tile : Entity {
     set { }
   }
 
+  public event Action<Actor> OnActorEnter;
+  public event Action<Actor> OnActorLeave;
+
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;
   }
@@ -25,6 +28,14 @@ public abstract class Tile : Entity {
     return BasePathfindingWeight();
   }
 
+  internal void ActorLeft(Actor actor) {
+    GameModel.main.EnqueueEvent(() => OnActorLeave?.Invoke(actor));
+  }
+
+  internal void ActorEntered(Actor actor) {
+    GameModel.main.EnqueueEvent(() => OnActorEnter?.Invoke(actor));
+  }
+
   protected virtual float BasePathfindingWeight() {
     return 1;
   }
@@ -36,8 +47,6 @@ public abstract class Tile : Entity {
   internal bool CanBeOccupied() {
     return GetPathfindingWeight() != 0;
   }
-
-  public virtual void OnPlayerEnter() { }
 }
 
 public enum TileVisiblity {
@@ -57,29 +66,32 @@ public class Wall : Tile {
 
 public class Upstairs : Tile {
   public Upstairs(Vector2Int pos) : base(pos) {
+    OnActorEnter += HandleActorEnter;
   }
 
-  public override void OnPlayerEnter() {
-    Floor prevFloor = GameModel.main.floors[GameModel.main.activeFloorIndex - 1];
-    if (prevFloor != null) {
-      GameModel.main.PutPlayerAt(prevFloor, true);
+  public void HandleActorEnter(Actor actor) {
+    if (actor == GameModel.main.player) {
+      Floor prevFloor = GameModel.main.floors[GameModel.main.activeFloorIndex - 1];
+      if (prevFloor != null) {
+        GameModel.main.PutPlayerAt(prevFloor, true);
+      }
     }
   }
 }
 
 public class Downstairs : Tile {
-  public Downstairs(Vector2Int pos) : base(pos) { }
+  public Downstairs(Vector2Int pos) : base(pos) {
+    OnActorEnter += HandleActorEnter;
+  }
 
-  public override void OnPlayerEnter() {
-    Floor nextFloor = GameModel.main.floors[GameModel.main.activeFloorIndex + 1];
-    if (nextFloor != null) {
-      GameModel.main.PutPlayerAt(nextFloor, false);
+  public void HandleActorEnter(Actor actor) {
+    if (actor == GameModel.main.player) {
+      Floor nextFloor = GameModel.main.floors[GameModel.main.activeFloorIndex + 1];
+      if (nextFloor != null) {
+        GameModel.main.PutPlayerAt(nextFloor, false);
+      }
     }
   }
-}
-
-public class Dirt : Tile {
-  public Dirt(Vector2Int pos) : base(pos) { }
 }
 
 public class Soil : Tile {

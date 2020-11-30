@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   public Actor actor;
-  public new SpriteRenderer renderer;
 
   // Start is called before the first frame update
   public virtual void Start() {
@@ -18,8 +17,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
     actor.OnSetAction += HandleSetAction;
-    this.renderer = GetComponent<SpriteRenderer>();
-    this.transform.position = Util.withZ(this.actor.pos);
+    Update();
   }
 
   // Update is called once per frame
@@ -30,10 +28,6 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     } else {
       this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, 20f * Time.deltaTime), this.transform.position.z);
     }
-    // don't need this because the renderer is sprite-masked
-    // if (renderer != null) {
-    //   renderer.enabled = actor.visible;
-    // }
   }
 
   private void HandleSetAction(ActorAction action) {
@@ -58,6 +52,9 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   }
 
   void HandleTakeDamage(int damage, int newHp, Actor source) {
+    if (!actor.visible) {
+      return;
+    }
     GameObject damageTextPrefab = Resources.Load<GameObject>("UI/Damage Text");
     GameObject damageText = Instantiate(damageTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
     damageText.GetComponentInChildren<TMPro.TMP_Text>().text = $"-{damage}";
@@ -69,6 +66,9 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   }
 
   void HandleHeal(int amount, int newHp) {
+    if (!actor.visible) {
+      return;
+    }
     GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity);
 

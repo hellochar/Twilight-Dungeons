@@ -6,16 +6,15 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Floor {
-  // public static readonly int WIDTH = 60;
-  // public static readonly int HEIGHT = 20;
-
   public TileStore tiles;
 
   /// All actors in this floor, including the Player
-  private List<Actor> actors;
+  private List<Actor> actors = new List<Actor>();
 
-  public event Action<Actor> OnActorAdded;
-  public event Action<Actor> OnActorRemoved;
+  private Dictionary<Vector2Int, Grass> grasses = new Dictionary<Vector2Int, Grass>();
+
+  public event Action<Entity> OnEntityAdded;
+  public event Action<Entity> OnEntityRemoved;
 
   /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin, boundsMax;
@@ -52,13 +51,75 @@ public class Floor {
 
   public Floor(int width, int height) {
     this.tiles = new TileStore(this, width, height);
-    this.actors = new List<Actor>();
     boundsMin = new Vector2Int(0, 0);
     boundsMax = new Vector2Int(width, height);
   }
 
   public Actor ActorAt(Vector2Int pos) {
     return this.actors.FirstOrDefault(a => a.pos == pos);
+  }
+
+  public Grass GrassAt(Vector2Int pos) {
+    if (this.grasses.ContainsKey(pos)) {
+      return this.grasses[pos];
+    }
+    return null;
+  }
+
+  public void Add(Entity entity) {
+    if (entity is Actor actor) {
+      AddActor(actor);
+    } else if (entity is Grass grass) {
+      AddGrass(grass);
+    } else {
+      throw new Exception("Cannot add unrecognized entity " + entity);
+    }
+    entity.SetFloor(this);
+    this.OnEntityAdded?.Invoke(entity);
+  }
+
+  public void Remove(Entity entity) {
+    if (entity is Actor a) {
+      RemoveActor(a);
+    } else if (entity is Grass g) {
+      RemoveGrass(g);
+    } else {
+      throw new Exception("Cannot remove unrecognized entity " + entity);
+    }
+    entity.SetFloor(null);
+    this.OnEntityRemoved?.Invoke(entity);
+  }
+
+
+  private void AddActor(Actor actor) {
+    if (!tiles[actor.pos.x, actor.pos.y].CanBeOccupied()) {
+      Debug.LogWarning("Adding " + actor + " over a tile that cannot be occupied!");
+    }
+    // remove actor from old floor
+    if (actor.floor != null) {
+      actor.floor.RemoveActor(actor);
+    }
+    this.actors.Add(actor);
+  }
+
+  private void RemoveActor(Actor actor) {
+    this.actors.Remove(actor);
+  }
+
+  private void AddGrass(Grass grass) {
+    if (grass.floor != null) {
+      throw new Exception("Trying to move grass after it's setup!");
+    }
+    if (grasses.ContainsKey(grass.pos)) {
+      var oldGrass = grasses[grass.pos];
+      // kill old grass; this also calls RemoveGrass
+      oldGrass.Kill();
+    }
+    grasses[grass.pos] = grass;
+  }
+
+  private void RemoveGrass(Grass g) {
+    grasses.Remove(g.pos);
   }
 
   internal IEnumerable<Actor> AdjacentActors(Vector2Int pos) {
@@ -73,36 +134,6 @@ public class Floor {
       }
     }
     return actors;
-  }
-
-  public void AddActor(Actor actor) {
-    if (!tiles[actor.pos.x, actor.pos.y].CanBeOccupied()) {
-      Debug.LogWarning("Adding " + actor + " over a tile that cannot be occupied!");
-    }
-    // remove actor from old floor
-    if (actor.floor != null) {
-      actor.floor.RemoveActor(actor);
-    }
-    this.actors.Add(actor);
-    if (actor == GameModel.main.player) {
-      AddVisibility(actor);
-    }
-    actor.floor = this;
-    this.OnActorAdded?.Invoke(actor);
-  }
-
-  internal bool AreStairsConnected() {
-    var path = FindPath(downstairs.pos, upstairs.pos);
-    return path.Any();
-  }
-
-  public void RemoveActor(Actor actor) {
-    this.actors.Remove(actor);
-    if (actor == GameModel.main.player) {
-      RemoveVisibility(actor);
-    }
-    actor.floor = null;
-    this.OnActorRemoved?.Invoke(actor);
   }
 
   /// returns a list of adjacent positions that form the path, or an empty list if no path is found
@@ -141,6 +172,13 @@ public class Floor {
       yield return a;
     }
   }
+
+  internal IEnumerable<Grass> Grasses() {
+    foreach (Grass g in this.grasses.Values) {
+      yield return g;
+    }
+  }
+
 
   internal void CatchUpStep(float time) {
     // step all actors until they're up to speed
@@ -286,14 +324,14 @@ public class TileStore : IEnumerable<Tile> {
   
   public Floor floor { get; }
 
-  public void Put(Tile tile) {
-    tiles[tile.pos.x, tile.pos.y] = tile;
-    tile.floor = floor;
-  }
-
   public TileStore(Floor floor, int width, int height) {
     this.floor = floor;
     this.tiles = new Tile[width, height];
+  }
+
+  public void Put(Tile tile) {
+    tiles[tile.pos.x, tile.pos.y] = tile;
+    tile.SetFloor(floor);
   }
 
   public IEnumerator<Tile> GetEnumerator() {

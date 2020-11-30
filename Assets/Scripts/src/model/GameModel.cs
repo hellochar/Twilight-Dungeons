@@ -76,8 +76,7 @@ public class GameModel {
 
     Tile floor0Upstairs = floors[0].upstairs;
     this.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
-    floors[0].AddActor(this.player);
-    floors[0].AddVisibility(player);
+    floors[0].Add(this.player);
   }
 
   internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {
@@ -91,9 +90,9 @@ public class GameModel {
     } else {
       newPlayerPosition = newFloor.upstairs.pos + new Vector2Int(1, 0);
     }
-    oldFloor.RemoveActor(player);
+    oldFloor.Remove(player);
     player.pos = newPlayerPosition;
-    newFloor.AddActor(player);
+    newFloor.Add(player);
 
     player.floor.CatchUpStep(this.time);
   }
@@ -101,8 +100,8 @@ public class GameModel {
   /// Get all actors that should be simulated, in no order. This includes: 
   /// Actors on the current floor, and
   /// Plants on any floor
-  internal IEnumerable<Actor> GetAllActorsInPlay() {
-    IEnumerable<Actor> enumerable = Enumerable.Empty<Actor>();
+  internal IEnumerable<SteppableEntity> GetAllEntitiesInPlay() {
+    var enumerable = Enumerable.Empty<SteppableEntity>();
     foreach (var f in floors) {
       if (f == currentFloor) {
         enumerable = enumerable.Concat(f.Actors());

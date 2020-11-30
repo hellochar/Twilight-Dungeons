@@ -42,13 +42,16 @@ public static class FloorGenerator {
     return floor;
   }
 
-
+  public static bool AreStairsConnected(Floor floor) {
+    var path = floor.FindPath(floor.downstairs.pos, floor.upstairs.pos);
+    return path.Any();
+  }
 
   public static Floor generateRandomFloor() {
     Floor floor;
     do {
       floor = tryGenerateRandomFloor();
-    } while (!floor.AreStairsConnected());
+    } while (!AreStairsConnected(floor));
 
     foreach (var room in floor.rooms) {
       // spawn a random encounter

@@ -15,7 +15,6 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
 
   // Start is called before the first frame update
   public override void Start() {
-    base.Start();
     uiChild = transform.Find("Canvas").gameObject;
     uiChild.SetActive(false);
     foreach (Transform t in transform) {
@@ -28,6 +27,7 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
     }
     activePlantStageObject = plantStageObjects[plant.stage.name];
     activePlantStageObject.SetActive(true);
+    base.Start();
   }
 
   public override void Update() {
@@ -55,7 +55,7 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
     }
     // Clicking inside the popup will trigger this method; account for that by checking if the clicked location is in the tile.
     Tile t = Util.GetVisibleTileAt(pointerEventData.position);
-    if (t != null && t == plant.currentTile && t.visibility == TileVisiblity.Visible) {
+    if (t != null && t == plant.tile && t.visibility == TileVisiblity.Visible) {
       TogglePopup();
     }
   }

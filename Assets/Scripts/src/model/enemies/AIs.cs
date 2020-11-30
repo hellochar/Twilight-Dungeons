@@ -50,7 +50,7 @@ public static class AIs {
 
   public static IEnumerable<ActorAction> BlobAI(Actor actor) {
     while (true) {
-      bool canSeePlayer = actor.currentTile.visibility == TileVisiblity.Visible;
+      bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision
       if (canSeePlayer) {
         if (actor.IsNextTo(GameModel.main.player)) {
@@ -67,7 +67,7 @@ public static class AIs {
   public static IEnumerable<ActorAction> JackalAI(Actor actor) {
     yield return new SleepAction(actor);
     while (true) {
-      bool canSeePlayer = actor.currentTile.visibility == TileVisiblity.Visible;
+      bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       if (canSeePlayer) {
         if (actor.IsNextTo(GameModel.main.player)) {
           yield return new AttackAction(actor, GameModel.main.player);

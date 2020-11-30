@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// Adds and removes Tile prefabs to match the state of a Floor variable.
@@ -22,37 +23,35 @@ public class MatchFloorState : MonoBehaviour {
   void Start() {
     this.instantiateGameObjectsToMatchFloor();
     // TODO do the same thing for tile changes
-    floor.OnActorAdded += HandleActorAdded;
-    floor.OnActorRemoved += HandleActorRemoved;
+    floor.OnEntityAdded += HandleEntityAdded;
+    floor.OnEntityRemoved += HandleEntityRemoved;
   }
 
-  void HandleActorAdded(Actor a) {
-    InstantiateGameObjectForEntity(a);
+  void HandleEntityAdded(Entity e) {
+    InstantiateGameObjectForEntity(e);
   }
 
-  void HandleActorRemoved(Actor a) {
-    if (a == GameModel.main.player) {
+  void HandleEntityRemoved(Entity e) {
+    if (e == GameModel.main.player) {
       return;
     }
-    GameObject currentObject = gameObjectMap[a];
+    GameObject currentObject = gameObjectMap[e];
     if (currentObject == null) {
-      Debug.LogWarning("" + a + " was removed from floor " + floor + " but didn't have a GameObject.");
+      Debug.LogWarning("" + e + " was removed from floor " + floor + " but didn't have a GameObject.");
     }
     Destroy(currentObject);
-    gameObjectMap.Remove(a);
+    gameObjectMap.Remove(e);
   }
 
   void instantiateGameObjectsToMatchFloor() {
-    for (int x = 0; x < floor.width; x++) {
-      for (int y = 0; y < floor.height; y++) {
-        Tile tile = floor.tiles[x, y];
-        if (tile != null) {
-          InstantiateGameObjectForEntity(tile);
-        }
-      }
+    foreach (Tile tile in floor.tiles) {
+      InstantiateGameObjectForEntity(tile);
     }
     foreach (Actor actor in floor.Actors()) {
       InstantiateGameObjectForEntity(actor);
+    }
+    foreach (Grass grass in floor.Grasses()) {
+      InstantiateGameObjectForEntity(grass);
     }
   }
 
@@ -68,10 +67,12 @@ public class MatchFloorState : MonoBehaviour {
     GameObject prefab = GetEntityPrefab(entity);
     if (prefab != null) {
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
-      if (entity is Tile) {
-        gameObject.GetComponent<MatchTileState>().owner = (Tile) entity;
-      } else if (entity is Actor) {
-        gameObject.GetComponent<MatchActorState>().actor = (Actor) entity;
+      if (entity is Tile tile) {
+        gameObject.GetComponent<MatchTileState>().owner = tile;
+      } else if (entity is Actor actor) {
+        gameObject.GetComponent<MatchActorState>().actor = actor;
+      } else if (entity is Grass grass) {
+        gameObject.GetComponent<MatchGrassState>().grass = grass;
       }
       gameObjectMap[entity] = gameObject;
     } else {

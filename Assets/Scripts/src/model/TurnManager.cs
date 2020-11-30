@@ -12,8 +12,8 @@ public class TurnManager {
   }
 
   /// The actor whose turn it is
-  private Actor FindActiveActor() {
-    var allActorsInPlay = model.GetAllActorsInPlay();
+  private SteppableEntity FindActiveEntity() {
+    var allActorsInPlay = model.GetAllEntitiesInPlay();
     return allActorsInPlay.Aggregate((a1, a2) => {
       if (a1.timeNextAction == a2.timeNextAction) {
         return a1.turnPriority < a2.turnPriority ? a1 : a2;
@@ -29,29 +29,29 @@ public class TurnManager {
     model.DrainEventQueue();
     bool isFirstIteration = true;
     do {
-      Actor actor = FindActiveActor();
-      if (actor == model.player && model.player.action == null) {
+      var entity = FindActiveEntity();
+      if (entity == model.player && model.player.action == null) {
         break;
       }
 
-      if (model.time > actor.timeNextAction) {
-        throw new Exception("time is " + model.time + " but " + actor + " had a turn at " + actor.timeNextAction);
+      if (model.time > entity.timeNextAction) {
+        throw new Exception("time is " + model.time + " but " + entity + " had a turn at " + entity.timeNextAction);
       }
 
-      if (model.time != actor.timeNextAction) {
+      if (model.time != entity.timeNextAction) {
         // Debug.Log("Progressing time from " + model.time + " to " + actor.timeNextAction);
         // The first iteration will usually be right after the user's set an action.
         // Do *not* pause in that situation to allow the game to respond instantly.
         if (!isFirstIteration) {
-          yield return new WaitForSeconds((actor.timeNextAction - model.time) * 0.2f);
+          yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
         }
         // move game time up to now
-        model.time = actor.timeNextAction;
+        model.time = entity.timeNextAction;
       }
 
-      actor.Step();
+      entity.DoStep();
 
-      if (!isFirstIteration && actor.currentTile.visibility == TileVisiblity.Visible) {
+      if (!isFirstIteration && entity is Actor a && a.tile.visibility == TileVisiblity.Visible) {
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(.02f);
       }

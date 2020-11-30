@@ -6,12 +6,13 @@ public class BerryBush : Plant {
   class Mature : PlantStage {
     public int numBerries = 1;
 
-    public override void Step() {
+    public override float Step() {
       int turnsPerBerry = 250;
       /// TODO this only works because Step() gets called for every single consecutive age.
       if (this.age >= turnsPerBerry && this.age % turnsPerBerry == 0) {
         numBerries++;
       }
+      return 1;
     }
 
     public override string getUIText() => $"Contains {numBerries} berries.";

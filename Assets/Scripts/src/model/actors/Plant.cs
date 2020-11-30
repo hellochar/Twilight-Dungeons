@@ -20,9 +20,8 @@ public abstract class Plant : Actor {
     this.stage = stage;
   }
 
-  public override void Step() {
-    this.stage.Step();
-    this.timeNextAction += baseActionCost;
+  protected override float Step() {
+    return this.stage.Step();
   }
 
   public abstract void Harvest(); 

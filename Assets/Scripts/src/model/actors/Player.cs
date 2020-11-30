@@ -26,11 +26,21 @@ public class Player : Actor {
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
     hp = hpMax = 12;
+    OnEnterFloor += HandleEnterFloor;
+    OnLeaveFloor += HandleLeaveFloor;
     OnStepped += HandleStepped;
     OnAttack += HandleAttack;
   }
 
-  void HandleStepped(ActorAction action, float timeCost) {
+  private void HandleLeaveFloor() {
+    floor.RemoveVisibility(this);
+  }
+
+  private void HandleEnterFloor() {
+    floor.AddVisibility(this);
+  }
+
+  void HandleStepped(float timeCost) {
     fullness = Math.Max(fullness - 1, 0);
     // you are now starving
     if (fullness <= 0) {
@@ -61,8 +71,6 @@ public class Player : Actor {
       base.pos = value;
       if (floor != null) {
         floor.AddVisibility(this);
-        Tile t = floor.tiles[value.x, value.y];
-        model.EnqueueEvent(() => t.OnPlayerEnter());
       }
     }
   }

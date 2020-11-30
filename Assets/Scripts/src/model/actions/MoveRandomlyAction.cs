@@ -6,8 +6,10 @@ class MoveRandomlyAction : ActorAction {
 
   public override void Perform() {
     var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
-    Vector2Int pos = Util.RandomPick(adjacentTiles).pos;
-    actor.pos = pos;
+    if (adjacentTiles.Any()) {
+      Vector2Int pos = Util.RandomPick(adjacentTiles).pos;
+      actor.pos = pos;
+    }
     base.Perform();
   }
 }

@@ -6,9 +6,13 @@ using UnityEngine.EventSystems;
 
 public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   public Actor actor;
+  private static GameObject hpChangeTextPrefab;
 
   // Start is called before the first frame update
   public virtual void Start() {
+    if (hpChangeTextPrefab == null) {
+      hpChangeTextPrefab = Resources.Load<GameObject>("UI/HP Change Text");
+    }
     if (actor == null) {
       actor = GameModel.main.player;
     }
@@ -55,9 +59,8 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     if (!actor.visible) {
       return;
     }
-    GameObject damageTextPrefab = Resources.Load<GameObject>("UI/Damage Text");
-    GameObject damageText = Instantiate(damageTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
-    damageText.GetComponentInChildren<TMPro.TMP_Text>().text = $"-{damage}";
+    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
+    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
 
     if(damage > 0) {
       GameObject damagedSpritePrefab = Resources.Load<GameObject>("UI/Damaged Sprite");
@@ -65,21 +68,16 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  void HandleHeal(int amount, int newHp) {
+  void HandleHeal(int heal, int newHp) {
     if (!actor.visible) {
       return;
     }
     GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity);
 
-    GameObject damageTextPrefab = Resources.Load<GameObject>("UI/Damage Text");
-    GameObject damageText = Instantiate(damageTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
-    TMPro.TMP_Text text = damageText.GetComponentInChildren<TMPro.TMP_Text>();
-    text.text = $"{amount}";
-    text.color = HealTextColor;
+    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
+    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);
   }
-
-  public readonly static Color HealTextColor = new Color(0.109082f, 0.9803922f, 0.04313723f);
 
   private void HandleAttack(int damage, Actor target) {}
 

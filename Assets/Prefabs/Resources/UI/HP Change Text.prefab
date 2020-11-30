@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6361422120006164110}
   - component: {fileID: 6361422120006164097}
   - component: {fileID: 6361422120006164096}
+  - component: {fileID: 3739912962881510814}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -78,7 +79,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1328045225
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
 --- !u!33 &6361422120006164108
 MeshFilter:
@@ -124,8 +125,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278923002
-  m_fontColor: {r: 0.9811321, g: 0.17859921, b: 0.041651815, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -238,6 +239,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 124c75ac2fc1e2c4cb8b79d895311bd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3739912962881510814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6361422120006164098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 960bbc262ad2cbe4285e12526c315a58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 0}
 --- !u!1 &6361422120033834548
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,7 +263,7 @@ GameObject:
   - component: {fileID: 6361422120033834549}
   - component: {fileID: 6771776572003376376}
   m_Layer: 0
-  m_Name: Damage Text
+  m_Name: HP Change Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

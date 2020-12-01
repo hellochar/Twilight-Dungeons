@@ -14,7 +14,7 @@ public class Grass : SteppableEntity {
     OnEnterFloor += HandleEnterFloor;
   }
 
-  private void HandleEnterFloor() {
+  protected virtual void HandleEnterFloor() {
     tile.OnActorEnter += HandleActorEnter;
   }
 
@@ -31,5 +31,51 @@ public class Grass : SteppableEntity {
     tile.OnActorEnter -= HandleActorEnter;
     OnEnterFloor -= HandleEnterFloor;
     base.Kill();
+  }
+}
+
+public class Redvines : Grass {
+  public Redvines(Vector2Int pos) : base(pos) {
+  }
+
+  protected override void HandleEnterFloor() {
+    // foreach (var tile in floor.GetAdjacentTiles(pos)) {
+    tile.OnActorEnter += HandleAdjacentActorEnter;
+    // }
+  }
+
+  private void HandleAdjacentActorEnter(Actor who) {
+    // stun them for a few turns
+    GrappledAction action = new GrappledAction(who, 3, this);
+    action.OnDone += HandleActionDone;
+    who.InsertActions(action);
+  }
+
+  private void HandleActionDone() {
+    if (!IsDead) {
+      Kill();
+    }
+  }
+
+  public override void Kill() {
+    // foreach (var tile in floor.GetAdjacentTiles(pos)) {
+    /// TODO oh shit you have to manually unregister all your events
+    tile.OnActorEnter -= HandleAdjacentActorEnter;
+    // }
+    base.Kill();
+  }
+}
+
+public class GrappledAction : WaitAction {
+  public Entity grappler { get; }
+  public GrappledAction(Actor actor, int turns, Entity grappler) : base(actor, turns) {
+    this.grappler = grappler;
+  }
+
+  public override bool IsDone() {
+    if (grappler.IsDead) {
+      return true;
+    }
+    return base.IsDone();
   }
 }

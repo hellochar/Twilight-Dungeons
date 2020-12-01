@@ -226,6 +226,7 @@ public class Floor {
     return isVisible;
   }
 
+  /// includes the tile *at* the pos
   public List<Tile> GetAdjacentTiles(Vector2Int pos) {
     List<Tile> list = new List<Tile>();
     int xMin = Mathf.Clamp(pos.x - 1, 0, width - 1);
@@ -260,12 +261,13 @@ public class Floor {
     }
   }
 
-  public IEnumerable<Tile> EnumerateRoomTiles(Room room) {
-    return EnumerateRoom(room).Select(x => tiles[x]);
+  public IEnumerable<Tile> EnumerateRoomTiles(Room room, int extrude = 0) {
+    return EnumerateRoom(room, extrude).Select(x => tiles[x]);
   }
 
-  public IEnumerable<Vector2Int> EnumerateRoom(Room room) {
-    return EnumerateRectangle(room.min, room.max + new Vector2Int(1, 1));
+  public IEnumerable<Vector2Int> EnumerateRoom(Room room, int extrude = 0) {
+    Vector2Int extrudeVector = new Vector2Int(extrude, extrude);
+    return EnumerateRectangle(room.min - extrudeVector, room.max + new Vector2Int(1, 1) + extrudeVector);
   }
 
 

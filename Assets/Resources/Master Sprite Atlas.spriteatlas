@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 111093890
+    totalSpriteSurfaceArea: 111094146
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -1791,6 +1791,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7be121f37dc99bb46b8b8765178b7c1b, type: 3}
   - {fileID: 21300000, guid: 0eefdc047e4da064c866ea900ee95c24, type: 3}
   - {fileID: -3032536096966241093, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
+  - {fileID: -5258339883686333690, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: 21300000, guid: 081aab545ef338f4bba6ea5a6f4fb330, type: 3}
   - {fileID: 21300000, guid: 32b28b642befe144d9ed4c293e42378d, type: 3}
   - {fileID: 21300000, guid: 5125e084925cd574d8c58bc179e10716, type: 3}
@@ -9683,6 +9684,7 @@ SpriteAtlas:
   - sprite_0030
   - sprite_0060
   - monochrome-blob
+  - vines
   - sprite_0028
   - 3Red
   - sprite_0012

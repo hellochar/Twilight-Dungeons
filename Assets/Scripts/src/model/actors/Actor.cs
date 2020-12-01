@@ -132,6 +132,13 @@ public class Actor : SteppableEntity {
     RemoveDoneActions();
   }
 
+  public void InsertActions(params ActorAction[] actions) {
+    actionQueue.InsertRange(0, actions);
+    OnSetAction?.Invoke(actionQueue[0]);
+    RemoveDoneActions();
+  }
+
+
   public float GetActionCost(Type t) {
     while (t != typeof(object)) {
       if (actionCosts.ContainsKey(t)) {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 /// https://gamedev.stackexchange.com/a/162996
 public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>> {
@@ -27,6 +28,14 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>> {
       }
     }
     return default(T); //should only happen when there are no entries
+  }
+
+  public T GetRandomWithout(params T[] encounters) {
+    T pick;
+    do {
+      pick = GetRandom();
+    } while (encounters.Contains(pick));
+    return pick;
   }
 
   public IEnumerator<KeyValuePair<float, T>> GetEnumerator() {

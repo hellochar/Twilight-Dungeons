@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MatchActorAction<T> : MonoBehaviour where T : ActorAction {
@@ -6,7 +7,11 @@ public class MatchActorAction<T> : MonoBehaviour where T : ActorAction {
 
   public virtual void Start() {
     actor = GetComponentInParent<MatchActorState>().actor;
-    action = (T) actor.action;
+    try {
+      action = (T) actor.action;
+    } catch (InvalidCastException) {
+      Destroy(this.gameObject);
+    }
   }
 
   public virtual void Update() {

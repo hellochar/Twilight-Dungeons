@@ -54,9 +54,11 @@ public static class FloorGenerator {
     } while (!AreStairsConnected(floor));
 
     foreach (var room in floor.rooms) {
-      // spawn a random encounter
-      var encounter = Encounters.CavesStandard.GetRandom();
-      encounter.Apply(floor, room);
+      if (!(room == floor.upstairsRoom)) {
+        // spawn a random encounter
+        var encounter = Encounters.CavesStandard.GetRandom();
+        encounter.Apply(floor, room);
+      }
     }
 
     return floor;
@@ -135,6 +137,8 @@ public static class FloorGenerator {
     floor.PlaceDownstairs(downstairsPos);
     floor.root = root;
     floor.rooms = rooms;
+    floor.upstairsRoom = upstairsRoom;
+    floor.downstairsRoom = downstairsRoom;
     return floor;
   }
 

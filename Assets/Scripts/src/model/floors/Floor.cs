@@ -21,8 +21,10 @@ public class Floor {
 
   /// abstract bsp root
   internal Room root;
-  /// all rooms (terminal bsp nodes)
+  /// all rooms (terminal bsp nodes). Sorted by 
   internal List<Room> rooms;
+  internal Room upstairsRoom;
+  internal Room downstairsRoom;
 
   public Upstairs upstairs {
     get {

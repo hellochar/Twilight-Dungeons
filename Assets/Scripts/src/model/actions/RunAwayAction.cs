@@ -4,6 +4,7 @@ using UnityEngine;
 public class RunAwayAction : ActorAction {
   private Vector2Int fearPoint;
   public int turns;
+  private bool isFirstTurn = true;
 
   public RunAwayAction(Actor a, Vector2Int fearPoint, int turns) : base(a) {
     this.fearPoint = fearPoint;
@@ -12,6 +13,11 @@ public class RunAwayAction : ActorAction {
 
   public override void Perform() {
     turns--;
+    // the first turn is a surprise
+    if (isFirstTurn) {
+      isFirstTurn = false;
+      return;
+    }
     var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
     if (adjacentTiles.Any()) {
       var furthestTile = adjacentTiles.Aggregate((t1, t2) =>

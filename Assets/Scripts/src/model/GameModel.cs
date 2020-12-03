@@ -105,6 +105,7 @@ public class GameModel {
     foreach (var f in floors) {
       if (f == currentFloor) {
         enumerable = enumerable.Concat(f.Actors());
+        enumerable = enumerable.Concat(f.Grasses());
       } else {
         enumerable = enumerable.Concat(f.Actors().Where((a) => a is Plant));
       }

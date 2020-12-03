@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 111094146
+    totalSpriteSurfaceArea: 111071826
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -1804,7 +1804,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6ffafbe415926c54c97d5aa43c875e5f, type: 3}
   - {fileID: 21300000, guid: 84f3dce4ce4b8074c8bd5cd3e164ec2c, type: 3}
   - {fileID: 21300000, guid: 781cacf45650eee47b21cf9f6aed98bc, type: 3}
-  - {fileID: 21300000, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
+  - {fileID: -3527876879021525145, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
   - {fileID: 21300000, guid: bffc2205a7ddec042adb6a58a88118d6, type: 3}
   - {fileID: -2826371706182235217, guid: 16af7d159b8f86446b1286d2325af859, type: 3}
   - {fileID: -561210672073046923, guid: 16af7d159b8f86446b1286d2325af859, type: 3}
@@ -9697,7 +9697,7 @@ SpriteAtlas:
   - sprite_0098
   - RoseRed
   - sprite_0022
-  - plants
+  - mushroom
   - 2Blue
   - roguelikeChar_transparent_332
   - roguelikeChar_transparent_333

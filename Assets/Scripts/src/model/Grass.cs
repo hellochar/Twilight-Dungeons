@@ -77,6 +77,12 @@ public class GrappledAction : WaitAction {
 
   public override bool IsDone() {
     if (grappler.IsDead) {
+      return true;
+    }
+    return base.IsDone();
+  }
+}
+
 public class Mushroom : Grass {
   public Mushroom(Vector2Int pos) : base(pos) {
     timeNextAction = this.timeCreated + 25;

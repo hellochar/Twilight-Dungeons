@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7507529383352486235}
   - component: {fileID: 4942177522835084672}
   m_Layer: 9
-  m_Name: Mushrooms
+  m_Name: Mushroom
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,7 +103,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5481438108711556104}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1

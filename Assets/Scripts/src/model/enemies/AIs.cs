@@ -4,7 +4,7 @@ using System.Linq;
 
 public static class AIs {
   /// bats hide in corners and occasionally attack the closest target
-  public static IEnumerable<ActorAction> BatAI(Actor actor) {
+  public static IEnumerable<ActorTask> BatAI(Actor actor) {
     Func<Actor> SelectTarget = () => {
       var potentialTargets = actor.floor
         .ActorsInCircle(actor.pos, 7)
@@ -21,63 +21,63 @@ public static class AIs {
       isHungry = false;
     };
 
-    yield return new SleepAction(actor);
+    yield return new SleepTask(actor);
     while (true) {
       if (!isHungry) {
         while (actor.pos != roost) {
-          var moveToTarget = new MoveToTargetAction(actor, roost);
+          var moveToTarget = new MoveToTargetTask(actor, roost);
           // this means there's no path forward right now
           if (moveToTarget.path.Count == 0) {
-            yield return new WaitAction(actor, 1);
+            yield return new WaitTask(actor, 1);
           } else {
             yield return moveToTarget;
           }
         }
-        yield return new WaitAction(actor, 7);
+        yield return new WaitTask(actor, 7);
         isHungry = true;
       } else {
         var target = SelectTarget();
         if (target != null) {
-          yield return new ChaseDynamicTargetAction(actor, SelectTarget, target);
-          yield return new AttackAction(actor, target);
+          yield return new ChaseDynamicTargetTask(actor, SelectTarget, target);
+          yield return new AttackTask(actor, target);
         } else {
-          yield return new MoveRandomlyAction(actor);
+          yield return new MoveRandomlyTask(actor);
         }
       }
     }
 
   }
 
-  public static IEnumerable<ActorAction> BlobAI(Actor actor) {
+  public static IEnumerable<ActorTask> BlobAI(Actor actor) {
     while (true) {
       bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision
       if (canSeePlayer) {
         if (actor.IsNextTo(GameModel.main.player)) {
-          yield return new AttackGroundAction(actor, GameModel.main.player.pos, 1);
+          yield return new AttackGroundTask(actor, GameModel.main.player.pos, 1);
         } else {
-          yield return new ChaseTargetAction(actor, GameModel.main.player);
+          yield return new ChaseTargetTask(actor, GameModel.main.player);
         }
       } else {
-        yield return new MoveRandomlyAction(actor);
+        yield return new MoveRandomlyTask(actor);
       }
     }
   }
 
-  public static IEnumerable<ActorAction> JackalAI(Actor actor) {
-    yield return new SleepAction(actor);
+  public static IEnumerable<ActorTask> JackalAI(Actor actor) {
+    yield return new SleepTask(actor);
     while (true) {
       bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       if (canSeePlayer) {
         if (actor.IsNextTo(GameModel.main.player)) {
-          yield return new AttackAction(actor, GameModel.main.player);
+          yield return new AttackTask(actor, GameModel.main.player);
         } else {
           while (!actor.IsNextTo(GameModel.main.player)) {
-            yield return new ChaseTargetAction(actor, GameModel.main.player);
+            yield return new ChaseTargetTask(actor, GameModel.main.player);
           }
         }
       } else {
-        yield return new MoveRandomlyAction(actor);
+        yield return new MoveRandomlyTask(actor);
       }
     }
   }

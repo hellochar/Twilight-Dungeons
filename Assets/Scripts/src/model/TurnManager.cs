@@ -30,7 +30,7 @@ public class TurnManager {
     bool isFirstIteration = true;
     do {
       var entity = FindActiveEntity();
-      if (entity == model.player && model.player.action == null) {
+      if (entity == model.player && model.player.task == null) {
         break;
       }
 

@@ -48,8 +48,8 @@ public class MatchPlantState : MatchActorState, IPointerClickHandler {
     }
 
     if (!GameModel.main.player.IsNextTo(plant)) {
-      MoveNextToTargetAction action = new MoveNextToTargetAction(GameModel.main.player, plant.pos);
-      GameModel.main.player.action = action;
+      MoveNextToTargetTask task = new MoveNextToTargetTask(GameModel.main.player, plant.pos);
+      GameModel.main.player.task = task;
       GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
       return;
     }

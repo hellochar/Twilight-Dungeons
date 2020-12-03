@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaitAction : ActorAction {
+public class WaitTask : ActorTask {
   private int turns;
 
-  public WaitAction(Actor actor, int turns) : base(actor) {
+  public WaitTask(Actor actor, int turns) : base(actor) {
     this.turns = turns;
   }
 

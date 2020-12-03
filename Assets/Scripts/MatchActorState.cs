@@ -20,7 +20,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
-    actor.OnSetAction += HandleSetAction;
+    actor.OnSetTask += HandleSetAction;
     Update();
   }
 
@@ -34,25 +34,25 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  private void HandleSetAction(ActorAction action) {
-    if (action != null) {
-      GameObject prefab = GetPrefabForAction(action);
+  private void HandleSetAction(ActorTask task) {
+    if (task != null) {
+      GameObject prefab = GetPrefabForTask(task);
       if (prefab != null) {
         Instantiate(prefab, transform.position, Quaternion.identity, transform);
       }
     }
   }
 
-  private static Dictionary<Type, GameObject> actionPrefabCache = new Dictionary<Type, GameObject>();
-  private GameObject GetPrefabForAction(ActorAction obj) {
+  private static Dictionary<Type, GameObject> taskPrefabCache = new Dictionary<Type, GameObject>();
+  private GameObject GetPrefabForTask(ActorTask obj) {
     var type = obj.GetType();
-    if (!actionPrefabCache.ContainsKey(type)) {
+    if (!taskPrefabCache.ContainsKey(type)) {
       // attempt to load it
       var name = type.Name;
-      var prefabOrNull = Resources.Load<GameObject>($"UI/Actions/{name}");
-      actionPrefabCache.Add(type, prefabOrNull);
+      var prefabOrNull = Resources.Load<GameObject>($"UI/Tasks/{name}");
+      taskPrefabCache.Add(type, prefabOrNull);
     }
-    return actionPrefabCache[type];
+    return taskPrefabCache[type];
   }
 
   void HandleTakeDamage(int damage, int newHp, Actor source) {
@@ -90,7 +90,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     Player player = GameModel.main.player;
     // on clicking self, wait for 1 turn
     if (actor == player) {
-      player.action = new WaitAction(player, 1);
+      player.task = new WaitTask(player, 1);
       return;
     }
     // depending on the faction:
@@ -99,12 +99,12 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     switch (actor.faction) {
       case Faction.Ally:
       case Faction.Neutral:
-        player.action = new MoveNextToTargetAction(player, actor.pos);
+        player.task = new MoveNextToTargetTask(player, actor.pos);
       break;
       case Faction.Enemy:
-        player.SetActions(
-          new MoveNextToTargetAction(player, actor.pos),
-          new AttackAction(player, actor)
+        player.SetTasks(
+          new MoveNextToTargetTask(player, actor.pos),
+          new AttackTask(player, actor)
         );
       break;
     }

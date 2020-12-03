@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchGrappledAction : MatchActorAction<GrappledAction> {
+public class MatchRunAwayTask : MatchActorTask<RunAwayTask> {
 
   public override void Start() {
-    transform.localPosition = new Vector3(0, 0, 0);
+    transform.localPosition = new Vector3(0, 0.5f, 0);
     base.Start();
   }
 }

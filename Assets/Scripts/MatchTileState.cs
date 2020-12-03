@@ -61,7 +61,7 @@ public class MatchTileState : MonoBehaviour, IPointerClickHandler {
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
     if (owner.visibility != TileVisiblity.Unexplored) {
-      GameModel.main.player.action = new MoveToTargetAction(GameModel.main.player, owner.pos);
+      GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, owner.pos);
     }
   }
 

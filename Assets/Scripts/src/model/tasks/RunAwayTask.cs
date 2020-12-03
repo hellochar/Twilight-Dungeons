@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RunAwayAction : ActorAction {
+public class RunAwayTask : ActorTask {
   private Vector2Int fearPoint;
   public int turns;
   public int turnsRemaining;
 
-  public RunAwayAction(Actor a, Vector2Int fearPoint, int turns) : base(a) {
+  public RunAwayTask(Actor a, Vector2Int fearPoint, int turns) : base(a) {
     this.fearPoint = fearPoint;
     this.turns = turns;
     this.turnsRemaining = turns;

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MoveNextToTargetAction : FollowPathAction {
-  public MoveNextToTargetAction(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor.pos, target)) { }
+public class MoveNextToTargetTask : FollowPathTask {
+  public MoveNextToTargetTask(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor.pos, target)) { }
 
   public static List<Vector2Int> FindBestAdjacentPath(Vector2Int pos, Vector2Int target) {
     if (pos == target) {

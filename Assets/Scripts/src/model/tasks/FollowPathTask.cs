@@ -3,10 +3,10 @@ using System.Linq;
 using UnityEngine;
 
 /// Close-ended.
-public class FollowPathAction : ActorAction {
+public class FollowPathTask : ActorTask {
   public Vector2Int target { get; }
   public List<Vector2Int> path;
-  public FollowPathAction(Actor actor, Vector2Int target, List<Vector2Int> path) : base(actor) {
+  public FollowPathTask(Actor actor, Vector2Int target, List<Vector2Int> path) : base(actor) {
     this.target = target;
     this.path = path;
   }

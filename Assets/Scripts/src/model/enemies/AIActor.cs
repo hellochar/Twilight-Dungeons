@@ -5,7 +5,7 @@ using UnityEngine;
 /// This AI decides what actions the actor takes.
 /// TODO we should use composition for this instead, eventually
 public class AIActor : Actor {
-  protected IEnumerator<ActorAction> ai;
+  protected IEnumerator<ActorTask> ai;
   public AIActor(Vector2Int pos) : base(pos) { }
 
   private static int MaxRetries = 3;
@@ -16,14 +16,14 @@ public class AIActor : Actor {
         return base.Step();
       } catch (NoActionException) {
         if (ai.MoveNext()) {
-          SetActions(ai.Current);
+          SetTasks(ai.Current);
         } else {
           throw new System.Exception("AI Enumerator ended!");
         }
       }
     }
     Debug.LogWarning(this + " reached MaxSkippedActions!");
-    SetActions(new WaitAction(this, 1));
+    SetTasks(new WaitTask(this, 1));
     return base.Step();
   }
 }

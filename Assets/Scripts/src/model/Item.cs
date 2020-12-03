@@ -18,9 +18,9 @@ public class Item {
 
   internal virtual string GetStats() => "";
 
-  public virtual List<ActorAction> GetAvailableActions(Player player) {
-    return new List<ActorAction> {
-      new GenericAction(player, Destroy)
+  public virtual List<ActorTask> GetAvailableTasks(Player player) {
+    return new List<ActorTask> {
+      new GenericTask(player, Destroy)
     };
   }
 }
@@ -36,12 +36,12 @@ public abstract class EquippableItem : Item {
     ((Player)a).inventory.AddItem(this);
   }
 
-  public override List<ActorAction> GetAvailableActions(Player actor) {
-    var actions = base.GetAvailableActions(actor);
+  public override List<ActorTask> GetAvailableTasks(Player actor) {
+    var actions = base.GetAvailableTasks(actor);
     if (actor.inventory.HasItem(this)) {
-      actions.Add(new GenericAction(actor, Equip));
+      actions.Add(new GenericTask(actor, Equip));
     } else if (actor.equipment.HasItem(this)) {
-      actions.Add(new GenericAction(actor, Unequip));
+      actions.Add(new GenericTask(actor, Unequip));
     }
     return actions;
   }
@@ -103,9 +103,9 @@ class ItemBerries : Item, IStackable {
     }
   }
 
-  public override List<ActorAction> GetAvailableActions(Player player) {
-    var actions = base.GetAvailableActions(player);
-    actions.Add(new GenericAction(player, Use));
+  public override List<ActorTask> GetAvailableTasks(Player player) {
+    var actions = base.GetAvailableTasks(player);
+    actions.Add(new GenericTask(player, Use));
     return actions;
   }
 
@@ -197,8 +197,8 @@ public class ItemHands : EquippableItem, IWeapon {
 
   public (int, int) AttackSpread => (1, 2);
 
-  public override List<ActorAction> GetAvailableActions(Player player) {
-    return new List<ActorAction>();
+  public override List<ActorTask> GetAvailableTasks(Player player) {
+    return new List<ActorTask>();
   }
 }
 

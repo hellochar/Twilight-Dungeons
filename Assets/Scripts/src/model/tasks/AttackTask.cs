@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
-public class AttackAction : DoOnceActorAction {
-  public AttackAction(Actor actor, Actor _target) : base(actor) {
+public class AttackTask : DoOnceTask {
+  public AttackTask(Actor actor, Actor _target) : base(actor) {
     target = _target;
   }
 

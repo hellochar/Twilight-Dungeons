@@ -10,9 +10,9 @@ public class MatchSoilState : MatchTileState {
     Player player = GameModel.main.player;
     ItemSeed seed = (ItemSeed)player.inventory.ToList().Find(item => item is ItemSeed);
     if (seed != null) {
-      player.SetActions(
-        new MoveNextToTargetAction(player, owner.pos),
-        new GenericAction(player, (p) => {
+      player.SetTasks(
+        new MoveNextToTargetTask(player, owner.pos),
+        new GenericTask(player, (p) => {
           if (p.IsNextTo(owner)) {
             seed.Plant((Soil)owner);
           }

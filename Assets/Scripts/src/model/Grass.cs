@@ -49,9 +49,9 @@ public class Redvines : Grass {
 
   private void HandleAdjacentActorEnter(Actor who) {
     // stun them for a few turns
-    GrappledAction action = new GrappledAction(who, 3, this);
+    GrappledTask action = new GrappledTask(who, 3, this);
     action.OnDone += HandleActionDone;
-    who.InsertActions(action);
+    who.InsertTasks(action);
   }
 
   private void HandleActionDone() {
@@ -69,10 +69,10 @@ public class Redvines : Grass {
   }
 }
 
-public class GrappledAction : ActorAction {
+public class GrappledTask : ActorTask {
   private readonly int turns;
   public Entity grappler { get; }
-  public GrappledAction(Actor actor, int turns, Entity grappler) : base(actor) {
+  public GrappledTask(Actor actor, int turns, Entity grappler) : base(actor) {
     this.turns = turns;
     this.grappler = grappler;
   }

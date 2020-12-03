@@ -53,8 +53,8 @@ public class Player : Actor {
     if (item is IDurable durable) {
       Durables.ReduceDurability(durable);
     }
-    if (action is FollowPathAction) {
-      action = null;
+    if (task is FollowPathTask) {
+      task = null;
     }
   }
 

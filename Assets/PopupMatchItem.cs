@@ -27,7 +27,7 @@ public class PopupMatchItem : MonoBehaviour {
     title.text = item.displayName;
 
     Player player = GameModel.main.player;
-    List<ActorAction> actions = item.GetAvailableActions(player);
+    List<ActorTask> actions = item.GetAvailableTasks(player);
     if (actions.Any()) {
       // put more fundamental actions later
       actions.Reverse();
@@ -35,7 +35,7 @@ public class PopupMatchItem : MonoBehaviour {
         var actionButton = Instantiate(itemActionButtonPrefab, new Vector3(), Quaternion.identity, actionsContainer.transform);
         actionButton.GetComponentInChildren<TMPro.TMP_Text>().text = action.displayName;
         actionButton.GetComponent<Button>().onClick.AddListener(() => {
-          player.action = action;
+          player.task = action;
           Close();
           // CloseInventory();
         });

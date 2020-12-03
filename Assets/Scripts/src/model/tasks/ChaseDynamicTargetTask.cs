@@ -1,9 +1,9 @@
 using System;
 
-internal class ChaseDynamicTargetAction : ChaseTargetAction {
+internal class ChaseDynamicTargetTask : ChaseTargetTask {
   private Func<Actor> targetDecider;
 
-  public ChaseDynamicTargetAction(Actor actor, Func<Actor> targetDecider, Actor initialTarget) : base(actor, initialTarget) {
+  public ChaseDynamicTargetTask(Actor actor, Func<Actor> targetDecider, Actor initialTarget) : base(actor, initialTarget) {
     this.targetDecider = targetDecider;
   }
 

@@ -1,8 +1,8 @@
 /// Open-ended.
-public class ChaseTargetAction : MoveNextToTargetAction {
+public class ChaseTargetTask : MoveNextToTargetTask {
   protected Actor targetActor;
 
-  public ChaseTargetAction(Actor actor, Actor targetActor) : base(actor, targetActor.pos) {
+  public ChaseTargetTask(Actor actor, Actor targetActor) : base(actor, targetActor.pos) {
     this.targetActor = targetActor;
   }
 

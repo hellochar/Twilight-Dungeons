@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchAttackGroundAction : MatchActorAction<AttackGroundAction> {
+public class MatchAttackGroundTask : MatchActorTask<AttackGroundTask> {
 
   public override void Start() {
     base.Start();

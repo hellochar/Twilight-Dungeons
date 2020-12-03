@@ -16,12 +16,12 @@ public class MatchGameModel : MonoBehaviour {
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     currentFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
     Player player = model.player;
-    player.OnSetAction += HandleSetPlayerAction;
+    player.OnSetTask += HandleSetPlayerTask;
     model.turnManager.OnPlayersChoice += HandlePlayersChoice;
   }
 
   private Coroutine gameLoop;
-  public void HandleSetPlayerAction(ActorAction action) {
+  public void HandleSetPlayerTask(ActorTask action) {
     if (gameLoop == null && action != null) {
       gameLoop = StartCoroutine(model.StepUntilPlayerChoice());
     }

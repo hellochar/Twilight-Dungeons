@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 
 /// Close-ended
-public class GenericAction : DoOnceActorAction {
+public class GenericTask : DoOnceTask {
   public override string displayName => Util.WithSpaces(Action.Method.Name);
-  public GenericAction(Actor actor, Action<Actor> action) : base(actor) {
+  public GenericTask(Actor actor, Action<Actor> action) : base(actor) {
     Action = action;
   }
 

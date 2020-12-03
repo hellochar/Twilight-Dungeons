@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-class MoveRandomlyAction : DoOnceActorAction {
-  public MoveRandomlyAction(Actor actor) : base(actor) { }
+class MoveRandomlyTask : DoOnceTask {
+  public MoveRandomlyTask(Actor actor) : base(actor) { }
 
   public override IEnumerator<BaseAction> Enumerator() {
     var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());

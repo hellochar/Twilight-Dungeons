@@ -4,9 +4,9 @@ using UnityEngine;
 /// This is implemented as open-ended but it should be close-ended; but I'm lazy to implement it.
 /// Technically open- vs close-ended only makes a difference for the Player, specifically so the UI
 /// can respond quicker.
-public class AttackGroundAction : ActorAction {
+public class AttackGroundTask : ActorTask {
 
-  public AttackGroundAction(Actor actor, Vector2Int targetPosition, int turnsTelegraphed = 0) : base(actor) {
+  public AttackGroundTask(Actor actor, Vector2Int targetPosition, int turnsTelegraphed = 0) : base(actor) {
     TargetPosition = targetPosition;
     TurnsTelegraphed = turnsTelegraphed;
   }

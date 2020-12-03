@@ -16,11 +16,11 @@ public class FollowPathUI : MonoBehaviour {
     reticle = Instantiate(Resources.Load<GameObject>("UI/Reticle"), new Vector3(), Quaternion.identity, transform);
     reticle.SetActive(false);
     player = GameModel.main.player;
-    player.OnSetAction += HandleSetPlayerAction;
+    player.OnSetTask += HandleSetPlayerTask;
   }
 
-  void HandleSetPlayerAction(ActorAction action) {
-    if (action is FollowPathAction) {
+  void HandleSetPlayerTask(ActorTask action) {
+    if (action is FollowPathTask) {
       this.ResetPathDots();
     }
   }
@@ -33,13 +33,13 @@ public class FollowPathUI : MonoBehaviour {
   }
 
   void UpdatePathSprites() {
-    if (!(player.action is FollowPathAction)) {
+    if (!(player.task is FollowPathTask)) {
       if (pathDots != null) {
         this.ResetPathDots();
       }
       return;
     }
-    FollowPathAction action = (FollowPathAction) player.action;
+    FollowPathTask action = (FollowPathTask) player.task;
     if (pathDots == null) {
       this.pathDots = action.path.Select(pos => Instantiate(pathDotPrefab, Util.withZ(pos, 0), Quaternion.identity, transform)).ToList();
     }
@@ -58,9 +58,9 @@ public class FollowPathUI : MonoBehaviour {
   }
 
   void UpdateReticle() {
-    if (player.action is FollowPathAction) {
+    if (player.task is FollowPathTask) {
       reticle.SetActive(true);
-      reticle.transform.position = Util.withZ(( (FollowPathAction) player.action).target, reticle.transform.position.z);
+      reticle.transform.position = Util.withZ(( (FollowPathTask) player.task).target, reticle.transform.position.z);
     } else {
       reticle.SetActive(false);
     }

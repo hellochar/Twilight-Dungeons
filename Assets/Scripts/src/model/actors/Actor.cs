@@ -37,12 +37,12 @@ public class Actor : SteppableEntity {
   public virtual IDictionary<ActionType, float> actionCosts => Actor.ActionCosts;
   protected float baseActionCost => GetActionCost(ActionType.WAIT);
   /// how many turns this Entity has been alive for
-  public virtual ActorAction action {
-    get => actionQueue.FirstOrDefault();
-    set => SetActions(value);
+  public virtual ActorTask task {
+    get => taskQueue.FirstOrDefault();
+    set => SetTasks(value);
   }
-  protected List<ActorAction> actionQueue = new List<ActorAction>();
-  public event Action<ActorAction> OnSetAction;
+  protected List<ActorTask> taskQueue = new List<ActorTask>();
+  public event Action<ActorTask> OnSetTask;
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
@@ -128,20 +128,20 @@ public class Actor : SteppableEntity {
     /// TODO remove references to this Actor if needed
   }
 
-  public void SetActions(params ActorAction[] actions) {
-    actionQueue.Clear();
-    actionQueue.AddRange(actions);
-    ActionChanged();
+  public void SetTasks(params ActorTask[] actions) {
+    taskQueue.Clear();
+    taskQueue.AddRange(actions);
+    TaskChanged();
   }
 
-  public void InsertActions(params ActorAction[] actions) {
-    actionQueue.InsertRange(0, actions);
-    ActionChanged();
+  public void InsertTasks(params ActorTask[] actions) {
+    taskQueue.InsertRange(0, actions);
+    TaskChanged();
   }
 
   /// Call when this.action is changed
-  protected void ActionChanged() {
-    OnSetAction?.Invoke(this.action);
+  protected void TaskChanged() {
+    OnSetTask?.Invoke(this.task);
   }
 
   public float GetActionCost(ActionType t) {
@@ -153,26 +153,26 @@ public class Actor : SteppableEntity {
   }
 
   protected override float Step() {
-    if (action == null) {
+    if (task == null) {
       throw new NoActionException();
     }
     /// clear out all done actions from the queue
-    while (!action.MoveNext()) {
+    while (!task.MoveNext()) {
       // this mutates action
-      GoToNextAction();
-      if (action == null) {
+      GoToNextTask();
+      if (task == null) {
         throw new NoActionException();
       }
     }
     // at this point, we know the following things:
     // action is not null
     // action.MoveNext() has been called and it returned true
-    var baseAction = action.Current;
+    var baseAction = task.Current;
     baseAction.Perform();
 
     // handle close-ended actions
-    while (action != null && action.IsDone()) {
-      GoToNextAction();
+    while (task != null && task.IsDone()) {
+      GoToNextTask();
     }
     return GetActionCost(baseAction);
   }
@@ -180,11 +180,11 @@ public class Actor : SteppableEntity {
   /// Precondition: this.action's enumerator is ended, but the action is still in the queue.
   /// This will remove this.action from the queue and call .Finish() on it, which will
   /// indirectly set this.action to the next one in the queue
-  protected virtual void GoToNextAction() {
-    ActorAction currentAction = this.action;
-    currentAction.Finish();
-    actionQueue.RemoveAt(0);
-    ActionChanged();
+  protected virtual void GoToNextTask() {
+    ActorTask currentTask = this.task;
+    currentTask.Finish();
+    taskQueue.RemoveAt(0);
+    TaskChanged();
   }
 }
 

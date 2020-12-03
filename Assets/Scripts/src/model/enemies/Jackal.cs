@@ -19,7 +19,7 @@ public class Jackal : AIActor {
 
   private void HandleDeath() {
     foreach (var jackal in floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal)) {
-      jackal.SetActions(new RunAwayAction(jackal, pos, 6));
+      jackal.SetTasks(new RunAwayTask(jackal, pos, 6));
     }
   }
 

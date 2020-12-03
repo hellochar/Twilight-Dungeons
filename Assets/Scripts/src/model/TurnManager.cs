@@ -49,7 +49,19 @@ public class TurnManager {
         model.time = entity.timeNextAction;
       }
 
-      entity.DoStep();
+      try {
+        entity.DoStep();
+      } catch (NoActionException) {
+        if (entity == model.player) {
+          // stop if it's the player
+          break;
+        } else {
+          // just hack it
+          entity.timeNextAction += 1;
+          // this actually shouldn't happen to AIs
+          Debug.LogWarning(entity + " NoActionException");
+        }
+      }
 
       if (!isFirstIteration && entity is Actor a && a.tile.visibility == TileVisiblity.Visible) {
         // stagger actors just a bit for juice

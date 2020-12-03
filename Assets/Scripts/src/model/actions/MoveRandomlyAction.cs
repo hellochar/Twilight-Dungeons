@@ -1,15 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-class MoveRandomlyAction : ActorAction {
+class MoveRandomlyAction : DoOnceActorAction {
   public MoveRandomlyAction(Actor actor) : base(actor) { }
 
-  public override void Perform() {
+  public override IEnumerator<BaseAction> Enumerator() {
     var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
     if (adjacentTiles.Any()) {
       Vector2Int pos = Util.RandomPick(adjacentTiles).pos;
-      actor.pos = pos;
+      yield return new MoveBaseAction(actor, pos);
     }
-    base.Perform();
   }
 }

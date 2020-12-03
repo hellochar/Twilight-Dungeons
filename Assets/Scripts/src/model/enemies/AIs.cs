@@ -27,7 +27,7 @@ public static class AIs {
         while (actor.pos != roost) {
           var moveToTarget = new MoveToTargetAction(actor, roost);
           // this means there's no path forward right now
-          if (moveToTarget.IsDone()) {
+          if (moveToTarget.path.Count == 0) {
             yield return new WaitAction(actor, 1);
           } else {
             yield return moveToTarget;

@@ -9,11 +9,9 @@ public class WaitAction : ActorAction {
     this.turns = turns;
   }
 
-  public override void Perform() {
-    turns--;
-  }
-
-  public override bool IsDone() {
-    return turns <= 0;
+  public override IEnumerator<BaseAction> Enumerator() {
+    for (var i = 0; i < turns; i++) {
+      yield return new WaitBaseAction(actor);
+    }
   }
 }

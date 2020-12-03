@@ -7,13 +7,8 @@ internal class ChaseDynamicTargetAction : ChaseTargetAction {
     this.targetDecider = targetDecider;
   }
 
-  public override void Perform() {
+  public override void OnGetNextPosition() {
     this.targetActor = targetDecider();
-    if (this.targetActor == null) {
-      // end
-      this.path.Clear();
-    } else {
-      base.Perform();
-    }
+    base.OnGetNextPosition();
   }
 }

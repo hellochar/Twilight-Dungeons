@@ -1,16 +1,16 @@
 using System;
+using System.Collections.Generic;
 
-public class GenericAction : ActorAction {
+/// Close-ended
+public class GenericAction : DoOnceActorAction {
+  public override string displayName => Util.WithSpaces(Action.Method.Name);
   public GenericAction(Actor actor, Action<Actor> action) : base(actor) {
     Action = action;
   }
 
   public Action<Actor> Action { get; }
 
-  public override void Perform() {
-    Action.Invoke(actor);
-    base.Perform();
+  public override IEnumerator<BaseAction> Enumerator() {
+    yield return new GenericBaseAction(actor, Action);
   }
-
-  public override string displayName => Util.WithSpaces(Action.Method.Name);
 }

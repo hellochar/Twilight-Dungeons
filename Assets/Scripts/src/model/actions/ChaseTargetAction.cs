@@ -1,3 +1,4 @@
+/// Open-ended.
 public class ChaseTargetAction : MoveNextToTargetAction {
   protected Actor targetActor;
 
@@ -5,9 +6,13 @@ public class ChaseTargetAction : MoveNextToTargetAction {
     this.targetActor = targetActor;
   }
 
-  public override void Perform() {
-    /// recompute the path
-    this.path = FindBestAdjacentPath(actor.pos, targetActor.pos);
-    base.Perform();
+  public override void OnGetNextPosition() {
+    if (targetActor == null) {
+      this.path.Clear();
+    } else {
+      this.path = FindBestAdjacentPath(actor.pos, targetActor.pos);
+    }
   }
+
+  public override bool IsDone() => false;
 }

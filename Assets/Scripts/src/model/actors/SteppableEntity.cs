@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class SteppableEntity : Entity {
   /// implementors are responsible for modifying this
-  public virtual float timeNextAction { get; protected set; }
+  public virtual float timeNextAction { get; set; }
 
   /// Determines Actor order when multiple have the same timeNextAction.
   /// Lower numbers go first.

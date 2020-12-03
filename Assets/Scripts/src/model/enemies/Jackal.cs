@@ -5,13 +5,11 @@ using System.Linq;
 using UnityEngine;
 // run fast, fear other jackals nearby when they die
 public class Jackal : AIActor {
-  public static new IDictionary<Type, float> ActionCosts = new ReadOnlyDictionary<Type, float>(
-    new Dictionary<Type, float>(Actor.ActionCosts) {
-      {typeof(FollowPathAction), 0.67f},
-    }
-  );
+  public static new IDictionary<ActionType, float> ActionCosts = new Dictionary<ActionType, float>(Actor.ActionCosts) {
+    [ActionType.MOVE] = 0.67f,
+  };
 
-  public override IDictionary<Type, float> actionCosts => Jackal.ActionCosts;
+  public override IDictionary<ActionType, float> actionCosts => Jackal.ActionCosts;
   public Jackal(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = hpMax = 3;

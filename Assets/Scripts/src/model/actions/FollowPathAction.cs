@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// Close-ended.
 public class FollowPathAction : ActorAction {
   public Vector2Int target { get; }
   public List<Vector2Int> path;
@@ -10,19 +11,16 @@ public class FollowPathAction : ActorAction {
     this.path = path;
   }
 
-  public override void Perform() {
-    if (path.Any()) {
+  public override IEnumerator<BaseAction> Enumerator() {
+    while (path.Any()) {
       Vector2Int nextPosition = path.First();
       path.RemoveAt(0);
-      actor.pos = nextPosition;
-      // if it failed for any reason, cancel the move
-      if (actor.pos != nextPosition) {
-        path.Clear();
-      }
+      /// TODO cancel this action if MoveBaseAction failed
+      yield return new MoveBaseAction(actor, nextPosition);
     }
   }
 
-  public override bool IsDone() {
-    return path.Count == 0;
-  }
+  public virtual void OnGetNextPosition() {}
+
+  public override bool IsDone() => path.Count == 0;
 }

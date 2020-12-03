@@ -1,29 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 /// An actor whose actions are controlled by some sort of AI.
 /// This AI decides what actions the actor takes.
 /// TODO we should use composition for this instead, eventually
 public class AIActor : Actor {
   protected IEnumerator<ActorAction> ai;
-  public AIActor(Vector2Int pos) : base(pos) {
-    OnPreStep += HandlePreStep;
-  }
+  public AIActor(Vector2Int pos) : base(pos) { }
 
-  private static int MaxSkippedActions = 3;
+  private static int MaxRetries = 3;
 
-  void HandlePreStep() {
-    if (action == null) {
-      var i = 0;
-      do {
-        ai.MoveNext();
-        i++;
-      } while (ai.Current.IsDone() && i < MaxSkippedActions);
-      if (i == MaxSkippedActions) {
-        Debug.LogWarning("" + this + " reached MaxSkippedActions!");
-        SetActions(new WaitAction(this, 1));
-      } else {
-        SetActions(ai.Current);
+  protected override float Step() {
+    for (int retries = 0; retries < MaxRetries; retries++) {
+      try {
+        return base.Step();
+      } catch (NoActionException) {
+        if (ai.MoveNext()) {
+          SetActions(ai.Current);
+        } else {
+          throw new System.Exception("AI Enumerator ended!");
+        }
       }
     }
+    Debug.LogWarning(this + " reached MaxSkippedActions!");
+    SetActions(new WaitAction(this, 1));
+    return base.Step();
   }
 }

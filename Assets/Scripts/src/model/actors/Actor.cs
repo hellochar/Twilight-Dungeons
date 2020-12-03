@@ -5,9 +5,12 @@ using System.Linq;
 using UnityEngine;
 
 public class Actor : SteppableEntity {
-  public static IDictionary<Type, float> ActionCosts = new ReadOnlyDictionary<Type, float>(
-    new Dictionary<Type, float> {
-      {typeof(ActorAction), 1}
+  public static IDictionary<ActionType, float> ActionCosts = new ReadOnlyDictionary<ActionType, float>(
+    new Dictionary<ActionType, float> {
+      {ActionType.ATTACK, 1},
+      {ActionType.GENERIC, 1},
+      {ActionType.MOVE, 1},
+      {ActionType.WAIT, 1},
     }
   );
 
@@ -31,14 +34,14 @@ public class Actor : SteppableEntity {
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
 
-  public virtual IDictionary<Type, float> actionCosts => Actor.ActionCosts;
-  protected float baseActionCost => GetActionCost(typeof(ActorAction));
+  public virtual IDictionary<ActionType, float> actionCosts => Actor.ActionCosts;
+  protected float baseActionCost => GetActionCost(ActionType.WAIT);
   /// how many turns this Entity has been alive for
   public virtual ActorAction action {
     get => actionQueue.FirstOrDefault();
     set => SetActions(value);
   }
-  private List<ActorAction> actionQueue = new List<ActorAction>();
+  protected List<ActorAction> actionQueue = new List<ActorAction>();
   public event Action<ActorAction> OnSetAction;
 
   public int visibilityRange = 7;
@@ -128,54 +131,60 @@ public class Actor : SteppableEntity {
   public void SetActions(params ActorAction[] actions) {
     actionQueue.Clear();
     actionQueue.AddRange(actions);
-    OnSetAction?.Invoke(actionQueue[0]);
-    RemoveDoneActions();
+    ActionChanged();
   }
 
   public void InsertActions(params ActorAction[] actions) {
     actionQueue.InsertRange(0, actions);
-    OnSetAction?.Invoke(actionQueue[0]);
-    RemoveDoneActions();
+    ActionChanged();
   }
 
-
-  public float GetActionCost(Type t) {
-    while (t != typeof(object)) {
-      if (actionCosts.ContainsKey(t)) {
-        return actionCosts[t];
-      } else {
-        // walk up the type hierarchy
-        t = t.BaseType;
-      }
-    }
-    return actionCosts[typeof(ActorAction)];
+  /// Call when this.action is changed
+  protected void ActionChanged() {
+    OnSetAction?.Invoke(this.action);
   }
 
-  public float GetActionCost(ActorAction action) {
-    return GetActionCost(action.GetType());
+  public float GetActionCost(ActionType t) {
+    return actionCosts[t];
+  }
+
+  public float GetActionCost(BaseAction action) {
+    return GetActionCost(action.Type);
   }
 
   protected override float Step() {
-    RemoveDoneActions();
-    ActorAction currentAction = this.action;
-    float timeCost;
-    if (currentAction == null) {
-      timeCost = baseActionCost;
-    } else {
-      timeCost = GetActionCost(currentAction);
-      currentAction.Perform();
-      RemoveDoneActions();
+    if (action == null) {
+      throw new NoActionException();
     }
-    return timeCost;
+    /// clear out all done actions from the queue
+    while (!action.MoveNext()) {
+      // this mutates action
+      GoToNextAction();
+      if (action == null) {
+        throw new NoActionException();
+      }
+    }
+    // at this point, we know the following things:
+    // action is not null
+    // action.MoveNext() has been called and it returned true
+    var baseAction = action.Current;
+    baseAction.Perform();
+
+    // handle close-ended actions
+    while (action != null && action.IsDone()) {
+      GoToNextAction();
+    }
+    return GetActionCost(baseAction);
   }
 
-  protected virtual void RemoveDoneActions() {
-    while (actionQueue.Any() && actionQueue[0].IsDone()) {
-      ActorAction finishedAction = actionQueue[0];
-      actionQueue.RemoveAt(0);
-      OnSetAction?.Invoke(actionQueue.FirstOrDefault());
-      finishedAction.Finish();
-    }
+  /// Precondition: this.action's enumerator is ended, but the action is still in the queue.
+  /// This will remove this.action from the queue and call .Finish() on it, which will
+  /// indirectly set this.action to the next one in the queue
+  protected virtual void GoToNextAction() {
+    ActorAction currentAction = this.action;
+    currentAction.Finish();
+    actionQueue.RemoveAt(0);
+    ActionChanged();
   }
 }
 
@@ -206,3 +215,5 @@ public enum Faction { Ally, Neutral, Enemy }
 //     target.TakeDamage(damage, source);
 //   }
 // }
+
+public class NoActionException : Exception {}

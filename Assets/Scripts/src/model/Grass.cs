@@ -69,17 +69,21 @@ public class Redvines : Grass {
   }
 }
 
-public class GrappledAction : WaitAction {
+public class GrappledAction : ActorAction {
+  private readonly int turns;
   public Entity grappler { get; }
-  public GrappledAction(Actor actor, int turns, Entity grappler) : base(actor, turns) {
+  public GrappledAction(Actor actor, int turns, Entity grappler) : base(actor) {
+    this.turns = turns;
     this.grappler = grappler;
   }
 
-  public override bool IsDone() {
-    if (grappler.IsDead) {
-      return true;
+  public override IEnumerator<BaseAction> Enumerator() {
+    for (var i = 0; i < turns; i++) {
+      if (grappler.IsDead) {
+        yield break;
+      }
+      yield return new WaitBaseAction(actor);
     }
-    return base.IsDone();
   }
 }
 

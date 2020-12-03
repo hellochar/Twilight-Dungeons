@@ -1,14 +1,13 @@
-public class AttackAction : ActorAction {
+using System.Collections.Generic;
+
+public class AttackAction : DoOnceActorAction {
   public AttackAction(Actor actor, Actor _target) : base(actor) {
     target = _target;
   }
 
   public Actor target { get; }
 
-  public override void Perform() {
-    if (actor.IsNextTo(target)) {
-      actor.Attack(target);
-    }
-    base.Perform();
+  public override IEnumerator<BaseAction> Enumerator() {
+    yield return new AttackBaseAction(actor, target);
   }
 }

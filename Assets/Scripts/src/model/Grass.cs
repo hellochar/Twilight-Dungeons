@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Grass : SteppableEntity {
@@ -12,6 +14,7 @@ public class Grass : SteppableEntity {
   public Grass(Vector2Int pos) : base() {
     this._pos = pos;
     OnEnterFloor += HandleEnterFloor;
+    timeNextAction = this.timeCreated + 9999;
   }
 
   protected virtual void HandleEnterFloor() {
@@ -74,8 +77,28 @@ public class GrappledAction : WaitAction {
 
   public override bool IsDone() {
     if (grappler.IsDead) {
-      return true;
-    }
-    return base.IsDone();
+public class Mushroom : Grass {
+  public Mushroom(Vector2Int pos) : base(pos) {
+    timeNextAction = this.timeCreated + 25;
   }
+
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+  }
+
+  public override void Kill() {
+    base.Kill();
+  }
+
+  protected override float Step() {
+    // find an adjacent square without mushrooms and grow into it
+    var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null);
+    if (noGrassTiles.Any()) {
+      var toGrowInto = Util.RandomPick(noGrassTiles);
+      var newMushrom = new Mushroom(toGrowInto.pos);
+      floor.Add(newMushrom);
+    }
+    return 25;
+  }
+
 }

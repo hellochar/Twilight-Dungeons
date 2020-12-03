@@ -5,7 +5,9 @@ using UnityEngine;
 public abstract class Tile : Entity {
   public TileVisiblity visibility = TileVisiblity.Unexplored;
   public Actor actor => floor.ActorAt(pos);
+  public Grass grass => floor.GrassAt(pos);
   private Vector2Int _pos;
+
   public override Vector2Int pos {
     get => _pos;
     /// do not allow moving tiles

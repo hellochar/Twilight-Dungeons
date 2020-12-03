@@ -73,13 +73,26 @@ public static class Encounters {
     // otherEncounter.Apply(floor, room);
   });
 
+  static Encounter AddMushroom = new Encounter((floor, room) => {
+    var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall) && tile.grass == null);
+    var chosenTile = Util.RandomPick(tilesNextToWalls);
+    floor.Add(new Mushroom(chosenTile.pos));
+    // foreach (var tile in tilesNextToWalls) {
+    //   floor.Add(new Redvines(tile.pos));
+    // }
+    // // also pick another Encounter
+    // var otherEncounter = CavesStandard.GetRandomWithout(CoverWithGrass, AddRedvines);
+    // otherEncounter.Apply(floor, room);
+  });
+
   public static WeightedRandomBag<Encounter> CavesStandard = new WeightedRandomBag<Encounter> {
     { 1.75f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
     { 0.8f, BatInCorner },
     { 1, CoverWithGrass },
-    { 5, AddRedvines },
+    // { 5, AddRedvines },
+    { 10, AddMushroom },
     { 0.1f, MatureBush },
   };
 }

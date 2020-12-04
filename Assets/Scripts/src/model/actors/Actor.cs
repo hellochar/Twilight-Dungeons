@@ -4,15 +4,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
+public class ActionCosts : Dictionary<ActionType, float> {
+  public ActionCosts(IDictionary<ActionType, float> dictionary) : base(dictionary) {}
+  public ActionCosts() : base() {}
+}
+
 public class Actor : SteppableEntity {
-  public static IDictionary<ActionType, float> ActionCosts = new ReadOnlyDictionary<ActionType, float>(
-    new Dictionary<ActionType, float> {
-      {ActionType.ATTACK, 1},
-      {ActionType.GENERIC, 1},
-      {ActionType.MOVE, 1},
-      {ActionType.WAIT, 1},
-    }
-  );
+  public static ActionCosts StaticActionCosts = new ActionCosts {
+    {ActionType.ATTACK, 1},
+    {ActionType.GENERIC, 1},
+    {ActionType.MOVE, 1},
+    {ActionType.WAIT, 1},
+  };
 
   private Vector2Int _pos;
   public override Vector2Int pos {
@@ -31,10 +34,13 @@ public class Actor : SteppableEntity {
       }
     }
   }
+
+  public StatusList statuses = new StatusList();
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
 
-  public virtual IDictionary<ActionType, float> actionCosts => Actor.ActionCosts;
+  /// don't call directly; this doesn't use modifiers
+  protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
   protected float baseActionCost => GetActionCost(ActionType.WAIT);
   /// how many turns this Entity has been alive for
   public virtual ActorTask task {
@@ -144,11 +150,12 @@ public class Actor : SteppableEntity {
     OnSetTask?.Invoke(this.task);
   }
 
+  /// uses modifiers
   public float GetActionCost(ActionType t) {
-    return actionCosts[t];
+    return Modifiers.Process(statuses.ActionCostModifiers(), actionCosts)[t];
   }
 
-  public float GetActionCost(BaseAction action) {
+  public virtual float GetActionCost(BaseAction action) {
     return GetActionCost(action.Type);
   }
 
@@ -167,14 +174,14 @@ public class Actor : SteppableEntity {
     // at this point, we know the following things:
     // action is not null
     // action.MoveNext() has been called and it returned true
-    var baseAction = task.Current;
-    baseAction.Perform();
+    var action = task.Current;
+    action.Perform();
 
     // handle close-ended actions
     while (task != null && task.IsDone()) {
       GoToNextTask();
     }
-    return GetActionCost(baseAction);
+    return GetActionCost(action);
   }
 
   /// Precondition: this.action's enumerator is ended, but the action is still in the queue.

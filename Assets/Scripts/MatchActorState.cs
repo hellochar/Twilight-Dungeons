@@ -56,7 +56,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   }
 
   void HandleTakeDamage(int damage, int newHp, Actor source) {
-    if (!actor.visible) {
+    if (!actor.isVisible) {
       return;
     }
     GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
@@ -69,7 +69,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
   }
 
   void HandleHeal(int heal, int newHp) {
-    if (!actor.visible) {
+    if (!actor.isVisible) {
       return;
     }
     GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");

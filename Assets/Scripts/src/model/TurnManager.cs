@@ -30,9 +30,6 @@ public class TurnManager {
     bool isFirstIteration = true;
     do {
       var entity = FindActiveEntity();
-      if (entity == model.player && model.player.task == null) {
-        break;
-      }
 
       if (model.time > entity.timeNextAction) {
         throw new Exception("time is " + model.time + " but " + entity + " had a turn at " + entity.timeNextAction);
@@ -42,11 +39,15 @@ public class TurnManager {
         // Debug.Log("Progressing time from " + model.time + " to " + actor.timeNextAction);
         // The first iteration will usually be right after the user's set an action.
         // Do *not* pause in that situation to allow the game to respond instantly.
-        if (!isFirstIteration) {
+        if (!isFirstIteration && entity.isVisible) {
           yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
         }
         // move game time up to now
         model.time = entity.timeNextAction;
+      }
+
+      if (entity == model.player && model.player.task == null) {
+        break;
       }
 
       try {
@@ -63,7 +64,7 @@ public class TurnManager {
         }
       }
 
-      if (!isFirstIteration && entity is Actor a && a.tile.visibility == TileVisiblity.Visible) {
+      if (!isFirstIteration && entity.isVisible) {
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(.02f);
       }

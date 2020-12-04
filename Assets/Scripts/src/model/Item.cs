@@ -50,46 +50,57 @@ public abstract class EquippableItem : Item {
 interface IStackable {
   int stacks { get; set; }
   int stacksMax { get; }
+}
+
+static class Stackables {
 
   /// remove newStacks from this stack and return a new
   /// stackable with that many stacks
-  IStackable Split(int newStacks);
+  public static T Split<T>(T s, int newStacks) where T : IStackable {
+    if (newStacks >= s.stacks) {
+      throw new ArgumentException($"Cannot split a stack of {s.stacks} into one of {newStacks}!");
+    }
+
+    var type = typeof(T);
+    var constructor = type.GetConstructor(new Type[] { typeof(int) });
+    var newInstance = (T) constructor.Invoke(new object[] { newStacks });
+
+    s.stacks -= newStacks;
+
+    return newInstance;
+  }
 
   /// Merge as many stacks as possible from other into this one.
-  /// May call Destroy() on the other stack. Return true if the other stack is now empty
-  /// NOTE: it's the responsibility of the caller to then call Destroy() on the IStackable!
-  bool Merge(IStackable other);
+  /// Return true if the other stack is now empty.
+  /// NOTE: it's the responsibility of the caller to then dispose of the IStackable!
+  public static bool Merge<T>(T s, T other) where T : IStackable {
+    var spaceLeft = s.stacksMax - s.stacks;
+    var stacksToAdd = UnityEngine.Mathf.Clamp(other.stacks, 0, spaceLeft);
+    s.stacks += stacksToAdd;
+    other.stacks -= stacksToAdd;
+    return other.stacks == 0;
+  }
 }
 
 class ItemBerries : Item, IStackable {
-
   public ItemBerries(int stacks) {
-    if (stacks <= 0) {
-      throw new ArgumentException("Made a 0 or negative stack of berries!");
-    }
     this.stacks = stacks;
   }
 
   public int stacksMax => 10;
 
-  public int stacks { get; set; }
-
-
-  public IStackable Split(int newStacks) {
-    if (newStacks >= stacks) {
-      throw new ArgumentException($"Cannot split a stack of {stacks} into one of {newStacks}!");
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy(null);
+      }
     }
-    var newItem = new ItemBerries(newStacks);
-    stacks -= newStacks;
-    return newItem;
-  }
-
-  public bool Merge(IStackable other) {
-    var spaceLeft = stacksMax - stacks;
-    var stacksToAdd = UnityEngine.Mathf.Clamp(other.stacks, 0, spaceLeft);
-    stacks += stacksToAdd;
-    other.stacks -= stacksToAdd;
-    return other.stacks == 0;
   }
 
   public void Use(Actor a) {
@@ -98,9 +109,6 @@ class ItemBerries : Item, IStackable {
       player.IncreaseFullness(0.05f);
     }
     stacks--;
-    if (stacks == 0) {
-      Destroy(a);
-    }
   }
 
   public override List<ActorTask> GetAvailableTasks(Player player) {
@@ -111,6 +119,43 @@ class ItemBerries : Item, IStackable {
 
   internal override string GetStats() => "Heals 3 HP.\nRecover 5% hunger.";
 }
+
+class ItemMushroom : Item, IStackable {
+  public ItemMushroom(int stacks) {
+    this.stacks = stacks;
+  }
+  public int stacksMax => 10;
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy(null);
+      }
+    }
+  }
+
+  public void Eat(Actor a) {
+    if (a is Player player) {
+      player.IncreaseFullness(0.05f);
+    }
+    stacks--;
+  }
+
+  public override List<ActorTask> GetAvailableTasks(Player player) {
+    var actions = base.GetAvailableTasks(player);
+    actions.Add(new GenericTask(player, Eat));
+    return actions;
+  }
+
+  internal override string GetStats() => "Recover 5% hunger.";
+}
+
 
 class ItemStick : EquippableItem, IDurable, IWeapon {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;

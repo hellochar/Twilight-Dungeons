@@ -11,9 +11,9 @@ public class Encounter {
 
 public static class Encounters {
   // no op
-  static Encounter Empty = new Encounter((Floor, Room) => {});
+  public static Encounter Empty = new Encounter((Floor, Room) => {});
 
-  static Encounter AFewBlobs = new Encounter((floor, room) => {
+  public static Encounter AFewBlobs = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
     emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
     var numBlobs = Random.Range(2, 4);
@@ -22,7 +22,7 @@ public static class Encounters {
     }
   });
 
-  static Encounter JackalPile = new Encounter((floor, room) => {
+  public static Encounter JackalPile = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
     emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
     emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
@@ -32,7 +32,7 @@ public static class Encounters {
     }
   });
 
-  static Encounter BatInCorner = new Encounter((floor, room) => {
+  public static Encounter BatInCorner = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
     // sort by farthest distance to center
     emptyTilesInRoom.Sort((x, y) => (int) Mathf.Sign(Vector2.Distance(y.pos, room.centerFloat) - Vector2.Distance(x.pos, room.centerFloat)));
@@ -41,7 +41,7 @@ public static class Encounters {
     }
   });
 
-  static Encounter MatureBush = new Encounter((floor, room) => {
+  public static Encounter MatureBush = new Encounter((floor, room) => {
     // add a soil at the center
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
     emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
@@ -56,14 +56,14 @@ public static class Encounters {
     }
   });
 
-  static Encounter CoverWithGrass = new Encounter((floor, room) => {
+  public static Encounter CoverWithSoftGrass = new Encounter((floor, room) => {
     foreach (var tile in floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground)) {
-      var grass = new Grass(tile.pos);
+      var grass = new SoftGrass(tile.pos);
       floor.Add(grass);
     }
   });
 
-  static Encounter AddRedvines = new Encounter((floor, room) => {
+  public static Encounter AddRedvines = new Encounter((floor, room) => {
     var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall));
     foreach (var tile in tilesNextToWalls) {
       floor.Add(new Redvines(tile.pos));
@@ -73,7 +73,7 @@ public static class Encounters {
     // otherEncounter.Apply(floor, room);
   });
 
-  static Encounter AddMushroom = new Encounter((floor, room) => {
+  public static Encounter AddMushroom = new Encounter((floor, room) => {
     var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall) && tile.grass == null);
     var chosenTile = Util.RandomPick(tilesNextToWalls);
     floor.Add(new Mushroom(chosenTile.pos));
@@ -90,9 +90,9 @@ public static class Encounters {
     { 1, AFewBlobs },
     { 1, JackalPile },
     { 0.8f, BatInCorner },
-    { 1, CoverWithGrass },
-    // { 5, AddRedvines },
-    { 10, AddMushroom },
+    { 1, CoverWithSoftGrass },
+    { 1, AddRedvines },
+    { 1, AddMushroom },
     { 0.1f, MatureBush },
   };
 }

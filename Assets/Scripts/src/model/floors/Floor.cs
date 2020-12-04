@@ -11,13 +11,15 @@ public class Floor {
   /// All actors in this floor, including the Player
   private List<Actor> actors = new List<Actor>();
 
+  /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
   private Dictionary<Vector2Int, Grass> grasses = new Dictionary<Vector2Int, Grass>();
 
   public event Action<Entity> OnEntityAdded;
   public event Action<Entity> OnEntityRemoved;
 
   /// min inclusive, max exclusive in terms of map width/height
-  public Vector2Int boundsMin, boundsMax;
+  public Vector2Int boundsMin => new Vector2Int(0, 0);
+  public Vector2Int boundsMax => new Vector2Int(width, height);
 
   /// abstract bsp root
   internal Room root;
@@ -53,8 +55,6 @@ public class Floor {
 
   public Floor(int width, int height) {
     this.tiles = new TileStore(this, width, height);
-    boundsMin = new Vector2Int(0, 0);
-    boundsMax = new Vector2Int(width, height);
   }
 
   public Actor ActorAt(Vector2Int pos) {

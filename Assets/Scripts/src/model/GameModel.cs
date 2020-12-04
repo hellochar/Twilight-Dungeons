@@ -97,8 +97,8 @@ public class GameModel {
     player.floor.CatchUpStep(this.time);
   }
 
-  /// Get all actors that should be simulated, in no order. This includes: 
-  /// Actors on the current floor, and
+  /// Get all actors that should be simulated, in no particular order. This includes: 
+  /// SteppableEntity's on the current floor, and
   /// Plants on any floor
   internal IEnumerable<SteppableEntity> GetAllEntitiesInPlay() {
     var enumerable = Enumerable.Empty<SteppableEntity>();

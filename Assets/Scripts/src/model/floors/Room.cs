@@ -27,7 +27,11 @@ public class Room {
     this.max = max;
   }
 
-  public Room(Vector2Int min, Vector2Int max) : this(null, min, max) {}
+  public Room(Vector2Int min, Vector2Int max) : this(null, min, max) { }
+
+  public Room(Floor floor) : this(
+    new Vector2Int(1, 1),
+    new Vector2Int(floor.width - 2, floor.height - 2)) { }
 
   public int width {
     get {

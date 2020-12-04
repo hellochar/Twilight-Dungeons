@@ -9,9 +9,11 @@ public abstract class Entity {
   public abstract Vector2Int pos { get; set; }
   public float timeCreated { get; }
   public float age => GameModel.main.time - timeCreated;
-  public Tile tile => floor.tiles[pos.x, pos.y];
-  public bool visible => tile.visibility == TileVisiblity.Visible;
   public Floor floor { get; private set; }
+  public Tile tile => floor.tiles[pos.x, pos.y];
+  public Grass grass => floor.GrassAt(pos);
+  public Actor actor => floor.ActorAt(pos);
+  public bool isVisible => tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set
   public event Action OnEnterFloor;
   /// called before the old floor is left

@@ -11,7 +11,7 @@ public class Player : Actor {
   public Inventory inventory { get; }
   public Equipment equipment { get; }
   /// 1000 is max fullness
-  public int fullness = MAX_FULLNESS;
+  public float fullness = MAX_FULLNESS;
 
   internal override float turnPriority => 10;
 
@@ -28,7 +28,7 @@ public class Player : Actor {
     hp = hpMax = 12;
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
-    OnStepped += HandleStepped;
+    OnPostStep += HandlePostStep;
     OnAttack += HandleAttack;
   }
 
@@ -40,8 +40,8 @@ public class Player : Actor {
     floor.AddVisibility(this);
   }
 
-  void HandleStepped(float timeCost) {
-    fullness = Math.Max(fullness - 1, 0);
+  void HandlePostStep(float timeCost) {
+    fullness = Math.Max(fullness - timeCost, 0);
     // you are now starving
     if (fullness <= 0) {
       this.TakeDamage(1, this);

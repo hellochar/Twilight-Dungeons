@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Grass : SteppableEntity {
+public abstract class Grass : SteppableEntity {
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
@@ -13,25 +13,43 @@ public class Grass : SteppableEntity {
 
   public Grass(Vector2Int pos) : base() {
     this._pos = pos;
+  }
+}
+
+public class SoftGrass : Grass {
+  public SoftGrass(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
-    timeNextAction = this.timeCreated + 9999;
+    /// TODO make SteppableEntity an Interface
+    timeNextAction = this.timeCreated + 99999;
   }
 
-  protected virtual void HandleEnterFloor() {
+  void HandleEnterFloor() {
+    /// TODO make this declarative instead of manually registering events
     tile.OnActorEnter += HandleActorEnter;
+    tile.OnActorLeave += HandleActorLeave;
   }
 
   void HandleActorEnter(Actor who) {
-    who.Heal(1);
-    Kill();
+    if (who is Player player) {
+      player.statuses.Add(new SoftGrassStatus());
+    }
   }
 
+  void HandleActorLeave(Actor who) {
+    who.statuses.RemoveOfType<SoftGrassStatus>();
+  }
+
+
   protected override float Step() {
-    return 9999;
+    return 99999;
   }
 
   public override void Kill() {
     tile.OnActorEnter -= HandleActorEnter;
+    if (tile.actor != null) {
+      HandleActorLeave(tile.actor);
+    }
+    tile.OnActorLeave -= HandleActorLeave;
     OnEnterFloor -= HandleEnterFloor;
     base.Kill();
   }
@@ -39,15 +57,19 @@ public class Grass : SteppableEntity {
 
 public class Redvines : Grass {
   public Redvines(Vector2Int pos) : base(pos) {
+    OnEnterFloor += HandleEnterFloor;
+    timeNextAction = this.timeCreated + 99999;
   }
 
-  protected override void HandleEnterFloor() {
-    // foreach (var tile in floor.GetAdjacentTiles(pos)) {
-    tile.OnActorEnter += HandleAdjacentActorEnter;
-    // }
+  protected override float Step() {
+    return 99999;
   }
 
-  private void HandleAdjacentActorEnter(Actor who) {
+  void HandleEnterFloor() {
+    tile.OnActorEnter += HandleActorEnter;
+  }
+
+  private void HandleActorEnter(Actor who) {
     // stun them for a few turns
     GrappledTask action = new GrappledTask(who, 3, this);
     action.OnDone += HandleActionDone;
@@ -61,10 +83,8 @@ public class Redvines : Grass {
   }
 
   public override void Kill() {
-    // foreach (var tile in floor.GetAdjacentTiles(pos)) {
     /// TODO oh shit you have to manually unregister all your events
-    tile.OnActorEnter -= HandleAdjacentActorEnter;
-    // }
+    tile.OnActorEnter -= HandleActorEnter;
     base.Kill();
   }
 }
@@ -89,11 +109,23 @@ public class GrappledTask : ActorTask {
 
 public class Mushroom : Grass {
   public Mushroom(Vector2Int pos) : base(pos) {
-    timeNextAction = this.timeCreated + 25;
+    timeNextAction = this.timeCreated + GetRandomDuplicateTime();
+    OnEnterFloor += HandleEnterFloor;
   }
 
-  protected override void HandleEnterFloor() {
-    base.HandleEnterFloor();
+  void HandleEnterFloor() {
+    tile.OnActorEnter += HandleActorEnter;
+  }
+
+  private void HandleActorEnter(Actor actor) {
+    if (actor == GameModel.main.player) {
+      GameModel.main.player.inventory.AddItem(new ItemMushroom(1));
+      Kill();
+    }
+  }
+
+  private float GetRandomDuplicateTime() {
+    return UnityEngine.Random.Range(50, 100);
   }
 
   public override void Kill() {
@@ -108,7 +140,6 @@ public class Mushroom : Grass {
       var newMushrom = new Mushroom(toGrowInto.pos);
       floor.Add(newMushrom);
     }
-    return 25;
+    return GetRandomDuplicateTime();
   }
-
 }

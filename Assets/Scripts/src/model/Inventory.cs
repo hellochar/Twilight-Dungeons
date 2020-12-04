@@ -18,7 +18,7 @@ public class Inventory : IEnumerable<Item> {
     if (slotArg == null && item is IStackable stackable) {
       // go through existing stacks and add as much as possible
       foreach (IStackable i in ItemsNonNull().Where(i => i.GetType() == item.GetType())) {
-        bool isConsumed = i.Merge(stackable);
+        bool isConsumed = Stackables.Merge(i, stackable);
         if (isConsumed) {
           item.Destroy(null);
           return true;

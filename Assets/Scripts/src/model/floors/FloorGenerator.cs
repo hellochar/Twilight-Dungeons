@@ -39,6 +39,12 @@ public static class FloorGenerator {
       }
     }
 
+    var room0 = new Room(floor);
+    floor.rooms = new List<Room> { room0 };
+    floor.root = room0;
+
+    // Encounters.CoverWithSoftGrass.Apply(floor, room0);
+
     return floor;
   }
 
@@ -74,7 +80,7 @@ public static class FloorGenerator {
     }
 
     // randomly partition space into 20 rooms
-    Room root = new Room(new Vector2Int(1, 1), new Vector2Int(floor.width - 2, floor.height - 2));
+    Room root = new Room(floor);
     for (int i = 0; i < 20; i++) {
       bool success = root.randomlySplit();
       if (!success) {

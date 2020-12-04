@@ -12,7 +12,7 @@ public abstract class SteppableEntity : Entity {
   internal virtual float turnPriority => 50;
 
   public event Action OnPreStep;
-  public event Action<float> OnStepped;
+  public event Action<float> OnPostStep;
 
   /// do not call this directly; should only be called from DoStep()
   protected abstract float Step();
@@ -25,7 +25,7 @@ public abstract class SteppableEntity : Entity {
       timeCost = 0.01f;
     }
     timeNextAction += timeCost;
-    OnStepped?.Invoke(timeCost);
+    OnPostStep?.Invoke(timeCost);
   }
 
   public void CatchUpStep(float newTime) {

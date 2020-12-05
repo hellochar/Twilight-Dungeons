@@ -32,11 +32,11 @@ public static class Encounters {
     }
   });
 
-  public static Encounter BatInCorner = new Encounter((floor, room) => {
+  public static Encounter BatsInCorner = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
     // sort by farthest distance to center
     emptyTilesInRoom.Sort((x, y) => (int) Mathf.Sign(Vector2.Distance(y.pos, room.centerFloat) - Vector2.Distance(x.pos, room.centerFloat)));
-    foreach (var tile in emptyTilesInRoom.Take(1)) {
+    foreach (var tile in emptyTilesInRoom.Take(2)) {
       floor.Add(new Bat(tile.pos));
     }
   });
@@ -66,33 +66,40 @@ public static class Encounters {
   public static Encounter AddRedvines = new Encounter((floor, room) => {
     var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall));
     foreach (var tile in tilesNextToWalls) {
-      floor.Add(new Redvines(tile.pos));
+      if (Random.value < 0.5) {
+        floor.Add(new Redvines(tile.pos));
+      }
+    }
+    // // also pick another Encounter
+    // var otherEncounter = CavesStandard.GetRandomWithout(CoverWithSoftGrass, AddRedvines, );
+    // otherEncounter.Apply(floor, room);
+  });
+
+  public static Encounter AddMushroom = new Encounter((floor, room) => {
+    var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall) && tile.grass == null);
+    var spacing = 5;
+    while (tilesNextToWalls.Any()) {
+      var chosenTile = Util.RandomPick(tilesNextToWalls.Take(spacing));
+      floor.Add(new Mushroom(chosenTile.pos));
+      tilesNextToWalls = tilesNextToWalls.Skip(spacing);
     }
     // // also pick another Encounter
     // var otherEncounter = CavesStandard.GetRandomWithout(CoverWithGrass, AddRedvines);
     // otherEncounter.Apply(floor, room);
   });
 
-  public static Encounter AddMushroom = new Encounter((floor, room) => {
-    var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall) && tile.grass == null);
-    var chosenTile = Util.RandomPick(tilesNextToWalls);
-    floor.Add(new Mushroom(chosenTile.pos));
-    // foreach (var tile in tilesNextToWalls) {
-    //   floor.Add(new Redvines(tile.pos));
-    // }
-    // // also pick another Encounter
-    // var otherEncounter = CavesStandard.GetRandomWithout(CoverWithGrass, AddRedvines);
-    // otherEncounter.Apply(floor, room);
-  });
-
-  public static WeightedRandomBag<Encounter> CavesStandard = new WeightedRandomBag<Encounter> {
-    { 1.75f, Empty },
+  public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
+    { 1.5f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
-    { 0.8f, BatInCorner },
+    { 0.8f, BatsInCorner },
+    // { 0.1f, MatureBush },
+  };
+
+  public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
+    { 4f, Empty },
     { 1, CoverWithSoftGrass },
     { 1, AddRedvines },
     { 1, AddMushroom },
-    { 0.1f, MatureBush },
   };
 }

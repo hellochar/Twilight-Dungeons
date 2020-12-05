@@ -11,12 +11,9 @@ public class Room {
 
   public RoomSplit? split;
   public Room parent;
+  internal bool isRoot => this.parent == null;
 
-  public bool isTerminal {
-    get {
-      return this.split == null;
-    }
-  }
+  public bool isTerminal => this.split == null;
 
   public Vector2Int center => (min + max) / 2;
   public Vector2 centerFloat => new Vector2((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f);

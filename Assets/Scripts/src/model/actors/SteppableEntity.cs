@@ -28,8 +28,9 @@ public abstract class SteppableEntity : Entity {
     OnPostStep?.Invoke(timeCost);
   }
 
-  public void CatchUpStep(float newTime) {
+  public virtual void CatchUpStep(float lastStepTime, float time) {
+    float jump = time - lastStepTime;
     // by default actors don't do anything; they just act as if they were paused
-    this.timeNextAction = Mathf.Max(this.timeNextAction, newTime);
+    this.timeNextAction += jump;
   }
 }

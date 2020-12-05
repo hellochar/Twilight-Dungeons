@@ -130,6 +130,8 @@ public class Actor : SteppableEntity {
 
   public override void Kill() {
     hp = Math.Max(hp, 0);
+    taskQueue.Clear();
+    TaskChanged();
     base.Kill();
     /// TODO remove references to this Actor if needed
   }
@@ -145,7 +147,7 @@ public class Actor : SteppableEntity {
     TaskChanged();
   }
 
-  /// Call when this.action is changed
+  /// Call when this.task is changed
   protected void TaskChanged() {
     OnSetTask?.Invoke(this.task);
   }
@@ -188,8 +190,7 @@ public class Actor : SteppableEntity {
   /// This will remove this.action from the queue and call .Finish() on it, which will
   /// indirectly set this.action to the next one in the queue
   protected virtual void GoToNextTask() {
-    ActorTask currentTask = this.task;
-    currentTask.Finish();
+    this.task.Finish();
     taskQueue.RemoveAt(0);
     TaskChanged();
   }

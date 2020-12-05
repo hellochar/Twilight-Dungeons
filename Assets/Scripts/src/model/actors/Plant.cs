@@ -24,6 +24,11 @@ public abstract class Plant : Actor {
     return this.stage.Step();
   }
 
+  public override void CatchUpStep(float lastStepTime, float time) {
+    // don't catchup; plants always run.
+    return;
+  }
+
   public abstract void Harvest(); 
 
   public abstract void Cull();

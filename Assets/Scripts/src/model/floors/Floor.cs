@@ -120,6 +120,11 @@ public class Floor {
     grasses[grass.pos] = grass;
   }
 
+  private float lastStepTime = 0;
+  internal void RecordLastStepTime(float time) {
+    lastStepTime = time;
+  }
+
   private void RemoveGrass(Grass g) {
     grasses.Remove(g.pos);
   }
@@ -185,7 +190,10 @@ public class Floor {
   internal void CatchUpStep(float time) {
     // step all actors until they're up to speed
     foreach (Actor a in actors) {
-      a.CatchUpStep(time);
+      a.CatchUpStep(lastStepTime, time);
+    }
+    foreach (Grass g in grasses.Values) {
+      g.CatchUpStep(lastStepTime, time);
     }
   }
 

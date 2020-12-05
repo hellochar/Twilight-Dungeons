@@ -62,10 +62,18 @@ public static class FloorGenerator {
     foreach (var room in floor.rooms) {
       if (!(room == floor.upstairsRoom)) {
         // spawn a random encounter
-        var encounter = Encounters.CavesStandard.GetRandom();
+        var encounter = Encounters.CavesMobs.GetRandom();
         encounter.Apply(floor, room);
       }
     }
+
+    floor.root.Traverse((room) => {
+      // this includes abstract rooms!
+      if (!room.isRoot) {
+        var encounter = Encounters.CavesGrasses.GetRandom();
+        encounter.Apply(floor, room);
+      }
+    });
 
     return floor;
   }
@@ -206,7 +214,7 @@ public static class FloorGenerator {
     }
 
     List<Room> rooms = new List<Room>();
-    var encounters = Encounters.CavesStandard.Select((tuple) => tuple.Value).ToList();
+    var encounters = Encounters.CavesMobs.Select((tuple) => tuple.Value).ToList();
 
     var encounterIndex = 0;
     var roomSize = 6;

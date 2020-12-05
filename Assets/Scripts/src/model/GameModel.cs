@@ -91,6 +91,7 @@ public class GameModel {
       newPlayerPosition = newFloor.upstairs.pos + new Vector2Int(1, 0);
     }
     oldFloor.Remove(player);
+    oldFloor.RecordLastStepTime(this.time);
     player.pos = newPlayerPosition;
     newFloor.Add(player);
 

@@ -34,7 +34,7 @@ public class MatchItem : MonoBehaviour {
     var detailsPopup = Instantiate(detailsPopupPrefab, new Vector3(), Quaternion.identity, inventoryContainer.transform);
     var popupMatchItem = detailsPopup.GetComponent<PopupMatchItem>();
     popupMatchItem.item = item;
-    popupMatchItem.spriteBase = image.gameObject;
+    popupMatchItem.SetSpriteBase(image.gameObject);
 
     // take up the whole canvas
     var rectTransform = detailsPopup.GetComponent<RectTransform>();

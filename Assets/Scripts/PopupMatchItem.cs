@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class PopupMatchItem : MonoBehaviour {
   public Item item;
-  public GameObject spriteBase;
+  // set by MatchItem
+  private GameObject spriteBase;
 
   GameObject itemActionButtonPrefab;
 
@@ -16,6 +17,11 @@ public class PopupMatchItem : MonoBehaviour {
   GameObject spriteContainer;
   TMPro.TMP_Text stats;
   TMPro.TMP_Text flavorText;
+
+  public void SetSpriteBase(GameObject spriteBase) {
+    this.spriteBase = spriteBase;
+  }
+
   void Start() {
     itemActionButtonPrefab = Resources.Load<GameObject>("UI/Item Action Button");
     title = transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();

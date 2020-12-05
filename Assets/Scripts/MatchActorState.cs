@@ -73,7 +73,8 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
       return;
     }
     GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");
-    GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity);
+    GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity, transform);
+    healEffect.transform.localPosition = new Vector3(0, 0, 0);
 
     GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);

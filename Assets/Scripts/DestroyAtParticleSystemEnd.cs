@@ -12,7 +12,7 @@ public class DestroyAtParticleSystemEnd : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     if (!particleSystem.IsAlive()) {
-      Destroy(gameObject.transform.root.gameObject);
+      Destroy(gameObject.transform.parent.gameObject);
     }
   }
 }

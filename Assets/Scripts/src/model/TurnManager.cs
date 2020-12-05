@@ -64,6 +64,12 @@ public class TurnManager {
         }
       }
 
+      if (model.player.IsDead) {
+        // make whole room visible as a hack for now
+        model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
+        // yield break;
+      }
+
       if (!isFirstIteration && entity.isVisible) {
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(.02f);

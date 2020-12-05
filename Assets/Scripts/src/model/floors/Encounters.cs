@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -33,9 +34,8 @@ public static class Encounters {
   });
 
   public static Encounter BatsInCorner = new Encounter((floor, room) => {
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    var emptyTilesInRoom = FloorUtils.TilesSortedByCorners(floor, room).Where(tile => tile.CanBeOccupied());
     // sort by farthest distance to center
-    emptyTilesInRoom.Sort((x, y) => (int) Mathf.Sign(Vector2.Distance(y.pos, room.centerFloat) - Vector2.Distance(x.pos, room.centerFloat)));
     foreach (var tile in emptyTilesInRoom.Take(2)) {
       floor.Add(new Bat(tile.pos));
     }
@@ -65,14 +65,14 @@ public static class Encounters {
 
   public static Encounter AddRedvines = new Encounter((floor, room) => {
     var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall));
-    foreach (var tile in tilesNextToWalls) {
-      if (Random.value < 0.5) {
+    while (tilesNextToWalls.Any()) {
+      var vineStripLength = Random.Range(4, 9);
+      var skipLength = Random.Range(4, 9);
+      foreach (var tile in tilesNextToWalls.Take(vineStripLength)) {
         floor.Add(new Redvines(tile.pos));
       }
+      tilesNextToWalls = tilesNextToWalls.Skip(vineStripLength + skipLength);
     }
-    // // also pick another Encounter
-    // var otherEncounter = CavesStandard.GetRandomWithout(CoverWithSoftGrass, AddRedvines, );
-    // otherEncounter.Apply(floor, room);
   });
 
   public static Encounter AddMushroom = new Encounter((floor, room) => {
@@ -88,12 +88,19 @@ public static class Encounters {
     // otherEncounter.Apply(floor, room);
   });
 
+  public static Encounter ThreePlumpAstoriasInCorner = new Encounter((floor, room) => {
+    var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t.grass == null);
+    foreach (var tile in positions.Take(3)) {
+      floor.Add(new PlumpAstoria(tile.pos));
+    }
+  });
+
   public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
     { 1.5f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
     { 0.8f, BatsInCorner },
-    // { 0.1f, MatureBush },
+    { 0.1f, MatureBush },
   };
 
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
@@ -101,5 +108,6 @@ public static class Encounters {
     { 1, CoverWithSoftGrass },
     { 1, AddRedvines },
     { 1, AddMushroom },
+    { 0.2f, ThreePlumpAstoriasInCorner },
   };
 }

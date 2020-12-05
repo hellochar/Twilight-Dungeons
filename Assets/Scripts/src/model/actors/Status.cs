@@ -3,6 +3,7 @@ using System.Linq;
 
 public abstract class Status {
   public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Status", ""));
+  public abstract string Info();
 }
 
 public class StatusList {
@@ -61,8 +62,10 @@ public class CannotPerformActionException : System.Exception {
 public class SoftGrassStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
     return new ActionCosts(costs) {
-      // 20% faster
-      [ActionType.MOVE] = costs[ActionType.MOVE] / (1 + 0.2f),
+      // 100% faster
+      [ActionType.MOVE] = costs[ActionType.MOVE] / 2,
     };
   }
+
+  public override string Info() => "Player moves 100% faster in Soft Grass.";
 }

@@ -20,6 +20,7 @@ public class MatchAttackGroundTask : MatchActorTask<AttackGroundTask> {
       var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
       straight.transform.rotation = Quaternion.Euler(0, 0, rotZ);
     }
+    Update();
   }
 
   public override void Update() {

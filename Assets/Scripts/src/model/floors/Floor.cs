@@ -216,6 +216,13 @@ public class Floor {
     }
   }
 
+  internal void ForceAddVisibility(IEnumerable<Vector2Int> positions) {
+    foreach (var pos in positions) {
+      Tile t = tiles[pos];
+      t.visibility = TileVisiblity.Visible;
+    }
+  }
+
   /// returns true if the points have line of sight to each other
   public bool TestVisibility(Vector2Int source, Vector2Int end) {
     bool isVisible = true;

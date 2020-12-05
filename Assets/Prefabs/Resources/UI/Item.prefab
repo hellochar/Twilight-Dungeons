@@ -332,7 +332,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8620970826474615517}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76d1fea323efd754091d4343c35a3c94, type: 3}
+  m_Script: {fileID: 11500000, guid: f193e52e3ca83b445a27cd3dfa77ebed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   masterSpriteAtlas: {fileID: 4343727234628468602, guid: c84b953c863cd94458bc815ffaa6487e,

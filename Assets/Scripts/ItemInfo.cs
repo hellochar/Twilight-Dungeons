@@ -29,6 +29,10 @@ public class ItemInfo {
     [typeof(ItemStick)] = new ItemInfo {
       spriteName = "Stick",
       flavorText = "Stiff but brittle, this won't last long."
+    },
+    [typeof(ItemMushroom)] = new ItemInfo {
+      spriteName = "Mushroom",
+      flavorText = "At least it's not toxic!"
     }
   };
   public static ItemInfo InfoFor(Item item) {

@@ -50,6 +50,9 @@ TagManager:
   - name: Entity
     uniqueID: 2819269403
     locked: 0
+  - name: Statuses
+    uniqueID: 1729073555
+    locked: 0
   - name: Particles
     uniqueID: 565039641
     locked: 0

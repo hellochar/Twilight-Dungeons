@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,42 +8,28 @@ public class Redvines : Grass {
     OnLeaveFloor += HandleLeaveFloor;
   }
 
+  public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
+
   private void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
+    tileBelow.OnActorEnter += HandleActorEnter;
   }
 
   private void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
+    tileBelow.OnActorEnter -= HandleActorEnter;
   }
 
   private void HandleActorEnter(Actor who) {
+    var stuckStatus = new StuckStatus();
+    who.statuses.Add(stuckStatus);
+    stuckStatus.OnRemoved += HandleStatusRemoved;
     // grapple them for a few turns
-    GrappledTask action = new GrappledTask(who, 3, this);
-    action.OnDone += HandleActionDone;
-    who.InsertTasks(action);
+    // GrappledTask action = new GrappledTask(who, 3, this);
+    // action.OnDone += HandleActionDone;
+    // who.InsertTasks(action);
   }
 
-  private void HandleActionDone() {
-    if (!IsDead) {
-      Kill();
-    }
-  }
-}
-
-public class GrappledTask : ActorTask {
-  private readonly int turns;
-  public Entity grappler { get; }
-  public GrappledTask(Actor actor, int turns, Entity grappler) : base(actor) {
-    this.turns = turns;
-    this.grappler = grappler;
-  }
-
-  public override IEnumerator<BaseAction> Enumerator() {
-    for (var i = 0; i < turns; i++) {
-      if (grappler.IsDead) {
-        yield break;
-      }
-      yield return new WaitBaseAction(actor);
-    }
+  private void HandleStatusRemoved() {
+    // when someone is able to break free; remove these vines
+    Kill();
   }
 }

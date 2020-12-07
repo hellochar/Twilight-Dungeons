@@ -49,6 +49,7 @@ public class Actor : SteppableEntity {
   }
   protected List<ActorTask> taskQueue = new List<ActorTask>();
   public event Action<ActorTask> OnSetTask;
+  public event Action<BaseAction> OnActionPerformed;
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
@@ -177,13 +178,15 @@ public class Actor : SteppableEntity {
     // action is not null
     // action.MoveNext() has been called and it returned true
     var action = task.Current;
-    action.Perform();
+    var finalAction = Modifiers.Process(this.statuses.BaseActionModifiers(), action);
+    finalAction.Perform();
+    OnActionPerformed?.Invoke(finalAction);
 
     // handle close-ended actions
     while (task != null && task.IsDone()) {
       GoToNextTask();
     }
-    return GetActionCost(action);
+    return GetActionCost(finalAction);
   }
 
   /// Precondition: this.action's enumerator is ended, but the action is still in the queue.

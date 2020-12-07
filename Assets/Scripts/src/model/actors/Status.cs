@@ -1,13 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 public abstract class Status {
+  public event Action OnRemoved;
+
   public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Status", ""));
   public abstract string Info();
+
+  internal void Removed() {
+    OnRemoved?.Invoke();
+  }
 }
 
 public class StatusList {
   public List<Status> list;
+
+  public event Action<Status> OnAdded;
 
   public StatusList(List<Status> statuses) {
     this.list = statuses;
@@ -15,27 +24,37 @@ public class StatusList {
 
   public StatusList() : this(new List<Status>()) { }
 
-  internal void Add(Status status) {
+  public void Add(Status status) {
     this.list.Add(status);
+    OnAdded?.Invoke(status);
   }
 
-  internal void RemoveOfType<T>() where T : Status {
+  public void RemoveOfType<T>() where T : Status {
     var toRemove = this.list.Where((status) => status is T).ToList();
     foreach (var status in toRemove) {
-      RemoveStatus(status);
+      Remove(status);
     }
   }
 
-  internal void RemoveStatus(Status status) {
+  public void Remove(Status status) {
     this.list.Remove(status);
+    status.Removed();
   }
 
   internal IEnumerable<IActionCostModifier> ActionCostModifiers() {
     return ModifiersFor<IActionCostModifier, ActionCosts>();
   }
 
+  internal IEnumerable<IBaseActionModifier> BaseActionModifiers() {
+    return ModifiersFor<IBaseActionModifier, BaseAction>();
+  }
+
   internal IEnumerable<T> ModifiersFor<T, I>() where T : IModifier<I> {
-    return this.list.Where((s) => s is T).Cast<T>();
+    return list.Where((s) => s is T).Cast<T>();
+  }
+
+  internal T FindOfType<T>() where T : Status {
+    return (T) (list.Find((s) => s is T));
   }
 }
 
@@ -50,6 +69,7 @@ static class Modifiers {
 }
 
 interface IActionCostModifier : IModifier<ActionCosts> {}
+interface IBaseActionModifier : IModifier<BaseAction> {}
 
 public class CannotPerformActionException : System.Exception {
   string why;
@@ -62,10 +82,21 @@ public class CannotPerformActionException : System.Exception {
 public class SoftGrassStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
     return new ActionCosts(costs) {
-      // 100% faster
-      [ActionType.MOVE] = costs[ActionType.MOVE] / 2,
+      // 33% faster
+      [ActionType.MOVE] = costs[ActionType.MOVE] / 1.33f,
     };
   }
 
-  public override string Info() => "Player moves 100% faster in Soft Grass.";
+  public override string Info() => "Player moves 33% faster in Soft Grass.";
+}
+
+public class StuckStatus : Status, IBaseActionModifier {
+  public override string Info() => "You must break free of vines before you can move!";
+
+  public BaseAction Modify(BaseAction input) {
+    if (input is MoveBaseAction) {
+      return new StruggleBaseAction(input.actor);
+    }
+    return input;
+  }
 }

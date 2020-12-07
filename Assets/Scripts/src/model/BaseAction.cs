@@ -88,3 +88,16 @@ public sealed class GenericBaseAction : BaseAction {
     action.Invoke(actor);
   }
 }
+
+public class StruggleBaseAction : BaseAction {
+  public override ActionType Type => ActionType.MOVE;
+  public StruggleBaseAction(Actor actor) : base(actor) {
+  }
+
+  public override void Perform() {
+    var stuckStatus = actor.statuses.FindOfType<StuckStatus>();
+    if (stuckStatus != null) {
+      actor.statuses.Remove(stuckStatus);
+    }
+  }
+}

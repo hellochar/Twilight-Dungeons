@@ -1,26 +1,32 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class MatchActorState : MonoBehaviour, IPointerClickHandler {
-  public Actor actor;
   private static GameObject hpChangeTextPrefab;
+  public Actor actor;
+  private Animator animator;
 
   // Start is called before the first frame update
   public virtual void Start() {
     if (hpChangeTextPrefab == null) {
       hpChangeTextPrefab = Resources.Load<GameObject>("UI/HP Change Text");
     }
+
     if (actor == null) {
       actor = GameModel.main.player;
     }
+
+    animator = GetComponentInChildren<Animator>();
+
     actor.OnTakeDamage += HandleTakeDamage;
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
     actor.OnSetTask += HandleSetAction;
+    actor.OnActionPerformed += HandleActionPerformed;
+    actor.statuses.OnAdded += HandleStatusAdded;
+
     Update();
   }
 
@@ -34,25 +40,21 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  private void HandleSetAction(ActorTask task) {
-    if (task != null) {
-      GameObject prefab = GetPrefabForTask(task);
-      if (prefab != null) {
-        Instantiate(prefab, transform.position, Quaternion.identity, transform);
-      }
+  private void HandleStatusAdded(Status status) {
+    var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, transform);
+    if (obj != null) {
+      obj.GetComponent<MatchStatusState>().status = status;
     }
   }
 
-  private static Dictionary<Type, GameObject> taskPrefabCache = new Dictionary<Type, GameObject>();
-  private GameObject GetPrefabForTask(ActorTask obj) {
-    var type = obj.GetType();
-    if (!taskPrefabCache.ContainsKey(type)) {
-      // attempt to load it
-      var name = type.Name;
-      var prefabOrNull = Resources.Load<GameObject>($"UI/Tasks/{name}");
-      taskPrefabCache.Add(type, prefabOrNull);
+  private void HandleSetAction(ActorTask task) {
+    PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
+  }
+
+  private void HandleActionPerformed(BaseAction baseAction) {
+    if (baseAction is StruggleBaseAction) {
+      animator?.SetTrigger("Struggled");
     }
-    return taskPrefabCache[type];
   }
 
   void HandleTakeDamage(int damage, int newHp, Actor source) {

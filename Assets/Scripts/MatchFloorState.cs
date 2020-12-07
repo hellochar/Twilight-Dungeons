@@ -39,7 +39,7 @@ public class MatchFloorState : MonoBehaviour {
     if (currentObject == null) {
       Debug.LogWarning("" + e + " was removed from floor " + floor + " but didn't have a GameObject.");
     }
-    Destroy(currentObject);
+    currentObject.AddComponent<FadeThenDestroy>();
     gameObjectMap.Remove(e);
   }
 

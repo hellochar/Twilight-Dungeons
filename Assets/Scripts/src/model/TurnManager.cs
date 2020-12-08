@@ -57,10 +57,19 @@ public class TurnManager {
           // stop if it's the player
           break;
         } else {
-          // just hack it
+          // TODO just hack it
           entity.timeNextAction += 1;
           // this actually shouldn't happen to AIs
           Debug.LogWarning(entity + " NoActionException");
+        }
+      } catch (CannotPerformActionException e) {
+        if (entity == model.player) {
+          // TODO let the player know
+          Debug.LogWarning(e.why);
+          break;
+        } else {
+          // TODO make this better
+          entity.timeNextAction += 1;
         }
       }
 

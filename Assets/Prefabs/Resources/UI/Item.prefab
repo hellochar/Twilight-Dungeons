@@ -64,7 +64,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35df85bb9506f5e4f942a14a5fc6b7c1, type: 2}
   m_sharedMaterial: {fileID: 1292428517294966019, guid: 35df85bb9506f5e4f942a14a5fc6b7c1,
@@ -134,13 +134,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 2946757427430910415}
-    characterCount: 1
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -221,7 +221,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3392629099716242594, guid: 59a4a8eada9da7c4299d17c07cb14daf,
+  m_Sprite: {fileID: -1300974183062543412, guid: af4df3188a01af048a678513709d8278,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -335,5 +335,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193e52e3ca83b445a27cd3dfa77ebed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  masterSpriteAtlas: {fileID: 4343727234628468602, guid: c84b953c863cd94458bc815ffaa6487e,
-    type: 2}

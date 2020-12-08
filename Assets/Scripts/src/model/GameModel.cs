@@ -93,9 +93,8 @@ public class GameModel {
     oldFloor.Remove(player);
     oldFloor.RecordLastStepTime(this.time);
     player.pos = newPlayerPosition;
+    newFloor.CatchUpStep(this.time);
     newFloor.Add(player);
-
-    player.floor.CatchUpStep(this.time);
   }
 
   /// Get all actors that should be simulated, in no particular order. This includes: 

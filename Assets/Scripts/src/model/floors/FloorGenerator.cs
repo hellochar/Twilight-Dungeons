@@ -44,7 +44,7 @@ public static class FloorGenerator {
     floor.root = room0;
 
     Encounters.ThreePlumpAstoriasInCorner.Apply(floor, room0);
-    Encounters.AddHangingVines.Apply(floor, room0);
+    // Encounters.AddHangingVines.Apply(floor, room0);
 
     return floor;
   }

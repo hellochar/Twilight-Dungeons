@@ -116,4 +116,8 @@ public class Player : Actor {
       return 1;
     }
   }
+
+  public override void CatchUpStep(float lastStepTime, float time) {
+    // no op for the player
+  }
 }

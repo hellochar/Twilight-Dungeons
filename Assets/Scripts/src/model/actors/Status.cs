@@ -72,7 +72,7 @@ interface IActionCostModifier : IModifier<ActionCosts> {}
 interface IBaseActionModifier : IModifier<BaseAction> {}
 
 public class CannotPerformActionException : System.Exception {
-  string why;
+  public readonly string why;
 
   public CannotPerformActionException(string why) {
     this.why = why;
@@ -91,12 +91,18 @@ public class SoftGrassStatus : Status, IActionCostModifier {
 }
 
 public class BoundStatus : Status, IBaseActionModifier {
-  public int turnsLeft = 2;
+  public int turnsLeft = 3;
   public override string Info() => "You must break free of vines before you can move!";
 
   public BaseAction Modify(BaseAction input) {
     if (input is MoveBaseAction) {
-      return new StruggleBaseAction(input.actor);
+      turnsLeft--;
+      if (turnsLeft <= 0) {
+        GameModel.main.EnqueueEvent(() => input.actor.statuses.Remove(this));
+        return input;
+      } else {
+        return new StruggleBaseAction(input.actor);
+      }
     }
     return input;
   }

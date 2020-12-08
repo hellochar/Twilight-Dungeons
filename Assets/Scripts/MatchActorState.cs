@@ -84,9 +84,9 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
 
   private void HandleAttack(int damage, Actor target) {}
 
-  private void HandleAttackGround(Vector2Int targetPosition, Actor occupant) {
+  private void HandleAttackGround(Vector2Int pos) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("UI/Attack Sprite");
-    GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(targetPosition), Quaternion.identity);
+    GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
@@ -95,6 +95,9 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     if (actor == player) {
       player.task = new WaitTask(player, 1);
       return;
+    }
+    if (actor.IsDead) {
+      return; // don't do anything to dead actors
     }
     // depending on the faction:
     // (1) ally or neutral - walk to

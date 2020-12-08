@@ -95,12 +95,6 @@ public class StruggleBaseAction : BaseAction {
   }
 
   public override void Perform() {
-    var stuckStatus = actor.statuses.FindOfType<BoundStatus>();
-    if (stuckStatus != null) {
-      stuckStatus.turnsLeft--;
-      if (stuckStatus.turnsLeft <= 0) {
-        actor.statuses.Remove(stuckStatus);
-      }
-    }
+    // no op
   }
 }

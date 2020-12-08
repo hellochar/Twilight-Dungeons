@@ -31,7 +31,7 @@ public class ItemInfo {
       flavorText = "Stiff but brittle, this won't last long."
     },
     [typeof(ItemMushroom)] = new ItemInfo {
-      spriteName = "Mushroom",
+      spriteName = "mushroom",
       flavorText = "At least it's not toxic!"
     }
   };
@@ -55,6 +55,9 @@ public class ItemInfo {
     get {
       if (_sprite == null) {
         _sprite = MasterSpriteAtlas.atlas.GetSprite(spriteName);
+        if (_sprite == null) {
+          Debug.LogWarning("Couldn't find sprite " + spriteName);
+        }
       }
       return _sprite;
     }

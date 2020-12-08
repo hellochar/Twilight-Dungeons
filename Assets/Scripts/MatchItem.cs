@@ -11,7 +11,6 @@ public class MatchItem : MonoBehaviour {
   private Button button;
   private Image image;
   private TMPro.TMP_Text stacksText;
-  public SpriteAtlas masterSpriteAtlas;
   private GameObject detailsPopupPrefab;
 
   void Start() {
@@ -21,8 +20,11 @@ public class MatchItem : MonoBehaviour {
     button.onClick.AddListener(HandleItemClicked);
 
     image = GetComponentInChildren<Image>(true);
-    image.sprite = ItemInfo.GetSpriteForItem(item);
-    image.rectTransform.sizeDelta = image.sprite.rect.size * 3;
+    var wantedSprite = ItemInfo.GetSpriteForItem(item);
+    if (wantedSprite != null) {
+      image.sprite = wantedSprite;
+      image.rectTransform.sizeDelta = wantedSprite.rect.size * 3;
+    }
 
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
     // stacksText.gameObject.SetActive(item is IStackable);

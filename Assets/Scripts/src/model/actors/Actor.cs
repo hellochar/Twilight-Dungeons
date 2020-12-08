@@ -59,7 +59,7 @@ public class Actor : SteppableEntity {
   /// gets called on a successful hit on a target
   public event Action<int, Actor> OnAttack;
   /// gets called on any ground targeted attack
-  public event Action<Vector2Int, Actor> OnAttackGround;
+  public event Action<Vector2Int> OnAttackGround;
 
   public Actor(Vector2Int pos) : base() {
     hp = hpMax = 8;
@@ -91,6 +91,9 @@ public class Actor : SteppableEntity {
 
   /// create an Attack and execute it
   internal void Attack(Actor target) {
+    if (target.IsDead) {
+      throw new CannotPerformActionException("Cannot attack dead target.");
+    }
     int damage = GetAttackDamage();
     OnAttack?.Invoke(damage, target);
     target.TakeDamage(damage, this);
@@ -103,10 +106,14 @@ public class Actor : SteppableEntity {
   }
 
   internal void AttackGround(Vector2Int targetPosition) {
-    Actor target = floor.tiles[targetPosition.x, targetPosition.y].actor;
-    OnAttackGround?.Invoke(targetPosition, target);
+    Actor target = floor.ActorAt(targetPosition);
+    Grass grass = floor.GrassAt(targetPosition);
+    OnAttackGround?.Invoke(targetPosition);
     if (target != null) {
       Attack(target);
+    } else if (grass != null) {
+      // kill the grass when it gets attacked
+      grass.Kill();
     }
   }
 

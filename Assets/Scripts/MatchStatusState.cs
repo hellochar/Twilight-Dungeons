@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MatchStatusState : MonoBehaviour {
+  static string ACTOR_SPRITENAME = "Sprite";
   public Status status;
   public Animator animator;
   void Start() {
     status.OnRemoved += HandleRemoved;
-    animator = transform.parent.GetComponentInChildren<Animator>();
+    // this is supposed to be the Actor's Animator
+    animator = transform.parent.Find(ACTOR_SPRITENAME).GetComponentInChildren<Animator>();
     animator?.SetBool("StuckStatus", true);
   }
 

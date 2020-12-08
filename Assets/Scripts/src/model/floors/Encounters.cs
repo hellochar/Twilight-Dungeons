@@ -67,12 +67,11 @@ public static class Encounters {
   public static Encounter AddHangingVines = new Encounter((floor, room) => {
     var wallsWithGroundBelow = floor.EnumerateRoomTiles(room, 1).Where((tile) => tile is Wall && tile.pos.y > 0 && floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground);
     while (wallsWithGroundBelow.Any()) {
-      var vineStripLength = Random.Range(4, 9);
-      var skipLength = Random.Range(4, 9);
-      foreach (var tile in wallsWithGroundBelow.Take(vineStripLength)) {
+      var skipLength = Random.Range(2, 5);
+      foreach (var tile in wallsWithGroundBelow.Take(1)) {
         floor.Add(new HangingVines(tile.pos));
       }
-      wallsWithGroundBelow = wallsWithGroundBelow.Skip(vineStripLength + skipLength);
+      wallsWithGroundBelow = wallsWithGroundBelow.Skip(1 + skipLength);
     }
   });
 

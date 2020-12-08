@@ -27,11 +27,13 @@ public class FadeThenDestroy : MonoBehaviour {
       return;
     }
     for (int i = 0; i < renderers.Length; i++) {
-      var originalColor = colors[i];
-      var newColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a * (1 - t));
-      var newScale = scales[i] * (1 + 0.2f * t);
-      renderers[i].color = newColor;
-      renderers[i].transform.localScale = newScale;
+      if (renderers[i] != null) {
+        var originalColor = colors[i];
+        var newColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a * (1 - t));
+        var newScale = scales[i] * (1 + 0.2f * t);
+        renderers[i].color = newColor;
+        renderers[i].transform.localScale = newScale;
+      }
     }
   }
 }

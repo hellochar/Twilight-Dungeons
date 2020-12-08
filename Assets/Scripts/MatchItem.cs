@@ -11,10 +11,8 @@ public class MatchItem : MonoBehaviour {
   private Button button;
   private Image image;
   private TMPro.TMP_Text stacksText;
-  private GameObject detailsPopupPrefab;
 
   void Start() {
-    detailsPopupPrefab = Resources.Load<GameObject>("UI/Item Details Popup");
     /// on click - toggle the popup for this item
     button = GetComponent<Button>();
     button.onClick.AddListener(HandleItemClicked);
@@ -33,15 +31,15 @@ public class MatchItem : MonoBehaviour {
 
   private void HandleItemClicked() {
     GameObject inventoryContainer = GetComponentInParent<Canvas>().transform.Find("Inventory Container").gameObject;
-    var detailsPopup = Instantiate(detailsPopupPrefab, new Vector3(), Quaternion.identity, inventoryContainer.transform);
-    var popupMatchItem = detailsPopup.GetComponent<PopupMatchItem>();
+    var popup = Popups.Create(
+      parent: inventoryContainer.transform,
+      title: item.displayName,
+      info: item.GetStatsFull(),
+      flavor: ObjectInfo.GetFlavorTextFor(item),
+      sprite: image.gameObject
+    );
+    var popupMatchItem = popup.AddComponent<PopupMatchItem>();
     popupMatchItem.item = item;
-    popupMatchItem.SetSpriteBase(image.gameObject);
-
-    // take up the whole canvas
-    var rectTransform = detailsPopup.GetComponent<RectTransform>();
-    rectTransform.offsetMax = new Vector2();
-    rectTransform.offsetMin = new Vector2();
   }
 
   // Update is called once per frame

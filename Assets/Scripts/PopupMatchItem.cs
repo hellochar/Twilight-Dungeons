@@ -7,30 +7,17 @@ using UnityEngine.UI;
 
 public class PopupMatchItem : MonoBehaviour {
   public Item item;
-  // set by MatchItem
-  private GameObject spriteBase;
 
   GameObject itemActionButtonPrefab;
 
   TMPro.TMP_Text title;
   GameObject actionsContainer;
-  GameObject spriteContainer;
   TMPro.TMP_Text stats;
-  TMPro.TMP_Text flavorText;
-
-  public void SetSpriteBase(GameObject spriteBase) {
-    this.spriteBase = spriteBase;
-  }
 
   void Start() {
     itemActionButtonPrefab = Resources.Load<GameObject>("UI/Item Action Button");
-    title = transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();
     actionsContainer = transform.Find("Frame/Actions").gameObject;
-    spriteContainer = transform.Find("Frame/Sprite Container").gameObject;
     stats = transform.Find("Frame/Stats").GetComponent<TMPro.TMP_Text>();
-    flavorText = transform.Find("Frame/Flavor Text").GetComponent<TMPro.TMP_Text>();
-
-    title.text = item.displayName;
 
     Player player = GameModel.main.player;
     List<ActorTask> actions = item.GetAvailableTasks(player);
@@ -49,25 +36,11 @@ public class PopupMatchItem : MonoBehaviour {
     } else {
       actionsContainer.SetActive(false);
     }
-
-    Instantiate(spriteBase, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
-
-    stats.text = item.GetStats();
-
-    flavorText.text = ObjectInfo.GetFlavorTextFor(item);
   }
 
   // Update is called once per frame
   void Update() {
-    var text = item.GetStats();
-    if (item is IWeapon w) {
-      var (min, max) = w.AttackSpread;
-      text += $"\n{min} - {max} damage.";
-    }
-    if (item is IDurable d) {
-      text += $"\nDurability: {d.durability}/{d.maxDurability}.";
-    }
-    stats.text = text.Trim();
+    stats.text = item.GetStatsFull();
     // if it's been removed
     if (item.inventory == null) {
       Debug.LogWarning("Item Details popup is being run on an item that's been removed from the inventory!");

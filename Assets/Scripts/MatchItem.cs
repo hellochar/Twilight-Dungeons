@@ -20,7 +20,7 @@ public class MatchItem : MonoBehaviour {
     button.onClick.AddListener(HandleItemClicked);
 
     image = GetComponentInChildren<Image>(true);
-    var wantedSprite = ItemInfo.GetSpriteForItem(item);
+    var wantedSprite = ObjectInfo.GetSpriteFor(item);
     if (wantedSprite != null) {
       image.sprite = wantedSprite;
       image.rectTransform.sizeDelta = wantedSprite.rect.size * 3;

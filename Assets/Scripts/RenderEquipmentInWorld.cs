@@ -15,11 +15,11 @@ public class RenderEquipmentInWorld : MatchItemSlot {
   }
 
   protected override GameObject UpdateInUse(Item item) {
-    var showOnPlayer = ItemInfo.InfoFor(item).showOnPlayer;
+    var showOnPlayer = ObjectInfo.InfoFor(item).showOnPlayer;
     if (showOnPlayer) {
       var child = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
       child.transform.localPosition = new Vector3(0, 0, 0);
-      child.GetComponent<SpriteRenderer>().sprite = ItemInfo.GetSpriteForItem(item);
+      child.GetComponent<SpriteRenderer>().sprite = ObjectInfo.GetSpriteFor(item);
       return child;
     }
     return null;

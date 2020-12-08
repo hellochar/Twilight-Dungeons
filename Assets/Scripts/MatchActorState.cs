@@ -51,8 +51,8 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
   }
 
-  private void HandleActionPerformed(BaseAction baseAction) {
-    if (baseAction is StruggleBaseAction) {
+  private void HandleActionPerformed(BaseAction action, BaseAction initial) {
+    if (action is StruggleBaseAction) {
       animator?.SetTrigger("Struggled");
     }
   }

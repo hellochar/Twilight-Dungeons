@@ -30,6 +30,23 @@ public class Player : Actor {
     OnLeaveFloor += HandleLeaveFloor;
     OnPostStep += HandlePostStep;
     OnAttack += HandleAttack;
+    OnActionPerformed += HandleActionPerformed;
+    statuses.OnAdded += HandleStatusAdded;
+  }
+
+  private void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    // player didn't do what they intended! We should reset and give
+    // player a choice.
+    if (final != initial) {
+      ClearTasks();
+    }
+  }
+
+  private void HandleStatusAdded(Status status) {
+    if (status is IBaseActionModifier) {
+      // cancel current action
+      ClearTasks();
+    }
   }
 
   private void HandleLeaveFloor() {

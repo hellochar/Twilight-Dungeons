@@ -49,7 +49,7 @@ public class Actor : SteppableEntity {
   }
   protected List<ActorTask> taskQueue = new List<ActorTask>();
   public event Action<ActorTask> OnSetTask;
-  public event Action<BaseAction> OnActionPerformed;
+  public event Action<BaseAction, BaseAction> OnActionPerformed;
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
@@ -137,6 +137,10 @@ public class Actor : SteppableEntity {
     /// TODO remove references to this Actor if needed
   }
 
+  public void ClearTasks() {
+    SetTasks();
+  }
+
   public void SetTasks(params ActorTask[] actions) {
     taskQueue.Clear();
     taskQueue.AddRange(actions);
@@ -180,7 +184,7 @@ public class Actor : SteppableEntity {
     var action = task.Current;
     var finalAction = Modifiers.Process(this.statuses.BaseActionModifiers(), action);
     finalAction.Perform();
-    OnActionPerformed?.Invoke(finalAction);
+    OnActionPerformed?.Invoke(finalAction, action);
 
     // handle close-ended actions
     while (task != null && task.IsDone()) {
@@ -193,7 +197,6 @@ public class Actor : SteppableEntity {
   /// This will remove this.action from the queue and call .Finish() on it, which will
   /// indirectly set this.action to the next one in the queue
   protected virtual void GoToNextTask() {
-    this.task.Finish();
     taskQueue.RemoveAt(0);
     TaskChanged();
   }

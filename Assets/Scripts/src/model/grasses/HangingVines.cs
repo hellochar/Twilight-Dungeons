@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Redvines : Grass {
-  public Redvines(Vector2Int pos) : base(pos) {
+public class HangingVines : Grass {
+  public HangingVines(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
   }
@@ -19,13 +19,9 @@ public class Redvines : Grass {
   }
 
   private void HandleActorEnter(Actor who) {
-    var stuckStatus = new StuckStatus();
+    var stuckStatus = new BoundStatus();
     who.statuses.Add(stuckStatus);
     stuckStatus.OnRemoved += HandleStatusRemoved;
-    // grapple them for a few turns
-    // GrappledTask action = new GrappledTask(who, 3, this);
-    // action.OnDone += HandleActionDone;
-    // who.InsertTasks(action);
   }
 
   private void HandleStatusRemoved() {

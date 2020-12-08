@@ -39,7 +39,7 @@ public class TurnManager {
         // Debug.Log("Progressing time from " + model.time + " to " + actor.timeNextAction);
         // The first iteration will usually be right after the user's set an action.
         // Do *not* pause in that situation to allow the game to respond instantly.
-        if (!isFirstIteration && entity.isVisible) {
+        if (!isFirstIteration) {
           yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
         }
         // move game time up to now

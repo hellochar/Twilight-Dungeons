@@ -90,7 +90,8 @@ public class SoftGrassStatus : Status, IActionCostModifier {
   public override string Info() => "Player moves 33% faster in Soft Grass.";
 }
 
-public class StuckStatus : Status, IBaseActionModifier {
+public class BoundStatus : Status, IBaseActionModifier {
+  public int turnsLeft = 2;
   public override string Info() => "You must break free of vines before you can move!";
 
   public BaseAction Modify(BaseAction input) {

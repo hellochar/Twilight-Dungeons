@@ -16,7 +16,7 @@ public static class Encounters {
 
   public static Encounter AFewBlobs = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
+    emptyTilesInRoom.Shuffle();
     var numBlobs = Random.Range(2, 4);
     foreach (var tile in emptyTilesInRoom.Take(numBlobs)) {
       floor.Add(new Blob(tile.pos));
@@ -25,7 +25,8 @@ public static class Encounters {
 
   public static Encounter JackalPile = new Encounter((floor, room) => {
     var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
-    emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
+    // TODO replace with bfs floodfill with random direction
+    // emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
     emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
     var numJackals = Random.Range(3, 7);
     foreach (var tile in emptyTilesInRoom.Take(numJackals)) {
@@ -63,15 +64,15 @@ public static class Encounters {
     }
   });
 
-  public static Encounter AddRedvines = new Encounter((floor, room) => {
-    var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall));
-    while (tilesNextToWalls.Any()) {
+  public static Encounter AddHangingVines = new Encounter((floor, room) => {
+    var wallsWithGroundBelow = floor.EnumerateRoomTiles(room, 1).Where((tile) => tile is Wall && tile.pos.y > 0 && floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground);
+    while (wallsWithGroundBelow.Any()) {
       var vineStripLength = Random.Range(4, 9);
       var skipLength = Random.Range(4, 9);
-      foreach (var tile in tilesNextToWalls.Take(vineStripLength)) {
-        floor.Add(new Redvines(tile.pos));
+      foreach (var tile in wallsWithGroundBelow.Take(vineStripLength)) {
+        floor.Add(new HangingVines(tile.pos));
       }
-      tilesNextToWalls = tilesNextToWalls.Skip(vineStripLength + skipLength);
+      wallsWithGroundBelow = wallsWithGroundBelow.Skip(vineStripLength + skipLength);
     }
   });
 
@@ -104,10 +105,10 @@ public static class Encounters {
   };
 
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
-    { 4f, Empty },
+    { 5f, Empty },
     { 1, CoverWithSoftGrass },
-    { 1, AddRedvines },
-    { 1, AddMushroom },
+    { 1f, AddHangingVines },
+    { 1f, AddMushroom },
     { 0.2f, ThreePlumpAstoriasInCorner },
   };
 }

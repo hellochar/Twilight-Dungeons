@@ -22,11 +22,6 @@ using UnityEngine;
 public abstract class ActorTask : IEnumerator<BaseAction> {
   public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Task", ""));
   public virtual Actor actor { get; }
-  public event Action OnDone;
-
-  internal void Finish() {
-    OnDone?.Invoke();
-  }
 
   /// default implementation is not done (aka open-ended).
   /// Note: IsDone() should return true if .MoveNext() would

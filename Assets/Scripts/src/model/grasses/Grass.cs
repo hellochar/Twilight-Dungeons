@@ -10,6 +10,8 @@ public abstract class Grass : SteppableEntity {
     set { }
   }
 
+  public event Action OnNoteworthyAction;
+
   public Grass(Vector2Int pos) : base() {
     this._pos = pos;
     timeNextAction = this.timeCreated + 99999;
@@ -18,5 +20,10 @@ public abstract class Grass : SteppableEntity {
   protected override float Step() {
     /// TODO make SteppableEntity an Interface
     return 99999;
+  }
+
+  /// The UI will do *something* in response to this
+  protected void TriggerNoteworthyAction() {
+    OnNoteworthyAction?.Invoke();
   }
 }

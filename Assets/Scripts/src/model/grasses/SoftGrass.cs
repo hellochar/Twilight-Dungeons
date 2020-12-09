@@ -20,6 +20,7 @@ public class SoftGrass : Grass {
       if (!player.statuses.Has<SoftGrassStatus>()) {
         player.statuses.Add(new SoftGrassStatus(player));
       }
+      TriggerNoteworthyAction();
     }
   }
 }

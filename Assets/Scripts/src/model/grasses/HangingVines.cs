@@ -21,6 +21,7 @@ public class HangingVines : Grass {
   private void HandleActorEnter(Actor who) {
     var stuckStatus = new BoundStatus();
     who.statuses.Add(stuckStatus);
+    TriggerNoteworthyAction();
     stuckStatus.OnRemoved += HandleStatusRemoved;
   }
 

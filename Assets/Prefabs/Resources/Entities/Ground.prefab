@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6322716508109516507}
   - component: {fileID: 3870027420533502564}
   - component: {fileID: 598269646474060315}
+  - component: {fileID: 6311159287284332325}
   m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
@@ -140,7 +141,7 @@ SpriteMask:
   m_MaskAlphaCutoff: 0
   m_FrontSortingLayerID: 565039641
   m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 3
+  m_FrontSortingLayer: 5
   m_BackSortingLayer: 0
   m_FrontSortingOrder: 0
   m_BackSortingOrder: 0
@@ -172,3 +173,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &6311159287284332325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3042002388432384745}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eae1d2799fc2e94e9ec9075ef1f322c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderer: {fileID: 8256072396031948699}
+  sprites:
+  - {fileID: -3714409817710726143, guid: b7e3e3bcf7f91db4bbd556fd274376b3, type: 3}
+  - {fileID: 6898460269864436913, guid: b7e3e3bcf7f91db4bbd556fd274376b3, type: 3}
+  - {fileID: 8848465696421099746, guid: b7e3e3bcf7f91db4bbd556fd274376b3, type: 3}

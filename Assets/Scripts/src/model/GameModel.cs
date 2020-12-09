@@ -22,7 +22,7 @@ public class GameModel {
   public Floor currentFloor { get => floors[activeFloorIndex]; }
 
   /// Events to process in response to state changes
-  public List<Action> eventQueue = new List<Action>();
+  private List<Action> eventQueue = new List<Action>();
 
   public static GameModel main = new GameModel(); //new GameModel();
   static GameModel() {

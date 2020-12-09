@@ -13,7 +13,7 @@ public abstract class Entity {
   public Tile tile => floor.tiles[pos.x, pos.y];
   public Grass grass => floor.GrassAt(pos);
   public Actor actor => floor.ActorAt(pos);
-  public bool isVisible => tile.visibility == TileVisiblity.Visible;
+  public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set
   public event Action OnEnterFloor;
   /// called before the old floor is left

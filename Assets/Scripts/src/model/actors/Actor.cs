@@ -41,7 +41,7 @@ public class Actor : SteppableEntity {
 
   /// don't call directly; this doesn't use modifiers
   protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
-  protected float baseActionCost => GetActionCost(ActionType.WAIT);
+  public float baseActionCost => GetActionCost(ActionType.WAIT);
   /// how many turns this Entity has been alive for
   public virtual ActorTask task {
     get => taskQueue.FirstOrDefault();
@@ -90,13 +90,16 @@ public class Actor : SteppableEntity {
   }
 
   /// create an Attack and execute it
-  internal void Attack(Actor target) {
+  internal void Attack(Actor target, int damage) {
     if (target.IsDead) {
       throw new CannotPerformActionException("Cannot attack dead target.");
     }
-    int damage = GetAttackDamage();
     OnAttack?.Invoke(damage, target);
     target.TakeDamage(damage, this);
+  }
+
+  internal void Attack(Actor target) {
+    Attack(target, GetAttackDamage());
   }
 
   /// get one instance of an attack damage from this Actor

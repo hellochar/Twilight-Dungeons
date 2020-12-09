@@ -20,3 +20,5 @@ public class MatchActorTask<T> : MonoBehaviour where T : ActorTask {
     }
   }
 }
+
+public class MatchActorTask : MatchActorTask<ActorTask> {}

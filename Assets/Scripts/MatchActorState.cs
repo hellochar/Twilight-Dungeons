@@ -17,13 +17,14 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
       actor = GameModel.main.player;
     }
 
-    animator = GetComponentInChildren<Animator>();
+    animator = transform.Find("Sprite")?.GetComponent<Animator>();
 
     actor.OnTakeDamage += HandleTakeDamage;
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
-    actor.OnSetTask += HandleSetAction;
+    actor.OnSetTask += HandleSetTask;
+    HandleSetTask(actor.task);
     actor.OnActionPerformed += HandleActionPerformed;
     actor.statuses.OnAdded += HandleStatusAdded;
 
@@ -38,6 +39,10 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     } else {
       this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, 20f * Time.deltaTime), this.transform.position.z);
     }
+
+    if (animator != null) {
+      animator.speed = 1f / actor.baseActionCost;
+    }
   }
 
   private void HandleStatusAdded(Status status) {
@@ -47,7 +52,7 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  private void HandleSetAction(ActorTask task) {
+  private void HandleSetTask(ActorTask task) {
     PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
   }
 
@@ -104,9 +109,9 @@ public class MatchActorState : MonoBehaviour, IPointerClickHandler {
     // (2) enemy - attack
     switch (actor.faction) {
       case Faction.Ally:
-      case Faction.Neutral:
         player.task = new MoveNextToTargetTask(player, actor.pos);
-      break;
+        break;
+      case Faction.Neutral:
       case Faction.Enemy:
         player.SetTasks(
           new MoveNextToTargetTask(player, actor.pos),

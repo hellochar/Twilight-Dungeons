@@ -15,7 +15,7 @@ public static class Encounters {
   public static Encounter Empty = new Encounter((Floor, Room) => {});
 
   public static Encounter AFewBlobs = new Encounter((floor, room) => {
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     emptyTilesInRoom.Shuffle();
     var numBlobs = Random.Range(2, 4);
     foreach (var tile in emptyTilesInRoom.Take(numBlobs)) {
@@ -24,7 +24,7 @@ public static class Encounters {
   });
 
   public static Encounter JackalPile = new Encounter((floor, room) => {
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     // TODO replace with bfs floodfill with random direction
     // emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
     emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
@@ -35,7 +35,7 @@ public static class Encounters {
   });
 
   public static Encounter BatsInCorner = new Encounter((floor, room) => {
-    var emptyTilesInRoom = FloorUtils.TilesSortedByCorners(floor, room).Where(tile => tile.CanBeOccupied());
+    var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     // sort by farthest distance to center
     foreach (var tile in emptyTilesInRoom.Take(2)) {
       floor.Add(new Bat(tile.pos));
@@ -44,7 +44,7 @@ public static class Encounters {
 
   public static Encounter MatureBush = new Encounter((floor, room) => {
     // add a soil at the center
-    var emptyTilesInRoom = floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
     var emptyTileNearestCenter = emptyTilesInRoom.FirstOrDefault();
 
@@ -76,7 +76,7 @@ public static class Encounters {
   });
 
   public static Encounter AddMushroom = new Encounter((floor, room) => {
-    var tilesNextToWalls = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && floor.GetAdjacentTiles(tile.pos).Any(x => x is Wall) && tile.grass == null);
+    var tilesNextToWalls = FloorUtils.TilesNextToWalls(floor, room);
     var spacing = 5;
     while (tilesNextToWalls.Any()) {
       var chosenTile = Util.RandomPick(tilesNextToWalls.Take(spacing));
@@ -95,6 +95,20 @@ public static class Encounters {
     }
   });
 
+  public static Encounter ScatteredBoombugs = new Encounter((floor, room) => {
+    var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
+    emptyTilesInRoom.Shuffle();
+    var num= Random.Range(2, 4);
+    foreach (var tile in emptyTilesInRoom.Take(num)) {
+      floor.Add(new Boombug(tile.pos));
+    }
+    // // also pick another Encounter
+    if (UnityEngine.Random.value < 0.5) {
+      var otherEncounter = CavesGrasses.GetRandomWithout(ScatteredBoombugs);
+      otherEncounter.Apply(floor, room);
+    }
+  });
+
   public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
     { 1.5f, Empty },
     { 1, AFewBlobs },
@@ -108,6 +122,7 @@ public static class Encounters {
     { 1, CoverWithSoftGrass },
     { 1f, AddHangingVines },
     { 1f, AddMushroom },
+    { 1f, ScatteredBoombugs },
     { 0.2f, ThreePlumpAstoriasInCorner },
   };
 }

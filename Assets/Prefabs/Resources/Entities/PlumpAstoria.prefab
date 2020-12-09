@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7602990812966034008}
   - component: {fileID: 4982390399112775299}
   m_Layer: 9
-  m_Name: PlumpRestoria
+  m_Name: PlumpAstoria
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

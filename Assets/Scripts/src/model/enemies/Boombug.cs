@@ -48,7 +48,7 @@ public class BoombugCorpse : Actor {
     return baseActionCost;
   }
 
-  internal override int GetAttackDamage() {
+  internal override int BaseAttackDamage() {
     return 2;
   }
 }

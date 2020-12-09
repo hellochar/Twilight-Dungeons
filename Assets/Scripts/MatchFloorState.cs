@@ -39,12 +39,7 @@ public class MatchFloorState : MonoBehaviour {
     if (currentObject == null) {
       Debug.LogWarning("" + e + " was removed from floor " + floor + " but didn't have a GameObject.");
     }
-    if (e is Boombug || e is BoombugCorpse) {
-      /// TODO find a better way to control death animations
-      Destroy(currentObject);
-    } else {
-      currentObject.AddComponent<FadeThenDestroy>();
-    }
+    currentObject.AddComponent<FadeThenDestroy>();
     gameObjectMap.Remove(e);
   }
 

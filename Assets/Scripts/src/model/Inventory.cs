@@ -27,7 +27,12 @@ public class Inventory : IEnumerable<Item> {
       // if we still exist, then continue
     }
 
-    int slot = slotArg ?? GetFirstFreeSlot();
+    int? maybeSlot = slotArg ?? GetFirstFreeSlot();
+    if (maybeSlot == null) {
+      return false;
+    }
+
+    int slot = maybeSlot.Value;
     if (items[slot] != null) {
       return false;
     }
@@ -42,8 +47,12 @@ public class Inventory : IEnumerable<Item> {
     return true;
   }
 
-  private int GetFirstFreeSlot() {
-    return Array.FindIndex(items, 0, items.Length, (t) => t == null);
+  private int? GetFirstFreeSlot() {
+    var index = Array.FindIndex(items, 0, items.Length, (t) => t == null);
+    if (index < 0) {
+      return null;
+    }
+    return index;
   }
 
   /// Be careful when calling this method not to lose the item into the nether, unless intentional

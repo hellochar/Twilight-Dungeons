@@ -188,7 +188,7 @@ public interface IWeapon {
   (int, int) AttackSpread { get; }
 }
 
-public class ItemBarkShield : EquippableItem, IDurable, IDamageModifier {
+public class ItemBarkShield : EquippableItem, IDurable, IDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Shield;
 
   public int durability { get; set; }
@@ -199,7 +199,7 @@ public class ItemBarkShield : EquippableItem, IDurable, IDamageModifier {
     this.durability = maxDurability;
   }
 
-  public int ModifyDamage(int damage) {
+  public int Modify(int damage) {
     Durables.ReduceDurability(this);
     return damage - 2;
   }

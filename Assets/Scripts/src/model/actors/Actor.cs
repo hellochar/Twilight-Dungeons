@@ -89,7 +89,7 @@ public class Actor : SteppableEntity {
     return amount;
   }
 
-  /// create an Attack and execute it
+  /// create an Attack and execute it. Bypasses all damage modifiers.
   internal void Attack(Actor target, int damage) {
     if (target.IsDead) {
       throw new CannotPerformActionException("Cannot attack dead target.");
@@ -99,13 +99,19 @@ public class Actor : SteppableEntity {
   }
 
   internal void Attack(Actor target) {
-    Attack(target, GetAttackDamage());
+    Attack(target, GetFinalAttackDamage());
   }
 
   /// get one instance of an attack damage from this Actor
-  internal virtual int GetAttackDamage() {
+  internal virtual int BaseAttackDamage() {
     Debug.LogWarning(this + " using base GetAttackDamage");
     return UnityEngine.Random.Range(1, 3);
+  }
+
+  internal virtual int GetFinalAttackDamage() {
+    var baseDamage = BaseAttackDamage();
+    var finalDamage = Modifiers.Process(statuses.AttackDamageModifiers(), baseDamage);
+    return finalDamage;
   }
 
   internal void AttackGround(Vector2Int targetPosition) {
@@ -125,7 +131,7 @@ public class Actor : SteppableEntity {
       Debug.LogWarning("Cannot take negative damage!");
       return;
     }
-    damage = ModifyDamage(damage);
+    damage = ModifyDamageTaken(damage);
     damage = Math.Max(damage, 0);
     hp -= damage;
     source.OnDealDamage?.Invoke(damage, this);
@@ -135,7 +141,7 @@ public class Actor : SteppableEntity {
     }
   }
 
-  protected virtual int ModifyDamage(int damage) {
+  protected virtual int ModifyDamageTaken(int damage) {
     return damage;
   }
 

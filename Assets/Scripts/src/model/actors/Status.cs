@@ -48,34 +48,25 @@ public class StatusList {
   }
 
   internal IEnumerable<IActionCostModifier> ActionCostModifiers() {
-    return ModifiersFor<IActionCostModifier, ActionCosts>();
+    return Modifiers.ActionCostModifiers(list);
   }
 
   internal IEnumerable<IBaseActionModifier> BaseActionModifiers() {
-    return ModifiersFor<IBaseActionModifier, BaseAction>();
+    return Modifiers.BaseActionModifiers(list);
   }
 
-  internal IEnumerable<T> ModifiersFor<T, I>() where T : IModifier<I> {
-    return list.Where((s) => s is T).Cast<T>();
+  internal IEnumerable<IDamageTakenModifier> DamageTakenModifiers() {
+    return Modifiers.DamageTakenModifiers(list);
+  }
+
+  internal IEnumerable<IAttackDamageModifier> AttackDamageModifiers() {
+    return Modifiers.AttackDamageModifiers(list);
   }
 
   internal T FindOfType<T>() where T : Status {
     return (T) (list.Find((s) => s is T));
   }
 }
-
-interface IModifier<T> {
-  T Modify(T input);
-}
-
-static class Modifiers {
-  public static T Process<T>(IEnumerable<IModifier<T>> modifiers, T initial) {
-    return modifiers.Aggregate(initial, (current, modifier) => modifier.Modify(current));
-  }
-}
-
-interface IActionCostModifier : IModifier<ActionCosts> {}
-interface IBaseActionModifier : IModifier<BaseAction> {}
 
 public class CannotPerformActionException : System.Exception {
   public readonly string why;

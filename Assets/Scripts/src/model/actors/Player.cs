@@ -97,22 +97,18 @@ public class Player : Actor {
     fullness = Mathf.Clamp(fullness + amount, 0, MAX_FULLNESS);
   }
 
-  protected override int ModifyDamage(int damage) {
-    foreach (var item in equipment.ItemsNonNull()) {
-      if (item is IDamageModifier damageModifier && damage > 0) {
-        damage = damageModifier.ModifyDamage(damage);
-      }
-    }
-    return damage;
+  protected override int ModifyDamageTaken(int damage) {
+    var newDamage = Modifiers.Process(Modifiers.DamageTakenModifiers(equipment.ItemsNonNull()), damage);
+    return newDamage;
   }
 
-  internal override int GetAttackDamage() {
+  internal override int BaseAttackDamage() {
     var item = equipment[EquipmentSlot.Weapon];
     if (item is IWeapon w) {
       var (min, max) = w.AttackSpread;
       return UnityEngine.Random.Range(min, max + 1);
     } else {
-      Debug.Log("Attacking with a non-weapon in the weapon slot: " + item);
+      Debug.Log("Player attacking with a non-weapon in the weapon slot: " + item);
       return 1;
     }
   }

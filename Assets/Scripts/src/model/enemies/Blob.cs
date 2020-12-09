@@ -8,7 +8,7 @@ public class Blob : AIActor {
     ai = AIs.BlobAI(this).GetEnumerator();
   }
 
-  internal override int GetAttackDamage() {
+  internal override int BaseAttackDamage() {
     return UnityEngine.Random.Range(2, 4);
   }
 }

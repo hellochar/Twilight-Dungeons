@@ -23,7 +23,7 @@ public class Jackal : AIActor {
     }
   }
 
-  internal override int GetAttackDamage() {
+  internal override int BaseAttackDamage() {
     return UnityEngine.Random.Range(1, 3);
   }
 }

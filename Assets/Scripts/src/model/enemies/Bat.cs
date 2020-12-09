@@ -16,7 +16,7 @@ public class Bat : AIActor {
     }
   }
 
-  internal override int GetAttackDamage() {
+  internal override int BaseAttackDamage() {
     return 1;
   }
 }

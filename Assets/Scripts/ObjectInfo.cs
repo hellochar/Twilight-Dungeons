@@ -34,6 +34,10 @@ public class ObjectInfo {
       spriteName = "mushroom",
       flavorText = "At least it's not toxic!"
     },
+    [typeof(ItemDeathbloomFlower)] = new ObjectInfo {
+      spriteName = "3Red",
+      flavorText = "The rare Deathbloom flower. Just the smell of it gets your blood pumping."
+    },
     [typeof(SoftGrassStatus)] = new ObjectInfo {
       spriteName = "colored_transparent_packed_95",
       flavorText = "Feels nice on your feet."
@@ -41,6 +45,10 @@ public class ObjectInfo {
     [typeof(BoundStatus)] = new ObjectInfo {
       spriteName = "bound-status",
       flavorText = "Thick, damp vines entangle you!"
+    },
+    [typeof(FrenziedStatus)] = new ObjectInfo {
+      spriteName = "3Red",
+      flavorText = "You're engulfed in a rage!"
     }
   };
   public static ObjectInfo InfoFor(object item) {

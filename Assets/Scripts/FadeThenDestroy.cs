@@ -43,7 +43,7 @@ public class FadeThenDestroy : MonoBehaviour {
         if (renderers[i] != null) {
           var originalColor = colors[i];
           var newColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a * (1 - t));
-          var newScale = scales[i] * (1 + 0.2f * t);
+          var newScale = scales[i] * (1 - 0.5f * t);
           renderers[i].color = newColor;
           renderers[i].transform.localScale = newScale;
         }
@@ -53,7 +53,7 @@ public class FadeThenDestroy : MonoBehaviour {
         if (images[i] != null) {
           var originalColor = colors[i];
           var newColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a * (1 - t));
-          var newScale = scales[i] * (1 + 0.2f * t);
+          var newScale = scales[i] * (1 - 0.5f * t);
           images[i].color = newColor;
           images[i].transform.localScale = newScale;
         }

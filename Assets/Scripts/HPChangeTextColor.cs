@@ -16,6 +16,6 @@ public class HPChangeTextColor : MonoBehaviour {
     }
   }
 
-  private readonly static Color DamageColor = new Color(1, 1, 1);
+  private readonly static Color DamageColor = new Color(0.7921569f, 0.1411765f, 0.03137255f);
   private readonly static Color HealColor = new Color(0.109082f, 0.9803922f, 0.04313723f);
 }

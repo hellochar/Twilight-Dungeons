@@ -1,16 +1,22 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public static class Popups {
-  private static GameObject prefab;
+  private static GameObject PopupPrefab;
 
-  public static GameObject Create(Transform parent, string title, string info, string flavor, GameObject sprite) {
-    if (prefab == null) {
-      prefab = Resources.Load<GameObject>("UI/Popup");
+  public static GameObject Create(string title, string info, string flavor, GameObject sprite, Transform parent = null, List<GameObject> buttons = null) {
+    if (PopupPrefab == null) {
+      PopupPrefab = Resources.Load<GameObject>("UI/Popup");
     }
-    var popup = UnityEngine.Object.Instantiate(prefab, new Vector3(), Quaternion.identity, parent);
+    if (parent == null) {
+      parent = GameObject.Find("Canvas").transform;
+    }
+    var popup = UnityEngine.Object.Instantiate(PopupPrefab, new Vector3(), Quaternion.identity, parent);
+    /// TODO refactor into a Controller class
 
-    // take up the whole canvas
+    // fill up the parent
     var rectTransform = popup.GetComponent<RectTransform>();
     rectTransform.offsetMax = new Vector2();
     rectTransform.offsetMin = new Vector2();
@@ -27,6 +33,16 @@ public static class Popups {
     // Add sprite
     var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
     UnityEngine.Object.Instantiate(sprite, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
+
+    // Add buttons
+    var buttonsContainer = popup.transform.Find("Frame/Actions");
+    if (buttons != null && buttons.Count > 0) {
+      buttons.ForEach((b) => {
+        b.transform.SetParent(buttonsContainer, false);
+      });
+    } else {
+      buttonsContainer.gameObject.SetActive(false);
+    }
 
     // destroy popup when overlay is clicked
     var overlayButton = popup.transform.Find("Overlay").GetComponent<Button>();

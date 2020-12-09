@@ -89,7 +89,7 @@ public static class Encounters {
   });
 
   public static Encounter ThreePlumpAstoriasInCorner = new Encounter((floor, room) => {
-    var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t.grass == null);
+    var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
     foreach (var tile in positions.Take(3)) {
       floor.Add(new PlumpAstoria(tile.pos));
     }

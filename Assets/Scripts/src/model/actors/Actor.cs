@@ -191,6 +191,7 @@ public class Actor : SteppableEntity {
     var action = task.Current;
     var finalAction = Modifiers.Process(this.statuses.BaseActionModifiers(), action);
     finalAction.Perform();
+    this.statuses.list.ForEach((status) => status.Step());
     OnActionPerformed?.Invoke(finalAction, action);
 
     // handle close-ended actions

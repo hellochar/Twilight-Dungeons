@@ -8,6 +8,8 @@ public abstract class Status {
   public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Status", ""));
   public abstract string Info();
 
+  public virtual void Step() {}
+
   internal void Removed() {
     OnRemoved?.Invoke();
   }
@@ -27,6 +29,10 @@ public class StatusList {
   public void Add(Status status) {
     this.list.Add(status);
     OnAdded?.Invoke(status);
+  }
+
+  internal bool Has<T>() where T : Status {
+    return this.list.Where((Status) => Status is T).Any();
   }
 
   public void RemoveOfType<T>() where T : Status {
@@ -80,6 +86,12 @@ public class CannotPerformActionException : System.Exception {
 }
 
 public class SoftGrassStatus : Status, IActionCostModifier {
+  Player player;
+
+  public SoftGrassStatus(Player player) {
+    this.player = player;
+  }
+
   public ActionCosts Modify(ActionCosts costs) {
     return new ActionCosts(costs) {
       // 33% faster
@@ -87,12 +99,18 @@ public class SoftGrassStatus : Status, IActionCostModifier {
     };
   }
 
+  public override void Step() {
+    if (!(player.grass is SoftGrass)) {
+      GameModel.main.EnqueueEvent(() => this.player.statuses.Remove(this));
+    }
+  }
+
   public override string Info() => "Player moves 33% faster in Soft Grass.";
 }
 
 public class BoundStatus : Status, IBaseActionModifier {
   public int turnsLeft = 3;
-  public override string Info() => "You must break free of vines before you can move!";
+  public override string Info() => $"You must break free of vines before you can move!\n{(int)(turnsLeft / 3.0f * 100)}% bound.";
 
   public BaseAction Modify(BaseAction input) {
     if (input is MoveBaseAction) {

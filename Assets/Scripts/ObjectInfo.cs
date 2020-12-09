@@ -37,6 +37,10 @@ public class ObjectInfo {
     [typeof(SoftGrassStatus)] = new ObjectInfo {
       spriteName = "colored_transparent_packed_95",
       flavorText = "Feels nice on your feet."
+    },
+    [typeof(BoundStatus)] = new ObjectInfo {
+      spriteName = "bound-status",
+      flavorText = "Thick, damp vines entangle you!"
     }
   };
   public static ObjectInfo InfoFor(object item) {
@@ -60,7 +64,11 @@ public class ObjectInfo {
       if (_sprite == null) {
         _sprite = MasterSpriteAtlas.atlas.GetSprite(spriteName);
         if (_sprite == null) {
-          Debug.LogWarning("Couldn't find sprite " + spriteName);
+          Debug.LogWarning("Couldn't find sprite in Atlas " + spriteName);
+          _sprite = Resources.Load<Sprite>(spriteName);
+          if (_sprite == null) {
+            Debug.LogWarning("Couldn't find sprite Resource " + spriteName);
+          }
         }
       }
       return _sprite;

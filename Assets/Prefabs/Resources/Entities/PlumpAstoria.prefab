@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5594278900770588426}
   - component: {fileID: 7602990812966034008}
   - component: {fileID: 4982390399112775299}
+  - component: {fileID: 6697651181268457897}
   m_Layer: 9
   m_Name: PlumpAstoria
   m_TagString: Player
@@ -121,3 +122,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &6697651181268457897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5594278900770588427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4b406973a8bbf419e52d4be37e671a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

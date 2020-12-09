@@ -780,7 +780,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1475697893
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 3392629099716242594, guid: 59a4a8eada9da7c4299d17c07cb14daf,
     type: 3}
@@ -1067,7 +1067,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1475697893
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -5380556929042734470, guid: 59a4a8eada9da7c4299d17c07cb14daf,
     type: 3}
@@ -1454,7 +1454,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1475697893
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -3366367827710478625, guid: 59a4a8eada9da7c4299d17c07cb14daf,
     type: 3}
@@ -2669,6 +2669,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5625467325116177897}
   - component: {fileID: 7776696363350138597}
+  - component: {fileID: 1460723033606934832}
   m_Layer: 0
   m_Name: Wildwood
   m_TagString: Untagged
@@ -2706,4 +2707,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb669643be1a4fa44ac3e1b9954fb906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderer: {fileID: 0}
+--- !u!114 &1460723033606934832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9209023794924840307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4b406973a8bbf419e52d4be37e671a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

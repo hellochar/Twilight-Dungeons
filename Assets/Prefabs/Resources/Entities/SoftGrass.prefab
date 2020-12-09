@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1298274228516673273}
   - component: {fileID: 3901671238619433899}
   - component: {fileID: 1910576442883446640}
+  - component: {fileID: -11533351341472607}
   m_Layer: 9
   m_Name: SoftGrass
   m_TagString: Player
@@ -122,3 +123,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-11533351341472607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298274228516673272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d4b406973a8bbf419e52d4be37e671a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -72,7 +72,7 @@ public class FloorController : MonoBehaviour {
       } else if (entity is Actor actor) {
         gameObject.GetComponent<ActorController>().actor = actor;
       } else if (entity is Grass grass) {
-        gameObject.GetComponent<MatchGrassState>().grass = grass;
+        gameObject.GetComponent<GrassController>().grass = grass;
       }
       gameObjectMap[entity] = gameObject;
     } else {

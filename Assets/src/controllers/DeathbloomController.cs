@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DeathbloomController : MatchGrassState {
+public class DeathbloomController : GrassController {
   public Deathbloom deathbloom => (Deathbloom) grass;
   private GameObject small, large;
 

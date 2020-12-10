@@ -7,7 +7,7 @@ using UnityEngine.U2D;
 using UnityEngine.UI;
 
 /// Renders one Item in the UI.
-public class MatchItem : MonoBehaviour {
+public class ItemController : MonoBehaviour {
   private static GameObject ActionButtonPrefab;
   public Item item;
   private Button button;

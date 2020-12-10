@@ -33,7 +33,7 @@ public class InventorySlotController : ItemSlotController {
 
     var child = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
     child.transform.localPosition = new Vector3(0, 0, 0);
-    child.GetComponent<MatchItem>().item = item;
+    child.GetComponent<ItemController>().item = item;
     return child;
   }
 

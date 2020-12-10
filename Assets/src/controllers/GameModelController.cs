@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchGameModel : MonoBehaviour {
+public class GameModelController : MonoBehaviour {
   GameModel model;
   private GameObject floorPrefab;
 

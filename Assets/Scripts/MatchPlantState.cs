@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class MatchPlantState : MatchActorState, IPointerClickHandler {
+public class MatchPlantState : ActorController, IPointerClickHandler {
   public Plant plant => (Plant) actor;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;

@@ -70,7 +70,7 @@ public class MatchFloorState : MonoBehaviour {
       if (entity is Tile tile) {
         gameObject.GetComponent<MatchTileState>().owner = tile;
       } else if (entity is Actor actor) {
-        gameObject.GetComponent<MatchActorState>().actor = actor;
+        gameObject.GetComponent<ActorController>().actor = actor;
       } else if (entity is Grass grass) {
         gameObject.GetComponent<MatchGrassState>().grass = grass;
       }

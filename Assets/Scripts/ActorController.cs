@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MatchActorState : MonoBehaviour, IPointerClickHandler {
+public class ActorController : MonoBehaviour, IPointerClickHandler {
   private static GameObject hpChangeTextPrefab;
   public Actor actor;
   private Animator animator;

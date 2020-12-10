@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
 
-public class MatchActorTask<T> : MonoBehaviour where T : ActorTask {
+public class ActorTaskController<T> : MonoBehaviour where T : ActorTask {
   public Actor actor;
   public T action;
 
   public virtual void Start() {
-    actor = GetComponentInParent<MatchActorState>().actor;
+    actor = GetComponentInParent<ActorController>().actor;
     try {
       action = (T) actor.task;
     } catch (InvalidCastException) {
@@ -21,4 +21,4 @@ public class MatchActorTask<T> : MonoBehaviour where T : ActorTask {
   }
 }
 
-public class MatchActorTask : MatchActorTask<ActorTask> {}
+public class MatchActorTask : ActorTaskController<ActorTask> {}

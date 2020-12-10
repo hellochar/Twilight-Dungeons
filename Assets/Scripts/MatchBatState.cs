@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MatchBatState : MatchActorState {
+public class MatchBatState : ActorController {
 
   public override void Update() {
     base.Update();

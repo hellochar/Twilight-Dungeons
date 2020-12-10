@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 /// Adds and removes Tile prefabs to match the state of a Floor variable.
-public class MatchFloorState : MonoBehaviour {
+public class FloorController : MonoBehaviour {
 
   public Floor floor;
   private Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();

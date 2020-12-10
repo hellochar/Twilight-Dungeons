@@ -6,9 +6,9 @@ public class MatchGameModel : MonoBehaviour {
   GameModel model;
   private GameObject floorPrefab;
 
-  private Dictionary<Floor, MatchFloorState> floorComponents = new Dictionary<Floor, MatchFloorState>();
+  private Dictionary<Floor, FloorController> floorComponents = new Dictionary<Floor, FloorController>();
 
-  private MatchFloorState currentFloorComponent;
+  private FloorController currentFloorComponent;
 
   // Start is called before the first frame update
   void Start() {
@@ -31,10 +31,10 @@ public class MatchGameModel : MonoBehaviour {
     gameLoop = null;
   }
 
-  private MatchFloorState GetOrCreateFloorComponent(Floor floor) {
+  private FloorController GetOrCreateFloorComponent(Floor floor) {
     if (!floorComponents.ContainsKey(floor)) {
       GameObject floorInstance = Instantiate(floorPrefab);
-      MatchFloorState floorComponent = floorInstance.GetComponent<MatchFloorState>();
+      FloorController floorComponent = floorInstance.GetComponent<FloorController>();
       floorComponent.floor = floor;
       floorComponents.Add(floor, floorComponent);
     }
@@ -47,7 +47,7 @@ public class MatchGameModel : MonoBehaviour {
     if (model.currentFloor != currentFloorComponent.floor) {
       currentFloorComponent.gameObject.SetActive(false);
 
-      MatchFloorState newFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
+      FloorController newFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
       newFloorComponent.gameObject.SetActive(true);
       currentFloorComponent = newFloorComponent;
     }

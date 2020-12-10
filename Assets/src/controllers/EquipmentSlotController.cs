@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EquipmentSlotController : MatchInventorySlot {
+public class EquipmentSlotController : InventorySlotController {
   public EquipmentSlot slot;
   public GameObject placeholder;
 

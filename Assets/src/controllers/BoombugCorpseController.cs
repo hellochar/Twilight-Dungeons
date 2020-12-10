@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MatchBoombugCorpseState : ActorController {
+public class BoombugCorpseController : ActorController {
 
   public override void Start() {
     base.Start();

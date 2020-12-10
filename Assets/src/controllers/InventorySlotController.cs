@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventorySlotController : MatchItemSlot {
+public class InventorySlotController : ItemSlotController {
   private GameObject itemPrefab;
   private Shadow shadow;
   /// the ragged border/fill representing the slot

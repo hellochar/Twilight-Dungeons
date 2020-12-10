@@ -101,10 +101,10 @@ public class SoftGrassStatus : Status, IActionCostModifier {
 
 public class BoundStatus : Status, IBaseActionModifier {
   public int turnsLeft = 3;
-  public override string Info() => $"You must break free of vines before you can move!\n{(int)(turnsLeft / 3.0f * 100)}% bound.";
+  public override string Info() => $"You must break free of vines before you can move or attack!\n{(int)(turnsLeft / 3.0f * 100)}% bound.";
 
   public BaseAction Modify(BaseAction input) {
-    if (input is MoveBaseAction) {
+    if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {
       turnsLeft--;
       if (turnsLeft <= 0) {
         GameModel.main.EnqueueEvent(() => input.actor.statuses.Remove(this));

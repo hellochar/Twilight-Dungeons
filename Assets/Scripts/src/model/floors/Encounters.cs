@@ -3,16 +3,16 @@ using System.Linq;
 using UnityEngine;
 
 public class Encounter {
-    public Encounter(System.Action<Floor, Room> apply) {
-      this.Apply = apply;
-    }
+  public Encounter(System.Action<Floor, Room> apply) {
+    this.Apply = apply;
+  }
 
-    public System.Action<Floor, Room> Apply { get; }
+  public System.Action<Floor, Room> Apply { get; }
 }
 
 public static class Encounters {
   // no op
-  public static Encounter Empty = new Encounter((Floor, Room) => {});
+  public static Encounter Empty = new Encounter((Floor, Room) => { });
 
   public static Encounter AFewBlobs = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
@@ -28,7 +28,7 @@ public static class Encounters {
     // TODO replace with bfs floodfill with random direction
     // emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
     tiles.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
-    var numJackals = Random.Range(3, 7);
+    var numJackals = Random.Range(2, 5);
     foreach (var tile in tiles.Take(numJackals)) {
       floor.Add(new Jackal(tile.pos));
     }
@@ -42,13 +42,13 @@ public static class Encounters {
     }
   });
 
-  public static Encounter MatureBush = new Encounter((floor, room) => {
+  public static Encounter MatureWildwood = new Encounter((floor, room) => {
     // add a soil at the center
     Tile tile = FloorUtils.EmptyTileNearestCenter(floor, room);
 
     if (tile != null && !(tile is Downstairs || tile is Upstairs)) {
       floor.tiles.Put(new Soil(tile.pos));
-      var bush = new BerryBush(tile.pos);
+      var bush = new Wildwood(tile.pos);
       // jump to Mature
       bush.stage = bush.stage.NextStage.NextStage;
       floor.Add(bush);
@@ -96,14 +96,9 @@ public static class Encounters {
   public static Encounter ScatteredBoombugs = new Encounter((floor, room) => {
     var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     emptyTilesInRoom.Shuffle();
-    var num= Random.Range(2, 4);
+    var num = Random.Range(2, 4);
     foreach (var tile in emptyTilesInRoom.Take(num)) {
       floor.Add(new Boombug(tile.pos));
-    }
-    // // also pick another Encounter
-    if (UnityEngine.Random.value < 0.5) {
-      var otherEncounter = CavesGrasses.GetRandomWithout(ScatteredBoombugs);
-      otherEncounter.Apply(floor, room);
     }
   });
 
@@ -122,17 +117,17 @@ public static class Encounters {
     { 1.5f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
-    { 0.8f, BatsInCorner },
-    { 0.1f, MatureBush },
+    { 1, ScatteredBoombugs },
+    // { 0.8f, BatsInCorner },
+    { 0.1f, MatureWildwood },
   };
 
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     { 5f, Empty },
-    { 1, CoverWithSoftGrass },
+    { 1f, CoverWithSoftGrass },
     { 1f, AddHangingVines },
     { 1f, AddMushroom },
     { 1f, AddDeathbloom },
-    { 1f, ScatteredBoombugs },
-    { 0.2f, ThreePlumpAstoriasInCorner },
+    { 0.5f, ThreePlumpAstoriasInCorner },
   };
 }

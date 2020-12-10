@@ -12,7 +12,7 @@ public class Jackal : AIActor {
   protected override ActionCosts actionCosts => Jackal.StaticActionCosts;
   public Jackal(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = hpMax = 3;
+    hp = hpMax = 2;
     ai = AIs.JackalAI(this).GetEnumerator();
     OnDeath += HandleDeath;
   }

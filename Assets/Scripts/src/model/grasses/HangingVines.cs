@@ -19,10 +19,10 @@ public class HangingVines : Grass {
   }
 
   private void HandleActorEnter(Actor who) {
-    var stuckStatus = new BoundStatus();
-    who.statuses.Add(stuckStatus);
+    var status = new BoundStatus();
+    who.statuses.Add(status);
     TriggerNoteworthyAction();
-    stuckStatus.OnRemoved += HandleStatusRemoved;
+    status.OnRemoved += HandleStatusRemoved;
   }
 
   private void HandleStatusRemoved() {

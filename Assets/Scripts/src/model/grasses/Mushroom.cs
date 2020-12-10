@@ -24,7 +24,7 @@ public class Mushroom : Grass {
   }
 
   private float GetRandomDuplicateTime() {
-    return UnityEngine.Random.Range(50, 100);
+    return UnityEngine.Random.Range(66, 88);
   }
 
   protected override float Step() {

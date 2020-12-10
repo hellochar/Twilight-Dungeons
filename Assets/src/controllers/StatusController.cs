@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchStatusState : MonoBehaviour {
+public class StatusController : MonoBehaviour {
   static string ACTOR_SPRITENAME = "Sprite";
   public Status status;
   public Animator animator;

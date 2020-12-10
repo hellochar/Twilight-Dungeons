@@ -48,7 +48,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
   private void HandleStatusAdded(Status status) {
     var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, transform);
     if (obj != null) {
-      obj.GetComponent<MatchStatusState>().status = status;
+      obj.GetComponent<StatusController>().status = status;
     }
   }
 

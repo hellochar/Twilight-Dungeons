@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchPlayerStatusesTopUI : MonoBehaviour {
+public class PlayerStatusesTopUIController : MonoBehaviour {
   GameObject statusIndicatorPrefab;
   Player player;
   // Start is called before the first frame update

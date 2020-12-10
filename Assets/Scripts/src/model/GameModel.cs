@@ -69,9 +69,13 @@ public class GameModel {
       FloorGenerator.generateFloor0(),
       FloorGenerator.generateRandomFloor(),
       FloorGenerator.generateRandomFloor(),
-      // Floor.generateRandomFloor(),
-      // Floor.generateRandomFloor(),
-      // Floor.generateRandomFloor(),
+      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateFloor0(),
+      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateRandomFloor(),
     };
 
     Tile floor0Upstairs = floors[0].upstairs;

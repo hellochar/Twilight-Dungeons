@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MatchStatusTopUIState : MonoBehaviour {
+public class StatusIconController : MonoBehaviour {
   public Status status;
   Image icon;
 

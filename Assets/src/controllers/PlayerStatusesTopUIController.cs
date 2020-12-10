@@ -15,6 +15,6 @@ public class PlayerStatusesTopUIController : MonoBehaviour {
 
   private void HandleStatusAdded(Status status) {
     var statusIndicator = Instantiate(statusIndicatorPrefab, transform.position, Quaternion.identity, transform);
-    statusIndicator.GetComponent<MatchStatusTopUIState>().status = status;
+    statusIndicator.GetComponent<StatusIconController>().status = status;
   }
 }

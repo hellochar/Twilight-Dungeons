@@ -21,4 +21,4 @@ public class ActorTaskController<T> : MonoBehaviour where T : ActorTask {
   }
 }
 
-public class MatchActorTask : ActorTaskController<ActorTask> {}
+public class ActorTaskController : ActorTaskController<ActorTask> {}

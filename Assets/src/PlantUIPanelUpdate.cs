@@ -8,7 +8,7 @@ public class PlantUIPanelUpdate : MonoBehaviour {
   private TMP_Text uiName;
   private TMP_Text uiInfo;
   void Start() {
-    plant = GetComponentInParent<MatchPlantState>().plant;
+    plant = GetComponentInParent<PlantController>().plant;
     uiName = transform.Find("Name").GetComponent<TMP_Text>();
     uiInfo = transform.Find("Info").GetComponent<TMP_Text>();
   }

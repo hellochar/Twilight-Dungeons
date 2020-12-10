@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SoilController : MatchTileState {
+public class SoilController : TileController {
   public override void OnPointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     ItemSeed seed = (ItemSeed)player.inventory.ToList().Find(item => item is ItemSeed);

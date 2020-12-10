@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MatchTileState : MonoBehaviour, IPointerClickHandler {
+public class TileController : MonoBehaviour, IPointerClickHandler {
   public Tile owner;
   private SpriteRenderer[] renderers;
   private SpriteMask mask;

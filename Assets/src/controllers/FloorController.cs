@@ -68,7 +68,7 @@ public class FloorController : MonoBehaviour {
     if (prefab != null) {
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile tile) {
-        gameObject.GetComponent<MatchTileState>().owner = tile;
+        gameObject.GetComponent<TileController>().owner = tile;
       } else if (entity is Actor actor) {
         gameObject.GetComponent<ActorController>().actor = actor;
       } else if (entity is Grass grass) {

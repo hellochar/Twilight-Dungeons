@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RenderEquipmentInWorld : ItemSlotController {
+public class InWorldEquipmentController : ItemSlotController {
   private GameObject itemPrefab;
 
   public EquipmentSlot slot;

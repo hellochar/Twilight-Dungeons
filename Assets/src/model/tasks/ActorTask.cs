@@ -20,7 +20,7 @@ using UnityEngine;
  * is true, then the action Ends immediately.
  */
 public abstract class ActorTask : IEnumerator<BaseAction> {
-  public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Task", ""));
+  public string Name { get; set; }
   public virtual Actor actor { get; }
 
   /// default implementation is not done (aka open-ended).
@@ -28,7 +28,15 @@ public abstract class ActorTask : IEnumerator<BaseAction> {
   /// return false.
   public virtual bool IsDone() => false;
 
-  protected ActorTask(Actor actor) { this.actor = actor; }
+  protected ActorTask(Actor actor) {
+    Name = Util.WithSpaces(GetType().Name.Replace("Task", ""));
+    this.actor = actor;
+  }
+
+  public ActorTask Named(string name) {
+    Name = name;
+    return this;
+  }
 
   public abstract IEnumerator<BaseAction> Enumerator();
 
@@ -63,7 +71,7 @@ public abstract class ActorTask : IEnumerator<BaseAction> {
 public abstract class DoOnceTask : ActorTask {
   private bool hasDoneOnce = false;
 
-  protected DoOnceTask(Actor actor) : base(actor) {}
+  protected DoOnceTask(Actor actor) : base(actor) { }
 
   public override bool MoveNext() {
     hasDoneOnce = true;

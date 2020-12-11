@@ -18,7 +18,7 @@ public class ItemController : MonoBehaviour {
 
   void Start() {
     if (ActionButtonPrefab == null) {
-      ActionButtonPrefab = Resources.Load<GameObject>("UI/Item Action Button");
+      ActionButtonPrefab = Resources.Load<GameObject>("UI/Action Button");
     }
     /// on click - toggle the popup for this item
     button = GetComponent<Button>();
@@ -53,7 +53,7 @@ public class ItemController : MonoBehaviour {
 
     var buttons = playerTasks.Select((task) => {
       var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
-      button.GetComponentInChildren<TMPro.TMP_Text>().text = task.displayName;
+      button.GetComponentInChildren<TMPro.TMP_Text>().text = task.Name;
       button.GetComponent<Button>().onClick.AddListener(() => {
         player.task = task;
         Destroy(popup);

@@ -68,7 +68,7 @@ public class Player : Actor {
   void HandleAttack(int damage, Actor target) {
     var item = equipment[EquipmentSlot.Weapon];
     if (item is IDurable durable) {
-      Durables.ReduceDurability(durable);
+      durable.ReduceDurability();
     }
     if (task is FollowPathTask) {
       task = null;

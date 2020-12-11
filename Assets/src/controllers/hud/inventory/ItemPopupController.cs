@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PopupMatchItem : MonoBehaviour {
+public class ItemPopupController : MonoBehaviour {
   public Item item;
   TMPro.TMP_Text stats;
 
@@ -22,15 +22,5 @@ public class PopupMatchItem : MonoBehaviour {
       Destroy(this);
       return;
     }
-  }
-
-  /// call to close the popup
-  public void Close() {
-    Destroy(gameObject);
-  }
-
-  public void CloseInventory() {
-    var inventoryContainer = GameObject.Find("Inventory Container");
-    inventoryContainer.SetActive(false);
   }
 }

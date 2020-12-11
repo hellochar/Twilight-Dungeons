@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InWorldEquipmentController : ItemSlotController {
+public class EquipmentOnPlayerController : ItemSlotController {
   private GameObject itemPrefab;
 
   public EquipmentSlot slot;
   public override Item item => GameModel.main.player.equipment[slot];
 
   void Start() {
-    itemPrefab = Resources.Load<GameObject>("UI/ItemOnPlayer");
+    itemPrefab = Resources.Load<GameObject>("UI/Equipment On Player");
     itemChild = transform.Find("ItemOnPlayer")?.gameObject;
   }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlantUIPanelUpdate : MonoBehaviour {
+public class PlantUIController : MonoBehaviour {
   private Plant plant;
   private TMP_Text uiName;
   private TMP_Text uiInfo;

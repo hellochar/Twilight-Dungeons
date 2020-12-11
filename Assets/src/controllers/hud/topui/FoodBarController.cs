@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FullnessBarUpdate : MonoBehaviour {
+public class FoodBarController : MonoBehaviour {
   private RectTransform rectTransform;
   private GameObject barFilled;
   private Player player;

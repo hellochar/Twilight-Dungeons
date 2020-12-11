@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HeartsUpdate : MonoBehaviour {
+public class PlayerHeartsController : MonoBehaviour {
   public Sprite[] sprites;
   public GameObject heartPrefab;
 

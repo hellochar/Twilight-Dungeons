@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// Updates the UI to match an Item slot having an item or being empty.
+/// Updates the UI to match any Item slot having an item or being empty.
 /// Is responsible for Instantiating the Item gameObject.
 public abstract class ItemSlotController : MonoBehaviour {
   protected GameObject itemChild;

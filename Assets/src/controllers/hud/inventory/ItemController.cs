@@ -65,7 +65,7 @@ public class ItemController : MonoBehaviour {
       sprite: image.gameObject,
       buttons: buttons
     );
-    var popupMatchItem = popup.AddComponent<PopupMatchItem>();
+    var popupMatchItem = popup.AddComponent<ItemPopupController>();
     popupMatchItem.item = item;
   }
 

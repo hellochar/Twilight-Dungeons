@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DepthIndicatorUpdate : MonoBehaviour {
+public class DepthTextController : MonoBehaviour {
   private TMPro.TMP_Text text;
   void Start() {
     text = GetComponent<TMPro.TMP_Text>();

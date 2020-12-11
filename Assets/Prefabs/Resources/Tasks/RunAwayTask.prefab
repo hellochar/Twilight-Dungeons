@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7167709775294253380}
   - component: {fileID: 5986410633921673925}
   m_Layer: 0
-  m_Name: RunAwayAction
+  m_Name: RunAwayTask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,8 +69,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1475697893
-  m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingLayer: 3
+  m_SortingOrder: 1
   m_Sprite: {fileID: -6043004507731418390, guid: af4df3188a01af048a678513709d8278,
     type: 3}
   m_Color: {r: 1, g: 0.25, b: 0, a: 1}

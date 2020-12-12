@@ -16,22 +16,17 @@ class ItemMushroom : Item, IStackable {
       }
       _stacks = value;
       if (_stacks == 0) {
-        Destroy(null);
+        Destroy();
       }
     }
   }
 
+  [PlayerAction]
   public void Eat(Actor a) {
     if (a is Player player) {
       player.IncreaseFullness(0.05f);
     }
     stacks--;
-  }
-
-  public override List<ActorTask> GetAvailableTasks(Player player) {
-    var actions = base.GetAvailableTasks(player);
-    actions.Add(new GenericTask(player, Eat));
-    return actions;
   }
 
   internal override string GetStats() => "Recover 5% hunger.";

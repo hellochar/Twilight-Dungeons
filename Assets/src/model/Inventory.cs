@@ -20,7 +20,7 @@ public class Inventory : IEnumerable<Item> {
       foreach (IStackable i in ItemsNonNull().Where(i => i.GetType() == item.GetType())) {
         bool isConsumed = i.Merge(stackable);
         if (isConsumed) {
-          item.Destroy(null);
+          item.Destroy();
           return true;
         }
       }

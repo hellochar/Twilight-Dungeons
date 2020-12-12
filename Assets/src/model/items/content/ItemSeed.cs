@@ -13,7 +13,7 @@ public class ItemSeed : Item {
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
     soil.floor.Add(plant);
-    Destroy(null);
+    Destroy();
   }
 
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";

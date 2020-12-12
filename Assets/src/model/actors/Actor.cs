@@ -42,7 +42,6 @@ public class Actor : SteppableEntity {
   /// don't call directly; this doesn't use modifiers
   protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
   public float baseActionCost => GetActionCost(ActionType.WAIT);
-  /// how many turns this Entity has been alive for
   public virtual ActorTask task {
     get => taskQueue.FirstOrDefault();
     set => SetTasks(value);

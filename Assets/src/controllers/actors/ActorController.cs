@@ -10,7 +10,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
   // Start is called before the first frame update
   public virtual void Start() {
     if (hpChangeTextPrefab == null) {
-      hpChangeTextPrefab = Resources.Load<GameObject>("UI/HP Change Text");
+      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
     }
 
     if (actor == null) {
@@ -23,9 +23,12 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
+
     actor.OnSetTask += HandleSetTask;
     HandleSetTask(actor.task);
+
     actor.OnActionPerformed += HandleActionPerformed;
+
     actor.statuses.OnAdded += HandleStatusAdded;
 
     Update();
@@ -59,6 +62,9 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
   private void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is StruggleBaseAction) {
       animator?.SetTrigger("Struggled");
+    } else if (action is WaitBaseAction) {
+      var waitPrefab = Resources.Load<GameObject>("Effects/Wait");
+      var wait = Instantiate(waitPrefab, new Vector3(actor.pos.x, actor.pos.y + 0.9f, 0), Quaternion.identity);
     }
   }
 
@@ -70,7 +76,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
 
     if(damage > 0) {
-      GameObject damagedSpritePrefab = Resources.Load<GameObject>("UI/Damaged Sprite");
+      GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
       Instantiate(damagedSpritePrefab, Util.withZ(actor.pos), Quaternion.identity);
     }
   }
@@ -79,7 +85,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     if (!actor.isVisible) {
       return;
     }
-    GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");
+    GameObject healEffectPrefab = Resources.Load<GameObject>("Effects/Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity, transform);
     healEffect.transform.localPosition = new Vector3(0, 0, 0);
 
@@ -90,17 +96,12 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
   private void HandleAttack(int damage, Actor target) {}
 
   private void HandleAttackGround(Vector2Int pos) {
-    GameObject attackSpritePrefab = Resources.Load<GameObject>("UI/Attack Sprite");
+    GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
-    // on clicking self, wait for 1 turn
-    if (actor == player) {
-      player.task = new WaitTask(player, 1);
-      return;
-    }
     if (actor.IsDead) {
       return; // don't do anything to dead actors
     }

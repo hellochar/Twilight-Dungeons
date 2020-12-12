@@ -18,10 +18,16 @@ public abstract class Plant : Actor {
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     faction = Faction.Ally;
     this.stage = stage;
+    this.timeNextAction = this.timeCreated + stage.StepTime;
   }
 
   protected override float Step() {
-    return this.stage.Step();
+    var stageBefore = stage;
+    var timeDelta = stage.Step();
+    if (stage != stageBefore) {
+      return stage.StepTime;
+    }
+    return timeDelta;
   }
 
   public override void CatchUpStep(float lastStepTime, float time) {

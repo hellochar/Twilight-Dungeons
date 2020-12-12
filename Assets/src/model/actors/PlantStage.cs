@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlantStage {
+public abstract class PlantStage {
   public Plant plant;
 
   /// set when the plant actually enters into this stage
@@ -23,42 +23,38 @@ public class PlantStage {
     ageEntered = plant.age;
   }
 
-  public virtual float Step() {
-    return 1;
-  }
+  public abstract float StepTime { get; }
+  public abstract float Step();
 
   public virtual string getUIText() { return ""; }
 }
 
 class Seed : PlantStage {
+  public override float StepTime => 500;
   public override float Step() {
-    if (this.age >= 500) {
-      plant.stage = NextStage;
-    }
-    return 1;
+    plant.stage = NextStage;
+    return StepTime;
   }
 
-  public override string getUIText() => $"Grows in {500 - this.age} turns.";
+  public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }
 
 class Young : PlantStage {
+  public override float StepTime => 500;
   public override float Step() {
-    if (this.age >= 500) {
-      plant.stage = NextStage;
-    }
-    return 1;
+    plant.stage = NextStage;
+    return StepTime;
   }
 
-  public override string getUIText() => $"Grows in {500 - this.age} turns.";
+  public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }
 
 class Sapling : PlantStage {
+  public override float StepTime => 500;
   public override float Step() {
-    if (this.age >= 500) {
-      plant.stage = NextStage;
-    }
-    return 1;
+    plant.stage = NextStage;
+    return StepTime;
   }
 
-  public override string getUIText() => $"Grows in {500 - this.age} turns.";
+  public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }

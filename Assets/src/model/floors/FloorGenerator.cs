@@ -43,7 +43,7 @@ public static class FloorGenerator {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    Encounters.ThreePlumpAstoriasInCorner.Apply(floor, room0);
+    Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AddHangingVines.Apply(floor, room0);
 
@@ -65,7 +65,7 @@ public static class FloorGenerator {
       if (!(room == floor.upstairsRoom)) {
         // spawn a random encounter
         var encounter = Encounters.CavesMobs.GetRandom();
-        encounter.Apply(floor, room);
+        encounter(floor, room);
       }
     }
 
@@ -73,7 +73,7 @@ public static class FloorGenerator {
       // this includes abstract rooms!
       if (!room.isRoot) {
         var encounter = Encounters.CavesGrasses.GetRandom();
-        encounter.Apply(floor, room);
+        encounter(floor, room);
       }
     });
 
@@ -230,7 +230,7 @@ public static class FloorGenerator {
         
         if (encounterIndex < encounters.Count) {
           var encounter = encounters[encounterIndex];
-          encounter.Apply(floor, room);
+          encounter(floor, room);
           encounterIndex++;
         }
       }

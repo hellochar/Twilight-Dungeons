@@ -2,13 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Encounter {
-  public Encounter(System.Action<Floor, Room> apply) {
-    this.Apply = apply;
-  }
-
-  public System.Action<Floor, Room> Apply { get; }
-}
+public delegate void Encounter(Floor floor, Room room);
 
 public static class Encounters {
   // no op

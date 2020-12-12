@@ -59,12 +59,9 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
   }
 
-  private void HandleActionPerformed(BaseAction action, BaseAction initial) {
+  protected virtual void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is StruggleBaseAction) {
       animator?.SetTrigger("Struggled");
-    } else if (action is WaitBaseAction) {
-      var waitPrefab = Resources.Load<GameObject>("Effects/Wait");
-      var wait = Instantiate(waitPrefab, new Vector3(actor.pos.x, actor.pos.y + 0.9f, 0), Quaternion.identity);
     }
   }
 

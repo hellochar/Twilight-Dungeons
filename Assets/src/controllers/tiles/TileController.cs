@@ -37,6 +37,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler {
           mask.enabled = true;
           // show all
           mask.backSortingLayerID = sortingLayerDefault;
+          mask.backSortingOrder = 0;
         }
         foreach (var renderer in renderers) {
           renderer.enabled = true;
@@ -49,6 +50,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler {
           mask.enabled = true;
           // don't show entities
           mask.backSortingLayerID = sortingLayerEntity;
+          mask.backSortingOrder = 9999;
         }
         foreach (var renderer in renderers) {
           renderer.enabled = true;

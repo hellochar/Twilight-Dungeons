@@ -1,5 +1,6 @@
 using System;
 
+/// Expects a constructor with one int parameter for # of stacks
 interface IStackable {
   int stacks { get; set; }
   int stacksMax { get; }

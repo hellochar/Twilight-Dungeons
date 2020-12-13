@@ -4,6 +4,13 @@ using UnityEngine.EventSystems;
 public class PlayerController : ActorController {
   Player player => (Player) actor;
 
+  public override void Update() {
+    if (Input.GetKeyDown(KeyCode.V)) {
+      player.SetTasks(new SleepTask(player));
+    }
+    base.Update();
+  }
+
   protected override void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is WaitBaseAction) {
       var waitPrefab = Resources.Load<GameObject>("Effects/Wait");

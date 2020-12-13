@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 /// Fade all renderers in this hierarchy over 1 second and then Destroy() the gameObject it's attached to
 public class FadeThenDestroy : MonoBehaviour {
-  static float FADE_TIME = 0.5f;
+  public float fadeTime = 0.5f;
+  public float shrink = 0.5f;
   private SpriteRenderer[] renderers;
   private Image[] images;
   private Color[] colors;
@@ -33,7 +34,7 @@ public class FadeThenDestroy : MonoBehaviour {
   }
 
   void Update() {
-    var t = (Time.time - startTime) / FADE_TIME;
+    var t = (Time.time - startTime) / fadeTime;
     if (t >= 1) {
       Destroy(this.gameObject);
       return;
@@ -43,7 +44,7 @@ public class FadeThenDestroy : MonoBehaviour {
         if (renderers[i] != null) {
           var originalColor = colors[i];
           var newColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a * (1 - t));
-          var newScale = scales[i] * (1 - 0.5f * t);
+          var newScale = scales[i] * (1 - shrink * t);
           renderers[i].color = newColor;
           renderers[i].transform.localScale = newScale;
         }
@@ -53,7 +54,7 @@ public class FadeThenDestroy : MonoBehaviour {
         if (images[i] != null) {
           var originalColor = colors[i];
           var newColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a * (1 - t));
-          var newScale = scales[i] * (1 - 0.5f * t);
+          var newScale = scales[i] * (1 - shrink * t);
           images[i].color = newColor;
           images[i].transform.localScale = newScale;
         }

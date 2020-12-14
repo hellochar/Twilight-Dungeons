@@ -25,6 +25,7 @@ public class GameModel {
   private List<Action> eventQueue = new List<Action>();
 
   public static GameModel main = new GameModel(); //new GameModel();
+  
   static GameModel() {
     // UnityEngine.Random.InitState(10000);
     main.generateGameModel();

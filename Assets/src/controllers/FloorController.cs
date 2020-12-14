@@ -63,9 +63,9 @@ public class FloorController : MonoBehaviour {
     if (entity is Player) {
       return;
     }
-    Vector3Int pos = new Vector3Int(entity.pos.x, entity.pos.y, 0);
     GameObject prefab = GetEntityPrefab(entity);
     if (prefab != null) {
+      Vector3 pos = new Vector3(entity.pos.x, entity.pos.y, prefab.transform.position.z);
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile tile) {
         gameObject.GetComponent<TileController>().owner = tile;

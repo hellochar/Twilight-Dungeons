@@ -38,7 +38,7 @@ public class Deathbloom : Grass {
       noGrassTiles.Shuffle();
       foreach (var tile in noGrassTiles.Take(2)) {
         var newDeathbloom = new Deathbloom(tile.pos);
-        floor.Add(newDeathbloom);
+        floor.Put(newDeathbloom);
       }
       Kill();
     }

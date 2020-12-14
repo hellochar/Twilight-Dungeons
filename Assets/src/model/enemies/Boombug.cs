@@ -18,7 +18,7 @@ public class Boombug : AIActor {
     var floor = this.floor;
     // leave a corpse on death
     // explode and hurt everything nearby
-    GameModel.main.EnqueueEvent(() => floor.Add(new BoombugCorpse(pos)));
+    GameModel.main.EnqueueEvent(() => floor.Put(new BoombugCorpse(pos)));
   }
 }
 

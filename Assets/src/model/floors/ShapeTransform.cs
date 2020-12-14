@@ -116,7 +116,7 @@ class ShapeTransform {
       } else {
         newTile = new Ground(pos);
       }
-      floor.tiles.Put(newTile);
+      floor.Put(newTile);
     }
   }
 }

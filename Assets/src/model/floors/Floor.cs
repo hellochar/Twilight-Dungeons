@@ -6,13 +6,11 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Floor {
-  public TileStore tiles;
-
-  /// All actors in this floor, including the Player
-  private List<Actor> actors = new List<Actor>();
-
   /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
-  private Dictionary<Vector2Int, Grass> grasses = new Dictionary<Vector2Int, Grass>();
+  public StaticEntityGrid<Tile> tiles;
+  public StaticEntityGrid<Grass> grasses;
+  public MovingEntityList<Actor> actors;
+
 
   public event Action<Entity> OnEntityAdded;
   public event Action<Entity> OnEntityRemoved;
@@ -49,30 +47,25 @@ public class Floor {
     }
   }
 
-  public int width => tiles.width;
+  public readonly int width;
 
-  public int height => tiles.height;
+  public readonly int height;
 
   public Floor(int width, int height) {
-    this.tiles = new TileStore(this, width, height);
+    this.width = width;
+    this.height = height;
+    this.tiles = new StaticEntityGrid<Tile>(this);
+    this.grasses = new StaticEntityGrid<Grass>(this);
+    this.actors = new MovingEntityList<Actor>(this);
   }
 
-  public Actor ActorAt(Vector2Int pos) {
-    return this.actors.FirstOrDefault(a => a.pos == pos);
-  }
-
-  public Grass GrassAt(Vector2Int pos) {
-    if (this.grasses.ContainsKey(pos)) {
-      return this.grasses[pos];
-    }
-    return null;
-  }
-
-  public void Add(Entity entity) {
-    if (entity is Actor actor) {
-      AddActor(actor);
+  public void Put(Entity entity) {
+    if (entity is Tile tile) {
+      tiles.Put(tile);
+    } else if (entity is Actor actor) {
+      actors.Put(actor);
     } else if (entity is Grass grass) {
-      AddGrass(grass);
+      grasses.Put(grass);
     } else {
       throw new Exception("Cannot add unrecognized entity " + entity);
     }
@@ -81,10 +74,12 @@ public class Floor {
   }
 
   public void Remove(Entity entity) {
-    if (entity is Actor a) {
-      RemoveActor(a);
+    if (entity is Tile tile) {
+      tiles.Remove(tile);
+    } else if (entity is Actor a) {
+      actors.Remove(a);
     } else if (entity is Grass g) {
-      RemoveGrass(g);
+      grasses.Remove(g);
     } else {
       throw new Exception("Cannot remove unrecognized entity " + entity);
     }
@@ -92,41 +87,9 @@ public class Floor {
     this.OnEntityRemoved?.Invoke(entity);
   }
 
-
-  private void AddActor(Actor actor) {
-    if (!tiles[actor.pos.x, actor.pos.y].CanBeOccupied()) {
-      Debug.LogWarning("Adding " + actor + " over a tile that cannot be occupied!");
-    }
-    // remove actor from old floor
-    if (actor.floor != null) {
-      actor.floor.RemoveActor(actor);
-    }
-    this.actors.Add(actor);
-  }
-
-  private void RemoveActor(Actor actor) {
-    this.actors.Remove(actor);
-  }
-
-  private void AddGrass(Grass grass) {
-    if (grass.floor != null) {
-      throw new Exception("Trying to move grass after it's setup!");
-    }
-    if (grasses.ContainsKey(grass.pos)) {
-      var oldGrass = grasses[grass.pos];
-      // kill old grass; this also calls RemoveGrass
-      oldGrass.Kill();
-    }
-    grasses[grass.pos] = grass;
-  }
-
   private float lastStepTime = 0;
   internal void RecordLastStepTime(float time) {
     lastStepTime = time;
-  }
-
-  private void RemoveGrass(Grass g) {
-    grasses.Remove(g.pos);
   }
 
   internal IEnumerable<Actor> AdjacentActors(Vector2Int pos) {
@@ -181,7 +144,7 @@ public class Floor {
   }
 
   internal IEnumerable<Grass> Grasses() {
-    foreach (Grass g in this.grasses.Values) {
+    foreach (Grass g in this.grasses) {
       yield return g;
     }
   }
@@ -192,7 +155,7 @@ public class Floor {
     foreach (Actor a in actors) {
       a.CatchUpStep(lastStepTime, time);
     }
-    foreach (Grass g in grasses.Values) {
+    foreach (Grass g in grasses) {
       g.CatchUpStep(lastStepTime, time);
     }
   }
@@ -305,63 +268,28 @@ public class Floor {
 
   public void PlaceUpstairs(Vector2Int pos) {
     // surround sides with wall, but ensure right tile is open
-    tiles.Put(new Wall(pos + new Vector2Int(-1, -1)));
-    tiles.Put(new Wall(pos + new Vector2Int(-1, 0)));
-    tiles.Put(new Wall(pos + new Vector2Int(-1, 1)));
+    Put(new Wall(pos + new Vector2Int(-1, -1)));
+    Put(new Wall(pos + new Vector2Int(-1, 0)));
+    Put(new Wall(pos + new Vector2Int(-1, 1)));
 
-    tiles.Put(new Wall(pos + new Vector2Int(0, -1)));
-    tiles.Put(new Upstairs(pos));
-    tiles.Put(new Wall(pos + new Vector2Int(0, 1)));
+    Put(new Wall(pos + new Vector2Int(0, -1)));
+    Put(new Upstairs(pos));
+    Put(new Wall(pos + new Vector2Int(0, 1)));
 
-    tiles.Put(new Ground(pos + new Vector2Int(1, 0)));
+    Put(new Ground(pos + new Vector2Int(1, 0)));
   }
 
   public void PlaceDownstairs(Vector2Int pos) {
     // surround sides with wall, but ensure left tile is open
-    tiles.Put(new Ground(pos + new Vector2Int(-1, 0)));
+    Put(new Ground(pos + new Vector2Int(-1, 0)));
 
-    tiles.Put(new Wall(pos + new Vector2Int(0, -1)));
-    tiles.Put(new Downstairs(pos));
-    tiles.Put(new Wall(pos + new Vector2Int(0, 1)));
+    Put(new Wall(pos + new Vector2Int(0, -1)));
+    Put(new Downstairs(pos));
+    Put(new Wall(pos + new Vector2Int(0, 1)));
 
-    tiles.Put(new Wall(pos + new Vector2Int(1, -1)));
-    tiles.Put(new Wall(pos + new Vector2Int(1, 0)));
-    tiles.Put(new Wall(pos + new Vector2Int(1, 1)));
-  }
-}
-
-public class TileStore : IEnumerable<Tile> {
-  private Tile[, ] tiles;
-  public Tile this[int x, int y] {
-    get => tiles[x, y];
-  }
-  public Tile this[Vector2Int vector] {
-    get => this[vector.x, vector.y];
-  }
-  public int width => tiles.GetLength(0);
-  public int height => tiles.GetLength(1);
-  
-  public Floor floor { get; }
-
-  public TileStore(Floor floor, int width, int height) {
-    this.floor = floor;
-    this.tiles = new Tile[width, height];
+    Put(new Wall(pos + new Vector2Int(1, -1)));
+    Put(new Wall(pos + new Vector2Int(1, 0)));
+    Put(new Wall(pos + new Vector2Int(1, 1)));
   }
 
-  public void Put(Tile tile) {
-    tiles[tile.pos.x, tile.pos.y] = tile;
-    tile.SetFloor(floor);
-  }
-
-  public IEnumerator<Tile> GetEnumerator() {
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < height; y++) {
-        yield return tiles[x, y];
-      }
-    }
-  }
-
-  IEnumerator IEnumerable.GetEnumerator() {
-    return (IEnumerator) GetEnumerator();
-  }
 }

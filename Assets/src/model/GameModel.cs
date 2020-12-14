@@ -89,7 +89,7 @@ public class GameModel {
 
     Tile floor0Upstairs = floors[0].upstairs;
     this.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
-    floors[0].Add(this.player);
+    floors[0].Put(this.player);
   }
 
   internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {
@@ -107,7 +107,7 @@ public class GameModel {
     oldFloor.RecordLastStepTime(this.time);
     player.pos = newPlayerPosition;
     newFloor.CatchUpStep(this.time);
-    newFloor.Add(player);
+    newFloor.Put(player);
   }
 
   /// Get all actors that should be simulated, in no particular order. This includes: 

@@ -8,17 +8,17 @@ public static class FloorGenerator {
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
-      floor.tiles.Put(new Ground(p));
+      floor.Put(new Ground(p));
     }
 
     // surround floor with walls
     for (int x = 0; x < floor.width; x++) {
-      floor.tiles.Put(new Wall(new Vector2Int(x, 0)));
-      floor.tiles.Put(new Wall(new Vector2Int(x, floor.height - 1)));
+      floor.Put(new Wall(new Vector2Int(x, 0)));
+      floor.Put(new Wall(new Vector2Int(x, floor.height - 1)));
     }
     for (int y = 0; y < floor.height; y++) {
-      floor.tiles.Put(new Wall(new Vector2Int(0, y)));
-      floor.tiles.Put(new Wall(new Vector2Int(floor.width - 1, y)));
+      floor.Put(new Wall(new Vector2Int(0, y)));
+      floor.Put(new Wall(new Vector2Int(floor.width - 1, y)));
     }
 
     SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);
@@ -31,11 +31,11 @@ public static class FloorGenerator {
     for (int x = 4; x < floor.width - 4; x += 4) {
       int y = floor.height / 2 - 2;
       if (floor.tiles[x, y] is Ground) {
-        floor.tiles.Put(new Soil(new Vector2Int(x, y)));
+        floor.Put(new Soil(new Vector2Int(x, y)));
       }
       y = floor.height / 2 + 2;
       if (floor.tiles[x, y] is Ground) {
-        floor.tiles.Put(new Soil(new Vector2Int(x, y)));
+        floor.Put(new Soil(new Vector2Int(x, y)));
       }
     }
 
@@ -86,7 +86,7 @@ public static class FloorGenerator {
 
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
-      floor.tiles.Put(new Wall(p));
+      floor.Put(new Wall(p));
     }
 
     // randomly partition space into 20 rooms
@@ -113,14 +113,14 @@ public static class FloorGenerator {
 
     foreach (var (a, b) in ConnectRooms(rooms, root)) {
       foreach (var point in floor.EnumerateLine(a, b)) {
-        floor.tiles.Put(new Ground(point));
+        floor.Put(new Ground(point));
       }
     }
 
     rooms.ForEach(room => {
       // fill each room with floor
       foreach (var pos in floor.EnumerateRoom(room)) {
-        floor.tiles.Put(new Ground(pos));
+        floor.Put(new Ground(pos));
       }
     });
 
@@ -212,7 +212,7 @@ public static class FloorGenerator {
   public static Floor EncounterTester() {
     var floor = new Floor(60, 20);
     foreach (var p in floor.EnumerateFloor()) {
-      floor.tiles.Put(new Wall(p));
+      floor.Put(new Wall(p));
     }
 
     List<Room> rooms = new List<Room>();
@@ -225,7 +225,7 @@ public static class FloorGenerator {
         var room = new Room(new Vector2Int(x, y), new Vector2Int(x + roomSize - 1, y + roomSize - 1));
         rooms.Add(room);
         foreach (var pos in floor.EnumerateRoom(room)) {
-          floor.tiles.Put(new Ground(pos));
+          floor.Put(new Ground(pos));
         }
         
         if (encounterIndex < encounters.Count) {

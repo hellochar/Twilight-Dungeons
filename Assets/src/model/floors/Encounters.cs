@@ -13,7 +13,7 @@ public static class Encounters {
     tiles.Shuffle();
     var numBlobs = Random.Range(2, 4);
     foreach (var tile in tiles.Take(numBlobs)) {
-      floor.Add(new Blob(tile.pos));
+      floor.Put(new Blob(tile.pos));
     }
   });
 
@@ -24,7 +24,7 @@ public static class Encounters {
     tiles.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
     var numJackals = Random.Range(2, 5);
     foreach (var tile in tiles.Take(numJackals)) {
-      floor.Add(new Jackal(tile.pos));
+      floor.Put(new Jackal(tile.pos));
     }
   });
 
@@ -32,7 +32,7 @@ public static class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     // sort by farthest distance to center
     foreach (var tile in tiles.Take(2)) {
-      floor.Add(new Bat(tile.pos));
+      floor.Put(new Bat(tile.pos));
     }
   });
 
@@ -41,18 +41,18 @@ public static class Encounters {
     Tile tile = FloorUtils.EmptyTileNearestCenter(floor, room);
 
     if (tile != null && !(tile is Downstairs || tile is Upstairs)) {
-      floor.tiles.Put(new Soil(tile.pos));
+      floor.Put(new Soil(tile.pos));
       var bush = new Wildwood(tile.pos);
       // jump to Mature
       bush.stage = bush.stage.NextStage.NextStage;
-      floor.Add(bush);
+      floor.Put(bush);
     }
   });
 
   public static Encounter CoverWithSoftGrass = new Encounter((floor, room) => {
     foreach (var tile in floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground)) {
       var grass = new SoftGrass(tile.pos);
-      floor.Add(grass);
+      floor.Put(grass);
     }
   });
 
@@ -61,7 +61,7 @@ public static class Encounters {
     while (wallsWithGroundBelow.Any()) {
       var skipLength = Random.Range(2, 5);
       foreach (var tile in wallsWithGroundBelow.Take(1)) {
-        floor.Add(new HangingVines(tile.pos));
+        floor.Put(new HangingVines(tile.pos));
       }
       wallsWithGroundBelow = wallsWithGroundBelow.Skip(1 + skipLength);
     }
@@ -72,7 +72,7 @@ public static class Encounters {
     var spacing = 5;
     while (tilesNextToWalls.Any()) {
       var chosenTile = Util.RandomPick(tilesNextToWalls.Take(spacing));
-      floor.Add(new Mushroom(chosenTile.pos));
+      floor.Put(new Mushroom(chosenTile.pos));
       tilesNextToWalls = tilesNextToWalls.Skip(spacing);
     }
     // // also pick another Encounter
@@ -83,7 +83,7 @@ public static class Encounters {
   public static Encounter ThreePlumpAstoriasInCorner = new Encounter((floor, room) => {
     var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
     foreach (var tile in positions.Take(3)) {
-      floor.Add(new PlumpAstoria(tile.pos));
+      floor.Put(new PlumpAstoria(tile.pos));
     }
   });
 
@@ -92,7 +92,7 @@ public static class Encounters {
     emptyTilesInRoom.Shuffle();
     var num = Random.Range(2, 4);
     foreach (var tile in emptyTilesInRoom.Take(num)) {
-      floor.Add(new Boombug(tile.pos));
+      floor.Put(new Boombug(tile.pos));
     }
   });
 
@@ -103,7 +103,7 @@ public static class Encounters {
 
     var tile = tiles.FirstOrDefault();
     if (tile != null) {
-      floor.Add(new Deathbloom(tile.pos));
+      floor.Put(new Deathbloom(tile.pos));
     }
   });
 

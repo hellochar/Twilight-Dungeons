@@ -114,8 +114,8 @@ public class Actor : SteppableEntity {
   }
 
   internal void AttackGround(Vector2Int targetPosition) {
-    Actor target = floor.ActorAt(targetPosition);
-    Grass grass = floor.GrassAt(targetPosition);
+    Actor target = floor.actors[targetPosition];
+    Grass grass = floor.grasses[targetPosition];
     OnAttackGround?.Invoke(targetPosition);
     if (target != null) {
       Attack(target);

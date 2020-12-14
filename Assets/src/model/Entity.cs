@@ -10,9 +10,9 @@ public abstract class Entity {
   public float timeCreated { get; }
   public float age => GameModel.main.time - timeCreated;
   public Floor floor { get; private set; }
-  public Tile tile => floor.tiles[pos.x, pos.y];
-  public Grass grass => floor.GrassAt(pos);
-  public Actor actor => floor.ActorAt(pos);
+  public Tile tile => floor.tiles[pos];
+  public Grass grass => floor.grasses[pos];
+  public Actor actor => floor.actors[pos];
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set
   public event Action OnEnterFloor;
@@ -24,7 +24,7 @@ public abstract class Entity {
     this.timeCreated = GameModel.main.time;
   }
 
-  /// Should only be called from Floor to internally update this Entity's floor pointer.
+  /// <summary>Only call this from Floor to internally update this Entity's floor pointer.</summary>
   public void SetFloor(Floor floor) {
     if (this.floor != null) {
       OnLeaveFloor?.Invoke();

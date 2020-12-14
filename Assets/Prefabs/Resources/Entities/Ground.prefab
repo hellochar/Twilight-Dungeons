@@ -144,7 +144,7 @@ SpriteMask:
   m_FrontSortingLayer: 5
   m_BackSortingLayer: 0
   m_FrontSortingOrder: 0
-  m_BackSortingOrder: 0
+  m_BackSortingOrder: 32767
   m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
 --- !u!61 &598269646474060315

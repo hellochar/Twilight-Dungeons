@@ -63,6 +63,7 @@ public static class AIs {
   }
 
   public static IEnumerable<ActorTask> BlobAI(Actor actor) {
+    yield return new SleepTask(actor);
     while (true) {
       bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.U2D;
 using UnityEngine.UI;
@@ -16,7 +18,7 @@ public class ItemController : MonoBehaviour {
 
   void Start() {
     if (ActionButtonPrefab == null) {
-      ActionButtonPrefab = Resources.Load<GameObject>("UI/Item Action Button");
+      ActionButtonPrefab = Resources.Load<GameObject>("UI/Action Button");
     }
     /// on click - toggle the popup for this item
     button = GetComponent<Button>();
@@ -51,13 +53,39 @@ public class ItemController : MonoBehaviour {
 
     var buttons = playerTasks.Select((task) => {
       var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
-      button.GetComponentInChildren<TMPro.TMP_Text>().text = task.displayName;
+      button.GetComponentInChildren<TMPro.TMP_Text>().text = task.Name;
       button.GetComponent<Button>().onClick.AddListener(() => {
         player.task = task;
         Destroy(popup);
       });
       return button;
     }).ToList();
+    if (item is ItemSeed seed) {
+      var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
+      button.GetComponentInChildren<TMPro.TMP_Text>().text = "Plant";
+      button.GetComponent<Button>().onClick.AddListener(async () => {
+        CloseInventory();
+        popup.SetActive(false);
+        try {
+          var soil = await PlayerSelectSoilUI();
+          player.SetTasks(
+            new MoveNextToTargetTask(player, soil.pos),
+            new GenericTask(player, (p) => {
+              if (p.IsNextTo(soil)) {
+                seed.Plant(soil);
+              }
+            })
+          );
+          Destroy(popup);
+        } catch (PlayerSelectCanceledException) {
+          // if player cancels selection, go back to before
+          OpenInventory();
+          popup.SetActive(true);
+        }
+      });
+
+      buttons.Insert(0, button);
+    }
     popup = Popups.Create(
       title: item.displayName,
       info: item.GetStatsFull(),
@@ -65,8 +93,42 @@ public class ItemController : MonoBehaviour {
       sprite: image.gameObject,
       buttons: buttons
     );
-    var popupMatchItem = popup.AddComponent<PopupMatchItem>();
+    var popupMatchItem = popup.AddComponent<ItemPopupController>();
     popupMatchItem.item = item;
+  }
+
+  /// Contract: if player properly selects, return the Soil.
+  /// If player cancels, throw PlayerSelectCanceledException.
+  /// how to "send" messages to this method from another gameobject?
+  private async Task<Soil> PlayerSelectSoilUI() {
+    var selectSoilUIPrefab = Resources.Load<GameObject>("UI/Select Soil");
+    var selectSoil = Instantiate(selectSoilUIPrefab);
+    var controller = selectSoil.GetComponent<SelectSoilUIController>();
+    Soil soil = null;
+    bool cancelled = false;
+    controller.OnSoilSelected += (s) => soil = s;
+    controller.OnCancelled += () => cancelled = true;
+    while(true) {
+      await Task.Delay(16);
+      if (soil != null) {
+        return soil;
+      }
+      if (cancelled) {
+        throw new PlayerSelectCanceledException();
+      }
+    }
+  }
+
+  public void OpenInventory() {
+    /// suuuper hack
+    GameObject.Find("Canvas")
+      .GetComponentsInChildren<Transform>(true)
+      .First((c) => c.gameObject.name == "Inventory Container")
+      .gameObject.SetActive(true);
+  }
+
+  public void CloseInventory() {
+    GameObject.Find("Inventory Container").SetActive(false);
   }
 
   // Update is called once per frame
@@ -82,5 +144,20 @@ public class ItemController : MonoBehaviour {
     } else {
       stacksText.gameObject.SetActive(false);
     }
+  }
+}
+
+[Serializable]
+internal class PlayerSelectCanceledException : Exception {
+  public PlayerSelectCanceledException() {
+  }
+
+  public PlayerSelectCanceledException(string message) : base(message) {
+  }
+
+  public PlayerSelectCanceledException(string message, Exception innerException) : base(message, innerException) {
+  }
+
+  protected PlayerSelectCanceledException(SerializationInfo info, StreamingContext context) : base(info, context) {
   }
 }

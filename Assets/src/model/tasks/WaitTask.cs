@@ -5,12 +5,14 @@ using UnityEngine;
 public class WaitTask : ActorTask {
   private int turns;
 
+  public int Turns => turns;
+
   public WaitTask(Actor actor, int turns) : base(actor) {
     this.turns = turns;
   }
 
   public override IEnumerator<BaseAction> Enumerator() {
-    for (var i = 0; i < turns; i++) {
+    for (; turns > 0; turns--) {
       yield return new WaitBaseAction(actor);
     }
   }

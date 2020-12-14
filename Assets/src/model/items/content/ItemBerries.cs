@@ -17,23 +17,18 @@ class ItemBerries : Item, IStackable {
       }
       _stacks = value;
       if (_stacks == 0) {
-        Destroy(null);
+        Destroy();
       }
     }
   }
 
+  [PlayerAction]
   public void Use(Actor a) {
     a.Heal(3);
     if (a is Player player) {
       player.IncreaseFullness(0.05f);
     }
     stacks--;
-  }
-
-  public override List<ActorTask> GetAvailableTasks(Player player) {
-    var actions = base.GetAvailableTasks(player);
-    actions.Add(new GenericTask(player, Use));
-    return actions;
   }
 
   internal override string GetStats() => "Heals 3 HP.\nRecover 5% hunger.";

@@ -28,7 +28,12 @@ public class TurnManager {
 
     model.DrainEventQueue();
     bool isFirstIteration = true;
+    int guard = 0;
     do {
+      if (guard++ > 1000) {
+        Debug.Log("Stopping step because it's been 1000 turns since player had a turn");
+        break;
+      }
       var entity = FindActiveEntity();
 
       if (model.time > entity.timeNextAction) {
@@ -40,7 +45,11 @@ public class TurnManager {
         // The first iteration will usually be right after the user's set an action.
         // Do *not* pause in that situation to allow the game to respond instantly.
         if (!isFirstIteration) {
-          yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
+          // speed through long-waiting
+          var shouldSpeedThroughWait = (entity == model.player && model.player.task is WaitTask wait && wait.Turns > 3);
+          if (!shouldSpeedThroughWait) {
+            yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
+          }
         }
         // move game time up to now
         model.time = entity.timeNextAction;

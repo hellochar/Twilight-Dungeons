@@ -5,27 +5,32 @@ using UnityEngine.EventSystems;
 public class ActorController : MonoBehaviour, IPointerClickHandler {
   private static GameObject hpChangeTextPrefab;
   public Actor actor;
-  private Animator animator;
+  protected GameObject spriteObject;
+  protected Animator animator;
 
   // Start is called before the first frame update
   public virtual void Start() {
     if (hpChangeTextPrefab == null) {
-      hpChangeTextPrefab = Resources.Load<GameObject>("UI/HP Change Text");
+      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
     }
 
     if (actor == null) {
       actor = GameModel.main.player;
     }
 
-    animator = transform.Find("Sprite")?.GetComponent<Animator>();
+    spriteObject = transform.Find("Sprite")?.gameObject;
+    animator = spriteObject?.GetComponent<Animator>();
 
     actor.OnTakeDamage += HandleTakeDamage;
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
+
     actor.OnSetTask += HandleSetTask;
     HandleSetTask(actor.task);
+
     actor.OnActionPerformed += HandleActionPerformed;
+
     actor.statuses.OnAdded += HandleStatusAdded;
 
     Update();
@@ -53,12 +58,36 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
   }
 
   private void HandleSetTask(ActorTask task) {
-    PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
+    if (animator != null) {
+      if (task is SleepTask) {
+        animator.SetBool("SleepingTask", true);
+      } else {
+        animator.SetBool("SleepingTask", false);
+      }
+    }
+    var taskObject = PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
+    if (taskObject != null) {
+      ActorTaskController actorTaskController = taskObject.GetComponent<ActorTaskController>();
+      actorTaskController.actor = actor;
+      actorTaskController.task = task;
+    }
   }
 
-  private void HandleActionPerformed(BaseAction action, BaseAction initial) {
+  protected virtual void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is StruggleBaseAction) {
       animator?.SetTrigger("Struggled");
+    } else if (action is AttackBaseAction attack) {
+      PlayAttackAnimation(attack.target.pos);
+    } else if (action is AttackGroundBaseAction attackGround) {
+      PlayAttackAnimation(attackGround.targetPosition);
+    }
+  }
+
+  private void PlayAttackAnimation(Vector2Int pos) {
+    if (spriteObject != null) {
+      // go -1 to be "in front"
+      var z = spriteObject.transform.position.z - 1;
+      spriteObject.AddComponent<BumpAndReturn>().target = Util.withZ(pos, z);
     }
   }
 
@@ -70,7 +99,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
 
     if(damage > 0) {
-      GameObject damagedSpritePrefab = Resources.Load<GameObject>("UI/Damaged Sprite");
+      GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
       Instantiate(damagedSpritePrefab, Util.withZ(actor.pos), Quaternion.identity);
     }
   }
@@ -79,7 +108,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     if (!actor.isVisible) {
       return;
     }
-    GameObject healEffectPrefab = Resources.Load<GameObject>("UI/Heal Effect");
+    GameObject healEffectPrefab = Resources.Load<GameObject>("Effects/Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity, transform);
     healEffect.transform.localPosition = new Vector3(0, 0, 0);
 
@@ -90,17 +119,12 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
   private void HandleAttack(int damage, Actor target) {}
 
   private void HandleAttackGround(Vector2Int pos) {
-    GameObject attackSpritePrefab = Resources.Load<GameObject>("UI/Attack Sprite");
+    GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
   public virtual void OnPointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
-    // on clicking self, wait for 1 turn
-    if (actor == player) {
-      player.task = new WaitTask(player, 1);
-      return;
-    }
     if (actor.IsDead) {
       return; // don't do anything to dead actors
     }

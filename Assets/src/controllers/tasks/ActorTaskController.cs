@@ -1,24 +1,22 @@
 using System;
 using UnityEngine;
 
-public class ActorTaskController<T> : MonoBehaviour where T : ActorTask {
+/**
+ * Create - created when prefab is Instantiated
+ * Destroy - self handled
+ */
+public class ActorTaskController : MonoBehaviour {
   public Actor actor;
-  public T action;
+  public ActorTask task;
 
   public virtual void Start() {
-    actor = GetComponentInParent<ActorController>().actor;
-    try {
-      action = (T) actor.task;
-    } catch (InvalidCastException) {
-      Destroy(this.gameObject);
-    }
+  //   Debug.LogError(this + " expecting actor's task to be of type " + typeof(T) + " but got " + actor.task.GetType() + " instead!");
+  //   Destroy(this.gameObject);
   }
 
   public virtual void Update() {
-    if (actor.task != action) {
+    if (actor.task != task) {
       Destroy(this.gameObject);
     }
   }
 }
-
-public class ActorTaskController : ActorTaskController<ActorTask> {}

@@ -7,7 +7,7 @@ class SleepTask : ActorTask {
   }
 
   public override IEnumerator<BaseAction> Enumerator() {
-    while(actor.tile.visibility != TileVisiblity.Visible) {
+    while (!actor.isVisible) {
       if (wakeUpNextTurn) {
         yield break;
       }

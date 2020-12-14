@@ -17,6 +17,9 @@ TextureImporter:
   - first:
       213: -1563979499396834108
     second: softgrass
+  - first:
+      213: -3902071884278208034
+    second: 1bit-circle
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -206,7 +209,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -214,6 +217,27 @@ TextureImporter:
       bones: []
       spriteID: 4cc557e7ee0ab4ae0800000000000000
       internalID: -1563979499396834108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 1bit-circle
+      rect:
+        serializedVersion: 2
+        x: 624
+        y: 128
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed9ee899b4e09d9c0800000000000000
+      internalID: -3902071884278208034
       vertices: []
       indices: 
       edges: []

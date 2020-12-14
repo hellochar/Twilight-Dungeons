@@ -24,10 +24,18 @@ public class GameModel {
   /// Events to process in response to state changes
   private List<Action> eventQueue = new List<Action>();
 
-  public static GameModel main = new GameModel(); //new GameModel();
-  
-  static GameModel() {
-    // UnityEngine.Random.InitState(10000);
+  public static GameModel main;
+
+  // static GameModel() {
+  //   // UnityEngine.Random.InitState(10000);
+  //   main.generateGameModel();
+  //   var step = main.StepUntilPlayerChoice();
+  //   // execute them all immediately
+  //   do { } while (step.MoveNext());
+  // }
+
+  public static void NewGameModel() {
+    main = new GameModel();
     main.generateGameModel();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately

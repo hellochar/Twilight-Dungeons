@@ -8,8 +8,9 @@ public class Item {
     Util.WithSpaces(GetType().Name.Substring(4));
 
   public virtual Inventory inventory { get; set; }
-  /// remove this item from the inventory
-  public void Destroy(Actor a) {
+
+  [PlayerAction]
+  public void Destroy() {
     if (inventory != null) {
       inventory.RemoveItem(this);
     }
@@ -18,9 +19,13 @@ public class Item {
   internal virtual string GetStats() => "";
 
   public virtual List<ActorTask> GetAvailableTasks(Player player) {
-    return new List<ActorTask> {
-      new GenericTask(player, Destroy)
-    };
+    var methods = GetType()
+      .GetMethods()
+      .Where((methodInfo) => methodInfo.GetCustomAttributes(true).OfType<PlayerActionAttribute>().Any()).ToList();
+
+    return methods.Select((methodInfo) => {
+      return new GenericTask(player, (p) => methodInfo.Invoke(p, new object[0])).Named(methodInfo.Name);
+    }).Cast<ActorTask>().ToList();
   }
 }
 

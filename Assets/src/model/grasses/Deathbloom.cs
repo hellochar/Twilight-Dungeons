@@ -47,14 +47,9 @@ public class Deathbloom : Grass {
 
 internal class ItemDeathbloomFlower : Item {
 
+  [PlayerAction]
   public void Eat(Actor a) {
     a.statuses.Add(new FrenziedStatus(a, 7));
-  }
-
-  public override List<ActorTask> GetAvailableTasks(Player player) {
-    var actions = base.GetAvailableTasks(player);
-    actions.Add(new GenericTask(player, Eat));
-    return actions;
   }
 }
 

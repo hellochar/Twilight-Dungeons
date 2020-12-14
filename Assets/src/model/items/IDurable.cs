@@ -7,7 +7,7 @@ static class IDurableExtensions {
   public static void ReduceDurability(this IDurable durable) {
     durable.durability--;
     if (durable.durability <= 0 && durable is Item i) {
-      i.Destroy(null);
+      i.Destroy();
     }
   }
 }

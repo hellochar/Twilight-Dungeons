@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameModelController : MonoBehaviour {
   GameModel model;
@@ -10,10 +12,14 @@ public class GameModelController : MonoBehaviour {
 
   private FloorController currentFloorComponent;
 
-  // Start is called before the first frame update
-  void Start() {
+  void Awake() {
+    GameModel.NewGameModel();
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
+  }
+
+  // Start is called before the first frame update
+  void Start() {
     currentFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
     Player player = model.player;
     player.OnSetTask += HandleSetPlayerTask;

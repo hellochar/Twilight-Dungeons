@@ -29,12 +29,8 @@ public class PlayerHeartsController : MonoBehaviour {
   }
 
   void MatchNumberOfHearts(int numHearts) {
-    int padding = 5;
     for (int i = transform.childCount; i < numHearts; i++) {
-      GameObject heart = Instantiate(heartPrefab, this.transform.position, Quaternion.identity, this.transform);
-      RectTransform rt = heart.GetComponent<RectTransform>();
-      float width = rt.rect.width;
-      rt.anchoredPosition = new Vector2((width + padding) * i, 0);
+      Instantiate(heartPrefab, transform);
     }
     // TODO delete extra hearts
   }

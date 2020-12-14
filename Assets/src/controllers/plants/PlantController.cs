@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class PlantController : ActorController, IPointerClickHandler {
+public class PlantController : ActorController {
   public Plant plant => (Plant) actor;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
@@ -40,7 +40,7 @@ public class PlantController : ActorController, IPointerClickHandler {
     UpdatePopup();
   }
 
-  public override void OnPointerClick(PointerEventData pointerEventData) {
+  public override void PointerClick(PointerEventData pointerEventData) {
     // Clicking the overlay will trigger this method since the overlay is a child
     if (pointerEventData.pointerEnter.name == "Overlay") {
       popupOpen = false;

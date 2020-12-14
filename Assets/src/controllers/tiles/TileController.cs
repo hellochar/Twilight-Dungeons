@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TileController : MonoBehaviour, IPointerClickHandler {
+public class TileController : MonoBehaviour {
   public Tile owner;
   private SpriteRenderer[] renderers;
   private SpriteMask mask;
@@ -61,7 +61,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  public virtual void OnPointerClick(PointerEventData pointerEventData) {
+  public virtual void PointerClick(PointerEventData pointerEventData) {
     if (owner.visibility != TileVisiblity.Unexplored) {
       GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, owner.pos);
     }

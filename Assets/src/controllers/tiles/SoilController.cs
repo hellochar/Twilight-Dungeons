@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SoilController : TileController {
-  public override void OnPointerClick(PointerEventData pointerEventData) {
+  public override void PointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     ItemSeed seed = (ItemSeed)player.inventory.ToList().Find(item => item is ItemSeed);
     if (seed != null) {
@@ -19,7 +19,7 @@ public class SoilController : TileController {
         })
       );
     } else {
-      base.OnPointerClick(pointerEventData);
+      base.PointerClick(pointerEventData);
     }
   }
 }

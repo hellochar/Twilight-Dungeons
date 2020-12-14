@@ -19,7 +19,7 @@ public class PlayerController : ActorController {
     base.HandleActionPerformed(action, initial);
   }
 
-  public override void OnPointerClick(PointerEventData pointerEventData) {
+  public override void PointerClick(PointerEventData pointerEventData) {
     // on clicking self, wait for 1 turn
     player.task = new WaitTask(player, 1);
   }

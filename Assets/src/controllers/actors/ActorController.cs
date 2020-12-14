@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : MonoBehaviour, IPointerClickHandler {
+public class ActorController : MonoBehaviour {
   private static GameObject hpChangeTextPrefab;
   public Actor actor;
   protected GameObject spriteObject;
@@ -123,7 +123,7 @@ public class ActorController : MonoBehaviour, IPointerClickHandler {
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
-  public virtual void OnPointerClick(PointerEventData pointerEventData) {
+  public virtual void PointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (actor.IsDead) {
       return; // don't do anything to dead actors

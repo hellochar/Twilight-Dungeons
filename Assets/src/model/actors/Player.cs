@@ -19,10 +19,7 @@ public class Player : Actor {
     faction = Faction.Ally;
     inventory = new Inventory(this, 12);
     inventory.AddItem(new ItemBarkShield());
-    inventory.AddItem(new ItemBerries(3));
-    inventory.AddItem(new ItemSeed(typeof(BerryBush)));
-    inventory.AddItem(new ItemSeed(typeof(Wildwood)));
-    inventory.AddItem(new ItemStick());
+
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
     hp = hpMax = 12;

@@ -1,15 +1,16 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class BerryBush : Plant {
 
   class Mature : PlantStage {
-    public int numBerries = 1;
+    public int numBerries = 3;
 
     public override float StepTime => 250;
 
     public override float Step() {
-      numBerries++;
+      numBerries += 3;
       return StepTime;
     }
 
@@ -21,23 +22,22 @@ public class BerryBush : Plant {
     stage.NextStage.NextStage = new Mature();
   }
 
-  public override void Harvest() {
-    Player player = GameModel.main.player;
-    var stacks = stage is Mature ? ((Mature) stage).numBerries : 0;
-    if (stacks > 0) {
-      var item = new ItemBerries(stacks);
-      player.inventory.AddItem(item);
-      ((Mature) stage).numBerries = 0;
+  public override Item[] HarvestRewards() {
+    if (stage is Mature mature) {
+      var stacks = mature.numBerries;
+      if (stacks > 0) {
+        stacks = 0;
+        return new Item[] { new ItemBerries(stacks) };
+      }
     }
+    return null;
   }
 
-  public override void Cull() {
-    Player player = GameModel.main.player;
-    player.inventory.AddItem(new ItemSeed(typeof(BerryBush)));
+  public override Item[] CullRewards() {
     if (stage is Mature) {
-      player.inventory.AddItem(new ItemSeed(typeof(BerryBush)));
+      return new Item[] { new ItemSeed(typeof(BerryBush)), new ItemSeed(typeof(BerryBush)) };
+    } else {
+      return new Item[] { new ItemSeed(typeof(BerryBush)) };
     }
-    this.Harvest();
-    this.Kill();
   }
 }

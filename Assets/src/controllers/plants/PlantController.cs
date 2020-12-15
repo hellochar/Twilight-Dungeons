@@ -11,7 +11,7 @@ public class PlantController : ActorController {
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
   private GameObject uiChild;
-  private bool popupOpen = false;
+  public bool popupOpen = false;
 
   // Start is called before the first frame update
   public override void Start() {
@@ -41,12 +41,6 @@ public class PlantController : ActorController {
   }
 
   public override void PointerClick(PointerEventData pointerEventData) {
-    // Clicking the overlay will trigger this method since the overlay is a child
-    if (pointerEventData.pointerEnter.name == "Overlay") {
-      popupOpen = false;
-      return;
-    }
-
     if (!GameModel.main.player.IsNextTo(plant)) {
       MoveNextToTargetTask task = new MoveNextToTargetTask(GameModel.main.player, plant.pos);
       GameModel.main.player.task = task;
@@ -75,10 +69,12 @@ public class PlantController : ActorController {
   }
 
   public void Harvest() {
+    popupOpen = false;
     plant.Harvest();
   }
 
   public void Cull() {
+    popupOpen = false;
     plant.Cull();
   }
 }

@@ -23,6 +23,8 @@ public abstract class PlantStage {
     ageEntered = plant.age;
   }
 
+  internal void GoNextStage() => plant.GoNextStage();
+
   public abstract float StepTime { get; }
   public abstract float Step();
 
@@ -32,7 +34,7 @@ public abstract class PlantStage {
 class Seed : PlantStage {
   public override float StepTime => 500;
   public override float Step() {
-    plant.stage = NextStage;
+    GoNextStage();
     return StepTime;
   }
 
@@ -42,7 +44,7 @@ class Seed : PlantStage {
 class Young : PlantStage {
   public override float StepTime => 500;
   public override float Step() {
-    plant.stage = NextStage;
+    GoNextStage();
     return StepTime;
   }
 
@@ -52,7 +54,7 @@ class Young : PlantStage {
 class Sapling : PlantStage {
   public override float StepTime => 500;
   public override float Step() {
-    plant.stage = NextStage;
+    GoNextStage();
     return StepTime;
   }
 

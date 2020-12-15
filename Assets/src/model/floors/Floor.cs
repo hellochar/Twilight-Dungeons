@@ -61,6 +61,12 @@ public class Floor {
     this.actors = new MovingEntityList<Actor>(this);
   }
 
+  internal void PutAll(IEnumerable<Entity> entities) {
+    foreach (var entity in entities) {
+      Put(entity);
+    }
+  }
+
   public void Put(Entity entity) {
     if (entity is Tile tile) {
       tiles.Put(tile);

@@ -12,7 +12,9 @@ public abstract class Entity {
   public Floor floor { get; private set; }
   public Tile tile => floor.tiles[pos];
   public Grass grass => floor.grasses[pos];
+  public ItemOnGround item => floor.items[pos];
   public Actor actor => floor.actors[pos];
+
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set
   public event Action OnEnterFloor;

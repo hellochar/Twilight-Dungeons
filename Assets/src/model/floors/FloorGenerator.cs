@@ -28,22 +28,36 @@ public static class FloorGenerator {
     floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
+    var soils = new List<Soil>();
     for (int x = 4; x < floor.width - 4; x += 4) {
       int y = floor.height / 2 - 2;
       if (floor.tiles[x, y] is Ground) {
-        floor.Put(new Soil(new Vector2Int(x, y)));
+        soils.Add(new Soil(new Vector2Int(x, y)));
       }
       y = floor.height / 2 + 2;
       if (floor.tiles[x, y] is Ground) {
-        floor.Put(new Soil(new Vector2Int(x, y)));
+        soils.Add(new Soil(new Vector2Int(x, y)));
       }
     }
+    floor.PutAll(soils);
 
     var room0 = new Room(floor);
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    // floor.Put(new ItemOnGround(floor.boundsMax / 2, new ItemBarkShield()));
+    var loc1 = Util.RandomPick(soils);
+    soils.Remove(loc1);
+    var berryBush = new BerryBush(loc1.pos);
+    berryBush.GoNextStage();
+    berryBush.GoNextStage();
+    floor.Put(berryBush);
+
+    var loc2 = Util.RandomPick(soils);
+    soils.Remove(loc2);
+    var wildWood = new Wildwood(loc2.pos);
+    wildWood.GoNextStage();
+    wildWood.GoNextStage();
+    floor.Put(wildWood);
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);

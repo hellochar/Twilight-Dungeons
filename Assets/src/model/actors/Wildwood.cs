@@ -15,20 +15,19 @@ public class Wildwood : Plant {
   }
 
   public override void Harvest() {
-    if (stage is Mature) {
-      stage = new Sapling();
-      stage.NextStage = new Mature();
-      Player player = GameModel.main.player;
-      player.inventory.AddItem(new ItemStick());
-      player.inventory.AddItem(new ItemStick());
-      player.inventory.AddItem(new ItemStick());
-    }
+    base.Harvest();
+    stage = new Sapling();
+    stage.NextStage = new Mature();
   }
 
-  public override void Cull() {
-    Player player = GameModel.main.player;
-    player.inventory.AddItem(new ItemSeed(typeof(Wildwood)));
-    Harvest();
-    Kill();
+  public override Item[] HarvestRewards() {
+    if (stage is Mature) {
+      return new Item[] { new ItemStick(), new ItemStick(), new ItemStick() };
+    }
+    return null;
+  }
+
+  public override Item[] CullRewards() {
+    return new Item[] { new ItemSeed(typeof(Wildwood)) }; 
   }
 }

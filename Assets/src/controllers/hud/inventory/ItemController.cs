@@ -37,8 +37,6 @@ public class ItemController : MonoBehaviour {
   }
 
   private void HandleItemClicked() {
-    GameObject inventoryContainer = GetComponentInParent<Canvas>().transform.Find("Inventory Container").gameObject;
-
     Player player = item.inventory.Player;
     List<ActorTask> playerTasks = item.GetAvailableTasks(player);
 

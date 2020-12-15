@@ -47,6 +47,9 @@ TagManager:
   - name: Grass
     uniqueID: 2703069401
     locked: 0
+  - name: Item On Ground
+    uniqueID: 1387383455
+    locked: 0
   - name: Entity
     uniqueID: 2819269403
     locked: 0

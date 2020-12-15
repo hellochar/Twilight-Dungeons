@@ -43,6 +43,8 @@ public static class FloorGenerator {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
+    // floor.Put(new ItemOnGround(floor.boundsMax / 2, new ItemBarkShield()));
+
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AddHangingVines.Apply(floor, room0);

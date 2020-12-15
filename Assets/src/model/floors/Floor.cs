@@ -9,6 +9,7 @@ public class Floor {
   /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
   public StaticEntityGrid<Tile> tiles;
   public StaticEntityGrid<Grass> grasses;
+  public StaticEntityGrid<ItemOnGround> items;
   public MovingEntityList<Actor> actors;
 
 
@@ -56,6 +57,7 @@ public class Floor {
     this.height = height;
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Grass>(this);
+    this.items = new StaticEntityGrid<ItemOnGround>(this);
     this.actors = new MovingEntityList<Actor>(this);
   }
 
@@ -66,6 +68,8 @@ public class Floor {
       actors.Put(actor);
     } else if (entity is Grass grass) {
       grasses.Put(grass);
+    } else if (entity is ItemOnGround item) {
+      items.Put(item);
     } else {
       throw new Exception("Cannot add unrecognized entity " + entity);
     }
@@ -80,6 +84,8 @@ public class Floor {
       actors.Remove(a);
     } else if (entity is Grass g) {
       grasses.Remove(g);
+    } else if (entity is ItemOnGround item) {
+      items.Remove(item);
     } else {
       throw new Exception("Cannot remove unrecognized entity " + entity);
     }
@@ -136,19 +142,6 @@ public class Floor {
     List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
     return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
   }
-
-  internal IEnumerable<Actor> Actors() {
-    foreach (Actor a in this.actors) {
-      yield return a;
-    }
-  }
-
-  internal IEnumerable<Grass> Grasses() {
-    foreach (Grass g in this.grasses) {
-      yield return g;
-    }
-  }
-
 
   internal void CatchUpStep(float time) {
     // step all actors until they're up to speed

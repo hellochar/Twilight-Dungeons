@@ -1,0 +1,36 @@
+using System;
+using UnityEngine;
+
+public class ItemOnGround : Entity {
+  private Vector2Int _pos;
+  public override Vector2Int pos {
+    get => _pos;
+    /// do not allow moving grass
+    set { }
+  }
+
+  public readonly Item item;
+
+  public ItemOnGround(Vector2Int pos, Item item) : base() {
+    this._pos = pos;
+    this.item = item;
+    OnEnterFloor += HandleEnterFloor;
+    OnLeaveFloor += HandleLeaveFloor;
+  }
+
+  private void HandleEnterFloor() {
+    tile.OnActorEnter += HandleActorEnter;
+  }
+
+  private void HandleLeaveFloor() {
+    tile.OnActorEnter -= HandleActorEnter;
+  }
+
+  private void HandleActorEnter(Actor actor) {
+    if (actor is Player player) {
+      if (player.inventory.AddItem(item)) {
+        Kill();
+      }
+    }
+  }
+}

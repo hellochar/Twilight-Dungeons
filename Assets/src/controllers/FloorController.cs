@@ -48,11 +48,14 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     foreach (Tile tile in floor.tiles) {
       InstantiateGameObjectForEntity(tile);
     }
-    foreach (Actor actor in floor.Actors()) {
-      InstantiateGameObjectForEntity(actor);
-    }
-    foreach (Grass grass in floor.Grasses()) {
+    foreach (Grass grass in floor.grasses) {
       InstantiateGameObjectForEntity(grass);
+    }
+    foreach (ItemOnGround itemOnGround in floor.items) {
+      InstantiateGameObjectForEntity(itemOnGround);
+    }
+    foreach (Actor actor in floor.actors) {
+      InstantiateGameObjectForEntity(actor);
     }
   }
 
@@ -77,6 +80,8 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
         gameObject.GetComponent<ActorController>().actor = actor;
       } else if (entity is Grass grass) {
         gameObject.GetComponent<GrassController>().grass = grass;
+      } else if (entity is ItemOnGround itemOnGround) {
+        gameObject.GetComponent<ItemOnGroundController>().itemOnGround = itemOnGround;
       }
       gameObjectMap[entity] = gameObject;
     } else {

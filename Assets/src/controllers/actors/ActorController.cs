@@ -38,11 +38,12 @@ public class ActorController : MonoBehaviour {
 
   // Update is called once per frame
   public virtual void Update() {
+    float lerpSpeed = 20f / actor.GetActionCost(ActionType.MOVE);
     // sync positions
     if (Vector2.Distance(Util.getXY(this.transform.position), this.actor.pos) > 3) {
       this.transform.position = Util.withZ(this.actor.pos, this.transform.position.z);
     } else {
-      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, 20f * Time.deltaTime), this.transform.position.z);
+      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, lerpSpeed * Time.deltaTime), this.transform.position.z);
     }
 
     if (animator != null) {

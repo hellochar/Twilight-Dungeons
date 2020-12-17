@@ -37,8 +37,12 @@ public abstract class Entity {
     }
   }
 
+  public float DistanceTo(Vector2Int other) {
+    return Vector2Int.Distance(pos, other);
+  }
+
   public float DistanceTo(Entity other) {
-    return Vector2Int.Distance(pos, other.pos);
+    return DistanceTo(other.pos);
   }
 
   public bool IsNextTo(Entity other) {
@@ -55,8 +59,12 @@ public abstract class Entity {
 
   public virtual void Kill() {
     /// TODO remove references to this Actor if needed
-    IsDead = true;
-    OnDeath?.Invoke();
-    floor.Remove(this);
+    if (!IsDead) {
+      IsDead = true;
+      OnDeath?.Invoke();
+      floor.Remove(this);
+    } else {
+      Debug.LogWarning("Calling Kill() on already dead Entity! Ignoring");
+    }
   }
 }

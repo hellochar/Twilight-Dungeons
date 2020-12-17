@@ -45,31 +45,23 @@ public class Deathbloom : Grass {
   }
 }
 
-internal class ItemDeathbloomFlower : Item {
+internal class ItemDeathbloomFlower : Item, IEdible {
 
-  [PlayerAction]
   public void Eat(Actor a) {
-    a.statuses.Add(new FrenziedStatus(a, 7));
+    a.statuses.Add(new FrenziedStatus(7));
   }
 }
 
-internal class FrenziedStatus : Status, IAttackDamageModifier {
-  private Actor actor;
-  private int turnsLeft;
-
-  public FrenziedStatus(Actor actor, int turnsLeft) {
-    this.actor = actor;
-    this.turnsLeft = turnsLeft;
+internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
+  public FrenziedStatus(int turnsLeft) {
+    this.stacks = turnsLeft;
   }
 
   public override void Step() {
-    turnsLeft--;
-    if (turnsLeft <= 0) {
-      GameModel.main.EnqueueEvent(() => actor.statuses.Remove(this));
-    }
+    stacks--;
   }
 
-  public override string Info() => $"You deal +2 damage.\n{this.turnsLeft} turns remaining.";
+  public override string Info() => $"You deal +2 damage.\n{this.stacks} turns remaining.";
 
   public int Modify(int input) {
     return input + 2;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,6 +11,7 @@ public class Player : Actor {
 
   public Inventory inventory { get; }
   public Equipment equipment { get; }
+  public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
   /// 1000 is max fullness
   public float fullness = MAX_FULLNESS;
 
@@ -36,6 +38,10 @@ public class Player : Actor {
     // player a choice.
     if (final != initial) {
       ClearTasks();
+    }
+    // this is pretty much a delegate whose invocation list is declarative
+    foreach (var handler in Modifiers.Of<IActionPerformedHandler>(MyModifiers)) {
+      handler.HandleActionPerformed(final, initial);
     }
   }
 

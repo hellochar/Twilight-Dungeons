@@ -20,6 +20,9 @@ TextureImporter:
   - first:
       213: -3902071884278208034
     second: 1bit-circle
+  - first:
+      213: -8106958686382220732
+    second: spider
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -230,7 +233,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

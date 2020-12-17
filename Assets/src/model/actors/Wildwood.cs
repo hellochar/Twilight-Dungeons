@@ -22,7 +22,7 @@ public class Wildwood : Plant {
 
   public override Item[] HarvestRewards() {
     if (stage is Mature) {
-      return new Item[] { new ItemStick(), new ItemStick(), new ItemStick() };
+      return new Item[] { new ItemStick(), new ItemStick(), new ItemWildwoodLeaf(3), new ItemWildwoodWreath() };
     }
     return null;
   }

@@ -7,6 +7,7 @@ using UnityEngine;
 public class ActionCosts : Dictionary<ActionType, float> {
   public ActionCosts(IDictionary<ActionType, float> dictionary) : base(dictionary) {}
   public ActionCosts() : base() {}
+  public ActionCosts Copy() => new ActionCosts(this);
 }
 
 public class Actor : SteppableEntity {
@@ -28,6 +29,7 @@ public class Actor : SteppableEntity {
           var oldTile = floor.tiles[_pos];
           oldTile.ActorLeft(this);
           _pos = value;
+          OnMove?.Invoke(value, oldTile.pos);
           Tile newTile = floor.tiles[_pos];
           newTile.ActorEntered(this);
         }
@@ -35,7 +37,29 @@ public class Actor : SteppableEntity {
     }
   }
 
-  public StatusList statuses = new StatusList();
+  public virtual IEnumerable<object> MyModifiers => statuses.list.Cast<object>().Append(this);
+
+  internal IEnumerable<IActionCostModifier> ActionCostModifiers() {
+    return Modifiers.ActionCostModifiers(MyModifiers);
+  }
+
+  internal IEnumerable<IBaseActionModifier> BaseActionModifiers() {
+    return Modifiers.BaseActionModifiers(MyModifiers);
+  }
+
+  internal IEnumerable<IDamageTakenModifier> DamageTakenModifiers() {
+    return Modifiers.DamageTakenModifiers(MyModifiers);
+  }
+
+  internal IEnumerable<IAttackDamageModifier> AttackDamageModifiers() {
+    return Modifiers.AttackDamageModifiers(MyModifiers);
+  }
+
+  internal IEnumerable<IStepModifier> StepModifiers() {
+    return Modifiers.StepModifiers(MyModifiers);
+  }
+
+  public StatusList statuses;
   public int hp { get; protected set; }
   public int hpMax { get; protected set; }
 
@@ -52,6 +76,7 @@ public class Actor : SteppableEntity {
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
+  public event Action<Vector2Int, Vector2Int> OnMove;
   public event Action<int, Actor> OnDealDamage;
   public event Action<int, int, Actor> OnTakeDamage;
   public event Action<int, int> OnHeal;
@@ -61,8 +86,10 @@ public class Actor : SteppableEntity {
   public event Action<Vector2Int> OnAttackGround;
 
   public Actor(Vector2Int pos) : base() {
+    statuses = new StatusList(this);
     hp = hpMax = 8;
-    this.timeNextAction = this.timeCreated + baseActionCost;
+    // this.timeNextAction = this.timeCreated + baseActionCost;
+    this.timeNextAction = this.timeCreated;
     this.pos = pos;
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
@@ -109,7 +136,7 @@ public class Actor : SteppableEntity {
 
   internal virtual int GetFinalAttackDamage() {
     var baseDamage = BaseAttackDamage();
-    var finalDamage = Modifiers.Process(statuses.AttackDamageModifiers(), baseDamage);
+    var finalDamage = Modifiers.Process(AttackDamageModifiers(), baseDamage);
     return finalDamage;
   }
 
@@ -174,7 +201,7 @@ public class Actor : SteppableEntity {
 
   /// uses modifiers
   public float GetActionCost(ActionType t) {
-    return Modifiers.Process(statuses.ActionCostModifiers(), actionCosts)[t];
+    return Modifiers.Process(ActionCostModifiers(), actionCosts.Copy())[t];
   }
 
   public virtual float GetActionCost(BaseAction action) {
@@ -197,9 +224,9 @@ public class Actor : SteppableEntity {
     // action is not null
     // action.MoveNext() has been called and it returned true
     var action = task.Current;
-    var finalAction = Modifiers.Process(this.statuses.BaseActionModifiers(), action);
+    var finalAction = Modifiers.Process(BaseActionModifiers(), action);
     finalAction.Perform();
-    this.statuses.list.ForEach((status) => status.Step());
+    Modifiers.Process(this.StepModifiers(), null);
     OnActionPerformed?.Invoke(finalAction, action);
 
     // handle close-ended actions

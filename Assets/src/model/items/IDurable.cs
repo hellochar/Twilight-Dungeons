@@ -1,4 +1,5 @@
 public interface IDurable {
+  /// do not set directly; use ReduceDurability()
   int durability { get; set; }
   int maxDurability { get; }
 }

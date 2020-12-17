@@ -51,6 +51,9 @@ public static class Util {
   }
 
   public static T RandomPick<T>(IEnumerable<T> items) {
+    if (items.Count() == 0) {
+      return default(T);
+    }
     return items.ElementAt(UnityEngine.Random.Range(0, items.Count()));
   }
 

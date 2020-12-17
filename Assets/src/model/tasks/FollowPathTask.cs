@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-/// Close-ended.
+/// Close-ended. Fails as 
 public class FollowPathTask : ActorTask {
   public Vector2Int target { get; }
   public List<Vector2Int> path;
@@ -12,12 +12,17 @@ public class FollowPathTask : ActorTask {
   }
 
   public override IEnumerator<BaseAction> Enumerator() {
-    while (path.Any()) {
+    while (PathHasElements()) {
       Vector2Int nextPosition = path.First();
       path.RemoveAt(0);
       /// TODO cancel this action if MoveBaseAction failed
       yield return new MoveBaseAction(actor, nextPosition);
     }
+  }
+
+  private bool PathHasElements() {
+    OnGetNextPosition();
+    return path.Any();
   }
 
   public virtual void OnGetNextPosition() {}

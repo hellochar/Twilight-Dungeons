@@ -38,9 +38,25 @@ public class ObjectInfo {
       spriteName = "3Red",
       flavorText = "The rare Deathbloom flower. Just the smell of it gets your blood pumping."
     },
+    [typeof(ItemWildwoodWreath)] = new ObjectInfo {
+      spriteName = "wildwood-wreath",
+      flavorText = "Leaves arranged in a circular pattern, to be worn on your head."
+    },
+    [typeof(ItemWildwoodLeaf)] = new ObjectInfo {
+      spriteName = "wildwood-leaf",
+      flavorText = "Named for its ability to thrive in harsh conditions, this blueish leaf has a variety of uses."
+    },
     [typeof(SoftGrassStatus)] = new ObjectInfo {
       spriteName = "colored_transparent_packed_95",
       flavorText = "Feels nice on your feet."
+    },
+    [typeof(WebStatus)] = new ObjectInfo {
+      spriteName = "web",
+      flavorText = "Sticky, gooey, and warm. Eeeew."
+    },
+    [typeof(PoisonedStatus)] = new ObjectInfo {
+      spriteName = "poisoned",
+      flavorText = "You feel sick to your stomach, but appreciate the dangerous beauty in nature."
     },
     [typeof(BoundStatus)] = new ObjectInfo {
       spriteName = "bound-status",
@@ -49,7 +65,11 @@ public class ObjectInfo {
     [typeof(FrenziedStatus)] = new ObjectInfo {
       spriteName = "3Red",
       flavorText = "You're engulfed in a rage!"
-    }
+    },
+    [typeof(StatusWild)] = new ObjectInfo {
+      spriteName = "wildwood-leaf",
+      flavorText = "This place feels tight and clausterphobic!"
+    },
   };
   public static ObjectInfo InfoFor(object item) {
     return Infos.ContainsKey(item.GetType()) ? Infos[item.GetType()] : DEFAULT;

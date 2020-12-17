@@ -26,8 +26,9 @@ public class BerryBush : Plant {
     if (stage is Mature mature) {
       var stacks = mature.numBerries;
       if (stacks > 0) {
-        stacks = 0;
-        return new Item[] { new ItemBerries(stacks) };
+        var wantedStacks = stacks;
+        mature.numBerries = 0;
+        return new Item[] { new ItemBerries(wantedStacks) };
       }
     }
     return null;

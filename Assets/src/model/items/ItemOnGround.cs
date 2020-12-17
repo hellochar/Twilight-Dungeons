@@ -9,7 +9,7 @@ public class ItemOnGround : Entity {
     set { }
   }
 
-  public readonly Item item;
+  public readonly new Item item;
 
   public ItemOnGround(Vector2Int pos, Item item) : base() {
     this._pos = pos;

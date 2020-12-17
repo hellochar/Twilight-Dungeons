@@ -11,11 +11,13 @@ public class StatusController : MonoBehaviour {
     status.OnRemoved += HandleRemoved;
     // this is supposed to be the Actor's Animator
     animator = transform.parent.Find(ACTOR_SPRITENAME).GetComponentInChildren<Animator>();
-    animator?.SetBool("StuckStatus", true);
+    var name = status.GetType().Name;
+    animator?.SetBool(name, true);
   }
 
   private void HandleRemoved() {
-    animator?.SetBool("StuckStatus", false);
+    var name = status.GetType().Name;
+    animator?.SetBool(name, false);
     Destroy(this.gameObject);
   }
 }

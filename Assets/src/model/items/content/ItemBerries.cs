@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-class ItemBerries : Item, IStackable {
+class ItemBerries : Item, IStackable, IUsable {
   public ItemBerries(int stacks) {
     this.stacks = stacks;
   }
@@ -22,11 +22,10 @@ class ItemBerries : Item, IStackable {
     }
   }
 
-  [PlayerAction]
   public void Use(Actor a) {
     a.Heal(3);
-    if (a is Player player) {
-      player.IncreaseFullness(0.05f);
+    if (a is Player p) {
+      p.IncreaseFullness(0.05f);
     }
     stacks--;
   }

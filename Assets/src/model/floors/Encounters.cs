@@ -107,11 +107,28 @@ public static class Encounters {
     }
   });
 
+  public static Encounter OneSpider = new Encounter((floor, room) => {
+    var floorCenter = floor.boundsMax / 2;
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    var farthestFromCenter = tiles.OrderByDescending(t => t.DistanceTo(floorCenter)).FirstOrDefault();
+    if (farthestFromCenter != null) {
+      floor.Put(new Spider(farthestFromCenter.pos));
+    }
+  });
+
+  public static Encounter OneLocust = new Encounter((floor, room) => {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new Locust(tile.pos));
+    }
+  });
+
   public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
     { 1.5f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
-    { 1, ScatteredBoombugs },
+    { 1f, OneSpider },
+    { 0.5f, OneLocust },
     // { 0.8f, BatsInCorner },
     { 0.1f, MatureWildwood },
   };
@@ -121,6 +138,7 @@ public static class Encounters {
     { 1f, CoverWithSoftGrass },
     { 1f, AddHangingVines },
     { 1f, AddMushroom },
+    { 1f, ScatteredBoombugs },
     { 1f, AddDeathbloom },
     { 0.5f, ThreePlumpAstoriasInCorner },
   };

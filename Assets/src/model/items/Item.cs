@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,8 +10,7 @@ public class Item {
 
   public virtual Inventory inventory { get; set; }
 
-  [PlayerAction]
-  public void Destroy() {
+  public void Destroy(object unused = null) {
     if (inventory != null) {
       inventory.RemoveItem(this);
     }
@@ -19,13 +19,18 @@ public class Item {
   internal virtual string GetStats() => "";
 
   public virtual List<ActorTask> GetAvailableTasks(Player player) {
-    var methods = GetType()
-      .GetMethods()
-      .Where((methodInfo) => methodInfo.GetCustomAttributes(true).OfType<PlayerActionAttribute>().Any()).ToList();
-
-    return methods.Select((methodInfo) => {
-      return new GenericTask(player, (p) => methodInfo.Invoke(p, new object[0])).Named(methodInfo.Name);
-    }).Cast<ActorTask>().ToList();
+    var zeroArgActions = new List<Action<Actor>>();
+    zeroArgActions.Add(Destroy);
+    if (this is IEdible edible) {
+      zeroArgActions.Add(edible.Eat);
+    }
+    if (this is IUsable usable) {
+      zeroArgActions.Add(usable.Use);
+    }
+    return zeroArgActions
+      .Select((action) => new GenericTask(player, action))
+      .Cast<ActorTask>()
+      .ToList();
   }
 }
 

@@ -2,33 +2,110 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract class Status {
+/// Trying to reapply an existing status will call "Stack"
+public abstract class Status : IStepModifier {
   public event Action OnRemoved;
+  private StatusList m_list;
+  /// <summary>Should only be set by the StatusList.</summary>
+  public StatusList list {
+    get => m_list;
+    set {
+      m_list = value;
+      if (value != null) {
+        Start();
+      } else {
+        OnRemoved?.Invoke();
+        End();
+      }
+    }
+  }
+  public Actor actor => list.actor;
+
+  /// Called when list and actor are setup
+  public virtual void Start() {}
+
+  /// Called right before the status is removed
+  public virtual void End() {}
 
   public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Status", ""));
   public abstract string Info();
 
+  /// The parameter will be of the same type as this type.
+  public abstract void Stack(Status other);
+
   public virtual void Step() {}
 
-  internal void Removed() {
-    OnRemoved?.Invoke();
+  object IModifier<object>.Modify(object input) {
+    Step();
+    return input;
+  }
+
+  /// <summary>Schedule this status for removal.</summary>
+  public void Remove() {
+    GameModel.main.EnqueueEvent(() => list.Remove(this));
   }
 }
 
+/// Number stacking statuses will just "add" their numbers when re-applied rather than having the old one
+/// removed
+public abstract class StackingStatus : Status {
+  public virtual StackingMode stackingMode => StackingMode.Add;
+  private int m_stacks;
+  public virtual int stacks {
+    get => m_stacks;
+    set {
+      m_stacks = value;
+      if (value <= 0) {
+        Remove();
+      }
+    }
+  }
+
+  public StackingStatus(int stacks) {
+    this.stacks = stacks;
+  }
+
+  public StackingStatus() : this(1) {}
+
+  public override void Stack(Status otherParam) {
+    var other = (StackingStatus) otherParam;
+    switch (stackingMode) {
+      case StackingMode.Add:
+        this.stacks += other.stacks;
+        break;
+      case StackingMode.Max:
+        this.stacks = Math.Max(stacks, other.stacks);
+        break;
+      case StackingMode.Ignore:
+        break;
+    }
+  }
+}
+
+public enum StackingMode { Add, Max, Ignore }
+
 public class StatusList {
+  public Actor actor;
   public List<Status> list;
 
   public event Action<Status> OnAdded;
 
-  public StatusList(List<Status> statuses) {
+  public StatusList(Actor actor, List<Status> statuses) {
+    this.actor = actor;
     this.list = statuses;
   }
 
-  public StatusList() : this(new List<Status>()) { }
+  public StatusList(Actor actor) : this(actor, new List<Status>()) { }
 
-  public void Add(Status status) {
-    this.list.Add(status);
-    OnAdded?.Invoke(status);
+  public void Add<T>(T status) where T : Status {
+    var existing = FindOfType<T>();
+    if (existing != null) {
+      existing.Stack(status);
+    } else {
+      this.list.Add(status);
+      status.list = this;
+      OnAdded?.Invoke(status);
+    }
   }
 
   internal bool Has<T>() where T : Status {
@@ -44,23 +121,7 @@ public class StatusList {
 
   public void Remove(Status status) {
     this.list.Remove(status);
-    status.Removed();
-  }
-
-  internal IEnumerable<IActionCostModifier> ActionCostModifiers() {
-    return Modifiers.ActionCostModifiers(list);
-  }
-
-  internal IEnumerable<IBaseActionModifier> BaseActionModifiers() {
-    return Modifiers.BaseActionModifiers(list);
-  }
-
-  internal IEnumerable<IDamageTakenModifier> DamageTakenModifiers() {
-    return Modifiers.DamageTakenModifiers(list);
-  }
-
-  internal IEnumerable<IAttackDamageModifier> AttackDamageModifiers() {
-    return Modifiers.AttackDamageModifiers(list);
+    status.list = null;
   }
 
   internal T FindOfType<T>() where T : Status {
@@ -77,37 +138,35 @@ public class CannotPerformActionException : System.Exception {
 }
 
 public class SoftGrassStatus : Status, IActionCostModifier {
-  Player player;
-
-  public SoftGrassStatus(Player player) {
-    this.player = player;
-  }
-
   public ActionCosts Modify(ActionCosts costs) {
-    return new ActionCosts(costs) {
-      // 33% faster
-      [ActionType.MOVE] = costs[ActionType.MOVE] / 1.33f,
-    };
+    // 33% faster
+    costs[ActionType.MOVE] /= 1.33f;
+    return costs;
   }
 
   public override void Step() {
-    if (!(player.grass is SoftGrass)) {
-      GameModel.main.EnqueueEvent(() => this.player.statuses.Remove(this));
+    if (!(actor.grass is SoftGrass)) {
+      Remove();
     }
   }
 
   public override string Info() => "Player moves 33% faster in Soft Grass.";
+
+  public override void Stack(Status other) { }
 }
 
-public class BoundStatus : Status, IBaseActionModifier {
-  public int turnsLeft = 3;
-  public override string Info() => $"You must break free of vines before you can move or attack!\n{(int)(turnsLeft / 3.0f * 100)}% bound.";
+public class BoundStatus : StackingStatus, IBaseActionModifier {
+  public override StackingMode stackingMode => StackingMode.Max;
+  public BoundStatus() {
+    stacks = 3;
+  }
+
+  public override string Info() => $"You must break free of vines before you can move or attack!\n{(int)(stacks / 3.0f * 100)}% bound.";
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {
-      turnsLeft--;
-      if (turnsLeft <= 0) {
-        GameModel.main.EnqueueEvent(() => input.actor.statuses.Remove(this));
+      stacks--;
+      if (stacks <= 0) {
         return input;
       } else {
         return new StruggleBaseAction(input.actor);

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-class ItemMushroom : Item, IStackable {
+class ItemMushroom : Item, IStackable, IEdible {
   public ItemMushroom(int stacks) {
     this.stacks = stacks;
   }
@@ -21,10 +21,9 @@ class ItemMushroom : Item, IStackable {
     }
   }
 
-  [PlayerAction]
   public void Eat(Actor a) {
-    if (a is Player player) {
-      player.IncreaseFullness(0.05f);
+    if (a is Player p) {
+      p.IncreaseFullness(0.05f);
     }
     stacks--;
   }

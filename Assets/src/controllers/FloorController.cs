@@ -60,15 +60,15 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
   }
 
   private void InstantiateGameObjectForEntity(Entity entity) {
-    if (gameObjectMap.ContainsKey(entity)) {
-      throw new System.Exception("Creating gameObject for entity that already has one" + entity);
-    }
+    /// Player is Instantiated separately, but we still associate it to the gameobjectmap
+    /// so it gets caught by the OnPointerClick code
     if (entity is Player) {
-      /// Player is Instantiated separately, but we still associate it to the floor
-      /// so it gets caught by the OnPointerClick code
       var gameObject = GameObject.Find("Player");
       gameObjectMap[entity] = gameObject;
       return;
+    }
+    if (gameObjectMap.ContainsKey(entity)) {
+      throw new System.Exception("Creating gameObject for entity that already has one" + entity);
     }
     GameObject prefab = GetEntityPrefab(entity);
     if (prefab != null) {

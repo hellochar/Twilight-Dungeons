@@ -7,7 +7,7 @@ interface IModifier<T> {
 }
 
 static class Modifiers {
-  public static IEnumerable<T> ModifiersFor<T, I>(IEnumerable<object> enumerable) where T : IModifier<I> {
+  public static IEnumerable<T> Of<T>(IEnumerable<object> enumerable) {
     return enumerable.Where((s) => s is T).Cast<T>();
   }
 
@@ -16,19 +16,23 @@ static class Modifiers {
   }
 
   public static IEnumerable<IActionCostModifier> ActionCostModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.ModifiersFor<IActionCostModifier, ActionCosts>(enumerable);
+    return Modifiers.Of<IActionCostModifier>(enumerable);
   }
 
   public static IEnumerable<IBaseActionModifier> BaseActionModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.ModifiersFor<IBaseActionModifier, BaseAction>(enumerable);
+    return Modifiers.Of<IBaseActionModifier>(enumerable);
   }
 
   public static IEnumerable<IDamageTakenModifier> DamageTakenModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.ModifiersFor<IDamageTakenModifier, int>(enumerable);
+    return Modifiers.Of<IDamageTakenModifier>(enumerable);
   }
 
   public static IEnumerable<IAttackDamageModifier> AttackDamageModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.ModifiersFor<IAttackDamageModifier, int>(enumerable);
+    return Modifiers.Of<IAttackDamageModifier>(enumerable);
+  }
+
+  public static IEnumerable<IStepModifier> StepModifiers(IEnumerable<object> enumerable) {
+    return Modifiers.Of<IStepModifier>(enumerable);
   }
 }
 
@@ -36,3 +40,5 @@ interface IActionCostModifier : IModifier<ActionCosts> {}
 interface IBaseActionModifier : IModifier<BaseAction> {}
 interface IDamageTakenModifier : IModifier<int> {}
 interface IAttackDamageModifier : IModifier<int> {}
+/// <summary>Kind of a hack to get declarative step()-ing.</summary>
+interface IStepModifier : IModifier<object> {}

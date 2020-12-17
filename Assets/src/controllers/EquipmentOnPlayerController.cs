@@ -19,6 +19,7 @@ public class EquipmentOnPlayerController : ItemSlotController {
     if (showOnPlayer) {
       var child = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
       child.transform.localPosition = new Vector3(0, 0, 0);
+      child.transform.localRotation = Quaternion.identity;
       child.GetComponent<SpriteRenderer>().sprite = ObjectInfo.GetSpriteFor(item);
       return child;
     }

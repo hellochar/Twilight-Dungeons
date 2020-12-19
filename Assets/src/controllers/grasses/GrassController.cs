@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class GrassController : MonoBehaviour {
+public class GrassController : MonoBehaviour, IEntityController {
   public Grass grass;
 
   // Start is called before the first frame update

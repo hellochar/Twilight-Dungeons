@@ -32,7 +32,7 @@ public class ObjectInfo {
     },
     [typeof(ItemMushroom)] = new ObjectInfo {
       spriteName = "mushroom",
-      flavorText = "At least it's not toxic!"
+      flavorText = "Don't pick them all! Mushrooms spread to nearby squares on their own."
     },
     [typeof(ItemDeathbloomFlower)] = new ObjectInfo {
       spriteName = "3Red",
@@ -46,12 +46,20 @@ public class ObjectInfo {
       spriteName = "wildwood-leaf",
       flavorText = "Named for its ability to thrive in harsh conditions, this blueish leaf has a variety of uses."
     },
+    [typeof(ItemVineWhip)] = new ObjectInfo {
+      spriteName = "hanging-vines-bottom",
+      flavorText = "Just the sound of it whipping through the air makes you a little nervous."
+    },
     [typeof(SoftGrassStatus)] = new ObjectInfo {
       spriteName = "colored_transparent_packed_95",
       flavorText = "Feels nice on your feet."
     },
     [typeof(WebStatus)] = new ObjectInfo {
       spriteName = "web",
+      flavorText = "Sticky, gooey, and warm. Eeeew."
+    },
+    [typeof(SlimedStatus)] = new ObjectInfo {
+      spriteName = "slimed",
       flavorText = "Sticky, gooey, and warm. Eeeew."
     },
     [typeof(PoisonedStatus)] = new ObjectInfo {

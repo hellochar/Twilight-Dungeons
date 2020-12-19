@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HangingVines : Grass {
+  private Inventory inventory = new Inventory(new Item[] { new ItemVineWhip(1) });
+  public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
+
   public HangingVines(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
+    OnDeath += HandleDeath;
   }
 
-  public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
+  private void HandleDeath() {
+    inventory.DropRandomlyOntoFloorAround(floor, tileBelow.pos);
+  }
 
   private void HandleEnterFloor() {
     tileBelow.OnActorEnter += HandleActorEnter;
@@ -29,4 +35,39 @@ public class HangingVines : Grass {
     // when someone is able to break free; remove these vines
     Kill();
   }
+}
+
+internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackable {
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+
+  public int stacksMax => 7;
+  public (int, int) AttackSpread => (1, stacks);
+  public override EquipmentSlot slot => EquipmentSlot.Weapon;
+
+  public ItemVineWhip(int stacks) {
+    this.stacks = stacks;
+  }
+
+  public void OnAttack(Actor target) {
+    stacks--;
+  }
+
+  internal override string GetStats() => "Max damage is equal to number of stacks.\nLose one stack on attack.";
+}
+
+// Called when this weapon is used for an attack
+public interface IAttackHandler {
+  void OnAttack(Actor target);
 }

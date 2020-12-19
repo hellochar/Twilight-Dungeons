@@ -591,9 +591,9 @@ SpriteMask:
   m_MaskAlphaCutoff: 0
   m_FrontSortingLayerID: 565039641
   m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 5
+  m_FrontSortingLayer: 6
   m_BackSortingLayer: 0
-  m_FrontSortingOrder: 0
+  m_FrontSortingOrder: 32767
   m_BackSortingOrder: 32767
   m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0

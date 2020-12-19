@@ -11,6 +11,8 @@ public class Floor {
   public StaticEntityGrid<Grass> grasses;
   public StaticEntityGrid<ItemOnGround> items;
   public MovingEntityList<Actor> actors;
+  public HashSet<Entity> entities;
+  public List<SteppableEntity> steppableEntities;
 
 
   public event Action<Entity> OnEntityAdded;
@@ -19,6 +21,7 @@ public class Floor {
   /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin => new Vector2Int(0, 0);
   public Vector2Int boundsMax => new Vector2Int(width, height);
+  public Vector2 center => new Vector2(width / 2.0f, height / 2.0f);
 
   /// abstract bsp root
   internal Room root;
@@ -59,6 +62,8 @@ public class Floor {
     this.grasses = new StaticEntityGrid<Grass>(this);
     this.items = new StaticEntityGrid<ItemOnGround>(this);
     this.actors = new MovingEntityList<Actor>(this);
+    this.entities = new HashSet<Entity>();
+    this.steppableEntities = new List<SteppableEntity>();
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {
@@ -68,6 +73,12 @@ public class Floor {
   }
 
   public void Put(Entity entity) {
+    this.entities.Add(entity);
+
+    if (entity is SteppableEntity s) {
+      steppableEntities.Add(s);
+    }
+
     if (entity is Tile tile) {
       tiles.Put(tile);
     } else if (entity is Actor actor) {
@@ -76,14 +87,27 @@ public class Floor {
       grasses.Put(grass);
     } else if (entity is ItemOnGround item) {
       items.Put(item);
-    } else {
-      throw new Exception("Cannot add unrecognized entity " + entity);
     }
+
+    /// HACK
+    if (entity is IBlocksVision) {
+      RecomputeVisiblity(GameModel.main.player);
+    }
+
     entity.SetFloor(this);
     this.OnEntityAdded?.Invoke(entity);
   }
 
   public void Remove(Entity entity) {
+    if (!entities.Contains(entity)) {
+      Debug.LogError("Removing " + entity + " from a floor it doesn't live in!");
+    }
+    this.entities.Remove(entity);
+
+    if (entity is SteppableEntity s) {
+      steppableEntities.Remove(s);
+    }
+
     if (entity is Tile tile) {
       tiles.Remove(tile);
     } else if (entity is Actor a) {
@@ -92,14 +116,19 @@ public class Floor {
       grasses.Remove(g);
     } else if (entity is ItemOnGround item) {
       items.Remove(item);
-    } else {
-      throw new Exception("Cannot remove unrecognized entity " + entity);
     }
+
+    /// HACK
+    if (entity is IBlocksVision) {
+      RecomputeVisiblity(GameModel.main.player);
+    }
+
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
   }
 
   private float lastStepTime = 0;
+
   internal void RecordLastStepTime(float time) {
     lastStepTime = time;
   }
@@ -150,6 +179,9 @@ public class Floor {
   }
 
   internal void CatchUpStep(float time) {
+    foreach (var s in SteppableEntities()) {
+
+    }
     // step all actors until they're up to speed
     foreach (Actor a in actors) {
       a.CatchUpStep(lastStepTime, time);
@@ -159,12 +191,25 @@ public class Floor {
     }
   }
 
+  public IEnumerable<SteppableEntity> SteppableEntities() => EntitiesOfType<SteppableEntity>();
+
+  public IEnumerable<T> EntitiesOfType<T>() {
+    return entities.Where((e) => e is T).Cast<T>();
+  }
+
   internal void RemoveVisibility(Actor entity) {
     foreach (var pos in EnumerateCircle(entity.pos, entity.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       if (t.visibility == TileVisiblity.Visible) {
         t.visibility = TileVisiblity.Explored;
       }
+    }
+  }
+
+  void RecomputeVisiblity(Actor entity) {
+    if (entity != null && entity.floor == this) {
+      RemoveVisibility(entity);
+      AddVisibility(entity);
     }
   }
 
@@ -218,6 +263,32 @@ public class Floor {
       }
     }
     return list;
+  }
+
+  public IEnumerable<Tile> GetFourNeighbors(Vector2Int pos) {
+    var up = pos + new Vector2Int(0, +1);
+    if (InBounds(up)) {
+      yield return tiles[up];
+    }
+
+    var right = pos + new Vector2Int(+1, 0);
+    if (InBounds(right)) {
+      yield return tiles[right];
+    }
+
+    var down = pos + new Vector2Int(0, -1);
+    if (InBounds(down)) {
+      yield return tiles[down];
+    }
+
+    var left = pos + new Vector2Int(-1, 0);
+    if (InBounds(left)) {
+      yield return tiles[left];
+    }
+  }
+
+  private bool InBounds(Vector2Int pos) {
+    return pos.x >= 0 && pos.y >= 0 && pos.x < width && pos.y < height;
   }
 
   public IEnumerable<Vector2Int> EnumerateCircle(Vector2Int center, float radius) {

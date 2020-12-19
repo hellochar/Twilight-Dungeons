@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TileController : MonoBehaviour {
-  public Tile owner;
+public class TileController : MonoBehaviour, IEntityController, IEntityClickedHandler {
+  public Tile tile;
   private SpriteRenderer[] renderers;
   private SpriteMask mask;
   private int sortingLayerEntity; 
@@ -21,7 +21,7 @@ public class TileController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    switch (owner.visibility) {
+    switch (tile.visibility) {
       case TileVisiblity.Unexplored:
         foreach (var renderer in renderers) {
           renderer.enabled = false;
@@ -62,8 +62,8 @@ public class TileController : MonoBehaviour {
   }
 
   public virtual void PointerClick(PointerEventData pointerEventData) {
-    if (owner.visibility != TileVisiblity.Unexplored) {
-      GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, owner.pos);
+    if (tile.visibility != TileVisiblity.Unexplored) {
+      GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, tile.pos);
     }
   }
 

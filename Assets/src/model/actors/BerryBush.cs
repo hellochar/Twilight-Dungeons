@@ -22,23 +22,23 @@ public class BerryBush : Plant {
     stage.NextStage.NextStage = new Mature();
   }
 
-  public override Item[] HarvestRewards() {
+  public override Inventory HarvestRewards() {
     if (stage is Mature mature) {
       var stacks = mature.numBerries;
       if (stacks > 0) {
         var wantedStacks = stacks;
         mature.numBerries = 0;
-        return new Item[] { new ItemBerries(wantedStacks) };
+        return new Inventory(new ItemBerries(wantedStacks));
       }
     }
     return null;
   }
 
-  public override Item[] CullRewards() {
+  public override Inventory CullRewards() {
     if (stage is Mature) {
-      return new Item[] { new ItemSeed(typeof(BerryBush)), new ItemSeed(typeof(BerryBush)) };
+      return new Inventory(new ItemSeed(typeof(BerryBush)), new ItemSeed(typeof(BerryBush)));
     } else {
-      return new Item[] { new ItemSeed(typeof(BerryBush)) };
+      return new Inventory(new ItemSeed(typeof(BerryBush)));
     }
   }
 }

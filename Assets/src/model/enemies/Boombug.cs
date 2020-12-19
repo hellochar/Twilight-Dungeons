@@ -25,6 +25,7 @@ public class Boombug : AIActor {
 public class BoombugCorpse : Actor {
   public BoombugCorpse(Vector2Int pos) : base(pos) {
     hp = hpMax = 1;
+    timeNextAction += 1;
     OnDeath += HandleDeath;
     SetTasks(new ExplodeTask(this));
   }

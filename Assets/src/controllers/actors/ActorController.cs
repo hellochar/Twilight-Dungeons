@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : MonoBehaviour {
+public class ActorController : MonoBehaviour, IEntityController, IEntityClickedHandler {
   private static GameObject hpChangeTextPrefab;
   public Actor actor;
   protected GameObject spriteObject;
@@ -32,6 +32,7 @@ public class ActorController : MonoBehaviour {
     actor.OnActionPerformed += HandleActionPerformed;
 
     actor.statuses.OnAdded += HandleStatusAdded;
+    actor.statuses.OnRemoved += HandleStatusRemoved;
 
     Update();
   }
@@ -51,11 +52,17 @@ public class ActorController : MonoBehaviour {
     }
   }
 
-  private void HandleStatusAdded(Status status) {
+  protected virtual void HandleStatusAdded(Status status) {
+    var name = status.GetType().Name;
+    animator?.SetBool(name, true);
     var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, transform);
     if (obj != null) {
       obj.GetComponent<StatusController>().status = status;
     }
+  }
+
+  private void HandleStatusRemoved(Status status) {
+    animator?.SetBool(status.GetType().Name, false);
   }
 
   private void HandleSetTask(ActorTask task) {

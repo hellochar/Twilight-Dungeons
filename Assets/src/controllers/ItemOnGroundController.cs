@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
-public class ItemOnGroundController : MonoBehaviour {
+public class ItemOnGroundController : MonoBehaviour, IEntityController {
   public ItemOnGround itemOnGround;
   private SpriteRenderer sprite;
 

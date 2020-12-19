@@ -11,10 +11,10 @@ public class SoilController : TileController {
     ItemSeed seed = (ItemSeed)player.inventory.ToList().Find(item => item is ItemSeed);
     if (seed != null) {
       player.SetTasks(
-        new MoveNextToTargetTask(player, owner.pos),
+        new MoveNextToTargetTask(player, tile.pos),
         new GenericTask(player, (p) => {
-          if (p.IsNextTo(owner)) {
-            seed.Plant((Soil)owner);
+          if (p.IsNextTo(tile)) {
+            seed.Plant((Soil)tile);
           }
         })
       );

@@ -22,18 +22,14 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
 
   // Start is called before the first frame update
   void Start() {
-    this.instantiateGameObjectsToMatchFloor();
-    // TODO do the same thing for tile changes
+    this.InstantiateGameObjectsToMatchFloor();
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
   }
 
-  void HandleEntityAdded(Entity e) {
-    InstantiateGameObjectForEntity(e);
-  }
-
   void HandleEntityRemoved(Entity e) {
     if (e == GameModel.main.player) {
+      gameObjectMap.Remove(e);
       return;
     }
     GameObject currentObject = gameObjectMap[e];
@@ -44,18 +40,13 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     gameObjectMap.Remove(e);
   }
 
-  void instantiateGameObjectsToMatchFloor() {
-    foreach (Tile tile in floor.tiles) {
-      InstantiateGameObjectForEntity(tile);
-    }
-    foreach (Grass grass in floor.grasses) {
-      InstantiateGameObjectForEntity(grass);
-    }
-    foreach (ItemOnGround itemOnGround in floor.items) {
-      InstantiateGameObjectForEntity(itemOnGround);
-    }
-    foreach (Actor actor in floor.actors) {
-      InstantiateGameObjectForEntity(actor);
+  void HandleEntityAdded(Entity e) {
+    InstantiateGameObjectForEntity(e);
+  }
+
+  void InstantiateGameObjectsToMatchFloor() {
+    foreach (var e in floor.entities) {
+      InstantiateGameObjectForEntity(e);
     }
   }
 
@@ -75,7 +66,7 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
       Vector3 pos = new Vector3(entity.pos.x, entity.pos.y, prefab.transform.position.z);
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile tile) {
-        gameObject.GetComponent<TileController>().owner = tile;
+        gameObject.GetComponent<TileController>().tile = tile;
       } else if (entity is Actor actor) {
         gameObject.GetComponent<ActorController>().actor = actor;
       } else if (entity is Grass grass) {
@@ -94,18 +85,34 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     var tile = floor.tiles[pos];
     var actor = tile.actor;
+    var itemOnGround = tile.item;
     var grass = tile.grass;
 
-    GameObject gameObject;
-    if (actor != null && gameObjectMap.TryGetValue(actor, out gameObject)) {
-      gameObject.GetComponent<ActorController>().PointerClick(eventData);
+    if (TryGetFirstEntityClickHandler(out var handler, actor, grass, itemOnGround, tile)) {
+      handler.PointerClick(eventData);
     }
-    // Grass don't have pointerclick yet
-    // else if (gameObjectMap.TryGetValue(grass, out gameObject)) {
-    //   // gameObject.GetComponent<GrassController>().PointerClick(eventData);
-    // }
-    else {
-      gameObjectMap[tile].GetComponent<TileController>().PointerClick(eventData);
+  }
+
+  bool TryGetEntityClickHandler(Entity e, out IEntityClickedHandler handler) {
+    if (e != null && gameObjectMap.TryGetValue(e, out var gameObject)) {
+      if (gameObject.TryGetComponent<IEntityController>(out var controller)) {
+        if (controller is IEntityClickedHandler h) {
+          handler = h;
+          return true;
+        }
+      }
     }
+    handler = null;
+    return false;
+  }
+
+  bool TryGetFirstEntityClickHandler(out IEntityClickedHandler handler, params Entity[] entities) {
+    foreach (var entity in entities) {
+      if (TryGetEntityClickHandler(entity, out handler)) {
+        return true;
+      }
+    }
+    handler = null;
+    return false;
   }
 }

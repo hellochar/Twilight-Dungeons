@@ -20,14 +20,14 @@ public class Wildwood : Plant {
     stage.NextStage = new Mature();
   }
 
-  public override Item[] HarvestRewards() {
+  public override Inventory HarvestRewards() {
     if (stage is Mature) {
-      return new Item[] { new ItemStick(), new ItemStick(), new ItemWildwoodLeaf(3), new ItemWildwoodWreath() };
+      return new Inventory(new ItemStick(), new ItemStick(), new ItemWildwoodLeaf(3), new ItemWildwoodWreath());
     }
     return null;
   }
 
-  public override Item[] CullRewards() {
-    return new Item[] { new ItemSeed(typeof(Wildwood)) }; 
+  public override Inventory CullRewards() {
+    return new Inventory(new ItemSeed(typeof(Wildwood))); 
   }
 }

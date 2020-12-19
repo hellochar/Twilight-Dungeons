@@ -37,7 +37,7 @@ public class ItemController : MonoBehaviour {
   }
 
   private void HandleItemClicked() {
-    Player player = item.inventory.Player;
+    Player player = GameModel.main.player;
     List<ActorTask> playerTasks = item.GetAvailableTasks(player);
 
     // put more fundamental actions later

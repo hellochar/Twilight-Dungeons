@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 class ItemMushroom : Item, IStackable, IEdible {
   public ItemMushroom(int stacks) {
     this.stacks = stacks;
   }
-  public int stacksMax => 10;
+  public int stacksMax => 100;
 
   private int _stacks;
   public int stacks {
@@ -23,10 +24,11 @@ class ItemMushroom : Item, IStackable, IEdible {
 
   public void Eat(Actor a) {
     if (a is Player p) {
-      p.IncreaseFullness(0.05f);
+      var amountToEat = Mathf.Clamp(Mathf.FloorToInt((1.0f - p.fullness / Player.MAX_FULLNESS) * 100), 0, stacks);
+      p.IncreaseFullness(0.01f * amountToEat);
+      stacks -= amountToEat;
     }
-    stacks--;
   }
 
-  internal override string GetStats() => "Recover 5% hunger.";
+  internal override string GetStats() => $"Recover 1% hunger per mushroom ({stacks}%).";
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 public class Spider : AIActor {
 
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
-    [ActionType.ATTACK] = 3,
+    [ActionType.ATTACK] = 2,
     [ActionType.MOVE] = 2,
   };
 
@@ -25,7 +25,7 @@ public class Spider : AIActor {
   private IEnumerable<ActorTask> AI() {
     while (true) {
       if (grass == null || !(grass is Web)) {
-        yield return new TelegraphedTask(this, 4, new GenericBaseAction(this, (_) => {
+        yield return new TelegraphedTask(this, 1, new GenericBaseAction(this, (_) => {
           floor.Put(new Web(this.pos));
         }));
         // yield return new GenericTask(this, (_) => {

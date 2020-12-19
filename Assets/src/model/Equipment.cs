@@ -2,7 +2,8 @@
 /// Equipment is a more specialized inventory where only certain
 /// items, namely, IEquippable's, can be AddItem()-ed. 
 public class Equipment : Inventory {
-  public Equipment(Player player) : base(player, 5) {
+  public Equipment(Player player) : base(5) {
+    Player = player;
   }
 
   public override Item this[int i] {
@@ -17,7 +18,10 @@ public class Equipment : Inventory {
 
   public Item this[EquipmentSlot e] => this[(int) e];
 
-  internal override bool AddItem(Item item, int? slotArg = null) {
+  public Player Player { get; }
+
+  /// Equipment only allows adding EquippableItems; will return false and do nothing otherwise
+  public override bool AddItem(Item item) {
     if (item is EquippableItem equippable) {
       var slot = (int) equippable.slot;
       return base.AddItem(item, slot);

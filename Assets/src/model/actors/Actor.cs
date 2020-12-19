@@ -167,8 +167,8 @@ public class Actor : SteppableEntity {
     }
   }
 
-  protected virtual int ModifyDamageTaken(int damage) {
-    return damage;
+  protected int ModifyDamageTaken(int damage) {
+    return Modifiers.Process(DamageTakenModifiers(), damage);
   }
 
   public override void Kill() {

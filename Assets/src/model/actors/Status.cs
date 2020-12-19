@@ -89,6 +89,7 @@ public class StatusList {
   public List<Status> list;
 
   public event Action<Status> OnAdded;
+  public event Action<Status> OnRemoved;
 
   public StatusList(Actor actor, List<Status> statuses) {
     this.actor = actor;
@@ -122,6 +123,7 @@ public class StatusList {
   public void Remove(Status status) {
     this.list.Remove(status);
     status.list = null;
+    OnRemoved?.Invoke(status);
   }
 
   internal T FindOfType<T>() where T : Status {
@@ -139,8 +141,8 @@ public class CannotPerformActionException : System.Exception {
 
 public class SoftGrassStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
-    // 33% faster
-    costs[ActionType.MOVE] /= 1.33f;
+    // 10% faster
+    costs[ActionType.MOVE] /= 1.1f;
     return costs;
   }
 
@@ -150,7 +152,7 @@ public class SoftGrassStatus : Status, IActionCostModifier {
     }
   }
 
-  public override string Info() => "Player moves 33% faster in Soft Grass.";
+  public override string Info() => "Player moves 10% faster in Soft Grass.";
 
   public override void Stack(Status other) { }
 }

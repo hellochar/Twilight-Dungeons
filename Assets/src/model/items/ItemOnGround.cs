@@ -14,6 +14,7 @@ public class ItemOnGround : Entity {
   public ItemOnGround(Vector2Int pos, Item item) : base() {
     this._pos = pos;
     this.item = item;
+    Debug.AssertFormat(item.inventory == null, "Item's inventory should be null");
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
   }

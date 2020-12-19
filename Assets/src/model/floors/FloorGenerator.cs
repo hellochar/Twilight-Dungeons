@@ -61,7 +61,7 @@ public static class FloorGenerator {
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
-    // Encounters.AddHangingVines.Apply(floor, room0);
+    // Encounters.OneSnail(floor, room0);
 
     return floor;
   }
@@ -77,8 +77,18 @@ public static class FloorGenerator {
       floor = tryGenerateRandomFloor();
     } while (!AreStairsConnected(floor));
 
+    // the non-downstairs terminal room farthest away from the upstairs according to pathfinding
+    var rewardRoom = floor.rooms
+      .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom)
+      .OrderByDescending((room) => floor.FindPath(floor.upstairs.pos, room.center).Count)
+      .First();
+    
+    Encounters.PrepareRewardRoom(floor, rewardRoom);
+    var rewardEncounter = Encounters.CavesRewards.GetRandom();
+    rewardEncounter(floor, rewardRoom);
+
     foreach (var room in floor.rooms) {
-      if (!(room == floor.upstairsRoom)) {
+      if (room != floor.upstairsRoom && room != rewardRoom) {
         // spawn a random encounter
         var encounter = Encounters.CavesMobs.GetRandom();
         encounter(floor, room);

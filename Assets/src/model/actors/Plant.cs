@@ -43,32 +43,16 @@ public abstract class Plant : Actor {
   }
 
   public virtual void Harvest() {
-    var items = HarvestRewards();
-    if (items != null) {
-      // it pops out randomly adjacent
-      foreach (var item in items) {
-        var itemTile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where((tile) => tile.item == null && tile.actor == null));
-        var itemOnGround = new ItemOnGround(itemTile.pos, item);
-        floor.Put(itemOnGround);
-      }
-    }
+    HarvestRewards()?.DropRandomlyOntoFloorAround(floor, base.pos);
   }
 
   public virtual void Cull() {
-    var items = CullRewards();
-    if (items != null) {
-      // it pops out randomly adjacent
-      foreach (var item in items) {
-        var itemTile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where((tile) => tile.item == null && tile.actor == null));
-        var itemOnGround = new ItemOnGround(itemTile.pos, item);
-        floor.Put(itemOnGround);
-      }
-    }
+    CullRewards()?.DropRandomlyOntoFloorAround(floor, base.pos);
     Harvest();
     Kill();
   }
 
-  public abstract Item[] HarvestRewards();
+  public abstract Inventory HarvestRewards();
 
-  public abstract Item[] CullRewards();
+  public abstract Inventory CullRewards();
 }

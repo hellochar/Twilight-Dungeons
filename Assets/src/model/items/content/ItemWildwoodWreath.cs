@@ -26,7 +26,7 @@ private void HandleOnActionPerformed(BaseAction arg1, BaseAction arg2) {
 
       if (adjacentEnemies.Any()) {
         var target = Util.RandomPick(adjacentEnemies);
-        target.TakeDamage(1, inventory.Player);
+        target.TakeDamage(1, final.actor);
         this.ReduceDurability();
       }
     }

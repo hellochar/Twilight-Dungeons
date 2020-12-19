@@ -36,15 +36,15 @@ public abstract class Tile : Entity {
     GameModel.main.EnqueueEvent(() => OnActorEnter?.Invoke(actor));
   }
 
-  protected virtual float BasePathfindingWeight() {
+  public virtual float BasePathfindingWeight() {
     return 1;
   }
 
-  public virtual bool ObstructsVision() {
-    return BasePathfindingWeight() == 0;
+  public bool ObstructsVision() {
+    return BasePathfindingWeight() == 0 || actor is IBlocksVision;
   }
 
-  internal bool CanBeOccupied() {
+  internal virtual bool CanBeOccupied() {
     return GetPathfindingWeight() != 0;
   }
 }
@@ -57,9 +57,14 @@ public class Ground : Tile {
   public Ground(Vector2Int pos) : base(pos) { }
 }
 
+public class FancyGround : Ground {
+  public FancyGround(Vector2Int pos) : base(pos) {
+  }
+}
+
 public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
-  protected override float BasePathfindingWeight() {
+  public override float BasePathfindingWeight() {
     return 0;
   }
 }

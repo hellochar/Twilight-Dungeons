@@ -19,7 +19,7 @@ public class Player : Actor {
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
-    inventory = new Inventory(this, 12);
+    inventory = new Inventory(12);
     inventory.AddItem(new ItemBarkShield());
 
     equipment = new Equipment(this);
@@ -73,6 +73,9 @@ public class Player : Actor {
     if (item is IDurable durable) {
       durable.ReduceDurability();
     }
+    if (item is IAttackHandler handler) {
+      handler.OnAttack(target);
+    }
     if (task is FollowPathTask) {
       task = null;
     }
@@ -98,11 +101,6 @@ public class Player : Actor {
   internal void IncreaseFullness(float v) {
     int amount = (int) (v * MAX_FULLNESS);
     fullness = Mathf.Clamp(fullness + amount, 0, MAX_FULLNESS);
-  }
-
-  protected override int ModifyDamageTaken(int damage) {
-    var newDamage = Modifiers.Process(Modifiers.DamageTakenModifiers(equipment.ItemsNonNull()), damage);
-    return newDamage;
   }
 
   internal override int BaseAttackDamage() {

@@ -132,12 +132,10 @@ internal class PoisonedStatus : StackingStatus {
   public override void Step() {
     if (--countDown <= 0) {
       countDown = 20;
-      if (actor.hp > 1) {
-        actor.TakeDamage(1, actor);
-      }
+      actor.TakeDamage(1, actor);
     }
     --stacks;
   }
 
-  public override string Info() => $"Deals 1 non-lethal damage every 20 turns.\n{stacks} turns remaining.";
+  public override string Info() => $"Deals 1 damage every 20 turns.\n{stacks} turns remaining.";
 }

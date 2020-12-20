@@ -36,7 +36,7 @@ public class Deathbloom : Grass {
       }
       var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
       noGrassTiles.Shuffle();
-      foreach (var tile in noGrassTiles.Take(2)) {
+      foreach (var tile in noGrassTiles.Take(1)) {
         var newDeathbloom = new Deathbloom(tile.pos);
         floor.Put(newDeathbloom);
       }

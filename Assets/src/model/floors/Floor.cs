@@ -98,6 +98,13 @@ public class Floor {
     this.OnEntityAdded?.Invoke(entity);
   }
 
+  /// Sets all terminal room connections by checking every pair of rooms if they're directly connected:
+  /// find a path between rooms A and B
+  /// If each tile on the path only belongs to A or B (or no room), then they're directly connected
+  internal void ComputeConnectivity() {
+    throw new NotImplementedException();
+  }
+
   public void Remove(Entity entity) {
     if (!entities.Contains(entity)) {
       Debug.LogError("Removing " + entity + " from a floor it doesn't live in!");

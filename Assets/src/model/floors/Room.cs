@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using UnityEngine;
 
 /// Represents a room in a floor; internally implements a BSP tree
@@ -14,6 +15,8 @@ public class Room {
   internal bool isRoot => this.parent == null;
 
   public bool isTerminal => this.split == null;
+  /// Only used in terminal rooms; get other rooms that this one is connected to.
+  public List<Room> connections = new List<Room>();
 
   public Vector2Int center => (min + max) / 2;
   public Vector2 centerFloat => new Vector2((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f);

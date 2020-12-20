@@ -29,13 +29,24 @@ public class Mushroom : Grass {
 
   protected override float Step() {
     // find an adjacent square without mushrooms and grow into it
-    var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null);
-    if (noGrassTiles.Any()) {
-      var toGrowInto = Util.RandomPick(noGrassTiles);
+    var growTiles = floor.GetFourNeighbors(pos).Where(CanLiveIn);
+    if (growTiles.Any()) {
+      var toGrowInto = Util.RandomPick(growTiles);
       var newMushrom = new Mushroom(toGrowInto.pos);
       floor.Put(newMushrom);
       TriggerNoteworthyAction();
     }
     return GetRandomDuplicateTime();
+  }
+
+  public static bool CanLiveIn(Tile tile) {
+    var floor = tile.floor;
+    // hugging at least one 4-neighbor wall
+    var fourNeighbors = floor.GetFourNeighbors(tile.pos);
+    var isHuggingWall = fourNeighbors.Any((pos) => pos is Wall);
+    var isGround = tile is Ground;
+    var isNotOccupied = tile.grass == null;
+    
+    return isHuggingWall && isGround && isNotOccupied;
   }
 }

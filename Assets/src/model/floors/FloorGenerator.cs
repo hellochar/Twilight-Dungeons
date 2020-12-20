@@ -77,15 +77,29 @@ public static class FloorGenerator {
       floor = tryGenerateRandomFloor();
     } while (!AreStairsConnected(floor));
 
+    // floor.ComputeConnectivity();
+
+    var intermediateRooms = floor.rooms
+      .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom);
+    
     // the non-downstairs terminal room farthest away from the upstairs according to pathfinding
-    var rewardRoom = floor.rooms
-      .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom)
+    var rewardRoom = intermediateRooms
       .OrderByDescending((room) => floor.FindPath(floor.upstairs.pos, room.center).Count)
       .First();
-    
-    Encounters.PrepareRewardRoom(floor, rewardRoom);
+
+    Encounters.PlaceFancyGround(floor, rewardRoom);
+    Encounters.SurroundWithRubble(floor, rewardRoom);
     var rewardEncounter = Encounters.CavesRewards.GetRandom();
     rewardEncounter(floor, rewardRoom);
+
+    // var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
+    // foreach (var room in deadEndRooms) {
+    //   if (Random.value < 0.5f) {
+    //     Encounters.SurroundWithRubble(floor, room);
+    //   }
+    //   var encounter = Encounters.CavesDeadEnds.GetRandom();
+    //   encounter(floor, room);
+    // }
 
     foreach (var room in floor.rooms) {
       if (room != floor.upstairsRoom && room != rewardRoom) {
@@ -196,8 +210,11 @@ public static class FloorGenerator {
     root.Traverse(node => {
       if (!node.isTerminal) {
         Vector2Int nodeCenter = node.getCenter();
-        Vector2Int aCenter = node.split.Value.a.getCenter();
-        Vector2Int bCenter = node.split.Value.b.getCenter();
+        RoomSplit split = node.split.Value;
+        split.a.connections.Add(split.b);
+        split.b.connections.Add(split.a);
+        Vector2Int aCenter = split.a.getCenter();
+        Vector2Int bCenter = split.b.getCenter();
         paths.Add((nodeCenter, aCenter));
         paths.Add((nodeCenter, bCenter));
       }

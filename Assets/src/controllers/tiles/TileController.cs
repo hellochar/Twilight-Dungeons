@@ -7,12 +7,12 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
   public Tile tile;
   private SpriteRenderer[] renderers;
   private SpriteMask mask;
-  private int sortingLayerEntity; 
+  private int sortingLayerStatuses; 
   private int sortingLayerDefault;
 
   // Start is called before the first frame update
   void Start() {
-    sortingLayerEntity = SortingLayer.NameToID("Entity");
+    sortingLayerStatuses = SortingLayer.NameToID("Statuses");
     sortingLayerDefault = SortingLayer.NameToID("Default");
     this.renderers = GetComponentsInChildren<SpriteRenderer>();
     this.mask = GetComponent<SpriteMask>();
@@ -48,9 +48,9 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
       case TileVisiblity.Explored:
         if (mask != null) {
           mask.enabled = true;
-          // don't show entities
-          mask.backSortingLayerID = sortingLayerEntity;
-          mask.backSortingOrder = 9999;
+          // don't show entities or statuses
+          mask.backSortingLayerID = sortingLayerStatuses;
+          mask.backSortingOrder = 99999;
         }
         foreach (var renderer in renderers) {
           renderer.enabled = true;

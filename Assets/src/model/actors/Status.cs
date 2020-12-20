@@ -141,8 +141,8 @@ public class CannotPerformActionException : System.Exception {
 
 public class SoftGrassStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
-    // 10% faster
-    costs[ActionType.MOVE] /= 1.1f;
+    // 11% faster
+    costs[ActionType.MOVE] *= 0.9f;
     return costs;
   }
 
@@ -152,7 +152,7 @@ public class SoftGrassStatus : Status, IActionCostModifier {
     }
   }
 
-  public override string Info() => "Player moves 10% faster in Soft Grass.";
+  public override string Info() => "Player moves 11% faster in Soft Grass.";
 
   public override void Stack(Status other) { }
 }

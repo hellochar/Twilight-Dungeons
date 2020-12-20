@@ -44,10 +44,10 @@ public class Inventory : IEnumerable<Item> {
 
   public virtual bool AddItem(Item item) {
     var slot = GetFirstFreeSlot();
-    if (slot == null) {
+    if (!(item is IStackable) && slot == null) {
       return false;
     } else {
-      return AddItem(item, slot.Value);
+      return AddItem(item, slot.GetValueOrDefault());
     }
   }
 

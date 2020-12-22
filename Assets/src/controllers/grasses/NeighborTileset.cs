@@ -67,7 +67,7 @@ public class NeighborTileset {
         coloredSprites = Resources.LoadAll<Sprite>("colored");
       }
 
-      var sprite = coloredSprites.First((sprite) => sprite.name == value);
+      var sprite = coloredSprites.First((s) => s.name == value);
 
       dict[ChunkToString(chunk)] = (sprite, 0);
 

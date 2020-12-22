@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1592770454718523862}
   - component: {fileID: 8919884528315743118}
   - component: {fileID: -8345836058285489930}
+  - component: {fileID: 3128458960753779329}
   m_Layer: 9
   m_Name: Water
   m_TagString: Player
@@ -72,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: -1591897895
   m_SortingLayer: 2
   m_SortingOrder: -2
-  m_Sprite: {fileID: -4272563635693523502, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+  m_Sprite: {fileID: 8509550459451208454, guid: ff64a074359db7640bceb3339bafac95,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -108,3 +109,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bf4cfcd4b3e5d34c9f752ce35f414e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &3128458960753779329
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592770454718523863}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7da27d9296d57ab4b85220a7cbd5ccc2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

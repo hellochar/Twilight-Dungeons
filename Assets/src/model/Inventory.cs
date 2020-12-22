@@ -28,13 +28,18 @@ public class Inventory : IEnumerable<Item> {
       // if we still exist, then continue
     }
 
-    if (items[slot] != null) {
-      return false;
-    }
-    if (item.inventory != null) {
-      bool didRemove = item.inventory.RemoveItem(item);
-      if (!didRemove) {
-        return false;
+    /// two options:
+    /// no other inventory -> just put it into this inventory
+    /// yes other inventory -> swap whatever's in the current slot into that one
+
+    var otherInventory = item.inventory;
+    if (otherInventory != null) {
+      var otherInventorySlot = Array.IndexOf(otherInventory.items, item);
+      otherInventory.RemoveItem(item);
+      var itemToSwap = items[slot];
+      if (itemToSwap != null) {
+        RemoveItem(itemToSwap);
+        otherInventory.AddItem(itemToSwap, otherInventorySlot);
       }
     }
     items[slot] = item;

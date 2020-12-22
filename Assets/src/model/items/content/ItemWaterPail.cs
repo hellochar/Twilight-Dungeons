@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo("water-pail", "Passed on from your uncle, your trusty water pail is older than you are.")]
-class ItemWaterPail : Item, IStackable {
+public class ItemWaterPail : Item, IStackable {
   public ItemWaterPail() {
     stacks = 0;
   }
@@ -28,17 +28,17 @@ class ItemWaterPail : Item, IStackable {
 
   public void Water(Plant plant) {
     if (stacks > 0) {
-      plant.timeNextAction = Mathf.Min(GameModel.main.time, plant.timeNextAction - 100);
+      plant.water++;
       stacks--;
     }
   }
 
   public void Water(Grass grass) {
     if (stacks > 0) {
-      var newPositions = grass.floor.GetFourNeighbors(grass.pos).Where((tile) => tile.grass == null);
+      var neighborTiles = grass.floor.GetFourNeighbors(grass.pos).Where((tile) => tile is Ground && tile.grass == null);
       var constructorInfo = grass.GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
-      foreach (var pos in newPositions) {
-        var newGrass = (Grass) constructorInfo.Invoke(new object[] { pos });
+      foreach (var tile in neighborTiles) {
+        var newGrass = (Grass) constructorInfo.Invoke(new object[] { tile.pos });
         grass.floor.Put(newGrass);
       }
       // grow into a nearby location

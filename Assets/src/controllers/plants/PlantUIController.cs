@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,9 +18,9 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   void Start() {
     plantController = GetComponentInParent<PlantController>();
 
-    uiName = transform.Find("Name").GetComponent<TMP_Text>();
-    uiInfo = transform.Find("Info").GetComponent<TMP_Text>();
-    waterIndicator = transform.Find("Water Indicator");
+    uiName = transform.Find("Frame/Name").GetComponent<TMP_Text>();
+    uiInfo = transform.Find("Frame/Info").GetComponent<TMP_Text>();
+    waterIndicator = transform.Find("Frame/Water Indicator");
     var empty = waterIndicator.Find("Water Circle Empty").gameObject;
     var filled = waterIndicator.Find("Water Circle Filled").gameObject;
     waterCircleEmpty = empty.GetComponent<Image>().sprite;
@@ -30,9 +31,13 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       Instantiate(empty, waterIndicator, false);
     }
 
+    var waterPail = GameModel.main.player.inventory.First((item) => item is ItemWaterPail) as ItemWaterPail;
+    var waterButton = transform.Find("Frame/Buttons/Water").GetComponent<Button>();
+    waterButton.interactable = waterPail.stacks > 0;
+    waterButton.onClick.AddListener(() => plantController.Water(waterPail));
 
-    transform.Find("Buttons/Harvest").GetComponent<Button>().onClick.AddListener(plantController.Harvest);
-    transform.Find("Buttons/Cull").GetComponent<Button>().onClick.AddListener(plantController.Cull);
+    transform.Find("Frame/Buttons/Harvest").GetComponent<Button>().onClick.AddListener(plantController.Harvest);
+    transform.Find("Frame/Buttons/Cull").GetComponent<Button>().onClick.AddListener(plantController.Cull);
 
     Update();
   }

@@ -16,8 +16,7 @@ public class PlantController : ActorController {
     set {
       if (value) {
         // opening popup
-        ui = PrefabCache.UI.Instantiate("Plant UI", transform, false);
-        ui.transform.localPosition = new Vector3(0, 0.3f, -1f);
+        ui = PrefabCache.UI.Instantiate("Plant UI", transform);
       } else {
         // closing popup
         Destroy(ui);
@@ -79,5 +78,10 @@ public class PlantController : ActorController {
   public void Cull() {
     popupOpen = false;
     plant.Cull();
+  }
+
+  internal void Water(ItemWaterPail pail) {
+    popupOpen = false;
+    pail.Water(plant);
   }
 }

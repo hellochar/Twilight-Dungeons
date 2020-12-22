@@ -67,6 +67,16 @@ public class ItemController : MonoBehaviour {
 
       buttons.Insert(0, button);
     }
+    if (item is ItemWaterPail pail) {
+      var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
+      button.GetComponentInChildren<TMPro.TMP_Text>().text = "Water";
+      button.GetComponent<Button>().onClick.AddListener(() => {
+        WaterWithUI(pail, player, popup);
+        Destroy(popup);
+      });
+
+      buttons.Insert(0, button);
+    }
 
     popup = Popups.Create(
       title: item.displayName,
@@ -91,6 +101,32 @@ public class ItemController : MonoBehaviour {
         new GenericTask(player, (p) => {
           if (p.IsNextTo(soil)) {
             seed.Plant(soil);
+          }
+        })
+      );
+    } catch (PlayerSelectCanceledException) {
+      // if player cancels selection, go back to before
+      OpenInventory();
+      popup.SetActive(true);
+    }
+  }
+
+  public async void WaterWithUI(ItemWaterPail pail, Player player, GameObject popup) {
+    CloseInventory();
+    popup.SetActive(false);
+    try {
+      var plantOrGrass = await MapSelector.Select(
+        GameModel.main.currentFloor.entities.Where(a => a.isVisible && (a is Plant || a is Grass))
+      );
+      player.SetTasks(
+        new MoveNextToTargetTask(player, plantOrGrass.pos),
+        new GenericTask(player, (_) => {
+          if (player.IsNextTo(plantOrGrass)) {
+            if (plantOrGrass is Plant p) {
+              pail.Water(p);
+            } else if (plantOrGrass is Grass g) {
+              pail.Water(g);
+            }
           }
         })
       );

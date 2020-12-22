@@ -25,10 +25,10 @@ class PrefabCache {
     return cache[name];
   }
 
-  public GameObject Instantiate(string name, Transform parent, bool worldPositionStays = true) {
+  public GameObject Instantiate(string name, Transform parent) {
     GameObject prefab = GetPrefabFor(name);
     if (prefab != null) {
-      return UnityEngine.Object.Instantiate(prefab, parent, worldPositionStays);
+      return UnityEngine.Object.Instantiate(prefab, parent.position, Quaternion.identity, parent);
     }
     return null;
   }

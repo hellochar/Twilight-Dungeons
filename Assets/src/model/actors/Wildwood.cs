@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public class Wildwood : Plant {
+  public override int maxWater => 5;
   class Mature : PlantStage {
     public override float StepTime => 99999;
     public override float Step() {

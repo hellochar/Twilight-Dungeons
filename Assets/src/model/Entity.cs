@@ -67,4 +67,11 @@ public abstract class Entity {
       Debug.LogWarning("Calling Kill() on already dead Entity! Ignoring");
     }
   }
+
+  public TimedEvent AddTimedEvent(float time, Action action) {
+    GameModel model = GameModel.main;
+    var evt = new TimedEvent(this, model.time + time, action);
+    model.turnManager.AddTimedEvent(evt);
+    return evt;
+  }
 }

@@ -144,18 +144,3 @@ public class ItemController : MonoBehaviour {
     }
   }
 }
-
-[Serializable]
-internal class PlayerSelectCanceledException : Exception {
-  public PlayerSelectCanceledException() {
-  }
-
-  public PlayerSelectCanceledException(string message) : base(message) {
-  }
-
-  public PlayerSelectCanceledException(string message, Exception innerException) : base(message, innerException) {
-  }
-
-  protected PlayerSelectCanceledException(SerializationInfo info, StreamingContext context) : base(info, context) {
-  }
-}

@@ -131,14 +131,6 @@ public class StatusList {
   }
 }
 
-public class CannotPerformActionException : System.Exception {
-  public readonly string why;
-
-  public CannotPerformActionException(string why) {
-    this.why = why;
-  }
-}
-
 public class SoftGrassStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
     // 11% faster

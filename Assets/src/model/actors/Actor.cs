@@ -272,5 +272,3 @@ public enum Faction { Ally, Neutral, Enemy }
 //     target.TakeDamage(damage, source);
 //   }
 // }
-
-public class NoActionException : Exception {}

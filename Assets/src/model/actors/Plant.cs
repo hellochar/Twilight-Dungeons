@@ -3,6 +3,13 @@ using System.Linq;
 using UnityEngine;
 
 public abstract class Plant : Actor {
+  private int m_water = 2;
+  public int water {
+    get => m_water;
+    set => m_water = Mathf.Clamp(value, 0, maxWater);
+  }
+
+  public abstract int maxWater { get; }
   private PlantStage _stage;
   public PlantStage stage {
     get => _stage;
@@ -20,6 +27,12 @@ public abstract class Plant : Actor {
     faction = Faction.Ally;
     this.stage = stage;
     this.timeNextAction = this.timeCreated + stage.StepTime;
+    AddTimedEvent(500, StepWater);
+  }
+
+  private void StepWater() {
+    water--;
+    AddTimedEvent(500, StepWater);
   }
 
   protected override float Step() {

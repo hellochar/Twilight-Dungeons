@@ -257,7 +257,7 @@ public class Floor {
     return isVisible;
   }
 
-  /// includes the tile *at* the pos
+  /// includes the tile *at* the pos.
   public List<Tile> GetAdjacentTiles(Vector2Int pos) {
     List<Tile> list = new List<Tile>();
     int xMin = Mathf.Clamp(pos.x - 1, 0, width - 1);
@@ -294,7 +294,7 @@ public class Floor {
     }
   }
 
-  private bool InBounds(Vector2Int pos) {
+  public bool InBounds(Vector2Int pos) {
     return pos.x >= 0 && pos.y >= 0 && pos.x < width && pos.y < height;
   }
 
@@ -341,6 +341,25 @@ public class Floor {
       yield return p;
     }
     yield return endPoint;
+  }
+
+  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true) {
+    LinkedList<Tile> frontier = new LinkedList<Tile>();
+    HashSet<Tile> seen = new HashSet<Tile>();
+    frontier.AddFirst(tiles[startPos]);
+    while (frontier.Any()) {
+      var tile = frontier.First.Value;
+      frontier.RemoveFirst();
+      yield return tile;
+      seen.Add(tile);
+      var adjacent = GetFourNeighbors(tile.pos).Except(seen).Where(predicate).ToList();
+      if (randomizeNeighborOrder) {
+        adjacent.Shuffle();
+      }
+      foreach (var next in adjacent) {
+        frontier.AddLast(next);
+      }
+    }
   }
 
   public void PlaceUpstairs(Vector2Int pos) {

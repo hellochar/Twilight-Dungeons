@@ -22,13 +22,13 @@ class ShapeTransform {
   /// Apply this transform to the floor. Accounts for all 4 rotations as well.
   public void ApplyWithRotations(Floor floor) {
     if (rot90 == null) {
-      rot90 = new ShapeTransform(Rotate90(input), output, probability);
+      rot90 = new ShapeTransform(Util.Rotate90(input), output, probability);
     }
     if (rot180 == null) {
-      rot180 = new ShapeTransform(Rotate90(rot90.input), output, probability);
+      rot180 = new ShapeTransform(Util.Rotate90(rot90.input), output, probability);
     }
     if (rot270 == null) {
-      rot270 = new ShapeTransform(Rotate90(rot180.input), output, probability);
+      rot270 = new ShapeTransform(Util.Rotate90(rot180.input), output, probability);
     }
     Apply(floor);
     rot90.Apply(floor);
@@ -40,27 +40,6 @@ class ShapeTransform {
     // placesToChange.Concat(rot180.getPlacesToChange(floor));
     // placesToChange.Concat(rot270.getPlacesToChange(floor));
     // ApplyPlacesToChange(floor, placesToChange);
-  }
-
-  /// Create a new chunk that's the old one rotated 90 degrees counterclockwise (because we're in a right-handed coordinate system)
-  private int[,] Rotate90(int[,] chunk) {
-    int i1 = chunk[0, 0];
-    int i2 = chunk[0, 1];
-    int i3 = chunk[0, 2];
-
-    int i4 = chunk[1, 0];
-    int i5 = chunk[1, 1];
-    int i6 = chunk[1, 2];
-
-    int i7 = chunk[2, 0];
-    int i8 = chunk[2, 1];
-    int i9 = chunk[2, 2];
-
-    return new int[3, 3] {
-      {i3, i6, i9},
-      {i2, i5, i8},
-      {i1, i4, i7}
-    };
   }
 
   private void Apply(Floor floor) {
@@ -81,7 +60,8 @@ class ShapeTransform {
     for (int x = 1; x < floor.width - 1; x++) {
       for (int y = 1; y < floor.height - 1; y++) {
         // iterate through every 3x3 block and try to match 
-        Fill3x3CenteredAt(floor, x, y, ref chunk);
+        /// We turn each tile into its pathfinding weight
+        Util.FillChunkCenteredAt(floor, x, y, ref chunk, (pos) => (int) floor.tiles[pos].GetPathfindingWeight(), 0);
 
         if (ChunkEquals(chunk, input)) {
           placesToChange.Add((x, y));
@@ -89,15 +69,6 @@ class ShapeTransform {
       }
     }
     return placesToChange;
-  }
-
-  /// We turn each tile into its pathfinding weight
-  private void Fill3x3CenteredAt(Floor floor, int x, int y, ref int[,] chunk) {
-    for (int dx = -1; dx <= 1; dx++) {
-      for (int dy = -1; dy <= 1; dy++) {
-        chunk[dx + 1, dy + 1] = (int)floor.tiles[x + dx, y + dy].GetPathfindingWeight();
-      }
-    }
   }
 
   private bool ChunkEquals(int[,] a, int[,] b) {

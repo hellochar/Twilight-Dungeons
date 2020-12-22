@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 public class BerryBush : Plant {
-
+  public override int maxWater => 4;
   class Mature : PlantStage {
     public int numBerries = 3;
 

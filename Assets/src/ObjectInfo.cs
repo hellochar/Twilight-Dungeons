@@ -80,7 +80,21 @@ public class ObjectInfo {
     },
   };
   public static ObjectInfo InfoFor(object item) {
-    return Infos.ContainsKey(item.GetType()) ? Infos[item.GetType()] : DEFAULT;
+    var type = item.GetType();
+    if (!Infos.ContainsKey(type)) {
+      // try to load it from the attribute
+      var objectInfoArray = type.GetCustomAttributes(typeof(ObjectInfoAttribute), false);
+      if (objectInfoArray.Length > 0) {
+        var attribute = (ObjectInfoAttribute) objectInfoArray[0];
+        Infos[type] = new ObjectInfo {
+          spriteName = attribute.spriteName,
+          flavorText = attribute.flavorText
+        };
+      } else {
+        Infos[type] = DEFAULT;
+      }
+    }
+    return Infos[type];
   }
 
   public static Sprite GetSpriteFor(object item) {
@@ -109,5 +123,15 @@ public class ObjectInfo {
       }
       return _sprite;
     }
+  }
+}
+
+public class ObjectInfoAttribute : Attribute {
+  public string spriteName { get; }
+  public string flavorText {get; }
+
+  public ObjectInfoAttribute(string spriteName, string flavorText) {
+    this.spriteName = spriteName;
+    this.flavorText = flavorText;
   }
 }

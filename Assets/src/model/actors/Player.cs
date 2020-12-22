@@ -21,6 +21,7 @@ public class Player : Actor {
     faction = Faction.Ally;
     inventory = new Inventory(12);
     inventory.AddItem(new ItemBarkShield());
+    inventory.AddItem(new ItemWaterPail());
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

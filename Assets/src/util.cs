@@ -75,4 +75,38 @@ public static class Util {
   public static string WithSpaces(string capitalCaseString) {
     return string.Concat(capitalCaseString.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
   }
+
+  /// <summary>Create a new 3x3 chunk that's the old one rotated 90 degrees counterclockwise (because we're in a right-handed coordinate system)</summary>
+  public static int[,] Rotate90(int[,] chunk) {
+    int i1 = chunk[0, 0];
+    int i2 = chunk[0, 1];
+    int i3 = chunk[0, 2];
+
+    int i4 = chunk[1, 0];
+    int i5 = chunk[1, 1];
+    int i6 = chunk[1, 2];
+
+    int i7 = chunk[2, 0];
+    int i8 = chunk[2, 1];
+    int i9 = chunk[2, 2];
+
+    return new int[3, 3] {
+      {i3, i6, i9},
+      {i2, i5, i8},
+      {i1, i4, i7}
+    };
+  }
+
+  public static void FillChunkCenteredAt(Floor floor, int x, int y, ref int[,] chunk, Func<Vector2Int, int> func, int outOfBoundsValue) {
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dy = -1; dy <= 1; dy++) {
+        Vector2Int pos = new Vector2Int(x + dx, y + dy);
+        if (floor.InBounds(pos)) {
+          chunk[dx + 1, dy + 1] = func(pos);
+        } else {
+          chunk[dx + 1, dy + 1] = outOfBoundsValue;
+        }
+      }
+    }
+  }
 }

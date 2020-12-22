@@ -160,6 +160,14 @@ public static class Encounters {
     }
   });
 
+  public static Encounter AddWater = new Encounter((floor, room) => {
+    var numWaters = Random.Range(6, 12);
+    var startPos = Util.RandomPick(floor.EnumerateRoom(room));
+    foreach (var tile in floor.BreadthFirstSearch(startPos, (tile) => tile is Ground).Take(numWaters)) {
+      floor.Put(new Water(tile.pos));
+    }
+  });
+
   public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
     { 2.5f, Empty },
     { 1, AFewBlobs },
@@ -191,6 +199,7 @@ public static class Encounters {
     { 1f, AddMushroom },
     { 1f, FreeSoil },
     { 1f, OneAstoria },
+    { 1f, AddWater },
     { 0.5f, OneSpider },
     { 0.5f, OneLocust },
     { 0.5f, ThreePlumpAstoriasInCorner },

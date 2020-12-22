@@ -1,14 +1,44 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Priority_Queue;
 using UnityEngine;
+
+public class TimedEvent {
+  public readonly float time;
+  public readonly Action action;
+  public readonly Entity entity;
+  public TimedEvent(Entity e, float time, Action action) {
+    this.entity = e;
+    this.time = time;
+    this.action = action;
+    e.OnDeath += HandleDeath;
+  }
+
+  private void HandleDeath() {
+    GameModel.main.turnManager.RemoveEvent(this);
+  }
+
+  public void Done() {
+    entity.OnDeath -= HandleDeath;
+  }
+}
 
 public class TurnManager {
   // private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
   public event Action OnPlayersChoice;
+  private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
   public TurnManager(GameModel model) {
     this.model = model;
+  }
+
+  public void AddTimedEvent(TimedEvent evt) {
+    timedEvents.Enqueue(evt, evt.time);
+  }
+
+  public void RemoveEvent(TimedEvent evt) {
+    timedEvents.TryRemove(evt);
   }
 
   /// The actor whose turn it is
@@ -34,6 +64,7 @@ public class TurnManager {
         Debug.Log("Stopping step because it's been 1000 turns since player had a turn");
         break;
       }
+
       var entity = FindActiveEntity();
 
       if (model.time > entity.timeNextAction) {
@@ -53,6 +84,17 @@ public class TurnManager {
         }
         // move game time up to now
         model.time = entity.timeNextAction;
+
+        // trigger any events that need to happen
+        while (timedEvents.Count > 0) {
+          var first = timedEvents.First;
+          if (first.time > model.time) {
+            break;
+          }
+          first.action();
+          first.Done();
+          RemoveEvent(first);
+        }
       }
 
       if (entity == model.player && model.player.task == null) {
@@ -74,7 +116,7 @@ public class TurnManager {
       } catch (CannotPerformActionException e) {
         if (entity == model.player) {
           // TODO let the player know
-          Debug.LogWarning(e.why);
+          Debug.LogWarning(e.Message);
           break;
         } else {
           // TODO make this better

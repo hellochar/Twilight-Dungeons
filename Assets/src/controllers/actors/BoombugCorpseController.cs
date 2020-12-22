@@ -12,7 +12,7 @@ public class BoombugCorpseController : ActorController {
   }
 
   private void HandleDeath() {
-    var explosion = PrefabCache.Effects.MaybeInstantiateFor("Explosion", transform);
+    var explosion = PrefabCache.Effects.Instantiate("Explosion", transform);
     explosion.transform.parent = null;
   }
 }

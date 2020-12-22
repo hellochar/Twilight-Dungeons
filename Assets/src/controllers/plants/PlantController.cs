@@ -10,20 +10,28 @@ public class PlantController : ActorController {
   public Plant plant => (Plant) actor;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
-  private GameObject uiChild;
-  public bool popupOpen = false;
+  private GameObject ui = null;
+  public bool popupOpen {
+    get => ui != null;
+    set {
+      if (value) {
+        // opening popup
+        ui = PrefabCache.UI.Instantiate("Plant UI", transform, false);
+        ui.transform.localPosition = new Vector3(0, 0.3f, -1f);
+      } else {
+        // closing popup
+        Destroy(ui);
+        ui = null;
+      }
+    }
+  }
 
   // Start is called before the first frame update
   public override void Start() {
-    uiChild = transform.Find("Canvas").gameObject;
-    uiChild.SetActive(false);
     foreach (Transform t in transform) {
-      // don't include the built-in canvas
-      if (t.GetComponent<Canvas>() == null) {
-        plantStageObjects.Add(t.gameObject.name, t.gameObject);
-        t.gameObject.SetActive(false);
-        t.localPosition = new Vector3(0, 0, t.localPosition.z);
-      }
+      plantStageObjects.Add(t.gameObject.name, t.gameObject);
+      t.gameObject.SetActive(false);
+      t.localPosition = new Vector3(0, 0, t.localPosition.z);
     }
     activePlantStageObject = plantStageObjects[plant.stage.name];
     activePlantStageObject.SetActive(true);
@@ -37,7 +45,6 @@ public class PlantController : ActorController {
       activePlantStageObject = plantStageObjects[plant.stage.name];
       activePlantStageObject.SetActive(true);
     }
-    UpdatePopup();
   }
 
   public override void PointerClick(PointerEventData pointerEventData) {
@@ -62,10 +69,6 @@ public class PlantController : ActorController {
 
   public void TogglePopup() {
     popupOpen = !popupOpen;
-  }
-
-  void UpdatePopup() {
-    uiChild.SetActive(popupOpen);
   }
 
   public void Harvest() {

@@ -7,6 +7,8 @@ class PrefabCache {
   public static PrefabCacheTyped<Status> Statuses = new PrefabCacheTyped<Status>("Statuses");
   public static PrefabCacheTyped<BaseAction> BaseActions = new PrefabCacheTyped<BaseAction>("BaseActions");
   public static PrefabCache Effects = new PrefabCache("Effects");
+  public static PrefabCache UI = new PrefabCache("UI");
+
   private Dictionary<string, GameObject> cache = new Dictionary<string, GameObject>();
   public string Path { get; set; }
 
@@ -23,10 +25,10 @@ class PrefabCache {
     return cache[name];
   }
 
-  public GameObject MaybeInstantiateFor(string name, Transform transform) {
+  public GameObject Instantiate(string name, Transform parent, bool worldPositionStays = true) {
     GameObject prefab = GetPrefabFor(name);
     if (prefab != null) {
-      return UnityEngine.Object.Instantiate(prefab, transform.position, Quaternion.identity, transform);
+      return UnityEngine.Object.Instantiate(prefab, parent, worldPositionStays);
     }
     return null;
   }
@@ -42,7 +44,7 @@ class PrefabCacheTyped<T> : PrefabCache {
 
   public GameObject MaybeInstantiateFor(T obj, Transform transform) {
     if (obj != null) {
-      return MaybeInstantiateFor(obj.GetType().Name, transform);
+      return Instantiate(obj.GetType().Name, transform);
     } else {
       return null;
     }

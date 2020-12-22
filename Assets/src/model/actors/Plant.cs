@@ -6,7 +6,12 @@ public abstract class Plant : Actor {
   private int m_water = 2;
   public int water {
     get => m_water;
-    set => m_water = Mathf.Clamp(value, 0, maxWater);
+    set {
+      m_water = Mathf.Clamp(value, 0, maxWater);
+      if (water > 0) {
+        timeNextAction = GameModel.main.time + stage.StepTime;
+      }
+    }
   }
 
   public abstract int maxWater { get; }
@@ -27,15 +32,24 @@ public abstract class Plant : Actor {
     faction = Faction.Ally;
     this.stage = stage;
     this.timeNextAction = this.timeCreated + stage.StepTime;
-    AddTimedEvent(500, StepWater);
+    OnDeath += HandleDeath;
+    // AddTimedEvent(5, StepWater);
   }
 
-  private void StepWater() {
-    water--;
-    AddTimedEvent(500, StepWater);
-  }
+  // private void StepWater() {
+  //   if (water <= 0) {
+  //     Kill();
+  //   } else {
+  //     water--;
+  //   }
+  //   AddTimedEvent(5, StepWater);
+  // }
 
   protected override float Step() {
+    if (water <= 0) {
+      return 99999;
+    }
+    water--;
     var stageBefore = stage;
     var timeDelta = stage.Step();
     if (stage != stageBefore) {
@@ -50,6 +64,14 @@ public abstract class Plant : Actor {
     }
   }
 
+  internal string GetUIText() {
+    if (water > 0) {
+      return stage.getUIText();
+    } else {
+      return "This plant needs water to keep growing!";
+    }
+  }
+
   public override void CatchUpStep(float lastStepTime, float time) {
     // don't catchup; plants always run.
     return;
@@ -60,9 +82,12 @@ public abstract class Plant : Actor {
   }
 
   public virtual void Cull() {
+    Kill();
+  }
+
+  private void HandleDeath() {
     CullRewards()?.DropRandomlyOntoFloorAround(floor, base.pos);
     Harvest();
-    Kill();
   }
 
   public abstract Inventory HarvestRewards();

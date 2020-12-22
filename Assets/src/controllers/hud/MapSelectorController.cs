@@ -6,26 +6,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SelectSoilUIController : MonoBehaviour {
+public class MapSelectorController : MonoBehaviour {
   public GameObject selectHighlightPrefab;
-  public event Action<Soil> OnSoilSelected;
+  public event Action<Entity> OnSelected;
   public event Action OnCancelled;
+  public IEnumerable<Entity> entities;
 
   // Start is called before the first frame update
   void Start() {
     // first, highlight all visible, unoccupied soils
-    var allSoils = GameModel.main.currentFloor.tiles.Where(tile => tile is Soil && tile.isVisible && tile.CanBeOccupied()).Cast<Soil>();
 
     // for each soil, we want to add a highlight onto it.
-    foreach (var soil in allSoils) {
-      var highlight = Instantiate(selectHighlightPrefab, Util.withZ(soil.pos, -1), Quaternion.identity, transform);
+    foreach (var e in entities) {
+      var highlight = Instantiate(selectHighlightPrefab, Util.withZ(e.pos, -1), Quaternion.identity, transform);
       highlight.SetActive(true);
-      highlight.GetComponent<Button>().onClick.AddListener(() => SoilSelected(soil));
+      highlight.GetComponent<Button>().onClick.AddListener(() => Selected(e));
     }
   }
 
-  public void SoilSelected(Soil soil) {
-    OnSoilSelected?.Invoke(soil);
+  public void Selected(Entity e) {
+    OnSelected?.Invoke(e);
     Destroy(gameObject);
   }
 

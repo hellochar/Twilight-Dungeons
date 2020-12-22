@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.U2D;
 using UnityEngine.UI;
@@ -61,29 +60,14 @@ public class ItemController : MonoBehaviour {
     if (item is ItemSeed seed) {
       var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
       button.GetComponentInChildren<TMPro.TMP_Text>().text = "Plant";
-      button.GetComponent<Button>().onClick.AddListener(async () => {
-        CloseInventory();
-        popup.SetActive(false);
-        try {
-          var soil = await PlayerSelectSoilUI();
-          player.SetTasks(
-            new MoveNextToTargetTask(player, soil.pos),
-            new GenericTask(player, (p) => {
-              if (p.IsNextTo(soil)) {
-                seed.Plant(soil);
-              }
-            })
-          );
-          Destroy(popup);
-        } catch (PlayerSelectCanceledException) {
-          // if player cancels selection, go back to before
-          OpenInventory();
-          popup.SetActive(true);
-        }
+      button.GetComponent<Button>().onClick.AddListener(() => {
+        PlantWithUI(seed, player, popup);
+        Destroy(popup);
       });
 
       buttons.Insert(0, button);
     }
+
     popup = Popups.Create(
       title: item.displayName,
       info: item.GetStatsFull(),
@@ -95,25 +79,25 @@ public class ItemController : MonoBehaviour {
     popupMatchItem.item = item;
   }
 
-  /// Contract: if player properly selects, return the Soil.
-  /// If player cancels, throw PlayerSelectCanceledException.
-  /// how to "send" messages to this method from another gameobject?
-  private async Task<Soil> PlayerSelectSoilUI() {
-    var selectSoilUIPrefab = Resources.Load<GameObject>("UI/Select Soil");
-    var selectSoil = Instantiate(selectSoilUIPrefab);
-    var controller = selectSoil.GetComponent<SelectSoilUIController>();
-    Soil soil = null;
-    bool cancelled = false;
-    controller.OnSoilSelected += (s) => soil = s;
-    controller.OnCancelled += () => cancelled = true;
-    while(true) {
-      await Task.Delay(16);
-      if (soil != null) {
-        return soil;
-      }
-      if (cancelled) {
-        throw new PlayerSelectCanceledException();
-      }
+  public async void PlantWithUI(ItemSeed seed, Player player, GameObject popup) {
+    CloseInventory();
+    popup.SetActive(false);
+    try {
+      var soil = await MapSelector.Select(
+        GameModel.main.currentFloor.tiles.Where(tile => tile is Soil && tile.isVisible && tile.CanBeOccupied()).Cast<Soil>()
+      );
+      player.SetTasks(
+        new MoveNextToTargetTask(player, soil.pos),
+        new GenericTask(player, (p) => {
+          if (p.IsNextTo(soil)) {
+            seed.Plant(soil);
+          }
+        })
+      );
+    } catch (PlayerSelectCanceledException) {
+      // if player cancels selection, go back to before
+      OpenInventory();
+      popup.SetActive(true);
     }
   }
 

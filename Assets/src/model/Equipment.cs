@@ -21,10 +21,10 @@ public class Equipment : Inventory {
   public Player Player { get; }
 
   /// Equipment only allows adding EquippableItems; will return false and do nothing otherwise
-  public override bool AddItem(Item item) {
+  public override bool AddItem(Item item, Entity source = null) {
     if (item is EquippableItem equippable) {
       var slot = (int) equippable.slot;
-      return base.AddItem(item, slot);
+      return base.AddItem(item, slot, source);
     } else {
       return false;
     }

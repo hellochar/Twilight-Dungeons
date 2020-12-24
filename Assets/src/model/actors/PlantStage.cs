@@ -26,16 +26,15 @@ public abstract class PlantStage {
   internal void GoNextStage() => plant.GoNextStage();
 
   public abstract float StepTime { get; }
-  public abstract float Step();
+  public abstract void Step();
 
   public virtual string getUIText() { return ""; }
 }
 
 class Seed : PlantStage {
   public override float StepTime => 500;
-  public override float Step() {
+  public override void Step() {
     GoNextStage();
-    return StepTime;
   }
 
   public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
@@ -43,9 +42,8 @@ class Seed : PlantStage {
 
 class Young : PlantStage {
   public override float StepTime => 500;
-  public override float Step() {
+  public override void Step() {
     GoNextStage();
-    return StepTime;
   }
 
   public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
@@ -53,9 +51,8 @@ class Young : PlantStage {
 
 class Sapling : PlantStage {
   public override float StepTime => 500;
-  public override float Step() {
+  public override void Step() {
     GoNextStage();
-    return StepTime;
   }
 
   public override string getUIText() => $"Grows in {StepTime - this.age} turns.";

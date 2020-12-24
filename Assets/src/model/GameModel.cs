@@ -75,16 +75,16 @@ public class GameModel {
   public void generateGameModel() {
     this.floors = new Floor[] {
       // FloorGenerator.EncounterTester(),
-      FloorGenerator.generateFloor0(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateFloor0(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateRandomFloor(),
-      FloorGenerator.generateRandomFloor(),
+      FloorGenerator.generateRestFloor(0),
+      FloorGenerator.generateRandomFloor(1),
+      FloorGenerator.generateRandomFloor(2),
+      FloorGenerator.generateRandomFloor(3),
+      FloorGenerator.generateRandomFloor(4),
+      FloorGenerator.generateRestFloor(5),
+      FloorGenerator.generateRandomFloor(6),
+      FloorGenerator.generateRandomFloor(7),
+      FloorGenerator.generateRandomFloor(8),
+      FloorGenerator.generateRandomFloor(9),
     };
 
     Tile floor0Upstairs = floors[0].upstairs;
@@ -108,6 +108,13 @@ public class GameModel {
     player.pos = newPlayerPosition;
     newFloor.CatchUpStep(this.time);
     newFloor.Put(player);
+  }
+
+  internal void PutActorAt(Actor actor, Floor floor, Vector2Int pos) {
+    var oldFloor = actor.floor;
+    oldFloor.Remove(actor);
+    actor.pos = pos;
+    floor.Put(actor);
   }
 
   /// Get all actors that should be simulated, in no particular order. This includes: 

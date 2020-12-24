@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Rubble : Actor, IBlocksVision {
   public Rubble(Vector2Int pos) : base(pos) {
-    hp = hpMax = 8;
+    hp = baseMaxHp = 7;
     faction = Faction.Neutral;
     this.timeNextAction += 99999;
   }

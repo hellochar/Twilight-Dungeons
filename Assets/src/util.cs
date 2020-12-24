@@ -109,4 +109,8 @@ public static class Util {
       }
     }
   }
+
+  public static T ClampPick<T>(int index, params T[] values) {
+    return values[Mathf.Clamp(index, 0, values.Length - 1)];
+  }
 }

@@ -33,6 +33,9 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
 
     actor.statuses.OnAdded += HandleStatusAdded;
     actor.statuses.OnRemoved += HandleStatusRemoved;
+    foreach (var s in actor.statuses.list) {
+      HandleStatusAdded(s);
+    }
 
     Update();
   }
@@ -88,6 +91,8 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
       PlayAttackAnimation(attack.target.pos);
     } else if (action is AttackGroundBaseAction attackGround) {
       PlayAttackAnimation(attackGround.targetPosition);
+    } else if (action is GenericBaseAction g) {
+      gameObject.AddComponent<PulseAnimation>();
     }
   }
 

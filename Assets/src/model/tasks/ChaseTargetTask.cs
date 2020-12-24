@@ -6,6 +6,10 @@ public class ChaseTargetTask : MoveNextToTargetTask {
     this.targetActor = targetActor;
   }
 
+  public Actor GetTargetActor() {
+    return targetActor;
+  }
+
   public override void OnGetNextPosition() {
     if (targetActor == null) {
       this.path.Clear();

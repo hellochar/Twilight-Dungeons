@@ -4,9 +4,7 @@ public class Wildwood : Plant {
   public override int maxWater => 5;
   class Mature : PlantStage {
     public override float StepTime => 99999;
-    public override float Step() {
-      return 99999;
-    }
+    public override void Step() { }
     public override string getUIText() => $"Ready to harvest.";
   }
 

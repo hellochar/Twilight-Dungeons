@@ -24,7 +24,7 @@ class ItemMushroom : Item, IStackable, IEdible {
 
   public void Eat(Actor a) {
     if (a is Player p) {
-      var amountToEat = Mathf.Clamp(Mathf.FloorToInt((1.0f - p.fullness / Player.MAX_FULLNESS) * 100), 0, stacks);
+      var amountToEat = Mathf.Clamp(Mathf.FloorToInt((1.0f - p.fullness) * 100), 0, stacks);
       p.IncreaseFullness(0.01f * amountToEat);
       stacks -= amountToEat;
     }

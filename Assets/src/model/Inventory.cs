@@ -8,6 +8,7 @@ public class Inventory : IEnumerable<Item> {
   private Item[] items;
   public int capacity => items.Length;
   public virtual Item this[int i] => items[i];
+  public event Action<Item, Entity> OnItemAdded;
 
   public Inventory(params Item[] items) {
     this.items = items;
@@ -15,13 +16,14 @@ public class Inventory : IEnumerable<Item> {
 
   public Inventory(int cap) : this(new Item[cap]) { }
 
-  internal virtual bool AddItem(Item item, int slot) {
+  internal virtual bool AddItem(Item item, int slot, Entity source = null) {
     if (item is IStackable stackable) {
       // go through existing stacks and add as much as possible
       foreach (IStackable i in ItemsNonNull().Where(i => i.GetType() == item.GetType())) {
         bool isConsumed = i.Merge(stackable);
         if (isConsumed) {
           item.Destroy();
+          OnItemAdded?.Invoke(item, source);
           return true;
         }
       }
@@ -44,35 +46,36 @@ public class Inventory : IEnumerable<Item> {
     }
     items[slot] = item;
     item.inventory = this;
+    OnItemAdded?.Invoke(item, source);
     return true;
   }
 
-  public virtual bool AddItem(Item item) {
+  public virtual bool AddItem(Item item, Entity source = null) {
     var slot = GetFirstFreeSlot();
     if (!(item is IStackable) && slot == null) {
       return false;
     } else {
-      return AddItem(item, slot.GetValueOrDefault());
+      return AddItem(item, slot.GetValueOrDefault(), source);
     }
   }
 
   internal void DropRandomlyOntoFloorAround(Floor floor, Vector2Int pos) {
     // it pops out randomly adjacent
-    foreach (var item in items) {
+    foreach (var item in ItemsNonNull()) {
       var tile = floor.tiles[pos];
-      if (!IsOpen(tile)) {
-        tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(IsOpen));
+      if (!IsTileFreeForItem(tile)) {
+        tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(IsTileFreeForItem));
       }
       if (tile != null) {
         DropItem(item, tile.pos);
       }
     }
 
-    bool IsOpen(Tile tile) => tile.item == null && tile.actor == null && tile.BasePathfindingWeight() != 0;
+    bool IsTileFreeForItem(Tile tile) => tile.item == null && tile.actor == null && tile.BasePathfindingWeight() != 0;
 
     void DropItem(Item item, Vector2Int p) {
       RemoveItem(item);
-      var itemOnGround = new ItemOnGround(p, item);
+      var itemOnGround = new ItemOnGround(p, item, pos);
       floor.Put(itemOnGround);
     }
   }

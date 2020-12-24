@@ -16,7 +16,7 @@ public class Spider : AIActor {
 
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = hpMax = 8;
+    hp = baseMaxHp = 8;
     ai = AI().GetEnumerator();
     OnDealDamage += HandleDealDamage;
     // OnMove += HandleMove;

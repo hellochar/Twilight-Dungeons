@@ -34,6 +34,10 @@ static class Modifiers {
   public static IEnumerable<IStepModifier> StepModifiers(IEnumerable<object> enumerable) {
     return Modifiers.Of<IStepModifier>(enumerable);
   }
+
+  public static IEnumerable<IMaxHPModifier> MaxHPModifiers(IEnumerable<object> enumerable) {
+    return Modifiers.Of<IMaxHPModifier>(enumerable);
+  }
 }
 
 interface IActionCostModifier : IModifier<ActionCosts> {}
@@ -42,3 +46,4 @@ interface IDamageTakenModifier : IModifier<int> {}
 interface IAttackDamageModifier : IModifier<int> {}
 /// <summary>Kind of a hack to get declarative step()-ing.</summary>
 interface IStepModifier : IModifier<object> {}
+interface IMaxHPModifier : IModifier<int> {}

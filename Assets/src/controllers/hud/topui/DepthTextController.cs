@@ -14,7 +14,7 @@ public class DepthTextController : MonoBehaviour {
   void Update() {
     int depth = GameModel.main.activeFloorIndex;
     text.text = "Depth " + (depth + 1);
-    text.text += "\nTime " + GameModel.main.time;
+    // text.text += "\nTime " + GameModel.main.time;
     // text.text += "\nStatuses: " + string.Join(", ", GameModel.main.player.statuses.list.Select(x => x.ToString()));
     // if (GameModel.main.turnManager != null) {
     //   this.tmpComponent.text += "\nTurn order: " + GameModel.main.turnManager.ToString();

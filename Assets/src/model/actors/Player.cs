@@ -6,14 +6,13 @@ using UnityEngine.Events;
 
 
 public class Player : Actor {
-  public static readonly int MAX_FULLNESS = 1000;
   internal readonly Item Hands;
 
   public Inventory inventory { get; }
   public Equipment equipment { get; }
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
-  /// 1000 is max fullness
-  public float fullness = MAX_FULLNESS;
+  /// 0 to 1
+  public float fullness = 1;
 
   internal override float turnPriority => 10;
 
@@ -22,10 +21,12 @@ public class Player : Actor {
     inventory = new Inventory(12);
     inventory.AddItem(new ItemBarkShield());
     inventory.AddItem(new ItemWaterPail());
+    inventory.AddItem(new ItemCharmBerry(3));
+    inventory.AddItem(new ItemPumpkin());
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
-    hp = hpMax = 12;
+    hp = baseMaxHp = 12;
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
     OnPostStep += HandlePostStep;
@@ -62,10 +63,17 @@ public class Player : Actor {
   }
 
   void HandlePostStep(float timeCost) {
-    fullness = Math.Max(fullness - timeCost, 0);
+    fullness = Math.Max(fullness - timeCost / 1000f, 0);
     // you are now starving
     if (fullness <= 0) {
-      this.TakeDamage(1, this);
+      statuses.RemoveOfType<HungryStatus>();
+      statuses.Add(new StarvingStatus());
+    } else if (fullness <= 0.1f) {
+      statuses.RemoveOfType<StarvingStatus>();
+      statuses.Add(new HungryStatus());
+    } else {
+      statuses.RemoveOfType<HungryStatus>();
+      statuses.RemoveOfType<StarvingStatus>();
     }
   }
 
@@ -100,8 +108,7 @@ public class Player : Actor {
   }
 
   internal void IncreaseFullness(float v) {
-    int amount = (int) (v * MAX_FULLNESS);
-    fullness = Mathf.Clamp(fullness + amount, 0, MAX_FULLNESS);
+    fullness += v;
   }
 
   internal override int BaseAttackDamage() {
@@ -118,4 +125,38 @@ public class Player : Actor {
   public override void CatchUpStep(float lastStepTime, float time) {
     // no op for the player
   }
+
+  public IEnumerable<Actor> ActorsInSight(Faction faction) => floor.ActorsInCircle(pos, visibilityRange).Where((a) => a.isVisible && a.faction == faction);
+
+  /// <summary>Return true if there are any enemies in vision range.</summary>
+  public bool IsInCombat() {
+    return ActorsInSight(Faction.Enemy).Any();
+  }
+}
+
+internal class StarvingStatus : Status {
+  private Player player => (Player) actor;
+  int cooldown = 0;
+
+  public override string Info() => $"You're starving! You will regularly take damage.";
+
+  public override void Step() {
+    if (cooldown <= 0) {
+      player.TakeDamage(1, player);
+      cooldown = 50;
+    }
+    cooldown--;
+  }
+
+  public override void Stack(Status other) {}
+}
+
+internal class HungryStatus : Status {
+  private Player player => (Player) actor;
+
+  public override string Info() => $"You have {FullnessPercent}% food left. Eat something!";
+
+  public string FullnessPercent => Mathf.Ceil(player.fullness * 100).ToString();
+
+  public override void Stack(Status other) { }
 }

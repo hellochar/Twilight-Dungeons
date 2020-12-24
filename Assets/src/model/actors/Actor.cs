@@ -37,7 +37,7 @@ public class Actor : SteppableEntity {
     }
   }
 
-  public virtual IEnumerable<object> MyModifiers => statuses.list.Cast<object>().Append(this);
+  public virtual IEnumerable<object> MyModifiers => statuses.list.Cast<object>().Append(this).Append(this.task);
 
   internal IEnumerable<IActionCostModifier> ActionCostModifiers() {
     return Modifiers.ActionCostModifiers(MyModifiers);
@@ -59,9 +59,14 @@ public class Actor : SteppableEntity {
     return Modifiers.StepModifiers(MyModifiers);
   }
 
+  internal IEnumerable<IMaxHPModifier> MaxHPModifiers() {
+    return Modifiers.MaxHPModifiers(MyModifiers);
+  }
+
   public StatusList statuses;
   public int hp { get; protected set; }
-  public int hpMax { get; protected set; }
+  public int baseMaxHp { get; protected set; }
+  public int maxHp => Modifiers.Process(MaxHPModifiers(), baseMaxHp);
 
   /// don't call directly; this doesn't use modifiers
   protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
@@ -87,7 +92,7 @@ public class Actor : SteppableEntity {
 
   public Actor(Vector2Int pos) : base() {
     statuses = new StatusList(this);
-    hp = hpMax = 8;
+    hp = baseMaxHp = 8;
     // this.timeNextAction = this.timeCreated + baseActionCost;
     this.timeNextAction = this.timeCreated;
     this.pos = pos;
@@ -109,7 +114,7 @@ public class Actor : SteppableEntity {
       Debug.Log("tried healing <= 0");
       return 0;
     }
-    amount = Mathf.Clamp(amount, 0, hpMax - hp);
+    amount = Mathf.Clamp(amount, 0, maxHp - hp);
     hp += amount;
     OnHeal?.Invoke(amount, hp);
     return amount;
@@ -157,7 +162,7 @@ public class Actor : SteppableEntity {
       Debug.LogWarning("Cannot take negative damage!");
       return;
     }
-    damage = ModifyDamageTaken(damage);
+    damage = Modifiers.Process(DamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
     hp -= damage;
     source.OnDealDamage?.Invoke(damage, this);
@@ -165,10 +170,6 @@ public class Actor : SteppableEntity {
     if (hp <= 0) {
       Kill();
     }
-  }
-
-  protected int ModifyDamageTaken(int damage) {
-    return Modifiers.Process(DamageTakenModifiers(), damage);
   }
 
   public override void Kill() {
@@ -183,15 +184,24 @@ public class Actor : SteppableEntity {
     SetTasks();
   }
 
-  public void SetTasks(params ActorTask[] actions) {
+  public void SetTasks(params ActorTask[] tasks) {
     taskQueue.Clear();
-    taskQueue.AddRange(actions);
+    taskQueue.AddRange(tasks);
     TaskChanged();
   }
 
-  public void InsertTasks(params ActorTask[] actions) {
-    taskQueue.InsertRange(0, actions);
+  public void InsertTasks(params ActorTask[] tasks) {
+    taskQueue.InsertRange(0, tasks);
     TaskChanged();
+  }
+
+  /// <summary>Immediately cancel the current task.</summary>
+  public void CancelTask(ActorTask task) {
+    if (this.task == task) {
+      GoToNextTask();
+    } else {
+      Debug.LogError("Cannot cancel " + task + " because it's not currently in progress!");
+    }
   }
 
   /// Call when this.task is changed
@@ -240,6 +250,7 @@ public class Actor : SteppableEntity {
   /// This will remove this.action from the queue and call .Finish() on it, which will
   /// indirectly set this.action to the next one in the queue
   protected virtual void GoToNextTask() {
+    task.Ended();
     taskQueue.RemoveAt(0);
     TaskChanged();
   }

@@ -10,8 +10,10 @@ public class ItemOnGround : Entity {
   }
 
   public readonly new Item item;
+  public Vector2Int? start;
 
-  public ItemOnGround(Vector2Int pos, Item item) : base() {
+  public ItemOnGround(Vector2Int pos, Item item, Vector2Int? start = null) : base() {
+    this.start = start;
     this._pos = pos;
     this.item = item;
     Debug.AssertFormat(item.inventory == null, "Item's inventory should be null");
@@ -29,7 +31,7 @@ public class ItemOnGround : Entity {
 
   private void HandleActorEnter(Actor actor) {
     if (actor is Player player) {
-      if (player.inventory.AddItem(item)) {
+      if (player.inventory.AddItem(item, this)) {
         Kill();
       }
     }

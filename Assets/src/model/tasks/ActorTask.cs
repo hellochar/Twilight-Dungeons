@@ -33,6 +33,14 @@ public abstract class ActorTask : IEnumerator<BaseAction> {
     this.actor = actor;
   }
 
+  /// <summary>Called by Actor when this task has ended.</summary>
+  internal virtual void Ended() { }
+
+  /// <summary>End this task immediately; should only be called while this is the active task.</summary>
+  public void Cancel() {
+    actor.CancelTask(this);
+  }
+
   public ActorTask Named(string name) {
     Name = name;
     return this;

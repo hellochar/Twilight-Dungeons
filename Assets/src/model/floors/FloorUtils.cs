@@ -10,6 +10,12 @@ public static class FloorUtils {
     return tiles;
   }
 
+  public static List<Tile> TilesSortedAwayFromFloorCenter(Floor floor, Room room) {
+    var tiles = floor.EnumerateRoomTiles(room).ToList();
+    tiles.OrderByDescending((t) => Vector2.Distance(t.pos, floor.center));
+    return tiles;
+  }
+
   internal static List<Tile> EmptyTilesInRoom(Floor floor, Room room) {
     return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
   }

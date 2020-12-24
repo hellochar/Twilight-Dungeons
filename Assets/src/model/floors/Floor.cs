@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Floor {
+  private int m_depth = 0;
+  public int depth => m_depth;
+
   /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
   public StaticEntityGrid<Tile> tiles;
   public StaticEntityGrid<Grass> grasses;
@@ -55,7 +58,8 @@ public class Floor {
 
   public readonly int height;
 
-  public Floor(int width, int height) {
+  public Floor(int depth, int width, int height) {
+    this.m_depth = depth;
     this.width = width;
     this.height = height;
     this.tiles = new StaticEntityGrid<Tile>(this);

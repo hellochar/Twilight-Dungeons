@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,10 +9,11 @@ public class Boombug : AIActor {
   };
   protected override ActionCosts actionCosts => Boombug.StaticActionCosts;
   public Boombug(Vector2Int pos) : base(pos) {
-    hp = hpMax = 1;
+    hp = baseMaxHp = 1;
     faction = Faction.Neutral;
     ai = AIs.BugAI(this).GetEnumerator();
     OnDeath += HandleDeath;
+    inventory.AddItem(new ItemBoombugCorpse(1));
   }
 
   private void HandleDeath() {
@@ -22,9 +24,36 @@ public class Boombug : AIActor {
   }
 }
 
+[ObjectInfo(spriteName: "boombug", flavorText: "Evolution sure comes up with crazy shit sometimes...")]
+public class ItemBoombugCorpse : Item, IStackable {
+  public ItemBoombugCorpse(int stacks) {
+    this.stacks = stacks;
+  }
+  public int stacksMax => 7;
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+
+  public void Throw(Player player, Vector2Int position) {
+    player.floor.Put(new BoombugCorpse(position));
+    stacks--;
+  }
+}
+
 public class BoombugCorpse : Actor {
   public BoombugCorpse(Vector2Int pos) : base(pos) {
-    hp = hpMax = 1;
+    hp = baseMaxHp = 1;
     timeNextAction += 1;
     OnDeath += HandleDeath;
     SetTasks(new ExplodeTask(this));

@@ -6,7 +6,7 @@ public class Locust : AIActor {
 
   public Locust(Vector2Int pos) : base(pos) {
     faction = Faction.Neutral;
-    hp = hpMax = 1;
+    hp = baseMaxHp = 1;
     ai = AI().GetEnumerator();
   }
 

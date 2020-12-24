@@ -106,6 +106,8 @@ public class Room {
     }
   }
 
+  public int depth => parent == null ? 0 : parent.depth + 1;
+
   private bool doSplit() {
     if (!this.isTerminal) {
       throw new System.Exception("Attempted to call doSplit() on a BSPNode that is already split!");

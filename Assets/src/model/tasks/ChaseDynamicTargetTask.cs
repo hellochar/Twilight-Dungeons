@@ -3,7 +3,7 @@ using System;
 internal class ChaseDynamicTargetTask : ChaseTargetTask {
   private Func<Actor> targetDecider;
 
-  public ChaseDynamicTargetTask(Actor actor, Func<Actor> targetDecider, Actor initialTarget) : base(actor, initialTarget) {
+  public ChaseDynamicTargetTask(Actor actor, Func<Actor> targetDecider) : base(actor, targetDecider()) {
     this.targetDecider = targetDecider;
   }
 

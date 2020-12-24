@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class PulseAnimation : MonoBehaviour {
   static float FADE_TIME = 0.33f;
   private Vector3 currentScale;

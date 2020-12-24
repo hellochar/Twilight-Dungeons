@@ -15,9 +15,9 @@ public class PlayerHeartsController : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     int hp = GameModel.main.player.hp;
-    int hpMax = GameModel.main.player.hpMax;
+    int maxHp = GameModel.main.player.maxHp;
 
-    int numHearts = hpMax / 4;
+    int numHearts = maxHp / 4;
     MatchNumberOfHearts(numHearts);
 
     for (int i = 0; i < numHearts; i++) {

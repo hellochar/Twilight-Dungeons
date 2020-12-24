@@ -6,10 +6,6 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IActionPerformedHand
     durability = 8;
   }
 
-private void HandleOnActionPerformed(BaseAction arg1, BaseAction arg2) {
-    throw new NotImplementedException();
-  }
-
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }
   public int maxDurability => 8;

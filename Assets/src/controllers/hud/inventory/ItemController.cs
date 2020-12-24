@@ -11,7 +11,6 @@ using UnityEngine.UI;
 public class ItemController : MonoBehaviour {
   private static GameObject ActionButtonPrefab;
   public Item item;
-  private Button button;
   private Image image;
   private TMPro.TMP_Text stacksText;
 
@@ -20,8 +19,7 @@ public class ItemController : MonoBehaviour {
       ActionButtonPrefab = Resources.Load<GameObject>("UI/Action Button");
     }
     /// on click - toggle the popup for this item
-    button = GetComponent<Button>();
-    button.onClick.AddListener(HandleItemClicked);
+    GetComponent<Button>().onClick.AddListener(HandleItemClicked);
 
     image = GetComponentInChildren<Image>(true);
     var wantedSprite = ObjectInfo.GetSpriteFor(item);
@@ -31,7 +29,6 @@ public class ItemController : MonoBehaviour {
     }
 
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
-    // stacksText.gameObject.SetActive(item is IStackable);
     Update();
   }
 
@@ -42,40 +39,24 @@ public class ItemController : MonoBehaviour {
     // put more fundamental actions later
     playerTasks.Reverse();
 
-    var popupActions = playerTasks.Select((task) => new Action(() => {
-      player.task = task;
-    })).ToList();
-
     GameObject popup = null;
 
-    var buttons = playerTasks.Select((task) => {
-      var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
-      button.GetComponentInChildren<TMPro.TMP_Text>().text = task.Name;
-      button.GetComponent<Button>().onClick.AddListener(() => {
-        player.task = task;
-        Destroy(popup);
-      });
-      return button;
-    }).ToList();
-    if (item is ItemSeed seed) {
-      var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
-      button.GetComponentInChildren<TMPro.TMP_Text>().text = "Plant";
-      button.GetComponent<Button>().onClick.AddListener(() => {
-        PlantWithUI(seed, player, popup);
-        Destroy(popup);
-      });
+    var buttons = playerTasks.Select((task) => MakeButton(task.Name, () => SetPlayerTasks(popup, task))).ToList();
 
-      buttons.Insert(0, button);
+    if (item is ItemSeed seed) {
+      buttons.Insert(0, MakeButton("Plant", () => PlantWithUI(seed, player, popup)));
     }
     if (item is ItemWaterPail pail) {
-      var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
-      button.GetComponentInChildren<TMPro.TMP_Text>().text = "Water";
-      button.GetComponent<Button>().onClick.AddListener(() => {
-        WaterWithUI(pail, player, popup);
-        Destroy(popup);
-      });
-
-      buttons.Insert(0, button);
+      buttons.Insert(0, MakeButton("Water", () => WaterWithUI(pail, player, popup)));
+    }
+    if (item is ItemCharmBerry charmBerry) {
+      buttons.Insert(0, MakeButton("Charm", () => CharmWithUI(charmBerry, player, popup)));
+    }
+    if (item is ItemBoombugCorpse boombugCorpse) {
+      buttons.Insert(0, MakeButton("Throw", () => ThrowBoombugCorpseWithUI(boombugCorpse, player, popup)));
+    }
+    if (item is ItemSnailShell snailShell) {
+      buttons.Insert(0, MakeButton("Throw", () => ThrowSnailShellWithUI(snailShell, player, popup)));
     }
 
     popup = Popups.Create(
@@ -89,14 +70,31 @@ public class ItemController : MonoBehaviour {
     popupMatchItem.item = item;
   }
 
+  private GameObject MakeButton(string name, Action onClicked) {
+    var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
+    button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
+    button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
+    return button;
+  }
+
+  private void SetPlayerTasks(GameObject popup, params ActorTask[] tasks) {
+    Player player = GameModel.main.player;
+    player.SetTasks(tasks);
+    Destroy(popup);
+    if (player.IsInCombat()) {
+      CloseInventory();
+    }
+  }
+
   public async void PlantWithUI(ItemSeed seed, Player player, GameObject popup) {
     CloseInventory();
     popup.SetActive(false);
     try {
-      var soil = await MapSelector.Select(
+      var soil = await MapSelector.SelectUI(
         GameModel.main.currentFloor.tiles.Where(tile => tile is Soil && tile.isVisible && tile.CanBeOccupied()).Cast<Soil>()
       );
-      player.SetTasks(
+      SetPlayerTasks(
+        popup,
         new MoveNextToTargetTask(player, soil.pos),
         new GenericTask(player, (p) => {
           if (p.IsNextTo(soil)) {
@@ -115,7 +113,7 @@ public class ItemController : MonoBehaviour {
     CloseInventory();
     popup.SetActive(false);
     try {
-      var plantOrGrass = await MapSelector.Select(
+      var plantOrGrass = await MapSelector.SelectUI(
         GameModel.main.currentFloor.entities.Where(a => a.isVisible && (a is Plant || a is Grass))
       );
       player.SetTasks(
@@ -128,6 +126,64 @@ public class ItemController : MonoBehaviour {
               pail.Water(g);
             }
           }
+        })
+      );
+    } catch (PlayerSelectCanceledException) {
+      // if player cancels selection, go back to before
+      OpenInventory();
+      popup.SetActive(true);
+    }
+  }
+
+  public async void CharmWithUI(ItemCharmBerry charmBerry, Player player, GameObject popup) {
+    CloseInventory();
+    popup.SetActive(false);
+    try {
+      var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor).Cast<AIActor>());
+      player.SetTasks(
+        new ChaseTargetTask(player, enemy),
+        new GenericTask(player, (_) => {
+          charmBerry.Charm(enemy);
+        })
+      );
+    } catch (PlayerSelectCanceledException) {
+      // if player cancels selection, go back to before
+      OpenInventory();
+      popup.SetActive(true);
+    }
+  }
+
+  public async void ThrowBoombugCorpseWithUI(ItemBoombugCorpse corpse, Player player, GameObject popup) {
+    CloseInventory();
+    popup.SetActive(false);
+    var floor = player.floor;
+    try {
+      var tile = await MapSelector.SelectUI(
+        floor
+          .EnumerateCircle(player.pos, player.visibilityRange)
+          .Select(p => floor.tiles[p])
+          .Where((p) => p.CanBeOccupied() && p.isVisible)
+      );
+      player.SetTasks(
+        new GenericTask(player, (_) => {
+          corpse.Throw(player, tile.pos);
+        })
+      );
+    } catch (PlayerSelectCanceledException) {
+      // if player cancels selection, go back to before
+      OpenInventory();
+      popup.SetActive(true);
+    }
+  }
+  public async void ThrowSnailShellWithUI(ItemSnailShell shell, Player player, GameObject popup) {
+    CloseInventory();
+    popup.SetActive(false);
+    var floor = player.floor;
+    try {
+      var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy));
+      player.SetTasks(
+        new GenericTask(player, (_) => {
+          shell.Throw(player, enemy);
         })
       );
     } catch (PlayerSelectCanceledException) {

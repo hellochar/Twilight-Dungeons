@@ -5,13 +5,26 @@ using UnityEngine;
 public delegate void Encounter(Floor floor, Room room);
 
 public static class Encounters {
+  private static int RandomRangeBasedOnFloor(Floor floor, params (int, int)[] values) {
+    if (floor.depth == 0) { // When I debug encounters by adding them to floor 0
+      return 3;
+    }
+    var (min, max) = Util.ClampPick(floor.depth - 1, values);
+    return Random.Range(min, max + 1);
+  }
+
   // no op
   public static Encounter Empty = new Encounter((Floor, Room) => { });
 
   public static Encounter AFewBlobs = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var numBlobs = Random.Range(2, 4);
+    var numBlobs = RandomRangeBasedOnFloor(floor,
+      (1, 1),
+      (1, 2),
+      (1, 3),
+      (2, 3)
+    );
     foreach (var tile in tiles.Take(numBlobs)) {
       floor.Put(new Blob(tile.pos));
     }
@@ -20,38 +33,46 @@ public static class Encounters {
   public static Encounter AFewSnails = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    // sort by farthest distance to center
-    foreach (var tile in tiles.Take(Random.Range(2, 4))) {
+    var num = RandomRangeBasedOnFloor(floor,
+      (2, 2),
+      (2, 3),
+      (2, 4),
+      (3, 5)
+    );
+    foreach (var tile in tiles.Take(num)) {
       floor.Put(new Snail(tile.pos));
     }
   });
 
   public static Encounter JackalPile = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
-    // TODO replace with bfs floodfill with random direction
-    // emptyTilesInRoom.Sort((x, y) => Random.value < 0.5 ? -1 : 1);
-    tiles.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
-    var numJackals = Random.Range(2, 5);
-    foreach (var tile in tiles.Take(numJackals)) {
+    tiles.OrderBy(x => Vector2.Distance(x.pos, room.centerFloat));
+    var num = RandomRangeBasedOnFloor(floor,
+      (1, 2),
+      (2, 2),
+      (2, 3),
+      (2, 4)
+    );
+    foreach (var tile in tiles.Take(num)) {
       floor.Put(new Jackal(tile.pos));
     }
   });
 
   public static Encounter BatInCorner = new Encounter((floor, room) => {
-    var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where(tile => tile.CanBeOccupied());
-    // sort by farthest distance to center
+    var tiles = FloorUtils.TilesSortedAwayFromFloorCenter(floor, room).Where(tile => tile.CanBeOccupied());
+    // sort by farthest distance to center of map
     foreach (var tile in tiles.Take(1)) {
       floor.Put(new Bat(tile.pos));
     }
   });
 
-  public static Encounter MatureWildwood = new Encounter((floor, room) => {
+  public static Encounter MatureBerryBush = new Encounter((floor, room) => {
     // add a soil at the center
     Tile tile = FloorUtils.EmptyTileNearestCenter(floor, room);
 
     if (tile != null && !(tile is Downstairs || tile is Upstairs)) {
       floor.Put(new Soil(tile.pos));
-      var bush = new Wildwood(tile.pos);
+      var bush = new BerryBush(tile.pos);
       // jump to Mature
       bush.stage = bush.stage.NextStage.NextStage;
       floor.Put(bush);
@@ -63,10 +84,17 @@ public static class Encounters {
     floor.Put(new Soil(tile.pos));
   });
 
-  public static Encounter CoverWithSoftGrass = new Encounter((floor, room) => {
-    foreach (var tile in floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null)) {
-      var grass = new SoftGrass(tile.pos);
-      floor.Put(grass);
+  public static Encounter AddSoftGrass = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var start = Util.RandomPick(occupiableTiles);
+      var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
+      var numSoftGrass = Random.Range(numTiles / 4, numTiles + 1);
+      foreach (var tile in bfs.Take(numSoftGrass)) {
+        var grass = new SoftGrass(tile.pos);
+        floor.Put(grass);
+      }
     }
   });
 
@@ -84,11 +112,11 @@ public static class Encounters {
   public static Encounter AddMushroom = new Encounter((floor, room) => {
     IEnumerable<Tile> tiles = floor.EnumerateRoomTiles(room).ToList();
     var tilesWhereMushroomsCanLive = tiles.Where((tile) => Mushroom.CanLiveIn(tile)).ToList();
-    if (tilesWhereMushroomsCanLive.Any()) {
-      var chosenTile = Util.RandomPick(tilesWhereMushroomsCanLive);
-      floor.Put(new Mushroom(chosenTile.pos));
-    } else {
+    if (tilesWhereMushroomsCanLive.Count == 0) {
       Debug.LogError("Couldn't find a location for mushrooms!");
+    }
+    foreach (var tile in tilesWhereMushroomsCanLive) {
+      floor.Put(new Mushroom(tile.pos));
     }
   });
 
@@ -161,8 +189,8 @@ public static class Encounters {
   });
 
   public static Encounter AddWater = new Encounter((floor, room) => {
-    var numWaters = Random.Range(6, 12);
-    var startPos = Util.RandomPick(floor.EnumerateRoom(room));
+    var numWaters = Random.Range(6, 11);
+    var startPos = room.center;
     foreach (var tile in floor.BreadthFirstSearch(startPos, (tile) => tile is Ground).Take(numWaters)) {
       floor.Put(new Water(tile.pos));
     }
@@ -173,20 +201,21 @@ public static class Encounters {
     { 1, AFewBlobs },
     { 1, JackalPile },
     { 1, AFewSnails },
-    { 1f, BatInCorner }
+    { 0.5f, BatInCorner }
   };
 
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
-    { 6f, Empty },
-    { 1f, CoverWithSoftGrass },
+    { 3f, Empty },
+    { 1f, AddSoftGrass },
     { 0.9f, AddHangingVines },
-    { 1f, ScatteredBoombugs },
+    { 0.5f, ScatteredBoombugs },
     { 0.2f, AddDeathbloom },
   };
 
   public static WeightedRandomBag<Encounter> CavesDeadEnds = new WeightedRandomBag<Encounter> {
     /// just to make it interesting, always give dead ends *something*
-    { 2f, Empty },
+    { 5f, Empty },
+    { 1f, AddWater },
     { 0.2f, FreeSoil },
     { 1f, OneAstoria },
     { 0.2f, AddDeathbloom },
@@ -197,12 +226,12 @@ public static class Encounters {
 
   public static WeightedRandomBag<Encounter> CavesRewards = new WeightedRandomBag<Encounter> {
     { 1f, AddMushroom },
-    { 1f, FreeSoil },
+    // { 1f, FreeSoil },
     { 1f, OneAstoria },
     { 1f, AddWater },
     { 0.5f, OneSpider },
     { 0.5f, OneLocust },
     { 0.5f, ThreePlumpAstoriasInCorner },
-    { 0.1f, MatureWildwood }
+    { 0.1f, MatureBerryBush }
   };
 }

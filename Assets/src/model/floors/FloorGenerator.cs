@@ -3,8 +3,8 @@ using System.Linq;
 using UnityEngine;
 
 public static class FloorGenerator {
-  public static Floor generateFloor0() {
-    Floor floor = new Floor(22, 14);
+  public static Floor generateRestFloor(int depth) {
+    Floor floor = new Floor(depth, 22, 14);
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
@@ -60,9 +60,12 @@ public static class FloorGenerator {
     floor.Put(wildWood);
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
-    Encounters.AddWater(floor, room0);
+    // Encounters.ScatteredBoombugs(floor, room0);
+    // Encounters.AddWater(floor, room0);
+    // Encounters.BatInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
-    // Encounters.OneSnail(floor, room0);
+    // Encounters.AFewSnails(floor, room0);
+    Encounters.AFewBlobs(floor, room0);
 
     return floor;
   }
@@ -72,10 +75,10 @@ public static class FloorGenerator {
     return path.Any();
   }
 
-  public static Floor generateRandomFloor() {
+  public static Floor generateRandomFloor(int depth) {
     Floor floor;
     do {
-      floor = tryGenerateRandomFloor();
+      floor = tryGenerateRandomFloor(depth);
     } while (!AreStairsConnected(floor));
 
     // floor.ComputeConnectivity();
@@ -93,27 +96,32 @@ public static class FloorGenerator {
     var rewardEncounter = Encounters.CavesRewards.GetRandom();
     rewardEncounter(floor, rewardRoom);
 
-    // var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
-    // foreach (var room in deadEndRooms) {
-    //   if (Random.value < 0.5f) {
-    //     Encounters.SurroundWithRubble(floor, room);
-    //   }
-    //   var encounter = Encounters.CavesDeadEnds.GetRandom();
-    //   encounter(floor, room);
-    // }
+    var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
+    foreach (var room in deadEndRooms) {
+      if (Random.value < 0.2f) {
+        Encounters.SurroundWithRubble(floor, room);
+      }
+      var encounter = Encounters.CavesDeadEnds.GetRandom();
+      encounter(floor, room);
+    }
 
+    // Add mobs; each time a mob encounter is added, the chance it happens again
+    // is discounted by this much.
+    var discount = 0.25f;
+    var mobs = Encounters.CavesMobs.Clone();
     foreach (var room in floor.rooms) {
       if (room != floor.upstairsRoom && room != rewardRoom) {
         // spawn a random encounter
-        var encounter = Encounters.CavesMobs.GetRandom();
+        var encounter = mobs.GetRandomAndDiscount(discount);
         encounter(floor, room);
       }
     }
 
+    var grasses = Encounters.CavesGrasses.Clone();
     floor.root.Traverse((room) => {
       // this includes abstract rooms!
-      if (!room.isRoot) {
-        var encounter = Encounters.CavesGrasses.GetRandom();
+      if (room.depth >= 2) {
+        var encounter = grasses.GetRandomAndDiscount(discount);
         encounter(floor, room);
       }
     });
@@ -122,8 +130,8 @@ public static class FloorGenerator {
   }
 
   /// connectivity is not guaranteed
-  private static Floor tryGenerateRandomFloor() {
-    Floor floor = new Floor(60, 20);
+  private static Floor tryGenerateRandomFloor(int depth) {
+    Floor floor = new Floor(depth, 60, 20);
 
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -252,42 +260,4 @@ public static class FloorGenerator {
     1 - Mathf.Sqrt(0.5f)
   // 0.33f
   );
-
-  public static Floor EncounterTester() {
-    var floor = new Floor(60, 20);
-    foreach (var p in floor.EnumerateFloor()) {
-      floor.Put(new Wall(p));
-    }
-
-    List<Room> rooms = new List<Room>();
-    var encounters = Encounters.CavesMobs.Select((tuple) => tuple.Value).ToList();
-
-    var encounterIndex = 0;
-    var roomSize = 6;
-    for (int x = 1; x < floor.width; x += roomSize + 1) {
-      for (int y = 1 ; y < floor.height; y += roomSize + 1) {
-        var room = new Room(new Vector2Int(x, y), new Vector2Int(x + roomSize - 1, y + roomSize - 1));
-        rooms.Add(room);
-        foreach (var pos in floor.EnumerateRoom(room)) {
-          floor.Put(new Ground(pos));
-        }
-        
-        if (encounterIndex < encounters.Count) {
-          var encounter = encounters[encounterIndex];
-          encounter(floor, room);
-          encounterIndex++;
-        }
-      }
-    }
-
-    floor.PlaceUpstairs(new Vector2Int(2, 2));
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
-
-    // make them all visible
-    foreach (var pos in floor.EnumerateFloor()) {
-      floor.tiles[pos].visibility = TileVisiblity.Visible;
-    }
-
-    return floor;
-  }
 }

@@ -25,10 +25,10 @@ class PrefabCache {
     return cache[name];
   }
 
-  public GameObject Instantiate(string name, Transform parent) {
+  public GameObject Instantiate(string name, Transform parent = null) {
     GameObject prefab = GetPrefabFor(name);
     if (prefab != null) {
-      return UnityEngine.Object.Instantiate(prefab, parent.position, Quaternion.identity, parent);
+      return UnityEngine.Object.Instantiate(prefab, parent?.position ?? new Vector3(), Quaternion.identity, parent);
     }
     return null;
   }
@@ -44,7 +44,15 @@ class PrefabCacheTyped<T> : PrefabCache {
 
   public GameObject MaybeInstantiateFor(T obj, Transform transform) {
     if (obj != null) {
-      return Instantiate(obj.GetType().Name, transform);
+      var type = obj.GetType();
+      while (type != typeof(object)) {
+        var go = Instantiate(type.Name, transform);
+        if (go != null) {
+          return go;
+        }
+        type = type.BaseType;
+      }
+      return null;
     } else {
       return null;
     }

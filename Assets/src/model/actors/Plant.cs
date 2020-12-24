@@ -51,16 +51,14 @@ public abstract class Plant : Actor {
     }
     water--;
     var stageBefore = stage;
-    var timeDelta = stage.Step();
-    if (stage != stageBefore) {
-      return stage.StepTime;
-    }
-    return timeDelta;
+    stage.Step();
+    return stage.StepTime;
   }
 
   public void GoNextStage() {
     if (stage.NextStage != null) {
       stage = stage.NextStage;
+      timeNextAction = age + stage.StepTime;
     }
   }
 

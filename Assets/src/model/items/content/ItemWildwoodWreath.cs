@@ -10,7 +10,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IActionPerformedHand
   public int durability { get; set; }
   public int maxDurability => 8;
 
-  internal override string GetStats() => "Whenever you move, deal 1 damage to an adjacent enemy.";
+  internal override string GetStats() => "Whenever you move, deal 1 damage to all adjacent enemies.";
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
@@ -21,8 +21,9 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IActionPerformedHand
         .Where((a) => a.faction == Faction.Enemy);
 
       if (adjacentEnemies.Any()) {
-        var target = Util.RandomPick(adjacentEnemies);
-        target.TakeDamage(1, final.actor);
+        foreach (var enemy in adjacentEnemies) {
+          enemy.TakeDamage(1, final.actor);
+        }
         this.ReduceDurability();
       }
     }

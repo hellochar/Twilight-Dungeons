@@ -21,8 +21,6 @@ public class Player : Actor {
     inventory = new Inventory(12);
     inventory.AddItem(new ItemBarkShield());
     inventory.AddItem(new ItemWaterPail());
-    inventory.AddItem(new ItemCharmBerry(3));
-    inventory.AddItem(new ItemPumpkin());
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
@@ -31,8 +29,31 @@ public class Player : Actor {
     OnLeaveFloor += HandleLeaveFloor;
     OnPostStep += HandlePostStep;
     OnAttack += HandleAttack;
+    OnMove += HandleMove;
+    OnMoveFailed += HandleMoveFailed;
+    OnTakeDamage += HandleTakeDamage;
     OnActionPerformed += HandleActionPerformed;
     statuses.OnAdded += HandleStatusAdded;
+  }
+
+  private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
+  private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
+    // if there's a newly visible enemy from last turn, cancel the current move task
+    var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => !lastVisibleEnemies.Contains(enemy));
+    if (isNewlyVisibleEnemy && task is FollowPathTask) {
+      ClearTasks();
+    }
+  }
+
+  private void HandleTakeDamage(int arg1, int arg2, Actor arg3) {
+    if (task is FollowPathTask) {
+      ClearTasks();
+    }
+  }
+
+  private void HandleMoveFailed(Vector2Int arg1, Vector2Int arg2) {
+    ClearTasks();
   }
 
   private void HandleActionPerformed(BaseAction final, BaseAction initial) {

@@ -15,7 +15,6 @@ public class Jackal : AIActor {
     hp = baseMaxHp = 2;
     ai = AIs.JackalAI(this).GetEnumerator();
     OnDeath += HandleDeath;
-    inventory.AddItem(new ItemJackalFur(1));
   }
 
   private void HandleDeath() {
@@ -27,39 +26,4 @@ public class Jackal : AIActor {
   internal override int BaseAttackDamage() {
     return UnityEngine.Random.Range(1, 3);
   }
-}
-
-[ObjectInfo(spriteName: "jackal-fur", flavorText: "Patches of matted fur strewn together.")]
-internal class ItemJackalFur : EquippableItem, IStackable, IMaxHPModifier {
-  public override EquipmentSlot slot => EquipmentSlot.Body;
-
-  public ItemJackalFur(int stacks) {
-    this.stacks = stacks;
-  }
-
-  public int stacksMax => 10;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-
-  public int Modify(int input) {
-    if (stacks == stacksMax) {
-      return input + 4;
-    } else {
-      return input;
-    }
-  }
-
-  internal override string GetStats() => "At 10 stacks, you get +4 max HP.";
 }

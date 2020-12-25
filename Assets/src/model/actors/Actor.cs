@@ -32,6 +32,8 @@ public class Actor : SteppableEntity {
           OnMove?.Invoke(value, oldTile.pos);
           Tile newTile = floor.tiles[_pos];
           newTile.ActorEntered(this);
+        } else {
+          OnMoveFailed?.Invoke(value, _pos);
         }
       }
     }
@@ -81,7 +83,10 @@ public class Actor : SteppableEntity {
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
+  /// <summary>new position, old position</summary>
   public event Action<Vector2Int, Vector2Int> OnMove;
+  /// <summary>failed position, old position</summary>
+  public event Action<Vector2Int, Vector2Int> OnMoveFailed;
   public event Action<int, Actor> OnDealDamage;
   public event Action<int, int, Actor> OnTakeDamage;
   public event Action<int, int> OnHeal;
@@ -193,15 +198,6 @@ public class Actor : SteppableEntity {
   public void InsertTasks(params ActorTask[] tasks) {
     taskQueue.InsertRange(0, tasks);
     TaskChanged();
-  }
-
-  /// <summary>Immediately cancel the current task.</summary>
-  public void CancelTask(ActorTask task) {
-    if (this.task == task) {
-      GoToNextTask();
-    } else {
-      Debug.LogError("Cannot cancel " + task + " because it's not currently in progress!");
-    }
   }
 
   /// Call when this.task is changed

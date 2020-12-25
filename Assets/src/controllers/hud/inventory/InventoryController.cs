@@ -11,8 +11,10 @@ public class InventoryController : MonoBehaviour {
   }
 
   private void HandleItemAdded(Item item, Entity source) {
-    var sprite = ObjectInfo.GetSpriteFor(item);
-    /// Create the animation of the item coming in/out of the backpack slot
-    SpriteFlyAnimation.Create(sprite, Util.withZ(source.pos), "Inventory Toggle");
+    if (source != null) {
+      var sprite = ObjectInfo.GetSpriteFor(item);
+      /// Create the animation of the item coming in/out of the backpack slot
+      SpriteFlyAnimation.Create(sprite, Util.withZ(source.pos), "Inventory Toggle");
+    }
   }
 }

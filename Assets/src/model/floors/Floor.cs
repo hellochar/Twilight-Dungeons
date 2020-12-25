@@ -54,6 +54,8 @@ public class Floor {
     }
   }
 
+  private PathfindingManager pathfindingManager;
+
   public readonly int width;
 
   public readonly int height;
@@ -392,4 +394,36 @@ public class Floor {
     Put(new Wall(pos + new Vector2Int(1, 1)));
   }
 
+}
+
+class PathfindingManager {
+  private bool needsRecompute;
+  PathfindingManager(Floor floor) {
+    floor.OnEntityAdded += HandleEntityAdded;
+    floor.OnEntityRemoved += HandleEntityRemoved;
+    needsRecompute = true;
+  }
+
+  void HandleEntityAdded(Entity entity) {
+    if (entity is Tile t) {
+      needsRecompute = true;
+    }
+  }
+
+  void HandleEntityRemoved(Entity entity) {
+    if (entity is Tile tile) {
+      needsRecompute = true;
+    }
+  }
+
+  // /// find path around tiles
+  // List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target) {
+  //   if (needsRecompute) {
+  //     RecomputePathFindGrid();
+  //   }
+  // }
+
+  private void RecomputePathFindGrid() {
+    needsRecompute = false;
+  }
 }

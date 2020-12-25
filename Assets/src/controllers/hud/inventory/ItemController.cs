@@ -180,7 +180,7 @@ public class ItemController : MonoBehaviour {
     popup.SetActive(false);
     var floor = player.floor;
     try {
-      var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy));
+      var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Concat(player.ActorsInSight(Faction.Neutral)));
       player.SetTasks(
         new GenericTask(player, (_) => {
           shell.Throw(player, enemy);

@@ -16,7 +16,9 @@ public class Snail : AIActor {
     ai = AI().GetEnumerator();
     OnAttack += HandleAttack;
     OnTakeDamage += HandleTakeDamage;
-    inventory.AddItem(new ItemSnailShell(1));
+    if (UnityEngine.Random.value < 0.2f) {
+      inventory.AddItem(new ItemSnailShell(1));
+    }
     // OnMove += HandleMove;
   }
 
@@ -77,11 +79,11 @@ public class ItemSnailShell : Item, IStackable {
   }
 
   public void Throw(Player player, Actor target) {
-    target.TakeDamage(1, player);
+    target.TakeDamage(3, player);
     stacks--;
   }
 
-  internal override string GetStats() => "Deals 1 damage when thrown.";
+  internal override string GetStats() => "Deals 3 damage when thrown.";
 }
 
 // internal class GrassSlimeTrail : Grass {

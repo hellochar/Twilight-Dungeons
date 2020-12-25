@@ -65,7 +65,7 @@ public static class FloorGenerator {
     // Encounters.BatInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AFewSnails(floor, room0);
-    Encounters.AFewBlobs(floor, room0);
+    // Encounters.AFewBlobs(floor, room0);
 
     return floor;
   }

@@ -32,7 +32,7 @@ public class Deathbloom : Grass {
   private void HandleActorEnter(Actor actor) {
     if (isBloomed) {
       if (actor is Player p) {
-        p.inventory.AddItem(new ItemDeathbloomFlower(), this);
+        p.inventory.AddItem(new ItemDeathbloomFlower(1), this);
       }
       var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
       noGrassTiles.Shuffle();
@@ -45,10 +45,29 @@ public class Deathbloom : Grass {
   }
 }
 
-internal class ItemDeathbloomFlower : Item, IEdible {
+internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
+  public ItemDeathbloomFlower(int stacks) {
+    this.stacks = stacks;
+  }
+  public int stacksMax => 5;
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
 
   public void Eat(Actor a) {
-    a.statuses.Add(new FrenziedStatus(7));
+    a.statuses.Add(new FrenziedStatus(10));
+    stacks--;
   }
 }
 

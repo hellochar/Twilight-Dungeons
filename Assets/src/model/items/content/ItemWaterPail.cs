@@ -7,7 +7,7 @@ public class ItemWaterPail : Item, IStackable {
   public ItemWaterPail() {
     stacks = 0;
   }
-  public int stacksMax => 25;
+  public int stacksMax => 100;
   private int _stacks;
   public int stacks {
     get => _stacks;

@@ -130,7 +130,7 @@ public static class Encounters {
 
   public static Encounter SurroundWithRubble = new Encounter((floor, room) => {
     var perimeter = floor.EnumerateRoomTiles(room, 1).Except(floor.EnumerateRoomTiles(room, 0));
-    var entrancesAndExits = perimeter.Where(tile => tile.BasePathfindingWeight() != 0);
+    var entrancesAndExits = perimeter.Where(tile => tile.CanBeOccupied());
     foreach (var tile in entrancesAndExits) {
       floor.Put(new Rubble(tile.pos));
     }
@@ -143,7 +143,7 @@ public static class Encounters {
     }
   });
 
-  public static Encounter OneAstoria = new Encounter((floor, room) => {
+  public static Encounter OnePlumpAstoria = new Encounter((floor, room) => {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();
     foreach (var tile in positions.Take(1)) {
@@ -189,10 +189,31 @@ public static class Encounters {
   });
 
   public static Encounter AddWater = new Encounter((floor, room) => {
-    var numWaters = Random.Range(6, 11);
+    var numWaters = Random.Range(3, 7);
     var startPos = room.center;
     foreach (var tile in floor.BreadthFirstSearch(startPos, (tile) => tile is Ground).Take(numWaters)) {
       floor.Put(new Water(tile.pos));
+    }
+  });
+
+  public static Encounter AddJackalHide = new Encounter((floor, room) => {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new ItemOnGround(tile.pos, new ItemJackalHide()));
+    }
+  });
+
+  public static Encounter AddGloopShoes = new Encounter((floor, room) => {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new ItemOnGround(tile.pos, new ItemGloopShoes()));
+    }
+  });
+
+  public static Encounter AddPumpkin = new Encounter((floor, room) => {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new ItemOnGround(tile.pos, new ItemPumpkin()));
     }
   });
 
@@ -215,20 +236,21 @@ public static class Encounters {
   public static WeightedRandomBag<Encounter> CavesDeadEnds = new WeightedRandomBag<Encounter> {
     /// just to make it interesting, always give dead ends *something*
     { 5f, Empty },
-    { 1f, AddWater },
+    { 0.5f, AddWater },
     { 0.2f, FreeSoil },
-    { 1f, OneAstoria },
     { 0.2f, AddDeathbloom },
     { 0.5f, AFewBlobs },
     { 0.5f, JackalPile },
-    { 0.5f, AFewSnails }
+    { 0.5f, AFewSnails },
+    { 0.1f, OneSpider },
   };
 
   public static WeightedRandomBag<Encounter> CavesRewards = new WeightedRandomBag<Encounter> {
     { 1f, AddMushroom },
-    // { 1f, FreeSoil },
-    { 1f, OneAstoria },
-    { 1f, AddWater },
+    { 1f, AddPumpkin },
+    { 1f, OnePlumpAstoria },
+    { 0.5f, AddJackalHide },
+    { 0.5f, AddGloopShoes },
     { 0.5f, OneSpider },
     { 0.5f, OneLocust },
     { 0.5f, ThreePlumpAstoriasInCorner },

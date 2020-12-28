@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Priority_Queue;
@@ -52,7 +53,28 @@ public class TurnManager {
     });
   }
 
-  internal IEnumerator<object> StepUntilPlayersChoice() {
+  internal IEnumerator StepUntilPlayersChoice() {
+    var enumerator = StepUntilPlayersChoiceImpl();
+    while (true) {
+      var hasNext = false;
+      try {
+        hasNext = enumerator.MoveNext();
+      } catch (Exception e) {
+        Debug.LogError(e);
+        Messages.Create(e.Message);
+      }
+
+      if (hasNext) {
+        yield return enumerator.Current;
+      } else {
+        break;
+      }
+    }
+
+    OnPlayersChoice?.Invoke();
+  }
+
+  private IEnumerator StepUntilPlayersChoiceImpl() {
     // skip one frame so whatever's currently running can finish (in response to player.action = xxx)
     yield return null;
 
@@ -78,7 +100,8 @@ public class TurnManager {
         if (!isFirstIteration) {
           // speed through long-waiting
           var shouldSpeedThroughWait = (entity == model.player && model.player.task is WaitTask wait && wait.Turns > 3);
-          if (!shouldSpeedThroughWait) {
+          var shouldSpeedThroughLongWalk = (entity == model.player && model.player.task is FollowPathTask path && path.path.Count > 10);
+          if (!shouldSpeedThroughWait && !shouldSpeedThroughLongWalk) {
             yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
           }
         }
@@ -115,8 +138,8 @@ public class TurnManager {
         }
       } catch (CannotPerformActionException e) {
         if (entity == model.player) {
-          // TODO let the player know
           Debug.LogWarning(e.Message);
+          Messages.Create(e.Message);
           break;
         } else {
           // TODO make this better
@@ -138,7 +161,5 @@ public class TurnManager {
       model.DrainEventQueue();
       isFirstIteration = false;
     } while (true);
-
-    OnPlayersChoice?.Invoke();
   }
 }

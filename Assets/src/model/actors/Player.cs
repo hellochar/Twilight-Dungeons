@@ -38,12 +38,15 @@ public class Player : Actor {
 
   private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
   private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
-    // if there's a newly visible enemy from last turn, cancel the current move task
-    var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => !lastVisibleEnemies.Contains(enemy));
-    if (isNewlyVisibleEnemy && task is FollowPathTask) {
-      ClearTasks();
-    }
+    GameModel.main.EnqueueEvent(() => {
+      var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
+      // if there's a newly visible enemy from last turn, cancel the current move task
+      var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => !lastVisibleEnemies.Contains(enemy));
+      if (isNewlyVisibleEnemy && task is FollowPathTask) {
+        ClearTasks();
+      }
+      lastVisibleEnemies = visibleEnemies;
+    });
   }
 
   private void HandleTakeDamage(int arg1, int arg2, Actor arg3) {

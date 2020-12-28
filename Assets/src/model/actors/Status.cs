@@ -42,7 +42,7 @@ public abstract class Status : IStepModifier {
 
   /// <summary>Schedule this status for removal.</summary>
   public void Remove() {
-    GameModel.main.EnqueueEvent(() => list.Remove(this));
+    GameModel.main.EnqueueEvent(() => list?.Remove(this));
   }
 }
 

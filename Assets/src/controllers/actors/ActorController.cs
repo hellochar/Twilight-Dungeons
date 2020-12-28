@@ -7,6 +7,7 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
   public Actor actor;
   protected GameObject spriteObject;
   protected Animator animator;
+  // private GameObject timeNextActionText;
 
   // Start is called before the first frame update
   public virtual void Start() {
@@ -37,6 +38,9 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
       HandleStatusAdded(s);
     }
 
+    // timeNextActionText = PrefabCache.UI.Instantiate("WorldText", transform);
+    // timeNextActionText.GetComponent<TMPro.TMP_Text>().text = actor.timeNextAction.ToString();
+
     Update();
   }
 
@@ -53,6 +57,8 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     if (animator != null) {
       animator.speed = 1f / actor.baseActionCost;
     }
+
+    // timeNextActionText.GetComponent<TMPro.TMP_Text>().text = actor.timeNextAction.ToString();
   }
 
   protected virtual void HandleStatusAdded(Status status) {

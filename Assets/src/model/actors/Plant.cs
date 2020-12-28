@@ -9,7 +9,7 @@ public abstract class Plant : Actor {
     set {
       m_water = Mathf.Clamp(value, 0, maxWater);
       if (water > 0) {
-        timeNextAction = GameModel.main.time + stage.StepTime;
+        timeNextAction = Mathf.Min(timeNextAction, GameModel.main.time + stage.StepTime);
       }
     }
   }
@@ -21,6 +21,7 @@ public abstract class Plant : Actor {
     set {
       _stage = value;
       _stage.BindTo(this);
+      timeNextAction = GameModel.main.time + _stage.StepTime;
     }
   }
   /// put earlier than the player so they can act early
@@ -58,7 +59,6 @@ public abstract class Plant : Actor {
   public void GoNextStage() {
     if (stage.NextStage != null) {
       stage = stage.NextStage;
-      timeNextAction = age + stage.StepTime;
     }
   }
 

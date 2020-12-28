@@ -1,9 +1,24 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PlayerController : ActorController {
   Player player => (Player) actor;
+  private int deepestDepthVisited = 0;
+
+  public override void Start() {
+    base.Start();
+    player.OnEnterFloor += HandleEnterFloor;
+  }
+
+  private void HandleEnterFloor() {
+    var depth = player.floor.depth;
+    if (depth > deepestDepthVisited) {
+      deepestDepthVisited = depth;
+      Messages.Create("Depth " + depth);
+    }
+  }
 
   public override void Update() {
     if (Input.GetKeyDown(KeyCode.V)) {
@@ -14,9 +29,15 @@ public class PlayerController : ActorController {
 
   public void GoHome() {
     // e.g. floorIndex 2 = depth 3; so we should traverse 3, then 2
-    var floorsToTraverse = GameModel.main.floors.Skip(1).Take(GameModel.main.activeFloorIndex).Reverse();
-    var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.upstairs.pos)).ToArray();
-    player.SetTasks(tasks);
+    if (GameModel.main.activeFloorIndex == 0) {
+      var floorsToTraverse = GameModel.main.floors.Take(deepestDepthVisited);
+      var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.downstairs.pos)).ToArray();
+      player.SetTasks(tasks);
+    } else {
+      var floorsToTraverse = GameModel.main.floors.Skip(1).Take(GameModel.main.activeFloorIndex).Reverse();
+      var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.upstairs.pos)).ToArray();
+      player.SetTasks(tasks);
+    }
   }
 
   protected override void HandleActionPerformed(BaseAction action, BaseAction initial) {
@@ -28,7 +49,11 @@ public class PlayerController : ActorController {
   }
 
   public override void PointerClick(PointerEventData pointerEventData) {
-    // on clicking self, wait for 1 turn
-    player.task = new WaitTask(player, 1);
+    if (player.task != null) {
+      player.ClearTasks();
+    } else {
+      // on clicking self, wait for 1 turn
+      player.task = new WaitTask(player, 1);
+    }
   }
 }

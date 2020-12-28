@@ -28,7 +28,7 @@ class PrefabCache {
   public GameObject Instantiate(string name, Transform parent = null) {
     GameObject prefab = GetPrefabFor(name);
     if (prefab != null) {
-      return UnityEngine.Object.Instantiate(prefab, parent?.position ?? new Vector3(), Quaternion.identity, parent);
+      return UnityEngine.Object.Instantiate(prefab, parent?.position ?? prefab.transform.position, Quaternion.identity, parent);
     }
     return null;
   }

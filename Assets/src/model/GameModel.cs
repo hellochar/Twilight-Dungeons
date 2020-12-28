@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Priority_Queue;
 using UnityEngine.Events;
+using System.Collections;
 
 public class GameModel {
   public Player player;
@@ -68,7 +69,7 @@ public class GameModel {
     throw new System.Exception("Reached max event queue generations!");
   }
 
-  public IEnumerator<object> StepUntilPlayerChoice() {
+  public IEnumerator StepUntilPlayerChoice() {
     return turnManager.StepUntilPlayersChoice();
   }
 

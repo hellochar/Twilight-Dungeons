@@ -98,8 +98,29 @@ public static class Encounters {
     }
   });
 
+  public static Encounter AddBrambles = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var start = Util.RandomPick(occupiableTiles);
+      var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
+      var numSoftGrass = Random.Range(numTiles / 8, numTiles / 4);
+      foreach (var tile in bfs.Take(numSoftGrass)) {
+        var grass = new Brambles(tile.pos);
+        floor.Put(grass);
+      }
+    }
+  });
+
   public static Encounter AddHangingVines = new Encounter((floor, room) => {
-    var wallsWithGroundBelow = floor.EnumerateRoomTiles(room, 1).Where((tile) => tile is Wall && tile.pos.y > 0 && floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground);
+    var wallsWithGroundBelow = floor
+      .EnumerateRoomTiles(room, 1)
+      .Where((tile) =>
+        tile.grass == null &&
+        tile is Wall &&
+        tile.pos.y > 0 &&
+        floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground
+      );
     while (wallsWithGroundBelow.Any()) {
       var skipLength = Random.Range(3, 7);
       foreach (var tile in wallsWithGroundBelow.Take(1)) {
@@ -228,6 +249,7 @@ public static class Encounters {
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     { 3f, Empty },
     { 1f, AddSoftGrass },
+    { 0.5f, AddBrambles },
     { 0.9f, AddHangingVines },
     { 0.5f, ScatteredBoombugs },
     { 0.2f, AddDeathbloom },

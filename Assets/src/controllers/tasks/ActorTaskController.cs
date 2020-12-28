@@ -16,7 +16,10 @@ public class ActorTaskController : MonoBehaviour {
 
   public virtual void Update() {
     if (actor.task != task) {
-      Destroy(this.gameObject);
+      var anim = gameObject.AddComponent<FadeThenDestroy>();
+      anim.fadeTime = 0.25f;
+      anim.shrink = 0f;
+      // Destroy(this.gameObject);
     }
   }
 }

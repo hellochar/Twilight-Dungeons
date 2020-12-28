@@ -10,6 +10,7 @@ public class GrowAtStart : MonoBehaviour {
   void Start() {
     initialScale = transform.localScale;
     transform.localScale = transform.localScale * 0.01f;
+    startTime = Time.time;
   }
 
   // Update is called once per frame

@@ -22,10 +22,17 @@ public abstract class Tile : Entity {
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
   public float GetPathfindingWeight() {
+    var weight = 0f;
     if (actor != null) {
-      return 0;
+      weight = 0;
+    } else {
+      weight = BasePathfindingWeight();
     }
-    return BasePathfindingWeight();
+    if (grass is IPathfindingCostModifier mod) {
+      return mod.Modify(weight);
+    } else {
+      return weight;
+    }
   }
 
   internal void ActorLeft(Actor actor) {

@@ -5,22 +5,25 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameModelController : MonoBehaviour {
+  public static GameModelController main;
   GameModel model;
   private GameObject floorPrefab;
 
-  private Dictionary<Floor, FloorController> floorComponents = new Dictionary<Floor, FloorController>();
+  private Dictionary<Floor, FloorController> floorControllers = new Dictionary<Floor, FloorController>();
 
-  private FloorController currentFloorComponent;
+  private FloorController currentFloorController;
+  public FloorController CurrentFloorController => currentFloorController;
 
   void Awake() {
     GameModel.NewGameModel();
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
+    main = this;
   }
 
   // Start is called before the first frame update
   void Start() {
-    currentFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
+    currentFloorController = GetOrCreateFloorComponent(model.currentFloor);
     Player player = model.player;
     player.OnSetTask += HandleSetPlayerTask;
     model.turnManager.OnPlayersChoice += HandlePlayersChoice;
@@ -38,24 +41,24 @@ public class GameModelController : MonoBehaviour {
   }
 
   private FloorController GetOrCreateFloorComponent(Floor floor) {
-    if (!floorComponents.ContainsKey(floor)) {
+    if (!floorControllers.ContainsKey(floor)) {
       GameObject floorInstance = Instantiate(floorPrefab);
       FloorController floorComponent = floorInstance.GetComponent<FloorController>();
       floorComponent.floor = floor;
-      floorComponents.Add(floor, floorComponent);
+      floorControllers.Add(floor, floorComponent);
     }
-    return floorComponents[floor];
+    return floorControllers[floor];
   }
 
   // Update is called once per frame
   void Update() {
     // when the GameModel's current floor has changed, update the renderer to match
-    if (model.currentFloor != currentFloorComponent.floor) {
-      currentFloorComponent.gameObject.SetActive(false);
+    if (model.currentFloor != currentFloorController.floor) {
+      currentFloorController.gameObject.SetActive(false);
 
       FloorController newFloorComponent = GetOrCreateFloorComponent(model.currentFloor);
       newFloorComponent.gameObject.SetActive(true);
-      currentFloorComponent = newFloorComponent;
+      currentFloorController = newFloorComponent;
     }
   }
 }

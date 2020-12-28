@@ -19,7 +19,14 @@ public class Snail : AIActor {
     if (UnityEngine.Random.value < 0.2f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
+    OnActionPerformed += HandleActionPerformed;
     // OnMove += HandleMove;
+  }
+
+  private void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    if (final.Type != ActionType.WAIT) {
+      InsertTasks(new WaitTask(this, 1));
+    }
   }
 
   // private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
@@ -53,7 +60,7 @@ public class Snail : AIActor {
   }
 
   internal override int BaseAttackDamage() {
-    return 1;
+    return 2;
   }
 }
 

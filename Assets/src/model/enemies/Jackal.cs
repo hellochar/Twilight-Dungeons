@@ -18,9 +18,12 @@ public class Jackal : AIActor {
   }
 
   private void HandleDeath() {
-    foreach (var jackal in floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal)) {
-      jackal.SetTasks(new RunAwayTask(jackal, pos, 6));
-    }
+    var jackalsToAlert = floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal).ToList();
+    GameModel.main.EnqueueEvent(() => {
+      foreach (var jackal in jackalsToAlert) {
+        jackal.SetTasks(new RunAwayTask(jackal, pos, 6));
+      }
+    });
   }
 
   internal override int BaseAttackDamage() {

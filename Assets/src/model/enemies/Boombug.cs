@@ -79,7 +79,7 @@ public class BoombugCorpse : Actor {
   }
 
   internal override int BaseAttackDamage() {
-    return 2;
+    return 3;
   }
 }
 

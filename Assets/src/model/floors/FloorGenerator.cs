@@ -60,6 +60,7 @@ public static class FloorGenerator {
     floor.Put(wildWood);
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
+    // Encounters.AddBrambles(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
     // Encounters.AddWater(floor, room0);
     // Encounters.BatInCorner(floor, room0);

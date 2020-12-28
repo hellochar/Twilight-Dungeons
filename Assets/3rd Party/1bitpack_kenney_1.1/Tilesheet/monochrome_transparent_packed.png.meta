@@ -23,6 +23,18 @@ TextureImporter:
   - first:
       213: -8106958686382220732
     second: spider
+  - first:
+      213: -8106958686382220732
+    second: monochrome-up-empty
+  - first:
+      213: -6703305794410399575
+    second: monochrome-up-filled
+  - first:
+      213: 2542525495126258572
+    second: monochrome-stop-empty
+  - first:
+      213: -4531652251376512669
+    second: monochrome-stop-filled
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -241,6 +253,90 @@ TextureImporter:
       bones: []
       spriteID: ed9ee899b4e09d9c0800000000000000
       internalID: -3902071884278208034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monochrome-up-empty
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44a9b69f60c4e7f80800000000000000
+      internalID: -8106958686382220732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monochrome-up-filled
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a8b95745e219f2a0800000000000000
+      internalID: -6703305794410399575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monochrome-stop-empty
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c83ff59877dd84320800000000000000
+      internalID: 2542525495126258572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monochrome-stop-filled
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3619a1f79465c11c0800000000000000
+      internalID: -4531652251376512669
       vertices: []
       indices: 
       edges: []

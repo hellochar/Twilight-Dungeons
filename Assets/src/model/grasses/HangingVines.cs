@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HangingVines : Grass {
-  private Inventory inventory = new Inventory(new Item[] { new ItemVineWhip(1) });
+  private Inventory inventory = new Inventory(new ItemVineWhip(1));
   public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
 
   public HangingVines(Vector2Int pos) : base(pos) {
@@ -14,6 +14,9 @@ public class HangingVines : Grass {
 
   private void HandleDeath() {
     inventory.DropRandomlyOntoFloorAround(floor, tileBelow.pos);
+    if (appliedStatus != null) {
+      appliedStatus.Remove();
+    }
   }
 
   private void HandleEnterFloor() {
@@ -24,11 +27,12 @@ public class HangingVines : Grass {
     tileBelow.OnActorEnter -= HandleActorEnter;
   }
 
+  private BoundStatus appliedStatus;
   private void HandleActorEnter(Actor who) {
-    var status = new BoundStatus();
-    who.statuses.Add(status);
+    appliedStatus = new BoundStatus();
+    who.statuses.Add(appliedStatus);
     TriggerNoteworthyAction();
-    status.OnRemoved += HandleStatusRemoved;
+    appliedStatus.OnRemoved += HandleStatusRemoved;
   }
 
   private void HandleStatusRemoved() {

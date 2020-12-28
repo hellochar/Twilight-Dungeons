@@ -84,7 +84,7 @@ public class Player : Actor {
   }
 
   void HandlePostStep(float timeCost) {
-    fullness = Math.Max(fullness - timeCost / 1000f, 0);
+    // fullness = Math.Max(fullness - timeCost / 1000f, 0);
     // you are now starving
     if (fullness <= 0) {
       statuses.RemoveOfType<HungryStatus>();

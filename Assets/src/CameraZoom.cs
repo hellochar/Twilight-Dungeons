@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraZoom : MonoBehaviour {
   public float minZoom = 3;
-  public float maxZoom = 10;
+  public float maxZoom = 15;
   // Start is called before the first frame update
   void Start() {
 
@@ -28,7 +28,7 @@ public class CameraZoom : MonoBehaviour {
 
         // get offset value
         float deltaDistance = oldTouchDistance - currentTouchDistance;
-        Zoom(deltaDistance / Screen.height);
+        Zoom(-deltaDistance / Screen.height * 10f);
       }
     }
 

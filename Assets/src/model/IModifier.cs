@@ -47,3 +47,4 @@ interface IAttackDamageModifier : IModifier<int> {}
 /// <summary>Kind of a hack to get declarative step()-ing.</summary>
 interface IStepModifier : IModifier<object> {}
 interface IMaxHPModifier : IModifier<int> {}
+interface IPathfindingCostModifier : IModifier<float> {}

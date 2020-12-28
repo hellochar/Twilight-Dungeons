@@ -17,7 +17,7 @@ class SleepTask : ActorTask, IDamageTakenModifier {
   }
 
   public override IEnumerator<BaseAction> Enumerator() {
-    var chanceToWakeUpWhileVisible = 0.25;
+    var chanceToWakeUpWhileVisible = 0.5;
     bool ShouldWakeUp() => actor.isVisible && UnityEngine.Random.value < chanceToWakeUpWhileVisible;
     while (!ShouldWakeUp()) {
       if (wakeUpNextTurn) {

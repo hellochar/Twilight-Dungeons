@@ -21,6 +21,7 @@ class SleepTask : ActorTask, IDamageTakenModifier {
     bool ShouldWakeUp() => actor.isVisible && UnityEngine.Random.value < chanceToWakeUpWhileVisible;
     while (!ShouldWakeUp()) {
       if (wakeUpNextTurn) {
+        yield return new WaitBaseAction(actor);
         yield break;
       }
       yield return new WaitBaseAction(actor);

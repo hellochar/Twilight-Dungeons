@@ -4,32 +4,20 @@ using UnityEngine;
 
 public static class FloorGenerator {
   public static Floor generateRestFloor(int depth) {
-    Floor floor = new Floor(depth, 22, 14);
+    Floor floor = new Floor(depth, 14, 10);
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Ground(p));
     }
 
-    // surround floor with walls
-    for (int x = 0; x < floor.width; x++) {
-      floor.Put(new Wall(new Vector2Int(x, 0)));
-      floor.Put(new Wall(new Vector2Int(x, floor.height - 1)));
-    }
-    for (int y = 0; y < floor.height; y++) {
-      floor.Put(new Wall(new Vector2Int(0, y)));
-      floor.Put(new Wall(new Vector2Int(floor.width - 1, y)));
-    }
-
-    SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);
-    SMOOTH_WALL_EDGES.ApplyWithRotations(floor);
-    MAKE_WALL_BUMPS.ApplyWithRotations(floor);
+    FloorUtils.SurroundWithWalls(floor);
 
     floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     var soils = new List<Soil>();
-    for (int x = 4; x < floor.width - 4; x += 4) {
+    for (int x = 2; x < floor.width - 2; x += 2) {
       int y = floor.height / 2 - 2;
       if (floor.tiles[x, y] is Ground) {
         soils.Add(new Soil(new Vector2Int(x, y)));
@@ -45,19 +33,22 @@ public static class FloorGenerator {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    void AddMaturePlant<T>() where T : Plant {
+    void AddMaturePlant(System.Type t) {
       var loc = Util.RandomPick(soils);
       soils.Remove(loc);
-      var constructor = typeof(T).GetConstructor(new System.Type[1] { typeof(Vector2Int) });
+      var constructor = t.GetConstructor(new System.Type[1] { typeof(Vector2Int) });
       var plant = (Plant) constructor.Invoke(new object[1] { loc.pos });
       plant.GoNextStage();
       plant.GoNextStage();
       floor.Put(plant);
     }
 
-    AddMaturePlant<BerryBush>();
-    AddMaturePlant<Wildwood>();
-    AddMaturePlant<Thornleaf>();
+    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf) };
+    AddMaturePlant(Util.RandomPick(types));
+
+    // AddMaturePlant<BerryBush>();
+    // AddMaturePlant<Wildwood>();
+    // AddMaturePlant<Thornleaf>();
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.OneButterfly(floor, room0);
@@ -74,9 +65,66 @@ public static class FloorGenerator {
     return floor;
   }
 
+  public static Floor generateRewardFloor(int depth) {
+    Floor floor = new Floor(depth, 9, 9);
+
+    // fill with floor tiles by default
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Ground(p));
+    }
+    FloorUtils.SurroundWithWalls(floor);
+    FloorUtils.NaturalizeEdges(floor);
+
+    var room0 = new Room(floor);
+
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
+
+    Encounters.PlaceFancyGround(floor, room0);
+    Encounters.CavesRewards.GetRandom()(floor, room0);
+
+    // just do nothing on this floor
+    return floor;
+  }
+
   public static bool AreStairsConnected(Floor floor) {
     var path = floor.FindPath(floor.downstairs.pos, floor.upstairs.pos);
     return path.Any();
+  }
+
+  public static Floor generateTinyFloor(int depth, int width, int height, int numMobs = 1, bool reward = false) {
+    Floor floor = new Floor(depth, width, height);
+
+    // fill with wall
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Wall(p));
+    }
+
+    Room room0 = new Room(floor);
+    foreach (var pos in floor.EnumerateRoom(room0)) {
+      floor.Put(new Ground(pos));
+    }
+
+    FloorUtils.NaturalizeEdges(floor);
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
+
+    floor.root = room0;
+    floor.rooms = new List<Room>();
+    floor.upstairsRoom = room0;
+    floor.downstairsRoom = room0;
+
+    Encounters.CavesWalls.GetRandom()(floor, room0);
+    for (var i = 0; i < numMobs; i++) {
+      Encounters.CavesMobs.GetRandom()(floor, room0);
+    }
+    Encounters.CavesGrasses.GetRandom()(floor, room0);
+    if (reward) {
+      Encounters.CavesRewards.GetRandom()(floor, room0);
+    }
+    Encounters.CavesDeadEnds.GetRandom()(floor, room0);
+    
+    return floor;
   }
 
   public static Floor generateRandomFloor(int depth, int width = 60, int height = 20, int numSplits = 20) {
@@ -142,7 +190,7 @@ public static class FloorGenerator {
       floor.Put(new Wall(p));
     }
 
-    // randomly partition space into 20 rooms
+    // randomly partition space into  rooms
     Room root = new Room(floor);
     for (int i = 0; i < numSplits; i++) {
       bool success = root.randomlySplit();
@@ -177,10 +225,7 @@ public static class FloorGenerator {
       }
     });
 
-    // apply a natural look across the floor by smoothing both wall corners and space corners
-    SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);
-    SMOOTH_WALL_EDGES.ApplyWithRotations(floor);
-    MAKE_WALL_BUMPS.ApplyWithRotations(floor);
+    FloorUtils.NaturalizeEdges(floor);
 
     // sort by distance to top-left.
     Vector2Int topLeft = new Vector2Int(0, floor.height);
@@ -234,34 +279,4 @@ public static class FloorGenerator {
     });
     return paths;
   }
-
-  static ShapeTransform SMOOTH_WALL_EDGES = new ShapeTransform(
-    new int[3, 3] {
-      {1, 1, 1},
-      {0, 0, 1},
-      {0, 0, 1},
-    },
-    1
-  );
-
-  static ShapeTransform SMOOTH_ROOM_EDGES = new ShapeTransform(
-    new int[3, 3] {
-      {0, 0, 0},
-      {1, 1, 0},
-      {1, 1, 0},
-    },
-    0
-  );
-
-  static ShapeTransform MAKE_WALL_BUMPS = new ShapeTransform(
-    new int[3, 3] {
-      {0, 0, 0},
-      {1, 1, 1},
-      {1, 1, 1},
-    },
-    0,
-    // 50% chance to make a 2-run
-    1 - Mathf.Sqrt(0.5f)
-  // 0.33f
-  );
 }

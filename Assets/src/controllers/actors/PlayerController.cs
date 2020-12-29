@@ -28,15 +28,18 @@ public class PlayerController : ActorController {
   }
 
   public void GoHome() {
-    // e.g. floorIndex 2 = depth 3; so we should traverse 3, then 2
-    if (GameModel.main.activeFloorIndex == 0) {
-      var floorsToTraverse = GameModel.main.floors.Take(deepestDepthVisited);
-      var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.downstairs.pos)).ToArray();
-      player.SetTasks(tasks);
+    var model = GameModel.main;
+    if (model.activeFloorIndex == 0) {
+      model.PutPlayerAt(model.floors[deepestDepthVisited], false);
+      // e.g. floorIndex 2 = depth 3; so we should traverse 3, then 2
+      // var floorsToTraverse = GameModel.main.floors.Take(deepestDepthVisited);
+      // var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.downstairs.pos)).ToArray();
+      // player.SetTasks(tasks);
     } else {
-      var floorsToTraverse = GameModel.main.floors.Skip(1).Take(GameModel.main.activeFloorIndex).Reverse();
-      var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.upstairs.pos)).ToArray();
-      player.SetTasks(tasks);
+      model.PutPlayerAt(model.floors[0], true);
+      // var floorsToTraverse = GameModel.main.floors.Skip(1).Take(GameModel.main.activeFloorIndex).Reverse();
+      // var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.upstairs.pos)).ToArray();
+      // player.SetTasks(tasks);
     }
   }
 

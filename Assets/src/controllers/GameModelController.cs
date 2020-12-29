@@ -15,7 +15,7 @@ public class GameModelController : MonoBehaviour {
   public FloorController CurrentFloorController => currentFloorController;
 
   void Awake() {
-    GameModel.NewGameModel();
+    GameModel.InitMain();
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     main = this;

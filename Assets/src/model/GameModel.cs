@@ -27,17 +27,10 @@ public class GameModel {
 
   public static GameModel main;
 
-  // static GameModel() {
-  //   // UnityEngine.Random.InitState(10000);
-  //   main.generateGameModel();
-  //   var step = main.StepUntilPlayerChoice();
-  //   // execute them all immediately
-  //   do { } while (step.MoveNext());
-  // }
-
-  public static void NewGameModel() {
+  public static void InitMain() {
     main = new GameModel();
-    main.generateGameModel();
+    // main.generateGameModel();
+    main.generateTinyFloorGameModel();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately
     do { } while (step.MoveNext());
@@ -86,6 +79,33 @@ public class GameModel {
       FloorGenerator.generateRandomFloor(7),
       FloorGenerator.generateRandomFloor(8),
       FloorGenerator.generateRandomFloor(9),
+    };
+
+    Tile floor0Upstairs = floors[0].upstairs;
+    this.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
+    floors[0].Put(this.player);
+  }
+
+  public void generateTinyFloorGameModel() {
+    this.floors = new Floor[] {
+      // FloorGenerator.EncounterTester(),
+      FloorGenerator.generateRestFloor(0),
+      FloorGenerator.generateTinyFloor(1, 7, 7),
+      FloorGenerator.generateTinyFloor(2, 8, 8),
+      FloorGenerator.generateTinyFloor(3, 9, 9),
+      FloorGenerator.generateTinyFloor(4, 10, 10),
+      FloorGenerator.generateTinyFloor(5, 11, 11, 2),
+      FloorGenerator.generateTinyFloor(6, 9, 9, 2),
+      FloorGenerator.generateTinyFloor(7, 8, 8, 2),
+      FloorGenerator.generateRewardFloor(8),
+      FloorGenerator.generateTinyFloor(9, 7, 7),
+      FloorGenerator.generateTinyFloor(10, 8, 8, 2),
+      FloorGenerator.generateTinyFloor(11, 9, 9, 2),
+      FloorGenerator.generateTinyFloor(12, 10, 10, 2),
+      FloorGenerator.generateTinyFloor(13, 11, 11, 3),
+      FloorGenerator.generateTinyFloor(14, 13, 13, 3),
+      FloorGenerator.generateTinyFloor(15, 15, 15, 4),
+      FloorGenerator.generateRewardFloor(16),
     };
 
     Tile floor0Upstairs = floors[0].upstairs;

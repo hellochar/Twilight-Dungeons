@@ -345,30 +345,34 @@ public class Floor {
     }
   }
 
-  public void PlaceUpstairs(Vector2Int pos) {
-    // surround sides with wall, but ensure right tile is open
-    Put(new Wall(pos + new Vector2Int(-1, -1)));
-    Put(new Wall(pos + new Vector2Int(-1, 0)));
-    Put(new Wall(pos + new Vector2Int(-1, 1)));
-
-    Put(new Wall(pos + new Vector2Int(0, -1)));
+  public void PlaceUpstairs(Vector2Int pos, bool addWalls = true) {
     Put(new Upstairs(pos));
-    Put(new Wall(pos + new Vector2Int(0, 1)));
+    // surround sides with wall, but ensure right tile is open
+    if (addWalls) {
+      Put(new Wall(pos + new Vector2Int(-1, -1)));
+      Put(new Wall(pos + new Vector2Int(-1, 0)));
+      Put(new Wall(pos + new Vector2Int(-1, 1)));
 
-    Put(new Ground(pos + new Vector2Int(1, 0)));
+      Put(new Wall(pos + new Vector2Int(0, -1)));
+      Put(new Wall(pos + new Vector2Int(0, 1)));
+
+      Put(new Ground(pos + new Vector2Int(1, 0)));
+    }
   }
 
-  public void PlaceDownstairs(Vector2Int pos) {
-    // surround sides with wall, but ensure left tile is open
-    Put(new Ground(pos + new Vector2Int(-1, 0)));
-
-    Put(new Wall(pos + new Vector2Int(0, -1)));
+  public void PlaceDownstairs(Vector2Int pos, bool addWalls = true) {
     Put(new Downstairs(pos));
-    Put(new Wall(pos + new Vector2Int(0, 1)));
+    // surround sides with wall, but ensure left tile is open
+    if (addWalls) {
+      Put(new Ground(pos + new Vector2Int(-1, 0)));
 
-    Put(new Wall(pos + new Vector2Int(1, -1)));
-    Put(new Wall(pos + new Vector2Int(1, 0)));
-    Put(new Wall(pos + new Vector2Int(1, 1)));
+      Put(new Wall(pos + new Vector2Int(0, -1)));
+      Put(new Wall(pos + new Vector2Int(0, 1)));
+
+      Put(new Wall(pos + new Vector2Int(1, -1)));
+      Put(new Wall(pos + new Vector2Int(1, 0)));
+      Put(new Wall(pos + new Vector2Int(1, 1)));
+    }
   }
 
 }

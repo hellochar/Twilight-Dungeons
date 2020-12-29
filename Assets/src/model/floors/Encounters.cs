@@ -132,7 +132,7 @@ public static class Encounters {
         floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground
       );
     while (wallsWithGroundBelow.Any()) {
-      var skipLength = Random.Range(3, 7);
+      var skipLength = Random.Range(1, 5);
       foreach (var tile in wallsWithGroundBelow.Take(1)) {
         floor.Put(new HangingVines(tile.pos));
       }
@@ -242,14 +242,31 @@ public static class Encounters {
   });
 
   public static Encounter AddPumpkin = new Encounter((floor, room) => {
-    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    var tile = FloorUtils.EmptyTileNearestCenter(floor, room);
     if (tile != null) {
       floor.Put(new ItemOnGround(tile.pos, new ItemPumpkin()));
     }
   });
 
+  public static Encounter WallPillars = new Encounter((floor, room) => {
+    var positions = floor.EnumerateRoom(room).ToList();
+    positions.Shuffle();
+    foreach (var pos in positions) {
+      if (!floor.GetAdjacentTiles(pos).Any((t) => t is Wall)) {
+        floor.Put(new Wall(pos));
+      }
+    }
+  });
+
+  public static Encounter ChunkInMiddle = new Encounter((floor, room) => {
+    var positions = floor.BreadthFirstSearch(room.center, (tile) => true).Take(5).Select(t => t.pos);
+    foreach(var pos in positions) {
+      floor.Put(new Wall(pos));
+    }
+  });
+
   public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
-    { 2.5f, Empty },
+    // { 2.5f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
     { 1, AFewSnails },
@@ -257,8 +274,14 @@ public static class Encounters {
     { 0.35f, OneSpider }
   };
 
-  public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
+  public static WeightedRandomBag<Encounter> CavesWalls = new WeightedRandomBag<Encounter> {
     { 3f, Empty },
+    { 0.5f, WallPillars },
+    { 0.5f, ChunkInMiddle },
+  };
+
+  public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
+    // { 3f, Empty },
     { 1f, AddSoftGrass },
     { 0.75f, AddHangingVines },
     { 0.5f, AddSpore },

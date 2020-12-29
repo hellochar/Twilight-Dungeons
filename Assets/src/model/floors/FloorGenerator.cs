@@ -45,21 +45,24 @@ public static class FloorGenerator {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    var loc1 = Util.RandomPick(soils);
-    soils.Remove(loc1);
-    var berryBush = new BerryBush(loc1.pos);
-    berryBush.GoNextStage();
-    berryBush.GoNextStage();
-    floor.Put(berryBush);
+    void AddMaturePlant<T>() where T : Plant {
+      var loc = Util.RandomPick(soils);
+      soils.Remove(loc);
+      var constructor = typeof(T).GetConstructor(new System.Type[1] { typeof(Vector2Int) });
+      var plant = (Plant) constructor.Invoke(new object[1] { loc.pos });
+      plant.GoNextStage();
+      plant.GoNextStage();
+      floor.Put(plant);
+    }
 
-    var loc2 = Util.RandomPick(soils);
-    soils.Remove(loc2);
-    var wildWood = new Wildwood(loc2.pos);
-    wildWood.GoNextStage();
-    wildWood.GoNextStage();
-    floor.Put(wildWood);
+    AddMaturePlant<BerryBush>();
+    AddMaturePlant<Wildwood>();
+    AddMaturePlant<Thornleaf>();
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
+    // Encounters.OneButterfly(floor, room0);
+    // Encounters.OneSpider(floor, room0);
+    // Encounters.AddSpore(floor, room0);
     // Encounters.AddBrambles(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
     // Encounters.AddWater(floor, room0);
@@ -76,10 +79,10 @@ public static class FloorGenerator {
     return path.Any();
   }
 
-  public static Floor generateRandomFloor(int depth) {
+  public static Floor generateRandomFloor(int depth, int width = 60, int height = 20, int numSplits = 20) {
     Floor floor;
     do {
-      floor = tryGenerateRandomFloor(depth);
+      floor = tryGenerateRandomFloor(depth, width, height, numSplits);
     } while (!AreStairsConnected(floor));
 
     // floor.ComputeConnectivity();
@@ -131,8 +134,8 @@ public static class FloorGenerator {
   }
 
   /// connectivity is not guaranteed
-  private static Floor tryGenerateRandomFloor(int depth) {
-    Floor floor = new Floor(depth, 60, 20);
+  private static Floor tryGenerateRandomFloor(int depth, int width, int height, int numSplits) {
+    Floor floor = new Floor(depth, width, height);
 
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -141,7 +144,7 @@ public static class FloorGenerator {
 
     // randomly partition space into 20 rooms
     Room root = new Room(floor);
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < numSplits; i++) {
       bool success = root.randomlySplit();
       if (!success) {
         Debug.Log("couldn't split at iteration " + i);

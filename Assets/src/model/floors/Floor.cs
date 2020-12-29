@@ -70,6 +70,7 @@ public class Floor {
     this.actors = new MovingEntityList<Actor>(this);
     this.entities = new HashSet<Entity>();
     this.steppableEntities = new List<SteppableEntity>();
+    pathfindingManager = new PathfindingManager(this);
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {
@@ -164,31 +165,7 @@ public class Floor {
   /// if pretendTargetEmpty is true, override the target tile to be walkable. You can then trim off
   /// the very end.
   internal List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty = false) {
-    float[,] tilesmap = new float[width, height];
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < height; y++) {
-        Tile tile = tiles[x, y];
-        float weight = tile.GetPathfindingWeight();
-        tilesmap[x, y] = weight;
-      }
-    }
-    if (pretendTargetEmpty) {
-      tilesmap[target.x, target.y] = 1f;
-    }
-    // every float in the array represent the cost of passing the tile at that position.
-    // use 0.0f for blocking tiles.
-
-    // create a grid
-    PathFind.Grid grid = new PathFind.Grid(width, height, tilesmap);
-
-    // create source and target points
-    PathFind.Point _from = new PathFind.Point(pos.x, pos.y);
-    PathFind.Point _to = new PathFind.Point(target.x, target.y);
-
-    // get path
-    // path will either be a list of Points (x, y), or an empty list if no path is found.
-    List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
-    return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
+    return pathfindingManager.FindPath(pos, target);
   }
 
   internal void CatchUpStep(float time) {
@@ -397,33 +374,55 @@ public class Floor {
 }
 
 class PathfindingManager {
-  private bool needsRecompute;
-  PathfindingManager(Floor floor) {
+  /// if null, we need a recompute
+  private PathFind.Grid grid;
+  private Floor floor;
+  public PathfindingManager(Floor floor) {
+    this.floor = floor;
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
-    needsRecompute = true;
   }
 
   void HandleEntityAdded(Entity entity) {
     if (entity is Tile t) {
-      needsRecompute = true;
+      grid = null;
     }
   }
 
   void HandleEntityRemoved(Entity entity) {
     if (entity is Tile tile) {
-      needsRecompute = true;
+      grid = null;
     }
   }
 
-  // /// find path around tiles
-  // List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target) {
-  //   if (needsRecompute) {
-  //     RecomputePathFindGrid();
-  //   }
-  // }
+  /// find path around tiles
+  public List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target) {
+    if (grid == null) {
+      RecomputePathFindGrid();
+    }
+    // create source and target points
+    PathFind.Point _from = new PathFind.Point(pos.x, pos.y);
+    PathFind.Point _to = new PathFind.Point(target.x, target.y);
+
+    // get path
+    // path will either be a list of Points (x, y), or an empty list if no path is found.
+    List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
+    return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
+  }
 
   private void RecomputePathFindGrid() {
-    needsRecompute = false;
+    float[,] tilesmap = new float[floor.width, floor.height];
+    for (int x = 0; x < floor.width; x++) {
+      for (int y = 0; y < floor.height; y++) {
+        Tile tile = floor.tiles[x, y];
+        float weight = tile.BasePathfindingWeight();
+        tilesmap[x, y] = weight;
+      }
+    }
+    // every float in the array represent the cost of passing the tile at that position.
+    // use 0.0f for blocking tiles.
+
+    // create a grid
+    grid = new PathFind.Grid(floor.width, floor.height, tilesmap);
   }
 }

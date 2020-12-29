@@ -16,11 +16,18 @@ public class Item {
     }
   }
 
+  public void Drop(Actor a) {
+    if (inventory != null) {
+      inventory.DropRandomlyOntoFloorAround(a.floor, a.pos);
+    }
+  }
+
   internal virtual string GetStats() => "";
 
   public virtual List<ActorTask> GetAvailableTasks(Player player) {
     var zeroArgActions = new List<Action<Actor>>();
     zeroArgActions.Add(Destroy);
+    zeroArgActions.Add(Drop);
     if (this is IEdible edible) {
       zeroArgActions.Add(edible.Eat);
     }

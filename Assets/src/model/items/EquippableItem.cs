@@ -1,14 +1,27 @@
+using System;
 using System.Collections.Generic;
 
 public abstract class EquippableItem : Item {
   public abstract EquipmentSlot slot { get; }
+  public event Action<Player> OnEquipped;
+  public event Action<Player> OnUnequipped;
 
   public void Equip(Actor a) {
-    ((Player)a).equipment.AddItem(this);
+    var player = (Player) a;
+    player.equipment.AddItem(this);
   }
 
   public void Unequip(Actor a) {
-    ((Player)a).inventory.AddItem(this);
+    var player = ((Player)a);
+    player.inventory.AddItem(this);
+  }
+
+  public void TriggerEquipped(Player player) {
+    OnEquipped?.Invoke(player);
+  }
+
+  public void TriggerUnequipped(Player player) {
+    OnUnequipped?.Invoke(player);
   }
 
   public override List<ActorTask> GetAvailableTasks(Player actor) {

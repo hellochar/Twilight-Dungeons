@@ -141,11 +141,11 @@ internal class SlimedStatus : Status, IActionCostModifier, IBaseActionModifier {
   public SlimedStatus() : base() {}
 
   public ActionCosts Modify(ActionCosts input) {
-    input[ActionType.ATTACK] *= 2f;
+    input[ActionType.MOVE] *= 2f;
     return input;
   }
 
-  public override string Info() => $"You attack 2x slower!\nBroken by movement.";
+  public override string Info() => $"Your next move is 2x slower!";
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE) {

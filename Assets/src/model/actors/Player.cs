@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-
 public class Player : Actor {
   internal readonly Item Hands;
 
@@ -66,7 +65,7 @@ public class Player : Actor {
       ClearTasks();
     }
     // this is pretty much a delegate whose invocation list is declarative
-    foreach (var handler in Modifiers.Of<IActionPerformedHandler>(MyModifiers)) {
+    foreach (var handler in Modifiers.Of<IActionPerformedHandler>(this)) {
       handler.HandleActionPerformed(final, initial);
     }
   }
@@ -103,7 +102,7 @@ public class Player : Actor {
 
   void HandleAttack(int damage, Actor target) {
     var item = equipment[EquipmentSlot.Weapon];
-    if (item is IDurable durable) {
+    if (item is IDurable durable && !(target is Rubble)) {
       durable.ReduceDurability();
     }
     if (item is IAttackHandler handler) {

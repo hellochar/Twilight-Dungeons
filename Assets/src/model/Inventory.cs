@@ -9,6 +9,7 @@ public class Inventory : IEnumerable<Item> {
   public int capacity => items.Length;
   public virtual Item this[int i] => items[i];
   public event Action<Item, Entity> OnItemAdded;
+  public event Action<Item> OnItemRemoved;
 
   public Inventory(params Item[] items) {
     this.items = items;
@@ -94,6 +95,7 @@ public class Inventory : IEnumerable<Item> {
     if (slot < 0) {
       return false;
     }
+    OnItemRemoved?.Invoke(item);
     items[slot] = null;
     item.inventory = null;
     return true;

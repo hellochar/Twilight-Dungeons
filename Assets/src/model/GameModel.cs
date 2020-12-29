@@ -77,8 +77,8 @@ public class GameModel {
     this.floors = new Floor[] {
       // FloorGenerator.EncounterTester(),
       FloorGenerator.generateRestFloor(0),
-      FloorGenerator.generateRandomFloor(1),
-      FloorGenerator.generateRandomFloor(2),
+      FloorGenerator.generateRandomFloor(1, 35, 20, 11),
+      FloorGenerator.generateRandomFloor(2, 48, 20, 16),
       FloorGenerator.generateRandomFloor(3),
       FloorGenerator.generateRandomFloor(4),
       FloorGenerator.generateRestFloor(5),

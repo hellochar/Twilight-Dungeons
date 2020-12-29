@@ -10,7 +10,7 @@ public class ActionCosts : Dictionary<ActionType, float> {
   public ActionCosts Copy() => new ActionCosts(this);
 }
 
-public class Actor : SteppableEntity {
+public class Actor : SteppableEntity, IModifierProvider {
   public static ActionCosts StaticActionCosts = new ActionCosts {
     {ActionType.ATTACK, 1},
     {ActionType.GENERIC, 1},
@@ -39,36 +39,26 @@ public class Actor : SteppableEntity {
     }
   }
 
+  /// assumes other is on the same floor
+  public void SwapPositions(Actor other) {
+    var oldTile = floor.tiles[_pos];
+    Tile newTile = floor.tiles[other._pos];
+    oldTile.ActorLeft(this);
+    newTile.ActorLeft(other);
+    _pos = newTile.pos;
+    other._pos = oldTile.pos;
+    OnMove?.Invoke(_pos, oldTile.pos);
+    other.OnMove?.Invoke(oldTile.pos, _pos);
+    newTile.ActorEntered(this);
+    oldTile.ActorEntered(other);
+  }
+
   public virtual IEnumerable<object> MyModifiers => statuses.list.Cast<object>().Append(this).Append(this.task);
-
-  internal IEnumerable<IActionCostModifier> ActionCostModifiers() {
-    return Modifiers.ActionCostModifiers(MyModifiers);
-  }
-
-  internal IEnumerable<IBaseActionModifier> BaseActionModifiers() {
-    return Modifiers.BaseActionModifiers(MyModifiers);
-  }
-
-  internal IEnumerable<IDamageTakenModifier> DamageTakenModifiers() {
-    return Modifiers.DamageTakenModifiers(MyModifiers);
-  }
-
-  internal IEnumerable<IAttackDamageModifier> AttackDamageModifiers() {
-    return Modifiers.AttackDamageModifiers(MyModifiers);
-  }
-
-  internal IEnumerable<IStepModifier> StepModifiers() {
-    return Modifiers.StepModifiers(MyModifiers);
-  }
-
-  internal IEnumerable<IMaxHPModifier> MaxHPModifiers() {
-    return Modifiers.MaxHPModifiers(MyModifiers);
-  }
 
   public StatusList statuses;
   public int hp { get; protected set; }
   public int baseMaxHp { get; protected set; }
-  public int maxHp => Modifiers.Process(MaxHPModifiers(), baseMaxHp);
+  public int maxHp => Modifiers.Process(this.MaxHPModifiers(), baseMaxHp);
 
   /// don't call directly; this doesn't use modifiers
   protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
@@ -146,7 +136,7 @@ public class Actor : SteppableEntity {
 
   internal virtual int GetFinalAttackDamage() {
     var baseDamage = BaseAttackDamage();
-    var finalDamage = Modifiers.Process(AttackDamageModifiers(), baseDamage);
+    var finalDamage = Modifiers.Process(this.AttackDamageModifiers(), baseDamage);
     return finalDamage;
   }
 
@@ -167,7 +157,7 @@ public class Actor : SteppableEntity {
       Debug.LogWarning("Cannot take negative damage!");
       return;
     }
-    damage = Modifiers.Process(DamageTakenModifiers(), damage);
+    damage = Modifiers.Process(this.DamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
     hp -= damage;
     source.OnDealDamage?.Invoke(damage, this);
@@ -207,7 +197,7 @@ public class Actor : SteppableEntity {
 
   /// uses modifiers
   public float GetActionCost(ActionType t) {
-    return Modifiers.Process(ActionCostModifiers(), actionCosts.Copy())[t];
+    return Modifiers.Process(this.ActionCostModifiers(), actionCosts.Copy())[t];
   }
 
   public virtual float GetActionCost(BaseAction action) {
@@ -230,7 +220,7 @@ public class Actor : SteppableEntity {
     // action is not null
     // action.MoveNext() has been called and it returned true
     var action = task.Current;
-    var finalAction = Modifiers.Process(BaseActionModifiers(), action);
+    var finalAction = Modifiers.Process(this.BaseActionModifiers(), action);
     finalAction.Perform();
     Modifiers.Process(this.StepModifiers(), null);
     OnActionPerformed?.Invoke(finalAction, action);

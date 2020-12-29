@@ -4,6 +4,18 @@
 public class Equipment : Inventory {
   public Equipment(Player player) : base(5) {
     Player = player;
+    OnItemAdded += HandleItemAdded;
+    OnItemRemoved += HandleItemRemoved;
+  }
+
+  private void HandleItemAdded(Item item, Entity source) {
+    var e = (EquippableItem) item;
+    e.TriggerEquipped(Player);
+  }
+
+  private void HandleItemRemoved(Item item) {
+    var e = (EquippableItem) item;
+    e.TriggerUnequipped(Player);
   }
 
   public override Item this[int i] {

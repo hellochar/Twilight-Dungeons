@@ -53,7 +53,12 @@ public abstract class Plant : Actor {
     water--;
     var stageBefore = stage;
     stage.Step();
-    return stage.StepTime;
+    if (stageBefore == stage) {
+      return stage.StepTime;
+    } else {
+      // stage has changed; timeNextAction was already set by setting the stage.
+      return 0;
+   }
   }
 
   public void GoNextStage() {
@@ -63,10 +68,11 @@ public abstract class Plant : Actor {
   }
 
   internal string GetUIText() {
+    var uiText = stage.getUIText();
     if (water > 0) {
-      return stage.getUIText();
+      return uiText;
     } else {
-      return "This plant needs water to keep growing!";
+      return uiText + "\nNeeds water to keep growing!";
     }
   }
 

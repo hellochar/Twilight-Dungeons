@@ -6,7 +6,7 @@ public class BerryBush : Plant {
   class Mature : PlantStage {
     public int numBerries = 3;
 
-    public override float StepTime => 250;
+    public override float StepTime => 125;
 
     public override void Step() {
       numBerries += 3;

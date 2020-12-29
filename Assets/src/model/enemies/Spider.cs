@@ -34,7 +34,7 @@ public class Spider : AIActor {
         continue;
       }
 
-      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));
+      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider) && !(actor is Plant) && !(actor is Rubble));
       if (intruders.Any()) {
         var target = Util.RandomPick(intruders);
         yield return new AttackTask(this, target);
@@ -59,7 +59,7 @@ public class Spider : AIActor {
   }
 
   private void HandleDealDamage(int dmg, Actor target) {
-    target.statuses.Add(new PoisonedStatus(25));
+    target.statuses.Add(new PoisonedStatus(1));
   }
 
   internal override int BaseAttackDamage() {
@@ -84,29 +84,79 @@ internal class Web : Grass {
   }
 
   void HandleActorEnter(Actor actor) {
-    if (actor is Spider) {
+    if (IsActorNice(actor)) {
       actor.statuses.Add(new WebStatus());
     }
     TriggerNoteworthyAction();
   }
 
+  bool IsActorNice(Actor actor) {
+    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSilkSandals);
+  }
+
   private void HandleActorLeave(Actor actor) {
-    if (!(actor is Spider)) {
-      actor.statuses.Add(new PoisonedStatus(5));
+    if (!IsActorNice(actor)) {
+      if (actor is Player player) {
+        player.inventory.AddItem(new ItemSpiderSilkSandals(1));
+      }
+      // actor.statuses.Add(new PoisonedStatus(1));
       Kill();
     }
   }
 }
 
+[ObjectInfo("spider-silk-shoes", "whoa")]
+internal class ItemSpiderSilkSandals : EquippableItem, IStackable {
+  public override EquipmentSlot slot => EquipmentSlot.Feet;
+  public int stacksMax => 30;
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+
+  public ItemSpiderSilkSandals(int stacks) {
+    this.stacks = stacks;
+    OnEquipped += HandleEquipped;
+    OnUnequipped += HandleUnequipped;
+  }
+
+  private void HandleEquipped(Player obj) {
+    obj.OnMove += HandleMove;
+  }
+
+  private void HandleUnequipped(Player obj) {
+    obj.OnMove -= HandleMove;
+  }
+
+  private void HandleMove(Vector2Int pos, Vector2Int oldPos) {
+    GameModel.main.EnqueueEvent(() => {
+      var player = GameModel.main.player;
+      if (!(player.floor.grasses[oldPos] is Web)) {
+        player.floor.Put(new Web(oldPos));
+        stacks--;
+      }
+      if (!(player.grass is Web) && stacks > 0) {
+        player.floor.Put(new Web(player.pos));
+        stacks--;
+      }
+    });
+  }
+
+  internal override string GetStats() => "Move faster on webs.\nLeave a trail of webs when you move.";
+}
+
 internal class WebStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
-    if (actor is Spider) {
-      // twice as fast (aka normal speed)
-      costs[ActionType.MOVE] /= 2;
-    } else {
-      // 100% slower
-      costs[ActionType.MOVE] *= 2;
-    }
+    costs[ActionType.MOVE] /= 2;
     return costs;
   }
 
@@ -118,24 +168,27 @@ internal class WebStatus : Status, IActionCostModifier {
 
   public override void Stack(Status other) { }
 
-  public override string Info() => "You move twice as slow, but Spiders move normal speed!";
+  public override string Info() => "Move twice as fast through webs!";
 }
 
 /// stacks = turns
 internal class PoisonedStatus : StackingStatus {
-  private int countDown = 20;
-
+  int countdown = 5;
   public PoisonedStatus(int stacks) : base() {
     this.stacks = stacks;
   }
 
   public override void Step() {
-    if (--countDown <= 0) {
-      countDown = 20;
+    if (stacks > 2) {
       actor.TakeDamage(1, actor);
+      --stacks;
+    } else {
+      if (--countdown <= 0) {
+        --stacks;
+        countdown = 5;
+      }
     }
-    --stacks;
   }
 
-  public override string Info() => $"Deals 1 damage every 20 turns.\n{stacks} turns remaining.";
+  public override string Info() => $"Above 2 stacks, take 1 damage per turn.\n{stacks} turns remaining.";
 }

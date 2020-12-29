@@ -18,7 +18,7 @@ public class AIActor : Actor {
     GameModel.main.EnqueueEvent(() => inventory.DropRandomlyOntoFloorAround(floor, pos));
   }
 
-  private static int MaxRetries = 3;
+  private static int MaxRetries = 2;
 
   public void SetAI(IEnumerator<ActorTask> ai) {
     this.ai = ai;
@@ -26,7 +26,8 @@ public class AIActor : Actor {
   }
 
   protected override float Step() {
-    for (int retries = 0; retries < MaxRetries; retries++) {
+    // the first step will likely be "no action" so retries starts at -1
+    for (int retries = -1; retries < MaxRetries; retries++) {
       try {
         return base.Step();
       } catch (NoActionException) {

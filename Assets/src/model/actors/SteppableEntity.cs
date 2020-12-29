@@ -20,7 +20,7 @@ public abstract class SteppableEntity : Entity {
   public void DoStep() {
     OnPreStep?.Invoke();
     float timeCost = Step();
-    if (timeCost == 0) {
+    if (timeCost == 0 && this is AIActor) {
       Debug.LogWarning("Got a timeCost 0; adding a minimum step");
       timeCost = 0.01f;
     }

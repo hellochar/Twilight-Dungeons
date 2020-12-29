@@ -152,7 +152,13 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     // (2) enemy - attack
     switch (actor.faction) {
       case Faction.Ally:
-        player.task = new MoveNextToTargetTask(player, actor.pos);
+        if (player.IsNextTo(actor)) {
+          player.task = new GenericTask(player, (_) => {
+            player.SwapPositions(actor);
+          }, ActionType.MOVE);
+        } else {
+          player.task = new MoveNextToTargetTask(player, actor.pos);
+        }
         break;
       case Faction.Neutral:
       case Faction.Enemy:

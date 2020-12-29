@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 /// Close-ended
 public class GenericTask : DoOnceTask {
-  public GenericTask(Actor actor, Action<Actor> action) : base(actor) {
+  private ActionType _type;
+  ActionType type => _type;
+  public GenericTask(Actor actor, Action<Actor> action, ActionType type = ActionType.GENERIC) : base(actor) {
+    _type = type;
     Action = action;
     Name = Util.WithSpaces(Action.Method.Name);
   }

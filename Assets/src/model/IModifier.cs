@@ -6,37 +6,53 @@ interface IModifier<T> {
   T Modify(T input);
 }
 
+interface IModifierProvider {
+  IEnumerable<object> MyModifiers { get; }
+}
+
+
 static class Modifiers {
-  public static IEnumerable<T> Of<T>(IEnumerable<object> enumerable) {
-    return enumerable.Where((s) => s is T).Cast<T>();
+  /// this recurses into IModifierProviders that may live in the enumerable, and ultimately flattens them all into one
+  public static IEnumerable<T> Of<T>(this IModifierProvider provider) {
+    var enumerable = provider.MyModifiers;
+    foreach (var s in enumerable) {
+      if (s is T t) {
+        yield return t;
+      }
+      if (s is IModifierProvider p && p != provider) {
+        foreach (var subT in p.Of<T>()) {
+          yield return subT;
+        }
+      }
+    }
   }
 
   public static T Process<T>(IEnumerable<IModifier<T>> modifiers, T initial) {
     return modifiers.Aggregate(initial, (current, modifier) => modifier.Modify(current));
   }
 
-  public static IEnumerable<IActionCostModifier> ActionCostModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.Of<IActionCostModifier>(enumerable);
+  public static IEnumerable<IActionCostModifier> ActionCostModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IActionCostModifier>(provider);
   }
 
-  public static IEnumerable<IBaseActionModifier> BaseActionModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.Of<IBaseActionModifier>(enumerable);
+  public static IEnumerable<IBaseActionModifier> BaseActionModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IBaseActionModifier>(provider);
   }
 
-  public static IEnumerable<IDamageTakenModifier> DamageTakenModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.Of<IDamageTakenModifier>(enumerable);
+  public static IEnumerable<IDamageTakenModifier> DamageTakenModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IDamageTakenModifier>(provider);
   }
 
-  public static IEnumerable<IAttackDamageModifier> AttackDamageModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.Of<IAttackDamageModifier>(enumerable);
+  public static IEnumerable<IAttackDamageModifier> AttackDamageModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IAttackDamageModifier>(provider);
   }
 
-  public static IEnumerable<IStepModifier> StepModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.Of<IStepModifier>(enumerable);
+  public static IEnumerable<IStepModifier> StepModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IStepModifier>(provider);
   }
 
-  public static IEnumerable<IMaxHPModifier> MaxHPModifiers(IEnumerable<object> enumerable) {
-    return Modifiers.Of<IMaxHPModifier>(enumerable);
+  public static IEnumerable<IMaxHPModifier> MaxHPModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IMaxHPModifier>(provider);
   }
 }
 

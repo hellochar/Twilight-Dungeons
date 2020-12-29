@@ -29,6 +29,10 @@ public class PlayerHeartsController : MonoBehaviour {
   }
 
   void MatchNumberOfHearts(int numHearts) {
+    // e.g. 5 children, 4 hearts
+    for (int i = transform.childCount; i > numHearts; i--) {
+      Destroy(transform.GetChild(i - 1).gameObject);
+    }
     for (int i = transform.childCount; i < numHearts; i++) {
       Instantiate(heartPrefab, transform);
     }

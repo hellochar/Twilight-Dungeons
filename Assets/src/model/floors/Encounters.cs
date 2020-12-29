@@ -112,6 +112,16 @@ public static class Encounters {
     }
   });
 
+  public static Encounter AddSpore = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var start = Util.RandomPick(occupiableTiles);
+      var grass = new Spores(start.pos);
+      floor.Put(grass);
+    }
+  });
+
   public static Encounter AddHangingVines = new Encounter((floor, room) => {
     var wallsWithGroundBelow = floor
       .EnumerateRoomTiles(room, 1)
@@ -202,10 +212,10 @@ public static class Encounters {
     }
   });
 
-  public static Encounter OneLocust = new Encounter((floor, room) => {
+  public static Encounter OneButterfly = new Encounter((floor, room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
-      floor.Put(new Locust(tile.pos));
+      floor.Put(new Butterfly(tile.pos));
     }
   });
 
@@ -243,15 +253,17 @@ public static class Encounters {
     { 1, AFewBlobs },
     { 1, JackalPile },
     { 1, AFewSnails },
-    { 0.5f, BatInCorner }
+    { 0.4f, BatInCorner },
+    { 0.35f, OneSpider }
   };
 
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     { 3f, Empty },
     { 1f, AddSoftGrass },
+    { 0.75f, AddHangingVines },
+    { 0.5f, AddSpore },
     { 0.5f, AddBrambles },
-    { 0.9f, AddHangingVines },
-    { 0.5f, ScatteredBoombugs },
+    { 0.4f, ScatteredBoombugs },
     { 0.2f, AddDeathbloom },
   };
 
@@ -273,8 +285,7 @@ public static class Encounters {
     { 1f, OnePlumpAstoria },
     { 0.5f, AddJackalHide },
     { 0.5f, AddGloopShoes },
-    { 0.5f, OneSpider },
-    { 0.5f, OneLocust },
+    { 0.5f, OneButterfly },
     { 0.5f, ThreePlumpAstoriasInCorner },
     { 0.1f, MatureBerryBush }
   };

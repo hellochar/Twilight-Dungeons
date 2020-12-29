@@ -1,10 +1,14 @@
 using UnityEngine;
 
-public class Rubble : Actor, IBlocksVision {
+public class Rubble : Actor, IBlocksVision, IDamageTakenModifier {
   public Rubble(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 7;
+    hp = baseMaxHp = 3;
     faction = Faction.Neutral;
     this.timeNextAction += 99999;
+  }
+
+  public int Modify(int input) {
+    return 1;
   }
 
   protected override float Step() {

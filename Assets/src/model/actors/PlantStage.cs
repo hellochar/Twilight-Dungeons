@@ -32,7 +32,7 @@ public abstract class PlantStage {
 }
 
 class Seed : PlantStage {
-  public override float StepTime => 5;
+  public override float StepTime => 500;
   public override void Step() {
     GoNextStage();
   }
@@ -41,7 +41,7 @@ class Seed : PlantStage {
 }
 
 class Young : PlantStage {
-  public override float StepTime => 5;
+  public override float StepTime => 500;
   public override void Step() {
     GoNextStage();
   }
@@ -50,7 +50,7 @@ class Young : PlantStage {
 }
 
 class Sapling : PlantStage {
-  public override float StepTime => 5;
+  public override float StepTime => 500;
   public override void Step() {
     GoNextStage();
   }

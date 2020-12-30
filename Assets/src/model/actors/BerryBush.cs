@@ -26,7 +26,7 @@ public class BerryBush : Plant {
       if (stacks > 0) {
         var wantedStacks = stacks;
         mature.numBerries = 0;
-        return new Inventory(new ItemBerries(wantedStacks));
+        return new Inventory(new ItemBerries(wantedStacks), new ItemBarkShield());
       }
     }
     return null;

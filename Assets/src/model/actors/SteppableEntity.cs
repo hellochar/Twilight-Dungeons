@@ -31,6 +31,7 @@ public abstract class SteppableEntity : Entity {
   public virtual void CatchUpStep(float lastStepTime, float time) {
     float jump = time - lastStepTime;
     // by default actors don't do anything; they just act as if they were paused
-    this.timeNextAction += jump;
+    // give 1 extra step so the Player can act first
+    this.timeNextAction += jump + 1;
   }
 }

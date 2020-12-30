@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 
 public class ItemHands : EquippableItem, IWeapon {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
@@ -16,7 +17,7 @@ public class ItemHands : EquippableItem, IWeapon {
 
   public (int, int) AttackSpread => (1, 2);
 
-  public override List<ActorTask> GetAvailableTasks(Player player) {
-    return new List<ActorTask>();
+  public override List<MethodInfo> GetAvailableMethods(Player player) {
+    return new List<MethodInfo>();
   }
 }

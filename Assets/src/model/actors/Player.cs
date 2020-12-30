@@ -18,7 +18,6 @@ public class Player : Actor {
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(12);
-    inventory.AddItem(new ItemBarkShield());
     inventory.AddItem(new ItemWaterPail());
 
     equipment = new Equipment(this);

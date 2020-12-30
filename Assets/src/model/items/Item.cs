@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 public class Item {
@@ -24,20 +25,18 @@ public class Item {
 
   internal virtual string GetStats() => "";
 
-  public virtual List<ActorTask> GetAvailableTasks(Player player) {
-    var zeroArgActions = new List<Action<Actor>>();
-    zeroArgActions.Add(Destroy);
-    zeroArgActions.Add(Drop);
+  public virtual List<MethodInfo> GetAvailableMethods(Player player) {
+    var methods = new List<MethodInfo>() {
+      GetType().GetMethod("Destroy"),
+      GetType().GetMethod("Drop")
+    };
     if (this is IEdible edible) {
-      zeroArgActions.Add(edible.Eat);
+      methods.Add(GetType().GetMethod("Eat"));
     }
     if (this is IUsable usable) {
-      zeroArgActions.Add(usable.Use);
+      methods.Add(GetType().GetMethod("Use"));
     }
-    return zeroArgActions
-      .Select((action) => new GenericTask(player, action))
-      .Cast<ActorTask>()
-      .ToList();
+    return methods;
   }
 }
 

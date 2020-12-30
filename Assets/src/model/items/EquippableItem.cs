@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 public abstract class EquippableItem : Item {
   public abstract EquipmentSlot slot { get; }
@@ -24,13 +25,13 @@ public abstract class EquippableItem : Item {
     OnUnequipped?.Invoke(player);
   }
 
-  public override List<ActorTask> GetAvailableTasks(Player actor) {
-    var actions = base.GetAvailableTasks(actor);
+  public override List<MethodInfo> GetAvailableMethods(Player actor) {
+    var methods = base.GetAvailableMethods(actor);
     if (actor.inventory.HasItem(this)) {
-      actions.Add(new GenericTask(actor, Equip));
+      methods.Add(GetType().GetMethod("Equip"));
     } else if (actor.equipment.HasItem(this)) {
-      actions.Add(new GenericTask(actor, Unequip));
+      methods.Add(GetType().GetMethod("Unequip"));
     }
-    return actions;
+    return methods;
   }
 }

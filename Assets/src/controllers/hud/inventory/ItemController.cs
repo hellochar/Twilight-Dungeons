@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -34,14 +35,17 @@ public class ItemController : MonoBehaviour {
 
   private void HandleItemClicked() {
     Player player = GameModel.main.player;
-    List<ActorTask> playerTasks = item.GetAvailableTasks(player);
+    List<MethodInfo> methods = item.GetAvailableMethods(player);
 
     // put more fundamental actions later
-    playerTasks.Reverse();
+    methods.Reverse();
 
     GameObject popup = null;
 
-    var buttons = playerTasks.Select((task) => MakeButton(task.Name, () => SetPlayerTasks(popup, task))).ToList();
+    var buttons = methods.Select((method) => MakeButton(method.Name, () => {
+      method.Invoke(item, new object[] { player });
+      PopupInteractionDone(popup);
+    })).ToList();
 
     if (item is ItemSeed seed) {
       buttons.Insert(0, MakeButton("Plant", () => PlantWithUI(seed, player, popup)));
@@ -77,9 +81,8 @@ public class ItemController : MonoBehaviour {
     return button;
   }
 
-  private void SetPlayerTasks(GameObject popup, params ActorTask[] tasks) {
+  private void PopupInteractionDone(GameObject popup) {
     Player player = GameModel.main.player;
-    player.SetTasks(tasks);
     Destroy(popup);
     if (player.IsInCombat()) {
       CloseInventory();
@@ -93,8 +96,7 @@ public class ItemController : MonoBehaviour {
       var soil = await MapSelector.SelectUI(
         GameModel.main.currentFloor.tiles.Where(tile => tile is Soil && tile.isVisible && tile.CanBeOccupied()).Cast<Soil>()
       );
-      SetPlayerTasks(
-        popup,
+      player.SetTasks(
         new MoveNextToTargetTask(player, soil.pos),
         new GenericTask(player, (p) => {
           if (p.IsNextTo(soil)) {
@@ -102,6 +104,7 @@ public class ItemController : MonoBehaviour {
           }
         })
       );
+      PopupInteractionDone(popup);
     } catch (PlayerSelectCanceledException) {
       // if player cancels selection, go back to before
       OpenInventory();
@@ -128,6 +131,7 @@ public class ItemController : MonoBehaviour {
           }
         })
       );
+      PopupInteractionDone(popup);
     } catch (PlayerSelectCanceledException) {
       // if player cancels selection, go back to before
       OpenInventory();
@@ -146,6 +150,7 @@ public class ItemController : MonoBehaviour {
           charmBerry.Charm(enemy);
         })
       );
+      PopupInteractionDone(popup);
     } catch (PlayerSelectCanceledException) {
       // if player cancels selection, go back to before
       OpenInventory();
@@ -169,6 +174,7 @@ public class ItemController : MonoBehaviour {
           corpse.Throw(player, tile.pos);
         })
       );
+      PopupInteractionDone(popup);
     } catch (PlayerSelectCanceledException) {
       // if player cancels selection, go back to before
       OpenInventory();
@@ -186,6 +192,7 @@ public class ItemController : MonoBehaviour {
           shell.Throw(player, enemy);
         })
       );
+      PopupInteractionDone(popup);
     } catch (PlayerSelectCanceledException) {
       // if player cancels selection, go back to before
       OpenInventory();
@@ -202,7 +209,7 @@ public class ItemController : MonoBehaviour {
   }
 
   public void CloseInventory() {
-    GameObject.Find("Inventory Container").SetActive(false);
+    GameObject.Find("Inventory Container")?.SetActive(false);
   }
 
   // Update is called once per frame

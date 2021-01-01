@@ -49,13 +49,13 @@ public static class FloorGenerator {
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.OneButterfly(floor, room0);
     // Encounters.OneSpider(floor, room0);
-    // Encounters.AddSpore(floor, room0);
+    Encounters.AddSpore(floor, room0);
     // Encounters.AddBrambles(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
     Encounters.AddWater(floor, room0);
     // Encounters.BatInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
-    // Encounters.AFewSnails(floor, room0);
+    Encounters.AFewSnails(floor, room0);
     // Encounters.AFewBlobs(floor, room0);
 
     return floor;

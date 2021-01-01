@@ -168,11 +168,16 @@ public class Actor : SteppableEntity, IModifierProvider {
   }
 
   public override void Kill() {
-    hp = Math.Max(hp, 0);
-    taskQueue.Clear();
-    TaskChanged();
-    base.Kill();
     /// TODO remove references to this Actor if needed
+    if (!IsDead) {
+      hp = Math.Max(hp, 0);
+      taskQueue.Clear();
+      TaskChanged();
+      foreach (var handler in Modifiers.Of<IActorKilledHandler>(this)) {
+        handler.OnKilled(this);
+      }
+      base.Kill();
+    }
   }
 
   public void ClearTasks() {

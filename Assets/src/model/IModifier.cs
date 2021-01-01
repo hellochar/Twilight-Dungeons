@@ -70,3 +70,8 @@ interface IPathfindingCostModifier : IModifier<float> {}
 public interface IAttackHandler {
   void OnAttack(Actor target);
 }
+
+/// <summary>Called when the Actor is Killed.</summary>
+public interface IActorKilledHandler {
+  void OnKilled(Actor a);
+}

@@ -33,69 +33,53 @@ public class Spores : Grass {
 }
 
 internal class SporeBloat : AIActor {
-  private bool isMature => age >= 20;
   public SporeBloat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
     faction = Faction.Neutral;
     OnDeath += HandleDeath;
-    OnActionPerformed += HandleActionPerformed;
     ai = AI();
-  }
-
-  private void HandleActionPerformed(BaseAction arg1, BaseAction arg2) {
-    GameModel.main.EnqueueEvent(() => {
-      if (floor != null) {
-        foreach (var actor in floor.AdjacentActors(pos).Where(actor => !(actor is SporeBloat))) {
-          if (!actor.statuses.Has<SporedStatus>()) {
-            actor.statuses.Add(new SporedStatus(1));
-          }
-        }
-      }
-    });
+    ClearTasks();
   }
 
   private IEnumerator<ActorTask> AI() {
-    while(true) {
-      if (isMature) {
-        yield return new GenericTask(this, (_) => {
-          Kill();
-        });
-      } else {
-        yield return new WaitTask(this, 1);
-        yield return new MoveRandomlyTask(this);
-      }
-    }
+    yield return new WaitTask(this, 1);
+    yield return new MoveRandomlyTask(this);
+    GameModel.main.EnqueueEvent(() => statuses.Add(new SurprisedStatus()));
+    yield return new WaitTask(this, 1); // gets consumed by the surprised
+    yield return new GenericTask(this, (_) => {
+      Kill();
+    });
   }
 
   private void HandleDeath() {
-    if (isMature) {
-      floor.Put(new Spores(pos));
+    foreach (var actor in floor.AdjacentActors(pos).Where(actor => !(actor is SporeBloat))) {
+      if (!actor.statuses.Has<SporedStatus>()) {
+        actor.statuses.Add(new SporedStatus(20));
+      }
     }
   }
 }
 
-[ObjectInfo("slimed", "eww")]
-internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier {
-  public SporedStatus(int stacks) : base(stacks) {
-  }
+[ObjectInfo("spored-status", "eww")]
+internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier, IActorKilledHandler {
+  public SporedStatus(int stacks) : base(stacks) {}
 
-  public override string Info() => $"You do {stacks} less damage!\nYou move twice as slow.\nStacks are equal to number of adjacent Spore Bloats.";
+  public override string Info() => $"You do 2 less damage!\nYou move twice as slow.\n{stacks} turns remaining.";
 
   public override void Step() {
-    GameModel.main.EnqueueEvent(() => {
-      if (actor != null) {
-        var numNearbyBloats = actor.floor.AdjacentActors(actor.pos).Where((a) => a is SporeBloat).Count();
-        stacks = numNearbyBloats;
-      }
-    });
+    stacks--;
   }
 
   public int Modify(int input) {
-    return input - stacks;
+    return input - 2;
   }
 
   public ActionCosts Modify(ActionCosts input) {
     input[ActionType.MOVE] *= 2;
     return input;
+  }
+
+  public void OnKilled(Actor a) {
+    a.floor.Put(new Spores(a.pos));
   }
 }

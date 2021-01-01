@@ -77,6 +77,8 @@ public class Wall : Tile {
 }
 
 public class Upstairs : Tile {
+  /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
+  public Vector2Int landing => pos + new Vector2Int(1, 0);
   public Upstairs(Vector2Int pos) : base(pos) {
     OnActorEnter += HandleActorEnter;
   }
@@ -92,6 +94,8 @@ public class Upstairs : Tile {
 }
 
 public class Downstairs : Tile {
+  /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
+  public Vector2Int landing => pos + new Vector2Int(-1, 0);
   public Downstairs(Vector2Int pos) : base(pos) {
     OnActorEnter += HandleActorEnter;
   }

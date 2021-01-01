@@ -2,11 +2,12 @@ using System;
 using UnityEngine;
 
 public class ItemOnGround : Entity {
+  public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
+
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
-    /// do not allow moving grass
-    set { }
+    set => _pos = value;
   }
 
   public readonly new Item item;

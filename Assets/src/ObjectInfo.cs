@@ -30,10 +30,6 @@ public class ObjectInfo {
       spriteName = "Stick",
       flavorText = "Stiff but brittle, this won't last long."
     },
-    [typeof(ItemMushroom)] = new ObjectInfo {
-      spriteName = "mushroom",
-      flavorText = "Don't pick them all! Mushrooms spread to nearby squares on their own."
-    },
     [typeof(ItemDeathbloomFlower)] = new ObjectInfo {
       spriteName = "3Red",
       flavorText = "The rare Deathbloom flower. Just the smell of it gets your blood pumping."

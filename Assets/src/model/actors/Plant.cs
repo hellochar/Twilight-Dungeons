@@ -82,7 +82,7 @@ public abstract class Plant : Actor {
   }
 
   public virtual void Harvest() {
-    HarvestRewards()?.DropRandomlyOntoFloorAround(floor, base.pos);
+    HarvestRewards()?.TryDropAllItems(floor, base.pos);
   }
 
   public virtual void Cull() {
@@ -90,7 +90,7 @@ public abstract class Plant : Actor {
   }
 
   private void HandleDeath() {
-    CullRewards()?.DropRandomlyOntoFloorAround(floor, base.pos);
+    CullRewards()?.TryDropAllItems(floor, base.pos);
     Harvest();
   }
 

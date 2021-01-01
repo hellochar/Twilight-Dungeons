@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 public static class AIs {
   // bugs just walk around, or sit still, who knows
   internal static IEnumerable<ActorTask> BugAI(Actor actor) {
-    yield return new SleepTask(actor);
     while (true) {
       if (Random.value < 0.5f) {
         yield return new WaitTask(actor, Random.Range(1, 5));
@@ -19,7 +18,6 @@ public static class AIs {
   }
 
   public static IEnumerable<ActorTask> BlobAI(Actor actor) {
-    yield return new SleepTask(actor);
     while (true) {
       bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       // hack - start attacking you once the player has vision
@@ -36,7 +34,6 @@ public static class AIs {
   }
 
   public static IEnumerable<ActorTask> JackalAI(Actor actor) {
-    yield return new SleepTask(actor);
     while (true) {
       bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
       if (canSeePlayer) {

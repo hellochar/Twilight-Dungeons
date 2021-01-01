@@ -14,11 +14,11 @@ public class Player : Actor {
   public float fullness = 1;
 
   internal override float turnPriority => 10;
+  public int water = 0;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(12);
-    inventory.AddItem(new ItemWaterPail());
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
@@ -70,7 +70,7 @@ public class Player : Actor {
   }
 
   private void HandleStatusAdded(Status status) {
-    if (status is IBaseActionModifier) {
+    if (status.isDebuff) {
       // cancel current action
       ClearTasks();
     }

@@ -8,7 +8,7 @@ using UnityEngine;
 public class Spider : AIActor {
 
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
-    [ActionType.ATTACK] = 2,
+    [ActionType.ATTACK] = 1,
     [ActionType.MOVE] = 2,
   };
 
@@ -16,7 +16,7 @@ public class Spider : AIActor {
 
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 8;
+    hp = baseMaxHp = 7;
     ai = AI().GetEnumerator();
     OnDealDamage += HandleDealDamage;
     // OnMove += HandleMove;
@@ -173,22 +173,20 @@ internal class WebStatus : Status, IActionCostModifier {
 
 /// stacks = turns
 internal class PoisonedStatus : StackingStatus {
-  int countdown = 5;
+  int duration = 5;
   public PoisonedStatus(int stacks) : base() {
     this.stacks = stacks;
   }
 
   public override void Step() {
-    if (stacks > 2) {
-      actor.TakeDamage(1, actor);
-      --stacks;
-    } else {
-      if (--countdown <= 0) {
-        --stacks;
-        countdown = 5;
+    if (--duration <= 0) {
+      if (stacks > 2) {
+        actor.TakeDamage(2, actor);
       }
+      --stacks;
+      duration = 5;
     }
   }
 
-  public override string Info() => $"Above 2 stacks, take 1 damage per turn.\n{stacks} turns remaining.";
+  public override string Info() => $"At 3 stacks and above, take 2 damage per 5 turns.";
 }

@@ -26,7 +26,7 @@ public class ItemController : MonoBehaviour {
     var wantedSprite = ObjectInfo.GetSpriteFor(item);
     if (wantedSprite != null) {
       image.sprite = wantedSprite;
-      image.rectTransform.sizeDelta = wantedSprite.rect.size * 3;
+      image.rectTransform.sizeDelta = wantedSprite.rect.size * 2;
     }
 
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
@@ -49,9 +49,6 @@ public class ItemController : MonoBehaviour {
 
     if (item is ItemSeed seed) {
       buttons.Insert(0, MakeButton("Plant", () => PlantWithUI(seed, player, popup)));
-    }
-    if (item is ItemWaterPail pail) {
-      buttons.Insert(0, MakeButton("Water", () => WaterWithUI(pail, player, popup)));
     }
     if (item is ItemCharmBerry charmBerry) {
       buttons.Insert(0, MakeButton("Charm", () => CharmWithUI(charmBerry, player, popup)));
@@ -84,9 +81,9 @@ public class ItemController : MonoBehaviour {
   private void PopupInteractionDone(GameObject popup) {
     Player player = GameModel.main.player;
     Destroy(popup);
-    if (player.IsInCombat()) {
-      CloseInventory();
-    }
+    // if (player.IsInCombat()) {
+    //   CloseInventory();
+    // }
   }
 
   public async void PlantWithUI(ItemSeed seed, Player player, GameObject popup) {
@@ -101,33 +98,6 @@ public class ItemController : MonoBehaviour {
         new GenericTask(player, (p) => {
           if (p.IsNextTo(soil)) {
             seed.Plant(soil);
-          }
-        })
-      );
-      PopupInteractionDone(popup);
-    } catch (PlayerSelectCanceledException) {
-      // if player cancels selection, go back to before
-      OpenInventory();
-      popup.SetActive(true);
-    }
-  }
-
-  public async void WaterWithUI(ItemWaterPail pail, Player player, GameObject popup) {
-    CloseInventory();
-    popup.SetActive(false);
-    try {
-      var plantOrGrass = await MapSelector.SelectUI(
-        GameModel.main.currentFloor.entities.Where(a => a.isVisible && (a is Plant || a is Grass))
-      );
-      player.SetTasks(
-        new MoveNextToTargetTask(player, plantOrGrass.pos),
-        new GenericTask(player, (_) => {
-          if (player.IsNextTo(plantOrGrass)) {
-            if (plantOrGrass is Plant p) {
-              pail.Water(p);
-            } else if (plantOrGrass is Grass g) {
-              pail.Water(g);
-            }
           }
         })
       );

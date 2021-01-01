@@ -64,3 +64,9 @@ interface IAttackDamageModifier : IModifier<int> {}
 interface IStepModifier : IModifier<object> {}
 interface IMaxHPModifier : IModifier<int> {}
 interface IPathfindingCostModifier : IModifier<float> {}
+
+
+// Called when this weapon is used for an attack
+public interface IAttackHandler {
+  void OnAttack(Actor target);
+}

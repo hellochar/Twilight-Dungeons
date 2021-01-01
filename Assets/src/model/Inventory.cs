@@ -31,6 +31,10 @@ public class Inventory : IEnumerable<Item> {
       // if we still exist, then continue
     }
 
+    if (slot == -1) {
+      return false;
+    }
+
     /// two options:
     /// no other inventory -> just put it into this inventory
     /// yes other inventory -> swap whatever's in the current slot into that one
@@ -56,29 +60,35 @@ public class Inventory : IEnumerable<Item> {
     if (!(item is IStackable) && slot == null) {
       return false;
     } else {
-      return AddItem(item, slot.GetValueOrDefault(), source);
+      return AddItem(item, slot ?? -1, source);
     }
   }
 
-  internal void DropRandomlyOntoFloorAround(Floor floor, Vector2Int pos) {
+  internal void TryDropAllItems(Floor floor, Vector2Int pos) {
     // it pops out randomly adjacent
     foreach (var item in ItemsNonNull()) {
       var tile = floor.tiles[pos];
-      if (!IsTileFreeForItem(tile)) {
-        tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(IsTileFreeForItem));
-      }
-      if (tile != null) {
-        DropItem(item, tile.pos);
-      }
+      TryDropItem(floor, tile.pos, item);
     }
+  }
 
-    bool IsTileFreeForItem(Tile tile) => tile.item == null && tile.actor == null && tile.BasePathfindingWeight() != 0;
+  public void TryDropItem(Floor floor, Vector2Int pos, Item item) {
+    // bool IsTileFreeForItem(Tile t) => t.item == null && t.actor == null && t.BasePathfindingWeight() != 0;
 
-    void DropItem(Item item, Vector2Int p) {
-      RemoveItem(item);
-      var itemOnGround = new ItemOnGround(p, item, pos);
-      floor.Put(itemOnGround);
-    }
+    // var tile = floor.tiles[pos];
+    // if (!IsTileFreeForItem(tile)) {
+    //   tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(IsTileFreeForItem));
+    // }
+
+    // if (tile != null) {
+      DropItemImpl(floor, pos, item);
+    // }
+  }
+
+  private void DropItemImpl(Floor floor, Vector2Int pos, Item item) {
+    RemoveItem(item);
+    var itemOnGround = new ItemOnGround(pos, item, pos);
+    floor.Put(itemOnGround);
   }
 
   private int? GetFirstFreeSlot() {

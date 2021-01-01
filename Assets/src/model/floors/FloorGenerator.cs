@@ -46,17 +46,13 @@ public static class FloorGenerator {
     var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf) };
     AddMaturePlant(Util.RandomPick(types));
 
-    // AddMaturePlant<BerryBush>();
-    // AddMaturePlant<Wildwood>();
-    // AddMaturePlant<Thornleaf>();
-
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.OneButterfly(floor, room0);
     // Encounters.OneSpider(floor, room0);
     // Encounters.AddSpore(floor, room0);
     // Encounters.AddBrambles(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
-    // Encounters.AddWater(floor, room0);
+    Encounters.AddWater(floor, room0);
     // Encounters.BatInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AFewSnails(floor, room0);
@@ -66,7 +62,7 @@ public static class FloorGenerator {
   }
 
   public static Floor generateRewardFloor(int depth) {
-    Floor floor = new Floor(depth, 9, 9);
+    Floor floor = new Floor(depth, 8, 8);
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
@@ -82,6 +78,7 @@ public static class FloorGenerator {
 
     Encounters.PlaceFancyGround(floor, room0);
     Encounters.CavesRewards.GetRandom()(floor, room0);
+    Encounters.CavesPlantRewards.GetRandomAndDiscount(0.9f)(floor, room0);
 
     // just do nothing on this floor
     return floor;
@@ -123,7 +120,17 @@ public static class FloorGenerator {
       Encounters.CavesRewards.GetRandom()(floor, room0);
     }
     Encounters.CavesDeadEnds.GetRandom()(floor, room0);
-    
+
+    // clear stairs so player doesn't walk into a shitshow
+    foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
+      tile.grass?.Kill();
+      if (tile.actor != null) {
+        var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(room0).Where((x) => x.CanBeOccupied()));
+        // move the actor to a different spot in the map
+        tile.actor.pos = newSpot.pos;
+      }
+    }
+
     return floor;
   }
 

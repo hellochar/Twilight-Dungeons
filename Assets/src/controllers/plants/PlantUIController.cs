@@ -31,10 +31,10 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       Instantiate(empty, waterIndicator, false);
     }
 
-    var waterPail = GameModel.main.player.inventory.First((item) => item is ItemWaterPail) as ItemWaterPail;
+    var player = GameModel.main.player;
     var waterButton = transform.Find("Frame/Buttons/Water").GetComponent<Button>();
-    waterButton.interactable = waterPail.stacks > 0;
-    waterButton.onClick.AddListener(() => plantController.Water(waterPail));
+    waterButton.interactable = player.water > 0;
+    waterButton.onClick.AddListener(() => plantController.Water(player));
 
     transform.Find("Frame/Buttons/Harvest").GetComponent<Button>().onClick.AddListener(plantController.Harvest);
     transform.Find("Frame/Buttons/Cull").GetComponent<Button>().onClick.AddListener(plantController.Cull);

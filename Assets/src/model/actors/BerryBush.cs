@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -26,17 +27,21 @@ public class BerryBush : Plant {
       if (stacks > 0) {
         var wantedStacks = stacks;
         mature.numBerries = 0;
-        return new Inventory(new ItemBerries(wantedStacks), new ItemBarkShield());
+        return new Inventory(new ItemBerries(wantedStacks));
       }
     }
     return null;
   }
 
   public override Inventory CullRewards() {
-    if (stage is Mature) {
-      return new Inventory(new ItemSeed(typeof(BerryBush)), new ItemSeed(typeof(BerryBush)));
-    } else {
-      return new Inventory(new ItemSeed(typeof(BerryBush)));
+    var items = new List<Item>();
+    items.Add(new ItemSeed(typeof(BerryBush)));
+    if (stage is Young || stage is Mature) {
+      items.Add(new ItemBarkShield());
     }
+    if (stage is Mature) {
+      items.Add(new ItemSeed(typeof(BerryBush)));
+    }
+    return new Inventory(items.ToArray());
   }
 }

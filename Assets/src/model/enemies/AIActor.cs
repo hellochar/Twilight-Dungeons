@@ -10,12 +10,13 @@ public class AIActor : Actor {
   public Inventory inventory = new Inventory(1);
   public AIActor(Vector2Int pos) : base(pos) {
     OnDeath += HandleDeath;
+    SetTasks(new SleepTask(this));
   }
 
   private void HandleDeath() {
     var floor = this.floor;
     var pos = this.pos;
-    GameModel.main.EnqueueEvent(() => inventory.DropRandomlyOntoFloorAround(floor, pos));
+    GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));
   }
 
   private static int MaxRetries = 2;

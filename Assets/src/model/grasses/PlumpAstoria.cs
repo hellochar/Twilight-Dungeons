@@ -16,7 +16,7 @@ public class PlumpAstoria : Grass {
   }
 
   private void HandleActorEnter(Actor actor) {
-    actor.Heal(3);
+    actor.Heal(4);
     Kill();
   }
 }

@@ -14,15 +14,9 @@ public class WaterController : GrassController, IEntityClickedHandler {
 
   public void PointerClick(PointerEventData pointerEventData) {
     var player = GameModel.main.player;
-    var waterPail = (ItemWaterPail) player.inventory.First((item) => item is ItemWaterPail);
-    if (waterPail != null) {
-      player.SetTasks(
-        new MoveNextToTargetTask(player, grass.pos),
-        new GenericTask(player, (_) => {
-          waterPail.AddStack();
-          grass.Kill();
-        })
-      );
-    }
+    player.SetTasks(
+      new MoveNextToTargetTask(player, grass.pos),
+      new GenericTask(player, (_) => ((Water)grass).Collect(player))
+    );
   }
 }

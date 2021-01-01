@@ -12,8 +12,7 @@ public class DepthTextController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    int depth = GameModel.main.activeFloorIndex;
-    text.text = "Depth " + (depth + 1);
+    text.text = "Depth " + (GameModel.main.currentFloor.depth);
     // text.text += "\nTime " + GameModel.main.time;
     // text.text += "\nStatuses: " + string.Join(", ", GameModel.main.player.statuses.list.Select(x => x.ToString()));
     // if (GameModel.main.turnManager != null) {

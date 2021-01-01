@@ -3,9 +3,15 @@ using System;
 using System.Collections.Generic;
 /// Don't do anything until the Player's in view
 class SleepTask : ActorTask, IDamageTakenModifier {
+  private bool done;
+  private int? maxTurns;
+  private readonly bool isDeepSleep;
+
   public bool wakeUpNextTurn { get; protected set; }
-  public SleepTask(Actor actor) : base(actor) {
+  public SleepTask(Actor actor, int? maxTurns = null, bool isDeepSleep = false) : base(actor) {
     actor.OnTakeDamage += HandleTakeDamage;
+    this.maxTurns = maxTurns;
+    this.isDeepSleep = isDeepSleep;
   }
 
   private void HandleTakeDamage(int dmg, int hp, Actor source) {
@@ -16,13 +22,25 @@ class SleepTask : ActorTask, IDamageTakenModifier {
     actor.OnTakeDamage -= HandleTakeDamage;
   }
 
+  protected virtual bool ShouldWakeUp() {
+    if (isDeepSleep) {
+      return false;
+    }
+
+    var chanceToWakeUpWhileVisible = 1;
+    return actor.isVisible && UnityEngine.Random.value < chanceToWakeUpWhileVisible;
+  }
+
   public override IEnumerator<BaseAction> Enumerator() {
-    var chanceToWakeUpWhileVisible = 0.5;
-    bool ShouldWakeUp() => actor.isVisible && UnityEngine.Random.value < chanceToWakeUpWhileVisible;
     while (!ShouldWakeUp()) {
+      if (maxTurns != null) {
+        maxTurns--;
+        if (maxTurns <= 0) {
+          break;
+        }
+      }
       if (wakeUpNextTurn) {
-        yield return new WaitBaseAction(actor);
-        yield break;
+        break;
       }
       yield return new WaitBaseAction(actor);
     }
@@ -33,27 +51,29 @@ class SleepTask : ActorTask, IDamageTakenModifier {
         s.wakeUpNextTurn = true;
       }
     }
+    done = true;
+    GameModel.main.EnqueueEvent(() => {
+      actor.statuses.Add(new SurprisedStatus());
+    });
+    yield return new WaitBaseAction(actor);
   }
 
   /// doubles damage taken while sleeping!
   public int Modify(int input) {
     return input * 2;
   }
+
+  public override bool IsDone() => done;
 }
 
-class DeepSleepTask : SleepTask {
-  public DeepSleepTask(Actor actor, int turns) : base(actor) {
-    this.turns = turns;
+class SurprisedStatus : Status, IBaseActionModifier {
+  public override bool isDebuff => true;
+  public override string Info() => "";
+
+  public BaseAction Modify(BaseAction input) {
+    Remove();
+    return input;
   }
 
-  int turns;
-
-  public override IEnumerator<BaseAction> Enumerator() {
-    for(; turns >= 0; turns--) {
-      if (wakeUpNextTurn) {
-        yield break;
-      }
-      yield return new WaitBaseAction(actor);
-    }
-  }
+  public override void Stack(Status other) {}
 }

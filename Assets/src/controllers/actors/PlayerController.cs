@@ -16,7 +16,7 @@ public class PlayerController : ActorController {
     var depth = player.floor.depth;
     if (depth > deepestDepthVisited) {
       deepestDepthVisited = depth;
-      Messages.Create("Depth " + depth);
+      // Messages.Create("Depth " + depth);
     }
   }
 
@@ -28,13 +28,26 @@ public class PlayerController : ActorController {
   }
 
   public void GoHome() {
+    if (player.IsInCombat()) {
+      Messages.Create("Leave combat to quicktravel home!");
+      return;
+    }
     var model = GameModel.main;
     if (model.activeFloorIndex == 0) {
-      model.PutPlayerAt(model.floors[deepestDepthVisited], false);
+      // model.PutPlayerAt(model.floors[deepestDepthVisited], false);
       // e.g. floorIndex 2 = depth 3; so we should traverse 3, then 2
-      // var floorsToTraverse = GameModel.main.floors.Take(deepestDepthVisited);
-      // var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.downstairs.pos)).ToArray();
-      // player.SetTasks(tasks);
+      var floorsToTraverse = GameModel.main.floors.Take(deepestDepthVisited + 1);
+      var tasks = floorsToTraverse.Select((floor) => {
+        if (floor == model.currentFloor) {
+          return new MoveToTargetTask(player, floor.downstairs.pos);
+        }
+        return new FollowPathTask(
+          player,
+          floor.downstairs.pos,
+          floor.FindPath(floor.upstairs.landing, floor.downstairs.pos, true)
+        );
+      }).ToArray();
+      player.SetTasks(tasks);
     } else {
       model.PutPlayerAt(model.floors[0], true);
       // var floorsToTraverse = GameModel.main.floors.Skip(1).Take(GameModel.main.activeFloorIndex).Reverse();

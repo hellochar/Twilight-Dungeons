@@ -37,28 +37,41 @@ public abstract class EntityStore<T> : IEnumerable<T> where T : Entity {
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }
 
+public enum OverlapBehavior { KillOld, RepositionNew }
+
 /// Storing a dense grid of Entity's that don't move.
 public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
   private T[,] grid;
+  private readonly Action<T> PlacementBehavior;
+
   public int width => floor.width;
   public int height => floor.height;
 
-  public StaticEntityGrid(Floor floor) : base(floor) {
+  public StaticEntityGrid(Floor floor, Action<T> placementBehavior = null) : base(floor) {
     this.grid = new T[floor.width, floor.height];
+    if (placementBehavior == null) {
+      placementBehavior = KillOldOnCollision;
+    }
+
+    this.PlacementBehavior = placementBehavior;
   }
 
   protected override T Get(int x, int y) => grid[x, y];
+
+  private void KillOldOnCollision(T entity) {
+    var old = this[entity.pos];
+    if (old != null) {
+      old.Kill();
+    }
+  }
 
   public override void Put(T entity) {
     if (entity.floor != null) {
       throw new Exception($"Trying to re-Put non-moving Entity {entity}!");
     }
-
-    var old = this[entity.pos];
-    if (old != null) {
-      // kill old grass; this indirectly also calls Remove()
-      old.Kill();
-    }
+    /*
+    */
+    PlacementBehavior(entity);
 
     grid[entity.pos.x, entity.pos.y] = entity;
   }

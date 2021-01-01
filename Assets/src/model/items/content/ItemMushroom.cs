@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ObjectInfo("mushroom", "Don't pick them all! Mushrooms spread to nearby squares on their own.")]
 class ItemMushroom : Item, IStackable, IEdible {
   public ItemMushroom(int stacks) {
     this.stacks = stacks;
@@ -23,12 +24,28 @@ class ItemMushroom : Item, IStackable, IEdible {
   }
 
   public void Eat(Actor a) {
-    if (a is Player p) {
-      var amountToEat = Mathf.Clamp(Mathf.FloorToInt((1.0f - p.fullness) * 100), 0, stacks);
-      p.IncreaseFullness(0.01f * amountToEat);
-      stacks -= amountToEat;
-    }
+    a.statuses.Add(new WellFedStatus(10 * stacks));
+    stacks = 0;
   }
 
   internal override string GetStats() => $"Recover 1% hunger per mushroom ({stacks}%).";
+}
+
+[ObjectInfo("mushroom", "Yummy")]
+class WellFedStatus : StackingStatus, IBaseActionModifier {
+  private int turnsLeft = 50;
+
+  public WellFedStatus(int stacks) : base(stacks) {}
+
+  public BaseAction Modify(BaseAction input) {
+    turnsLeft--;
+    if (turnsLeft <= 0) {
+      input.actor.Heal(1);
+      turnsLeft = 50;
+      stacks--;
+    }
+    return input;
+  }
+
+  public override string Info() => $"Every 50 turns ({turnsLeft} left), heal 1 HP.";
 }

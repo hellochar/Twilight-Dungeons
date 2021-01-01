@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraZoom : MonoBehaviour {
+  public static float lastZoomTime;
+  public static bool IsZoomGuardActive => Time.time - lastZoomTime < 0.5f;
   public float minZoom = 3;
   public float maxZoom = 15;
   // Start is called before the first frame update
@@ -28,7 +30,7 @@ public class CameraZoom : MonoBehaviour {
 
         // get offset value
         float deltaDistance = oldTouchDistance - currentTouchDistance;
-        Zoom(-deltaDistance / Screen.height * 10f);
+        Zoom(-deltaDistance / Screen.height * 5f);
       }
     }
 
@@ -39,6 +41,7 @@ public class CameraZoom : MonoBehaviour {
   }
 
   void Zoom(float scroll) {
+    lastZoomTime = Time.time;
     var camera = Camera.main;
     var scalar = Mathf.Pow(1.1f, -scroll);
     var newSize = camera.orthographicSize * scalar;

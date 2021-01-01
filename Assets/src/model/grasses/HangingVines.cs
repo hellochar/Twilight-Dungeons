@@ -13,7 +13,7 @@ public class HangingVines : Grass {
   }
 
   private void HandleDeath() {
-    inventory.DropRandomlyOntoFloorAround(floor, tileBelow.pos);
+    inventory.TryDropAllItems(floor, tileBelow.pos);
     if (appliedStatus != null) {
       appliedStatus.Remove();
     }
@@ -71,7 +71,24 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
   internal override string GetStats() => "Max damage is equal to number of stacks.\nLose one stack on attack.";
 }
 
-// Called when this weapon is used for an attack
-public interface IAttackHandler {
-  void OnAttack(Actor target);
+public class BoundStatus : StackingStatus, IBaseActionModifier {
+  public override bool isDebuff => true;
+  public override StackingMode stackingMode => StackingMode.Max;
+  public BoundStatus() {
+    stacks = 3;
+  }
+
+  public override string Info() => $"You must break free of vines before you can move or attack!\n{(int)(stacks / 3.0f * 100)}% bound.";
+
+  public BaseAction Modify(BaseAction input) {
+    if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {
+      stacks--;
+      if (stacks <= 0) {
+        return input;
+      } else {
+        return new StruggleBaseAction(input.actor);
+      }
+    }
+    return input;
+  }
 }

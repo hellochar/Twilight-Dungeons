@@ -18,7 +18,7 @@ public class StatusIconController : MonoBehaviour {
   }
 
   void Update() {
-    if (status is StackingStatus stacking) {
+    if (status is StackingStatus stacking && status.list != null) {
       text.text = stacking.stacks.ToString();
     }
   }

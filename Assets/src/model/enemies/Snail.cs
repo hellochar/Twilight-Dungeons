@@ -43,7 +43,6 @@ public class Snail : AIActor {
   }
 
   private IEnumerable<ActorTask> AI() {
-    yield return new SleepTask(this);
     while (true) {
       if (isVisible) {
         if (IsNextTo(GameModel.main.player)) {
@@ -138,6 +137,7 @@ internal class InShellStatus : StackingStatus, IDamageTakenModifier, IBaseAction
 }
 
 internal class SlimedStatus : Status, IActionCostModifier, IBaseActionModifier {
+  public override bool isDebuff => true;
   public SlimedStatus() : base() {}
 
   public ActionCosts Modify(ActionCosts input) {

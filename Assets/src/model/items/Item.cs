@@ -19,7 +19,7 @@ public class Item {
 
   public void Drop(Actor a) {
     if (inventory != null) {
-      inventory.DropRandomlyOntoFloorAround(a.floor, a.pos);
+      inventory.TryDropItem(a.floor, a.pos, this);
     }
   }
 

@@ -81,9 +81,11 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
   }
 
   public void OnPointerClick(PointerEventData eventData) {
-    var worldPos = eventData.pointerCurrentRaycast.worldPosition;
-    var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
-    UserInteractAt(pos, eventData);
+    if (!CameraZoom.IsZoomGuardActive) {
+      var worldPos = eventData.pointerCurrentRaycast.worldPosition;
+      var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+      UserInteractAt(pos, eventData);
+    }
   }
 
   public void UserInteractAt(Vector2Int pos, PointerEventData eventData) {

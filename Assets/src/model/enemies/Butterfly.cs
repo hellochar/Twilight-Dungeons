@@ -11,8 +11,6 @@ public class Butterfly : AIActor {
   }
 
   private IEnumerable<ActorTask> AI() {
-    yield return new SleepTask(this);
-
     statuses.Add(new CharmedStatus());
 
     var player = GameModel.main.player;
@@ -26,7 +24,6 @@ public class Butterfly : AIActor {
 
     var duplicateCooldown = 0;
 
-    var lifeRemaining = 100;
     while (true) {
       // if (--lifeRemaining <= 0) {
       //   yield return new GenericTask(this, (_) => {
@@ -48,7 +45,6 @@ public class Butterfly : AIActor {
           yield return new GenericTask(this, (_) => {
             DuplicateGrass(pick);
             duplicateCooldown = 20;
-            lifeRemaining = 100;
           });
           continue;
         }

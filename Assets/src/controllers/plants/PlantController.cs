@@ -54,7 +54,7 @@ public class PlantController : ActorController {
       return;
     }
     // Clicking inside the popup will trigger this method; account for that by checking if the clicked location is in the tile.
-    Tile t = Util.GetVisibleTileAt(pointerEventData.position);
+    Tile t = pointerEventData == null ? plant.tile : Util.GetVisibleTileAt(pointerEventData.position);
     if (t != null && t == plant.tile && t.visibility == TileVisiblity.Visible) {
       TogglePopup();
     }
@@ -80,8 +80,10 @@ public class PlantController : ActorController {
     plant.Cull();
   }
 
-  internal void Water(ItemWaterPail pail) {
-    popupOpen = false;
-    pail.Water(plant);
+  internal void Water(Player player) {
+    if (player.water > 0) {
+      player.water--;
+      plant.water++;
+    }
   }
 }

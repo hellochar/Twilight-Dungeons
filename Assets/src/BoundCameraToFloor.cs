@@ -7,7 +7,7 @@ public class BoundCameraToFloor : MonoBehaviour {
   private Bounds bounds = new Bounds(new Vector3(-999, -999), new Vector3(999, 999));
   /// Allow camera bounds to go beyond the map bounds.
   /// Set to 2 to allow the bottom-left corner (where the backpack is) to not be blocked
-  public float padding = 2;
+  public float paddingTop = 2, paddingRight = 2, paddingBottom = 2, paddingLeft = 2;
   new private Camera camera;
 
   // Start is called before the first frame update
@@ -19,8 +19,8 @@ public class BoundCameraToFloor : MonoBehaviour {
   void Update() {
     /// bug - if the current floor is less than 1 bounds, the camera shakes
 
-    bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-padding, -padding, 0);
-    bounds.max = Util.withZ(GameModel.main.currentFloor.boundsMax) + new Vector3(padding, padding, 0);
+    bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-paddingLeft, -paddingBottom, 0);
+    bounds.max = Util.withZ(GameModel.main.currentFloor.boundsMax) + new Vector3(paddingRight, paddingTop, 0);
 
     Bounds cameraBounds = OrthographicBounds(this.camera);
     bool constrainX = bounds.extents.x > cameraBounds.extents.x;

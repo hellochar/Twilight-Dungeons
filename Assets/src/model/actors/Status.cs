@@ -4,6 +4,7 @@ using System.Linq;
 
 /// Trying to reapply an existing status will call "Stack"
 public abstract class Status : IStepModifier {
+  public virtual bool isDebuff => false;
   public event Action OnRemoved;
   private StatusList m_list;
   /// <summary>Should only be set by the StatusList.</summary>
@@ -19,7 +20,7 @@ public abstract class Status : IStepModifier {
       }
     }
   }
-  public Actor actor => list.actor;
+  public Actor actor => list?.actor;
 
   /// Called when list and actor are setup
   public virtual void Start() {}
@@ -131,41 +132,3 @@ public class StatusList {
   }
 }
 
-public class SoftGrassStatus : Status, IActionCostModifier {
-  public ActionCosts Modify(ActionCosts costs) {
-    // 11% faster
-    costs[ActionType.MOVE] *= 0.9f;
-    return costs;
-  }
-
-  public override void Step() {
-    if (!(actor.grass is SoftGrass)) {
-      Remove();
-    }
-  }
-
-  public override string Info() => "Player moves 11% faster in Soft Grass.";
-
-  public override void Stack(Status other) { }
-}
-
-public class BoundStatus : StackingStatus, IBaseActionModifier {
-  public override StackingMode stackingMode => StackingMode.Max;
-  public BoundStatus() {
-    stacks = 3;
-  }
-
-  public override string Info() => $"You must break free of vines before you can move or attack!\n{(int)(stacks / 3.0f * 100)}% bound.";
-
-  public BaseAction Modify(BaseAction input) {
-    if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {
-      stacks--;
-      if (stacks <= 0) {
-        return input;
-      } else {
-        return new StruggleBaseAction(input.actor);
-      }
-    }
-    return input;
-  }
-}

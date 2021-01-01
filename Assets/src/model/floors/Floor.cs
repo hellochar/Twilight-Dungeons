@@ -66,7 +66,13 @@ public class Floor {
     this.height = height;
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Grass>(this);
-    this.items = new StaticEntityGrid<ItemOnGround>(this);
+    this.items = new StaticEntityGrid<ItemOnGround>(this, (item) => {
+      var newPosition = BreadthFirstSearch(item.pos, (_) => true)
+        .Where(ItemOnGround.CanOccupy)
+        .First()
+        .pos;
+      item.pos = newPosition;
+    });
     this.actors = new MovingEntityList<Actor>(this);
     this.entities = new HashSet<Entity>();
     this.steppableEntities = new List<SteppableEntity>();
@@ -299,6 +305,17 @@ public class Floor {
       for (int y = min.y; y < max.y; y++) {
         yield return new Vector2Int(x, y);
       }
+    }
+  }
+
+  public IEnumerable<Vector2Int> EnumeratePerimeter() {
+    for (int x = 0; x < width; x++) {
+      yield return new Vector2Int(x, 0);
+      yield return new Vector2Int(x, height - 1);
+    }
+    for (int y = 0; y < height; y++) {
+      yield return new Vector2Int(0, y);
+      yield return new Vector2Int(width - 1, y);
     }
   }
 

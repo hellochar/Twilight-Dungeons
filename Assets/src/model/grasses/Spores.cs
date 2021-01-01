@@ -75,11 +75,11 @@ internal class SporeBloat : AIActor {
 }
 
 [ObjectInfo("slimed", "eww")]
-internal class SporedStatus : StackingStatus, IAttackDamageModifier {
+internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier {
   public SporedStatus(int stacks) : base(stacks) {
   }
 
-  public override string Info() => $"You do {stacks} less damage!\nStacks are equal to number of adjacent Spore Bloats.";
+  public override string Info() => $"You do {stacks} less damage!\nYou move twice as slow.\nStacks are equal to number of adjacent Spore Bloats.";
 
   public override void Step() {
     GameModel.main.EnqueueEvent(() => {
@@ -92,5 +92,10 @@ internal class SporedStatus : StackingStatus, IAttackDamageModifier {
 
   public int Modify(int input) {
     return input - stacks;
+  }
+
+  public ActionCosts Modify(ActionCosts input) {
+    input[ActionType.MOVE] *= 2;
+    return input;
   }
 }

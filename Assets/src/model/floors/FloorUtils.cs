@@ -17,24 +17,19 @@ public static class FloorUtils {
   }
 
   internal static List<Tile> EmptyTilesInRoom(Floor floor, Room room) {
-    return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()).ToList();
+    return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs || t is Upstairs)).ToList();
   }
 
-  internal static Tile EmptyTileNearestCenter(Floor floor, Room room) {
-    var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
-    emptyTilesInRoom.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
-    return emptyTilesInRoom.FirstOrDefault();
+  internal static List<Tile> TilesFromCenter(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    tiles.OrderBy((t) => Vector2Int.Distance(t.pos, room.center));
+    return tiles.ToList();
   }
 
   // surround floor perimeter with walls
   public static void SurroundWithWalls(Floor floor) {
-    for (int x = 0; x < floor.width; x++) {
-      floor.Put(new Wall(new Vector2Int(x, 0)));
-      floor.Put(new Wall(new Vector2Int(x, floor.height - 1)));
-    }
-    for (int y = 0; y < floor.height; y++) {
-      floor.Put(new Wall(new Vector2Int(0, y)));
-      floor.Put(new Wall(new Vector2Int(floor.width - 1, y)));
+    foreach (var p in floor.EnumeratePerimeter()) {
+      floor.Put(new Wall(p));
     }
   }
 

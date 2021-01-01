@@ -19,7 +19,9 @@ public class ActorTaskController : MonoBehaviour {
       var anim = gameObject.AddComponent<FadeThenDestroy>();
       anim.fadeTime = 0.25f;
       anim.shrink = 0f;
-      // Destroy(this.gameObject);
+      if (task is SleepTask) {
+        Destroy(this.gameObject);
+      }
     }
   }
 }

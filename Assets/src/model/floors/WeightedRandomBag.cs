@@ -44,14 +44,14 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   private float GetAccumulatedWeight() => entries.Select(e => e.weight).Sum();
 
   /// Get an item and then mutate this bag such that the item has v% less weight
-  internal T GetRandomAndDiscount(float v) {
+  internal T GetRandomAndDiscount(float reduceChanceBy = 0.25f) {
     var item = GetRandom();
 
     var currentWeight = GetWeight(item);
     var accumulatedWeight = GetAccumulatedWeight();
 
     var currentChance = currentWeight / GetAccumulatedWeight();
-    var newChance = currentChance * (1f - v);
+    var newChance = currentChance * (1f - reduceChanceBy);
 
     // newChance = newWeight / (newWeight + rest), solve for newWeight
     // newChance * (newWeight + rest) = newWeight

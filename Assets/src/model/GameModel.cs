@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using System.Collections;
 
 public class GameModel {
+  public int seed;
   public Player player;
   public Floor[] floors;
   public int activeFloorIndex = 0;
@@ -28,14 +29,20 @@ public class GameModel {
   public static GameModel main;
 
   public static void InitMain() {
-    // UnityEngine.Random.InitState(1);
-    main = new GameModel();
+    var seed = UnityEngine.Random.Range(0, 100000);
+    main = new GameModel(seed);
     // main.generateGameModel();
     main.generateTinyFloorGameModel();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately
     do { } while (step.MoveNext());
   }
+
+  public GameModel(int seed) {
+    this.seed = seed;
+    UnityEngine.Random.InitState(seed);
+  }
+
 
   public void EnqueueEvent(Action cb) {
     eventQueue.Add(cb);
@@ -67,26 +74,6 @@ public class GameModel {
     return turnManager.StepUntilPlayersChoice();
   }
 
-  public void generateGameModel() {
-    this.floors = new Floor[] {
-      // FloorGenerator.EncounterTester(),
-      FloorGenerator.generateRestFloor(0),
-      FloorGenerator.generateRandomFloor(1, 35, 20, 11),
-      FloorGenerator.generateRandomFloor(2, 48, 20, 16),
-      FloorGenerator.generateRandomFloor(3),
-      FloorGenerator.generateRandomFloor(4),
-      FloorGenerator.generateRestFloor(5),
-      FloorGenerator.generateRandomFloor(6),
-      FloorGenerator.generateRandomFloor(7),
-      FloorGenerator.generateRandomFloor(8),
-      FloorGenerator.generateRandomFloor(9),
-    };
-
-    Tile floor0Upstairs = floors[0].upstairs;
-    this.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
-    floors[0].Put(this.player);
-  }
-
   public void generateTinyFloorGameModel() {
     this.floors = new Floor[] {
       // FloorGenerator.EncounterTester(),
@@ -94,18 +81,18 @@ public class GameModel {
       FloorGenerator.generateTinyFloor(1, 9, 9),
       FloorGenerator.generateTinyFloor(2, 10, 10),
       FloorGenerator.generateTinyFloor(3, 11, 11),
-      FloorGenerator.generateTinyFloor(4, 11, 11, 1, true),
+      FloorGenerator.generateTinyFloor(4, 11, 11, 1),
       FloorGenerator.generateTinyFloor(5, 15, 15, 2),
       FloorGenerator.generateTinyFloor(6, 13, 13, 2),
       FloorGenerator.generateTinyFloor(7, 11, 11, 2),
       FloorGenerator.generateRewardFloor(8),
-      FloorGenerator.generateTinyFloor(9, 9, 9),
-      FloorGenerator.generateTinyFloor(10, 14, 7, 2),
-      FloorGenerator.generateTinyFloor(11, 9, 9, 2),
-      FloorGenerator.generateTinyFloor(12, 10, 10, 2, true),
-      FloorGenerator.generateTinyFloor(13, 12, 12, 3),
-      FloorGenerator.generateTinyFloor(14, 13, 13, 3),
-      FloorGenerator.generateTinyFloor(15, 15, 15, 4),
+      FloorGenerator.generateTinyFloor(9, 13, 9, 2, 2),
+      FloorGenerator.generateTinyFloor(10, 14, 7, 2, 2),
+      FloorGenerator.generateTinyFloor(11, 20, 9, 3, 2),
+      FloorGenerator.generateTinyFloor(12, 10, 10, 2, 2),
+      FloorGenerator.generateTinyFloor(13, 12, 12, 3, 2),
+      FloorGenerator.generateTinyFloor(14, 13, 13, 3, 2),
+      FloorGenerator.generateTinyFloor(15, 15, 15, 4, 2),
       FloorGenerator.generateRewardFloor(16),
       FloorGenerator.generateRandomFloor(17, 15, 15, 4),
       FloorGenerator.generateRandomFloor(18, 20, 20, 4),
@@ -117,8 +104,7 @@ public class GameModel {
       FloorGenerator.generateRewardFloor(24)
     };
 
-    Tile floor0Upstairs = floors[0].upstairs;
-    this.player = new Player(new Vector2Int(floor0Upstairs.pos.x + 1, floor0Upstairs.pos.y));
+    this.player = new Player(floors[0].upstairs.landing);
     floors[0].Put(this.player);
   }
 

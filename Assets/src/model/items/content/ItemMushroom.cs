@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ObjectInfo("mushroom", "Don't pick them all! Mushrooms spread to nearby squares on their own.")]
+[ObjectInfo("mushroom", "They have such an interesting taste!")]
 class ItemMushroom : Item, IStackable, IEdible {
   public ItemMushroom(int stacks) {
     this.stacks = stacks;
@@ -24,7 +24,7 @@ class ItemMushroom : Item, IStackable, IEdible {
   }
 
   public void Eat(Actor a) {
-    a.statuses.Add(new WellFedStatus(10 * stacks));
+    a.statuses.Add(new PumpedUpStatus(stacks));
     stacks = 0;
   }
 
@@ -32,20 +32,24 @@ class ItemMushroom : Item, IStackable, IEdible {
 }
 
 [ObjectInfo("mushroom", "Yummy")]
-class WellFedStatus : StackingStatus, IBaseActionModifier {
-  private int turnsLeft = 50;
-
-  public WellFedStatus(int stacks) : base(stacks) {}
+class PumpedUpStatus : StackingStatus, IBaseActionModifier, IActionCostModifier {
+  public PumpedUpStatus(int stacks) : base(stacks) {}
+  bool isModifying = false;
 
   public BaseAction Modify(BaseAction input) {
-    turnsLeft--;
-    if (turnsLeft <= 0) {
-      input.actor.Heal(1);
-      turnsLeft = 50;
+    if (input.Type == ActionType.ATTACK) {
+      isModifying = true;
       stacks--;
     }
     return input;
   }
 
-  public override string Info() => $"Every 50 turns ({turnsLeft} left), heal 1 HP.";
+  public ActionCosts Modify(ActionCosts input) {
+    if (isModifying) {
+      input[ActionType.ATTACK] /= (1.5f);
+    }
+    return input;
+  }
+
+  public override string Info() => $"Your next {stacks} attacks are performed 50% faster!";
 }

@@ -47,8 +47,7 @@ public static class Encounters {
   });
 
   public static Encounter JackalPile = new Encounter((floor, room) => {
-    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
-    tiles.OrderBy(x => Vector2.Distance(x.pos, room.centerFloat));
+    var tiles = FloorUtils.TilesFromCenter(floor, room);
     var num = RandomRangeBasedOnFloor(floor,
       (1, 2),
       (2, 2),
@@ -61,7 +60,7 @@ public static class Encounters {
   });
 
   public static Encounter BatInCorner = new Encounter((floor, room) => {
-    var tiles = FloorUtils.TilesSortedAwayFromFloorCenter(floor, room).Where(tile => tile.CanBeOccupied());
+    var tiles = FloorUtils.TilesAwayFromCenter(floor, room).Where(tile => tile.CanBeOccupied());
     // sort by farthest distance to center of map
     foreach (var tile in tiles.Take(1)) {
       floor.Put(new Bat(tile.pos));
@@ -111,15 +110,15 @@ public static class Encounters {
     }
   });
 
-  public static Encounter AddBrambles = new Encounter((floor, room) => {
+  public static Encounter AddBladegrass = new Encounter((floor, room) => {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var numSoftGrass = Random.Range(numTiles / 8, numTiles / 4);
+      var numSoftGrass = Random.Range(numTiles / 4, numTiles / 2);
       foreach (var tile in bfs.Take(numSoftGrass)) {
-        var grass = new Brambles(tile.pos);
+        var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
       }
     }
@@ -157,7 +156,7 @@ public static class Encounters {
         tile.pos.y > 0 &&
         floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground
       ).ToList();
-    for (int i = 1; i < wallsWithGroundBelow.Count; i += Random.Range(2, 4)) {
+    for (int i = 1; i < wallsWithGroundBelow.Count; i += Random.Range(2, 5)) {
       floor.Put(new HangingVines(wallsWithGroundBelow[i].pos));
     }
   });
@@ -244,7 +243,7 @@ public static class Encounters {
   public static Encounter AddWater = new Encounter((floor, room) => {
     var numWaters = Random.Range(3, 7);
     var startPos = room.center;
-    foreach (var tile in FloorUtils.TilesSortedAwayFromFloorCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
+    foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
       floor.Put(new Water(tile.pos));
     }
   });
@@ -264,7 +263,7 @@ public static class Encounters {
   });
 
   public static Encounter AddPumpkin = new Encounter((floor, room) => {
-    var tile = FloorUtils.TilesFromCenter(floor, room).FirstOrDefault();
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new ItemOnGround(tile.pos, new ItemPumpkin()));
     }
@@ -273,7 +272,8 @@ public static class Encounters {
   public static Encounter WallPillars = new Encounter((floor, room) => {
     var positions = floor.EnumerateRoom(room).ToList();
     positions.Shuffle();
-    foreach (var pos in positions) {
+    var num = Random.Range(positions.Count / 2, positions.Count + 1);
+    foreach (var pos in positions.Take(num)) {
       if (!floor.GetAdjacentTiles(pos).Any((t) => t is Wall)) {
         floor.Put(new Wall(pos));
       }
@@ -323,7 +323,7 @@ public static class Encounters {
   public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     // { 1f, Empty },
     { 1f, AddSoftGrass },
-    { 0.75f, AddBrambles },
+    { 0.75f, AddBladegrass },
     { 0.75f, AddHangingVines },
     { 0.5f, AddGuardleaf },
     { 0.5f, AddSpore },
@@ -342,7 +342,7 @@ public static class Encounters {
     { 0.5f, AFewSnails },
     { 0.1f, OneSpider },
     { 0.25f, AddSoftGrass },
-    { 0.25f, AddBrambles },
+    { 0.25f, AddBladegrass },
     { 0.1f, AddGuardleaf },
     { 0.1f, AddSpore },
   };

@@ -32,11 +32,12 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 6482642
+    totalSpriteSurfaceArea: 6482898
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 40e68100d86f0c34ea0d7aea9966ff25, type: 3}
+  - {fileID: 21300000, guid: 3c3cf210ca4c9344fac5f56eb3c57f5e, type: 3}
   - {fileID: 21300000, guid: 6c1f5dc0c34f91c4684c813c41bb843e, type: 3}
   - {fileID: -5025174812137501099, guid: 8dafc7f001ea89746a4d15b485422b74, type: 3}
   - {fileID: -367015839217504639, guid: 8dafc7f001ea89746a4d15b485422b74, type: 3}
@@ -7881,6 +7882,7 @@ SpriteAtlas:
   - {fileID: 4047403940040452729, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
   m_PackedSpriteNamesToIndex:
   - 1bit 16px patterns and tiles
+  - slimed
   - heart_animated_1
   - heart_animated_2_1
   - heart_animated_2_0
@@ -14124,7 +14126,7 @@ SpriteAtlas:
   - stealthix-speech-bubble
   - health_bar_decoration
   - Clock
-  - slimed
+  - spored-status
   - Textures_v02
   - ui_split
   - health_bar

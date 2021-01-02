@@ -49,13 +49,13 @@ public static class FloorGenerator {
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     // Encounters.OneButterfly(floor, room0);
     // Encounters.OneSpider(floor, room0);
-    Encounters.AddSpore(floor, room0);
-    // Encounters.AddBrambles(floor, room0);
+    // Encounters.AddSpore(floor, room0);
+    // Encounters.AddBladegrass(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
     Encounters.AddWater(floor, room0);
     // Encounters.BatInCorner(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
-    Encounters.AFewSnails(floor, room0);
+    // Encounters.AFewSnails(floor, room0);
     // Encounters.AFewBlobs(floor, room0);
 
     return floor;
@@ -77,7 +77,7 @@ public static class FloorGenerator {
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
 
     Encounters.PlaceFancyGround(floor, room0);
-    Encounters.CavesRewards.GetRandom()(floor, room0);
+    Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
     Encounters.CavesPlantRewards.GetRandomAndDiscount(0.9f)(floor, room0);
 
     // just do nothing on this floor
@@ -89,7 +89,7 @@ public static class FloorGenerator {
     return path.Any();
   }
 
-  public static Floor generateTinyFloor(int depth, int width, int height, int numMobs = 1, bool reward = false) {
+  public static Floor generateTinyFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false) {
     Floor floor = new Floor(depth, width, height);
 
     // fill with wall
@@ -111,15 +111,17 @@ public static class FloorGenerator {
     floor.upstairsRoom = room0;
     floor.downstairsRoom = room0;
 
-    Encounters.CavesWalls.GetRandom()(floor, room0);
+    Encounters.CavesWalls.GetRandomAndDiscount()(floor, room0);
     for (var i = 0; i < numMobs; i++) {
-      Encounters.CavesMobs.GetRandom()(floor, room0);
+      Encounters.CavesMobs.GetRandomAndDiscount()(floor, room0);
     }
-    Encounters.CavesGrasses.GetRandom()(floor, room0);
+    for (var i = 0; i < numGrasses; i++) {
+      Encounters.CavesGrasses.GetRandomAndDiscount()(floor, room0);
+    }
     if (reward) {
-      Encounters.CavesRewards.GetRandom()(floor, room0);
+      Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
     }
-    Encounters.CavesDeadEnds.GetRandom()(floor, room0);
+    Encounters.CavesDeadEnds.GetRandomAndDiscount()(floor, room0);
 
     // clear stairs so player doesn't walk into a shitshow
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
@@ -151,13 +153,13 @@ public static class FloorGenerator {
       .First();
 
     Encounters.PlaceFancyGround(floor, rewardRoom);
-    Encounters.SurroundWithRubble(floor, rewardRoom);
-    var rewardEncounter = Encounters.CavesRewards.GetRandom();
+    // Encounters.SurroundWithRubble(floor, rewardRoom);
+    var rewardEncounter = Encounters.CavesRewards.GetRandomAndDiscount();
     rewardEncounter(floor, rewardRoom);
 
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
     foreach (var room in deadEndRooms) {
-      if (Random.value < 0.2f) {
+      if (Random.value < 0.05f) {
         Encounters.SurroundWithRubble(floor, room);
       }
       var encounter = Encounters.CavesDeadEnds.GetRandom();
@@ -166,21 +168,18 @@ public static class FloorGenerator {
 
     // Add mobs; each time a mob encounter is added, the chance it happens again
     // is discounted by this much.
-    var discount = 0.25f;
-    var mobs = Encounters.CavesMobs.Clone();
     foreach (var room in floor.rooms) {
       if (room != floor.upstairsRoom && room != rewardRoom) {
         // spawn a random encounter
-        var encounter = mobs.GetRandomAndDiscount(discount);
+        var encounter = Encounters.CavesMobs.GetRandomAndDiscount();
         encounter(floor, room);
       }
     }
 
-    var grasses = Encounters.CavesGrasses.Clone();
     floor.root.Traverse((room) => {
       // this includes abstract rooms!
       if (room.depth >= 2) {
-        var encounter = grasses.GetRandomAndDiscount(discount);
+        var encounter = Encounters.CavesGrasses.GetRandomAndDiscount();
         encounter(floor, room);
       }
     });
@@ -220,7 +219,7 @@ public static class FloorGenerator {
     rooms.ForEach(room => room.randomlyShrink());
 
     foreach (var (a, b) in ConnectRooms(rooms, root)) {
-      foreach (var point in floor.EnumerateLine(a, b)) {
+      foreach (var point in floor.EnumerateLine(a, b).SelectMany((pos) => floor.GetAdjacentTiles(pos).Select(t => t.pos))) {
         floor.Put(new Ground(point));
       }
     }

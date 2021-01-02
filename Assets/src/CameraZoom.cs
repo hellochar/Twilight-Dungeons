@@ -30,7 +30,7 @@ public class CameraZoom : MonoBehaviour {
 
         // get offset value
         float deltaDistance = oldTouchDistance - currentTouchDistance;
-        Zoom(-deltaDistance / Screen.height * 5f);
+        Zoom(-deltaDistance / Screen.height * 8.75f);
       }
     }
 

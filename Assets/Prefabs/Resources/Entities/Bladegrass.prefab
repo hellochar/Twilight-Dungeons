@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8588317691317532318}
   - component: {fileID: 7054783270053774314}
   m_Layer: 9
-  m_Name: Brambles
+  m_Name: Bladegrass
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: -1591897895
   m_SortingLayer: 2
   m_SortingOrder: -2
-  m_Sprite: {fileID: -1261573385363623454, guid: d448e116fde663d45b7e3114fbe44e5d,
+  m_Sprite: {fileID: 7506423824143329095, guid: d448e116fde663d45b7e3114fbe44e5d,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

@@ -10,20 +10,21 @@ public static class FloorUtils {
     return tiles;
   }
 
-  public static List<Tile> TilesSortedAwayFromFloorCenter(Floor floor, Room room) {
-    var tiles = floor.EnumerateRoomTiles(room).ToList();
-    tiles.OrderByDescending((t) => Vector2.Distance(t.pos, floor.center));
-    return tiles;
-  }
-
   internal static List<Tile> EmptyTilesInRoom(Floor floor, Room room) {
     return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs || t is Upstairs)).ToList();
   }
 
   internal static List<Tile> TilesFromCenter(Floor floor, Room room) {
-    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
-    tiles.OrderBy((t) => Vector2Int.Distance(t.pos, room.center));
-    return tiles.ToList();
+    return FloorUtils
+      .EmptyTilesInRoom(floor, room)
+      .OrderBy((t) => Vector2.Distance(t.pos, room.centerFloat))
+      .ToList();
+  }
+
+  public static List<Tile> TilesAwayFromCenter(Floor floor, Room room) {
+    var tiles = TilesFromCenter(floor, room);
+    tiles.Reverse();
+    return tiles;
   }
 
   // surround floor perimeter with walls

@@ -62,6 +62,7 @@ internal class SporeBloat : AIActor {
 
 [ObjectInfo("spored-status", "eww")]
 internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier, IActorKilledHandler {
+  public override StackingMode stackingMode => StackingMode.Max;
   public SporedStatus(int stacks) : base(stacks) {}
 
   public override string Info() => $"You do 2 less damage!\nYou move twice as slow.\n{stacks} turns remaining.";

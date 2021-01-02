@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,7 +13,9 @@ public class DepthTextController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    text.text = "Depth " + (GameModel.main.currentFloor.depth);
+    var timeSpan = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
+    var timeSpanText = timeSpan.ToString(@"hh\:mm\:ss");
+    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nSeed " + GameModel.main.seed + "\n" + timeSpanText;
     // text.text += "\nTime " + GameModel.main.time;
     // text.text += "\nStatuses: " + string.Join(", ", GameModel.main.player.statuses.list.Select(x => x.ToString()));
     // if (GameModel.main.turnManager != null) {

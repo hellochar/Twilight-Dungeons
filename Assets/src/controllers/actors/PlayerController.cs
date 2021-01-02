@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : ActorController {
   Player player => (Player) actor;
-  private int deepestDepthVisited = 0;
+  private int deepestDepthVisited = 16;
 
   public override void Start() {
     base.Start();
@@ -23,6 +23,9 @@ public class PlayerController : ActorController {
   public override void Update() {
     if (Input.GetKeyDown(KeyCode.V)) {
       player.SetTasks(new SleepTask(player));
+    }
+    if (Input.GetKeyDown(KeyCode.Space)) {
+      player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
     }
     base.Update();
   }

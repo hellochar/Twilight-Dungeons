@@ -22,7 +22,7 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     spriteObject = transform.Find("Sprite")?.gameObject;
     animator = spriteObject?.GetComponent<Animator>();
 
-    actor.OnTakeDamage += HandleTakeDamage;
+    actor.OnTakeAttackDamage += HandleTakeDamage;
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
@@ -71,7 +71,10 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
   }
 
   private void HandleStatusRemoved(Status status) {
-    animator?.SetBool(status.GetType().Name, false);
+    if (animator != null) {
+      animator.logWarnings = false;
+      animator?.SetBool(status.GetType().Name, false);
+    }
   }
 
   private void HandleSetTask(ActorTask task) {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Rubble : Actor, IBlocksVision, IDamageTakenModifier {
+public class Rubble : Actor, IBlocksVision, IAnyDamageTakenModifier {
   public Rubble(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 3;
     faction = Faction.Neutral;

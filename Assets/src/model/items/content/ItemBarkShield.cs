@@ -1,4 +1,4 @@
-public class ItemBarkShield : EquippableItem, IDurable, IDamageTakenModifier {
+public class ItemBarkShield : EquippableItem, IDurable, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Shield;
 
   public int durability { get; set; }

@@ -53,17 +53,17 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier {
   }
 
   private void HandleEquipped(Player p) {
-    p.OnTakeDamage += HandleTakeDamage;
+    p.OnTakeAttackDamage += HandleTakeAttackDamage;
   }
 
   private void HandleUnequipped(Player p) {
-    p.OnTakeDamage -= HandleTakeDamage;
+    p.OnTakeAttackDamage -= HandleTakeAttackDamage;
   }
 
-  private void HandleTakeDamage(int dmg, int hp, Actor source) {
+  private void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     var player = GameModel.main.player;
-    if (dmg > 0 && source != player) {
-      source.TakeDamage(1, player);
+    if (source != player) {
+      source.TakeDamage(1);
       this.ReduceDurability();
     }
   }
@@ -77,7 +77,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier {
 
 [ObjectInfo("thornshield", "Also spiky!")]
 internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
-  private class TakeLessDamage : IDamageTakenModifier {
+  private class TakeLessDamage : IAttackDamageTakenModifier {
     private ItemThornShield itemThornShield;
 
     public TakeLessDamage(ItemThornShield itemThornShield) {

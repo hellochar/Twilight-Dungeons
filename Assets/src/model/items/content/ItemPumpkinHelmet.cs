@@ -1,5 +1,5 @@
 [ObjectInfo(spriteName: "pumpkin-helmet", flavorText: "It slows you down but it protects your noggin.")]
-internal class ItemPumpkinHelmet : EquippableItem, IDurable, IDamageTakenModifier, IActionCostModifier {
+internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenModifier, IActionCostModifier {
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }
   public int maxDurability { get; protected set; }

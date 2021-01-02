@@ -2,24 +2,21 @@
 using System;
 using System.Collections.Generic;
 /// Don't do anything until the Player's in view
-class SleepTask : ActorTask, IDamageTakenModifier {
+class SleepTask : ActorTask, IAnyDamageTakenModifier {
   private bool done;
   private int? maxTurns;
   private readonly bool isDeepSleep;
 
   public bool wakeUpNextTurn { get; protected set; }
   public SleepTask(Actor actor, int? maxTurns = null, bool isDeepSleep = false) : base(actor) {
-    actor.OnTakeDamage += HandleTakeDamage;
     this.maxTurns = maxTurns;
     this.isDeepSleep = isDeepSleep;
   }
 
-  private void HandleTakeDamage(int dmg, int hp, Actor source) {
+  /// doubles damage taken while sleeping, also should wake up!
+  public int Modify(int input) {
     wakeUpNextTurn = true;
-  }
-
-  internal override void Ended() {
-    actor.OnTakeDamage -= HandleTakeDamage;
+    return input * 2;
   }
 
   protected virtual bool ShouldWakeUp() {
@@ -56,11 +53,6 @@ class SleepTask : ActorTask, IDamageTakenModifier {
       actor.statuses.Add(new SurprisedStatus());
     });
     yield return new WaitBaseAction(actor);
-  }
-
-  /// doubles damage taken while sleeping!
-  public int Modify(int input) {
-    return input * 2;
   }
 
   public override bool IsDone() => done;

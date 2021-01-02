@@ -262,7 +262,7 @@ public class Floor {
     return list;
   }
 
-  public IEnumerable<Tile> GetFourNeighbors(Vector2Int pos) {
+  public IEnumerable<Tile> GetCardinalNeighbors(Vector2Int pos) {
     var up = pos + new Vector2Int(0, +1);
     if (InBounds(up)) {
       yield return tiles[up];
@@ -353,7 +353,7 @@ public class Floor {
       frontier.RemoveFirst();
       yield return tile;
       seen.Add(tile);
-      var adjacent = GetFourNeighbors(tile.pos).Except(seen).Where(predicate).ToList();
+      var adjacent = GetCardinalNeighbors(tile.pos).Except(seen).Where(predicate).ToList();
       if (randomizeNeighborOrder) {
         adjacent.Shuffle();
       }

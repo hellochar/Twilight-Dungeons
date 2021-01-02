@@ -17,7 +17,10 @@ public class Spider : AIActor {
     faction = Faction.Enemy;
     hp = baseMaxHp = 7;
     ai = AI().GetEnumerator();
-    OnDealDamage += HandleDealDamage;
+    OnDealAttackDamage += HandleDealDamage;
+    if (UnityEngine.Random.value < 0.25f) {
+      inventory.AddItem(new ItemSpiderSandals(30));
+    }
     // OnMove += HandleMove;
   }
 
@@ -89,23 +92,19 @@ internal class Web : Grass {
     TriggerNoteworthyAction();
   }
 
-  bool IsActorNice(Actor actor) {
-    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSilkSandals);
+  public static bool IsActorNice(Actor actor) {
+    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
   }
 
   private void HandleActorLeave(Actor actor) {
     if (!IsActorNice(actor)) {
-      if (actor is Player player) {
-        player.inventory.AddItem(new ItemSpiderSilkSandals(1));
-      }
-      // actor.statuses.Add(new PoisonedStatus(1));
       Kill();
     }
   }
 }
 
 [ObjectInfo("spider-silk-shoes", "whoa")]
-internal class ItemSpiderSilkSandals : EquippableItem, IStackable {
+internal class ItemSpiderSandals : EquippableItem, IStackable {
   public override EquipmentSlot slot => EquipmentSlot.Feet;
   public int stacksMax => 30;
   private int _stacks;
@@ -122,7 +121,7 @@ internal class ItemSpiderSilkSandals : EquippableItem, IStackable {
     }
   }
 
-  public ItemSpiderSilkSandals(int stacks) {
+  public ItemSpiderSandals(int stacks) {
     this.stacks = stacks;
     OnEquipped += HandleEquipped;
     OnUnequipped += HandleUnequipped;
@@ -155,7 +154,11 @@ internal class ItemSpiderSilkSandals : EquippableItem, IStackable {
 
 internal class WebStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
-    costs[ActionType.MOVE] /= 2;
+    if (Web.IsActorNice(actor)) {
+      costs[ActionType.MOVE] /= 2;
+    } else {
+      costs[ActionType.MOVE] *= 2;
+    }
     return costs;
   }
 
@@ -167,7 +170,7 @@ internal class WebStatus : Status, IActionCostModifier {
 
   public override void Stack(Status other) { }
 
-  public override string Info() => "Move twice as fast through webs!";
+  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! Move twice as fast through webs." : "Move twice as slow through webs!";
 }
 
 /// stacks = turns
@@ -180,7 +183,7 @@ internal class PoisonedStatus : StackingStatus {
   public override void Step() {
     if (--duration <= 0) {
       if (stacks > 2) {
-        actor.TakeDamage(2, actor);
+        actor.TakeDamage(2);
       }
       --stacks;
       duration = 5;

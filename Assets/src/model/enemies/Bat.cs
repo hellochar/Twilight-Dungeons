@@ -9,8 +9,8 @@ public class Bat : AIActor {
     hp = baseMaxHp = 6;
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
-    OnDealDamage += HandleDealDamage;
-    OnTakeDamage += HandleTakeDamage;
+    OnDealAttackDamage += HandleDealDamage;
+    OnTakeAttackDamage += HandleTakeDamage;
   }
 
   /// bats hide in corners and occasionally attack the closest target

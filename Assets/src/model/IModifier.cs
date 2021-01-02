@@ -39,8 +39,12 @@ static class Modifiers {
     return Modifiers.Of<IBaseActionModifier>(provider);
   }
 
-  public static IEnumerable<IDamageTakenModifier> DamageTakenModifiers(this IModifierProvider provider) {
-    return Modifiers.Of<IDamageTakenModifier>(provider);
+  public static IEnumerable<IAttackDamageTakenModifier> AttackDamageTakenModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IAttackDamageTakenModifier>(provider);
+  }
+
+  public static IEnumerable<IAnyDamageTakenModifier> AnyDamageTakenModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IAnyDamageTakenModifier>(provider);
   }
 
   public static IEnumerable<IAttackDamageModifier> AttackDamageModifiers(this IModifierProvider provider) {
@@ -58,7 +62,8 @@ static class Modifiers {
 
 interface IActionCostModifier : IModifier<ActionCosts> {}
 interface IBaseActionModifier : IModifier<BaseAction> {}
-interface IDamageTakenModifier : IModifier<int> {}
+interface IAttackDamageTakenModifier : IModifier<int> {}
+interface IAnyDamageTakenModifier : IModifier<int> {}
 interface IAttackDamageModifier : IModifier<int> {}
 /// <summary>Kind of a hack to get declarative step()-ing.</summary>
 interface IStepModifier : IModifier<object> {}

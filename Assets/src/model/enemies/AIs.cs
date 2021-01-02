@@ -17,22 +17,6 @@ public static class AIs {
     }
   }
 
-  public static IEnumerable<ActorTask> BlobAI(Actor actor) {
-    while (true) {
-      bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;
-      // hack - start attacking you once the player has vision
-      if (canSeePlayer) {
-        if (actor.IsNextTo(GameModel.main.player)) {
-          yield return new AttackGroundTask(actor, GameModel.main.player.pos, 1);
-        } else {
-          yield return new ChaseTargetTask(actor, GameModel.main.player);
-        }
-      } else {
-        yield return new MoveRandomlyTask(actor);
-      }
-    }
-  }
-
   public static IEnumerable<ActorTask> JackalAI(Actor actor) {
     while (true) {
       bool canSeePlayer = actor.tile.visibility == TileVisiblity.Visible;

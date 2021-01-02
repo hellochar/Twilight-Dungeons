@@ -29,7 +29,7 @@ public class Player : Actor {
     OnAttack += HandleAttack;
     OnMove += HandleMove;
     OnMoveFailed += HandleMoveFailed;
-    OnTakeDamage += HandleTakeDamage;
+    OnTakeAttackDamage += HandleTakeDamage;
     OnActionPerformed += HandleActionPerformed;
     statuses.OnAdded += HandleStatusAdded;
   }
@@ -164,7 +164,7 @@ internal class StarvingStatus : Status {
 
   public override void Step() {
     if (cooldown <= 0) {
-      player.TakeDamage(1, player);
+      player.TakeDamage(1);
       cooldown = 50;
     }
     cooldown--;

@@ -32,7 +32,10 @@ public static class Popups {
 
     // Add sprite
     var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
-    UnityEngine.Object.Instantiate(sprite, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
+    var spriteGameObject = UnityEngine.Object.Instantiate(sprite, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
+    spriteGameObject.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+    spriteGameObject.GetComponent<RectTransform>().anchorMin = new Vector2();
+    spriteGameObject.GetComponent<RectTransform>().sizeDelta = new Vector2();
 
     // Add buttons
     var buttonsContainer = popup.transform.Find("Frame/Actions");

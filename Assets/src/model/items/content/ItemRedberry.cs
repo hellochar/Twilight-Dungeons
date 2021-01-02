@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 
-class ItemBerries : Item, IStackable, IUsable {
-  public ItemBerries(int stacks) {
+[ObjectInfo(spriteName: "redberry", flavorText: "Small but packed with goodness!")]
+class ItemRedberry : Item, IStackable, IUsable {
+  public ItemRedberry(int stacks) {
     this.stacks = stacks;
   }
 
@@ -30,5 +30,5 @@ class ItemBerries : Item, IStackable, IUsable {
     stacks--;
   }
 
-  internal override string GetStats() => "Heals 3 HP.\nRecover 5% hunger.";
+  internal override string GetStats() => "Heals 3 HP.";
 }

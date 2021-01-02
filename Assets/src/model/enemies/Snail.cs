@@ -15,7 +15,7 @@ public class Snail : AIActor {
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
     OnAttack += HandleAttack;
-    OnTakeDamage += HandleTakeDamage;
+    OnTakeAttackDamage += HandleTakeDamage;
     if (UnityEngine.Random.value < 0.2f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
@@ -85,7 +85,7 @@ public class ItemSnailShell : Item, IStackable {
   }
 
   public void Throw(Player player, Actor target) {
-    target.TakeDamage(3, player);
+    target.TakeAttackDamage(3, player);
     stacks--;
   }
 
@@ -118,7 +118,7 @@ public class ItemSnailShell : Item, IStackable {
 //   }
 // }
 
-internal class InShellStatus : StackingStatus, IDamageTakenModifier, IBaseActionModifier {
+internal class InShellStatus : StackingStatus, IAttackDamageTakenModifier, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Max;
   public InShellStatus(int stacks) : base(stacks) { }
 

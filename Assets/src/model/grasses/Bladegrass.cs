@@ -31,7 +31,7 @@ public class Bladegrass : Grass {
 
   private void HandleActorEnter(Actor actor) {
     if (isSharp) {
-      actor.TakeDamage(2, actor);
+      actor.TakeDamage(2);
       Kill();
     }
   }

@@ -13,10 +13,6 @@ public class ObjectInfo {
       spriteName = "colored_transparent_packed_134",
       flavorText = "Chunks of bark, twigs, and leaves are tightly bound together with sap and sinew into a makeshift shield. It'll protect you, but not for long."
     },
-    [typeof(ItemBerries)] = new ObjectInfo {
-      spriteName = "berry-red-1",
-      flavorText = "Small but packed with goodness!",
-    },
     [typeof(ItemSeed)] = new ObjectInfo {
       spriteName = "roguelikeSheet_transparent_532",
       flavorText = "But where shall I be,\nWhen this little Seed is a tall green Tree?"

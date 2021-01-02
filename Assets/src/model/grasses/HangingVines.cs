@@ -65,7 +65,9 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
   }
 
   public void OnAttack(Actor target) {
-    stacks--;
+    if (!(target is Rubble)) {
+      stacks--;
+    }
   }
 
   internal override string GetStats() => "Max damage is equal to number of stacks.\nLose one stack on attack.";

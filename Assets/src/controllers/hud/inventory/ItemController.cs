@@ -26,7 +26,6 @@ public class ItemController : MonoBehaviour {
     var wantedSprite = ObjectInfo.GetSpriteFor(item);
     if (wantedSprite != null) {
       image.sprite = wantedSprite;
-      image.rectTransform.sizeDelta = wantedSprite.rect.size * 2;
     }
 
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);

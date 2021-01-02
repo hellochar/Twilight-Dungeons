@@ -22,7 +22,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IActionPerformedHand
 
       if (adjacentEnemies.Any()) {
         foreach (var enemy in adjacentEnemies) {
-          enemy.TakeDamage(1, final.actor);
+          enemy.TakeAttackDamage(1, final.actor);
         }
         this.ReduceDurability();
       }

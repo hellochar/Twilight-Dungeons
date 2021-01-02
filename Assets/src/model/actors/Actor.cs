@@ -77,8 +77,9 @@ public class Actor : SteppableEntity, IModifierProvider {
   public event Action<Vector2Int, Vector2Int> OnMove;
   /// <summary>failed position, old position</summary>
   public event Action<Vector2Int, Vector2Int> OnMoveFailed;
-  public event Action<int, Actor> OnDealDamage;
-  public event Action<int, int, Actor> OnTakeDamage;
+  public event Action<int, Actor> OnDealAttackDamage;
+  public event Action<int, int, Actor> OnTakeAttackDamage;
+  public event Action<int> OnTakeAnyDamage;
   public event Action<int, int> OnHeal;
   /// gets called on a successful hit on a target
   public event Action<int, Actor> OnAttack;
@@ -115,15 +116,16 @@ public class Actor : SteppableEntity, IModifierProvider {
     return amount;
   }
 
-  /// create an Attack and execute it. Bypasses all damage modifiers.
+  /// create an Attack with the specified damage. This does *not* do damage modifiers.
   internal void Attack(Actor target, int damage) {
     if (target.IsDead) {
       throw new CannotPerformActionException("Cannot attack dead target.");
     }
     OnAttack?.Invoke(damage, target);
-    target.TakeDamage(damage, this);
+    target.TakeAttackDamage(damage, this);
   }
 
+  /// Attack the target, using this Actor's final attack damage.
   internal void Attack(Actor target) {
     Attack(target, GetFinalAttackDamage());
   }
@@ -152,16 +154,20 @@ public class Actor : SteppableEntity, IModifierProvider {
     }
   }
 
-  public void TakeDamage(int damage, Actor source) {
-    if (damage < 0) {
-      Debug.LogWarning("Cannot take negative damage!");
-      return;
-    }
-    damage = Modifiers.Process(this.DamageTakenModifiers(), damage);
+  public void TakeAttackDamage(int damage, Actor source) {
+    damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
+    source.OnDealAttackDamage?.Invoke(damage, this);
+    OnTakeAttackDamage?.Invoke(damage, hp, source);
+    TakeDamage(damage);
+  }
+
+  /// Take damage from any source.
+  public void TakeDamage(int damage) {
+    damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
+    damage = Math.Max(damage, 0);
+    OnTakeAnyDamage?.Invoke(damage);
     hp -= damage;
-    source.OnDealDamage?.Invoke(damage, this);
-    OnTakeDamage?.Invoke(damage, hp, source);
     if (hp <= 0) {
       Kill();
     }

@@ -25,25 +25,14 @@ public class Butterfly : AIActor {
     var duplicateCooldown = 0;
 
     while (true) {
-      // if (--lifeRemaining <= 0) {
-      //   yield return new GenericTask(this, (_) => {
-      //     Kill();
-      //   });
-      //   continue;
-      // }
       // we want to duplicate
       if (duplicateCooldown <= 0) {
         // find a grass
-        var adjacentGrass = floor
-          .GetAdjacentTiles(player.pos)
-          .Where(tile => tile.isVisible && tile.grass != null)
-          .Select(tile => tile.grass);
-
-        if (adjacentGrass.Any()) {
-          var pick = Util.RandomPick(adjacentGrass);
+        var playerGrass = player.grass;
+        if (playerGrass != null) {
           // we're on top of a grass, duplicate!
           yield return new GenericTask(this, (_) => {
-            DuplicateGrass(pick);
+            DuplicateGrass(playerGrass);
             duplicateCooldown = 20;
           });
           continue;
@@ -58,7 +47,7 @@ public class Butterfly : AIActor {
   }
 
   private void DuplicateGrass(Grass grass) {
-    var neighborTiles = grass.floor.GetFourNeighbors(grass.pos).Where((tile) => tile is Ground && tile.grass == null);
+    var neighborTiles = grass.floor.GetCardinalNeighbors(grass.pos).Where((tile) => tile is Ground && tile.grass == null);
     var constructorInfo = grass.GetType().GetConstructor(new System.Type[1] { typeof(Vector2Int) });
     foreach (var tile in neighborTiles) {
       var newGrass = (Grass)constructorInfo.Invoke(new object[] { tile.pos });

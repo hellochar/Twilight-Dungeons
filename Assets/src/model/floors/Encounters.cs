@@ -6,7 +6,8 @@ using Random = UnityEngine.Random;
 
 public delegate void Encounter(Floor floor, Room room);
 
-public static class Encounters {
+/// Specific Encounters are static, but bags of encounters are not; picking out of a bag will discount it.
+public class Encounters {
   private static int RandomRangeBasedOnFloor(Floor floor, params (int, int)[] values) {
     if (floor.depth == 0) { // When I debug encounters by adding them to floor 0
       return 3;
@@ -134,6 +135,14 @@ public static class Encounters {
       foreach (var tile in bfs.Take(num)) {
         floor.Put(new Guardleaf(tile.pos));
       }
+    }
+  });
+
+  public static Encounter AddWebs = new Encounter((floor, room) => {
+    var tiles = FloorUtils.TilesSortedByCorners(floor, room).ToList();
+    var num = Random.Range(tiles.Count / 8, tiles.Count / 2);
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Web(tile.pos));
     }
   });
 
@@ -304,7 +313,7 @@ public static class Encounters {
     }
   });
 
-  public static WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
+  public WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
     // { 2.5f, Empty },
     { 1, AFewBlobs },
     { 1, JackalPile },
@@ -313,25 +322,26 @@ public static class Encounters {
     { 0.35f, OneSpider }
   };
 
-  public static WeightedRandomBag<Encounter> CavesWalls = new WeightedRandomBag<Encounter> {
+  public WeightedRandomBag<Encounter> CavesWalls = new WeightedRandomBag<Encounter> {
     { 3f, Empty },
     { 0.5f, WallPillars },
     { 0.5f, ChunkInMiddle },
     { 0.5f, LineWithOpening },
   };
 
-  public static WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
+  public WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     // { 1f, Empty },
     { 1f, AddSoftGrass },
     { 0.75f, AddBladegrass },
-    { 0.75f, AddHangingVines },
-    { 0.5f, AddGuardleaf },
-    { 0.5f, AddSpore },
+    { 0.5f, AddHangingVines },
+    { 0.4f, AddGuardleaf },
+    { 0.4f, AddSpore },
+    { 0.4f, AddWebs },
     { 0.4f, ScatteredBoombugs },
     { 0.2f, AddDeathbloom },
   };
 
-  public static WeightedRandomBag<Encounter> CavesDeadEnds = new WeightedRandomBag<Encounter> {
+  public WeightedRandomBag<Encounter> CavesDeadEnds = new WeightedRandomBag<Encounter> {
     /// just to make it interesting, always give dead ends *something*
     { 5f, Empty },
     { 0.5f, AddWater },
@@ -347,7 +357,7 @@ public static class Encounters {
     { 0.1f, AddSpore },
   };
 
-  public static WeightedRandomBag<Encounter> CavesRewards = new WeightedRandomBag<Encounter> {
+  public WeightedRandomBag<Encounter> CavesRewards = new WeightedRandomBag<Encounter> {
     { 1f, AddMushroom },
     { 1f, AddPumpkin },
     { 1f, OnePlumpAstoria },
@@ -357,7 +367,7 @@ public static class Encounters {
     { 0.5f, ThreePlumpAstoriasInCorner },
   };
 
-  public static WeightedRandomBag<Encounter> CavesPlantRewards = new WeightedRandomBag<Encounter> {
+  public WeightedRandomBag<Encounter> CavesPlantRewards = new WeightedRandomBag<Encounter> {
     { 1f, MatureBerryBush },
     { 1f, MatureThornleaf },
     { 1f, MatureWildWood },

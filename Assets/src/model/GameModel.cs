@@ -31,8 +31,7 @@ public class GameModel {
   public static void InitMain() {
     var seed = UnityEngine.Random.Range(0, 100000);
     main = new GameModel(seed);
-    // main.generateGameModel();
-    main.generateTinyFloorGameModel();
+    main.generate();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately
     do { } while (step.MoveNext());
@@ -41,6 +40,40 @@ public class GameModel {
   public GameModel(int seed) {
     this.seed = seed;
     UnityEngine.Random.InitState(seed);
+  }
+
+  private void generate() {
+    var floorGen = new FloorGenerator(new Encounters());
+    floors = new Floor[] {
+      floorGen.generateRestFloor(0),
+      floorGen.generateSingleRoomFloor(1, 9, 9),
+      floorGen.generateSingleRoomFloor(2, 10, 10),
+      floorGen.generateSingleRoomFloor(3, 11, 11),
+      floorGen.generateSingleRoomFloor(4, 11, 11, 1),
+      floorGen.generateSingleRoomFloor(5, 15, 15, 2),
+      floorGen.generateSingleRoomFloor(6, 13, 13, 2),
+      floorGen.generateSingleRoomFloor(7, 11, 11, 2),
+      floorGen.generateRewardFloor(8),
+      floorGen.generateSingleRoomFloor(9, 13, 9, 2, 2),
+      floorGen.generateSingleRoomFloor(10, 14, 7, 2, 2),
+      floorGen.generateSingleRoomFloor(11, 20, 9, 3, 2),
+      floorGen.generateSingleRoomFloor(12, 10, 10, 2, 2),
+      floorGen.generateSingleRoomFloor(13, 12, 12, 3, 2),
+      floorGen.generateSingleRoomFloor(14, 13, 13, 3, 2),
+      floorGen.generateSingleRoomFloor(15, 15, 15, 4, 2),
+      floorGen.generateRewardFloor(16),
+      floorGen.generateMultiRoomFloor(17, 15, 15, 4),
+      floorGen.generateMultiRoomFloor(18, 20, 20, 4),
+      floorGen.generateMultiRoomFloor(19, 30, 20, 5),
+      floorGen.generateMultiRoomFloor(20, 20, 20, 6),
+      floorGen.generateMultiRoomFloor(21, 24, 24, 8),
+      floorGen.generateMultiRoomFloor(22, 30, 12, 10),
+      floorGen.generateMultiRoomFloor(23, 30, 20, 15),
+      floorGen.generateRewardFloor(24)
+    };
+
+    player = new Player(floors[0].upstairs.landing);
+    floors[0].Put(player);
   }
 
 
@@ -72,40 +105,6 @@ public class GameModel {
 
   public IEnumerator StepUntilPlayerChoice() {
     return turnManager.StepUntilPlayersChoice();
-  }
-
-  public void generateTinyFloorGameModel() {
-    this.floors = new Floor[] {
-      // FloorGenerator.EncounterTester(),
-      FloorGenerator.generateRestFloor(0),
-      FloorGenerator.generateTinyFloor(1, 9, 9),
-      FloorGenerator.generateTinyFloor(2, 10, 10),
-      FloorGenerator.generateTinyFloor(3, 11, 11),
-      FloorGenerator.generateTinyFloor(4, 11, 11, 1),
-      FloorGenerator.generateTinyFloor(5, 15, 15, 2),
-      FloorGenerator.generateTinyFloor(6, 13, 13, 2),
-      FloorGenerator.generateTinyFloor(7, 11, 11, 2),
-      FloorGenerator.generateRewardFloor(8),
-      FloorGenerator.generateTinyFloor(9, 13, 9, 2, 2),
-      FloorGenerator.generateTinyFloor(10, 14, 7, 2, 2),
-      FloorGenerator.generateTinyFloor(11, 20, 9, 3, 2),
-      FloorGenerator.generateTinyFloor(12, 10, 10, 2, 2),
-      FloorGenerator.generateTinyFloor(13, 12, 12, 3, 2),
-      FloorGenerator.generateTinyFloor(14, 13, 13, 3, 2),
-      FloorGenerator.generateTinyFloor(15, 15, 15, 4, 2),
-      FloorGenerator.generateRewardFloor(16),
-      FloorGenerator.generateRandomFloor(17, 15, 15, 4),
-      FloorGenerator.generateRandomFloor(18, 20, 20, 4),
-      FloorGenerator.generateRandomFloor(19, 30, 20, 5),
-      FloorGenerator.generateRandomFloor(20, 20, 20, 6),
-      FloorGenerator.generateRandomFloor(21, 24, 24, 8),
-      FloorGenerator.generateRandomFloor(22, 30, 12, 10),
-      FloorGenerator.generateRandomFloor(23, 30, 20, 15),
-      FloorGenerator.generateRewardFloor(24)
-    };
-
-    this.player = new Player(floors[0].upstairs.landing);
-    floors[0].Put(this.player);
   }
 
   internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {

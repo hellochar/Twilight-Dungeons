@@ -32,16 +32,16 @@ public class Guardleaf : Grass {
 }
 
 [ObjectInfo("guardroot", "Big leaves")]
-public class GuardStatus : StackingStatus, IDamageTakenModifier {
+public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
   public override int stacks {
-    get => leaf.guardLeft;
+    get => leaf?.guardLeft ?? 0;
     set { }
   }
 
   public GuardStatus() {}
 
-  private Guardleaf leaf => actor.grass as Guardleaf;
-  public override string Info() => "Blocks 1 damage.";
+  private Guardleaf leaf => actor?.grass as Guardleaf;
+  public override string Info() => $"The Guardleaf will block {stacks} more attack damage.";
 
   public int Modify(int input) {
     var reduction = Mathf.Min(input, leaf.guardLeft);

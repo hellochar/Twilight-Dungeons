@@ -29,7 +29,7 @@ public class Mushroom : Grass {
 
   protected override float Step() {
     // find an adjacent square without mushrooms and grow into it
-    var growTiles = floor.GetFourNeighbors(pos).Where(CanLiveIn);
+    var growTiles = floor.GetCardinalNeighbors(pos).Where(CanLiveIn);
     if (growTiles.Any()) {
       var toGrowInto = Util.RandomPick(growTiles);
       var newMushrom = new Mushroom(toGrowInto.pos);
@@ -42,8 +42,8 @@ public class Mushroom : Grass {
   public static bool CanLiveIn(Tile tile) {
     var floor = tile.floor;
     // hugging at least one 4-neighbor wall
-    var fourNeighbors = floor.GetFourNeighbors(tile.pos);
-    var isHuggingWall = fourNeighbors.Any((pos) => pos is Wall);
+    var cardinalNeighbors = floor.GetCardinalNeighbors(tile.pos);
+    var isHuggingWall = cardinalNeighbors.Any((pos) => pos is Wall);
     var isGround = tile is Ground;
     var isNotOccupied = tile.grass == null;
     

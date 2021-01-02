@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
-public class ItemOnGroundController : MonoBehaviour, IEntityController {
+public class ItemOnGroundController : MonoBehaviour, IEntityController, IEntityClickedHandler {
   public ItemOnGround itemOnGround;
   private SpriteRenderer spriteRenderer;
 
@@ -35,5 +36,11 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController {
       transform.position = Vector3.Lerp(start, end, EasingFunctions.EaseOutCubic(0, 1, t)) + new Vector3(0, 0, t * 3 * (1 - EasingFunctions.EaseInBounce(0, 1, t)));
     } while (t <= 1);
     transform.position = end;
+  }
+
+  public void PointerClick(PointerEventData pointerEventData) {
+    if (itemOnGround.isVisible) {
+      GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, itemOnGround.pos);
+    }
   }
 }

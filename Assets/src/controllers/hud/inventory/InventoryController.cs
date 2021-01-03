@@ -9,7 +9,10 @@ public class InventoryController : MonoBehaviour {
   public Inventory inventory;
   public bool trimExcess = false;
 
-  void Start() {
+  public virtual void Start() {
+    if (inventory == null) {
+      inventory = GameModel.main.player.inventory;
+    }
     MatchNumberOfSlots();
   }
 

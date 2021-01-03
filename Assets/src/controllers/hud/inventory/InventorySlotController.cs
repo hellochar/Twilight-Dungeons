@@ -15,7 +15,7 @@ public class InventorySlotController : ItemSlotController {
     shadow = GetComponent<Shadow>();
     image = GetComponent<Image>();
     slotIndex = transform.GetSiblingIndex();
-    inventory = GameModel.main.player.inventory;
+    inventory = GetComponentInParent<InventoryController>()?.inventory ?? GameModel.main.player.inventory;
     itemChild = transform.Find("Item")?.gameObject;
   }
 

@@ -41,6 +41,10 @@ public static class Popups {
       });
     } else {
       buttonsContainer.gameObject.SetActive(false);
+      // if there's no actions, clicking the frame itself will toggle the popup
+      var frame = popup.transform.Find("Frame").gameObject;
+      var frameButton = frame.AddComponent<Button>();
+      frameButton.onClick.AddListener(() => UnityEngine.Object.Destroy(popup));
     }
 
     return popup;
@@ -63,9 +67,7 @@ public static class Popups {
 
     // destroy popup when overlay is clicked
     var overlayButton = popup.transform.Find("Overlay").GetComponent<Button>();
-    overlayButton.onClick.AddListener(() => {
-      UnityEngine.Object.Destroy(popup);
-    });
+    overlayButton.onClick.AddListener(() => UnityEngine.Object.Destroy(popup));
     return popup;
   }
 }

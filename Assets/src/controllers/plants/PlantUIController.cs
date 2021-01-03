@@ -16,7 +16,6 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   private Sprite waterCircleFilled;
 
   void Start() {
-
     uiName = transform.Find("Frame/Name").GetComponent<TMP_Text>();
     uiInfo = transform.Find("Frame/Info").GetComponent<TMP_Text>();
 

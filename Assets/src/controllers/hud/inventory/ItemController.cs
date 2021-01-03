@@ -33,30 +33,33 @@ public class ItemController : MonoBehaviour {
   }
 
   private void HandleItemClicked() {
-    Player player = GameModel.main.player;
-    List<MethodInfo> methods = item.GetAvailableMethods(player);
-
-    // put more fundamental actions later
-    methods.Reverse();
-
     GameObject popup = null;
+    List<GameObject> buttons = null;
 
-    var buttons = methods.Select((method) => MakeButton(method.Name, () => {
-      method.Invoke(item, new object[] { player });
-      PopupInteractionDone(popup);
-    })).ToList();
+    Player player = GameModel.main.player;
+    if (item.inventory == player.inventory || item.inventory == player.equipment) {
+      List<MethodInfo> methods = item.GetAvailableMethods(player);
 
-    if (item is ItemSeed seed) {
-      buttons.Insert(0, MakeButton("Plant", () => PlantWithUI(seed, player, popup)));
-    }
-    if (item is ItemCharmBerry charmBerry) {
-      buttons.Insert(0, MakeButton("Charm", () => CharmWithUI(charmBerry, player, popup)));
-    }
-    if (item is ItemBoombugCorpse boombugCorpse) {
-      buttons.Insert(0, MakeButton("Throw", () => ThrowBoombugCorpseWithUI(boombugCorpse, player, popup)));
-    }
-    if (item is ItemSnailShell snailShell) {
-      buttons.Insert(0, MakeButton("Throw", () => ThrowSnailShellWithUI(snailShell, player, popup)));
+      // put more fundamental actions later
+      methods.Reverse();
+
+      buttons = methods.Select((method) => MakeButton(method.Name, () => {
+        method.Invoke(item, new object[] { player });
+        PopupInteractionDone(popup);
+      })).ToList();
+
+      if (item is ItemSeed seed) {
+        buttons.Insert(0, MakeButton("Plant", () => PlantWithUI(seed, player, popup)));
+      }
+      if (item is ItemCharmBerry charmBerry) {
+        buttons.Insert(0, MakeButton("Charm", () => CharmWithUI(charmBerry, player, popup)));
+      }
+      if (item is ItemBoombugCorpse boombugCorpse) {
+        buttons.Insert(0, MakeButton("Throw", () => ThrowBoombugCorpseWithUI(boombugCorpse, player, popup)));
+      }
+      if (item is ItemSnailShell snailShell) {
+        buttons.Insert(0, MakeButton("Throw", () => ThrowSnailShellWithUI(snailShell, player, popup)));
+      }
     }
 
     popup = Popups.Create(

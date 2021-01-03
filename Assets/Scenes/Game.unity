@@ -854,6 +854,7 @@ GameObject:
   - component: {fileID: 177890847}
   - component: {fileID: 177890846}
   - component: {fileID: 177890845}
+  - component: {fileID: 177890844}
   m_Layer: 5
   m_Name: Equipment
   m_TagString: Untagged
@@ -888,6 +889,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 0}
+--- !u!114 &177890844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177890842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c10fb0ff404f3d4fb294a19e560b902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trimExcess: 0
 --- !u!114 &177890845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12191,7 +12205,7 @@ PrefabInstance:
     - target: {fileID: 1966910036891293959, guid: f7266160ad650084cafedde9ebb22139,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3388752204699051188, guid: f7266160ad650084cafedde9ebb22139,
         type: 3}
@@ -12729,7 +12743,7 @@ PrefabInstance:
     - target: {fileID: 8602525125636298448, guid: 8202d55c74fc4f54a81457df8bfd062c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8602525125636298448, guid: 8202d55c74fc4f54a81457df8bfd062c,
         type: 3}

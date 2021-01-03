@@ -71,11 +71,6 @@ interface IMaxHPModifier : IModifier<int> {}
 interface IPathfindingCostModifier : IModifier<float> {}
 
 
-// Called when this weapon is used for an attack
-public interface IAttackHandler {
-  void OnAttack(Actor target);
-}
-
 /// <summary>Called when the Actor is Killed.</summary>
 public interface IActorKilledHandler {
   void OnKilled(Actor a);

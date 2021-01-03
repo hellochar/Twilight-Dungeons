@@ -4,13 +4,15 @@ using System.Linq;
 using UnityEngine;
 
 public class Bat : AIActor {
-  bool isHungry = false;
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 6;
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
     OnDealAttackDamage += HandleDealDamage;
     OnTakeAttackDamage += HandleTakeDamage;
+    if (UnityEngine.Random.value < 0.2f) {
+      inventory.AddItem(new ItemBatTooth());
+    }
   }
 
   /// bats hide in corners and occasionally attack the closest target
@@ -38,11 +40,41 @@ public class Bat : AIActor {
   private void HandleDealDamage(int dmg, Actor target) {
     if (dmg > 0) {
       Heal(1);
-      isHungry = false;
     }
   }
 
   internal override int BaseAttackDamage() {
     return 1;
   }
+}
+
+[ObjectInfo("bat-tooth", "Sharp with a little hole on the end to extract blood.")]
+internal class ItemBatTooth : EquippableItem, IWeapon, IDurable {
+  public ItemBatTooth() {
+    OnEquipped += HandleEquipped;
+    OnUnequipped += HandleUnequipped;
+  }
+
+  private void HandleEquipped(Player obj) {
+    obj.OnDealAttackDamage += HandleDealAttackDamage;
+  }
+
+  private void HandleUnequipped(Player obj) {
+    obj.OnDealAttackDamage -= HandleDealAttackDamage;
+  }
+
+  private void HandleDealAttackDamage(int dmg, Actor target) {
+    if (dmg > 0) {
+      GameModel.main.player.Heal(1);
+    }
+  }
+
+  public (int, int) AttackSpread => (3, 3);
+
+  public int durability { get; set; }
+
+  public int maxDurability => 1;
+  public override EquipmentSlot slot => EquipmentSlot.Weapon;
+
+  internal override string GetStats() => "Heal 1 HP when you deal damage with this weapon.";
 }

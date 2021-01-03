@@ -5,28 +5,17 @@ public class Wildwood : Plant {
   class Mature : PlantStage {
     public override float StepTime => 99999;
     public override void Step() { }
+    public override void BindTo(Plant plant) {
+      base.BindTo(plant);
+      plant.inventory.AddItem(new ItemStick());
+      plant.inventory.AddItem(new ItemWildwoodLeaf(3));
+      plant.inventory.AddItem(new ItemWildwoodWreath());
+    }
     public override string getUIText() => $"Ready to harvest.";
   }
 
   public Wildwood(Vector2Int pos) : base(pos, new Seed()) {
     stage.NextStage = new Sapling();
     stage.NextStage.NextStage = new Mature();
-  }
-
-  public override void Harvest() {
-    base.Harvest();
-    stage = new Sapling();
-    stage.NextStage = new Mature();
-  }
-
-  public override Inventory HarvestRewards() {
-    if (stage is Mature) {
-      return new Inventory(new ItemStick(), new ItemStick(), new ItemWildwoodLeaf(3), new ItemWildwoodWreath());
-    }
-    return null;
-  }
-
-  public override Inventory CullRewards() {
-    return new Inventory(new ItemSeed(typeof(Wildwood))); 
   }
 }

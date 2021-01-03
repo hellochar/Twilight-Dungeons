@@ -33,9 +33,9 @@ public class PlayerHeartsController : MonoBehaviour {
     for (int i = transform.childCount; i > numHearts; i--) {
       Destroy(transform.GetChild(i - 1).gameObject);
     }
+
     for (int i = transform.childCount; i < numHearts; i++) {
       Instantiate(heartPrefab, transform);
     }
-    // TODO delete extra hearts
   }
 }

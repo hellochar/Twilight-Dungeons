@@ -16,7 +16,9 @@ public class PlantController : ActorController {
     set {
       if (value) {
         // opening popup
-        ui = PrefabCache.UI.Instantiate("Plant UI", transform);
+        var parent = GameObject.Find("Canvas").transform;
+        ui = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Plant UI"), new Vector3(), Quaternion.identity, parent);
+        ui.GetComponentInChildren<PlantUIController>().plantController = this;
       } else {
         // closing popup
         Destroy(ui);
@@ -73,11 +75,6 @@ public class PlantController : ActorController {
   public void Harvest() {
     popupOpen = false;
     plant.Harvest();
-  }
-
-  public void Cull() {
-    popupOpen = false;
-    plant.Cull();
   }
 
   internal void Water(Player player) {

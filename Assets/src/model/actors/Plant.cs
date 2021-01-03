@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 public abstract class Plant : Actor {
+  public Inventory inventory = new Inventory(12);
   private int m_water = 2;
   public int water {
     get => m_water;
@@ -31,20 +32,11 @@ public abstract class Plant : Actor {
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     faction = Faction.Ally;
+    inventory.AddItem(new ItemSeed(this.GetType()));
     this.stage = stage;
     this.timeNextAction = this.timeCreated + stage.StepTime;
     OnDeath += HandleDeath;
-    // AddTimedEvent(5, StepWater);
   }
-
-  // private void StepWater() {
-  //   if (water <= 0) {
-  //     Kill();
-  //   } else {
-  //     water--;
-  //   }
-  //   AddTimedEvent(5, StepWater);
-  // }
 
   protected override float Step() {
     if (water <= 0) {
@@ -58,7 +50,7 @@ public abstract class Plant : Actor {
     } else {
       // stage has changed; timeNextAction was already set by setting the stage.
       return 0;
-   }
+    }
   }
 
   public void GoNextStage() {
@@ -81,20 +73,12 @@ public abstract class Plant : Actor {
     return;
   }
 
-  public virtual void Harvest() {
-    HarvestRewards()?.TryDropAllItems(floor, base.pos);
+  private void HandleDeath() {
+    inventory.TryDropAllItems(floor, pos);
   }
 
-  public virtual void Cull() {
+  internal void Harvest() {
+    // just a pseudonym
     Kill();
   }
-
-  private void HandleDeath() {
-    CullRewards()?.TryDropAllItems(floor, base.pos);
-    Harvest();
-  }
-
-  public abstract Inventory HarvestRewards();
-
-  public abstract Inventory CullRewards();
 }

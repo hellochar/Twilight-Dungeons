@@ -9,17 +9,19 @@ using UnityEngine.UI;
 public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   private TMP_Text uiName;
   private TMP_Text uiInfo;
-  private PlantController plantController;
+  public PlantController plantController;
   private Plant plant => plantController.plant;
   private Transform waterIndicator;
   private Sprite waterCircleEmpty;
   private Sprite waterCircleFilled;
 
   void Start() {
-    plantController = GetComponentInParent<PlantController>();
 
     uiName = transform.Find("Frame/Name").GetComponent<TMP_Text>();
     uiInfo = transform.Find("Frame/Info").GetComponent<TMP_Text>();
+
+    GetComponentInChildren<InventoryController>().inventory = plant.inventory;
+
     waterIndicator = transform.Find("Frame/Water Indicator");
     var empty = waterIndicator.Find("Water Circle Empty").gameObject;
     var filled = waterIndicator.Find("Water Circle Filled").gameObject;
@@ -37,7 +39,6 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
     waterButton.onClick.AddListener(() => plantController.Water(player));
 
     transform.Find("Frame/Buttons/Harvest").GetComponent<Button>().onClick.AddListener(plantController.Harvest);
-    transform.Find("Frame/Buttons/Cull").GetComponent<Button>().onClick.AddListener(plantController.Cull);
 
     Update();
   }

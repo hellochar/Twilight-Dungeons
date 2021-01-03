@@ -12,7 +12,7 @@ public abstract class PlantStage {
 
   public PlantStage NextStage { get; set; }
 
-  public void BindTo(Plant plant) {
+  public virtual void BindTo(Plant plant) {
     if (this.plant != null) {
       throw new Exception("Trying to bind an already bount Plant Stage!");
     }

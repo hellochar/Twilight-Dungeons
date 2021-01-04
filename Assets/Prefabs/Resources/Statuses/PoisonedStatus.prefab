@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6005994843243750987}
-  - component: {fileID: 1203710056782651091}
+  - component: {fileID: 444367261357951628}
   m_Layer: 0
   m_Name: PoisonedStatus
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1203710056782651091
+--- !u!114 &444367261357951628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,9 +41,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1066126783439713545}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d15a7bea9223c8a4ab0cdd0a9b7f245d, type: 3}
+  m_Script: {fileID: 11500000, guid: e53eaeaa3ef931e4ea7b13cabe739f21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 180132319780512236}
+  sprites:
+  - {fileID: -1978447348820421590, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b, type: 3}
+  - {fileID: -7676069885133121109, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b, type: 3}
+  - {fileID: -6532741355290048802, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b, type: 3}
 --- !u!1 &8461379838842151866
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +119,8 @@ SpriteRenderer:
   m_SortingLayerID: 1729073555
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b, type: 3}
+  m_Sprite: {fileID: -6532741355290048802, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

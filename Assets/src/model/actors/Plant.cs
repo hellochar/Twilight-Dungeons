@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 
 public abstract class Plant : Actor {
-  public Inventory inventory = new Inventory(12);
   private int m_water = 2;
   public int water {
     get => m_water;
@@ -11,6 +10,16 @@ public abstract class Plant : Actor {
       m_water = Mathf.Clamp(value, 0, maxWater);
       if (water > 0) {
         timeNextAction = Mathf.Min(timeNextAction, GameModel.main.time + stage.StepTime);
+      }
+    }
+  }
+
+  public float percentGrown {
+    get {
+      if (stage.NextStage == null) {
+        return 1;
+      } else {
+        return stage.age / stage.StepTime;
       }
     }
   }
@@ -32,7 +41,6 @@ public abstract class Plant : Actor {
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     faction = Faction.Ally;
-    inventory.AddItem(new ItemSeed(this.GetType()));
     this.stage = stage;
     this.timeNextAction = this.timeCreated + stage.StepTime;
     OnDeath += HandleDeath;
@@ -74,10 +82,11 @@ public abstract class Plant : Actor {
   }
 
   private void HandleDeath() {
-    inventory.TryDropAllItems(floor, pos);
+    // inventory.TryDropAllItems(floor, pos);
   }
 
-  internal void Harvest() {
+  internal void Harvest(int choiceIndex) {
+    stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
     // just a pseudonym
     Kill();
   }

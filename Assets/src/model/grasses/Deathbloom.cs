@@ -33,14 +33,14 @@ public class Deathbloom : Grass {
     if (isBloomed) {
       if (actor is Player p) {
         p.inventory.AddItem(new ItemDeathbloomFlower(1), this);
+        var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
+        noGrassTiles.Shuffle();
+        foreach (var tile in noGrassTiles.Take(1)) {
+          var newDeathbloom = new Deathbloom(tile.pos);
+          floor.Put(newDeathbloom);
+        }
+        Kill();
       }
-      var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
-      noGrassTiles.Shuffle();
-      foreach (var tile in noGrassTiles.Take(1)) {
-        var newDeathbloom = new Deathbloom(tile.pos);
-        floor.Put(newDeathbloom);
-      }
-      Kill();
     }
   }
 }

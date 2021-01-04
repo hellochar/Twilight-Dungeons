@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 6482898
+    totalSpriteSurfaceArea: 6482130
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -50,6 +50,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 08508fb1398e67849aee030fc1035f23, type: 3}
   - {fileID: 21300000, guid: c9f63cd16bff60342a3b6ff774adea1d, type: 3}
   - {fileID: 21300000, guid: 09d11de1b13732f4f98b4b0bbe12845d, type: 3}
+  - {fileID: 21300000, guid: 3598ed026fc7a614d8abeba070164b88, type: 3}
   - {fileID: 21300000, guid: 515f0432abf1ea14fbc257dd5dde4d16, type: 3}
   - {fileID: 21300000, guid: ad657932aad06774b955a024848ae11c, type: 3}
   - {fileID: 21300000, guid: ae759e521ee37ca46ac7401b9dc0f160, type: 3}
@@ -2152,10 +2153,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a118dc35cc1687849a5ff3b1ecf8261a, type: 3}
   - {fileID: 21300000, guid: 5e990165f1807384b9194f829a93a33e, type: 3}
   - {fileID: 21300000, guid: e3c661e5b50caf94aa42478e83f69d79, type: 3}
-  - {fileID: -4168749336264048823, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
-  - {fileID: -1261573385363623454, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
-  - {fileID: 3806142619812529289, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
-  - {fileID: -6128419424072721850, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
+  - {fileID: 6115217362735768368, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
+  - {fileID: 7506423824143329095, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
+  - {fileID: 1276235689861735731, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
+  - {fileID: 175961130100141872, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
   - {fileID: 1917699227143800744, guid: b9f79d364c160a74984f0639eda855cf, type: 3}
   - {fileID: 21300000, guid: 6f5b0f462c22f2e45b60aa8ee7d8ccdb, type: 3}
   - {fileID: 21300000, guid: c582f276f700821448285f69440db231, type: 3}
@@ -4659,6 +4660,7 @@ SpriteAtlas:
   - {fileID: -4009157606203222040, guid: 3b8e3da917b348743aee822aeb3d55ab, type: 3}
   - {fileID: 21300000, guid: 92bfdcc90d35b554da2e76d2fadbe75f, type: 3}
   - {fileID: 21300000, guid: 16dd36d93f58b4a4398fdc64fba252b9, type: 3}
+  - {fileID: 21300000, guid: 8fb47ce9dd1c0d147a01dca18230a3ed, type: 3}
   - {fileID: 21300000, guid: d2a5890a46b81564d8e70c22b2c2abfb, type: 3}
   - {fileID: 21300000, guid: 03738d4a2bd8ac9469f2f95b02bed832, type: 3}
   - {fileID: 21300000, guid: 459ab27a8873f2d44b003ae28a9678a3, type: 3}
@@ -7880,6 +7882,7 @@ SpriteAtlas:
   - {fileID: 5853588692729510811, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
   - {fileID: 2246077000650934820, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
   - {fileID: 4047403940040452729, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
+  - {fileID: 21300000, guid: f93893df1edf6bb42ab322c678a28447, type: 3}
   m_PackedSpriteNamesToIndex:
   - 1bit 16px patterns and tiles
   - slimed
@@ -7895,6 +7898,7 @@ SpriteAtlas:
   - Path Dot
   - butterfly
   - spider-silk-shoes
+  - bat-tooth
   - water-droplet
   - bound-status
   - thornbush-sapling
@@ -9997,10 +10001,10 @@ SpriteAtlas:
   - charmed
   - deathbloom-stem
   - kingshroom-seed
-  - brambles_2
-  - brambles_3
-  - brambles_0
-  - brambles_1
+  - bladegrass_2
+  - bladegrass_3
+  - bladegrass_0
+  - bladegrass_1
   - Spam_Cupcake text borders_0
   - sporebloat
   - wildwood-wreath
@@ -12504,6 +12508,7 @@ SpriteAtlas:
   - explosion_2
   - thornbush-mature
   - boombug2
+  - heart-of-thorns
   - spider
   - selection-circle
   - CircleFilled16
@@ -15725,5 +15730,6 @@ SpriteAtlas:
   - roguelikeDungeon_transparent_511
   - roguelikeDungeon_transparent_268
   - roguelikeDungeon_transparent_512
+  - redberry
   m_Tag: Master Sprite Atlas
   m_IsVariant: 0

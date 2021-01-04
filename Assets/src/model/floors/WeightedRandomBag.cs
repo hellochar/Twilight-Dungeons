@@ -6,7 +6,7 @@ using System.Linq;
 /// https://gamedev.stackexchange.com/a/162996
 public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, ICloneable {
 
-  private struct Entry {
+  private class Entry {
     public float weight;
     public T item;
   }
@@ -64,6 +64,7 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     var newWeight = newChance * restWeight / (1f - newChance);
 
     SetWeight(item, newWeight);
+    UnityEngine.Debug.Log(currentWeight + " -> " + newWeight);
     return item;
   }
 

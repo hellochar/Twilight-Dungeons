@@ -15,7 +15,7 @@ public class DepthTextController : MonoBehaviour {
   void Update() {
     var timeSpan = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
     var timeSpanText = timeSpan.ToString(@"hh\:mm\:ss");
-    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nSeed " + GameModel.main.seed + "\n" + timeSpanText;
+    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time + "\n" + timeSpanText + "\nSeed " + GameModel.main.seed;
     // text.text += "\nTime " + GameModel.main.time;
     // text.text += "\nStatuses: " + string.Join(", ", GameModel.main.player.statuses.list.Select(x => x.ToString()));
     // if (GameModel.main.turnManager != null) {

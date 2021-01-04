@@ -1,8 +1,8 @@
 using UnityEngine;
 
 public class Rubble : Actor, IBlocksVision, IAnyDamageTakenModifier {
-  public Rubble(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 3;
+  public Rubble(Vector2Int pos, int hp = 3) : base(pos) {
+    this.hp = this.baseMaxHp = hp;
     faction = Faction.Neutral;
     this.timeNextAction += 99999;
   }

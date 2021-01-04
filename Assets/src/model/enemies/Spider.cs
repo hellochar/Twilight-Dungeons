@@ -16,6 +16,7 @@ public class Spider : AIActor {
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 7;
+    ClearTasks();
     ai = AI().GetEnumerator();
     OnDealAttackDamage += HandleDealDamage;
     if (UnityEngine.Random.value < 0.25f) {
@@ -86,9 +87,7 @@ internal class Web : Grass {
   }
 
   void HandleActorEnter(Actor actor) {
-    if (IsActorNice(actor)) {
-      actor.statuses.Add(new WebStatus());
-    }
+    actor.statuses.Add(new WebStatus());
     TriggerNoteworthyAction();
   }
 
@@ -174,6 +173,7 @@ internal class WebStatus : Status, IActionCostModifier {
 }
 
 /// stacks = turns
+[ObjectInfo("poisoned-status", "You feel sick to your stomach...")]
 internal class PoisonedStatus : StackingStatus {
   int duration = 5;
   public PoisonedStatus(int stacks) : base() {
@@ -181,14 +181,15 @@ internal class PoisonedStatus : StackingStatus {
   }
 
   public override void Step() {
+    if (stacks >= 3) {
+      actor.TakeDamage(3);
+      stacks = 0;
+    }
     if (--duration <= 0) {
-      if (stacks > 2) {
-        actor.TakeDamage(2);
-      }
       --stacks;
       duration = 5;
     }
   }
 
-  public override string Info() => $"At 3 stacks and above, take 2 damage per 5 turns.";
+  public override string Info() => $"At 3 stacks, take 3 damage and remove stacks.\nLose one stack every 5 turns.";
 }

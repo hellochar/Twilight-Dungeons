@@ -9,11 +9,15 @@ public class ItemSeed : Item {
   }
 
   public void Plant(Soil soil) {
-    /// consume this item somehow
-    var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-    var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
-    soil.floor.Put(plant);
-    Destroy();
+    if (GameModel.main.player.water >= 1) {
+      GameModel.main.player.water -= 1;
+      var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
+      var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
+      soil.floor.Put(plant);
+      Destroy();
+    } else {
+      throw new CannotPerformActionException("Need 1 water!");
+    }
   }
 
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";

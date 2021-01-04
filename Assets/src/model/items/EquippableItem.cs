@@ -6,6 +6,7 @@ public abstract class EquippableItem : Item {
   public abstract EquipmentSlot slot { get; }
   public event Action<Player> OnEquipped;
   public event Action<Player> OnUnequipped;
+  protected Player player => GameModel.main.player;
   public bool IsEquipped => inventory != null;
 
   public void Equip(Actor a) {

@@ -11,12 +11,13 @@ public abstract class Status : IStepModifier {
   public StatusList list {
     get => m_list;
     set {
+      if (value == null && m_list != null) {
+        OnRemoved?.Invoke();
+        End();
+      }
       m_list = value;
       if (value != null) {
         Start();
-      } else {
-        OnRemoved?.Invoke();
-        End();
       }
     }
   }

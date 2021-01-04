@@ -26,11 +26,12 @@ class ItemWildwoodLeaf : Item, IStackable, IEdible {
     stacks--;
   }
 
-  internal override string GetStats() => "Apply the Wild status for 15 turns.";
+  internal override string GetStats() => "Apply the Wild status for 25 turns.";
 }
 
 internal class StatusWild : StackingStatus, IActionCostModifier {
-  public StatusWild() : base(25) {}
+  public StatusWild(int stacks) : base(stacks) {}
+  public StatusWild() : this(25) {}
 
   public override string Info() => $"Move twice as fast.";
 

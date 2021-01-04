@@ -49,7 +49,8 @@ public class FloorGenerator {
       floor.Put(plant);
     }
 
-    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf) };
+    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood) };
+    AddMaturePlant(Util.RandomPick(types));
     AddMaturePlant(Util.RandomPick(types));
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
@@ -59,6 +60,7 @@ public class FloorGenerator {
     // Encounters.AddBladegrass(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
     Encounters.AddWater(floor, room0);
+    // Encounters.AddBats(floor, room0);
     // Encounters.AddPumpkin(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AFewSnails(floor, room0);
@@ -95,30 +97,11 @@ public class FloorGenerator {
   /// Good for a contained experience.
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false) {
-    Floor floor = new Floor(depth, width, height);
-
-    // fill with wall
-    foreach (var p in floor.EnumerateFloor()) {
-      floor.Put(new Wall(p));
-    }
-
-    Room room0 = new Room(floor);
-    foreach (var pos in floor.EnumerateRoom(room0)) {
-      floor.Put(new Ground(pos));
-    }
-
-    FloorUtils.NaturalizeEdges(floor);
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
-    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
-
-    floor.root = room0;
-    floor.rooms = new List<Room>();
-    floor.upstairsRoom = room0;
-    floor.downstairsRoom = room0;
-
-    // one wall variation
-    Encounters.CavesWalls.GetRandomAndDiscount()(floor, room0);
-
+    Floor floor;
+    do {
+      floor = tryGenerateSingleRoomFloor(depth, width, height);
+    } while (!AreStairsConnected(floor));
+    var room0 = floor.root;
     // X mobs
     for (var i = 0; i < numMobs; i++) {
       Encounters.CavesMobs.GetRandomAndDiscount()(floor, room0);
@@ -146,6 +129,34 @@ public class FloorGenerator {
         tile.actor.pos = newSpot.pos;
       }
     }
+
+    return floor;
+  }
+
+  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height) {
+    Floor floor = new Floor(depth, width, height);
+
+    // fill with wall
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Wall(p));
+    }
+
+    Room room0 = new Room(floor);
+    foreach (var pos in floor.EnumerateRoom(room0)) {
+      floor.Put(new Ground(pos));
+    }
+
+    // one wall variation
+    Encounters.CavesWalls.GetRandomAndDiscount()(floor, room0);
+
+    FloorUtils.NaturalizeEdges(floor);
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
+
+    floor.root = room0;
+    floor.rooms = new List<Room>();
+    floor.upstairsRoom = room0;
+    floor.downstairsRoom = room0;
 
     return floor;
   }

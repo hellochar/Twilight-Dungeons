@@ -51,9 +51,9 @@ public class ItemBoombugCorpse : Item, IStackable {
   }
 }
 
-public class BoombugCorpse : Actor {
+public class BoombugCorpse : Actor, IAnyDamageTakenModifier {
   public BoombugCorpse(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 1;
+    hp = baseMaxHp = 100;
     timeNextAction += 1;
     OnDeath += HandleDeath;
     SetTasks(new ExplodeTask(this));
@@ -80,6 +80,10 @@ public class BoombugCorpse : Actor {
 
   internal override int BaseAttackDamage() {
     return 3;
+  }
+
+  public int Modify(int input) {
+    return -100;
   }
 }
 

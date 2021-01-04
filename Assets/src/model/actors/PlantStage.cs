@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class PlantStage {
@@ -9,6 +10,7 @@ public abstract class PlantStage {
   /// how long the plant has been in this stage specifically
   public float age => plant.age - ageEntered;
   public string name => GetType().Name;
+  public List<Inventory> harvestOptions = new List<Inventory>();
 
   public PlantStage NextStage { get; set; }
 

@@ -37,6 +37,7 @@ public class HangingVines : Grass {
 
   private void HandleStatusRemoved() {
     // when someone is able to break free; remove these vines
+    appliedStatus = null;
     Kill();
   }
 }

@@ -22,7 +22,7 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     spriteObject = transform.Find("Sprite")?.gameObject;
     animator = spriteObject?.GetComponent<Animator>();
 
-    actor.OnTakeAttackDamage += HandleTakeDamage;
+    actor.OnTakeAnyDamage += HandleTakeDamage;
     actor.OnHeal += HandleHeal;
     actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
@@ -113,7 +113,7 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     }
   }
 
-  void HandleTakeDamage(int damage, int newHp, Actor source) {
+  void HandleTakeDamage(int damage) {
     if (!actor.isVisible) {
       return;
     }

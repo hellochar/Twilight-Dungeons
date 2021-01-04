@@ -85,6 +85,8 @@ public class Actor : SteppableEntity, IModifierProvider {
   public event Action<int, Actor> OnAttack;
   /// gets called on any ground targeted attack
   public event Action<Vector2Int> OnAttackGround;
+  /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
+  public event Action<int, Actor> OnAttacked;
 
   public Actor(Vector2Int pos) : base() {
     statuses = new StatusList(this);
@@ -122,7 +124,7 @@ public class Actor : SteppableEntity, IModifierProvider {
       throw new CannotPerformActionException("Cannot attack dead target.");
     }
     OnAttack?.Invoke(damage, target);
-    target.TakeAttackDamage(damage, this);
+    target.Attacked(damage, this);
   }
 
   /// Attack the target, using this Actor's final attack damage.
@@ -154,6 +156,13 @@ public class Actor : SteppableEntity, IModifierProvider {
     }
   }
 
+  private void Attacked(int damage, Actor source) {
+    OnAttacked?.Invoke(damage, source);
+    TakeAttackDamage(damage, source);
+  }
+
+  /// Attack damage doesn't always come from an *attack* specifically. For instance,
+  /// Snail shells count as attack damage, although they are not an attack action.
   public void TakeAttackDamage(int damage, Actor source) {
     damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
@@ -231,16 +240,21 @@ public class Actor : SteppableEntity, IModifierProvider {
     // action is not null
     // action.MoveNext() has been called and it returned true
     var action = task.Current;
-    var finalAction = Modifiers.Process(this.BaseActionModifiers(), action);
-    finalAction.Perform();
+    BaseAction finalAction = Perform(action);
     Modifiers.Process(this.StepModifiers(), null);
-    OnActionPerformed?.Invoke(finalAction, action);
 
     // handle close-ended actions
     while (task != null && task.IsDone()) {
       GoToNextTask();
     }
     return GetActionCost(finalAction);
+  }
+
+  public BaseAction Perform(BaseAction action) {
+    var finalAction = Modifiers.Process(this.BaseActionModifiers(), action);
+    finalAction.Perform();
+    OnActionPerformed?.Invoke(finalAction, action);
+    return finalAction;
   }
 
   /// Precondition: this.action's enumerator is ended, but the action is still in the queue.

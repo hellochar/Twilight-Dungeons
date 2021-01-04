@@ -10,8 +10,12 @@ public class ItemBarkShield : EquippableItem, IDurable, IAttackDamageTakenModifi
   }
 
   public int Modify(int damage) {
-    this.ReduceDurability();
-    return damage - 2;
+    if (damage > 0) {
+      this.ReduceDurability();
+      return damage - 2;
+    } else {
+      return damage;
+    }
   }
 
 

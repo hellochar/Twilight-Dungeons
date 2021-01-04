@@ -75,3 +75,12 @@ interface IPathfindingCostModifier : IModifier<float> {}
 public interface IActorKilledHandler {
   void OnKilled(Actor a);
 }
+
+interface IActionPerformedHandler {
+  void HandleActionPerformed(BaseAction final, BaseAction initial);
+}
+
+// Called when the attached actor attacks a target
+public interface IAttackHandler {
+  void OnAttack(Actor target);
+}

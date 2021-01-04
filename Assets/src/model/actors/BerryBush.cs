@@ -5,16 +5,24 @@ using UnityEngine;
 public class BerryBush : Plant {
   public override int maxWater => 4;
   class Mature : PlantStage {
-    public override float StepTime => 125;
+    public override float StepTime => 999999;
 
-    public override void Step() {
-      plant.inventory.AddItem(new ItemRedberry(3));
-    }
+    public override void Step() {}
 
     public override void BindTo(Plant plant) {
-      plant.inventory.AddItem(new ItemRedberry(3));
-      plant.inventory.AddItem(new ItemBarkShield());
-      plant.inventory.AddItem(new ItemSeed(typeof(BerryBush)));
+      harvestOptions.Add(new Inventory(
+        new ItemSeed(typeof(BerryBush)),
+        new ItemSeed(typeof(BerryBush)),
+        new ItemRedberry(3),
+        new ItemStick()
+      ));
+      harvestOptions.Add(new Inventory(
+        new ItemSeed(typeof(BerryBush)),
+        new ItemRedberry(3),
+        new ItemBarkShield(),
+        new ItemStick()
+      ));
+      harvestOptions.Add(new Inventory(new ItemCharmBerry(3)));
       base.BindTo(plant);
     }
 
@@ -22,7 +30,6 @@ public class BerryBush : Plant {
   }
 
   public BerryBush(Vector2Int pos) : base(pos, new Seed()) {
-    stage.NextStage = new Young();
-    stage.NextStage.NextStage = new Mature();
+    stage.NextStage = new Mature();
   }
 }

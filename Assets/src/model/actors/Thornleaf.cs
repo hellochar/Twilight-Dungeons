@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Thornleaf : Plant {
@@ -11,16 +12,26 @@ public class Thornleaf : Plant {
 
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
-      plant.inventory.AddItem(new ItemThornShield());
-      plant.inventory.AddItem(new ItemThornmail());
+      harvestOptions.Add(new Inventory(
+        new ItemSeed(typeof(Thornleaf)),
+        new ItemSeed(typeof(Thornleaf)),
+        new ItemStick()
+      ));
+      harvestOptions.Add(new Inventory(
+        new ItemSeed(typeof(Thornleaf)),
+        new ItemThornShield(),
+        new ItemThornmail()
+      ));
+      harvestOptions.Add(new Inventory(
+        new ItemHeartOfThorns()
+      ));
     }
 
     public override string getUIText() => $"Ready to harvest.";
   }
 
   public Thornleaf(Vector2Int pos) : base(pos, new Seed()) {
-    stage.NextStage = new Sapling();
-    stage.NextStage.NextStage = new Mature();
+    stage.NextStage = new Mature();
   }
 }
 
@@ -104,4 +115,36 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
   }
 
   internal override string GetStats() => "Blocks 1 damage.\nDeal 1 more attack damage.\nBoth attacking and defending use durability.";
+}
+
+[ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
+internal class ItemHeartOfThorns : EquippableItem, IDurable {
+  internal override string GetStats() => "When attacked, grow Bladegrass on all adjacent squares.";
+
+  public override EquipmentSlot slot => EquipmentSlot.Head;
+  public int durability { get; set; }
+  public int maxDurability => 100;
+
+  public ItemHeartOfThorns() {
+    OnEquipped += HandleEquipped;
+    OnUnequipped += HandleUnequipped;
+    durability = maxDurability;
+  }
+
+  private void HandleEquipped(Player player) {
+    player.OnAttacked += HandleAttacked;
+  }
+
+  private void HandleUnequipped(Player player) {
+    player.OnAttacked -= HandleAttacked;
+  }
+
+  private void HandleAttacked(int arg1, Actor source) {
+    foreach (var tile in player.floor.GetAdjacentTiles(player.pos).Where(Bladegrass.CanOccupy)) {
+      if (durability > 0) {
+        player.floor.Put(new Bladegrass(tile.pos));
+        this.ReduceDurability();
+      }
+    }
+  }
 }

@@ -23,26 +23,17 @@ public class SoftGrass : Grass {
   }
 }
 
-public class SoftGrassStatus : StackingStatus, IActionCostModifier, IBaseActionModifier {
+public class SoftGrassStatus : StackingStatus, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Ignore;
   public SoftGrassStatus(int stacks) : base(stacks) {}
-  private bool nextMoveFree = false;
-
-  public ActionCosts Modify(ActionCosts costs) {
-    if (nextMoveFree) {
-      nextMoveFree = false;
-      costs[ActionType.MOVE] = 0f;
-    }
-    return costs;
-  }
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE) {
-      if (stacks >= 5) {
-        nextMoveFree = true;
+      stacks++;
+      if (stacks == 5) {
+        GameModel.main.EnqueueEvent(() => input.actor.statuses.Add(new FreeMoveStatus()));
+      } else if (stacks > 5) {
         stacks = 1;
-      } else {
-        stacks++;
       }
     }
     return input;
@@ -55,4 +46,25 @@ public class SoftGrassStatus : StackingStatus, IActionCostModifier, IBaseActionM
   }
 
   public override string Info() => "Every fifth move is free!";
+}
+
+[ObjectInfo("colored_transparent_packed_850", "")]
+public class FreeMoveStatus : Status, IActionCostModifier, IBaseActionModifier {
+  public FreeMoveStatus() {}
+
+  public override string Info() => "Your next move is free!";
+
+  public ActionCosts Modify(ActionCosts costs) {
+    costs[ActionType.MOVE] = 0f;
+    return costs;
+  }
+
+  public BaseAction Modify(BaseAction input) {
+    if (input.Type == ActionType.MOVE) {
+      Remove();
+    }
+    return input;
+  }
+
+  public override void Stack(Status other) {}
 }

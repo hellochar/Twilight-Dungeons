@@ -1,35 +1,19 @@
 using System;
 using System.Linq;
 
-public class ItemWildwoodWreath : EquippableItem, IDurable, IActionPerformedHandler {
+public class ItemWildwoodWreath : EquippableItem, IDurable, IAttackHandler {
   public ItemWildwoodWreath() {
-    durability = 8;
+    durability = maxDurability;
   }
 
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }
-  public int maxDurability => 8;
+  public int maxDurability => 15;
 
-  internal override string GetStats() => "Whenever you move, deal 1 damage to all adjacent enemies.";
-
-  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    if (final.Type == ActionType.MOVE) {
-      var actor = final.actor;
-
-      var adjacentEnemies = actor.floor
-        .AdjacentActors(actor.pos)
-        .Where((a) => a.faction == Faction.Enemy);
-
-      if (adjacentEnemies.Any()) {
-        foreach (var enemy in adjacentEnemies) {
-          enemy.TakeAttackDamage(1, final.actor);
-        }
-        this.ReduceDurability();
-      }
-    }
+  public void OnAttack(Actor target) {
+    player.statuses.Add(new StatusWild(2));
+    this.ReduceDurability();
   }
-}
 
-interface IActionPerformedHandler {
-  void HandleActionPerformed(BaseAction final, BaseAction initial);
+  internal override string GetStats() => "Attacking an enemy gives you the Wild status for 2 turns.";
 }

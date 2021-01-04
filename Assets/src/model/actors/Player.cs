@@ -35,6 +35,7 @@ public class Player : Actor {
   }
 
   private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
+
   private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     GameModel.main.EnqueueEvent(() => {
       var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
@@ -104,7 +105,7 @@ public class Player : Actor {
     if (item is IDurable durable && !(target is Rubble)) {
       durable.ReduceDurability();
     }
-    if (item is IAttackHandler handler) {
+    foreach (var handler in Modifiers.Of<IAttackHandler>(this)) {
       handler.OnAttack(target);
     }
     if (task is FollowPathTask) {

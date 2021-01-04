@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class Bladegrass : Grass {
+  public static bool CanOccupy(Tile tile) => tile is Ground;
   public bool isSharp = false;
   public event Action OnSharpened;
   public Bladegrass(Vector2Int pos) : base(pos) {

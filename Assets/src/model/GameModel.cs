@@ -29,7 +29,8 @@ public class GameModel {
   public static GameModel main;
 
   public static void InitMain() {
-    var seed = UnityEngine.Random.Range(0, 100000);
+    // var seed = UnityEngine.Random.Range(0, 100000);
+    var seed = 53922;
     main = new GameModel(seed);
     main.generate();
     var step = main.StepUntilPlayerChoice();
@@ -49,7 +50,7 @@ public class GameModel {
       floorGen.generateSingleRoomFloor(1, 9, 9),
       floorGen.generateSingleRoomFloor(2, 10, 10),
       floorGen.generateSingleRoomFloor(3, 11, 11),
-      floorGen.generateSingleRoomFloor(4, 11, 11, 1),
+      floorGen.generateSingleRoomFloor(4, 11, 11, 1, 1, true),
       floorGen.generateSingleRoomFloor(5, 15, 15, 2),
       floorGen.generateSingleRoomFloor(6, 13, 13, 2),
       floorGen.generateSingleRoomFloor(7, 11, 11, 2),
@@ -57,7 +58,7 @@ public class GameModel {
       floorGen.generateSingleRoomFloor(9, 13, 9, 2, 2),
       floorGen.generateSingleRoomFloor(10, 14, 7, 2, 2),
       floorGen.generateSingleRoomFloor(11, 20, 9, 3, 2),
-      floorGen.generateSingleRoomFloor(12, 10, 10, 2, 2),
+      floorGen.generateSingleRoomFloor(12, 10, 10, 2, 2, true),
       floorGen.generateSingleRoomFloor(13, 12, 12, 3, 2),
       floorGen.generateSingleRoomFloor(14, 13, 13, 3, 2),
       floorGen.generateSingleRoomFloor(15, 15, 15, 4, 2),
@@ -65,7 +66,7 @@ public class GameModel {
       floorGen.generateMultiRoomFloor(17, 15, 15, 4),
       floorGen.generateMultiRoomFloor(18, 20, 20, 4),
       floorGen.generateMultiRoomFloor(19, 30, 20, 5),
-      floorGen.generateMultiRoomFloor(20, 20, 20, 6),
+      floorGen.generateMultiRoomFloor(20, 20, 20, 6, true),
       floorGen.generateMultiRoomFloor(21, 24, 24, 8),
       floorGen.generateMultiRoomFloor(22, 30, 12, 10),
       floorGen.generateMultiRoomFloor(23, 30, 20, 15),

@@ -6,35 +6,54 @@ using UnityEngine;
 public class Bat : AIActor {
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 6;
+    ClearTasks();
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
     OnDealAttackDamage += HandleDealDamage;
-    OnTakeAttackDamage += HandleTakeDamage;
+    OnActionPerformed += HandleActionPerformed;
     if (UnityEngine.Random.value < 0.2f) {
       inventory.AddItem(new ItemBatTooth());
+    }
+  }
+
+  int turnsUntilSleep = 5;
+  private void HandleActionPerformed(BaseAction arg1, BaseAction arg2) {
+    if (!(task is SleepTask)) {
+      turnsUntilSleep--;
+      if (turnsUntilSleep <= 0) {
+        var sleep = new SleepTask(this, 5, true);
+        SetTasks(sleep);
+      }
+    } else {
+      turnsUntilSleep = 5;
     }
   }
 
   /// bats hide in corners and occasionally attack the closest target
   private IEnumerable<ActorTask> AI() {
     while (true) {
-      for (int i = 0; i < 5; i++) {
-        var potentialTargets = actor.floor
-          .AdjacentActors(actor.pos)
-          .Where((t) => !(t is Bat));
-        if (potentialTargets.Any()) {
-          var target = Util.RandomPick(potentialTargets);
-          yield return new AttackTask(actor, target);
-        } else {
-          yield return new MoveRandomlyTask(actor);
-        }
+      var target = SelectTarget();
+      if (target == null) {
+        yield return new MoveRandomlyTask(this);
+        continue;
       }
-      yield return new SleepTask(actor, 5, true);
+      if (IsNextTo(target)) {
+        yield return new AttackTask(actor, target);
+        continue;
+      }
+      // chase until you are next to any target
+      yield return new ChaseDynamicTargetTask(actor, SelectTarget);
     }
   }
 
-  private void HandleTakeDamage(int dmg, int hp, Actor source) {
-    // SetTasks(new AttackTask(this, source));
+  Actor SelectTarget() {
+    var potentialTargets = actor.floor
+      .ActorsInCircle(actor.pos, 7)
+      .Where((t) => actor.floor.TestVisibility(actor.pos, t.pos) && !(t is Bat));
+    if (potentialTargets.Any()) {
+      return potentialTargets.Aggregate((t1, t2) => actor.DistanceTo(t1) < actor.DistanceTo(t2) ? t1 : t2);
+    }
+    return null;
   }
 
   private void HandleDealDamage(int dmg, Actor target) {
@@ -51,6 +70,7 @@ public class Bat : AIActor {
 [ObjectInfo("bat-tooth", "Sharp with a little hole on the end to extract blood.")]
 internal class ItemBatTooth : EquippableItem, IWeapon, IDurable {
   public ItemBatTooth() {
+    durability = maxDurability;
     OnEquipped += HandleEquipped;
     OnUnequipped += HandleUnequipped;
   }
@@ -73,7 +93,7 @@ internal class ItemBatTooth : EquippableItem, IWeapon, IDurable {
 
   public int durability { get; set; }
 
-  public int maxDurability => 1;
+  public int maxDurability => 4;
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
   internal override string GetStats() => "Heal 1 HP when you deal damage with this weapon.";

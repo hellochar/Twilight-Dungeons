@@ -18,7 +18,10 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
       switch (e) {
         case Tile t:
           category = "Tiles/";
-        break;
+          break;
+        case Grass g:
+          category = "Grasses/";
+          break;
       }
       string resourcePath = $"Entities/{category}{type.Name}";
       EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));

@@ -14,7 +14,13 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
   public GameObject GetEntityPrefab(Entity e) {
     var type = e.GetType();
     if (!EntityPrefabs.ContainsKey(type)) {
-      string resourcePath = $"Entities/{type.Name}";
+      string category = "";
+      switch (e) {
+        case Tile t:
+          category = "Tiles/";
+        break;
+      }
+      string resourcePath = $"Entities/{category}{type.Name}";
       EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));
     }
     return EntityPrefabs[type];

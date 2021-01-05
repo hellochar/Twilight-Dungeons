@@ -241,6 +241,9 @@ public class Actor : SteppableEntity, IModifierProvider {
     // action.MoveNext() has been called and it returned true
     var action = task.Current;
     BaseAction finalAction = Perform(action);
+    if (IsDead) {
+      throw new ActorDiedException();
+    }
     Modifiers.Process(this.StepModifiers(), null);
 
     // handle close-ended actions

@@ -20,6 +20,10 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
   }
 
   protected virtual bool ShouldWakeUp() {
+    if (wakeUpNextTurn) {
+      return true;
+    }
+
     if (isDeepSleep) {
       return false;
     }
@@ -36,14 +40,11 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
           break;
         }
       }
-      if (wakeUpNextTurn) {
-        break;
-      }
       yield return new WaitBaseAction(actor);
     }
     // end of sleep - wake up adjacent sleeping Actors
     foreach (var actor in actor.floor.AdjacentActors(actor.pos)) {
-      if (actor.task is SleepTask s) {
+      if (actor.task is SleepTask s && !s.isDeepSleep) {
         // hack to wake them up
         s.wakeUpNextTurn = true;
       }

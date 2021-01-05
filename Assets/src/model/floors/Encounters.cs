@@ -164,7 +164,7 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var numSoftGrass = Random.Range(numTiles / 4, numTiles + 1);
+      var numSoftGrass = Random.Range(numTiles / 2, numTiles + 1);
       foreach (var tile in bfs.Take(numSoftGrass)) {
         var grass = new SoftGrass(tile.pos);
         floor.Put(grass);
@@ -199,6 +199,19 @@ public class Encounters {
     }
   });
 
+  public static Encounter AddPoisonmoss = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Poisonmoss.CanOccupy));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var start = Util.RandomPick(occupiableTiles);
+      var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
+      var num = Random.Range(2, 6);
+      foreach (var tile in bfs.Take(num)) {
+        floor.Put(new Poisonmoss(tile.pos));
+      }
+    }
+  });
+
   public static Encounter AddWebs = new Encounter((floor, room) => {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => tile.grass == null && tile is Ground).ToList();
     var num = Random.Range(tiles.Count / 8, tiles.Count / 2);
@@ -214,6 +227,23 @@ public class Encounters {
       var start = Util.RandomPick(occupiableTiles);
       var grass = new Spores(start.pos);
       floor.Put(grass);
+    }
+  });
+
+  public static Encounter AddEveningBells = new Encounter((floor, room) => {
+    var rubbleLocations = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room));
+    var numRubble = Random.Range(1, 4);
+    for (var i = 0; i < numRubble; i++) {
+      var tile = Util.RandomPick(rubbleLocations);
+      if (tile != null) {
+        floor.Put(new Rubble(tile.pos));
+        floor.PutAll(floor
+          .GetCardinalNeighbors(tile.pos)
+          .Where(EveningBells.CanOccupy)
+          .Select((t) => new EveningBells(t.pos))
+        );
+        rubbleLocations.ExceptWith(floor.GetAdjacentTiles(tile.pos));
+      }
     }
   });
 
@@ -237,13 +267,25 @@ public class Encounters {
     }
   });
 
+  public static Encounter AddAgave = new Encounter((floor, room) => {
+    var livableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Agave.CanOccupy));
+    var start = Util.RandomPick(livableTiles);
+    var num = Random.Range(3, 9);
+    if (start != null) {
+      foreach (var tile in floor.BreadthFirstSearch(start.pos, livableTiles.Contains).Take(num)) {
+        floor.Put(new Agave(tile.pos));
+      }
+    } else {
+      Debug.Log("Couldn't find room to place Agave");
+    }
+  });
+
   public static Encounter AddMushroom = new Encounter((floor, room) => {
-    IEnumerable<Tile> tiles = floor.EnumerateRoomTiles(room).ToList();
-    var tilesWhereMushroomsCanLive = tiles.Where((tile) => Mushroom.CanLiveIn(tile)).ToList();
-    if (tilesWhereMushroomsCanLive.Count == 0) {
+    var livableTiles = floor.EnumerateRoomTiles(room).Where(Mushroom.CanOccupy);
+    if (!livableTiles.Any()) {
       Debug.LogError("Couldn't find a location for mushrooms!");
     }
-    foreach (var tile in tilesWhereMushroomsCanLive) {
+    foreach (var tile in livableTiles) {
       floor.Put(new Mushroom(tile.pos));
     }
   });
@@ -393,11 +435,14 @@ public class Encounters {
   public WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     { 1f, AddSoftGrass },
     { 0.75f, AddBladegrass },
+    { 0.5f, AddAgave },
     { 0.5f, AddHangingVines },
+    { 0.4f, AddEveningBells },
     { 0.4f, AddGuardleaf },
     { 0.4f, AddSpore },
     { 0.4f, AddWebs },
     { 0.4f, ScatteredBoombugs },
+    { 0.2f, AddPoisonmoss },
     { 0.2f, AddDeathbloom },
   };
 

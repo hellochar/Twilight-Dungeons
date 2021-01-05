@@ -29,8 +29,8 @@ public class GameModel {
   public static GameModel main;
 
   public static void InitMain() {
-    // var seed = UnityEngine.Random.Range(0, 100000);
-    var seed = 53922;
+    var seed = UnityEngine.Random.Range(0, 100000);
+    // var seed = 53922;
     main = new GameModel(seed);
     main.generate();
     var step = main.StepUntilPlayerChoice();

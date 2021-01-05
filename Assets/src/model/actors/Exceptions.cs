@@ -7,6 +7,7 @@ public class CannotPerformActionException : Exception {
 }
 
 public class NoActionException : Exception {}
+public class ActorDiedException : Exception {}
 
 [Serializable]
 public class PlayerSelectCanceledException : Exception {

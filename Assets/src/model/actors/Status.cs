@@ -6,14 +6,20 @@ using System.Linq;
 public abstract class Status : IStepModifier {
   public virtual bool isDebuff => false;
   public event Action OnRemoved;
+  private string firstRemoveStackTrace;
   private StatusList m_list;
   /// <summary>Should only be set by the StatusList.</summary>
   public StatusList list {
     get => m_list;
     set {
       if (value == null && m_list != null) {
-        OnRemoved?.Invoke();
-        End();
+        if (firstRemoveStackTrace != null) {
+          throw new Exception("Removing " + this + "twice! First stack trace was " + firstRemoveStackTrace);
+        } else {
+          firstRemoveStackTrace = Environment.StackTrace;
+          OnRemoved?.Invoke();
+          End();
+        }
       }
       m_list = value;
       if (value != null) {

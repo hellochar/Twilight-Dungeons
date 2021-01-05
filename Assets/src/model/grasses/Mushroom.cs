@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 public class Mushroom : Grass {
@@ -29,7 +32,7 @@ public class Mushroom : Grass {
 
   protected override float Step() {
     // find an adjacent square without mushrooms and grow into it
-    var growTiles = floor.GetCardinalNeighbors(pos).Where(CanLiveIn);
+    var growTiles = floor.GetCardinalNeighbors(pos).Where(CanOccupy);
     if (growTiles.Any()) {
       var toGrowInto = Util.RandomPick(growTiles);
       var newMushrom = new Mushroom(toGrowInto.pos);
@@ -39,7 +42,7 @@ public class Mushroom : Grass {
     return GetRandomDuplicateTime();
   }
 
-  public static bool CanLiveIn(Tile tile) {
+  public static bool CanOccupy(Tile tile) {
     var floor = tile.floor;
     // hugging at least one 4-neighbor wall
     var cardinalNeighbors = floor.GetCardinalNeighbors(tile.pos);

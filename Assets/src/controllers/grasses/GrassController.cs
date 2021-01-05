@@ -10,6 +10,8 @@ public class GrassController : MonoBehaviour, IEntityController {
   }
 
   private void HandleNoteworthyAction() {
-    gameObject.AddComponent<PulseAnimation>();
+    if (GetComponent<GrowAtStart>() == null) {
+      gameObject.AddComponent<PulseAnimation>();
+    }
   }
 }

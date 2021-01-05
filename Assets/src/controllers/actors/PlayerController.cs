@@ -31,7 +31,7 @@ public class PlayerController : ActorController {
     if (Input.GetKeyDown(KeyCode.Equals)) {
       GameModel.main.PutPlayerAt(model.floors[model.activeFloorIndex + 1], false);
     } else if (Input.GetKeyDown(KeyCode.Minus)) {
-      GameModel.main.PutPlayerAt(model.floors[model.activeFloorIndex - 1], true);
+      GameModel.main.PutPlayerAt(model.floors[model.activeFloorIndex - 1], false);
     }
     base.Update();
   }

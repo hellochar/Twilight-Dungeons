@@ -49,8 +49,8 @@ public class Spider : AIActor {
         bag.Add(1, t);
       }
       foreach (var t in webbedAdjacentTiles) {
-        // prefer to walk on their web 6 to 1
-        bag.Add(6, t);
+        // prefer to walk on their web 3 to 1
+        bag.Add(3, t);
       }
       var nextTile = bag.GetRandom();
 
@@ -135,17 +135,15 @@ internal class ItemSpiderSandals : EquippableItem, IStackable {
   }
 
   private void HandleMove(Vector2Int pos, Vector2Int oldPos) {
-    GameModel.main.EnqueueEvent(() => {
-      var player = GameModel.main.player;
-      if (!(player.floor.grasses[oldPos] is Web)) {
-        player.floor.Put(new Web(oldPos));
-        stacks--;
-      }
-      if (!(player.grass is Web) && stacks > 0) {
-        player.floor.Put(new Web(player.pos));
-        stacks--;
-      }
-    });
+    var player = GameModel.main.player;
+    if (!(player.floor.grasses[oldPos] is Web)) {
+      player.floor.Put(new Web(oldPos));
+      stacks--;
+    }
+    if (!(player.grass is Web) && stacks > 0) {
+      player.floor.Put(new Web(player.pos));
+      stacks--;
+    }
   }
 
   internal override string GetStats() => "Move faster on webs.\nLeave a trail of webs when you move.";
@@ -162,6 +160,9 @@ internal class WebStatus : Status, IActionCostModifier {
   }
 
   public override void Step() {
+    if (actor.floor == null) {
+      throw new Exception("Stepping Web status even though the actor's left the floor!");
+    }
     if (!(actor.grass is Web)) {
       Remove();
     }

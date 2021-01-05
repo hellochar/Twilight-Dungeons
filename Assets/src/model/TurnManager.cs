@@ -145,6 +145,8 @@ public class TurnManager {
           // TODO make this better
           entity.timeNextAction += 1;
         }
+      } catch (ActorDiedException) {
+        // just a catch-all; we don't have to do anything
       }
 
       if (model.player.IsDead) {

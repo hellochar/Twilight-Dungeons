@@ -54,17 +54,20 @@ public class FloorGenerator {
     AddMaturePlant(Util.RandomPick(types));
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
+    Encounters.AddWater(floor, room0);
+
+    #if DEBUG
     // Encounters.OneButterfly(floor, room0);
     // Encounters.OneSpider(floor, room0);
     // Encounters.AddSpore(floor, room0);
     // Encounters.AddBladegrass(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
-    Encounters.AddWater(floor, room0);
     // Encounters.AddBats(floor, room0);
     // Encounters.AddPumpkin(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AFewSnails(floor, room0);
     // Encounters.AFewBlobs(floor, room0);
+    #endif
 
     return floor;
   }

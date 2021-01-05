@@ -7,11 +7,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2120311342416436357, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: m_Name
+      value: FancyGround
+      objectReference: {fileID: 0}
     - target: {fileID: 3042002388432384745, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
       propertyPath: m_Name
       value: FancyGround
       objectReference: {fileID: 0}
+    - target: {fileID: 5028533942722238967, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8848465696421099746, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+        type: 3}
     - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
       propertyPath: m_LocalPosition.x

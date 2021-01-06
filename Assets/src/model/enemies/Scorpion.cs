@@ -15,6 +15,6 @@ public class Scorpion : AIActor {
   }
 
   internal override int BaseAttackDamage() {
-    return UnityEngine.Random.Range(1, 2);
+    return 1;
   }
 }

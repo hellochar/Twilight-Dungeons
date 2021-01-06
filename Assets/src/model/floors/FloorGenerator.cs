@@ -239,7 +239,7 @@ public class FloorGenerator {
     for (int i = 0; i < numSplits; i++) {
       bool success = root.randomlySplit();
       if (!success) {
-        Debug.Log("couldn't split at iteration " + i);
+        Debug.LogWarning("couldn't split at iteration " + i);
         break;
       }
     }

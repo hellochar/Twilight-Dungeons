@@ -296,7 +296,7 @@ public class Encounters {
         floor.Put(new Agave(tile.pos));
       }
     } else {
-      Debug.Log("Couldn't find room to place Agave");
+      Debug.LogWarning("Couldn't find room to place Agave");
     }
   });
 

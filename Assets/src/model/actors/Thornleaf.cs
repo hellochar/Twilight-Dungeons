@@ -146,8 +146,5 @@ internal class ItemHeartOfThorns : EquippableItem, IDurable {
         this.ReduceDurability();
       }
     }
-    foreach (var bladegrass in player.floor.GetAdjacentTiles(player.pos).Select(t => t.grass).Where(g => g is Bladegrass).Cast<Bladegrass>()) {
-      bladegrass.Sharpen();
-    }
   }
 }

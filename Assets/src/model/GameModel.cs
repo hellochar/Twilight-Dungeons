@@ -30,10 +30,13 @@ public class GameModel {
 
   public static void InitMain() {
     var seed = UnityEngine.Random.Range(0, 100000);
+
     #if UNITY_EDITOR
     // seed = 53922;
+    // Analyze();
     #endif
-    main = new GameModel(seed);
+
+    new GameModel(seed);
     main.generate();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately
@@ -43,6 +46,7 @@ public class GameModel {
   public GameModel(int seed) {
     this.seed = seed;
     UnityEngine.Random.InitState(seed);
+    main = this;
   }
 
   private void generate() {
@@ -77,6 +81,31 @@ public class GameModel {
 
     player = new Player(floors[0].upstairs.landing);
     floors[0].Put(player);
+  }
+
+  private static void Analyze() {
+    var dict = new Dictionary<Type, int[]>();
+    for (int i = 0; i < 10; i++) {
+      var model = new GameModel(UnityEngine.Random.Range(0, 999999));
+      model.generate();
+      // Analyze(model, i, floor => floor.actors.Where((a) => a.faction == Faction.Enemy));
+      Analyze(model, i, floor => floor.grasses);
+    }
+    var l = dict.ToList().OrderByDescending((pair) => pair.Value[0]);
+    var s = String.Join("\n", l.Select((pair) => $"{pair.Key}, {String.Join(", ", pair.Value)}"));
+    Debug.Log(s);
+
+    void Analyze<T>(GameModel model, int index, Func<Floor, IEnumerable<T>> selector) {
+      foreach (var floor in model.floors) {
+        foreach (var actor in selector(floor)) {
+          var t = actor.GetType();
+          if (!dict.ContainsKey(t)) {
+            dict.Add(t, new int[10]);
+          }
+          dict[t][index]++;
+        }
+      }
+    }
   }
 
 

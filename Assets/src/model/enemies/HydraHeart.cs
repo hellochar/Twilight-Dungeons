@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class HydraHeart : AIActor, IBaseActionModifier {
+  public static int spawnRange = 4;
   public static bool IsTarget(Actor a) => !(a is HydraHead) && !(a is HydraHeart);
   private List<HydraHead> heads = new List<HydraHead>();
   public HydraHeart(Vector2Int pos) : base(pos) {
@@ -23,13 +24,13 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   void SpawnHydraHead() {
     Vector2Int? spawnPos = null;
 
-    var nearestEnemy = floor.ActorsInCircle(pos, 3).Where(IsTarget).OrderBy((a) => a.DistanceTo(pos)).FirstOrDefault();
+    var nearestEnemy = floor.ActorsInCircle(pos, spawnRange).Where(IsTarget).OrderBy((a) => a.DistanceTo(pos)).FirstOrDefault();
     if (nearestEnemy != null) {
       spawnPos = Util.RandomPick(floor.GetAdjacentTiles(nearestEnemy.pos).Select(t => t.pos).Where(CanSpawnHydraHeadAt));
     }
 
     if (spawnPos == null) {
-      spawnPos = Util.RandomPick(floor.EnumerateCircle(base.pos, 3).Where(CanSpawnHydraHeadAt));
+      spawnPos = Util.RandomPick(floor.EnumerateCircle(base.pos, spawnRange).Where(CanSpawnHydraHeadAt));
     }
 
     if (spawnPos != null) {
@@ -70,7 +71,7 @@ public class HydraHead : AIActor, IBaseActionModifier {
   protected override ActionCosts actionCosts => StaticActionCosts;
   public HydraHead(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 2;
+    hp = baseMaxHp = 3;
     ai = AI().GetEnumerator();
   }
 

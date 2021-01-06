@@ -22,12 +22,16 @@ public class Bladegrass : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorLeave(Actor obj) {
+  public void Sharpen() {
     if (!isSharp) {
       isSharp = true;
       OnSharpened?.Invoke();
       AddTimedEvent(10, () => Kill());
     }
+  }
+
+  private void HandleActorLeave(Actor obj) {
+    Sharpen();
   }
 
   private void HandleActorEnter(Actor actor) {

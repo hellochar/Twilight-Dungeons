@@ -32,7 +32,7 @@ class ItemAgave : Item, IStackable {
     this.stacks = stacks;
   }
 
-  public int stacksMax => 7;
+  public int stacksMax => 4;
   private int _stacks;
   public int stacks {
     get => _stacks;
@@ -53,7 +53,6 @@ class ItemAgave : Item, IStackable {
 
   private void RefineImpl(Player player) {
     player.floor.Put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
-    player.floor.Put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
     Destroy();
   }
 
@@ -71,7 +70,8 @@ class ItemAgave : Item, IStackable {
 [ObjectInfo("roguelikeSheet_transparent_647", "")]
 class ItemAgaveHoney : Item, IEdible {
   public void Eat(Actor a) {
-    a.statuses.Add(new WellFedStatus(10));
+    a.Heal(1);
+    // a.statuses.Add(new WellFedStatus(10));
     Destroy();
   }
 

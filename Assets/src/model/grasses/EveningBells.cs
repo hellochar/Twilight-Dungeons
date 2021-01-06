@@ -1,10 +1,13 @@
 using UnityEngine;
 
-internal class EveningBells : Grass {
+public class EveningBells : Grass {
+  public readonly float angle;
+
   public static bool CanOccupy(Tile tile) => tile is Ground;
-  public EveningBells(Vector2Int pos) : base(pos) {
+  public EveningBells(Vector2Int pos, float angle = 0) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
+    this.angle = angle;
   }
 
   void HandleEnterFloor() {

@@ -57,6 +57,7 @@ public class FloorGenerator {
     Encounters.AddWater(floor, room0);
 
     #if DEBUG
+    // Encounters.AddEveningBells(floor, room0);
     // Encounters.OneButterfly(floor, room0);
     // Encounters.OneSpider(floor, room0);
     // Encounters.AddSpore(floor, room0);
@@ -88,7 +89,7 @@ public class FloorGenerator {
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
 
     Encounters.PlaceFancyGround(floor, room0);
-    Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
+    // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
     Encounters.CavesPlantRewards.GetRandomAndDiscount(0.9f)(floor, room0);
 
     // just do nothing on this floor
@@ -118,10 +119,14 @@ public class FloorGenerator {
     // a reward (optional)
     if (reward) {
       Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
+      Encounters.AddWater(floor, room0);
     }
 
     // and a little bit of extra spice
-    // Encounters.CavesDeadEnds.GetRandomAndDiscount()(floor, room0);
+    Encounters.CavesDeadEnds.GetRandom()(floor, room0);
+    // #if DEBUG
+    // Encounters.AddParasite(floor, room0);
+    // #endif
 
     // clear stairs so player doesn't walk right into bad grasses or get immediately surrounded by enemies
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
@@ -191,11 +196,12 @@ public class FloorGenerator {
     }
 
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
+    var deadEndEncounters = Encounters.CavesDeadEnds.Clone();
     foreach (var room in deadEndRooms) {
       if (Random.value < 0.05f) {
         Encounters.SurroundWithRubble(floor, room);
       }
-      var encounter = Encounters.CavesDeadEnds.GetRandomAndDiscount();
+      var encounter = deadEndEncounters.GetRandomAndDiscount();
       encounter(floor, room);
     }
 

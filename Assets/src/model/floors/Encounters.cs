@@ -63,9 +63,9 @@ public class Encounters {
     var num = RandomRangeBasedOnIndex(floor.depth / 5,
       (1, 1),
       (1, 2),
-      (2, 2),
+      (1, 4),
       (2, 3),
-      (3, 3),
+      (2, 4),
       (3, 4)
     );
     foreach (var tile in tiles.Take(num)) {
@@ -79,9 +79,9 @@ public class Encounters {
     var num = RandomRangeBasedOnIndex(floor.depth / 5,
       (1, 1),
       (1, 2),
-      (2, 2),
+      (1, 4),
       (2, 3),
-      (3, 3),
+      (2, 4),
       (3, 4)
     );
     foreach (var tile in tiles.Take(num)) {
@@ -114,6 +114,14 @@ public class Encounters {
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Golem(tile.pos));
+    }
+  });
+
+  public static Encounter AddParasite = new Encounter((floor, room) => {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    tiles.Shuffle();
+    foreach (var tile in tiles.Take(1)) {
+      floor.Put(new Parasite(tile.pos));
     }
   });
 
@@ -231,18 +239,22 @@ public class Encounters {
   });
 
   public static Encounter AddEveningBells = new Encounter((floor, room) => {
-    var rubbleLocations = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room));
-    var numRubble = Random.Range(1, 4);
-    for (var i = 0; i < numRubble; i++) {
-      var tile = Util.RandomPick(rubbleLocations);
+    var locations = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => !Mushroom.CanOccupy(tile)));
+    var num = 1;
+    for (var i = 0; i < num; i++) {
+      var tile = Util.RandomPick(locations);
       if (tile != null) {
-        floor.Put(new Rubble(tile.pos));
+        var center = tile.pos;
+        floor.Put(new Stump(center));
         floor.PutAll(floor
-          .GetCardinalNeighbors(tile.pos)
+          .GetCardinalNeighbors(center)
           .Where(EveningBells.CanOccupy)
-          .Select((t) => new EveningBells(t.pos))
+          .Select((t) => {
+            var angle = Vector2.SignedAngle(new Vector2(0, -1), t.pos - center);
+            return new EveningBells(t.pos, angle);
+          })
         );
-        rubbleLocations.ExceptWith(floor.GetAdjacentTiles(tile.pos));
+        locations.ExceptWith(floor.GetAdjacentTiles(tile.pos));
       }
     }
   });
@@ -421,8 +433,9 @@ public class Encounters {
     { 0.4f, AddBats },
     { 0.35f, AddSpiders },
     { 0.2f, AddScorpions },
+    { 0.2f, AddParasite },
     { 0.2f, AddGolems },
-    { 0.1f, AddHydra }
+    { 0.1f, AddHydra },
   };
 
   public WeightedRandomBag<Encounter> CavesWalls = new WeightedRandomBag<Encounter> {
@@ -449,21 +462,34 @@ public class Encounters {
   public WeightedRandomBag<Encounter> CavesDeadEnds = new WeightedRandomBag<Encounter> {
     /// just to make it interesting, always give dead ends *something*
     { 5f, Empty },
-    { 0.5f, AddWater },
-    { 0.1f, AddDeathbloom },
-    { 0.2f, ScatteredBoombugs },
+
     { 0.5f, AFewBlobs },
     { 0.5f, JackalPile },
     { 0.5f, AFewSnails },
-    { 0.1f, AddSpiders },
+
     { 0.25f, AddSoftGrass },
     { 0.25f, AddBladegrass },
+
+    { 0.2f, AddWater },
+    { 0.2f, ScatteredBoombugs },
+
+    { 0.1f, AddDeathbloom },
+    { 0.1f, AddSpiders },
     { 0.1f, AddGuardleaf },
     { 0.1f, AddSpore },
+
+    { 0.05f, AddEveningBells },
+    { 0.05f, AddPoisonmoss },
+
+    { 0.02f, AddScorpions },
+    { 0.02f, AddParasite },
+    { 0.02f, AddGolems },
+
+    { 0.01f, AddHydra },
   };
 
   public WeightedRandomBag<Encounter> CavesRewards = new WeightedRandomBag<Encounter> {
-    { 2f, AddWater },
+    // { 2f, AddWater },
     { 1f, AddMushroom },
     { 1f, AddPumpkin },
     { 1f, OnePlumpAstoria },

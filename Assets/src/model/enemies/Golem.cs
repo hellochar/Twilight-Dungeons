@@ -1,16 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class Golem : AIActor {
-  internal override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
+public class Golem : AIActor, IAttackDamageTakenModifier {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
+    [ActionType.ATTACK] = 2f,
     [ActionType.MOVE] = 2f,
   };
 
   protected override ActionCosts actionCosts => StaticActionCosts;
   public Golem(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 12;
+    hp = baseMaxHp = 10;
     ai = AI().GetEnumerator();
     OnMove += HandleMove;
   }
@@ -27,7 +29,7 @@ public class Golem : AIActor {
     while (true) {
       if (isVisible) {
         if (IsNextTo(GameModel.main.player)) {
-          yield return new AttackGroundTask(actor, GameModel.main.player.pos, 1);
+          yield return new AttackTask(actor, GameModel.main.player);
         } else {
           yield return new ChaseTargetTask(actor, GameModel.main.player);
         }
@@ -35,5 +37,9 @@ public class Golem : AIActor {
         yield return new MoveRandomlyTask(actor);
       }
     }
+  }
+
+  public int Modify(int input) {
+    return input - 1;
   }
 }

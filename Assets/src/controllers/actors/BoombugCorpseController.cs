@@ -5,12 +5,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BoombugCorpseController : ActorController {
+  BoombugCorpse corpse => (BoombugCorpse) actor;
   public override void Start() {
     base.Start();
-    actor.OnDeath += HandleDeath;
+    corpse.OnExploded += HandleExploded;
   }
 
-  private void HandleDeath() {
+  private void HandleExploded() {
     var explosion = PrefabCache.Effects.Instantiate("Boombug Explosion", transform);
     explosion.transform.parent = null;
   }

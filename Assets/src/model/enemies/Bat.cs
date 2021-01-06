@@ -38,20 +38,20 @@ public class Bat : AIActor {
         continue;
       }
       if (IsNextTo(target)) {
-        yield return new AttackTask(actor, target);
+        yield return new AttackTask(this, target);
         continue;
       }
       // chase until you are next to any target
-      yield return new ChaseDynamicTargetTask(actor, SelectTarget);
+      yield return new ChaseDynamicTargetTask(this, SelectTarget);
     }
   }
 
   Actor SelectTarget() {
-    var potentialTargets = actor.floor
-      .ActorsInCircle(actor.pos, 7)
-      .Where((t) => actor.floor.TestVisibility(actor.pos, t.pos) && !(t is Bat));
+    var potentialTargets = floor
+      .ActorsInCircle(pos, 7)
+      .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Bat));
     if (potentialTargets.Any()) {
-      return potentialTargets.Aggregate((t1, t2) => actor.DistanceTo(t1) < actor.DistanceTo(t2) ? t1 : t2);
+      return potentialTargets.Aggregate((t1, t2) => DistanceTo(t1) < DistanceTo(t2) ? t1 : t2);
     }
     return null;
   }
@@ -68,7 +68,7 @@ public class Bat : AIActor {
 }
 
 [ObjectInfo("bat-tooth", "Sharp with a little hole on the end to extract blood.")]
-internal class ItemBatTooth : EquippableItem, IWeapon, IDurable {
+internal class ItemBatTooth : EquippableItem, IWeapon {
   public ItemBatTooth() {
     durability = maxDurability;
     OnEquipped += HandleEquipped;
@@ -89,11 +89,11 @@ internal class ItemBatTooth : EquippableItem, IWeapon, IDurable {
     }
   }
 
-  public (int, int) AttackSpread => (3, 3);
+  public (int, int) AttackSpread => (1, 1);
 
   public int durability { get; set; }
 
-  public int maxDurability => 4;
+  public int maxDurability => 1;
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
   internal override string GetStats() => "Heal 1 HP when you deal damage with this weapon.";

@@ -63,7 +63,9 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
 
   protected virtual void HandleStatusAdded(Status status) {
     var name = status.GetType().Name;
-    animator?.SetBool(name, true);
+    if (animator != null) {
+      animator.SetBool(name, true);
+    }
     var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, transform);
     if (obj != null) {
       obj.GetComponent<StatusController>().status = status;

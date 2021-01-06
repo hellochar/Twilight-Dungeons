@@ -1,5 +1,17 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &153489580829585249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6827753706117626047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf02dccb6a4a9c94cb5754a2e2c9fa9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2334760806850563075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70,22 +82,22 @@ PrefabInstance:
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.27033645
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.57684165
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.764151
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Color.a
-      value: 0.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
@@ -98,5 +110,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 93cb4bfbf0123a5458ad10d2a85cd3bb,
         type: 3}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6522990853209237999, guid: 24aa84cb97063fb44ae466e268ea266b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 24aa84cb97063fb44ae466e268ea266b, type: 3}
+--- !u!1 &6827753706117626047 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9126458090356110524, guid: 24aa84cb97063fb44ae466e268ea266b,
+    type: 3}
+  m_PrefabInstance: {fileID: 2334760806850563075}
+  m_PrefabAsset: {fileID: 0}

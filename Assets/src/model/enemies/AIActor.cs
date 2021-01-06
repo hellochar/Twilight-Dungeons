@@ -35,7 +35,8 @@ public class AIActor : Actor {
         if (ai.MoveNext()) {
           SetTasks(ai.Current);
         } else {
-          throw new System.Exception("AI Enumerator ended!");
+          SetTasks(new WaitTask(this, 99999));
+          throw new System.Exception("AI Enumerator ended!" + this);
         }
       }
     }

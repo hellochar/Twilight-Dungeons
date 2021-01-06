@@ -46,6 +46,7 @@ internal class ItemVilePotion : Item, IUsable {
         floor.Put(new VileGrowth(pos));
       }
     }
+    Destroy();
   }
 
   internal override string GetStats() => "Spawns Vile Growths in a line towards enemies in range 5.\nVile Growth does 1 damage per turn to the creature standing over it. Lasts 12 turns.";
@@ -72,6 +73,7 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
 
   public void OnAttack(Actor target) {
     player.statuses.Add(new FreeMoveStatus());
+    this.ReduceDurability();
   }
 
   public ItemBackstepShoes() {
@@ -85,7 +87,7 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
   public int maxDurability => 20;
 }
 
-[ObjectInfo("colored_transparent_packed_321", "Wendy the Witch,\nFound the Snitch,\nNow he's lying,\nIn a ditch")]
+[ObjectInfo("witchs-shiv", "Wendy the Witch,\nFound the Snitch,\nNow he's lying,\nIn a ditch")]
 internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandler {
   public override string displayName => "Witch's Shiv";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;

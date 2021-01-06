@@ -65,7 +65,7 @@ internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCost
   public override StackingMode stackingMode => StackingMode.Max;
   public SporedStatus(int stacks) : base(stacks) {}
 
-  public override string Info() => $"You do 2 less damage!\nYou move twice as slow.\n{stacks} turns remaining.";
+  public override string Info() => $"You do 2 less damage!\nYou move twice as slow.\nWhen you die, Spores grow at your position.\n{stacks} turns remaining.";
 
   public override void Step() {
     stacks--;

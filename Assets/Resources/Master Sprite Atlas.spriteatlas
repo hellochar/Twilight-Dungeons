@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 6485218
+    totalSpriteSurfaceArea: 6485474
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -4655,6 +4655,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c4ccea09c2c32fb4ebd2b98cd3e42318, type: 3}
   - {fileID: 21300000, guid: ebd81429ce1a6bf419267467a8fd6e7b, type: 3}
   - {fileID: -8148729040721155582, guid: e87d907951a63fa4d8e2358c9eef08a5, type: 3}
+  - {fileID: 21300000, guid: 70a67e796667a6d4ab895dfe6b076e8e, type: 3}
   - {fileID: 8991455535210373810, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
   - {fileID: -3278524096712110203, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
   - {fileID: -2892910820977171364, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
@@ -12514,6 +12515,7 @@ SpriteAtlas:
   - Circle5
   - pumpkin-helmet
   - green-divider
+  - witchs-shiv
   - snail_3
   - snail_2
   - snail_1

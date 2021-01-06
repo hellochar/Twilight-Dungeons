@@ -19,8 +19,8 @@ public class Spider : AIActor {
     ClearTasks();
     ai = AI().GetEnumerator();
     OnDealAttackDamage += HandleDealDamage;
-    if (UnityEngine.Random.value < 0.25f) {
-      inventory.AddItem(new ItemSpiderSandals(30));
+    if (UnityEngine.Random.value < 0.1f) {
+      inventory.AddItem(new ItemSpiderSandals(15));
     }
     // OnMove += HandleMove;
   }
@@ -105,7 +105,7 @@ internal class Web : Grass {
 [ObjectInfo("spider-silk-shoes", "whoa")]
 internal class ItemSpiderSandals : EquippableItem, IStackable {
   public override EquipmentSlot slot => EquipmentSlot.Feet;
-  public int stacksMax => 30;
+  public int stacksMax => 15;
   private int _stacks;
   public int stacks {
     get => _stacks;

@@ -16,5 +16,15 @@ public class Rubble : Actor, IBlocksVision, IAnyDamageTakenModifier {
   }
 }
 
+public class Stump : Actor {
+  public Stump(Vector2Int pos) : base(pos) {
+    timeNextAction += 99999;
+  }
+
+  protected override float Step() {
+    return 99999;
+  }
+}
+
 /// Note - not implemented on moving entities yet
 public interface IBlocksVision { }

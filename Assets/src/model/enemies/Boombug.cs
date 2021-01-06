@@ -13,7 +13,6 @@ public class Boombug : AIActor {
     faction = Faction.Neutral;
     ai = AIs.BugAI(this).GetEnumerator();
     OnDeath += HandleDeath;
-    inventory.AddItem(new ItemBoombugCorpse(1));
   }
 
   private void HandleDeath() {
@@ -51,39 +50,47 @@ public class ItemBoombugCorpse : Item, IStackable {
   }
 }
 
-public class BoombugCorpse : Actor, IAnyDamageTakenModifier {
+public class BoombugCorpse : Actor {
+  private bool exploded = false;
+  public event Action OnExploded;
   public BoombugCorpse(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 100;
+    hp = baseMaxHp = 1;
     timeNextAction += 1;
     OnDeath += HandleDeath;
     SetTasks(new ExplodeTask(this));
   }
 
   private void HandleDeath() {
-    var floor = this.floor;
-    GameModel.main.EnqueueEvent(() => {
-      foreach (var tile in floor.GetAdjacentTiles(pos)) {
-        if (tile.actor != null && tile.actor != this) {
-          this.Attack(tile.actor);
-        }
-        if (tile.grass != null) {
-          tile.grass.Kill();
-        }
-      }
-    });
+    if (!exploded) {
+      // We died before we could explode! Leave a corpse item instead.
+      var inventory = new Inventory(new ItemBoombugCorpse(1));
+      var floor = this.floor;
+      var pos = this.pos;
+      GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));
+    }
   }
 
   protected override float Step() {
-    Kill();
+    Explode();
     return baseActionCost;
+  }
+
+  void Explode() {
+    exploded = true;
+    foreach (var tile in floor.GetAdjacentTiles(pos)) {
+      OnExploded?.Invoke();
+      if (tile.actor != null && tile.actor != this) {
+        this.Attack(tile.actor);
+      }
+      if (actor == null && tile.grass != null) {
+        tile.grass.Kill();
+      }
+    }
+    Kill();
   }
 
   internal override int BaseAttackDamage() {
     return 3;
-  }
-
-  public int Modify(int input) {
-    return -100;
   }
 }
 

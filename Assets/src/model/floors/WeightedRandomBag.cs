@@ -64,7 +64,6 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     var newWeight = newChance * restWeight / (1f - newChance);
 
     SetWeight(item, newWeight);
-    UnityEngine.Debug.Log(currentWeight + " -> " + newWeight);
     return item;
   }
 

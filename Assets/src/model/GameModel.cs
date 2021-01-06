@@ -30,7 +30,7 @@ public class GameModel {
 
   public static void InitMain() {
     var seed = UnityEngine.Random.Range(0, 100000);
-    #if DEBUG
+    #if UNITY_EDITOR
     // seed = 53922;
     #endif
     main = new GameModel(seed);
@@ -65,11 +65,11 @@ public class GameModel {
       floorGen.generateSingleRoomFloor(14, 13, 13, 3, 2),
       floorGen.generateSingleRoomFloor(15, 15, 15, 4, 2),
       floorGen.generateRewardFloor(16),
-      floorGen.generateMultiRoomFloor(17, 15, 15, 4),
-      floorGen.generateMultiRoomFloor(18, 20, 20, 4),
-      floorGen.generateMultiRoomFloor(19, 30, 20, 5),
-      floorGen.generateMultiRoomFloor(20, 20, 20, 6, true),
-      floorGen.generateMultiRoomFloor(21, 24, 24, 8),
+      floorGen.generateMultiRoomFloor(17, 15, 15, 6),
+      floorGen.generateMultiRoomFloor(18, 20, 20, 6),
+      floorGen.generateMultiRoomFloor(19, 30, 20, 7),
+      floorGen.generateMultiRoomFloor(20, 20, 20, 8, true),
+      floorGen.generateMultiRoomFloor(21, 24, 16, 9),
       floorGen.generateMultiRoomFloor(22, 30, 12, 10),
       floorGen.generateMultiRoomFloor(23, 30, 20, 15),
       floorGen.generateRewardFloor(24)

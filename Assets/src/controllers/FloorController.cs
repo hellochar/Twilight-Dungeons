@@ -39,6 +39,15 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     this.InstantiateGameObjectsToMatchFloor();
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
+    #if UNITY_EDITOR
+      LogEnemyHP();
+    #endif
+  }
+
+  void LogEnemyHP() {
+    var enemies = floor.actors.Where((x) => x.faction == Faction.Enemy);
+    var allHP = enemies.Select((a) => a.maxHp).Sum();
+    Debug.Log("Depth " + floor.depth +", HP " + allHP, this);
   }
 
   void HandleEntityRemoved(Entity e) {

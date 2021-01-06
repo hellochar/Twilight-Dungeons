@@ -56,7 +56,8 @@ public class FloorGenerator {
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     Encounters.AddWater(floor, room0);
 
-    #if DEBUG
+    #if UNITY_EDITOR
+    // Encounters.AddHangingVines(floor, room0);
     // Encounters.AddEveningBells(floor, room0);
     // Encounters.OneButterfly(floor, room0);
     // Encounters.OneSpider(floor, room0);
@@ -124,9 +125,9 @@ public class FloorGenerator {
 
     // and a little bit of extra spice
     Encounters.CavesDeadEnds.GetRandom()(floor, room0);
-    // #if DEBUG
+    #if UNITY_EDITOR
     // Encounters.AddParasite(floor, room0);
-    // #endif
+    #endif
 
     // clear stairs so player doesn't walk right into bad grasses or get immediately surrounded by enemies
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {

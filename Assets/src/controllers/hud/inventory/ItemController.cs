@@ -181,7 +181,7 @@ public class ItemController : MonoBehaviour {
   }
 
   public void CloseInventory() {
-    GameObject.Find("Inventory Container")?.SetActive(false);
+    // GameObject.Find("Inventory Container")?.SetActive(false);
   }
 
   // Update is called once per frame

@@ -263,10 +263,17 @@ public class Encounters {
     var wallsWithGroundBelow = new HashSet<Vector2Int>(floor
       .EnumerateRoomTiles(room, 1)
       .Where((tile) =>
-        tile.grass == null &&
         tile is Wall &&
+
         tile.pos.y > 0 &&
-        floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground
+        tile.pos.x > 0 &&
+        tile.pos.x < floor.width - 1 &&
+
+        floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground &&
+
+        tile.grass == null &&
+        floor.grasses[tile.pos + new Vector2Int(-1, 0)] == null &&
+        floor.grasses[tile.pos + new Vector2Int(1, 0)] == null
       )
       .Select((tile) => tile.pos));
     var num = Random.Range(3, 8);
@@ -275,6 +282,7 @@ public class Encounters {
       floor.Put(new HangingVines(pos));
       // disallow two consecutive vines
       wallsWithGroundBelow.Remove(pos + new Vector2Int(-1, 0));
+      wallsWithGroundBelow.Remove(pos);
       wallsWithGroundBelow.Remove(pos + new Vector2Int(1, 0));
     }
   });

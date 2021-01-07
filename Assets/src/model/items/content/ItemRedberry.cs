@@ -23,12 +23,9 @@ class ItemRedberry : Item, IStackable, IUsable {
   }
 
   public void Use(Actor a) {
-    a.Heal(3);
-    if (a is Player p) {
-      p.IncreaseFullness(0.05f);
-    }
+    a.Heal(2);
     stacks--;
   }
 
-  internal override string GetStats() => "Heals 3 HP.";
+  internal override string GetStats() => "Heals 2 HP.";
 }

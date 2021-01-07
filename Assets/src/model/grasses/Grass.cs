@@ -23,7 +23,7 @@ public abstract class Grass : SteppableEntity {
   }
 
   /// The UI will do *something* in response to this
-  protected void TriggerNoteworthyAction() {
+  public void TriggerNoteworthyAction() {
     OnNoteworthyAction?.Invoke();
   }
 }

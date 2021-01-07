@@ -98,5 +98,20 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1475697893
+      objectReference: {fileID: 0}
+    - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24aa84cb97063fb44ae466e268ea266b, type: 3}

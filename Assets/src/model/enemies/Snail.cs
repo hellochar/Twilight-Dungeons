@@ -15,8 +15,8 @@ public class Snail : AIActor {
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
     OnAttack += HandleAttack;
-    OnTakeAttackDamage += HandleTakeDamage;
-    if (UnityEngine.Random.value < 0.2f) {
+    OnTakeAttackDamage += HandleTakeAttackDamage;
+    if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
     OnActionPerformed += HandleActionPerformed;
@@ -33,7 +33,7 @@ public class Snail : AIActor {
   //   floor.Put(new GrassSlimeTrail(oldPos));
   // }
 
-  private void HandleTakeDamage(int dmg, int hp, Actor source) {
+  private void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     // curl up into your shell
     statuses.Add(new InShellStatus());
   }
@@ -68,7 +68,7 @@ public class ItemSnailShell : Item, IStackable {
   public ItemSnailShell(int stacks) {
     this.stacks = stacks;
   }
-  public int stacksMax => 20;
+  public int stacksMax => 1;
 
   private int _stacks;
   public int stacks {
@@ -154,5 +154,5 @@ internal class SlimedStatus : Status, IActionCostModifier, IBaseActionModifier {
     return input;
   }
 
-  public override void Stack(Status other) { }
+  public override bool Consume(Status other) => false;
 }

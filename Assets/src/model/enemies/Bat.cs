@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Bat : AIActor {
   public Bat(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 6;
+    hp = baseMaxHp = 7;
     ClearTasks();
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
@@ -16,7 +16,7 @@ public class Bat : AIActor {
     }
   }
 
-  int turnsUntilSleep = 5;
+  int turnsUntilSleep = 7;
   private void HandleActionPerformed(BaseAction arg1, BaseAction arg2) {
     if (!(task is SleepTask)) {
       turnsUntilSleep--;
@@ -25,7 +25,7 @@ public class Bat : AIActor {
         SetTasks(sleep);
       }
     } else {
-      turnsUntilSleep = 5;
+      turnsUntilSleep = 7;
     }
   }
 
@@ -87,6 +87,7 @@ internal class ItemBatTooth : EquippableItem, IWeapon {
     if (dmg > 0) {
       GameModel.main.player.Heal(1);
     }
+    Destroy();
   }
 
   public (int, int) AttackSpread => (1, 1);
@@ -96,5 +97,5 @@ internal class ItemBatTooth : EquippableItem, IWeapon {
   public int maxDurability => 1;
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
-  internal override string GetStats() => "Heal 1 HP when you deal damage with this weapon.";
+  internal override string GetStats() => "Heal 1 HP when this deals damage.\nConsumed on use.";
 }

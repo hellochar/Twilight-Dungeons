@@ -3,7 +3,7 @@ using System.Reflection;
 
 public class ItemHands : EquippableItem, IWeapon {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-  private Player player;
+  private new Player player;
 
   public ItemHands(Player player) {
     this.player = player;

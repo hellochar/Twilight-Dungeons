@@ -34,10 +34,10 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth,
-      (2, 2),
-      (2, 3),
+      (1, 2),
+      (1, 3),
       (2, 4),
-      (3, 5)
+      (2, 4)
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Snail(tile.pos));

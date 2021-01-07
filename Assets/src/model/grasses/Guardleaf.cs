@@ -46,6 +46,7 @@ public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
   public int Modify(int input) {
     var reduction = Mathf.Min(input, leaf.guardLeft);
     leaf.removeGuard(reduction);
+    leaf.TriggerNoteworthyAction();
     return input - reduction;
   }
 
@@ -55,5 +56,5 @@ public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
     }
   }
 
-  public override void Stack(Status other) {}
+  public override bool Consume(Status other) => true;
 }

@@ -107,7 +107,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
   public int durability { get; set; }
 
-  public int maxDurability => 40;
+  public int maxDurability => 12;
 
   public ItemThornShield() {
     durability = maxDurability;
@@ -118,12 +118,12 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 }
 
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
-internal class ItemHeartOfThorns : EquippableItem, IDurable {
-  internal override string GetStats() => "When attacked, grow Bladegrass on all adjacent squares.";
+internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier {
+  internal override string GetStats() => "Take 2 less damage.\nWhen you take damage, grow Bladegrass on all adjacent squares.";
 
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }
-  public int maxDurability => 100;
+  public int maxDurability => 20;
 
   public ItemHeartOfThorns() {
     OnEquipped += HandleEquipped;
@@ -132,19 +132,23 @@ internal class ItemHeartOfThorns : EquippableItem, IDurable {
   }
 
   private void HandleEquipped(Player player) {
-    player.OnAttacked += HandleAttacked;
+    player.OnTakeAnyDamage += HandleTakeAnyDamage;
   }
 
   private void HandleUnequipped(Player player) {
-    player.OnAttacked -= HandleAttacked;
+    player.OnTakeAnyDamage -= HandleTakeAnyDamage;
   }
 
-  private void HandleAttacked(int arg1, Actor source) {
+  private void HandleTakeAnyDamage(int arg1) {
     foreach (var tile in player.floor.GetAdjacentTiles(player.pos).Where(Bladegrass.CanOccupy)) {
       if (durability > 0) {
         player.floor.Put(new Bladegrass(tile.pos));
-        this.ReduceDurability();
       }
     }
+    this.ReduceDurability();
+  }
+
+  public int Modify(int input) {
+    return input - 2;
   }
 }

@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
+public enum PulseType { Smaller, Larger }
+
 public class GrassController : MonoBehaviour, IEntityController {
   public Grass grass;
+  public PulseType pulses = PulseType.Smaller;
 
   // Start is called before the first frame update
   public virtual void Start() {
@@ -11,7 +14,10 @@ public class GrassController : MonoBehaviour, IEntityController {
 
   private void HandleNoteworthyAction() {
     if (GetComponent<GrowAtStart>() == null) {
-      gameObject.AddComponent<PulseAnimation>();
+      var pulse = gameObject.AddComponent<PulseAnimation>();
+      if (pulse != null) {
+        pulse.pulseScale = pulses == PulseType.Smaller ? 0.75f : 1.25f;
+      }
     }
   }
 }

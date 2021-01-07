@@ -60,7 +60,7 @@ public class FloorGenerator {
     // Encounters.AddHangingVines(floor, room0);
     // Encounters.AddEveningBells(floor, room0);
     // Encounters.OneButterfly(floor, room0);
-    // Encounters.OneSpider(floor, room0);
+    // Encounters.AddSpiders(floor, room0);
     // Encounters.AddSpore(floor, room0);
     // Encounters.AddBladegrass(floor, room0);
     // Encounters.ScatteredBoombugs(floor, room0);
@@ -128,6 +128,13 @@ public class FloorGenerator {
     #if UNITY_EDITOR
     // Encounters.AddParasite(floor, room0);
     #endif
+
+    if (floor.tiles[floor.upstairs.landing] is Wall) {
+      floor.Put(new Ground(floor.upstairs.landing));
+    }
+    if (floor.tiles[floor.downstairs.landing] is Wall) {
+      floor.Put(new Ground(floor.downstairs.landing));
+    }
 
     // clear stairs so player doesn't walk right into bad grasses or get immediately surrounded by enemies
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {

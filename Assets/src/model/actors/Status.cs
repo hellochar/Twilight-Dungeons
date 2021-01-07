@@ -39,7 +39,8 @@ public abstract class Status : IStepModifier {
   public abstract string Info();
 
   /// The parameter will be of the same type as this type.
-  public abstract void Stack(Status other);
+  /// Return true if this Status has consumed the other.
+  public abstract bool Consume(Status other);
 
   public virtual void Step() {}
 
@@ -75,22 +76,25 @@ public abstract class StackingStatus : Status {
 
   public StackingStatus() : this(1) {}
 
-  public override void Stack(Status otherParam) {
+  public override bool Consume(Status otherParam) {
     var other = (StackingStatus) otherParam;
     switch (stackingMode) {
       case StackingMode.Add:
         this.stacks += other.stacks;
-        break;
+        return true;
       case StackingMode.Max:
         this.stacks = Math.Max(stacks, other.stacks);
-        break;
+        return true;
       case StackingMode.Ignore:
-        break;
+        return true;
+      case StackingMode.Independent:
+      default:
+        return false;
     }
   }
 }
 
-public enum StackingMode { Add, Max, Ignore }
+public enum StackingMode { Add, Max, Ignore, Independent }
 
 public class StatusList {
   public Actor actor;
@@ -107,10 +111,9 @@ public class StatusList {
   public StatusList(Actor actor) : this(actor, new List<Status>()) { }
 
   public void Add<T>(T status) where T : Status {
-    var existing = FindOfType<T>();
-    if (existing != null) {
-      existing.Stack(status);
-    } else {
+    var consumed = FindOfType<T>()?.Consume(status) ?? false;
+    
+    if (!consumed) {
       this.list.Add(status);
       status.list = this;
       OnAdded?.Invoke(status);

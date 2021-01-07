@@ -81,18 +81,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
   m_SpriteSortPoint: 0
---- !u!114 &6108870028853500419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6737026737724406601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac1232b3859b4574d929dd336fd4b120, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6107272556625877909
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,6 +163,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 1
   m_SpriteSortPoint: 0
+--- !u!114 &6108870028853500419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6737026737724406601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac1232b3859b4574d929dd336fd4b120, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pulses: 1
 --- !u!1 &8024398803062566206
 GameObject:
   m_ObjectHideFlags: 0

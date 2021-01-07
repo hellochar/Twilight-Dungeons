@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8765262275556005990}
-  - component: {fileID: 4200042123566948606}
+  - component: {fileID: 2315905489181584444}
   m_Layer: 0
   m_Name: ParasiteStatus
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4200042123566948606
+--- !u!114 &2315905489181584444
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2609351432285899556}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d15a7bea9223c8a4ab0cdd0a9b7f245d, type: 3}
+  m_Script: {fileID: 11500000, guid: 032b643d303b0e9468eed8decd4a5a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6886355426341576087
@@ -70,7 +70,7 @@ Transform:
   m_GameObject: {fileID: 6886355426341576087}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.65, y: 0.65, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 8765262275556005990}
   m_RootOrder: 0

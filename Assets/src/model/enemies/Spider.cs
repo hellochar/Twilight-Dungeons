@@ -8,14 +8,14 @@ using UnityEngine;
 public class Spider : AIActor {
 
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
-    [ActionType.MOVE] = 2,
+    [ActionType.MOVE] = 1,
   };
 
   protected override ActionCosts actionCosts => Spider.StaticActionCosts;
 
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 7;
+    hp = baseMaxHp = 5;
     ClearTasks();
     ai = AI().GetEnumerator();
     OnDealAttackDamage += HandleDealDamage;
@@ -46,11 +46,11 @@ public class Spider : AIActor {
 
       var bag = new WeightedRandomBag<Tile>();
       foreach (var t in nonWebbedAdjacentTiles) {
-        bag.Add(1, t);
+        bag.Add(3, t);
       }
       foreach (var t in webbedAdjacentTiles) {
-        // prefer to walk on their web 3 to 1
-        bag.Add(3, t);
+        // prefer to walk on their web 1 to 3
+        bag.Add(1, t);
       }
       var nextTile = bag.GetRandom();
 
@@ -168,7 +168,7 @@ internal class WebStatus : Status, IActionCostModifier {
     }
   }
 
-  public override void Stack(Status other) { }
+  public override bool Consume(Status other) => true;
 
   public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! Move twice as fast through webs." : "Move twice as slow through webs!";
 }
@@ -181,14 +181,23 @@ internal class PoisonedStatus : StackingStatus {
     this.stacks = stacks;
   }
 
-  public override void Step() {
+  public override void Start() {
+    actor.AddTimedEvent(1, IndependentStep);
+  }
+
+  public void IndependentStep() {
     if (stacks >= 3) {
-      actor.TakeDamage(3);
-      stacks = 0;
+      actor.AddTimedEvent(0.01f, () => {
+        actor.TakeDamage(3);
+        stacks -= 3;
+      });
     }
     if (--duration <= 0) {
       --stacks;
       duration = 5;
+    }
+    if (stacks > 0) {
+      actor.AddTimedEvent(1, IndependentStep);
     }
   }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,10 +17,8 @@ public class Parasite : AIActor {
   }
 
   private void HandleDealAttackDamage(int dmg, Actor target) {
-    if (dmg > 0) {
-      GameModel.main.EnqueueEvent(() => target.statuses.Add(new ParasiteStatus(16)));
-      Kill();
-    }
+    target.statuses.Add(new ParasiteStatus(16));
+    Kill();
   }
 
   internal override int BaseAttackDamage() {
@@ -55,24 +54,34 @@ public class Parasite : AIActor {
 
 [ObjectInfo("colored_transparent_packed_270", "oh noooooooo")]
 public class ParasiteStatus : StackingStatus {
+  public override StackingMode stackingMode => StackingMode.Independent;
   public override bool isDebuff => base.isDebuff;
+  public event System.Action OnAttack;
 
   public ParasiteStatus(int stacks) : base(stacks) {
   }
 
   public override void Start() {
     actor.OnDeath += HandleActorDeath;
+    actor.OnHeal += HandleHeal;
   }
 
   public override void End() {
     actor.OnDeath -= HandleActorDeath;
+    actor.OnHeal -= HandleHeal;
   }
+
+  // remove immediately
+  private void HandleHeal(int arg1, int arg2) {
+    Remove();
+  }
+
 
   private void HandleActorDeath() {
     var floor = actor.floor;
     var pos = actor.pos;
     GameModel.main.EnqueueEvent(() => {
-      var tiles = floor.GetAdjacentTiles(pos).Where((t) => t.CanBeOccupied()).ToList();
+      var tiles = floor.GetCardinalNeighbors(pos).Where((t) => t.CanBeOccupied()).ToList();
       tiles.Shuffle();
       foreach (var tile in tiles.Take(2)) {
         floor.Put(new Parasite(tile.pos));
@@ -83,10 +92,13 @@ public class ParasiteStatus : StackingStatus {
 
   public override void Step() {
     if (stacks % 3 == 0) {
-      actor.TakeAttackDamage(1, actor);
+      GameModel.main.EnqueueEvent(() => {
+        actor?.TakeDamage(1);
+      });
+      OnAttack?.Invoke();
     }
     stacks--;
   }
 
-  public override string Info() => "A parasite is inside you! Take 1 attack damage per 3 turns.\nIf you die, two parasites spawn around your position.";
+  public override string Info() => "A parasite is inside you! Take 1 attack damage per 3 turns.\nHealing cures immediately.\nIf you die, two parasites spawn around your position.";
 }

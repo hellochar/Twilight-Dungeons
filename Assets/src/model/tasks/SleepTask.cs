@@ -68,5 +68,5 @@ class SurprisedStatus : Status, IBaseActionModifier {
     return input;
   }
 
-  public override void Stack(Status other) {}
+  public override bool Consume(Status other) => true;
 }

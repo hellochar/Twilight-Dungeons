@@ -78,5 +78,5 @@ internal class CharmedStatus : Status {
 
   public override string Info() => "On your team!";
 
-  public override void Stack(Status other) {}
+  public override bool Consume(Status other) => true;
 }

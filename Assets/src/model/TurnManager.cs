@@ -117,6 +117,7 @@ public class TurnManager {
           first.action();
           first.Done();
           RemoveEvent(first);
+          model.DrainEventQueue();
         }
       }
 
@@ -155,7 +156,7 @@ public class TurnManager {
         // yield break;
       }
 
-      if (!isFirstIteration && entity.isVisible) {
+      if (!isFirstIteration && entity.isVisible && entity is Actor) {
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(.02f);
       }

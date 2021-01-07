@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StatusController : MonoBehaviour {
   public Status status;
-  void Start() {
+  public virtual void Start() {
     status.OnRemoved += HandleRemoved;
   }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PulseAnimation : MonoBehaviour {
   static float FADE_TIME = 0.33f;
+  public float pulseScale = 0.75f;
   private Vector3 currentScale;
   private float startTime;
   // Start is called before the first frame update
@@ -20,7 +21,7 @@ public class PulseAnimation : MonoBehaviour {
       Destroy(this);
       return;
     }
-    float scalar = Util.MapLinear(Mathf.Pow(Mathf.Cos(t * Mathf.PI), 4), 1, 0, 1, 0.75f);
+    float scalar = Util.MapLinear(Mathf.Pow(Mathf.Cos(t * Mathf.PI), 4), 1, 0, 1, pulseScale);
     transform.localScale = currentScale * scalar;
   }
 }

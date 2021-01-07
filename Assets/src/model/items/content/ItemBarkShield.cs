@@ -5,7 +5,7 @@ public class ItemBarkShield : EquippableItem, IDurable, IAttackDamageTakenModifi
   public int maxDurability { get; protected set; }
 
   public ItemBarkShield() {
-    this.maxDurability = 10;
+    this.maxDurability = 6;
     this.durability = maxDurability;
   }
 

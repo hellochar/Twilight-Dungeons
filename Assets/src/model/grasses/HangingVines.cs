@@ -58,7 +58,7 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
   }
 
   public int stacksMax => 7;
-  public (int, int) AttackSpread => (1, stacks);
+  public (int, int) AttackSpread => (stacks, stacks);
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
   public ItemVineWhip(int stacks) {
@@ -67,11 +67,11 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
 
   public void OnAttack(Actor target) {
     if (!(target is Rubble)) {
-      stacks--;
+      Destroy();
     }
   }
 
-  internal override string GetStats() => "Max damage is equal to number of stacks.\nLose one stack on attack.";
+  internal override string GetStats() => "Damage is equal to number of stacks.\nDestroyed on use.";
 }
 
 public class BoundStatus : StackingStatus, IBaseActionModifier {

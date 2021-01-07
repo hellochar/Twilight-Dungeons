@@ -44,6 +44,9 @@ public class ItemController : MonoBehaviour {
       methods.Reverse();
 
       buttons = methods.Select((method) => MakeButton(method.Name, () => {
+        // player.SetTasks(new GenericTask(player, (_) => {
+        //   method.Invoke(item, new object[] { player });
+        // }).Named(method.Name));
         method.Invoke(item, new object[] { player });
         PopupInteractionDone(popup);
       })).ToList();

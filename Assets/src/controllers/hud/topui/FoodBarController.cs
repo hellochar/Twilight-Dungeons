@@ -13,7 +13,7 @@ public class FoodBarController : MonoBehaviour {
   }
 
   void Update() {
-    var fullness = player.fullness;
+    var fullness = 1; //player.fullness
     var maxFullnessWidth = rectTransform.sizeDelta.x;
     var wantedWidth = fullness * maxFullnessWidth;
     RectTransform filledRectTransform = barFilled.GetComponent<RectTransform>();

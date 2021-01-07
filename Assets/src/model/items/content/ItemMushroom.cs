@@ -46,10 +46,10 @@ class PumpedUpStatus : StackingStatus, IBaseActionModifier, IActionCostModifier 
 
   public ActionCosts Modify(ActionCosts input) {
     if (isModifying) {
-      input[ActionType.ATTACK] /= (1.5f);
+      input[ActionType.ATTACK] /= 2;
     }
     return input;
   }
 
-  public override string Info() => $"Your next {stacks} attacks are performed 50% faster!";
+  public override string Info() => $"Your next {stacks} attacks are twice as fast!";
 }

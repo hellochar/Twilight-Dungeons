@@ -10,8 +10,6 @@ public class Player : Actor {
   public Inventory inventory { get; }
   public Equipment equipment { get; }
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
-  /// 0 to 1
-  public float fullness = 1;
 
   internal override float turnPriority => 10;
   public int water = 0;
@@ -25,7 +23,6 @@ public class Player : Actor {
     hp = baseMaxHp = 12;
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
-    OnPostStep += HandlePostStep;
     OnAttack += HandleAttack;
     OnMove += HandleMove;
     OnMoveFailed += HandleMoveFailed;
@@ -85,21 +82,6 @@ public class Player : Actor {
     floor.AddVisibility(this);
   }
 
-  void HandlePostStep(float timeCost) {
-    // fullness = Math.Max(fullness - timeCost / 1000f, 0);
-    // you are now starving
-    if (fullness <= 0) {
-      statuses.RemoveOfType<HungryStatus>();
-      statuses.Add(new StarvingStatus());
-    } else if (fullness <= 0.1f) {
-      statuses.RemoveOfType<StarvingStatus>();
-      statuses.Add(new HungryStatus());
-    } else {
-      statuses.RemoveOfType<HungryStatus>();
-      statuses.RemoveOfType<StarvingStatus>();
-    }
-  }
-
   void HandleAttack(int damage, Actor target) {
     var item = equipment[EquipmentSlot.Weapon];
     if (item is IDurable durable && !(target is Rubble)) {
@@ -130,10 +112,6 @@ public class Player : Actor {
     }
   }
 
-  internal void IncreaseFullness(float v) {
-    fullness += v;
-  }
-
   internal override int BaseAttackDamage() {
     var item = equipment[EquipmentSlot.Weapon];
     if (item is IWeapon w) {
@@ -155,31 +133,4 @@ public class Player : Actor {
   public bool IsInCombat() {
     return ActorsInSight(Faction.Enemy).Any();
   }
-}
-
-internal class StarvingStatus : Status {
-  private Player player => (Player) actor;
-  int cooldown = 0;
-
-  public override string Info() => $"You're starving! You will regularly take damage.";
-
-  public override void Step() {
-    if (cooldown <= 0) {
-      player.TakeDamage(1);
-      cooldown = 50;
-    }
-    cooldown--;
-  }
-
-  public override void Stack(Status other) {}
-}
-
-internal class HungryStatus : Status {
-  private Player player => (Player) actor;
-
-  public override string Info() => $"You have {FullnessPercent}% food left. Eat something!";
-
-  public string FullnessPercent => Mathf.Ceil(player.fullness * 100).ToString();
-
-  public override void Stack(Status other) { }
 }

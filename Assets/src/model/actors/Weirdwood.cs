@@ -34,19 +34,41 @@ public class Weirdwood : Plant {
 }
 
 [ObjectInfo("vile-potion", "Weirdwood roots are notorious for their use in demonic rituals... You wonder why?")]
-internal class ItemVilePotion : Item, IUsable {
-  public ItemVilePotion() {}
+internal class ItemVilePotion : Item, IStackable, IUsable {
+  public ItemVilePotion(int stacks = 4) {
+    this.stacks = stacks;
+  }
+  public int stacksMax => 4;
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+
 
   public void Use(Actor actor) {
     var floor = actor.floor;
-    var enemies = floor.ActorsInCircle(actor.pos, 5).Where((a) => a.faction == Faction.Enemy);
+    var enemies = floor.ActorsInCircle(actor.pos, 6).Where((a) => a.faction == Faction.Enemy);
     var start = actor.pos;
-    foreach (var enemy in enemies) {
-      foreach (var pos in floor.EnumerateLine(start, enemy.pos).Where((pos) => floor.tiles[pos] is Ground)) {
-        floor.Put(new VileGrowth(pos));
+    if (enemies.Any()) {
+      foreach (var enemy in enemies) {
+        foreach (var pos in floor.EnumerateLine(start, enemy.pos).Where((pos) => floor.tiles[pos] is Ground)) {
+          floor.Put(new VileGrowth(pos));
+        }
       }
+      stacks--;
+    } else {
+      // throw new CannotPerformActionException("No enemies around.");
     }
-    Destroy();
   }
 
   internal override string GetStats() => "Spawns Vile Growths in a line towards enemies in range 5.\nVile Growth does 1 damage per turn to the creature standing over it. Lasts 12 turns.";
@@ -60,6 +82,7 @@ internal class VileGrowth : Grass {
 
   protected override float Step() {
     actor?.TakeDamage(1);
+    TriggerNoteworthyAction();
     if (--turns <= 0) {
       Kill();
     }
@@ -84,7 +107,7 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
 
   public int durability { get; set; }
 
-  public int maxDurability => 20;
+  public int maxDurability => 10;
 }
 
 [ObjectInfo("witchs-shiv", "Wendy the Witch,\nFound the Snitch,\nNow he's lying,\nIn a ditch")]
@@ -101,7 +124,7 @@ internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandle
 
   public int durability { get; set; }
 
-  public int maxDurability => 12;
+  public int maxDurability => 5;
 
   public void OnAttack(Actor target) {
     target.SetTasks(new RunAwayTask(target, player.pos, 3));

@@ -19,7 +19,6 @@ public class Wildwood : Plant {
         new ItemWildwoodWreath()
       ));
       harvestOptions.Add(new Inventory(
-        new ItemWildwoodLeaf(3),
         new ItemWildwoodRod()
       ));
     }

@@ -104,7 +104,7 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
   }
 
   public void OnPointerClick(PointerEventData eventData) {
-    if (!CameraZoom.IsZoomGuardActive) {
+    if (!CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
       var worldPos = eventData.pointerCurrentRaycast.worldPosition;
       var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
       UserInteractAt(pos, eventData);

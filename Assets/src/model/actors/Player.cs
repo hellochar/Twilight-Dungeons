@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Player : Actor {
+  public int deepestDepthVisited = 1;
   internal readonly Item Hands;
 
   public Inventory inventory { get; }
@@ -80,6 +81,10 @@ public class Player : Actor {
 
   private void HandleEnterFloor() {
     floor.AddVisibility(this);
+    var depth = floor.depth;
+    if (depth > deepestDepthVisited) {
+      deepestDepthVisited = depth;
+    }
   }
 
   void HandleAttack(int damage, Actor target) {

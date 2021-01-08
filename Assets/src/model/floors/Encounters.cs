@@ -93,7 +93,7 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 10,
-      (0, 1),
+      (1, 1),
       (1, 2),
       (2, 3),
       (2, 4)
@@ -107,7 +107,7 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 10,
-      (0, 1),
+      (1, 1),
       (1, 2),
       (2, 3),
       (2, 4)
@@ -116,6 +116,12 @@ public class Encounters {
       floor.Put(new Golem(tile.pos));
     }
   });
+
+  public static void AddTeleportStone(Floor floor, Room room0) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room0).Where((t) => t.CanBeOccupied());
+    var tile = tiles.First();
+    floor.Put(new TeleportStone(tile.pos));
+  }
 
   public static Encounter AddParasite = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
@@ -147,6 +153,10 @@ public class Encounters {
 
   public static Encounter MatureWeirdwood = new Encounter((floor, room) => {
     AddPlantInCenter(floor, room, typeof(Weirdwood));
+  });
+
+  public static Encounter MatureKingshroom = new Encounter((floor, room) => {
+    AddPlantInCenter(floor, room, typeof(Kingshroom));
   });
 
   private static void AddPlantInCenter(Floor floor, Room room, System.Type type) {
@@ -365,7 +375,7 @@ public class Encounters {
   public static Encounter OneButterfly = new Encounter((floor, room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
-      floor.Put(new Butterfly(tile.pos));
+      floor.Put(new ItemOnGround(tile.pos, new ItemButterfly()));
     }
   });
 
@@ -511,6 +521,7 @@ public class Encounters {
     { 1f, MatureBerryBush },
     { 1f, MatureThornleaf },
     { 1f, MatureWildWood },
-    { 1f, MatureWeirdwood }
+    { 1f, MatureWeirdwood },
+    { 1f, MatureKingshroom }
   };
 }

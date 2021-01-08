@@ -79,7 +79,7 @@ public class GameModel {
       floorGen.generateRewardFloor(24)
     };
 
-    player = new Player(floors[0].upstairs.landing);
+    player = new Player(new Vector2Int(3, floors[0].height/2));
     floors[0].Put(player);
   }
 
@@ -148,7 +148,7 @@ public class GameModel {
     if (isGoingUpstairs) {
       newPlayerPosition = newFloor.downstairs.landing;
     } else {
-      newPlayerPosition = newFloor.upstairs.landing;
+      newPlayerPosition = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height/ 2);
     }
     oldFloor.Remove(player);
     oldFloor.RecordLastStepTime(this.time);

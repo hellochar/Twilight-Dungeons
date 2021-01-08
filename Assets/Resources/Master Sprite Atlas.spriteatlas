@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 6485474
+    totalSpriteSurfaceArea: 6485766
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -1794,6 +1794,7 @@ SpriteAtlas:
   - {fileID: 2398009223125789384, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 21300000, guid: 684dd2d49b97ae3419bbaee4cf6b1856, type: 3}
   - {fileID: -3527876879021525145, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
+  - {fileID: -1927889906097043966, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
   - {fileID: -2826371706182235217, guid: 16af7d159b8f86446b1286d2325af859, type: 3}
   - {fileID: -561210672073046923, guid: 16af7d159b8f86446b1286d2325af859, type: 3}
   - {fileID: -3957724184423445158, guid: 16af7d159b8f86446b1286d2325af859, type: 3}
@@ -4362,6 +4363,7 @@ SpriteAtlas:
   - {fileID: -1544878197175216825, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 21300000, guid: 2820d9285aa99f74dba9ddf2ecb7f380, type: 3}
   - {fileID: 21300000, guid: bdb7b0388bba62341be9e1ef5ae15e05, type: 3}
+  - {fileID: 21300000, guid: 9c0d0b48d5e38e747827d0fae553a32b, type: 3}
   - {fileID: 21300000, guid: 389d7d582bb7a0b4eb9be60692d33571, type: 3}
   - {fileID: 21300000, guid: 45f265a897d4c604092c4d7a58ab63eb, type: 3}
   - {fileID: 21300000, guid: 5fe55fb858146144aabef4d64ac925e4, type: 3}
@@ -9654,6 +9656,7 @@ SpriteAtlas:
   - pixel-line-horizontal
   - Hands
   - mushroom
+  - mushroom-small
   - roguelikeChar_transparent_332
   - roguelikeChar_transparent_333
   - roguelikeChar_transparent_330
@@ -12222,6 +12225,7 @@ SpriteAtlas:
   - colored_transparent_packed_783
   - water-pail
   - heart_animated_2
+  - gear
   - spores
   - bound-particle
   - pumpkin

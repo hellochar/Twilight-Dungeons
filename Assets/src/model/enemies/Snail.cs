@@ -14,8 +14,7 @@ public class Snail : AIActor {
     hp = baseMaxHp = 4;
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
-    OnAttack += HandleAttack;
-    OnTakeAttackDamage += HandleTakeAttackDamage;
+    OnTakeAnyDamage += HandleTakeDamage;
     if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
@@ -33,13 +32,9 @@ public class Snail : AIActor {
   //   floor.Put(new GrassSlimeTrail(oldPos));
   // }
 
-  private void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
+  private void HandleTakeDamage(int dmg) {
     // curl up into your shell
     statuses.Add(new InShellStatus());
-  }
-
-  private void HandleAttack(int dmg, Actor who) {
-    // who.statuses.Add(new SlimedStatus());
   }
 
   private IEnumerable<ActorTask> AI() {

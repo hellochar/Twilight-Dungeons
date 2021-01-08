@@ -5,20 +5,6 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : ActorController {
   Player player => (Player) actor;
-  private int deepestDepthVisited = 1;
-
-  public override void Start() {
-    base.Start();
-    player.OnEnterFloor += HandleEnterFloor;
-  }
-
-  private void HandleEnterFloor() {
-    var depth = player.floor.depth;
-    if (depth > deepestDepthVisited) {
-      deepestDepthVisited = depth;
-      // Messages.Create("Depth " + depth);
-    }
-  }
 
   public override void Update() {
     if (Input.GetKeyDown(KeyCode.V)) {
@@ -34,35 +20,6 @@ public class PlayerController : ActorController {
       GameModel.main.PutPlayerAt(model.floors[model.activeFloorIndex - 1], false);
     }
     base.Update();
-  }
-
-  public void GoHome() {
-    if (player.IsInCombat()) {
-      Messages.Create("Leave combat to quicktravel home!");
-      return;
-    }
-    var model = GameModel.main;
-    if (model.activeFloorIndex == 0) {
-      model.PutPlayerAt(model.floors[deepestDepthVisited], false);
-      // e.g. floorIndex 2 = depth 3; so we should traverse 3, then 2
-      // var floorsToTraverse = GameModel.main.floors.Take(deepestDepthVisited + 1);
-      // var tasks = floorsToTraverse.Select((floor) => {
-      //   if (floor == model.currentFloor) {
-      //     return new MoveToTargetTask(player, floor.downstairs.pos);
-      //   }
-      //   return new FollowPathTask(
-      //     player,
-      //     floor.downstairs.pos,
-      //     floor.FindPath(floor.upstairs.landing, floor.downstairs.pos, true)
-      //   );
-      // }).ToArray();
-      // player.SetTasks(tasks);
-    } else {
-      model.PutPlayerAt(model.floors[0], true);
-      // var floorsToTraverse = GameModel.main.floors.Skip(1).Take(GameModel.main.activeFloorIndex).Reverse();
-      // var tasks = floorsToTraverse.Select((floor) => new MoveToTargetTask(player, floor.upstairs.pos)).ToArray();
-      // player.SetTasks(tasks);
-    }
   }
 
   protected override void HandleActionPerformed(BaseAction action, BaseAction initial) {

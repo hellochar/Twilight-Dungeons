@@ -19,7 +19,8 @@ public class FloorGenerator {
 
     FloorUtils.SurroundWithWalls(floor);
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    // floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    floor.Put(new TeleportStone(new Vector2Int(1, floor.height / 2)));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     var soils = new List<Soil>();
@@ -49,9 +50,9 @@ public class FloorGenerator {
       floor.Put(plant);
     }
 
-    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood) };
+    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood), typeof(Kingshroom) };
     AddMaturePlant(Util.RandomPick(types));
-    AddMaturePlant(Util.RandomPick(types));
+    // AddMaturePlant(typeof(Kingshroom));
 
     Encounters.ThreePlumpAstoriasInCorner(floor, room0);
     Encounters.AddWater(floor, room0);
@@ -92,6 +93,7 @@ public class FloorGenerator {
     Encounters.PlaceFancyGround(floor, room0);
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
     Encounters.CavesPlantRewards.GetRandomAndDiscount(0.9f)(floor, room0);
+    Encounters.AddTeleportStone(floor, room0);
 
     // just do nothing on this floor
     return floor;

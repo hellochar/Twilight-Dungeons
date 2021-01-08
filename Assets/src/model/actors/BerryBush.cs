@@ -22,7 +22,7 @@ public class BerryBush : Plant {
         new ItemBarkShield(),
         new ItemStick()
       ));
-      harvestOptions.Add(new Inventory(new ItemCharmBerry(1)));
+      harvestOptions.Add(new Inventory(new ItemCharmBerry(3)));
       base.BindTo(plant);
     }
 

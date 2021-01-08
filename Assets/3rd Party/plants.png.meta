@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: -3527876879021525145
     second: mushroom
+  - first:
+      213: -1927889906097043966
+    second: mushroom-small
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -118,6 +121,27 @@ TextureImporter:
       bones: []
       spriteID: 767bb968ba67a0fc0800000000000000
       internalID: -3527876879021525145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mushroom-small
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 0
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20646054852ce35e0800000000000000
+      internalID: -1927889906097043966
       vertices: []
       indices: 
       edges: []

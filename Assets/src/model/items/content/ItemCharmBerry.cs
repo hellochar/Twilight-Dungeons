@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-[ObjectInfo(spriteName: "charmberry", flavorText: "It's tart, sour and sweet! Loved by creatures of all sorts.")]
+[ObjectInfo(spriteName: "charmberry", flavorText: "It's sweet, sour, and tart! Loved by creatures of all sorts.")]
 public class ItemCharmBerry : Item, IStackable {
   public int stacksMax => 5;
 
@@ -24,6 +24,8 @@ public class ItemCharmBerry : Item, IStackable {
     this.stacks = stacks;
   }
 
+  internal override string GetStats() => "Makes a target loyal to you; they will follow you and attack nearby enemies, but cannot traverse floors. Enemies will not re-direct their focus to attack them.";
+
   public void Charm(AIActor actor) {
     actor.SetAI(CharmAI(actor).GetEnumerator());
     actor.statuses.Add(new CharmedStatus());
@@ -34,12 +36,12 @@ public class ItemCharmBerry : Item, IStackable {
 private IEnumerable<ActorTask> CharmAI(AIActor actor) {
     var player = GameModel.main.player;
 
-    player.OnEnterFloor += () => {
-      GameModel.main.EnqueueEvent(() => {
-        var freeTile = player.floor.GetAdjacentTiles(player.pos).Where((tile) => tile.CanBeOccupied()).First();
-        GameModel.main.PutActorAt(actor, player.floor, freeTile.pos);
-      });
-    };
+    // player.OnEnterFloor += () => {
+    //   GameModel.main.EnqueueEvent(() => {
+    //     var freeTile = player.floor.GetAdjacentTiles(player.pos).Where((tile) => tile.CanBeOccupied()).First();
+    //     GameModel.main.PutActorAt(actor, player.floor, freeTile.pos);
+    //   });
+    // };
 
     // diagonals only count as distance 1
     int DiamondDistance(Actor a) => Math.Min(Math.Abs(a.pos.x - player.pos.x), Math.Abs(a.pos.y - player.pos.y));

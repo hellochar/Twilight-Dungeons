@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TeleportStoneController : ActorController {
-  public TeleportStone stone => (TeleportStone)actor;
+  // public TeleportStone stone => (TeleportStone)actor;
   public new ParticleSystem particleSystem;
 
   void OnEnable() {
@@ -17,11 +17,11 @@ public class TeleportStoneController : ActorController {
     }
   }
 
-  public override void PointerClick(PointerEventData pointerEventData) {
-    var player = GameModel.main.player;
-    player.SetTasks(
-      new MoveNextToTargetTask(player, stone.pos),
-      new GenericTask(player, (_) => stone.TeleportPlayer())
-    );
-  }
+  // public override void PointerClick(PointerEventData pointerEventData) {
+  //   var player = GameModel.main.player;
+  //   player.SetTasks(
+  //     new MoveNextToTargetTask(player, stone.pos),
+  //     new GenericTask(player, (_) => stone.TeleportPlayer())
+  //   );
+  // }
 }

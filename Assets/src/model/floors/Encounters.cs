@@ -117,11 +117,12 @@ public class Encounters {
     }
   });
 
-  public static void AddTeleportStone(Floor floor, Room room0) {
-    var tiles = FloorUtils.TilesFromCenter(floor, room0).Where((t) => t.CanBeOccupied());
-    var tile = tiles.First();
-    floor.Put(new TeleportStone(tile.pos));
-  }
+  // public static void AddTeleportStone(Floor floor, Room room0) {
+  //   var tiles = FloorUtils.TilesFromCenter(floor, room0).Where((t) => t.CanBeOccupied());
+  //   var tile = tiles.First();
+  //   // var tile = floor.upstairs;
+  //   floor.Put(new TeleportStone(tile.pos));
+  // }
 
   public static Encounter AddParasite = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);

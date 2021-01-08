@@ -84,7 +84,9 @@ public class ParasiteStatus : StackingStatus {
       var tiles = floor.GetCardinalNeighbors(pos).Where((t) => t.CanBeOccupied()).ToList();
       tiles.Shuffle();
       foreach (var tile in tiles.Take(2)) {
-        floor.Put(new Parasite(tile.pos));
+        var p = new Parasite(tile.pos);
+        p.ClearTasks();
+        floor.Put(p);
       }
     });
   }

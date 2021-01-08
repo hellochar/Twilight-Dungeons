@@ -79,17 +79,15 @@ public class Wall : Tile {
 public class Upstairs : Tile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(1, 0);
-  public Upstairs(Vector2Int pos) : base(pos) {
-    OnActorEnter += HandleActorEnter;
-  }
+  public Upstairs(Vector2Int pos) : base(pos) {}
 
-  public void HandleActorEnter(Actor actor) {
-    if (actor == GameModel.main.player) {
-      Floor prevFloor = GameModel.main.floors[GameModel.main.activeFloorIndex - 1];
-      if (prevFloor != null) {
-        GameModel.main.PutPlayerAt(prevFloor, true);
-      }
+  public void GoHome() {
+    if (GameModel.main.player.IsInCombat()) {
+      throw new CannotPerformActionException("There are enemies around!");
     }
+
+    Floor prevFloor = GameModel.main.floors[0];
+    GameModel.main.PutPlayerAt(prevFloor, true);
   }
 }
 
@@ -101,11 +99,17 @@ public class Downstairs : Tile {
   }
 
   public void HandleActorEnter(Actor actor) {
-    if (actor == GameModel.main.player) {
-      Floor nextFloor = GameModel.main.floors[GameModel.main.activeFloorIndex + 1];
-      if (nextFloor != null) {
-        GameModel.main.PutPlayerAt(nextFloor, false);
+    var player = GameModel.main.player;
+    if (actor == player) {
+      // if we're on floor 0, go straight to the deepest floor
+      // if we're on the deepest floor, go 1 deeper
+      Floor nextFloor;
+      if (floor.depth == 0) {
+        nextFloor = GameModel.main.floors[player.deepestDepthVisited];
+      } else {
+        nextFloor = GameModel.main.floors[floor.depth + 1];
       }
+      GameModel.main.PutPlayerAt(nextFloor, false);
     }
   }
 }

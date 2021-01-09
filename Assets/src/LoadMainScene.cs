@@ -13,17 +13,21 @@ public class LoadMainScene : MonoBehaviour {
   }
 
   public void StartGame() {
-    StartCoroutine(TransitionToNewScene(blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+    StartCoroutine(TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
   }
 
-  public static IEnumerator TransitionToNewScene(Image overlay, string sceneToLoad) {
+  public static IEnumerator TransitionToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad) {
+    yield return b.StartCoroutine(FadeToBlack(overlay));
+    SceneManager.LoadSceneAsync(sceneToLoad);
+  }
+
+  public static IEnumerator FadeToBlack(Image overlay, float duration = 0.5f) {
     var start = Time.time;
     var t = 0f;
     do {
-      t = (Time.time - start) / 0.5f;
+      t = (Time.time - start) / duration;
       overlay.color = Color.Lerp(new Color(0, 0, 0, 0), new Color(0, 0, 0, 1), t);
       yield return new WaitForEndOfFrame();
     } while (t < 1);
-    SceneManager.LoadSceneAsync(sceneToLoad);
   }
 }

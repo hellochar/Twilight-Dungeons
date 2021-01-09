@@ -8,10 +8,10 @@ using UnityEngine.EventSystems;
 public class FloorController : MonoBehaviour, IPointerClickHandler {
 
   public Floor floor;
-  private Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
+  public static Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
   private Dictionary<Entity, GameObject> gameObjectMap = new Dictionary<Entity, GameObject>();
 
-  public GameObject GetEntityPrefab(Entity e) {
+  public static GameObject GetEntityPrefab(Entity e) {
     var type = e.GetType();
     if (!EntityPrefabs.ContainsKey(type)) {
       string category = "";
@@ -32,6 +32,10 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
       EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));
     }
     return EntityPrefabs[type];
+  }
+
+  public GameObject GameObjectFor(Entity entity) {
+    return gameObjectMap[entity];
   }
 
   // Start is called before the first frame update

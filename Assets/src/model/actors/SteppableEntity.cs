@@ -2,8 +2,10 @@ using System;
 using UnityEngine;
 
 public abstract class SteppableEntity : Entity {
+
   /// implementors are responsible for modifying this
   public virtual float timeNextAction { get; set; }
+  public float timeUntilTurn => timeNextAction - GameModel.main.time;
 
   /// Determines Actor order when multiple have the same timeNextAction.
   /// Lower numbers go first.

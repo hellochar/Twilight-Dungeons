@@ -13,7 +13,7 @@ public class DepthTextController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    var timeSpan = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
+    var timeSpan = TimeSpan.FromSeconds(Time.timeSinceLevelLoad);
     var timeSpanText = timeSpan.ToString(@"hh\:mm\:ss");
     text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time + "\n" + timeSpanText + "\nSeed " + GameModel.main.seed;
     // text.text += "\nTime " + GameModel.main.time;

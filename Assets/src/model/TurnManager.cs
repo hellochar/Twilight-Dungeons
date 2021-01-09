@@ -29,6 +29,8 @@ public class TurnManager {
   // private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
   public event Action OnPlayersChoice;
+  public event Action<SteppableEntity> OnStep;
+  public event Action OnTimePassed;
   private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
   public TurnManager(GameModel model) {
     this.model = model;
@@ -74,6 +76,8 @@ public class TurnManager {
     OnPlayersChoice?.Invoke();
   }
 
+  public static float JUICE_STAGGER_SECONDS = 0.02f;
+  public static float GAME_TIME_TO_SECONDS_WAIT_SCALE = 0.2f;
   private IEnumerator StepUntilPlayersChoiceImpl() {
     // skip one frame so whatever's currently running can finish (in response to player.action = xxx)
     yield return null;
@@ -102,11 +106,12 @@ public class TurnManager {
           var shouldSpeedThroughWait = (entity == model.player && model.player.task is WaitTask wait && wait.Turns > 3);
           var shouldSpeedThroughLongWalk = (entity == model.player && model.player.task is FollowPathTask path && path.path.Count > 10);
           if (!shouldSpeedThroughWait && !shouldSpeedThroughLongWalk) {
-            yield return new WaitForSeconds((entity.timeNextAction - model.time) * 0.2f);
+            yield return new WaitForSeconds((entity.timeUntilTurn) * GAME_TIME_TO_SECONDS_WAIT_SCALE);
           }
         }
         // move game time up to now
         model.time = entity.timeNextAction;
+        OnTimePassed?.Invoke();
 
         // trigger any events that need to happen
         while (timedEvents.Count > 0) {
@@ -158,10 +163,11 @@ public class TurnManager {
 
       if (!isFirstIteration && entity.isVisible && entity is Actor) {
         // stagger actors just a bit for juice
-        yield return new WaitForSeconds(.02f);
+        yield return new WaitForSeconds(JUICE_STAGGER_SECONDS);
       }
 
       model.DrainEventQueue();
+      OnStep?.Invoke(entity);
       isFirstIteration = false;
     } while (true);
   }

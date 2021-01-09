@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SettingsController : MonoBehaviour {
   private static List<MoveMode> ChoiceToMoveMode = new List<MoveMode> {
@@ -15,6 +16,10 @@ public class SettingsController : MonoBehaviour {
 
   void Start() {
     movementDropdown.SetValueWithoutNotify(ChoiceToMoveMode.IndexOf(Settings.main.moveMode));
+  }
+
+  public void Restart() {
+    SceneManager.LoadSceneAsync("Scenes/Game");
   }
 
   public void Close() {

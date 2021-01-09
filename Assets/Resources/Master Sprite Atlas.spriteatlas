@@ -32,7 +32,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 6485766
+    totalSpriteSurfaceArea: 6487766
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -6292,6 +6292,7 @@ SpriteAtlas:
   - {fileID: 5490377643769034267, guid: d784a55b6df56d4408e1227fafa167e4, type: 3}
   - {fileID: 218999717799096499, guid: d784a55b6df56d4408e1227fafa167e4, type: 3}
   - {fileID: 21300000, guid: 7425186b3f6862c4585e5c7c1371833f, type: 3}
+  - {fileID: 21300000, guid: 99422c8b147686a44a6234118382d285, type: 3}
   - {fileID: 21300000, guid: b8a8be8b9a434574396282e110f0a107, type: 3}
   - {fileID: 21300000, guid: 8b767c9b3454c1343b789c3b90cb4049, type: 3}
   - {fileID: 21300000, guid: b27b62fb718136741b2e77f198079a47, type: 3}
@@ -14154,6 +14155,7 @@ SpriteAtlas:
   - stealthix-orb-light
   - stealthix-speech-bubble
   - health_bar_decoration
+  - timeline
   - Clock
   - spored-status
   - Textures_v02

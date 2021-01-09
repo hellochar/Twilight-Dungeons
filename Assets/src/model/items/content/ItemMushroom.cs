@@ -32,24 +32,19 @@ class ItemMushroom : Item, IStackable, IEdible {
 }
 
 [ObjectInfo("mushroom", "Yummy")]
-class PumpedUpStatus : StackingStatus, IBaseActionModifier, IActionCostModifier {
+class PumpedUpStatus : StackingStatus, IActionCostModifier, IActionPerformedHandler {
   public PumpedUpStatus(int stacks) : base(stacks) {}
-  bool isModifying = false;
-
-  public BaseAction Modify(BaseAction input) {
-    if (input.Type == ActionType.ATTACK) {
-      isModifying = true;
-      stacks--;
-    }
-    return input;
-  }
 
   public ActionCosts Modify(ActionCosts input) {
-    if (isModifying) {
-      input[ActionType.ATTACK] /= 2;
-    }
+    input[ActionType.ATTACK] /= 2;
     return input;
   }
 
   public override string Info() => $"Your next {stacks} attacks are twice as fast!";
+
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    if (final.Type == ActionType.ATTACK) {
+      stacks--;
+    }
+  }
 }

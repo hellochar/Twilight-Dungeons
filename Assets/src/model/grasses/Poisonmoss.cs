@@ -1,14 +1,15 @@
 using System.Linq;
 using UnityEngine;
 
-class Poisonmoss : Grass {
+class Poisonmoss : Grass, ISteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   private bool hasDuplicated = false;
+
   public Poisonmoss(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated + 1;
   }
 
-  public override float Step() {
+  public float Step() {
     if (actor != null) {
       OnNoteworthyAction();
       actor.statuses.Add(new PoisonedStatus(1));
@@ -28,4 +29,7 @@ class Poisonmoss : Grass {
     }
     return 1;
   }
+
+  public float timeNextAction { get; set; }
+  public float turnPriority => 50;
 }

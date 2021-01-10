@@ -171,8 +171,7 @@ public class GameModel {
     var enumerable = Enumerable.Empty<ISteppable>();
     foreach (var f in floors) {
       if (f == currentFloor) {
-        enumerable = enumerable.Concat(f.actors);
-        enumerable = enumerable.Concat(f.grasses);
+        enumerable = enumerable.Concat(f.steppableEntities);
       } else {
         enumerable = enumerable.Concat(f.actors.Where((a) => a is Plant));
       }

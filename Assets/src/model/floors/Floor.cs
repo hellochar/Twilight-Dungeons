@@ -176,22 +176,9 @@ public class Floor {
   }
 
   internal void CatchUpStep(float time) {
-    foreach (var s in SteppableEntities()) {
-
+    foreach (var s in steppableEntities) {
+      s.CatchUpStep(lastStepTime, time);
     }
-    // step all actors until they're up to speed
-    foreach (Actor a in actors) {
-      a.CatchUpStep(lastStepTime, time);
-    }
-    foreach (Grass g in grasses) {
-      g.CatchUpStep(lastStepTime, time);
-    }
-  }
-
-  public IEnumerable<ISteppable> SteppableEntities() => EntitiesOfType<ISteppable>();
-
-  public IEnumerable<T> EntitiesOfType<T>() {
-    return entities.Where((e) => e is T).Cast<T>();
   }
 
   internal void RemoveVisibility(Actor entity) {

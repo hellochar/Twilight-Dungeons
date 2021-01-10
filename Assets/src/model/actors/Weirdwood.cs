@@ -74,13 +74,13 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
   internal override string GetStats() => "Spawns Vile Growths in a line towards enemies in range 5.\nVile Growth does 1 damage per turn to the creature standing over it. Lasts 12 turns.";
 }
 
-internal class VileGrowth : Grass {
+internal class VileGrowth : Grass, ISteppable {
   int turns = 12;
   public VileGrowth(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated + 1;
   }
 
-  public override float Step() {
+  public float Step() {
     actor?.TakeDamage(1);
     OnNoteworthyAction();
     if (--turns <= 0) {
@@ -88,6 +88,9 @@ internal class VileGrowth : Grass {
     }
     return 1;
   }
+
+  public float timeNextAction { get; set; }
+  public float turnPriority => 50;
 }
 
 [ObjectInfo("colored_transparent_packed_39", "")]

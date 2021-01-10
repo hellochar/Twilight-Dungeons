@@ -10,7 +10,7 @@ class Poisonmoss : Grass {
 
   public override float Step() {
     if (actor != null) {
-      TriggerNoteworthyAction();
+      OnNoteworthyAction();
       actor.statuses.Add(new PoisonedStatus(1));
     }
     if (!hasDuplicated) {
@@ -20,7 +20,7 @@ class Poisonmoss : Grass {
       .Where(t => CanOccupy(t) && t.grass != null && !(t.grass is Poisonmoss))
       );
       if (tile != null) {
-        TriggerNoteworthyAction();
+        OnNoteworthyAction();
         hasDuplicated = true;
         tile.grass.Kill();
         floor.Put(new Poisonmoss(tile.pos));

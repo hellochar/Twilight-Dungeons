@@ -37,7 +37,7 @@ public class Mushroom : Grass {
       var toGrowInto = Util.RandomPick(growTiles);
       var newMushrom = new Mushroom(toGrowInto.pos);
       floor.Put(newMushrom);
-      TriggerNoteworthyAction();
+      OnNoteworthyAction();
     }
     return GetRandomDuplicateTime();
   }

@@ -88,7 +88,7 @@ internal class Web : Grass {
 
   void HandleActorEnter(Actor actor) {
     actor.statuses.Add(new WebStatus());
-    TriggerNoteworthyAction();
+    OnNoteworthyAction();
   }
 
   public static bool IsActorNice(Actor actor) {

@@ -31,7 +31,7 @@ public class HangingVines : Grass {
   private void HandleActorEnter(Actor who) {
     appliedStatus = new BoundStatus();
     who.statuses.Add(appliedStatus);
-    TriggerNoteworthyAction();
+    OnNoteworthyAction();
     appliedStatus.OnRemoved += HandleStatusRemoved;
   }
 

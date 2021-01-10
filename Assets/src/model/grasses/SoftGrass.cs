@@ -18,7 +18,7 @@ public class SoftGrass : Grass {
   void HandleActorEnter(Actor who) {
     if (who is Player player) {
       player.statuses.Add(new SoftGrassStatus(1));
-      TriggerNoteworthyAction();
+      OnNoteworthyAction();
     }
   }
 }

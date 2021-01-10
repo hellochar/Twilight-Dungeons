@@ -20,7 +20,7 @@ public class Guardleaf : Grass {
 
   void HandleActorEnter(Actor who) {
     who.statuses.Add(new GuardStatus());
-    TriggerNoteworthyAction();
+    OnNoteworthyAction();
   }
 
   internal void removeGuard(int reduction) {
@@ -46,7 +46,7 @@ public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
   public int Modify(int input) {
     var reduction = Mathf.Min(input, leaf.guardLeft);
     leaf.removeGuard(reduction);
-    leaf.TriggerNoteworthyAction();
+    leaf.OnNoteworthyAction();
     return input - reduction;
   }
 

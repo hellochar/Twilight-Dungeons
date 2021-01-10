@@ -80,7 +80,7 @@ internal class VileGrowth : Grass {
     timeNextAction = timeCreated + 1;
   }
 
-  protected override float Step() {
+  public override float Step() {
     actor?.TakeDamage(1);
     TriggerNoteworthyAction();
     if (--turns <= 0) {

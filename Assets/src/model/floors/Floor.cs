@@ -15,7 +15,7 @@ public class Floor {
   public StaticEntityGrid<ItemOnGround> items;
   public MovingEntityList<Actor> actors;
   public HashSet<Entity> entities;
-  public List<SteppableEntity> steppableEntities;
+  public List<ISteppable> steppableEntities;
 
 
   public event Action<Entity> OnEntityAdded;
@@ -75,7 +75,7 @@ public class Floor {
     });
     this.actors = new MovingEntityList<Actor>(this);
     this.entities = new HashSet<Entity>();
-    this.steppableEntities = new List<SteppableEntity>();
+    this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
   }
 
@@ -88,7 +88,7 @@ public class Floor {
   public void Put(Entity entity) {
     this.entities.Add(entity);
 
-    if (entity is SteppableEntity s) {
+    if (entity is ISteppable s) {
       steppableEntities.Add(s);
     }
 
@@ -124,7 +124,7 @@ public class Floor {
     }
     this.entities.Remove(entity);
 
-    if (entity is SteppableEntity s) {
+    if (entity is ISteppable s) {
       steppableEntities.Remove(s);
     }
 
@@ -188,7 +188,7 @@ public class Floor {
     }
   }
 
-  public IEnumerable<SteppableEntity> SteppableEntities() => EntitiesOfType<SteppableEntity>();
+  public IEnumerable<ISteppable> SteppableEntities() => EntitiesOfType<ISteppable>();
 
   public IEnumerable<T> EntitiesOfType<T>() {
     return entities.Where((e) => e is T).Cast<T>();

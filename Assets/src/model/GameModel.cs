@@ -167,8 +167,8 @@ public class GameModel {
   /// Get all actors that should be simulated, in no particular order. This includes: 
   /// SteppableEntity's on the current floor, and
   /// Plants on any floor
-  internal IEnumerable<SteppableEntity> GetAllEntitiesInPlay() {
-    var enumerable = Enumerable.Empty<SteppableEntity>();
+  internal IEnumerable<ISteppable> GetAllEntitiesInPlay() {
+    var enumerable = Enumerable.Empty<ISteppable>();
     foreach (var f in floors) {
       if (f == currentFloor) {
         enumerable = enumerable.Concat(f.actors);

@@ -70,7 +70,7 @@ public class BoombugCorpse : Actor {
     }
   }
 
-  protected override float Step() {
+  public override float Step() {
     Explode();
     return baseActionCost;
   }

@@ -26,7 +26,7 @@ public class AIActor : Actor {
     ClearTasks();
   }
 
-  protected override float Step() {
+  public override float Step() {
     // the first step will likely be "no action" so retries starts at -1
     for (int retries = -1; retries < MaxRetries; retries++) {
       try {

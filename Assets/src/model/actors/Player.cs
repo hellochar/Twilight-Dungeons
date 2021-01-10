@@ -12,7 +12,7 @@ public class Player : Actor {
   public Equipment equipment { get; }
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
 
-  internal override float turnPriority => 10;
+  public override float turnPriority => 10;
   public int water = 0;
 
   public Player(Vector2Int pos) : base(pos) {
@@ -126,10 +126,6 @@ public class Player : Actor {
       Debug.Log("Player attacking with a non-weapon in the weapon slot: " + item);
       return 1;
     }
-  }
-
-  public override void CatchUpStep(float lastStepTime, float time) {
-    // no op for the player
   }
 
   public IEnumerable<Actor> ActorsInSight(Faction faction) => floor.ActorsInCircle(pos, visibilityRange).Where((a) => a.isVisible && a.faction == faction);

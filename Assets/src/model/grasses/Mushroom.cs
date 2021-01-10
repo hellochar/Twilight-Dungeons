@@ -30,7 +30,7 @@ public class Mushroom : Grass {
     return UnityEngine.Random.Range(66, 88);
   }
 
-  protected override float Step() {
+  public override float Step() {
     // find an adjacent square without mushrooms and grow into it
     var growTiles = floor.GetCardinalNeighbors(pos).Where(CanOccupy);
     if (growTiles.Any()) {

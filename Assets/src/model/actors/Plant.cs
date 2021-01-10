@@ -35,7 +35,7 @@ public abstract class Plant : Actor {
     }
   }
   /// put earlier than the player so they can act early
-  internal override float turnPriority => 0;
+  public override float turnPriority => 0;
 
   public string displayName => $"{Util.WithSpaces(GetType().Name)} ({stage.name})";
 
@@ -46,7 +46,7 @@ public abstract class Plant : Actor {
     OnDeath += HandleDeath;
   }
 
-  protected override float Step() {
+  public override float Step() {
     if (water <= 0) {
       return 99999;
     }
@@ -74,11 +74,6 @@ public abstract class Plant : Actor {
     } else {
       return uiText + "\nNeeds water to keep growing!";
     }
-  }
-
-  public override void CatchUpStep(float lastStepTime, float time) {
-    // don't catchup; plants always run.
-    return;
   }
 
   private void HandleDeath() {

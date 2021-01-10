@@ -8,7 +8,7 @@ class Poisonmoss : Grass {
     timeNextAction = timeCreated + 1;
   }
 
-  protected override float Step() {
+  public override float Step() {
     if (actor != null) {
       TriggerNoteworthyAction();
       actor.statuses.Add(new PoisonedStatus(1));

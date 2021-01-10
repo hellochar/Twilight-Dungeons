@@ -11,7 +11,7 @@ public class Rubble : Actor, IBlocksVision, IAnyDamageTakenModifier {
     return 1;
   }
 
-  protected override float Step() {
+  public override float Step() {
     return 99999;
   }
 }
@@ -21,7 +21,7 @@ public class Stump : Actor {
     timeNextAction += 99999;
   }
 
-  protected override float Step() {
+  public override float Step() {
     return 99999;
   }
 }

@@ -10,7 +10,10 @@ public class ActionCosts : Dictionary<ActionType, float> {
   public ActionCosts Copy() => new ActionCosts(this);
 }
 
-public class Actor : SteppableEntity, IModifierProvider {
+public class Actor : Entity, ISteppable, IModifierProvider {
+  public float timeNextAction { get; set; }
+  public virtual float turnPriority => 50;
+
   public static ActionCosts StaticActionCosts = new ActionCosts {
     {ActionType.ATTACK, 1},
     {ActionType.GENERIC, 1},
@@ -224,7 +227,7 @@ public class Actor : SteppableEntity, IModifierProvider {
     return GetActionCost(action.Type);
   }
 
-  protected override float Step() {
+  public virtual float Step() {
     if (task == null) {
       throw new NoActionException();
     }

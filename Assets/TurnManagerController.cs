@@ -9,7 +9,7 @@ public class TurnManagerController : MonoBehaviour {
   public GameModel model => GameModel.main;
   public TurnManager turnManager => model.turnManager;
   // Start is called before the first frame update
-  public Dictionary<SteppableEntity, GameObject> markers = new Dictionary<SteppableEntity, GameObject>();
+  public Dictionary<ISteppable, GameObject> markers = new Dictionary<ISteppable, GameObject>();
   public GameObject markerPrefab;
   private RectTransform rectTransform;
 
@@ -21,7 +21,7 @@ public class TurnManagerController : MonoBehaviour {
   }
 
   public bool needsUpdate = false;
-  private void HandleStep(SteppableEntity e) {
+  private void HandleStep(ISteppable e) {
     needsUpdate = true;
   }
 
@@ -45,8 +45,8 @@ public class TurnManagerController : MonoBehaviour {
 
   public void RemoveAddAndUpdateMarkers() {
     needsUpdate = false;
-    var entities = model.GetAllEntitiesInPlay().Where((a) => a is Actor && a.timeUntilTurn <= 2.5 && a.isVisible).ToList();
-    entities = entities.OrderBy((a) => a.timeUntilTurn + a.turnPriority * .001f).ToList();
+    var entities = model.GetAllEntitiesInPlay().Where((s) => s is Actor a && a.timeUntilTurn() <= 2.5f && a.isVisible).Cast<Actor>().ToList();
+    entities = entities.OrderBy((a) => a.timeUntilTurn() + a.turnPriority * .001f).ToList();
     // remove old markers
     var toRemove = markers.Keys.Except(entities).ToList();
     foreach (var e in toRemove) {
@@ -81,7 +81,7 @@ public class TurnManagerController : MonoBehaviour {
     }
 
     var entityGroupedByTime = entities
-      .GroupBy((e) => e.timeUntilTurn)
+      .GroupBy((e) => e.timeUntilTurn())
       .ToDictionary(grouping => grouping.Key, grouping => grouping.OrderBy(e => e.turnPriority).ToList());
 
     // update all markers
@@ -90,12 +90,12 @@ public class TurnManagerController : MonoBehaviour {
       var marker = markers[entity];
 
       // put it in the right place
-      var priorityList = entityGroupedByTime[entity.timeUntilTurn];
+      var priorityList = entityGroupedByTime[entity.timeUntilTurn()];
       var order = priorityList.IndexOf(entity);
       var groupPixelY = -order * 16;
       marker.transform.Find("Creature").GetComponent<RectTransform>().anchoredPosition = new Vector2(0, groupPixelY);
 
-      RepositionX(marker, entity.timeUntilTurn);
+      RepositionX(marker, entity.timeUntilTurn());
     }
   }
 

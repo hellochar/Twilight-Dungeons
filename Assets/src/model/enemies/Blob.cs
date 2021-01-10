@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Blob : AIActor {
-  internal override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
+  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
   public Blob(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 8;
     faction = Faction.Enemy;

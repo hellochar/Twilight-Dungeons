@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Grass : SteppableEntity {
+public abstract class Grass : Entity, ISteppable {
+  public float timeNextAction { get; set; }
+  public float turnPriority => 50;
+
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
@@ -17,7 +20,7 @@ public abstract class Grass : SteppableEntity {
     timeNextAction = this.timeCreated + 99999;
   }
 
-  protected override float Step() {
+  public virtual float Step() {
     /// TODO make SteppableEntity an Interface
     return 99999;
   }

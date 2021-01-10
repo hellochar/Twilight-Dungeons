@@ -29,7 +29,7 @@ public class TurnManager {
   // private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
   public event Action OnPlayersChoice;
-  public event Action<SteppableEntity> OnStep;
+  public event Action<ISteppable> OnStep;
   public event Action OnTimePassed;
   private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
   public TurnManager(GameModel model) {
@@ -45,7 +45,7 @@ public class TurnManager {
   }
 
   /// The actor whose turn it is
-  private SteppableEntity FindActiveEntity() {
+  private ISteppable FindActiveEntity() {
     var allActorsInPlay = model.GetAllEntitiesInPlay();
     return allActorsInPlay.Aggregate((a1, a2) => {
       if (a1.timeNextAction == a2.timeNextAction) {
@@ -106,7 +106,7 @@ public class TurnManager {
           var shouldSpeedThroughWait = (entity == model.player && model.player.task is WaitTask wait && wait.Turns > 3);
           var shouldSpeedThroughLongWalk = (entity == model.player && model.player.task is FollowPathTask path && path.path.Count > 10);
           if (!shouldSpeedThroughWait && !shouldSpeedThroughLongWalk) {
-            yield return new WaitForSeconds((entity.timeUntilTurn) * GAME_TIME_TO_SECONDS_WAIT_SCALE);
+            yield return new WaitForSeconds((entity.timeUntilTurn()) * GAME_TIME_TO_SECONDS_WAIT_SCALE);
           }
         }
         // move game time up to now
@@ -161,7 +161,7 @@ public class TurnManager {
         // yield break;
       }
 
-      if (!isFirstIteration && entity.isVisible && entity is Actor) {
+      if (!isFirstIteration && entity is Actor a && a.isVisible) {
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(JUICE_STAGGER_SECONDS);
       }

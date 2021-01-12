@@ -34,7 +34,7 @@ public class Spider : AIActor {
         continue;
       }
 
-      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider) && !(actor is Plant) && !(actor is Rubble));
+      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider) && !(actor is Plant));
       if (intruders.Any()) {
         var target = Util.RandomPick(intruders);
         yield return new AttackTask(this, target);

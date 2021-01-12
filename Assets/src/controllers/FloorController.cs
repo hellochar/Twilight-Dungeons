@@ -24,7 +24,7 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
           break;
         case Plant p:
           break;
-        case Actor a:
+        case Body b:
           category = "Actors/";
           break;
       }
@@ -94,8 +94,8 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
       GameObject gameObject = Instantiate(prefab, pos, Quaternion.identity, this.transform);
       if (entity is Tile tile) {
         gameObject.GetComponent<TileController>().tile = tile;
-      } else if (entity is Actor actor) {
-        gameObject.GetComponent<ActorController>().actor = actor;
+      } else if (entity is Body body) {
+        gameObject.GetComponent<BodyController>().body = body;
       } else if (entity is Grass grass) {
         gameObject.GetComponent<GrassController>().grass = grass;
       } else if (entity is ItemOnGround itemOnGround) {
@@ -117,11 +117,11 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
 
   public void UserInteractAt(Vector2Int pos, PointerEventData eventData) {
     var tile = floor.tiles[pos];
-    var actor = tile.actor;
+    var body = tile.body;
     var itemOnGround = tile.item;
     var grass = tile.grass;
 
-    if (TryGetFirstEntityClickHandler(out var handler, actor, grass, itemOnGround, tile)) {
+    if (TryGetFirstEntityClickHandler(out var handler, body, grass, itemOnGround, tile)) {
       handler.PointerClick(eventData);
     }
   }

@@ -24,7 +24,7 @@ public abstract class Tile : Entity {
   /// weight 1 is "normal" weight.
   public float GetPathfindingWeight() {
     var weight = 0f;
-    if (actor != null) {
+    if (body != null) {
       weight = 0;
     } else {
       weight = BasePathfindingWeight();
@@ -53,7 +53,7 @@ public abstract class Tile : Entity {
   }
 
   public bool ObstructsVision() {
-    return BasePathfindingWeight() == 0 || actor is IBlocksVision;
+    return BasePathfindingWeight() == 0 || body is IBlocksVision;
   }
 
   internal virtual bool CanBeOccupied() {

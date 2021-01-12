@@ -32,7 +32,7 @@ public class GameModel {
     var seed = UnityEngine.Random.Range(0, 100000);
 
     #if UNITY_EDITOR
-    // seed = 48999;
+    seed = 84386;
     // Analyze();
     #endif
 

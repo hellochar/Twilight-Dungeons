@@ -2,28 +2,23 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : MonoBehaviour, IEntityController, IEntityClickedHandler {
-  private static GameObject hpChangeTextPrefab;
-  public Actor actor;
+public class ActorController : BodyController {
+  public Actor actor => (Actor) body;
   protected GameObject spriteObject;
   protected Animator animator;
   // private GameObject timeNextActionText;
 
   // Start is called before the first frame update
-  public virtual void Start() {
-    if (hpChangeTextPrefab == null) {
-      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
+  public override void Start() {
+    if (body == null) {
+      body = GameModel.main.player;
     }
 
-    if (actor == null) {
-      actor = GameModel.main.player;
-    }
+    base.Start();
 
     spriteObject = transform.Find("Sprite")?.gameObject;
     animator = spriteObject?.GetComponent<Animator>();
 
-    actor.OnTakeAnyDamage += HandleTakeDamage;
-    actor.OnHeal += HandleHeal;
     actor.OnAttackGround += HandleAttackGround;
 
     actor.OnSetTask += HandleSetTask;
@@ -114,37 +109,12 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     }
   }
 
-  void HandleTakeDamage(int damage) {
-    if (!actor.isVisible) {
-      return;
-    }
-    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
-    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
-
-    if(damage > 0) {
-      GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
-      Instantiate(damagedSpritePrefab, Util.withZ(actor.pos), Quaternion.identity);
-    }
-  }
-
-  void HandleHeal(int heal, int newHp) {
-    if (!actor.isVisible) {
-      return;
-    }
-    GameObject healEffectPrefab = Resources.Load<GameObject>("Effects/Heal Effect");
-    GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(actor.pos), Quaternion.identity, transform);
-    healEffect.transform.localPosition = new Vector3(0, 0, 0);
-
-    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
-    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);
-  }
-
   private void HandleAttackGround(Vector2Int pos) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
-  public virtual void PointerClick(PointerEventData pointerEventData) {
+  public override void PointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (actor.IsDead) {
       return; // don't do anything to dead actors

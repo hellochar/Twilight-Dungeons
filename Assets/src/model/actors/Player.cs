@@ -89,7 +89,7 @@ public class Player : Actor {
 
   void HandleAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
-    if (item is IDurable durable && !(target is Rubble)) {
+    if (item is IDurable durable && target is Actor) {
       durable.ReduceDurability();
     }
     foreach (var handler in Modifiers.Of<IAttackHandler>(this)) {

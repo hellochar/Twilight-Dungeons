@@ -40,9 +40,9 @@ public sealed class MoveBaseAction : BaseAction {
 
 public sealed class AttackBaseAction : BaseAction {
   public override ActionType Type => ActionType.ATTACK;
-  public readonly Actor target;
+  public readonly Body target;
 
-  public AttackBaseAction(Actor actor, Actor target) : base(actor) {
+  public AttackBaseAction(Actor actor, Body target) : base(actor) {
     this.target = target;
   }
 

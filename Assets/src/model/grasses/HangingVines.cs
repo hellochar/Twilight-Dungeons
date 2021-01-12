@@ -28,13 +28,11 @@ public class HangingVines : Grass {
   }
 
   private BoundStatus appliedStatus;
-  private void HandleActorEnter(Body body) {
-    if (body is Actor who) {
-      appliedStatus = new BoundStatus();
-      who.statuses.Add(appliedStatus);
-      OnNoteworthyAction();
-      appliedStatus.OnRemoved += HandleStatusRemoved;
-    }
+  private void HandleActorEnter(Actor who) {
+    appliedStatus = new BoundStatus();
+    who.statuses.Add(appliedStatus);
+    OnNoteworthyAction();
+    appliedStatus.OnRemoved += HandleStatusRemoved;
   }
 
   private void HandleStatusRemoved() {

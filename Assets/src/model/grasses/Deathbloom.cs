@@ -29,9 +29,9 @@ public class Deathbloom : Grass {
     }
   }
 
-  private void HandleActorEnter(Body body) {
+  private void HandleActorEnter(Actor actor) {
     if (isBloomed) {
-      if (body is Player p) {
+      if (actor is Player p) {
         p.inventory.AddItem(new ItemDeathbloomFlower(1), this);
         var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
         noGrassTiles.Shuffle();

@@ -13,8 +13,8 @@ public abstract class Tile : Entity {
     set { }
   }
 
-  public event Action<Body> OnActorEnter;
-  public event Action<Body> OnActorLeave;
+  public event Action<Actor> OnActorEnter;
+  public event Action<Actor> OnActorLeave;
 
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;
@@ -36,12 +36,16 @@ public abstract class Tile : Entity {
     }
   }
 
-  internal void ActorLeft(Body actor) {
-    GameModel.main.EnqueueEvent(() => OnActorLeave?.Invoke(actor));
+  internal void BodyLeft(Body body) {
+    if (body is Actor actor) {
+      GameModel.main.EnqueueEvent(() => OnActorLeave?.Invoke(actor));
+    }
   }
 
-  internal void ActorEntered(Body actor) {
-    GameModel.main.EnqueueEvent(() => OnActorEnter?.Invoke(actor));
+  internal void BodyEntered(Body body) {
+    if (body is Actor actor) {
+      GameModel.main.EnqueueEvent(() => OnActorEnter?.Invoke(actor));
+    }
   }
 
   public virtual float BasePathfindingWeight() {

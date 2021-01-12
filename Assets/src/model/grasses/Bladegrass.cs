@@ -30,13 +30,13 @@ public class Bladegrass : Grass {
     }
   }
 
-  private void HandleActorLeave(Body body) {
+  private void HandleActorLeave(Actor obj) {
     Sharpen();
   }
 
-  private void HandleActorEnter(Body body) {
+  private void HandleActorEnter(Actor actor) {
     if (isSharp) {
-      body.TakeDamage(2);
+      actor.TakeDamage(2);
       Kill();
     }
   }

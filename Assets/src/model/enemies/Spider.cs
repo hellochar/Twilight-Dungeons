@@ -88,19 +88,17 @@ internal class Web : Grass {
     tile.OnActorLeave -= HandleActorLeave;
   }
 
-  void HandleActorEnter(Body body) {
-    if (body is Actor a) {
-      actor.statuses.Add(new WebStatus());
-      OnNoteworthyAction();
-    }
+  void HandleActorEnter(Actor actor) {
+    actor.statuses.Add(new WebStatus());
+    OnNoteworthyAction();
   }
 
   public static bool IsActorNice(Actor actor) {
     return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
   }
 
-  private void HandleActorLeave(Body b) {
-    if (b is Actor actor && !IsActorNice(actor)) {
+  private void HandleActorLeave(Actor actor) {
+    if (!IsActorNice(actor)) {
       Kill();
     }
   }

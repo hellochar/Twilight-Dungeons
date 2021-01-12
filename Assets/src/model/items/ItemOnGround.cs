@@ -31,8 +31,8 @@ public class ItemOnGround : Entity {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Body body) {
-    if (body is Player player) {
+  private void HandleActorEnter(Actor actor) {
+    if (actor is Player player) {
       if (player.inventory.AddItem(item, this)) {
         Kill();
       }

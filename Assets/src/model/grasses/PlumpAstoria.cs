@@ -15,7 +15,7 @@ public class PlumpAstoria : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Body actor) {
+  private void HandleActorEnter(Actor actor) {
     actor.Heal(4);
     Kill();
   }

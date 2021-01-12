@@ -26,11 +26,11 @@ public class Body : Entity, IModifierProvider {
       } else {
         if (floor.tiles[value.x, value.y].CanBeOccupied()) {
           var oldTile = floor.tiles[_pos];
-          oldTile.ActorLeft(this);
+          oldTile.BodyLeft(this);
           _pos = value;
           OnMove?.Invoke(value, oldTile.pos);
           Tile newTile = floor.tiles[_pos];
-          newTile.ActorEntered(this);
+          newTile.BodyEntered(this);
         } else {
           OnMoveFailed?.Invoke(value, _pos);
         }
@@ -42,14 +42,14 @@ public class Body : Entity, IModifierProvider {
   public void SwapPositions(Actor other) {
     var oldTile = floor.tiles[_pos];
     Tile newTile = floor.tiles[other._pos];
-    oldTile.ActorLeft(this);
-    newTile.ActorLeft(other);
+    oldTile.BodyLeft(this);
+    newTile.BodyLeft(other);
     _pos = newTile.pos;
     other._pos = oldTile.pos;
     OnMove?.Invoke(_pos, oldTile.pos);
     other.OnMove?.Invoke(oldTile.pos, _pos);
-    newTile.ActorEntered(this);
-    oldTile.ActorEntered(other);
+    newTile.BodyEntered(this);
+    oldTile.BodyEntered(other);
   }
 
   public int hp { get; protected set; }
@@ -73,11 +73,11 @@ public class Body : Entity, IModifierProvider {
   }
 
   private void HandleLeaveFloor() {
-    tile.ActorLeft(this);
+    tile.BodyLeft(this);
   }
 
   private void HandleEnterFloor() {
-    tile.ActorEntered(this);
+    tile.BodyEntered(this);
   }
 
   /// returns how much it actually healed

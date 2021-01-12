@@ -15,7 +15,7 @@ public class SoftGrass : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  void HandleActorEnter(Body who) {
+  void HandleActorEnter(Actor who) {
     if (who is Player player) {
       player.statuses.Add(new SoftGrassStatus(1));
       OnNoteworthyAction();

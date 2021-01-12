@@ -140,7 +140,7 @@ public class Actor : Body, ISteppable {
     {ActionType.WAIT, 1},
   };
 
-  public override IEnumerable<object> MyModifiers => base.MyModifiers.Append(statuses.list).Append(this.task);
+  public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(statuses.list).Append(this.task);
 
   public StatusList statuses;
   public override int maxHp => Modifiers.Process(this.MaxHPModifiers(), baseMaxHp);

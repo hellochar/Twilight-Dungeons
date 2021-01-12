@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 public abstract class Tile : Entity {
+  public override EntityLayer layer => EntityLayer.TILE;
   public TileVisiblity visibility = TileVisiblity.Unexplored;
   private Vector2Int _pos;
 
@@ -12,8 +13,8 @@ public abstract class Tile : Entity {
     set { }
   }
 
-  public event Action<Actor> OnActorEnter;
-  public event Action<Actor> OnActorLeave;
+  public event Action<Body> OnActorEnter;
+  public event Action<Body> OnActorLeave;
 
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;
@@ -35,11 +36,11 @@ public abstract class Tile : Entity {
     }
   }
 
-  internal void ActorLeft(Actor actor) {
+  internal void ActorLeft(Body actor) {
     GameModel.main.EnqueueEvent(() => OnActorLeave?.Invoke(actor));
   }
 
-  internal void ActorEntered(Actor actor) {
+  internal void ActorEntered(Body actor) {
     GameModel.main.EnqueueEvent(() => OnActorEnter?.Invoke(actor));
   }
 
@@ -98,9 +99,9 @@ public class Downstairs : Tile {
     OnActorEnter += HandleActorEnter;
   }
 
-  public void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Body body) {
     var player = GameModel.main.player;
-    if (actor == player) {
+    if (body == player) {
       // if we're on floor 0, go straight to the deepest floor
       // if we're on the deepest floor, go 1 deeper
       Floor nextFloor;

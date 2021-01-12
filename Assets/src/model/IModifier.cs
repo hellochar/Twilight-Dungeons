@@ -82,5 +82,5 @@ interface IActionPerformedHandler {
 
 // Called when the attached actor attacks a target
 public interface IAttackHandler {
-  void OnAttack(Actor target);
+  void OnAttack(Body target);
 }

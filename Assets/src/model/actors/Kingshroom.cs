@@ -61,7 +61,7 @@ internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IAct
     }
   }
 
-  public void OnAttack(Actor target) {
+  public void OnAttack(Body target) {
     var floor = target.floor;
     var pos = target.pos;
     GameModel.main.EnqueueEvent(() => {

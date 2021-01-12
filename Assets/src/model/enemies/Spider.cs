@@ -58,8 +58,10 @@ public class Spider : AIActor {
     }
   }
 
-  private void HandleDealDamage(int dmg, Actor target) {
-    target.statuses.Add(new PoisonedStatus(1));
+  private void HandleDealDamage(int dmg, Body target) {
+    if (target is Actor a) {
+      a.statuses.Add(new PoisonedStatus(1));
+    }
   }
 
   internal override int BaseAttackDamage() {
@@ -86,17 +88,19 @@ internal class Web : Grass {
     tile.OnActorLeave -= HandleActorLeave;
   }
 
-  void HandleActorEnter(Actor actor) {
-    actor.statuses.Add(new WebStatus());
-    OnNoteworthyAction();
+  void HandleActorEnter(Body body) {
+    if (body is Actor a) {
+      actor.statuses.Add(new WebStatus());
+      OnNoteworthyAction();
+    }
   }
 
   public static bool IsActorNice(Actor actor) {
     return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
   }
 
-  private void HandleActorLeave(Actor actor) {
-    if (!IsActorNice(actor)) {
+  private void HandleActorLeave(Body b) {
+    if (b is Actor actor && !IsActorNice(actor)) {
       Kill();
     }
   }

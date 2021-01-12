@@ -10,16 +10,12 @@ public class ActionCosts : Dictionary<ActionType, float> {
   public ActionCosts Copy() => new ActionCosts(this);
 }
 
-public class Actor : Entity, ISteppable, IModifierProvider {
-  public float timeNextAction { get; set; }
-  public virtual float turnPriority => 50;
-
-  public static ActionCosts StaticActionCosts = new ActionCosts {
-    {ActionType.ATTACK, 1},
-    {ActionType.GENERIC, 1},
-    {ActionType.MOVE, 1},
-    {ActionType.WAIT, 1},
-  };
+public class Body : Entity, IModifierProvider {
+  public override EntityLayer layer => EntityLayer.BODY;
+  private static IEnumerable<object> SelfEnumerator<T>(T item) {
+    yield return item;
+  }
+  public virtual IEnumerable<object> MyModifiers => SelfEnumerator(this);
 
   private Vector2Int _pos;
   public override Vector2Int pos {
@@ -56,46 +52,21 @@ public class Actor : Entity, ISteppable, IModifierProvider {
     oldTile.ActorEntered(other);
   }
 
-  public virtual IEnumerable<object> MyModifiers => statuses.list.Cast<object>().Append(this).Append(this.task);
-
-  public StatusList statuses;
   public int hp { get; protected set; }
   public int baseMaxHp { get; protected set; }
-  public int maxHp => Modifiers.Process(this.MaxHPModifiers(), baseMaxHp);
+  public virtual int maxHp => baseMaxHp;
 
-  /// don't call directly; this doesn't use modifiers
-  protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
-  public float baseActionCost => GetActionCost(ActionType.WAIT);
-  public virtual ActorTask task {
-    get => taskQueue.FirstOrDefault();
-    set => SetTasks(value);
-  }
-  protected List<ActorTask> taskQueue = new List<ActorTask>();
-  public event Action<ActorTask> OnSetTask;
-  public event Action<BaseAction, BaseAction> OnActionPerformed;
-
-  public int visibilityRange = 7;
-  public Faction faction = Faction.Neutral;
   /// <summary>new position, old position</summary>
   public event Action<Vector2Int, Vector2Int> OnMove;
   /// <summary>failed position, old position</summary>
   public event Action<Vector2Int, Vector2Int> OnMoveFailed;
-  public event Action<int, Actor> OnDealAttackDamage;
   public event Action<int, int, Actor> OnTakeAttackDamage;
   public event Action<int> OnTakeAnyDamage;
   public event Action<int, int> OnHeal;
-  /// gets called on a successful hit on a target
-  public event Action<int, Actor> OnAttack;
-  /// gets called on any ground targeted attack
-  public event Action<Vector2Int> OnAttackGround;
   /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
   public event Action<int, Actor> OnAttacked;
-
-  public Actor(Vector2Int pos) : base() {
-    statuses = new StatusList(this);
-    hp = baseMaxHp = 8;
-    // this.timeNextAction = this.timeCreated + baseActionCost;
-    this.timeNextAction = this.timeCreated;
+  
+  public Body(Vector2Int pos) : base() {
     this.pos = pos;
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
@@ -121,8 +92,87 @@ public class Actor : Entity, ISteppable, IModifierProvider {
     return amount;
   }
 
+  public void Attacked(int damage, Actor source) {
+    OnAttacked?.Invoke(damage, source);
+    TakeAttackDamage(damage, source);
+  }
+
+  /// Attack damage doesn't always come from an *attack* specifically. For instance,
+  /// Snail shells count as attack damage, although they are not an attack action.
+  public void TakeAttackDamage(int damage, Actor source) {
+    damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
+    damage = Math.Max(damage, 0);
+    source.OnDealAttackDamage?.Invoke(damage, this);
+    OnTakeAttackDamage?.Invoke(damage, hp, source);
+    TakeDamage(damage);
+  }
+
+  /// Take damage from any source.
+  public void TakeDamage(int damage) {
+    damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
+    damage = Math.Max(damage, 0);
+    OnTakeAnyDamage?.Invoke(damage);
+    hp -= damage;
+    if (hp <= 0) {
+      Kill();
+    }
+  }
+
+  public override void Kill() {
+    /// TODO remove references to this Actor if needed
+    if (!IsDead) {
+      hp = Math.Max(hp, 0);
+      base.Kill();
+    }
+  }
+}
+
+public delegate void OnDealAttackDamage(int dmg, Body target);
+
+public class Actor : Body, ISteppable {
+  public float timeNextAction { get; set; }
+  public virtual float turnPriority => 50;
+
+  public static ActionCosts StaticActionCosts = new ActionCosts {
+    {ActionType.ATTACK, 1},
+    {ActionType.GENERIC, 1},
+    {ActionType.MOVE, 1},
+    {ActionType.WAIT, 1},
+  };
+
+  public override IEnumerable<object> MyModifiers => base.MyModifiers.Append(statuses.list).Append(this.task);
+
+  public StatusList statuses;
+  public override int maxHp => Modifiers.Process(this.MaxHPModifiers(), baseMaxHp);
+
+  /// don't call directly; this doesn't use modifiers
+  protected virtual ActionCosts actionCosts => Actor.StaticActionCosts;
+  public float baseActionCost => GetActionCost(ActionType.WAIT);
+  public virtual ActorTask task {
+    get => taskQueue.FirstOrDefault();
+    set => SetTasks(value);
+  }
+  protected List<ActorTask> taskQueue = new List<ActorTask>();
+  public event Action<ActorTask> OnSetTask;
+  public event Action<BaseAction, BaseAction> OnActionPerformed;
+
+  public int visibilityRange = 7;
+  public Faction faction = Faction.Neutral;
+  public OnDealAttackDamage OnDealAttackDamage;
+  /// gets called on a successful hit on a target
+  public event Action<int, Body> OnAttack;
+  /// gets called on any ground targeted attack
+  public event Action<Vector2Int> OnAttackGround;
+
+  public Actor(Vector2Int pos) : base(pos) {
+    statuses = new StatusList(this);
+    hp = baseMaxHp = 8;
+    // this.timeNextAction = this.timeCreated + baseActionCost;
+    this.timeNextAction = this.timeCreated;
+  }
+
   /// create an Attack with the specified damage. This does *not* do damage modifiers.
-  internal void Attack(Actor target, int damage) {
+  internal void Attack(Body target, int damage) {
     if (target.IsDead) {
       throw new CannotPerformActionException("Cannot attack dead target.");
     }
@@ -159,36 +209,8 @@ public class Actor : Entity, ISteppable, IModifierProvider {
     }
   }
 
-  private void Attacked(int damage, Actor source) {
-    OnAttacked?.Invoke(damage, source);
-    TakeAttackDamage(damage, source);
-  }
-
-  /// Attack damage doesn't always come from an *attack* specifically. For instance,
-  /// Snail shells count as attack damage, although they are not an attack action.
-  public void TakeAttackDamage(int damage, Actor source) {
-    damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
-    damage = Math.Max(damage, 0);
-    source.OnDealAttackDamage?.Invoke(damage, this);
-    OnTakeAttackDamage?.Invoke(damage, hp, source);
-    TakeDamage(damage);
-  }
-
-  /// Take damage from any source.
-  public void TakeDamage(int damage) {
-    damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
-    damage = Math.Max(damage, 0);
-    OnTakeAnyDamage?.Invoke(damage);
-    hp -= damage;
-    if (hp <= 0) {
-      Kill();
-    }
-  }
-
   public override void Kill() {
-    /// TODO remove references to this Actor if needed
     if (!IsDead) {
-      hp = Math.Max(hp, 0);
       taskQueue.Clear();
       TaskChanged();
       foreach (var handler in Modifiers.Of<IActorKilledHandler>(this)) {

@@ -24,7 +24,6 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
 
     actor.OnTakeAnyDamage += HandleTakeDamage;
     actor.OnHeal += HandleHeal;
-    actor.OnAttack += HandleAttack;
     actor.OnAttackGround += HandleAttackGround;
 
     actor.OnSetTask += HandleSetTask;
@@ -139,8 +138,6 @@ public class ActorController : MonoBehaviour, IEntityController, IEntityClickedH
     GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(actor.pos), Quaternion.identity);
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);
   }
-
-  private void HandleAttack(int damage, Actor target) {}
 
   private void HandleAttackGround(Vector2Int pos) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");

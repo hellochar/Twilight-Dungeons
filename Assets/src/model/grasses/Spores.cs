@@ -17,7 +17,7 @@ public class Spores : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Actor actor) {
+  private void HandleActorEnter(Body actor) {
     if (!(actor is SporeBloat)) {
       Kill();
     }

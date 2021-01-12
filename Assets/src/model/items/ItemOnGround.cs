@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ItemOnGround : Entity {
   public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
+  public override EntityLayer layer => EntityLayer.ITEM;
 
   private Vector2Int _pos;
   public override Vector2Int pos {
@@ -30,8 +31,8 @@ public class ItemOnGround : Entity {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Actor actor) {
-    if (actor is Player player) {
+  private void HandleActorEnter(Body body) {
+    if (body is Player player) {
       if (player.inventory.AddItem(item, this)) {
         Kill();
       }

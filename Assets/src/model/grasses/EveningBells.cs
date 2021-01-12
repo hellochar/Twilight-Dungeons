@@ -18,8 +18,8 @@ public class EveningBells : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Actor actor) {
-    if (actor != GameModel.main.player) {
+  private void HandleActorEnter(Body body) {
+    if (body is Actor actor && body != GameModel.main.player) {
       actor.SetTasks(new SleepTask(actor, 3, true));
       Kill();
     }

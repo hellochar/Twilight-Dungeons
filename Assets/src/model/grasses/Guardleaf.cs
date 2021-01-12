@@ -18,9 +18,11 @@ public class Guardleaf : Grass {
     actor?.statuses.RemoveOfType<GuardStatus>();
   }
 
-  void HandleActorEnter(Actor who) {
-    who.statuses.Add(new GuardStatus());
-    OnNoteworthyAction();
+  void HandleActorEnter(Body body) {
+    if (body is Actor who) {
+      actor.statuses.Add(new GuardStatus());
+      OnNoteworthyAction();
+    }
   }
 
   internal void removeGuard(int reduction) {

@@ -87,7 +87,7 @@ public class Player : Actor {
     }
   }
 
-  void HandleAttack(int damage, Actor target) {
+  void HandleAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
     if (item is IDurable durable && !(target is Rubble)) {
       durable.ReduceDurability();

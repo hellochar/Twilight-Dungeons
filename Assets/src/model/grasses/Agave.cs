@@ -18,8 +18,8 @@ public class Agave : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Actor actor) {
-    if (actor == GameModel.main.player) {
+  private void HandleActorEnter(Body body) {
+    if (body == GameModel.main.player) {
       GameModel.main.player.inventory.AddItem(new ItemAgave(1), this);
       Kill();
     }

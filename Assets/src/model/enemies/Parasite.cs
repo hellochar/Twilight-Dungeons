@@ -16,9 +16,11 @@ public class Parasite : AIActor {
     OnDealAttackDamage += HandleDealAttackDamage;
   }
 
-  private void HandleDealAttackDamage(int dmg, Actor target) {
-    target.statuses.Add(new ParasiteStatus(16));
-    Kill();
+  private void HandleDealAttackDamage(int dmg, Body target) {
+    if (target is Actor actor) {
+      actor.statuses.Add(new ParasiteStatus(16));
+      Kill();
+    }
   }
 
   internal override int BaseAttackDamage() {

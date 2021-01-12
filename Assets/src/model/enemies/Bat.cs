@@ -56,7 +56,7 @@ public class Bat : AIActor {
     return null;
   }
 
-  private void HandleDealDamage(int dmg, Actor target) {
+  private void HandleDealDamage(int dmg, Body target) {
     if (dmg > 0) {
       Heal(1);
     }
@@ -83,7 +83,7 @@ internal class ItemBatTooth : EquippableItem, IWeapon {
     obj.OnDealAttackDamage -= HandleDealAttackDamage;
   }
 
-  private void HandleDealAttackDamage(int dmg, Actor target) {
+  private void HandleDealAttackDamage(int dmg, Body target) {
     if (dmg > 0) {
       GameModel.main.player.Heal(1);
     }

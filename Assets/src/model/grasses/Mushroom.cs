@@ -18,7 +18,7 @@ public class Mushroom : Grass {
     tile.OnActorEnter -= HandleActorEnter;
   }
 
-  private void HandleActorEnter(Actor actor) {
+  private void HandleActorEnter(Body actor) {
     if (actor == GameModel.main.player) {
       GameModel.main.player.inventory.AddItem(new ItemMushroom(1), this);
       Kill();

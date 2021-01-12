@@ -119,11 +119,11 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
 internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier {
-  internal override string GetStats() => "Take 2 less damage.\nWhen you take damage, grow Bladegrass on all adjacent squares.";
+  internal override string GetStats() => "Take 2 less damage.\nWhen you take damage, grow, sharpen, or trigger Bladegrass on all adjacent squares.";
 
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }
-  public int maxDurability => 20;
+  public int maxDurability => 36;
 
   public ItemHeartOfThorns() {
     OnEquipped += HandleEquipped;
@@ -139,9 +139,17 @@ internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModi
     player.OnTakeAnyDamage -= HandleTakeAnyDamage;
   }
 
-  private void HandleTakeAnyDamage(int arg1) {
+  private void HandleTakeAnyDamage(int dmg) {
     foreach (var tile in player.floor.GetAdjacentTiles(player.pos).Where(Bladegrass.CanOccupy)) {
-      if (durability > 0) {
+      if (tile.grass is Bladegrass g) {
+        if (g.isSharp) {
+          if (g.actor != null) {
+            g.HandleActorEnter(g.actor);
+          }
+        } else {
+          g.Sharpen();
+        }
+      } else {
         player.floor.Put(new Bladegrass(tile.pos));
       }
     }

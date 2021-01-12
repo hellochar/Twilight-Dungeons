@@ -34,7 +34,7 @@ public class Spider : AIActor {
         continue;
       }
 
-      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider) && !(actor is Plant));
+      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));
       if (intruders.Any()) {
         var target = Util.RandomPick(intruders);
         yield return new AttackTask(this, target);
@@ -44,17 +44,23 @@ public class Spider : AIActor {
       var nonWebbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && !(tile.grass is Web));
       var webbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && (tile.grass is Web));
 
-      var bag = new WeightedRandomBag<Tile>();
-      foreach (var t in nonWebbedAdjacentTiles) {
-        bag.Add(3, t);
+      if (nonWebbedAdjacentTiles.Any()) {
+        yield return new MoveToTargetTask(this, Util.RandomPick(nonWebbedAdjacentTiles).pos);
+      } else {
+        yield return new MoveToTargetTask(this, Util.RandomPick(webbedAdjacentTiles).pos);
       }
-      foreach (var t in webbedAdjacentTiles) {
-        // prefer to walk on their web 1 to 3
-        bag.Add(1, t);
-      }
-      var nextTile = bag.GetRandom();
 
-      yield return new MoveToTargetTask(this, nextTile.pos);
+      // var bag = new WeightedRandomBag<Tile>();
+      // foreach (var t in nonWebbedAdjacentTiles) {
+      //   bag.Add(3, t);
+      // }
+      // foreach (var t in webbedAdjacentTiles) {
+      //   // prefer to walk on their web 1 to 3
+      //   bag.Add(1, t);
+      // }
+      // var nextTile = bag.GetRandom();
+
+      // yield return new MoveToTargetTask(this, nextTile.pos);
     }
   }
 

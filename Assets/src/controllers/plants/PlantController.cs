@@ -6,8 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class PlantController : ActorController {
-  public Plant plant => (Plant) actor;
+public class PlantController : BodyController {
+  public Plant plant => (Plant) body;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
   private GameObject ui = null;
@@ -39,8 +39,7 @@ public class PlantController : ActorController {
     base.Start();
   }
 
-  public override void Update() {
-    base.Update();
+  public void Update() {
     if (activePlantStageObject.name != plant.stage.name) {
       activePlantStageObject.SetActive(false);
       activePlantStageObject = plantStageObjects[plant.stage.name];

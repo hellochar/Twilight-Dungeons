@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 /// Don't do anything until the Player's in view
 class SleepTask : ActorTask, IAnyDamageTakenModifier {
   private bool done;
@@ -15,7 +16,9 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
 
   /// doubles damage taken while sleeping, also should wake up!
   public int Modify(int input) {
-    wakeUpNextTurn = true;
+    if (input > 0) {
+      WakeUp();
+    }
     return input * 2;
   }
 
@@ -49,11 +52,18 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
         s.wakeUpNextTurn = true;
       }
     }
-    done = true;
-    GameModel.main.EnqueueEvent(() => {
-      actor.statuses.Add(new SurprisedStatus());
-    });
+    WakeUp();
     yield return new WaitBaseAction(actor);
+  }
+
+  public void WakeUp() {
+    if (!done) {
+      done = true;
+      GameModel.main.EnqueueEvent(() => {
+        actor.statuses.Add(new SurprisedStatus());
+      });
+      wakeUpNextTurn = true;
+    }
   }
 
   public override bool IsDone() => done;

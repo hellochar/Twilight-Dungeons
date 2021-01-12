@@ -152,6 +152,7 @@ public class Actor : Body, ISteppable {
     get => taskQueue.FirstOrDefault();
     set => SetTasks(value);
   }
+  public IEnumerable<ActorTask> tasks => taskQueue.AsEnumerable();
   protected List<ActorTask> taskQueue = new List<ActorTask>();
   public event Action<ActorTask> OnSetTask;
   public event Action<BaseAction, BaseAction> OnActionPerformed;

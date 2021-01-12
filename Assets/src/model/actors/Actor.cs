@@ -181,7 +181,7 @@ public class Actor : Body, ISteppable {
   }
 
   /// Attack the target, using this Actor's final attack damage.
-  internal void Attack(Actor target) {
+  internal void Attack(Body target) {
     Attack(target, GetFinalAttackDamage());
   }
 
@@ -198,7 +198,7 @@ public class Actor : Body, ISteppable {
   }
 
   internal void AttackGround(Vector2Int targetPosition) {
-    Actor target = floor.actors[targetPosition];
+    Body target = floor.bodies[targetPosition];
     Grass grass = floor.grasses[targetPosition];
     OnAttackGround?.Invoke(targetPosition);
     if (target != null) {

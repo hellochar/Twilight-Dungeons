@@ -22,7 +22,8 @@ public abstract class Entity {
   public Tile tile => floor.tiles[pos];
   public Grass grass => floor.grasses[pos];
   public ItemOnGround item => floor.items[pos];
-  public Actor actor => floor.actors[pos];
+  public Body body => floor.bodies[pos];
+  public Actor actor => body as Actor;
 
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set

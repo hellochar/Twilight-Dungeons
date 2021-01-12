@@ -13,7 +13,7 @@ public class Floor {
   public StaticEntityGrid<Tile> tiles;
   public StaticEntityGrid<Grass> grasses;
   public StaticEntityGrid<ItemOnGround> items;
-  public MovingEntityList<Actor> actors;
+  public MovingEntityList<Body> bodies;
   public HashSet<Entity> entities;
   public List<ISteppable> steppableEntities;
 
@@ -73,7 +73,7 @@ public class Floor {
         .pos;
       item.pos = newPosition;
     });
-    this.actors = new MovingEntityList<Actor>(this);
+    this.bodies = new MovingEntityList<Body>(this);
     this.entities = new HashSet<Entity>();
     this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
@@ -94,8 +94,8 @@ public class Floor {
 
     if (entity is Tile tile) {
       tiles.Put(tile);
-    } else if (entity is Actor actor) {
-      actors.Put(actor);
+    } else if (entity is Body body) {
+      bodies.Put(body);
     } else if (entity is Grass grass) {
       grasses.Put(grass);
     } else if (entity is ItemOnGround item) {
@@ -130,8 +130,8 @@ public class Floor {
 
     if (entity is Tile tile) {
       tiles.Remove(tile);
-    } else if (entity is Actor a) {
-      actors.Remove(a);
+    } else if (entity is Body b) {
+      bodies.Remove(b);
     } else if (entity is Grass g) {
       grasses.Remove(g);
     } else if (entity is ItemOnGround item) {

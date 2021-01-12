@@ -49,7 +49,7 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
   }
 
   void LogEnemyHP() {
-    var enemies = floor.actors.Where((x) => x.faction == Faction.Enemy);
+    var enemies = floor.bodies.Where((b) => b is Actor x && x.faction == Faction.Enemy);
     var allHP = enemies.Select((a) => a.maxHp).Sum();
     Debug.Log("Depth " + floor.depth +", HP " + allHP, this);
   }

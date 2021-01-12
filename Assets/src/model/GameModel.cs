@@ -173,7 +173,7 @@ public class GameModel {
       if (f == currentFloor) {
         enumerable = enumerable.Concat(f.steppableEntities);
       } else {
-        enumerable = enumerable.Concat(f.actors.Where((a) => a is Plant));
+        enumerable = enumerable.Concat(f.bodies.Where((a) => a is Plant).Cast<Plant>());
       }
     }
     return enumerable;

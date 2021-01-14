@@ -57,6 +57,7 @@ public class FloorGenerator {
     Encounters.AddWater(floor, room0);
 
     #if UNITY_EDITOR
+    // Encounters.AddCoralmoss(floor, room0);
     // Encounters.AddHangingVines(floor, room0);
     // Encounters.AddEveningBells(floor, room0);
     // Encounters.OneButterfly(floor, room0);

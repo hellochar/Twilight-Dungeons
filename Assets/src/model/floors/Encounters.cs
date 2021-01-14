@@ -231,6 +231,19 @@ public class Encounters {
     }
   });
 
+  public static Encounter AddCoralmoss = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Coralmoss.CanOccupy));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var start = Util.RandomPick(occupiableTiles);
+      var dfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile), true);
+      var num = Random.Range(3, 12);
+      foreach (var tile in dfs.Take(num)) {
+        floor.Put(new Coralmoss(tile.pos));
+      }
+    }
+  });
+
   public static Encounter AddWebs = new Encounter((floor, room) => {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => tile.grass == null && tile is Ground).ToList();
     var num = Random.Range(tiles.Count / 8, tiles.Count / 2);
@@ -466,14 +479,19 @@ public class Encounters {
 
   public WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
     { 1f, AddSoftGrass },
+
     { 0.75f, AddBladegrass },
+
     { 0.5f, AddAgave },
+    // { 0.5f, AddCoralmoss },
     { 0.5f, AddHangingVines },
+
     { 0.4f, AddEveningBells },
     { 0.4f, AddGuardleaf },
     { 0.4f, AddSpore },
     { 0.4f, AddWebs },
     { 0.4f, ScatteredBoombugs },
+
     { 0.2f, AddPoisonmoss },
     { 0.2f, AddDeathbloom },
   };
@@ -492,6 +510,7 @@ public class Encounters {
     { 0.2f, AddWater },
     { 0.2f, ScatteredBoombugs },
 
+    // { 0.1f, AddCoralmoss },
     { 0.1f, AddDeathbloom },
     { 0.1f, AddSpiders },
     { 0.1f, AddGuardleaf },

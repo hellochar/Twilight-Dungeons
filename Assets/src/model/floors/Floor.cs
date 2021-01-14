@@ -331,13 +331,19 @@ public class Floor {
     yield return endPoint;
   }
 
-  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true) {
+  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true, bool depthFirst = false) {
     LinkedList<Tile> frontier = new LinkedList<Tile>();
     HashSet<Tile> seen = new HashSet<Tile>();
     frontier.AddFirst(tiles[startPos]);
     while (frontier.Any()) {
-      var tile = frontier.First.Value;
-      frontier.RemoveFirst();
+      Tile tile;
+      if (depthFirst) {
+        tile = frontier.Last.Value;
+        frontier.RemoveLast();
+      } else {
+        tile = frontier.First.Value;
+        frontier.RemoveFirst();
+      }
       yield return tile;
       seen.Add(tile);
       var adjacent = GetCardinalNeighbors(tile.pos).Except(seen).Where(predicate).ToList();

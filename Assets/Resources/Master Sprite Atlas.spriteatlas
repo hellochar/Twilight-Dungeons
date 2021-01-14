@@ -28,12 +28,15 @@ SpriteAtlas:
       allowAlphaSplitting: 0
       enableRotation: 0
       enableTightPacking: 1
+    secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 6487766
+    totalSpriteSurfaceArea: 6488278
     bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 40e68100d86f0c34ea0d7aea9966ff25, type: 3}
@@ -57,6 +60,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 515f0432abf1ea14fbc257dd5dde4d16, type: 3}
   - {fileID: 21300000, guid: ad657932aad06774b955a024848ae11c, type: 3}
   - {fileID: 21300000, guid: ae759e521ee37ca46ac7401b9dc0f160, type: 3}
+  - {fileID: 21300000, guid: f4daf282ca573d0499bbf123e1ab87bb, type: 3}
   - {fileID: 21300000, guid: e35e6092607d0b643a2586cf8046491d, type: 3}
   - {fileID: 21300000, guid: 8bd456237d101f44680f91bd37f10a74, type: 3}
   - {fileID: -6032677125156830045, guid: bb8b3e336c594944391cf23a2c1df40a, type: 3}
@@ -7369,6 +7373,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d10473ddcf13dbe46a911763432a4655, type: 3}
   - {fileID: 21300000, guid: 62d7722e2d7563b468471d867555b6cb, type: 3}
   - {fileID: 21300000, guid: c2f7f23e6e084f240a0a5f87fc5c3b51, type: 3}
+  - {fileID: 21300000, guid: 9295d66e7959a084fa6a62a35e3675cd, type: 3}
   - {fileID: 21300000, guid: d323feae203eaa14f9c8cb43e26ca88b, type: 3}
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: c87b69eeeb4926d498a1f51a2bd74586, type: 3}
@@ -7920,6 +7925,7 @@ SpriteAtlas:
   - water-droplet
   - bound-status
   - thornbush-sapling
+  - coral
   - outdoor_32x32
   - Sleep
   - roguelikeSheet_transparent_desaturated_1211
@@ -15232,6 +15238,7 @@ SpriteAtlas:
   - background
   - colored_original
   - guardroot
+  - coralmoss
   - vile-potion
   - charmberry
   - heart
@@ -15761,5 +15768,6 @@ SpriteAtlas:
   - roguelikeDungeon_transparent_268
   - roguelikeDungeon_transparent_512
   - redberry
+  m_RenderDataMap: {}
   m_Tag: Master Sprite Atlas
   m_IsVariant: 0

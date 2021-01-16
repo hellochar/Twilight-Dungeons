@@ -7,8 +7,10 @@ using UnityEngine.UI;
 
 public class InterestingThingsController : MonoBehaviour {
   public Player player => GameModel.main.player;
-  public Dictionary<string, GameObject> thingMap = new Dictionary<string, GameObject>();
-  public GameObject content;
+  public Dictionary<string, GameObject> entries = new Dictionary<string, GameObject>();
+  public Dictionary<string, Entity> interestingEntities;
+  public GameObject creaturesContainer;
+  public GameObject grassesContainer;
   public GameObject buttonPrefab;
 
   void Start() {
@@ -30,39 +32,50 @@ public class InterestingThingsController : MonoBehaviour {
   }
 
   void UpdateItems() {
-    var newInterestingThings = GetInterestingThings().GroupBy(e => e.displayName).ToDictionary((grouping) => grouping.Key, (grouping) => grouping.First());
-    var toRemove = thingMap.Keys.Except(newInterestingThings.Keys).ToList();
+    interestingEntities = GetInterestingThings().GroupBy(e => e.displayName).ToDictionary((grouping) => grouping.Key, (grouping) => grouping.First());
+    var toRemove = entries.Keys.Except(interestingEntities.Keys).ToList();
 
     // remove old items
     foreach (var name in toRemove) {
-      Destroy(thingMap[name]);
-      thingMap.Remove(name);
+      Destroy(entries[name]);
+      entries.Remove(name);
     }
 
     // add new items
-    foreach (var name in newInterestingThings.Keys) {
-      if (!thingMap.ContainsKey(name)) {
-        var buttonObject = Instantiate(buttonPrefab, content.transform.position, Quaternion.identity, content.transform);
+    foreach (var name in interestingEntities.Keys) {
+      var entity = interestingEntities[name];
+      if (!entries.ContainsKey(name)) {
+        var contentBox = entity is Grass ? grassesContainer : creaturesContainer;
+        var buttonObject = Instantiate(buttonPrefab, contentBox.transform.position, Quaternion.identity, contentBox.transform);
         buttonObject.SetActive(true);
-        thingMap[name] = buttonObject;
+        entries[name] = buttonObject;
 
         var button = buttonObject.GetComponent<Button>();
         button.onClick.AddListener(() => {
-          GameModelController.main.CurrentFloorController.ShowPopupFor(newInterestingThings[name]);
+          var firstEntityOfType = interestingEntities[name];
+          GameModelController.main.CurrentFloorController.ShowPopupFor(firstEntityOfType);
           // TODO create popup for entity
         });
         buttonObject.GetComponentInChildren<TMPro.TMP_Text>().text = name;
       }
     }
+
+    // 1 is the title, 2 is the inactive Button prefab
+    var hasCreatures = creaturesContainer.transform.childCount > 2;
+    // 1 is the title
+    var hasGrasses = grassesContainer.transform.childCount > 1;
+
+    creaturesContainer.SetActive(hasCreatures);
+    grassesContainer.SetActive(hasGrasses);
   }
 
   /// interesting things: bodies and grasses
   IEnumerable<Entity> GetInterestingThings() {
     foreach (var pos in player.floor.EnumerateCircle(player.pos, player.visibilityRange)) {
-      var body = player.floor.bodies[pos];
+      var actor = player.floor.tiles[pos].actor;
       var grass = player.floor.grasses[pos];
-      if (body != null && body != player && body.isVisible) {
-        yield return body;
+      if (actor != null && actor != player && actor.isVisible) {
+        yield return actor;
       }
       if (grass != null && grass.isVisible) {
         yield return grass;

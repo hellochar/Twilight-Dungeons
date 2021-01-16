@@ -53,7 +53,7 @@ public class FloorGenerator {
     AddMaturePlant(Util.RandomPick(types));
     AddMaturePlant(Util.RandomPick(types));
 
-    Encounters.ThreePlumpAstoriasInCorner(floor, room0);
+    Encounters.ThreeAstoriasInCorner(floor, room0);
     Encounters.AddWater(floor, room0);
 
     #if UNITY_EDITOR

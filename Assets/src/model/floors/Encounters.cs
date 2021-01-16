@@ -350,18 +350,18 @@ public class Encounters {
     }
   });
 
-  public static Encounter ThreePlumpAstoriasInCorner = new Encounter((floor, room) => {
+  public static Encounter ThreeAstoriasInCorner = new Encounter((floor, room) => {
     var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
     foreach (var tile in positions.Take(3)) {
-      floor.Put(new PlumpAstoria(tile.pos));
+      floor.Put(new Astoria(tile.pos));
     }
   });
 
-  public static Encounter OnePlumpAstoria = new Encounter((floor, room) => {
+  public static Encounter OneAstoria = new Encounter((floor, room) => {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();
     foreach (var tile in positions.Take(1)) {
-      floor.Put(new PlumpAstoria(tile.pos));
+      floor.Put(new Astoria(tile.pos));
     }
   });
 
@@ -530,11 +530,11 @@ public class Encounters {
     // { 2f, AddWater },
     { 1f, AddMushroom },
     { 1f, AddPumpkin },
-    { 1f, OnePlumpAstoria },
+    { 1f, OneAstoria },
     { 0.5f, AddJackalHide },
     { 0.5f, AddGloopShoes },
     { 0.5f, OneButterfly },
-    { 0.5f, ThreePlumpAstoriasInCorner },
+    { 0.5f, ThreeAstoriasInCorner },
   };
 
   public WeightedRandomBag<Encounter> CavesPlantRewards = new WeightedRandomBag<Encounter> {

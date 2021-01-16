@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Chases and attacks nearest creature.\nLifesteals.\nGoes into Deep Sleep after 7 turns awake.\nOccasionally drops Bat Tooth.")]
 public class Bat : AIActor {
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 7;
@@ -62,8 +63,8 @@ public class Bat : AIActor {
     }
   }
 
-  internal override int BaseAttackDamage() {
-    return 1;
+  internal override (int, int) BaseAttackDamage() {
+    return (1, 1);
   }
 }
 

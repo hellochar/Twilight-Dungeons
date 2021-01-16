@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 // run fast, fear other jackals nearby when they die
+[ObjectInfo(description: "Runs 2 tiles every other move.\nRuns away when another Jackal dies.\nChases you.")]
 public class Jackal : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.67f,
@@ -26,7 +27,5 @@ public class Jackal : AIActor {
     });
   }
 
-  internal override int BaseAttackDamage() {
-    return UnityEngine.Random.Range(1, 3);
-  }
+  internal override (int, int) BaseAttackDamage() => (1, 2);
 }

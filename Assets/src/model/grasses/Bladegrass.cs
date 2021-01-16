@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Walk over to sharpen.\nOnce sharpened, any creature walking into this Bladegrass takes 2 damage and kills it.")]
 public class Bladegrass : Grass {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public bool isSharp = false;

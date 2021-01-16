@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[ObjectInfo(description: "Walk over it to harvest.")]
 public class Mushroom : Grass {
   public Mushroom(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;

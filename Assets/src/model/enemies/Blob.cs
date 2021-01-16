@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ObjectInfo(description: "Chases you.\nTelegraphs attacks.")]
 public class Blob : AIActor {
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
   public Blob(Vector2Int pos) : base(pos) {
@@ -10,8 +11,8 @@ public class Blob : AIActor {
     ai = BlobAI(this).GetEnumerator();
   }
 
-  internal override int BaseAttackDamage() {
-    return UnityEngine.Random.Range(2, 4);
+  internal override (int, int) BaseAttackDamage() {
+    return (2, 3);
   }
 
   public static IEnumerable<ActorTask> BlobAI(Actor actor) {

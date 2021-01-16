@@ -74,6 +74,7 @@ public class FancyGround : Ground {
   }
 }
 
+[ObjectInfo(description: "Blocks vision and movement.", flavorText: "This hard rock has weathered centuries of erosion.")]
 public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
   public override float BasePathfindingWeight() {
@@ -119,6 +120,7 @@ public class Downstairs : Tile {
   }
 }
 
+[ObjectInfo(description: "Plant seeds in Soil.", flavorText: "Good soil is hard to come by in the caves...")]
 public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }
 }

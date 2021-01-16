@@ -187,13 +187,14 @@ public class Actor : Body, ISteppable {
   }
 
   /// get one instance of an attack damage from this Actor
-  internal virtual int BaseAttackDamage() {
+  internal virtual (int, int) BaseAttackDamage() {
     Debug.LogWarning(this + " using base GetAttackDamage");
-    return UnityEngine.Random.Range(1, 3);
+    return (1, 2);
   }
 
   internal virtual int GetFinalAttackDamage() {
-    var baseDamage = BaseAttackDamage();
+    var (min, max) = BaseAttackDamage();
+    var baseDamage = UnityEngine.Random.Range(min, max + 1);
     var finalDamage = Modifiers.Process(this.AttackDamageModifiers(), baseDamage);
     return finalDamage;
   }
@@ -297,6 +298,21 @@ public class Actor : Body, ISteppable {
 }
 
 public enum Faction { Ally, Neutral, Enemy }
+
+public class Attack {
+  public readonly Body target;
+  public int damage;
+  public readonly Actor source;
+
+  public Attack(Actor source, Body target, int damage) {
+    this.source = source;
+    this.target = target;
+    this.damage = damage;
+  }
+
+  public Attack(Actor source, Body target) : this(source, target, source.GetFinalAttackDamage()) {
+  }
+}
 
 // /// First we create an attack "instance", and
 // /// fill it up with info.

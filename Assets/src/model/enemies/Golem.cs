@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Attacks and moves take twice as long.\nTakes 1 less damage from attacks.\nLeaves a trail of Rubble.", flavorText: "Eager to prove himself, Aurogan had managed to Will Life into the boulder on the Boulder Hill. The Council was impressed; then horrified; then flat.")]
 public class Golem : AIActor, IAttackDamageTakenModifier {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.ATTACK] = 2f,
@@ -21,9 +22,7 @@ public class Golem : AIActor, IAttackDamageTakenModifier {
     floor.Put(new Rubble(oldPos, 1));
   }
 
-  internal override int BaseAttackDamage() {
-    return UnityEngine.Random.Range(4, 6);
-  }
+  internal override (int, int) BaseAttackDamage() => (4, 5);
 
   private IEnumerable<ActorTask> AI() {
     while (true) {

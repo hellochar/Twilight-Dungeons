@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ObjectInfo(description: "Goes into its shell when it takes damage.\nPauses after each action.\nChases you.")]
 public class Snail : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.WAIT] = 1f,
@@ -53,9 +54,7 @@ public class Snail : AIActor {
     }
   }
 
-  internal override int BaseAttackDamage() {
-    return 2;
-  }
+  internal override (int, int) BaseAttackDamage() => (2, 2);
 }
 
 [ObjectInfo(spriteName: "snail-shell", flavorText: "A dinky little thing.")]

@@ -89,11 +89,11 @@ public class Player : Actor {
 
   void HandleAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
-    if (item is IDurable durable && target is Actor) {
-      GameModel.main.EnqueueEvent(durable.ReduceDurability);
-    }
     foreach (var handler in Modifiers.Of<IAttackHandler>(this)) {
       handler.OnAttack(target);
+    }
+    if (item is IDurable durable && target is Actor) {
+      GameModel.main.EnqueueEvent(durable.ReduceDurability);
     }
     if (task is FollowPathTask) {
       task = null;
@@ -117,14 +117,13 @@ public class Player : Actor {
     }
   }
 
-  internal override int BaseAttackDamage() {
+  internal override (int, int) BaseAttackDamage() {
     var item = equipment[EquipmentSlot.Weapon];
     if (item is IWeapon w) {
-      var (min, max) = w.AttackSpread;
-      return UnityEngine.Random.Range(min, max + 1);
+      return w.AttackSpread;
     } else {
       Debug.Log("Player attacking with a non-weapon in the weapon slot: " + item);
-      return 1;
+      return (1, 1);
     }
   }
 

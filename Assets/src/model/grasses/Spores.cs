@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.", flavorText: "One man's dead brother is a fungi's feast.")]
 public class Spores : Grass {
   public Spores(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
@@ -32,6 +33,7 @@ public class Spores : Grass {
   }
 }
 
+[ObjectInfo(description: "Explodes, applying the Spored Status on to adjacent creatures.", flavorText: "Massive and swollen and looking to spread its seed...")]
 internal class SporeBloat : AIActor {
   public SporeBloat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
@@ -65,7 +67,7 @@ internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCost
   public override StackingMode stackingMode => StackingMode.Max;
   public SporedStatus(int stacks) : base(stacks) {}
 
-  public override string Info() => $"You do 2 less damage!\nYou move twice as slow.\nWhen you die, Spores grow at your position.\n{stacks} turns remaining.";
+  public override string Info() => $"Deal 2 less attack damage!\nMove twice as slow.\nWhen you die, Spores grow at your position.\n{stacks} turns remaining.";
 
   public override void Step() {
     stacks--;

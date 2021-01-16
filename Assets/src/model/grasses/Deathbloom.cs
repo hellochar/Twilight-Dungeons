@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Blooms when a creature dies adjacent to this.\nOnce bloomed, walk over it to obtain a Deathbloom Flower and spawn a new Deathbloom.")]
 public class Deathbloom : Grass {
   public bool isBloomed = false;
   public event Action OnBloomed;

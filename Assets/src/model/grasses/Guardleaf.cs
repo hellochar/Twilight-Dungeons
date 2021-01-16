@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[ObjectInfo(description: "Blocks up to 5 attack damage dealt to any creature standing on the Guardleaf.")]
 public class Guardleaf : Grass {
   public int guardLeft;
   public Guardleaf(Vector2Int pos) : base(pos) {

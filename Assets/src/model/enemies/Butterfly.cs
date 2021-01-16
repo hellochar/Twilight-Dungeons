@@ -13,6 +13,7 @@ public class ItemButterfly : Item, IUsable {
   }
 }
 
+[ObjectInfo(description: "Every 5 turns, Butterfly will duplicate the Grass you're standing on to the cardinally adjacent squares.")]
 public class Butterfly : AIActor {
 
   public Butterfly(Vector2Int pos) : base(pos) {

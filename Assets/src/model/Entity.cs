@@ -24,6 +24,8 @@ public abstract class Entity {
   public ItemOnGround item => floor.items[pos];
   public Body body => floor.bodies[pos];
   public Actor actor => body as Actor;
+  public virtual string displayName => Util.WithSpaces(GetType().Name);
+  public virtual string description => ObjectInfo.GetDescriptionFor(this);
 
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set

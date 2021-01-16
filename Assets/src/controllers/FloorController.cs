@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// Adds and removes Tile prefabs to match the state of a Floor variable.
 public class FloorController : MonoBehaviour, IPointerClickHandler {
@@ -107,6 +108,69 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     }
   }
 
+  private InputHold hold;
+  void Update() {
+    if (Input.GetMouseButtonDown(0)) {
+      hold = new InputHold(Time.time);
+    } else if (Input.GetMouseButton(0) && (hold?.ShouldTrigger(Time.time) ?? false)) {
+      hold.triggered = true;
+      Handheld.Vibrate();
+      Debug.Log("Triggered!");
+      ShowObjectInfoPopupOverMousePosition();
+    } else if (Input.GetMouseButtonUp(0)) {
+      hold = null;
+    }
+  }
+
+  void ShowObjectInfoPopupOverMousePosition() {
+    var mousePosition = Input.mousePosition;
+    var worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
+    var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+
+    if (!floor.InBounds(pos)) {
+      return;
+    }
+
+    var tile = floor.tiles[pos];
+    var body = tile.body;
+    var itemOnGround = tile.item;
+    var grass = tile.grass;
+
+    var entityList = new Entity[] { body, itemOnGround, grass, tile };
+    
+    var entity = entityList.Where((e) => e != null && e.isVisible).FirstOrDefault();
+
+    if (entity != null) {
+      ShowPopupFor(entity);
+    }
+  }
+
+  public void ShowPopupFor(Entity entity) {
+    string description = entity.description + "\n\n";
+    if (entity is Body b) {
+      if (b is Actor a) {
+        var (min, max) = a.BaseAttackDamage();
+        description += $"{min} - {max} damage.\n";
+      }
+      description += "Max HP: " + b.maxHp + "\n";
+    }
+    var entityGameObject = gameObjectMap[entity];
+
+    var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
+    var sprite = Instantiate(spritePrefab);
+    var image = sprite.GetComponentInChildren<Image>();
+    image.sprite = entityGameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+    image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
+
+    Popups.Create(
+      title: entity.displayName,
+      info: description.Trim(),
+      flavor: ObjectInfo.GetFlavorTextFor(entity),
+      sprite: sprite
+    );
+    Destroy(sprite);
+  }
+
   public void OnPointerClick(PointerEventData eventData) {
     if (!CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
       var worldPos = eventData.pointerCurrentRaycast.worldPosition;
@@ -148,4 +212,18 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     handler = null;
     return false;
   }
+}
+
+class InputHold {
+  public const float THRESHOLD = 0.5f;
+  public readonly float time;
+  public readonly float threshold;
+  public bool triggered = false;
+
+  public InputHold(float time, float threshold = THRESHOLD) {
+    this.time = time;
+    this.threshold = threshold;
+  }
+
+  public bool ShouldTrigger(float t) => !triggered && (t - time > threshold);
 }

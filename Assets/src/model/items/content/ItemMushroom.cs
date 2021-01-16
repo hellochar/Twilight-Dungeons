@@ -28,7 +28,7 @@ class ItemMushroom : Item, IStackable, IEdible {
     stacks = 0;
   }
 
-  internal override string GetStats() => $"Recover 1% hunger per mushroom ({stacks}%).";
+  internal override string GetStats() => $"Get {stacks} stacks of the Pumped Up status.";
 }
 
 [ObjectInfo("mushroom", "Yummy")]

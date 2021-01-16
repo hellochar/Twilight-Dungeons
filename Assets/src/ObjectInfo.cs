@@ -5,7 +5,8 @@ using UnityEngine;
 public class ObjectInfo {
   private static ObjectInfo DEFAULT = new ObjectInfo {
     spriteName = "colored_transparent_packed_1046",
-    flavorText = "Missing Item info!"
+    flavorText = "",
+    description = ""
   };
 
   private static readonly Dictionary<Type, ObjectInfo> Infos = new Dictionary<Type, ObjectInfo> {
@@ -42,10 +43,6 @@ public class ObjectInfo {
       spriteName = "hanging-vines-bottom",
       flavorText = "Just the sound of it whipping through the air makes you a little nervous."
     },
-    [typeof(SoftGrassStatus)] = new ObjectInfo {
-      spriteName = "colored_transparent_packed_95",
-      flavorText = "Feels nice on your feet."
-    },
     [typeof(WebStatus)] = new ObjectInfo {
       spriteName = "web",
       flavorText = "Sticky, gooey, and warm. Eeeew."
@@ -76,7 +73,8 @@ public class ObjectInfo {
         var attribute = (ObjectInfoAttribute) objectInfoArray[0];
         Infos[type] = new ObjectInfo {
           spriteName = attribute.spriteName,
-          flavorText = attribute.flavorText
+          flavorText = attribute.flavorText,
+          description = attribute.description
         };
       } else {
         Infos[type] = DEFAULT;
@@ -92,10 +90,15 @@ public class ObjectInfo {
   public static string GetFlavorTextFor(object item) {
     return InfoFor(item).flavorText;
   }
+  
+  public static string GetDescriptionFor(object item) {
+    return InfoFor(item).description;
+  }
 
   public bool showOnPlayer = true;
   public string spriteName;
   public string flavorText;
+  public string description;
   private Sprite _sprite;
   public Sprite sprite {
     get {
@@ -116,10 +119,12 @@ public class ObjectInfo {
 
 public class ObjectInfoAttribute : Attribute {
   public string spriteName { get; }
-  public string flavorText {get; }
+  public string flavorText { get; }
+  public string description { get; }
 
-  public ObjectInfoAttribute(string spriteName, string flavorText) {
+  public ObjectInfoAttribute(string spriteName = null, string flavorText = "", string description = "") {
     this.spriteName = spriteName;
     this.flavorText = flavorText;
+    this.description = description;
   }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -33,7 +34,7 @@ public class Kingshroom : Plant {
 }
 
 [ObjectInfo("kingshroom", "")]
-internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IActionPerformedHandler, IModifierProvider {
+internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IActionPerformedHandler, IModifierProvider, IStepModifier {
   public override EquipmentSlot slot => EquipmentSlot.Body;
   public ItemBodyMycelium() {
     durability = maxDurability;
@@ -56,8 +57,6 @@ internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IAct
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
       this.ReduceDurability();
-    } else if (final.Type == ActionType.WAIT) {
-      this.IncreaseDurability();
     }
   }
 
@@ -71,7 +70,16 @@ internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IAct
     });
   }
 
-  internal override string GetStats() => "Take 2 less attack damage.\nDeal 1 less attack damage.\nMoving reduces durability.\nWaiting increases durability.\nKilling an enemy creates a Mushroom in its place.";
+  public object Modify(object input) {
+    var sporedStatus = player.statuses.FindOfType<SporedStatus>();
+    if (sporedStatus != null) {
+      sporedStatus.Remove();
+      this.IncreaseDurability(sporedStatus.stacks);
+    }
+    return input;
+  }
+
+  internal override string GetStats() => "Take 2 less attack damage.\nDeal 1 less attack damage.\nMoving reduces durability.\nConsumes the Spored status to increase Durability.\nKilling an enemy creates a Mushroom in its place.";
 
   public override List<MethodInfo> GetAvailableMethods(Player actor) {
     var methods = base.GetAvailableMethods(actor);
@@ -150,6 +158,11 @@ class ThickMushroom : AIActor {
     hp = baseMaxHp = 3;
     ClearTasks();
     ai = AI().GetEnumerator();
+    OnDeath += HandleDeath;
+  }
+
+  private void HandleDeath() {
+    ReleaseSpores();
   }
 
   public IEnumerable<ActorTask> AI() {
@@ -161,7 +174,7 @@ class ThickMushroom : AIActor {
       });
       yield return new WaitTask(this, 1);
       yield return new GenericTask(this, (_) => {
-        ReleaseSpores();
+        Kill();
       });
     }
   }
@@ -170,6 +183,5 @@ class ThickMushroom : AIActor {
     foreach (var actor in floor.AdjacentActors(pos).Where((actor) => actor.faction == Faction.Enemy)) {
       actor.TakeDamage(1);
     }
-    Kill();
   }
 }

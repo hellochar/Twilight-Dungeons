@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+[ObjectInfo(description: "Walk over it to harvest.")]
 public class Agave : Grass {
   public static bool CanOccupy(Tile tile) => Mushroom.CanOccupy(tile);
   public Agave(Vector2Int pos) : base(pos) {
@@ -64,7 +65,7 @@ class ItemAgave : Item, IStackable {
     return methods;
   }
 
-  internal override string GetStats() => $"Gather {stacksMax} stacks to Refine into Honey.";
+  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey.";
 }
 
 [ObjectInfo("roguelikeSheet_transparent_647", "")]

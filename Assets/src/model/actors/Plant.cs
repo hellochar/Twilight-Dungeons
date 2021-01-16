@@ -38,11 +38,12 @@ public abstract class Plant : Body, ISteppable {
       timeNextAction = GameModel.main.time + _stage.StepTime;
     }
   }
-  public string displayName => $"{Util.WithSpaces(GetType().Name)} ({stage.name})";
+  public override string displayName => $"{base.displayName} ({stage.name})";
 
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     this.stage = stage;
+    this.hp = this.baseMaxHp = 1;
     this.timeNextAction = this.timeCreated + stage.StepTime;
   }
 

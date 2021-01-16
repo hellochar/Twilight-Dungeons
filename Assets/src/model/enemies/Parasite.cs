@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Moves twice per turn. When Parasite deals damage, it applies the Infested Status and dies.", flavorText: "")]
 public class Parasite : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
@@ -23,9 +24,7 @@ public class Parasite : AIActor {
     }
   }
 
-  internal override int BaseAttackDamage() {
-    return 1;
-  }
+  internal override (int, int) BaseAttackDamage() => (1, 1);
 
   private IEnumerable<ActorTask> AI() {
     while (true) {
@@ -87,7 +86,8 @@ public class ParasiteStatus : StackingStatus {
       tiles.Shuffle();
       foreach (var tile in tiles.Take(2)) {
         var p = new Parasite(tile.pos);
-        p.ClearTasks();
+        var sleepTask = p.task as SleepTask;
+        sleepTask.wakeUpNextTurn = true;
         floor.Put(p);
       }
     });

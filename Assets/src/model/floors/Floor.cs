@@ -153,6 +153,10 @@ public class Floor {
     lastStepTime = time;
   }
 
+  internal IEnumerable<Body> AdjacentBodies(Vector2Int pos) {
+    return GetAdjacentTiles(pos).Select(x => x.body).Where(x => x != null);
+  }
+
   internal IEnumerable<Actor> AdjacentActors(Vector2Int pos) {
     return GetAdjacentTiles(pos).Select(x => x.actor).Where(x => x != null);
   }

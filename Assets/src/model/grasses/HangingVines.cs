@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ObjectInfo(description: "Constricts any creature that walks into its hook.\nYou may destroy the Hanging Vines by tapping the stem.")]
 public class HangingVines : Grass {
   private Inventory inventory = new Inventory(new ItemVineWhip(1));
   public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
@@ -81,7 +82,7 @@ public class BoundStatus : StackingStatus, IBaseActionModifier {
     stacks = 3;
   }
 
-  public override string Info() => $"You must break free of vines before you can move or attack!\n{(int)(stacks / 3.0f * 100)}% bound.";
+  public override string Info() => $"You must break free of vines before you can move or attack!\n{stacks} stacks left.";
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {

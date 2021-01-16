@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[ObjectInfo(description: "Moving five times on Soft Grass gives you one Free Move.")]
 public class SoftGrass : Grass {
   public SoftGrass(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
@@ -22,7 +23,7 @@ public class SoftGrass : Grass {
     }
   }
 }
-
+[ObjectInfo(spriteName: "colored_transparent_packed_95", flavorText: "Feels nice on your feet.")]
 public class SoftGrassStatus : StackingStatus, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Ignore;
   public SoftGrassStatus(int stacks) : base(stacks) {}

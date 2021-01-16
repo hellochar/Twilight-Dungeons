@@ -8,7 +8,7 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
   private int? maxTurns;
   private readonly bool isDeepSleep;
 
-  public bool wakeUpNextTurn { get; protected set; }
+  public bool wakeUpNextTurn { get; set; }
   public SleepTask(Actor actor, int? maxTurns = null, bool isDeepSleep = false) : base(actor) {
     this.maxTurns = maxTurns;
     this.isDeepSleep = isDeepSleep;

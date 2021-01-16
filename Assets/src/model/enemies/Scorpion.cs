@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[ObjectInfo(description: "Chases you.\nAttacks and moves twice.")]
 public class Scorpion : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
@@ -14,7 +15,5 @@ public class Scorpion : AIActor {
     ai = AIs.JackalAI(this).GetEnumerator();
   }
 
-  internal override int BaseAttackDamage() {
-    return 1;
-  }
+  internal override (int, int) BaseAttackDamage() => (1, 1);
 }

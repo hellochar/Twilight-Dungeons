@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[ObjectInfo(description: "Every four turns, spawn a Hydra Head next to the creature closest to it (range 4).\nOn death, all Hydra Heads die as well.\nDoes not attack or move.", flavorText: "Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.")]
 public class HydraHeart : AIActor, IBaseActionModifier {
   public static int spawnRange = 4;
-  public static bool IsTarget(Actor a) => !(a is HydraHead) && !(a is HydraHeart);
+  public static bool IsTarget(Body b) => !(b is HydraHead) && !(b is HydraHeart);
   private List<HydraHead> heads = new List<HydraHead>();
   public HydraHeart(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
@@ -50,9 +51,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
     });
   }
 
-  internal override int BaseAttackDamage() {
-    return UnityEngine.Random.Range(1, 3);
-  }
+  internal override (int, int) BaseAttackDamage() => (0, 0);
 
   public BaseAction Modify(BaseAction input) {
     // cannot move
@@ -63,6 +62,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   }
 }
 
+[ObjectInfo(description: "Attacks anything adjacent to it.\nStationary.", flavorText: "A fleshy tube with a gaping jaw at the end, grasping at any food nearby.")]
 public class HydraHead : AIActor, IBaseActionModifier {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.ATTACK] = 2f,
@@ -75,14 +75,12 @@ public class HydraHead : AIActor, IBaseActionModifier {
     ai = AI().GetEnumerator();
   }
 
-  internal override int BaseAttackDamage() {
-    return UnityEngine.Random.Range(1, 3);
-  }
+  internal override (int, int) BaseAttackDamage() => (1, 2);
 
   private IEnumerable<ActorTask> AI() {
     while (true) {
       var potentialTargets = floor
-        .AdjacentActors(pos)
+        .AdjacentBodies(pos)
         .Where(HydraHeart.IsTarget);
       if (potentialTargets.Any()) {
         var target = Util.RandomPick(potentialTargets);

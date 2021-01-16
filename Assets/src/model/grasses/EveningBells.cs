@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[ObjectInfo(description: "Any non-player Creature walking into the Evening Bells falls into Deep Sleep for 3 turns. This consumes the Evening Bells.")]
 public class EveningBells : Grass {
   public readonly float angle;
 

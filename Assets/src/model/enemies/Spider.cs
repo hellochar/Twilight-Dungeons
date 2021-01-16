@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 // move slow, but cover ground with webs
+[ObjectInfo(description: "Creates webs underneath itself.\nPrioritizes expanding its territory.\nAttacks deal no damage but poison you.\nAttacks anyone adjacent to it.\nOccasionally drops Spider Sandals.")]
 public class Spider : AIActor {
 
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
@@ -70,9 +71,7 @@ public class Spider : AIActor {
     }
   }
 
-  internal override int BaseAttackDamage() {
-    return 0;
-  }
+  internal override (int, int) BaseAttackDamage() => (0, 0);
 }
 
 internal class Web : Grass {

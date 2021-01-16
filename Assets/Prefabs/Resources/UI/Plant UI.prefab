@@ -720,7 +720,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Seed
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35df85bb9506f5e4f942a14a5fc6b7c1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 1292428517294966019, guid: 35df85bb9506f5e4f942a14a5fc6b7c1,
     type: 2}
   m_fontSharedMaterials: []
@@ -785,7 +785,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &3359600042529701271
@@ -855,7 +855,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Water
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35df85bb9506f5e4f942a14a5fc6b7c1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 1292428517294966019, guid: 35df85bb9506f5e4f942a14a5fc6b7c1,
     type: 2}
   m_fontSharedMaterials: []
@@ -920,7 +920,7 @@ MonoBehaviour:
   m_margin: {x: 10, y: 0, z: 10, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &3523135716256034520
@@ -990,7 +990,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Young
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35df85bb9506f5e4f942a14a5fc6b7c1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 1292428517294966019, guid: 35df85bb9506f5e4f942a14a5fc6b7c1,
     type: 2}
   m_fontSharedMaterials: []
@@ -1055,7 +1055,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &3835734716541415482
@@ -1627,7 +1627,7 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35df85bb9506f5e4f942a14a5fc6b7c1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 1292428517294966019, guid: 35df85bb9506f5e4f942a14a5fc6b7c1,
     type: 2}
   m_fontSharedMaterials: []
@@ -1692,7 +1692,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &6039118729683571022
@@ -2335,7 +2335,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Water:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35df85bb9506f5e4f942a14a5fc6b7c1, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 1292428517294966019, guid: 35df85bb9506f5e4f942a14a5fc6b7c1,
     type: 2}
   m_fontSharedMaterials: []
@@ -2400,7 +2400,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &8949905954016034236
@@ -2738,6 +2738,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 656842363237274458, guid: 4970f1bdd92e69447ab57f88ea600341,
         type: 3}
+      propertyPath: m_textAlignment
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 656842363237274458, guid: 4970f1bdd92e69447ab57f88ea600341,
+        type: 3}
       propertyPath: m_textInfo.lineCount
       value: 1
       objectReference: {fileID: 0}
@@ -2981,6 +2986,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8857205312271644549}
     m_Modifications:
+    - target: {fileID: 656842363237274458, guid: 4970f1bdd92e69447ab57f88ea600341,
+        type: 3}
+      propertyPath: m_textAlignment
+      value: 65535
+      objectReference: {fileID: 0}
     - target: {fileID: 656842363237274458, guid: 4970f1bdd92e69447ab57f88ea600341,
         type: 3}
       propertyPath: m_textInfo.lineCount

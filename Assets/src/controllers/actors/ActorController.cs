@@ -6,7 +6,6 @@ public class ActorController : BodyController {
   public Actor actor => (Actor) body;
   protected GameObject spriteObject;
   protected Animator animator;
-  // private GameObject timeNextActionText;
 
   // Start is called before the first frame update
   public override void Start() {
@@ -19,11 +18,14 @@ public class ActorController : BodyController {
     spriteObject = transform.Find("Sprite")?.gameObject;
     animator = spriteObject?.GetComponent<Animator>();
 
+    actor.OnDeath += HandleDeath;
+
     actor.OnAttackGround += HandleAttackGround;
 
     actor.OnSetTask += HandleSetTask;
     HandleSetTask(actor.task);
 
+    actor.OnMove += HandleMove;
     actor.OnActionPerformed += HandleActionPerformed;
 
     actor.statuses.OnAdded += HandleStatusAdded;
@@ -36,6 +38,14 @@ public class ActorController : BodyController {
     // timeNextActionText.GetComponent<TMPro.TMP_Text>().text = actor.timeNextAction.ToString();
 
     Update();
+  }
+
+  private void HandleMove(Vector2Int arg1, Vector2Int arg2) {
+    AudioClipStore.main.move.PlayAtPoint(transform.position, 0.5f);
+  }
+
+  private void HandleDeath() {
+    AudioClipStore.main.death.PlayAtPoint(transform.position);
   }
 
   // Update is called once per frame
@@ -94,6 +104,7 @@ public class ActorController : BodyController {
       animator?.SetTrigger("Struggled");
     } else if (action is AttackBaseAction attack) {
       PlayAttackAnimation(attack.target.pos);
+      AudioClipStore.main.attack.PlayAtPoint(transform.position);
     } else if (action is AttackGroundBaseAction attackGround) {
       PlayAttackAnimation(attackGround.targetPosition);
     } else if (action is GenericBaseAction g) {
@@ -101,6 +112,7 @@ public class ActorController : BodyController {
     }
   }
 
+  /// also triggers audio
   private void PlayAttackAnimation(Vector2Int pos) {
     if (spriteObject != null) {
       // go -1 to be "in front"
@@ -112,6 +124,11 @@ public class ActorController : BodyController {
   private void HandleAttackGround(Vector2Int pos) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
+    if (actor.floor.bodies[pos] == null) {
+      AudioClipStore.main.attackMiss.PlayAtPoint(transform.position);
+    } else {
+      AudioClipStore.main.attack.PlayAtPoint(transform.position);
+    }
   }
 
   public override void PointerClick(PointerEventData pointerEventData) {

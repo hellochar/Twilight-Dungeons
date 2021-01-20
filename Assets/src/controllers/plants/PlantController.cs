@@ -72,6 +72,7 @@ public class PlantController : BodyController {
   }
 
   public void Harvest(int choiceIndex) {
+    AudioClipStore.main.plantHarvest.Play(0.1f);
     popupOpen = false;
     plant.Harvest(choiceIndex);
   }

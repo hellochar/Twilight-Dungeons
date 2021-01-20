@@ -6,6 +6,40 @@ using UnityEngine.EventSystems;
 public class PlayerController : ActorController {
   Player player => (Player) actor;
 
+  public override void Start() {
+    base.Start();
+    player.OnHeal += HandleHeal;
+    player.inventory.OnItemAdded += HandleInventoryItemAdded;
+    player.equipment.OnItemAdded += HandleEquipmentItemAdded;
+    player.equipment.OnItemRemoved += HandleItemRemoved;
+    GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
+  }
+
+  private void HandleInventoryItemAdded(Item arg1, Entity arg2) {
+    AudioClipStore.main.playerPickupItem.PlayAtPoint(transform.position);
+  }
+
+  private void HandleHeal(int heal, int newHp) {
+    AudioClipStore.main.playerHeal.PlayAtPoint(transform.position);
+  }
+
+  private void HandleItemRemoved(Item obj) {
+    PlayEquipSound();
+  }
+
+  private void HandleEquipmentItemAdded(Item arg1, Entity arg2) {
+    PlayEquipSound();
+  }
+
+  private void HandlePlayerChangeFloor(Floor arg1, Floor arg2) {
+    AudioClipStore.main.playerTakeStairs.Play(1);
+  }
+
+
+  private void PlayEquipSound() {
+    AudioClipStore.main.playerEquip.PlayAtPoint(transform.position);
+  }
+
   public override void Update() {
     if (Input.GetKeyDown(KeyCode.V)) {
       player.SetTasks(new SleepTask(player));
@@ -26,6 +60,9 @@ public class PlayerController : ActorController {
     if (action is WaitBaseAction) {
       var waitPrefab = Resources.Load<GameObject>("Effects/Wait");
       var wait = Instantiate(waitPrefab, new Vector3(actor.pos.x, actor.pos.y + 0.9f, 0), Quaternion.identity);
+      AudioClipStore.main.playerWait.PlayAtPoint(transform.position);
+    } else if (action is GenericBaseAction) {
+      AudioClipStore.main.playerGeneric.PlayAtPoint(transform.position);
     }
     base.HandleActionPerformed(action, initial);
   }

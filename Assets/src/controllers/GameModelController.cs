@@ -28,6 +28,8 @@ public class GameModelController : MonoBehaviour {
     Player player = model.player;
     player.OnSetTask += HandleSetPlayerTask;
     model.turnManager.OnPlayersChoice += HandlePlayersChoice;
+    model.turnManager.OnPlayerCannotPerform += HandlePlayerCannotPerform;
+    // AudioClipStore.main.gameStart.Play();
   }
 
   private Coroutine gameLoop;
@@ -39,6 +41,12 @@ public class GameModelController : MonoBehaviour {
 
   private void HandlePlayersChoice() {
     gameLoop = null;
+  }
+
+  private void HandlePlayerCannotPerform(CannotPerformActionException e) {
+    Debug.LogWarning(e.Message);
+    Messages.Create(e.Message);
+    AudioClipStore.main.uiError.Play();
   }
 
   private FloorController GetOrCreateFloorController(Floor floor) {

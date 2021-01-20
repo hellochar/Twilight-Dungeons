@@ -62,6 +62,7 @@ public class Body : Entity, IModifierProvider {
   public event Action<Vector2Int, Vector2Int> OnMoveFailed;
   public event Action<int, int, Actor> OnTakeAttackDamage;
   public event Action<int> OnTakeAnyDamage;
+  /// <summary>amount, new hp</summary>
   public event Action<int, int> OnHeal;
   /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
   public event Action<int, Actor> OnAttacked;

@@ -31,6 +31,7 @@ public class TurnManager {
   public event Action OnPlayersChoice;
   public event Action<ISteppable> OnStep;
   public event Action OnTimePassed;
+  public event Action<CannotPerformActionException> OnPlayerCannotPerform;
   private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
   public TurnManager(GameModel model) {
     this.model = model;
@@ -144,8 +145,7 @@ public class TurnManager {
         }
       } catch (CannotPerformActionException e) {
         if (entity == model.player) {
-          Debug.LogWarning(e.Message);
-          Messages.Create(e.Message);
+          OnPlayerCannotPerform?.Invoke(e);
           break;
         } else {
           // TODO make this better

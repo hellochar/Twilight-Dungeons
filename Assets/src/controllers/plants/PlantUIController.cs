@@ -16,6 +16,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   private Sprite waterCircleFilled;
 
   void Start() {
+    AudioClipStore.main.popupOpen.Play(0.2f);
     uiName = transform.Find("Frame/Name").GetComponent<TMP_Text>();
     uiInfo = transform.Find("Frame/Info").GetComponent<TMP_Text>();
 
@@ -90,5 +91,9 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       plantController.popupOpen = false;
       return;
     }
+  }
+
+  void OnDestroy() {
+    AudioClipStore.main.popupClose.Play(0.2f);
   }
 }

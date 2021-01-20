@@ -23,6 +23,8 @@ public class GameModel {
   }
   public Floor currentFloor { get => floors[activeFloorIndex]; }
 
+  public event Action<Floor, Floor> OnPlayerChangeFloor;
+
   /// Events to process in response to state changes
   private List<Action> eventQueue = new List<Action>();
 
@@ -155,6 +157,7 @@ public class GameModel {
     player.pos = newPlayerPosition;
     newFloor.CatchUpStep(this.time);
     newFloor.Put(player);
+    OnPlayerChangeFloor?.Invoke(oldFloor, newFloor);
   }
 
   internal void PutActorAt(Actor actor, Floor floor, Vector2Int pos) {

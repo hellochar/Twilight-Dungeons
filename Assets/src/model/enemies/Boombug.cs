@@ -81,7 +81,7 @@ public class BoombugCorpse : Actor {
       OnExploded?.Invoke();
       this.AttackGround(tile.pos);
     }
-    Kill();
+    GameModel.main.EnqueueEvent(Kill);
   }
 
   internal override (int, int) BaseAttackDamage() {

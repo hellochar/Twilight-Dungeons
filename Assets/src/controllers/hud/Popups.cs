@@ -14,8 +14,10 @@ public static class Popups {
     Transform parent = null,
     List<GameObject> buttons = null
   ) {
-    GameObject popup = CreateBase(parent);
+    GameObject popup = InstantiatePopup(parent);
+    var controller = popup.GetComponent<PopupController>();
 
+    /// TODO refactor into a Controller class
     var titleText = popup.transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();
     titleText.text = title;
 
@@ -44,30 +46,19 @@ public static class Popups {
       // if there's no actions, clicking the frame itself will toggle the popup
       var frame = popup.transform.Find("Frame").gameObject;
       var frameButton = frame.AddComponent<Button>();
-      frameButton.onClick.AddListener(() => UnityEngine.Object.Destroy(popup));
+      frameButton.onClick.AddListener(controller.Close);
     }
 
     return popup;
   }
 
-  private static GameObject CreateBase(Transform parent) {
+  private static GameObject InstantiatePopup(Transform parent) {
     if (PopupPrefab == null) {
       PopupPrefab = Resources.Load<GameObject>("UI/Popup");
     }
     if (parent == null) {
       parent = GameObject.Find("Canvas").transform;
     }
-    var popup = UnityEngine.Object.Instantiate(PopupPrefab, new Vector3(), Quaternion.identity, parent);
-    /// TODO refactor into a Controller class
-
-    // fill up the parent
-    var rectTransform = popup.GetComponent<RectTransform>();
-    rectTransform.offsetMax = new Vector2();
-    rectTransform.offsetMin = new Vector2();
-
-    // destroy popup when overlay is clicked
-    var overlayButton = popup.transform.Find("Overlay").GetComponent<Button>();
-    overlayButton.onClick.AddListener(() => UnityEngine.Object.Destroy(popup));
-    return popup;
+    return UnityEngine.Object.Instantiate(PopupPrefab, new Vector3(), Quaternion.identity, parent);
   }
 }

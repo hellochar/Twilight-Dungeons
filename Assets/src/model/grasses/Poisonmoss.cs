@@ -14,15 +14,18 @@ class Poisonmoss : Grass, ISteppable {
       OnNoteworthyAction();
       actor.statuses.Add(new PoisonedStatus(1));
     }
-    var tile = Util.RandomPick(floor
-      .GetAdjacentTiles(pos)
-      /// take over non-poisonmoss tiles!
-      .Where(t => CanOccupy(t) && t.grass != null && !(t.grass is Poisonmoss))
-    );
-    if (tile != null) {
-      OnNoteworthyAction();
-      tile.grass.Kill();
-      floor.Put(new Poisonmoss(tile.pos));
+    // every 3 turns, grow
+    if (age % 3 == 2) {
+      var tile = Util.RandomPick(floor
+        .GetAdjacentTiles(pos)
+        /// take over non-poisonmoss tiles!
+        .Where(t => CanOccupy(t) && t.grass != null && !(t.grass is Poisonmoss))
+      );
+      if (tile != null) {
+        OnNoteworthyAction();
+        tile.grass.Kill();
+        floor.Put(new Poisonmoss(tile.pos));
+      }
     }
     return 1;
   }

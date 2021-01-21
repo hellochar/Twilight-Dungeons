@@ -44,8 +44,7 @@ public static class ItemExtensions {
   public static string GetStatsFull(this Item item) {
     var text = item.GetStats();
     if (item is IWeapon w) {
-      var (min, max) = w.AttackSpread;
-      text += $"\n{min} - {max} damage.";
+      text += $"\n{Util.DescribeDamageSpread(w.AttackSpread)}";
     }
     if (item is IDurable d) {
       text += $"\nDurability: {d.durability}/{d.maxDurability}.";

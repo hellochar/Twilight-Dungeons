@@ -113,4 +113,13 @@ public static class Util {
   public static T ClampGet<T>(int index, params T[] values) {
     return values[Mathf.Clamp(index, 0, values.Length - 1)];
   }
+
+  public static string DescribeDamageSpread((int, int) spread) {
+    var (min, max) = spread;
+    if (min == max) {
+      return $"{min} damage.";
+    } else {
+      return $"{min} - {max} damage.";
+    }
+  }
 }

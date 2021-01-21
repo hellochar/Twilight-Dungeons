@@ -77,11 +77,18 @@ public class BoombugCorpse : Actor {
 
   void Explode() {
     exploded = true;
+    OnExploded?.Invoke();
     foreach (var tile in floor.GetAdjacentTiles(pos)) {
-      OnExploded?.Invoke();
-      this.AttackGround(tile.pos);
+      if (tile != this.tile) {
+        if (tile.actor != null && tile.actor != this) {
+          this.Attack(tile.actor);
+        }
+        if (actor == null && tile.grass != null) {
+          tile.grass.Kill();
+        }
+      }
     }
-    GameModel.main.EnqueueEvent(Kill);
+    Kill();
   }
 
   internal override (int, int) BaseAttackDamage() {

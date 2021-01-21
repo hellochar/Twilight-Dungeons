@@ -149,10 +149,9 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     string description = entity.description + "\n\n";
     if (entity is Body b) {
       if (b is Actor a) {
-        var (min, max) = a.BaseAttackDamage();
-        description += $"{min} - {max} damage.\n";
+        description += $"{Util.DescribeDamageSpread(a.BaseAttackDamage())}\n";
       }
-      description += "Max HP: " + b.maxHp + "\n";
+      description += $"Max HP: {b.maxHp}\n";
     }
     var entityGameObject = gameObjectMap[entity];
 

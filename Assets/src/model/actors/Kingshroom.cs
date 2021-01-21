@@ -14,7 +14,7 @@ public class Kingshroom : Plant {
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Kingshroom)),
         new ItemSeed(typeof(Kingshroom)),
-        new ItemMushroom(20)
+        new ItemMushroom(25)
       ));
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Kingshroom)),

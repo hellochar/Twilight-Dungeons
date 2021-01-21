@@ -4,16 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
-// move slow, but cover ground with webs
-[ObjectInfo(description: "Creates webs underneath itself.\nPrioritizes expanding its territory.\nAttacks deal no damage but poison you.\nAttacks anyone adjacent to it.\nOccasionally drops Spider Sandals.")]
+[ObjectInfo(description: "Spins webs underneath itself.\nPrioritizes expanding its territory.\nAttacks deal no damage but apply Poison.\nAttacks anyone adjacent to it.")]
 public class Spider : AIActor {
-
-  public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
-    [ActionType.MOVE] = 1,
-  };
-
-  protected override ActionCosts actionCosts => Spider.StaticActionCosts;
-
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 5;
@@ -50,18 +42,6 @@ public class Spider : AIActor {
       } else {
         yield return new MoveToTargetTask(this, Util.RandomPick(webbedAdjacentTiles).pos);
       }
-
-      // var bag = new WeightedRandomBag<Tile>();
-      // foreach (var t in nonWebbedAdjacentTiles) {
-      //   bag.Add(3, t);
-      // }
-      // foreach (var t in webbedAdjacentTiles) {
-      //   // prefer to walk on their web 1 to 3
-      //   bag.Add(1, t);
-      // }
-      // var nextTile = bag.GetRandom();
-
-      // yield return new MoveToTargetTask(this, nextTile.pos);
     }
   }
 
@@ -153,14 +133,12 @@ internal class ItemSpiderSandals : EquippableItem, IStackable {
     }
   }
 
-  internal override string GetStats() => "Move faster on webs.\nLeave a trail of webs when you move.";
+  internal override string GetStats() => "Take no penalty from webs.\nLeave a trail of webs when you move.";
 }
 
 internal class WebStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
-    if (Web.IsActorNice(actor)) {
-      costs[ActionType.MOVE] /= 2;
-    } else {
+    if (!Web.IsActorNice(actor)) {
       costs[ActionType.MOVE] *= 2;
     }
     return costs;
@@ -177,7 +155,7 @@ internal class WebStatus : Status, IActionCostModifier {
 
   public override bool Consume(Status other) => true;
 
-  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! Move twice as fast through webs." : "Move twice as slow through webs!";
+  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Move twice as slow through webs!";
 }
 
 /// stacks = turns

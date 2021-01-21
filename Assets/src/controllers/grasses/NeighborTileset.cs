@@ -92,7 +92,7 @@ public class NeighborTileset {
   public static void ApplyNeighborAwareTile(Water water, SpriteRenderer spriteRenderer) {
     var chunk = new int[3, 3];
     var floor = water.floor;
-    Util.FillChunkCenteredAt(floor, water.pos.x, water.pos.y, ref chunk, (pos) => floor.grasses[pos] is Water ? 1 : 0, 0);
+    Util.FillChunkCenteredAt(floor, water.pos.x, water.pos.y, ref chunk, (pos) => floor.tiles[pos] is Water ? 1 : 0, 0);
     if (NeighborTileset.WaterTiles.TryGetSpriteAndRotationFor(chunk, out var tuple)) {
       var (sprite, rotation) = tuple;
       spriteRenderer.sprite = sprite;

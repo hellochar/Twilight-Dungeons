@@ -18,6 +18,15 @@ public abstract class Tile : Entity {
 
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;
+    OnEnterFloor += HandleEnterFloor;
+  }
+
+  private void HandleEnterFloor() {
+    if (GameModel.main?.player != null) {
+      if (floor == GameModel.main.player.floor && floor.TestVisibility(GameModel.main.player.pos, pos)) {
+        visibility = TileVisiblity.Visible;
+      }
+    }
   }
 
   /// 0.0 means unwalkable.
@@ -123,4 +132,15 @@ public class Downstairs : Tile {
 [ObjectInfo(description: "Plant seeds in Soil.", flavorText: "Good soil is hard to come by in the caves...")]
 public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }
+}
+
+[ObjectInfo(description: "Tap to collect. Planting a seed costs 1 water.", flavorText: "Water water everywhere...")]
+public class Water : Tile {
+  public Water(Vector2Int pos) : base(pos) {
+  }
+
+  public void Collect(Player player) {
+    player.water++;
+    floor.Put(new Ground(pos));
+  }
 }

@@ -11,7 +11,7 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
   private int sortingLayerDefault;
 
   // Start is called before the first frame update
-  void Start() {
+  public virtual void Start() {
     sortingLayerStatuses = SortingLayer.NameToID("Statuses");
     sortingLayerDefault = SortingLayer.NameToID("Default");
     this.renderers = GetComponentsInChildren<SpriteRenderer>();

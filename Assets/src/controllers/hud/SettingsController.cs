@@ -43,7 +43,6 @@ public struct Settings {
     try {
       if (PlayerPrefs.HasKey("settings")) {
         var savedJson = PlayerPrefs.GetString("settings");
-        Debug.Log("Retrieved " + savedJson);
         var settings = JsonUtility.FromJson<Settings>(savedJson);
         return settings;
       }
@@ -58,7 +57,6 @@ public struct Settings {
   public static void Set(Settings newSettings) {
     m_main = newSettings;
     var json = JsonUtility.ToJson(m_main);
-    Debug.Log(json);
     PlayerPrefs.SetString("settings", json);
     OnChanged?.Invoke();
   }

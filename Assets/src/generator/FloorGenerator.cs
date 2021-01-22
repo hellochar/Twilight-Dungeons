@@ -12,23 +12,25 @@ public class FloorGenerator {
 
   public Floor[] generateAllFloors() {
     var floors = new List<Floor>();
-    EncounterGroup = EncounterGroup.Everything();
+    EncounterGroup = EncounterGroup.EarlyGame();
+    floors.Add(generateRestFloor(0));
     floors.Add(generateSingleRoomFloor(1, 9, 9));
     floors.Add(generateSingleRoomFloor(2, 10, 10));
     floors.Add(generateSingleRoomFloor(3, 11, 11));
     floors.Add(generateSingleRoomFloor(4, 11, 11, 1, 1, true));
-    floors.Add(generateSingleRoomFloor(5, 15, 15, 2));
-    floors.Add(generateSingleRoomFloor(6, 13, 13, 2));
+    floors.Add(generateSingleRoomFloor(5, 20, 11, 2));
+    floors.Add(generateSingleRoomFloor(6, 15, 11, 2));
     floors.Add(generateSingleRoomFloor(7, 11, 11, 2));
-    floors.Add(generateRewardFloor(8));
+    floors.Add(generateRewardFloor(8, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
     floors.Add(generateSingleRoomFloor(9, 13, 9, 2, 2));
     floors.Add(generateSingleRoomFloor(10, 14, 7, 2, 2));
     floors.Add(generateSingleRoomFloor(11, 20, 9, 3, 2));
-    floors.Add(generateSingleRoomFloor(12, 10, 10, 2, 2, true));
+    EncounterGroup = EncounterGroup.EarlyMidMixed();
+    floors.Add(generateSingleRoomFloor(12, 10, 10, 2, 2, true)); // make this a miniboss level
     floors.Add(generateSingleRoomFloor(13, 12, 12, 3, 2));
-    floors.Add(generateSingleRoomFloor(14, 13, 13, 3, 2));
-    floors.Add(generateSingleRoomFloor(15, 15, 15, 4, 2));
-    floors.Add(generateRewardFloor(16));
+    floors.Add(generateSingleRoomFloor(14, 15, 11, 3, 3));
+    floors.Add(generateSingleRoomFloor(15, 20, 9, 4, 3));
+    floors.Add(generateRewardFloor(16, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
     floors.Add(generateMultiRoomFloor(17, 15, 15, 6));
     floors.Add(generateMultiRoomFloor(18, 20, 20, 6));
     floors.Add(generateMultiRoomFloor(19, 30, 20, 7));
@@ -36,12 +38,23 @@ public class FloorGenerator {
     floors.Add(generateMultiRoomFloor(21, 24, 16, 9));
     floors.Add(generateMultiRoomFloor(22, 30, 12, 10));
     floors.Add(generateMultiRoomFloor(23, 30, 20, 15));
-    floors.Add(generateRewardFloor(24));
+    floors.Add(generateRewardFloor(24, Encounters.Twice(Encounters.AddWater), Encounters.ThreeAstoriasInCorner));
+    EncounterGroup = EncounterGroup.MidGame();
+    floors.Add(generateSingleRoomFloor(25, 11, 11, 1, 2, true));
+    floors.Add(generateMultiRoomFloor(26, 20, 13, 5, true));
+    floors.Add(generateMultiRoomFloor(27, 30, 13, 7, true));
+    floors.Add(generateMultiRoomFloor(28, 30, 12, 8, true));
+    floors.Add(generateMultiRoomFloor(29, 24, 13, 9, true));
+    floors.Add(generateMultiRoomFloor(30, 22, 12, 10, true));
+    floors.Add(generateMultiRoomFloor(31, 45, 11, 15, true));
+    floors.Add(generateRewardFloor(32, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
+    // floors.Add(generateBossFloor(33));
+    // floors.Add(generateEndFloor(34));
     return floors.ToArray();
   }
   
   public Floor generateRestFloor(int depth) {
-    Floor floor = new Floor(depth, 14, 10);
+    Floor floor = new Floor(depth, 22, 14);
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
@@ -106,8 +119,8 @@ public class FloorGenerator {
     return floor;
   }
 
-  public Floor generateRewardFloor(int depth) {
-    Floor floor = new Floor(depth, 8, 8);
+  public Floor generateRewardFloor(int depth, params Encounter[] extraEncounters) {
+    Floor floor = new Floor(depth, 16, 10);
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
@@ -123,8 +136,11 @@ public class FloorGenerator {
 
     Encounters.PlaceFancyGround(floor, room0);
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
-    EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
+    // EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
     // Encounters.AddTeleportStone(floor, room0);
+    foreach (var encounter in extraEncounters) {
+      encounter(floor, room0);
+    }
 
     // just do nothing on this floor
     return floor;
@@ -156,8 +172,7 @@ public class FloorGenerator {
       Encounters.AddWater(floor, room0);
     }
 
-    // and a little bit of extra spice
-    EncounterGroup.DeadEnds.GetRandom()(floor, room0);
+    EncounterGroup.Spice.GetRandom()(floor, room0);
     #if UNITY_EDITOR
     // Encounters.AddParasite(floor, room0);
     #endif
@@ -237,7 +252,7 @@ public class FloorGenerator {
     }
 
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
-    var deadEndEncounters = EncounterGroup.DeadEnds.Clone();
+    var deadEndEncounters = EncounterGroup.Spice.Clone();
     foreach (var room in deadEndRooms) {
       if (Random.value < 0.05f) {
         Encounters.SurroundWithRubble(floor, room);

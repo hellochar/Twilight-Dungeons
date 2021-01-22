@@ -8,13 +8,13 @@ public delegate void Encounter(Floor floor, Room room);
 
 /// Specific Encounters are static, but bags of encounters are not; picking out of a bag will discount it.
 public class Encounters {
-  public static WeightedRandomBag<Encounter> PlantsStatic = new WeightedRandomBag<Encounter> {
-    { 1f, MatureBerryBush },
-    { 1f, MatureThornleaf },
-    { 1f, MatureWildWood },
-    { 1f, MatureWeirdwood },
-    { 1f, MatureKingshroom }
-  };
+  public static Encounter Twice(Encounter input) {
+    Encounter result = (floor, room) => {
+      input(floor, room);
+      input(floor, room);
+    };
+    return result;
+  }
 
   private static int RandomRangeBasedOnIndex(int index, params (int, int)[] values) {
     var (min, max) = Util.ClampGet(index, values);
@@ -68,7 +68,7 @@ public class Encounters {
   public static Encounter AddBats = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth / 5,
+    var num = RandomRangeBasedOnIndex(floor.depth / 4,
       (1, 1),
       (1, 2),
       (1, 4),
@@ -84,13 +84,13 @@ public class Encounters {
   public static Encounter AddSpiders = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth / 5,
-      (1, 1),
-      (1, 2),
-      (1, 4),
-      (2, 3),
-      (2, 4),
-      (3, 4)
+    var num = RandomRangeBasedOnIndex(floor.depth / 4,
+      (1, 1), // 0 - 3
+      (1, 1), // 4 - 7
+      (2, 2), // 8 - 11
+      (2, 2), // 12 - 15
+      (3, 3), // 16 - 19
+      (3, 3)  // 20 - 23
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Spider(tile.pos));
@@ -100,7 +100,7 @@ public class Encounters {
   public static Encounter AddScorpions = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth / 10,
+    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
       (1, 1),
       (1, 2),
       (2, 3),
@@ -114,7 +114,7 @@ public class Encounters {
   public static Encounter AddGolems = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth / 10,
+    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
       (1, 1),
       (1, 2),
       (2, 3),

@@ -3,12 +3,43 @@ using System.Linq;
 using UnityEngine;
 
 public class FloorGenerator {
-  public Encounters Encounters;
+  public EncounterGroup EncounterGroup;
 
-  public FloorGenerator(Encounters encounters) {
-    Encounters = encounters;
+  public static Floor[] generateAll() {
+    var generator = new FloorGenerator();
+    return generator.generateAllFloors();
   }
 
+  public Floor[] generateAllFloors() {
+    var floors = new List<Floor>();
+    EncounterGroup = EncounterGroup.Everything();
+    floors.Add(generateSingleRoomFloor(1, 9, 9));
+    floors.Add(generateSingleRoomFloor(2, 10, 10));
+    floors.Add(generateSingleRoomFloor(3, 11, 11));
+    floors.Add(generateSingleRoomFloor(4, 11, 11, 1, 1, true));
+    floors.Add(generateSingleRoomFloor(5, 15, 15, 2));
+    floors.Add(generateSingleRoomFloor(6, 13, 13, 2));
+    floors.Add(generateSingleRoomFloor(7, 11, 11, 2));
+    floors.Add(generateRewardFloor(8));
+    floors.Add(generateSingleRoomFloor(9, 13, 9, 2, 2));
+    floors.Add(generateSingleRoomFloor(10, 14, 7, 2, 2));
+    floors.Add(generateSingleRoomFloor(11, 20, 9, 3, 2));
+    floors.Add(generateSingleRoomFloor(12, 10, 10, 2, 2, true));
+    floors.Add(generateSingleRoomFloor(13, 12, 12, 3, 2));
+    floors.Add(generateSingleRoomFloor(14, 13, 13, 3, 2));
+    floors.Add(generateSingleRoomFloor(15, 15, 15, 4, 2));
+    floors.Add(generateRewardFloor(16));
+    floors.Add(generateMultiRoomFloor(17, 15, 15, 6));
+    floors.Add(generateMultiRoomFloor(18, 20, 20, 6));
+    floors.Add(generateMultiRoomFloor(19, 30, 20, 7));
+    floors.Add(generateMultiRoomFloor(20, 20, 20, 8, true));
+    floors.Add(generateMultiRoomFloor(21, 24, 16, 9));
+    floors.Add(generateMultiRoomFloor(22, 30, 12, 10));
+    floors.Add(generateMultiRoomFloor(23, 30, 20, 15));
+    floors.Add(generateRewardFloor(24));
+    return floors.ToArray();
+  }
+  
   public Floor generateRestFloor(int depth) {
     Floor floor = new Floor(depth, 14, 10);
 
@@ -92,7 +123,7 @@ public class FloorGenerator {
 
     Encounters.PlaceFancyGround(floor, room0);
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
-    Encounters.CavesPlantRewards.GetRandomAndDiscount(0.9f)(floor, room0);
+    EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
     // Encounters.AddTeleportStone(floor, room0);
 
     // just do nothing on this floor
@@ -111,22 +142,22 @@ public class FloorGenerator {
     var room0 = floor.root;
     // X mobs
     for (var i = 0; i < numMobs; i++) {
-      Encounters.CavesMobs.GetRandomAndDiscount()(floor, room0);
+      EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
     }
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
-      Encounters.CavesGrasses.GetRandomAndDiscount()(floor, room0);
+      EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
     }
 
     // a reward (optional)
     if (reward) {
-      Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
+      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
       Encounters.AddWater(floor, room0);
     }
 
     // and a little bit of extra spice
-    Encounters.CavesDeadEnds.GetRandom()(floor, room0);
+    EncounterGroup.DeadEnds.GetRandom()(floor, room0);
     #if UNITY_EDITOR
     // Encounters.AddParasite(floor, room0);
     #endif
@@ -165,7 +196,7 @@ public class FloorGenerator {
     }
 
     // one wall variation
-    Encounters.CavesWalls.GetRandomAndDiscount()(floor, room0);
+    EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
 
     FloorUtils.NaturalizeEdges(floor);
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
@@ -191,7 +222,7 @@ public class FloorGenerator {
 
     var intermediateRooms = floor.rooms
       .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom);
-    
+
     Room rewardRoom = null;
     if (hasReward) {
       // the non-downstairs terminal room farthest away from the upstairs according to pathfinding
@@ -201,12 +232,12 @@ public class FloorGenerator {
 
       Encounters.PlaceFancyGround(floor, rewardRoom);
       Encounters.SurroundWithRubble(floor, rewardRoom);
-      var rewardEncounter = Encounters.CavesRewards.GetRandomAndDiscount();
+      var rewardEncounter = EncounterGroup.Rewards.GetRandomAndDiscount();
       rewardEncounter(floor, rewardRoom);
     }
 
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
-    var deadEndEncounters = Encounters.CavesDeadEnds.Clone();
+    var deadEndEncounters = EncounterGroup.DeadEnds.Clone();
     foreach (var room in deadEndRooms) {
       if (Random.value < 0.05f) {
         Encounters.SurroundWithRubble(floor, room);
@@ -218,7 +249,7 @@ public class FloorGenerator {
     foreach (var room in floor.rooms) {
       if (room != floor.upstairsRoom && room != rewardRoom) {
         // spawn a random encounter
-        var encounter = Encounters.CavesMobs.GetRandomAndDiscount();
+        var encounter = EncounterGroup.Mobs.GetRandomAndDiscount();
         encounter(floor, room);
       }
     }
@@ -226,7 +257,7 @@ public class FloorGenerator {
     floor.root.Traverse((room) => {
       // this includes abstract rooms!
       if (room.depth >= 2) {
-        var encounter = Encounters.CavesGrasses.GetRandomAndDiscount();
+        var encounter = EncounterGroup.Grasses.GetRandomAndDiscount();
         encounter(floor, room);
       }
     });
@@ -311,7 +342,7 @@ public class FloorGenerator {
 
   /// draw a path connecting siblings together, including intermediary nodes (guarantees connectedness)
   /// this tends to draw long lines that cut right through single thickness walls
-  private  static List<(Vector2Int, Vector2Int)> BSPSiblingRoomConnections(List<Room> rooms, Room root) {
+  private static List<(Vector2Int, Vector2Int)> BSPSiblingRoomConnections(List<Room> rooms, Room root) {
     List<(Vector2Int, Vector2Int)> paths = new List<(Vector2Int, Vector2Int)>();
     root.Traverse(node => {
       if (!node.isTerminal) {

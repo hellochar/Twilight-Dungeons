@@ -52,35 +52,7 @@ public class GameModel {
   }
 
   private void generate() {
-    var floorGen = new FloorGenerator(new Encounters());
-    floors = new Floor[] {
-      floorGen.generateRestFloor(0),
-      floorGen.generateSingleRoomFloor(1, 9, 9),
-      floorGen.generateSingleRoomFloor(2, 10, 10),
-      floorGen.generateSingleRoomFloor(3, 11, 11),
-      floorGen.generateSingleRoomFloor(4, 11, 11, 1, 1, true),
-      floorGen.generateSingleRoomFloor(5, 15, 15, 2),
-      floorGen.generateSingleRoomFloor(6, 13, 13, 2),
-      floorGen.generateSingleRoomFloor(7, 11, 11, 2),
-      floorGen.generateRewardFloor(8),
-      floorGen.generateSingleRoomFloor(9, 13, 9, 2, 2),
-      floorGen.generateSingleRoomFloor(10, 14, 7, 2, 2),
-      floorGen.generateSingleRoomFloor(11, 20, 9, 3, 2),
-      floorGen.generateSingleRoomFloor(12, 10, 10, 2, 2, true),
-      floorGen.generateSingleRoomFloor(13, 12, 12, 3, 2),
-      floorGen.generateSingleRoomFloor(14, 13, 13, 3, 2),
-      floorGen.generateSingleRoomFloor(15, 15, 15, 4, 2),
-      floorGen.generateRewardFloor(16),
-      floorGen.generateMultiRoomFloor(17, 15, 15, 6),
-      floorGen.generateMultiRoomFloor(18, 20, 20, 6),
-      floorGen.generateMultiRoomFloor(19, 30, 20, 7),
-      floorGen.generateMultiRoomFloor(20, 20, 20, 8, true),
-      floorGen.generateMultiRoomFloor(21, 24, 16, 9),
-      floorGen.generateMultiRoomFloor(22, 30, 12, 10),
-      floorGen.generateMultiRoomFloor(23, 30, 20, 15),
-      floorGen.generateRewardFloor(24)
-    };
-
+    floors = FloorGenerator.generateAll();
     player = new Player(new Vector2Int(3, floors[0].height/2));
     floors[0].Put(player);
   }

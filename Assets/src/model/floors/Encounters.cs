@@ -8,6 +8,14 @@ public delegate void Encounter(Floor floor, Room room);
 
 /// Specific Encounters are static, but bags of encounters are not; picking out of a bag will discount it.
 public class Encounters {
+  public static WeightedRandomBag<Encounter> PlantsStatic = new WeightedRandomBag<Encounter> {
+    { 1f, MatureBerryBush },
+    { 1f, MatureThornleaf },
+    { 1f, MatureWildWood },
+    { 1f, MatureWeirdwood },
+    { 1f, MatureKingshroom }
+  };
+
   private static int RandomRangeBasedOnIndex(int index, params (int, int)[] values) {
     var (min, max) = Util.ClampGet(index, values);
     return Random.Range(min, max + 1);
@@ -143,7 +151,7 @@ public class Encounters {
   public static Encounter MatureBerryBush = new Encounter((floor, room) => {
     AddPlantInCenter(floor, room, typeof(BerryBush));
   });
-  
+
   public static Encounter MatureWildWood = new Encounter((floor, room) => {
     AddPlantInCenter(floor, room, typeof(Wildwood));
   });
@@ -165,7 +173,7 @@ public class Encounters {
     if (tile != null) {
       floor.Put(new Soil(tile.pos));
       var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
-      var plant = (Plant) constructor.Invoke(new object[1] { tile.pos });
+      var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
       plant.GoNextStage();
       plant.GoNextStage();
       floor.Put(plant);
@@ -436,7 +444,7 @@ public class Encounters {
   public static Encounter ChunkInMiddle = new Encounter((floor, room) => {
     var chunkSize = Random.Range(1, 6);
     var positions = floor.BreadthFirstSearch(room.center, (tile) => true).Take(chunkSize).Select(t => t.pos);
-    foreach(var pos in positions) {
+    foreach (var pos in positions) {
       floor.Put(new Wall(pos));
     }
   });
@@ -457,91 +465,4 @@ public class Encounters {
     }
   });
 
-  public WeightedRandomBag<Encounter> CavesMobs = new WeightedRandomBag<Encounter> {
-    // { 2.5f, Empty },
-    { 1, AFewBlobs },
-    { 1, JackalPile },
-    { 1, AFewSnails },
-    { 0.4f, AddBats },
-    { 0.35f, AddSpiders },
-    { 0.2f, AddScorpions },
-    { 0.2f, AddParasite },
-    { 0.2f, AddGolems },
-    { 0.1f, AddHydra },
-  };
-
-  public WeightedRandomBag<Encounter> CavesWalls = new WeightedRandomBag<Encounter> {
-    { 3f, Empty },
-    { 0.5f, WallPillars },
-    { 0.5f, ChunkInMiddle },
-    { 0.5f, LineWithOpening },
-  };
-
-  public WeightedRandomBag<Encounter> CavesGrasses = new WeightedRandomBag<Encounter> {
-    { 1f, AddSoftGrass },
-
-    { 0.75f, AddBladegrass },
-
-    { 0.5f, AddAgave },
-    // { 0.5f, AddCoralmoss },
-    { 0.5f, AddHangingVines },
-
-    { 0.4f, AddEveningBells },
-    { 0.4f, AddGuardleaf },
-    { 0.4f, AddSpore },
-    { 0.4f, AddWebs },
-    { 0.4f, ScatteredBoombugs },
-
-    { 0.2f, AddPoisonmoss },
-    { 0.2f, AddDeathbloom },
-  };
-
-  public WeightedRandomBag<Encounter> CavesDeadEnds = new WeightedRandomBag<Encounter> {
-    /// just to make it interesting, always give dead ends *something*
-    { 5f, Empty },
-
-    { 0.5f, AFewBlobs },
-    { 0.5f, JackalPile },
-    { 0.5f, AFewSnails },
-
-    { 0.25f, AddSoftGrass },
-    { 0.25f, AddBladegrass },
-
-    { 0.2f, AddWater },
-    { 0.2f, ScatteredBoombugs },
-
-    // { 0.1f, AddCoralmoss },
-    { 0.1f, AddDeathbloom },
-    { 0.1f, AddSpiders },
-    { 0.1f, AddGuardleaf },
-    { 0.1f, AddSpore },
-
-    { 0.05f, AddEveningBells },
-    { 0.05f, AddPoisonmoss },
-
-    { 0.02f, AddScorpions },
-    { 0.02f, AddParasite },
-    { 0.02f, AddGolems },
-
-    { 0.01f, AddHydra },
-  };
-
-  public WeightedRandomBag<Encounter> CavesRewards = new WeightedRandomBag<Encounter> {
-    // { 2f, AddWater },
-    { 1f, AddMushroom },
-    { 1f, AddPumpkin },
-    { 1f, OneAstoria },
-    { 0.5f, AddJackalHide },
-    { 0.5f, AddGloopShoes },
-    { 0.5f, OneButterfly },
-    { 0.5f, ThreeAstoriasInCorner },
-  };
-
-  public WeightedRandomBag<Encounter> CavesPlantRewards = new WeightedRandomBag<Encounter> {
-    { 1f, MatureBerryBush },
-    { 1f, MatureThornleaf },
-    { 1f, MatureWildWood },
-    { 1f, MatureWeirdwood },
-    { 1f, MatureKingshroom }
-  };
 }

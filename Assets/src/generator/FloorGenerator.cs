@@ -62,6 +62,7 @@ public class FloorGenerator {
     }
 
     FloorUtils.SurroundWithWalls(floor);
+    FloorUtils.NaturalizeEdges(floor);
 
     // floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
@@ -101,6 +102,10 @@ public class FloorGenerator {
     Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
+    floor.depth = 20;
+    Encounters.AddWildekins(floor, room0);
+    Encounters.AddCrabs(floor, room0);
+    Encounters.AddParasite(floor, room0);
     // Encounters.AddCoralmoss(floor, room0);
     // Encounters.AddHangingVines(floor, room0);
     // Encounters.AddEveningBells(floor, room0);
@@ -114,6 +119,7 @@ public class FloorGenerator {
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AFewSnails(floor, room0);
     // Encounters.AFewBlobs(floor, room0);
+    floor.depth = 0;
     #endif
 
     return floor;

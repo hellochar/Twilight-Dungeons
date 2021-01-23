@@ -26,22 +26,35 @@ public class AIActor : Actor {
     ClearTasks();
   }
 
+  private ActorTask MoveAIEnumerator() {
+    if (ai.MoveNext()) {
+      return ai.Current;
+    } else {
+      Debug.LogError("AI Enumerator ended!" + this);
+      return new WaitTask(this, 99999);
+    }
+  }
+
   public override float Step() {
     // the first step will likely be "no action" so retries starts at -1
     for (int retries = -1; retries < MaxRetries; retries++) {
       try {
         return base.Step();
       } catch (NoActionException) {
-        if (ai.MoveNext()) {
-          SetTasks(ai.Current);
-        } else {
-          SetTasks(new WaitTask(this, 99999));
-          throw new System.Exception("AI Enumerator ended!" + this);
-        }
+        SetTasks(MoveAIEnumerator());
       }
     }
     Debug.LogWarning(this + " reached MaxSkippedActions!");
     SetTasks(new WaitTask(this, 1));
     return base.Step();
+  }
+
+  protected override void GoToNextTask() {
+    if (taskQueue.Count == 1 && task.IsDoneOrForceOpen()) {
+      // queue up another task from the list
+      var task = MoveAIEnumerator();
+      taskQueue.Add(task);
+    }
+    base.GoToNextTask();
   }
 }

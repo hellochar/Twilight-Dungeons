@@ -275,7 +275,7 @@ public class Actor : Body, ISteppable {
     Modifiers.Process(this.StepModifiers(), null);
 
     // handle close-ended actions
-    while (task != null && task.IsDone()) {
+    while (task != null && task.IsDoneOrForceOpen()) {
       GoToNextTask();
     }
     return GetActionCost(finalAction);

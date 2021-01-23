@@ -102,8 +102,14 @@ public class Encounters {
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
       (1, 1),
+      (1, 1),
       (1, 2),
+      (1, 2),
+      (2, 2),
+      (2, 2),
       (2, 3),
+      (2, 3),
+      (2, 4),
       (2, 4)
     );
     foreach (var tile in tiles.Take(num)) {
@@ -116,8 +122,14 @@ public class Encounters {
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
       (1, 1),
+      (1, 1),
       (1, 2),
+      (1, 2),
+      (2, 2),
+      (2, 2),
       (2, 3),
+      (2, 3),
+      (2, 4),
       (2, 4)
     );
     foreach (var tile in tiles.Take(num)) {
@@ -144,6 +156,29 @@ public class Encounters {
     var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).First();
     if (tile != null) {
       floor.Put(new HydraHeart(tile.pos));
+    }
+  });
+
+  public static Encounter AddWildekins = new Encounter((floor, room) => {
+    var tiles = FloorUtils.TilesFromCenter(floor, room);
+    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
+      (1, 2),
+      (2, 2),
+      (2, 3),
+      (2, 4),
+      (3, 4),
+      (3, 4)
+    );
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Wildekin(tile.pos));
+    }
+  });
+
+  public static Encounter AddCrabs = new Encounter((floor, room) => {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    tiles.Shuffle();
+    foreach (var tile in tiles.Take(3)) {
+      floor.Put(new Crab(tile.pos));
     }
   });
 

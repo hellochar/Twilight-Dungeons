@@ -1,21 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &3882138388728978235
+--- !u!114 &1357652467528359659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3058877965957667138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe7c0ae3a198ea4da0b1bae7db02126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &8441032035995257064
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1576846652889842319, guid: 67481c8900921ad45b4da8aed5f1cb43,
+    - target: {fileID: 3483431341202102275, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1576846652889842319, guid: 67481c8900921ad45b4da8aed5f1cb43,
+    - target: {fileID: 6718828019105851581, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.5
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
@@ -75,33 +87,25 @@ PrefabInstance:
     - target: {fileID: 6870171582872785322, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Name
-      value: Parasite
+      value: ParasiteEgg
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -5923946582500250790, guid: af4df3188a01af048a678513709d8278,
+      objectReference: {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50,
         type: 3}
-    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
+--- !u!1 &3058877965957667138 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6870171582872785322, guid: 67481c8900921ad45b4da8aed5f1cb43,
+    type: 3}
+  m_PrefabInstance: {fileID: 8441032035995257064}
+  m_PrefabAsset: {fileID: 0}

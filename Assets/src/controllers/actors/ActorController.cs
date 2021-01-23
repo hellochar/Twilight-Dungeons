@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class ActorController : BodyController {
   public Actor actor => (Actor) body;
-  protected GameObject spriteObject;
   protected Animator animator;
 
   // Start is called before the first frame update
@@ -15,8 +14,7 @@ public class ActorController : BodyController {
 
     base.Start();
 
-    spriteObject = transform.Find("Sprite")?.gameObject;
-    animator = spriteObject?.GetComponent<Animator>();
+    animator = sprite?.GetComponent<Animator>();
 
     actor.OnDeath += HandleDeath;
 
@@ -114,10 +112,10 @@ public class ActorController : BodyController {
 
   /// also triggers audio
   private void PlayAttackAnimation(Vector2Int pos) {
-    if (spriteObject != null) {
+    if (sprite != null) {
       // go -1 to be "in front"
-      var z = spriteObject.transform.position.z - 1;
-      spriteObject.AddComponent<BumpAndReturn>().target = Util.withZ(pos, z);
+      var z = sprite.transform.position.z - 1;
+      sprite.AddComponent<BumpAndReturn>().target = Util.withZ(pos, z);
     }
   }
 

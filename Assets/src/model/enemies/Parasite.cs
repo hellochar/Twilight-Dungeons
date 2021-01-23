@@ -7,7 +7,10 @@ using UnityEngine;
 public class Parasite : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
+    [ActionType.ATTACK] = 1f,
+    [ActionType.WAIT] = 0.5f,
   };
+  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
 
   protected override ActionCosts actionCosts => StaticActionCosts;
   public Parasite(Vector2Int pos) : base(pos) {
@@ -18,7 +21,7 @@ public class Parasite : AIActor {
   }
 
   private void HandleDealAttackDamage(int dmg, Body target) {
-    if (target is Actor actor) {
+    if (target is Actor actor && !(actor is Parasite)) {
       actor.statuses.Add(new ParasiteStatus(16));
       Kill();
     }
@@ -33,23 +36,34 @@ public class Parasite : AIActor {
         yield return new MoveRandomlyTask(this);
         continue;
       }
-      if (IsNextTo(target)) {
-        yield return new AttackTask(this, target);
-        continue;
-      }
-      // chase until you are next to any target
-      yield return new ChaseDynamicTargetTask(this, SelectTarget);
+      yield return new AttackGroundTask(this, target.pos, 1);
     }
   }
 
   Actor SelectTarget() {
     var potentialTargets = floor
-      .ActorsInCircle(pos, 7)
-      .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Parasite));
-    if (potentialTargets.Any()) {
-      return potentialTargets.Aggregate((t1, t2) => DistanceTo(t1) < DistanceTo(t2) ? t1 : t2);
+      .AdjacentActors(pos)
+      .Where((t) => !(t is Parasite));
+    return Util.RandomPick(potentialTargets);
+  }
+}
+
+public class ParasiteEgg : Body {
+  public ParasiteEgg(Vector2Int pos) : base(pos) {
+    AddTimedEvent(10, Hatch);
+    hp = baseMaxHp = 5;
+  }
+
+  void Hatch() {
+    var tiles = floor.GetCardinalNeighbors(pos).Where((t) => t.CanBeOccupied()).ToList();
+    tiles.Shuffle();
+    foreach (var tile in tiles.Take(2)) {
+      var p = new Parasite(tile.pos);
+      var sleepTask = p.task as SleepTask;
+      sleepTask.wakeUpNextTurn = true;
+      floor.Put(p);
     }
-    return null;
+    Kill();
   }
 }
 
@@ -82,17 +96,9 @@ public class ParasiteStatus : StackingStatus {
     var floor = actor.floor;
     var pos = actor.pos;
     GameModel.main.EnqueueEvent(() => {
-      var tiles = floor.GetCardinalNeighbors(pos).Where((t) => t.CanBeOccupied()).ToList();
-      tiles.Shuffle();
-      foreach (var tile in tiles.Take(2)) {
-        var p = new Parasite(tile.pos);
-        var sleepTask = p.task as SleepTask;
-        sleepTask.wakeUpNextTurn = true;
-        floor.Put(p);
-      }
+      floor.Put(new ParasiteEgg(pos));
     });
   }
-
 
   public override void Step() {
     if (stacks % 3 == 0) {

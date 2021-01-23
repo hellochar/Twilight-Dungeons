@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
 public class AttackTask : DoOnceTask {
-  public AttackTask(Actor actor, Body _target) : base(actor) {
-    target = _target;
+  public AttackTask(Actor actor, Body target) : base(actor) {
+    this.target = target;
   }
 
   public Body target { get; }

@@ -60,12 +60,16 @@ public class TurnManager {
     var enumerator = StepUntilPlayersChoiceImpl();
     while (true) {
       var hasNext = false;
+      #if UNITY_EDITOR
+      hasNext = enumerator.MoveNext();
+      #else
       try {
         hasNext = enumerator.MoveNext();
       } catch (Exception e) {
         Debug.LogError(e);
         Messages.Create(e.Message);
       }
+      #endif
 
       if (hasNext) {
         yield return enumerator.Current;

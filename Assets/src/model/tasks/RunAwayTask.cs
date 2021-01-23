@@ -6,15 +6,19 @@ public class RunAwayTask : ActorTask {
   private Vector2Int fearPoint;
   public int turns;
   public int turnsRemaining;
+  public bool hasSurpriseTurn;
 
-  public RunAwayTask(Actor a, Vector2Int fearPoint, int turns) : base(a) {
+  public RunAwayTask(Actor a, Vector2Int fearPoint, int turns, bool hasSurpriseTurn = true) : base(a) {
     this.fearPoint = fearPoint;
     this.turns = turns;
     this.turnsRemaining = turns;
+    this.hasSurpriseTurn = hasSurpriseTurn;
   }
 
   public override IEnumerator<BaseAction> Enumerator() {
-    yield return new WaitBaseAction(actor);
+    if (hasSurpriseTurn) {
+      yield return new WaitBaseAction(actor);
+    }
     for (; turnsRemaining > 0; turnsRemaining--) {
       var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
       if (adjacentTiles.Any()) {

@@ -9,9 +9,9 @@ public class BatController : ActorController {
   public override void Update() {
     base.Update();
     if (actor.task is WaitTask || actor.task is SleepTask) {
-      spriteObject.transform.localScale = Vector3.Lerp(spriteObject.transform.localScale, scaleWaiting, 10f * Time.deltaTime);
+      sprite.transform.localScale = Vector3.Lerp(sprite.transform.localScale, scaleWaiting, 10f * Time.deltaTime);
     } else {
-      spriteObject.transform.localScale = Vector3.Lerp(spriteObject.transform.localScale, scaleNormal, 10f * Time.deltaTime);
+      sprite.transform.localScale = Vector3.Lerp(sprite.transform.localScale, scaleNormal, 10f * Time.deltaTime);
     }
   }
 

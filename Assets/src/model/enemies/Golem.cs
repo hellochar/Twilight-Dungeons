@@ -25,15 +25,16 @@ public class Golem : AIActor, IAttackDamageTakenModifier {
   internal override (int, int) BaseAttackDamage() => (4, 5);
 
   private IEnumerable<ActorTask> AI() {
+    var player = GameModel.main.player;
     while (true) {
       if (isVisible) {
-        if (IsNextTo(GameModel.main.player)) {
-          yield return new AttackTask(actor, GameModel.main.player);
+        if (IsNextTo(player)) {
+          yield return new AttackTask(this, player);
         } else {
-          yield return new ChaseTargetTask(actor, GameModel.main.player);
+          yield return new ChaseTargetTask(this, player);
         }
       } else {
-        yield return new MoveRandomlyTask(actor);
+        yield return new MoveRandomlyTask(this);
       }
     }
   }

@@ -43,6 +43,7 @@ public sealed class AttackBaseAction : BaseAction {
   public readonly Body target;
 
   public AttackBaseAction(Actor actor, Body target) : base(actor) {
+    Debug.Assert(target != null, "attacking a null target");
     this.target = target;
   }
 

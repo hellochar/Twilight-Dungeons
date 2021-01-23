@@ -6,6 +6,8 @@ public static class EncounterGroupMidGame {
       Mobs = new WeightedRandomBag<Encounter> {
         { 1f, AddScorpions },
         { 1f, AddGolems },
+        { 1f, AddWildekins },
+        { 1f, AddCrabs },
         // need a 3rd 1f midgame mob
         { 0.5f, AddHydra },
         { 0.4f, AddParasite },
@@ -23,6 +25,8 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddSpiders },
         { 0.2f, AddGolems },
         { 0.2f, AddScorpions },
+        { 0.2f, AddWildekins },
+        { 0.2f, AddCrabs },
         //// adding extra parasites is just fucking annoying tbh
         // { 0.05f, AddParasite },
 

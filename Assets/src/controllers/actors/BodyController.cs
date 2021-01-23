@@ -4,10 +4,15 @@ using UnityEngine.EventSystems;
 public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHandler {
   private static GameObject hpChangeTextPrefab;
   public Body body;
+  protected GameObject sprite;
+  protected GameObject damageContainer;
   public virtual void Start() {
     if (hpChangeTextPrefab == null) {
       hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
     }
+
+    sprite = transform.Find("Sprite")?.gameObject;
+    damageContainer = sprite?.transform.Find("Damage Container").gameObject;
 
     body.OnTakeAnyDamage += HandleTakeDamage;
     body.OnHeal += HandleHeal;
@@ -24,6 +29,7 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
       GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
       Instantiate(damagedSpritePrefab, Util.withZ(body.pos), Quaternion.identity);
     }
+    UpdateDamageTicks();
   }
 
   void HandleHeal(int heal, int newHp) {
@@ -36,6 +42,36 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
 
     GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);
+    UpdateDamageTicks();
+  }
+
+  void UpdateDamageTicks() {
+    GameModel.main.EnqueueEvent(() => {
+      if (damageContainer == null) {
+        return;
+      }
+      // int newDamage = body.maxHp - body.hp;
+      // var spriteRenderer = damageContainer.GetComponent<SpriteRenderer>();
+      // if (newDamage == 0) {
+      //   spriteRenderer.sprite = null;
+      // } else {
+      //   var spriteName = $"damage-states_{Mathf.Clamp(newDamage - 1, 0, 9)}";
+      //   spriteRenderer.sprite = MasterSpriteAtlas.atlas.GetSprite(spriteName);
+      // }
+      int newDamage = ((float) body.hp / body.maxHp > 0.5) ? 0 : 1;
+      // remove extra damage ticks
+      for (int i = damageContainer.transform.childCount; i > newDamage; i--) {
+        Destroy(damageContainer.transform.GetChild(i - 1).gameObject);
+      }
+      // create new damage
+      for (int i = damageContainer.transform.childCount; i < newDamage; i++) {
+        var damageTickPrefab = PrefabCache.Effects.GetPrefabFor("Damage Tick");
+        var rotation = Quaternion.Euler(0, 0, Random.Range(45 / 2, 45 * 1.5f));
+        var damageTick = Instantiate(damageTickPrefab, new Vector3(), rotation, damageContainer.transform);
+        damageTick.transform.localPosition = new Vector3(0, -0.25f, 0);
+        // damageTick.transform.localPosition = Random.insideUnitCircle * Random.insideUnitCircle * Random.insideUnitCircle * Random.insideUnitCircle * 0.5f;
+      }
+    });
   }
 
   public virtual void PointerClick(PointerEventData pointerEventData) {

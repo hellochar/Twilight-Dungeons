@@ -25,7 +25,7 @@ public abstract class ActorTask : IEnumerator<BaseAction> {
 
   /// default implementation is not done (aka open-ended).
   /// Note: IsDone() should return true if .MoveNext() would
-  /// return false.
+  /// return false. Don't call this directly; instead use the extension method
   public virtual bool IsDone() => false;
 
   protected ActorTask(Actor actor) {
@@ -68,6 +68,17 @@ public abstract class ActorTask : IEnumerator<BaseAction> {
   public void Dispose() {
     EnumeratorInstance.Dispose();
   }
+
+  public bool forceOpen = false;
+  /// force this task to be open ended.
+  public ActorTask Open() {
+    forceOpen = true;
+    return this;
+  }
+}
+
+public static class ActorTaskExtensions {
+  public static bool IsDoneOrForceOpen(this ActorTask task) => task.IsDone() && !task.forceOpen;
 }
 
 /// A close-ended action that, once it has been stepped once, is done.

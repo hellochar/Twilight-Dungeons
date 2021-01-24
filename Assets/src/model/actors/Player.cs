@@ -35,6 +35,10 @@ public class Player : Actor {
   private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
 
   private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    if (floor != null) {
+      floor.RemoveVisibility(this, oldPos);
+      floor.AddVisibility(this, newPos);
+    }
     GameModel.main.EnqueueEvent(() => {
       var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
       // if there's a newly visible enemy from last turn, cancel the current move task
@@ -97,23 +101,6 @@ public class Player : Actor {
     }
     if (task is FollowPathTask) {
       task = null;
-    }
-  }
-
-  public override Vector2Int pos {
-    get {
-      return base.pos;
-    }
-
-    set {
-      GameModel model = GameModel.main;
-      if (floor != null) {
-        floor.RemoveVisibility(this);
-      }
-      base.pos = value;
-      if (floor != null) {
-        floor.AddVisibility(this);
-      }
     }
   }
 

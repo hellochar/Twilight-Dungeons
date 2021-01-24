@@ -2805,8 +2805,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   paddingTop: 0.5
-  paddingRight: 0.5
-  paddingBottom: 3
+  paddingRight: 3
+  paddingBottom: 4
   paddingLeft: 3
 --- !u!114 &519420034
 MonoBehaviour:

@@ -184,8 +184,8 @@ public class Floor {
     }
   }
 
-  internal void RemoveVisibility(Actor entity) {
-    foreach (var pos in EnumerateCircle(entity.pos, entity.visibilityRange)) {
+  internal void RemoveVisibility(Actor entity, Vector2Int? position = null) {
+    foreach (var pos in EnumerateCircle(position ?? entity.pos, entity.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       if (t.visibility == TileVisiblity.Visible) {
         t.visibility = TileVisiblity.Explored;
@@ -200,7 +200,7 @@ public class Floor {
     }
   }
 
-  internal void AddVisibility(Actor entity) {
+  internal void AddVisibility(Actor entity, Vector2Int? position = null) {
     foreach (var pos in EnumerateCircle(entity.pos, entity.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(entity.pos, pos);

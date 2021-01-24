@@ -57,6 +57,9 @@ public class ItemController : MonoBehaviour {
       if (item is ItemCharmBerry charmBerry) {
         buttons.Insert(0, MakeButton("Charm", () => CharmWithUI(charmBerry, player, popup)));
       }
+      if (item is ItemKingshroomPowder spores) {
+        buttons.Insert(0, MakeButton("Use", () => PowderInfectWithUI(spores, player, popup)));
+      }
       if (item is ItemBoombugCorpse boombugCorpse) {
         buttons.Insert(0, MakeButton("Throw", () => ThrowBoombugCorpseWithUI(boombugCorpse, player, popup)));
       }
@@ -104,6 +107,25 @@ public class ItemController : MonoBehaviour {
           if (p.IsNextTo(soil)) {
             seed.Plant(soil);
           }
+        })
+      );
+      PopupInteractionDone(popup);
+    } catch (PlayerSelectCanceledException) {
+      // if player cancels selection, go back to before
+      OpenInventory();
+      popup.SetActive(true);
+    }
+  }
+
+  public async void PowderInfectWithUI(ItemKingshroomPowder powder, Player player, GameObject popup) {
+    CloseInventory();
+    popup.SetActive(false);
+    try {
+      var enemy = await MapSelector.SelectUI(player.floor.AdjacentActors(player.pos).Where((a) => a != player));
+      player.SetTasks(
+        new ChaseTargetTask(player, enemy),
+        new GenericTask(player, (_) => {
+          powder.Infect(player, enemy);
         })
       );
       PopupInteractionDone(popup);

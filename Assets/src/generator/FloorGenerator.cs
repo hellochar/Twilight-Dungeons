@@ -95,6 +95,8 @@ public class FloorGenerator {
     }
 
     var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood), typeof(Kingshroom) };
+    // AddMaturePlant(typeof(Kingshroom));
+    // AddMaturePlant(typeof(Kingshroom));
     AddMaturePlant(Util.RandomPick(types));
     AddMaturePlant(Util.RandomPick(types));
 
@@ -103,9 +105,9 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     floor.depth = 20;
-    Encounters.AddWildekins(floor, room0);
-    Encounters.AddCrabs(floor, room0);
-    Encounters.AddParasite(floor, room0);
+    // Encounters.AddWildekins(floor, room0);
+    // Encounters.AddCrabs(floor, room0);
+    // Encounters.AddParasite(floor, room0);
     // Encounters.AddCoralmoss(floor, room0);
     // Encounters.AddHangingVines(floor, room0);
     // Encounters.AddEveningBells(floor, room0);

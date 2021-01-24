@@ -14,15 +14,15 @@ public class Kingshroom : Plant {
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Kingshroom)),
         new ItemSeed(typeof(Kingshroom)),
-        new ItemMushroom(25)
+        new ItemGerm()
       ));
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Kingshroom)),
-        new ItemKingshroomHat(),
+        new ItemMuffinCap(),
         new ItemKingshroomPowder()
       ));
       harvestOptions.Add(new Inventory(
-        new ItemBodyMycelium()
+        new ItemLivingArmor()
       ));
     }
     public override string getUIText() => $"Ready to harvest.";
@@ -33,10 +33,10 @@ public class Kingshroom : Plant {
   }
 }
 
-[ObjectInfo("kingshroom", "")]
-internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IActionPerformedHandler, IModifierProvider, IStepModifier {
+[ObjectInfo("living-armor", "")]
+internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandler, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Body;
-  public ItemBodyMycelium() {
+  public ItemLivingArmor() {
     durability = maxDurability;
   }
 
@@ -44,42 +44,15 @@ internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IAct
 
   public int maxDurability => 300;
 
-  private class DealLessDamage : IAttackDamageModifier {
-    public int Modify(int input) => input - 1;
-  }
-  private class TakeLessDamage : IAttackDamageTakenModifier {
-    public int Modify(int input) => input - 2;
-  }
-
-  private static List<object> Modifiers = new List<object> { new TakeLessDamage(), new DealLessDamage() };
-  public IEnumerable<object> MyModifiers => Modifiers;
-
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
       this.ReduceDurability();
     }
   }
 
-  public void OnAttack(Body target) {
-    var floor = target.floor;
-    var pos = target.pos;
-    GameModel.main.EnqueueEvent(() => {
-      if (target.IsDead) {
-        floor.Put(new ThickMushroom(pos));
-      }
-    });
-  }
+  public int Modify(int input) => input - 2;
 
-  public object Modify(object input) {
-    var sporedStatus = player.statuses.FindOfType<SporedStatus>();
-    if (sporedStatus != null) {
-      sporedStatus.Remove();
-      this.IncreaseDurability(sporedStatus.stacks);
-    }
-    return input;
-  }
-
-  internal override string GetStats() => "Take 2 less attack damage.\nDeal 1 less attack damage.\nMoving reduces durability.\nConsumes the Spored status to increase Durability.\nKilling an enemy creates a Mushroom in its place.";
+  internal override string GetStats() => "Blocks 2 attack damage.\nMoving reduces durability.";
 
   public override List<MethodInfo> GetAvailableMethods(Player actor) {
     var methods = base.GetAvailableMethods(actor);
@@ -89,57 +62,82 @@ internal class ItemBodyMycelium : EquippableItem, IDurable, IAttackHandler, IAct
   }
 }
 
-[ObjectInfo("colored_transparent_packed_34", "")]
-internal class ItemKingshroomHat : EquippableItem, IDurable, IActionPerformedHandler {
-  public ItemKingshroomHat() {
+[ObjectInfo("mushroom-cap", "It looks like a muffin from a far, but up close you realize the black dots are spongy and porous to try and catch whatever's floating in the air.")]
+internal class ItemMuffinCap : EquippableItem, IDurable {
+  public ItemMuffinCap() {
     durability = maxDurability;
+    OnEquipped += HandleEquipped;
+    OnUnequipped += HandleUnequipped;
+  }
+
+  private void HandleEquipped(Player obj) {
+    obj.statuses.OnAdded += HandleStatusAdded;
+  }
+
+  private void HandleUnequipped(Player obj) {
+    obj.statuses.OnAdded -= HandleStatusAdded;
+  }
+
+  private void HandleStatusAdded(Status status) {
+    if (status is SporedStatus) {
+      status.actor.Heal(1);
+      status.actor.statuses.Remove(status);
+      this.ReduceDurability();
+    }
   }
 
   public override EquipmentSlot slot => EquipmentSlot.Head;
 
   public int durability { get; set; }
 
-  public int maxDurability => 30;
+  public int maxDurability => 5;
 
-  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    if (final.Type == ActionType.WAIT && !player.statuses.Has<GerminatingStatus>()) {
-      player.statuses.Add(new GerminatingStatus());
-      this.ReduceDurability();
-    }
-  }
-
-  internal override string GetStats() => "When you stand still for 3 turns, emit toxic spores.";
-}
-
-[ObjectInfo("colored_transparent_packed_861", "")]
-class GerminatingStatus : StackingStatus, IActionPerformedHandler {
-  public override StackingMode stackingMode => StackingMode.Add;
-  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    if (final.Type == ActionType.WAIT) {
-      stacks++;
-      if (stacks >= 3) {
-        foreach (var a in actor.floor.AdjacentActors(actor.pos).Where((who) => who != actor)) {
-          a.statuses.Add(new SporedStatus(20));
-        }
-        stacks = 0;
-      }
-    } else {
-      stacks = 0;
-    }
-  }
-
-  public override string Info() => "Something is growing on your head!";
+  internal override string GetStats() => "Prevents Spored Status, and heals you for 1 HP instead when you get it. ";
 }
 
 [ObjectInfo("colored_transparent_packed_657", "")]
-internal class ItemKingshroomPowder : Item, IDurable, IUsable {
+public class ItemKingshroomPowder : Item, IDurable {
   public ItemKingshroomPowder() {
     durability = maxDurability;
   }
 
   public int durability { get; set; }
 
-  public int maxDurability => 10;
+  public int maxDurability => 3;
+
+  public void Infect(Player player, Actor target) {
+    if (target.IsNextTo(player)) {
+      target.statuses.Add(new InfectedStatus());
+      this.ReduceDurability();
+    }
+  }
+
+  internal override string GetStats() => "Infect an adjacent creature. Each turn, it takes 1 damage and spawns a Thick Mushroom adjacent to it.";
+}
+
+[ObjectInfo("infected")]
+class InfectedStatus : Status {
+  public override void Step() {
+    var tile = Util.RandomPick(actor.floor.GetAdjacentTiles(actor.pos).Where((t) => t.CanBeOccupied()));
+    if (tile != null) {
+      actor.floor.Put(new ThickMushroom(tile.pos));
+    }
+    GameModel.main.EnqueueEvent(() => actor.TakeDamage(1));
+  }
+
+  public override string Info() => "Each turn, take 1 damage and spawn a Thick Mushroom adjacent to you.";
+  public override bool Consume(Status other) => true;
+}
+
+[ObjectInfo("germ", "")]
+internal class ItemGerm : Item, IDurable, IUsable {
+  public ItemGerm() {
+    durability = maxDurability;
+  }
+
+  public int durability { get; set; }
+
+  public int maxDurability => 7;
 
   public void Use(Actor a) {
     // create a ring of mushrooms around you.
@@ -149,8 +147,10 @@ internal class ItemKingshroomPowder : Item, IDurable, IUsable {
     this.ReduceDurability();
   }
 
-  internal override string GetStats() => "Create friendly mushrooms. They do nothing for 3-6 turns and then explode, dealing 1 damage to adjacent enemies.";
+
+  internal override string GetStats() => "Spawn allied Thick Mushrooms around you. You can swap positions with them.";
 }
+
 
 class ThickMushroom : AIActor {
   public ThickMushroom(Vector2Int pos) : base(pos) {
@@ -158,30 +158,11 @@ class ThickMushroom : AIActor {
     hp = baseMaxHp = 3;
     ClearTasks();
     ai = AI().GetEnumerator();
-    OnDeath += HandleDeath;
-  }
-
-  private void HandleDeath() {
-    ReleaseSpores();
   }
 
   public IEnumerable<ActorTask> AI() {
-    // yield return new WaitTask(this, 30);
     while(true) {
-      yield return new WaitTask(this, UnityEngine.Random.Range(3, 7));
-      GameModel.main.EnqueueEvent(() => {
-        actor.statuses.Add(new SurprisedStatus());
-      });
-      yield return new WaitTask(this, 1);
-      yield return new GenericTask(this, (_) => {
-        Kill();
-      });
-    }
-  }
-
-  public void ReleaseSpores() {
-    foreach (var actor in floor.AdjacentActors(pos).Where((actor) => actor.faction == Faction.Enemy)) {
-      actor.TakeDamage(1);
+      yield return new WaitTask(this, 999);
     }
   }
 }

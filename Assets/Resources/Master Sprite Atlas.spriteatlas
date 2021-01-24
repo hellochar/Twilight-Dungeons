@@ -33,7 +33,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5133871
+    totalSpriteSurfaceArea: 5134127
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -7376,6 +7376,7 @@ SpriteAtlas:
   - {fileID: -6532741355290048802, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b, type: 3}
   - {fileID: 21300000, guid: dd63d0dc0a7bedb4095d130f23bf22a5, type: 3}
   - {fileID: 21300000, guid: 5e5b6eec62efc8345acfedf7eb3ab9f2, type: 3}
+  - {fileID: 21300000, guid: af1e7b0d8ae6887498a650ac58efdcd5, type: 3}
   - {fileID: 21300000, guid: 686aa92d0bed17d448514adec36cd374, type: 3}
   - {fileID: 21300000, guid: 8a77c04d6ab46854eaa6241498e9ac46, type: 3}
   - {fileID: -553817365315116960, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
@@ -15251,6 +15252,7 @@ SpriteAtlas:
   - poisoned_2
   - thornshield
   - jackal-fur
+  - damage-tick
   - roguelikeDungeon_transparent
   - thornmail
   - hanging-vines-1x2

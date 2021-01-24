@@ -14,21 +14,22 @@ public class InterestingThingsController : MonoBehaviour {
   public GameObject buttonPrefab;
 
   void Start() {
-    player.OnMove += HandleMove;
+    GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
     buttonPrefab.SetActive(false);
     UpdateItems();
   }
 
   bool needsUpdate = false;
-  private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+  private void HandlePlayersChoice() {
     needsUpdate = true;
   }
 
+
   void Update() {
-    // if (needsUpdate) {
+    if (needsUpdate) {
       UpdateItems();
-      // needsUpdate = false;
-    // }
+      needsUpdate = false;
+    }
   }
 
   void UpdateItems() {

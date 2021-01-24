@@ -32,7 +32,7 @@ public class PlayerController : ActorController {
   }
 
   private void HandlePlayerChangeFloor(Floor arg1, Floor arg2) {
-    AudioClipStore.main.playerTakeStairs.Play(1);
+    // AudioClipStore.main.playerTakeStairs.Play(1);
   }
 
 

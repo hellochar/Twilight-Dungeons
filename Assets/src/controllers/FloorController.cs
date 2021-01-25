@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// Adds and removes Tile prefabs to match the state of a Floor variable.
-public class FloorController : MonoBehaviour, IPointerClickHandler {
+public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler {
 
   public Floor floor;
   public static Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
@@ -108,27 +108,9 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     }
   }
 
-  private InputHold hold;
-  void Update() {
-    if (Input.GetMouseButtonDown(0)) {
-      hold = new InputHold(Time.time);
-    } else if (Input.GetMouseButton(0) && (hold?.ShouldTrigger(Time.time) ?? false)) {
-      hold.triggered = true;
-      Handheld.Vibrate();
-      Debug.Log("Triggered!");
-      ShowObjectInfoPopupOverMousePosition();
-    } else if (Input.GetMouseButtonUp(0)) {
-      hold = null;
-    }
-  }
-
-  void ShowObjectInfoPopupOverMousePosition() {
-    var mousePosition = Input.mousePosition;
-    var worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
-    var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
-
+  public Entity[] GetVisibleEntitiesInLayerOrder(Vector2Int pos) {
     if (!floor.InBounds(pos)) {
-      return;
+      return new Entity[0];
     }
 
     var tile = floor.tiles[pos];
@@ -136,12 +118,37 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
     var itemOnGround = tile.item;
     var grass = tile.grass;
 
-    var entityList = new Entity[] { body, itemOnGround, grass, tile };
-    
-    var entity = entityList.Where((e) => e != null && e.isVisible).FirstOrDefault();
+    return new Entity[] { body, itemOnGround, grass, tile }.Where(e => e != null && e.isVisible).ToArray();
+  }
 
-    if (entity != null) {
-      ShowPopupFor(entity);
+  public void OnPointerDown(PointerEventData eventData) {
+    if (!CameraZoom.IsZoomGuardActive) {
+      hold = new InputHold(Time.time);
+    }
+  }
+
+  public void OnPointerUp(PointerEventData eventData) {
+    hold = null;
+  }
+
+  private InputHold hold;
+  void Update() {
+    if (hold != null && hold.ShouldTrigger(Time.time)) {
+      hold.triggered = true;
+      ShowObjectInfoPopupOverTouch();
+    }
+  }
+
+  void ShowObjectInfoPopupOverTouch() {
+    var mousePosition = Input.mousePosition;
+    var worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
+    var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+
+    var tappedEntity = GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
+
+    if (tappedEntity != null) {
+      Handheld.Vibrate();
+      ShowPopupFor(tappedEntity);
     }
   }
 
@@ -179,17 +186,13 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
   }
 
   public void UserInteractAt(Vector2Int pos, PointerEventData eventData) {
-    var tile = floor.tiles[pos];
-    var body = tile.body;
-    var itemOnGround = tile.item;
-    var grass = tile.grass;
-
-    if (TryGetFirstEntityClickHandler(out var handler, body, grass, itemOnGround, tile)) {
+    var entities = GetVisibleEntitiesInLayerOrder(pos);
+    if (TryGetFirstEntityClickHandler(out var handler, entities)) {
       handler.PointerClick(eventData);
     }
   }
 
-  bool TryGetEntityClickHandler(Entity e, out IEntityClickedHandler handler) {
+  bool TryGetEntityClickedHandler(Entity e, out IEntityClickedHandler handler) {
     if (e != null && gameObjectMap.TryGetValue(e, out var gameObject)) {
       if (gameObject.TryGetComponent<IEntityController>(out var controller)) {
         if (controller is IEntityClickedHandler h) {
@@ -204,7 +207,7 @@ public class FloorController : MonoBehaviour, IPointerClickHandler {
 
   bool TryGetFirstEntityClickHandler(out IEntityClickedHandler handler, params Entity[] entities) {
     foreach (var entity in entities) {
-      if (TryGetEntityClickHandler(entity, out handler)) {
+      if (TryGetEntityClickedHandler(entity, out handler)) {
         return true;
       }
     }

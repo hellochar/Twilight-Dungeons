@@ -49,12 +49,13 @@ public class AIActor : Actor {
     return base.Step();
   }
 
-  protected override void GoToNextTask() {
-    if (taskQueue.Count == 1 && task.IsDoneOrForceOpen()) {
-      // queue up another task from the list
-      var task = MoveAIEnumerator();
-      taskQueue.Add(task);
-    }
-    base.GoToNextTask();
-  }
+  /// this is technically correct but it created a bunch of errors; fix later
+  // protected override void GoToNextTask() {
+  //   if (taskQueue.Count == 1 && task.IsDoneOrForceOpen()) {
+  //     // queue up another task from the list
+  //     var task = MoveAIEnumerator();
+  //     taskQueue.Add(task);
+  //   }
+  //   base.GoToNextTask();
+  // }
 }

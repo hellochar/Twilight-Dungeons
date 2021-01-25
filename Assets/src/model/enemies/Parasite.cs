@@ -8,7 +8,6 @@ public class Parasite : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
     [ActionType.ATTACK] = 1f,
-    [ActionType.WAIT] = 0.5f,
   };
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
 
@@ -22,7 +21,7 @@ public class Parasite : AIActor {
 
   private void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor actor && !(actor is Parasite)) {
-      actor.statuses.Add(new ParasiteStatus(16));
+      actor.statuses.Add(new ParasiteStatus(100));
       Kill();
     }
   }
@@ -101,14 +100,14 @@ public class ParasiteStatus : StackingStatus {
   }
 
   public override void Step() {
-    if (stacks % 3 == 0) {
+    if (stacks % 10 == 0 && stacks != 100) {
       GameModel.main.EnqueueEvent(() => {
-        actor?.TakeDamage(1);
+        actor?.TakeAttackDamage(1, actor);
       });
       OnAttack?.Invoke();
     }
     stacks--;
   }
 
-  public override string Info() => "A parasite is inside you! Take 1 attack damage per 3 turns.\nHealing cures immediately.\nIf you die, two parasites spawn around your position.";
+  public override string Info() => "A parasite is inside you! Take 1 attack damage per 10 turns.\nHealing cures immediately.\nIf you die, a Parasite Egg spawns over your corpse.";
 }

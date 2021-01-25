@@ -21,7 +21,7 @@ public class InterestingThingsController : MonoBehaviour {
 
   bool needsUpdate = false;
   private void HandlePlayersChoice() {
-    needsUpdate = true;
+    GameModel.main.EnqueueEvent(() => needsUpdate = true);
   }
 
 

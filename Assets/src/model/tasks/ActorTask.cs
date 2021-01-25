@@ -78,6 +78,7 @@ public abstract class ActorTask : IEnumerator<BaseAction> {
 }
 
 public static class ActorTaskExtensions {
+  // x && !false = x && true = x
   public static bool IsDoneOrForceOpen(this ActorTask task) => task.IsDone() && !task.forceOpen;
 }
 

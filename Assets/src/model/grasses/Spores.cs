@@ -7,7 +7,6 @@ public class Spores : Grass {
   public Spores(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
-    OnDeath += HandleDeath;
   }
 
   private void HandleEnterFloor() {
@@ -20,11 +19,12 @@ public class Spores : Grass {
 
   private void HandleActorEnter(Actor actor) {
     if (!(actor is SporeBloat)) {
+      Activate();
       Kill();
     }
   }
 
-  private void HandleDeath() {
+  public void Activate() {
     var freeSpots = floor.GetAdjacentTiles(pos).Where(x => x.CanBeOccupied()).ToList();
     freeSpots.Shuffle();
     foreach (var tile in freeSpots.Take(3)) {

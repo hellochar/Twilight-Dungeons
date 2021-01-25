@@ -107,7 +107,7 @@ public class FloorGenerator {
     floor.depth = 20;
     // Encounters.AddWildekins(floor, room0);
     // Encounters.AddCrabs(floor, room0);
-    // Encounters.AddParasite(floor, room0);
+    Encounters.AddParasite(floor, room0);
     // Encounters.AddCoralmoss(floor, room0);
     // Encounters.AddHangingVines(floor, room0);
     // Encounters.AddEveningBells(floor, room0);
@@ -120,7 +120,7 @@ public class FloorGenerator {
     // Encounters.AddPumpkin(floor, room0);
     // Encounters.ScatteredBoombugs.Apply(floor, room0);
     // Encounters.AFewSnails(floor, room0);
-    // Encounters.AFewBlobs(floor, room0);
+    Encounters.AFewBlobs(floor, room0);
     floor.depth = 0;
     #endif
 

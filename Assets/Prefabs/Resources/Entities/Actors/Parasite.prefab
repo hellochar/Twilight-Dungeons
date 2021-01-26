@@ -17,6 +17,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.a
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.r
+      value: 0.65
+      objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_RootOrder
@@ -81,17 +91,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -5923946582500250790, guid: af4df3188a01af048a678513709d8278,
+      objectReference: {fileID: 21300000, guid: 0dbaa1a6308aaec499d6fb8d31e5c06a,
         type: 3}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}

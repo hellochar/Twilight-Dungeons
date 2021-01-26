@@ -31,7 +31,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bf4cfcd4b3e5d34c9f752ce35f414e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pulses: 0
 --- !u!1001 &507988456908467566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,6 +99,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8509550459451208454, guid: ff64a074359db7640bceb3339bafac95,
         type: 3}
+    - target: {fileID: 3777084247053353605, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_Name

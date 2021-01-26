@@ -32,6 +32,8 @@ public class TurnManager {
   public event Action<ISteppable> OnStep;
   public event Action OnTimePassed;
   public event Action<CannotPerformActionException> OnPlayerCannotPerform;
+  public ISteppable activeEntity;
+  public bool forceStaggerThisTurn = false;
   private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
   public TurnManager(GameModel model) {
     this.model = model;
@@ -97,6 +99,7 @@ public class TurnManager {
       }
 
       var entity = FindActiveEntity();
+      activeEntity = entity;
 
       if (model.time > entity.timeNextAction) {
         throw new Exception("time is " + model.time + " but " + entity + " had a turn at " + entity.timeNextAction);
@@ -137,9 +140,10 @@ public class TurnManager {
 
       try {
         entity.DoStep();
+        OnStep?.Invoke(entity);
       } catch (NoActionException) {
         if (entity == model.player) {
-          // stop if it's the player
+          // stop turn loop if it's the player
           break;
         } else {
           // TODO just hack it
@@ -147,9 +151,9 @@ public class TurnManager {
           // this actually shouldn't happen to AIs
           Debug.LogWarning(entity + " NoActionException");
         }
-      } catch (CannotPerformActionException e) {
+      } catch (CannotPerformActionException exception) {
         if (entity == model.player) {
-          OnPlayerCannotPerform?.Invoke(e);
+          OnPlayerCannotPerform?.Invoke(exception);
           break;
         } else {
           // TODO make this better
@@ -159,19 +163,16 @@ public class TurnManager {
         // just a catch-all; we don't have to do anything
       }
 
-      if (model.player.IsDead) {
-        // make whole room visible as a hack for now
-        model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
-        // yield break;
-      }
+      model.DrainEventQueue();
 
-      if (!isFirstIteration && entity is Actor a && a.isVisible) {
+      bool shouldStagger = !isFirstIteration && entity is Entity e && e.isVisible && (e is Actor || forceStaggerThisTurn);
+      if (shouldStagger) {
+        forceStaggerThisTurn = false;
         // stagger actors just a bit for juice
         yield return new WaitForSeconds(JUICE_STAGGER_SECONDS);
       }
 
-      model.DrainEventQueue();
-      OnStep?.Invoke(entity);
+      activeEntity = null;
       isFirstIteration = false;
     } while (true);
   }

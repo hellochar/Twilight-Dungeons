@@ -13,6 +13,10 @@ public class GrassController : MonoBehaviour, IEntityController {
   }
 
   private void HandleNoteworthyAction() {
+    // when the grass's step does a noteworthy action
+    if (GameModel.main.turnManager.activeEntity == grass && grass.isVisible) {
+      GameModel.main.turnManager.forceStaggerThisTurn = true;
+    }
     if (GetComponent<GrowAtStart>() == null) {
       var pulse = gameObject.AddComponent<PulseAnimation>();
       if (pulse != null) {

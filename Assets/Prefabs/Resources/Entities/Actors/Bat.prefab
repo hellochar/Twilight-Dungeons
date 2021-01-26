@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0ac59aa12ec4844b86d142fe24af10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bloodColor: {r: 0.5638095, g: 0.592, b: 0.09083599, a: 0.5}
 --- !u!1001 &4585729961026341023
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,6 +7,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.a
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.b
+      value: 0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.g
+      value: 0.37960774
+      objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.r
+      value: 0.20078433
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -24,6 +49,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -35,16 +65,6 @@ PrefabInstance:
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
@@ -69,14 +89,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
-        type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: a2a493b3652ea624d8b4a95595992591,
         type: 3}
+    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}

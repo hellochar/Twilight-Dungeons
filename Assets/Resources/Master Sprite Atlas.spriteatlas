@@ -33,7 +33,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5134127
+    totalSpriteSurfaceArea: 5137199
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -62,6 +62,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ae759e521ee37ca46ac7401b9dc0f160, type: 3}
   - {fileID: 21300000, guid: f4daf282ca573d0499bbf123e1ab87bb, type: 3}
   - {fileID: 21300000, guid: e35e6092607d0b643a2586cf8046491d, type: 3}
+  - {fileID: -2126246720042785711, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
+  - {fileID: -174042169833062346, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
+  - {fileID: 8958670535985375444, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
+  - {fileID: 4711116328407865328, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
   - {fileID: 21300000, guid: 8bd456237d101f44680f91bd37f10a74, type: 3}
   - {fileID: -6032677125156830045, guid: bb8b3e336c594944391cf23a2c1df40a, type: 3}
   - {fileID: 6498142676335720151, guid: bb8b3e336c594944391cf23a2c1df40a, type: 3}
@@ -2181,6 +2185,7 @@ SpriteAtlas:
   - {fileID: 1917699227143800744, guid: b9f79d364c160a74984f0639eda855cf, type: 3}
   - {fileID: 21300000, guid: 6f5b0f462c22f2e45b60aa8ee7d8ccdb, type: 3}
   - {fileID: 21300000, guid: c582f276f700821448285f69440db231, type: 3}
+  - {fileID: 21300000, guid: 0dbaa1a6308aaec499d6fb8d31e5c06a, type: 3}
   - {fileID: 21300000, guid: 396f1eb6e89dcc74e9f7be972dcbb64b, type: 3}
   - {fileID: 21300000, guid: 8f31b8d6e13b2d545a95481918d68abe, type: 3}
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
@@ -7376,11 +7381,14 @@ SpriteAtlas:
   - {fileID: -6532741355290048802, guid: 742f48bc2e7b8b24eae1dd9ea117bd8b, type: 3}
   - {fileID: 21300000, guid: dd63d0dc0a7bedb4095d130f23bf22a5, type: 3}
   - {fileID: 21300000, guid: 5e5b6eec62efc8345acfedf7eb3ab9f2, type: 3}
+  - {fileID: 21300000, guid: d173e6fcf8a7f154e99acaba49b2acc9, type: 3}
   - {fileID: 21300000, guid: af1e7b0d8ae6887498a650ac58efdcd5, type: 3}
   - {fileID: 21300000, guid: 686aa92d0bed17d448514adec36cd374, type: 3}
   - {fileID: 21300000, guid: 8a77c04d6ab46854eaa6241498e9ac46, type: 3}
   - {fileID: -553817365315116960, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: -4611009959399730175, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
+  - {fileID: 21300000, guid: 4e996e9d3ecb6b34da4031a80baa2a65, type: 3}
+  - {fileID: 21300000, guid: d58ad4cd3ab97734aac279ebe56231ff, type: 3}
   - {fileID: 21300000, guid: 2dd03ccd0a5dcbb4cab08e9b386ffca3, type: 3}
   - {fileID: 21300000, guid: d10473ddcf13dbe46a911763432a4655, type: 3}
   - {fileID: 21300000, guid: 62d7722e2d7563b468471d867555b6cb, type: 3}
@@ -7390,7 +7398,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: c87b69eeeb4926d498a1f51a2bd74586, type: 3}
   - {fileID: 21300000, guid: f7aac50f633140940b092ed05755b914, type: 3}
+  - {fileID: 21300000, guid: 24e1cc9fda07a6f4fb2960d8e24f024e, type: 3}
   - {fileID: 21300000, guid: 4c795eafbe0b47f4ba29ac7c9d34ee6c, type: 3}
+  - {fileID: 21300000, guid: 412ebcbf536e16f429a709567bf38f2a, type: 3}
   - {fileID: -1831654172775069049, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
   - {fileID: 3784030360291194049, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
   - {fileID: 4226751866010327236, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
@@ -7938,6 +7948,10 @@ SpriteAtlas:
   - thornbush-sapling
   - coral
   - outdoor_32x32
+  - blood_0
+  - blood_1
+  - blood_2
+  - blood_3
   - Sleep
   - roguelikeSheet_transparent_desaturated_1211
   - roguelikeSheet_transparent_desaturated_1505
@@ -10057,6 +10071,7 @@ SpriteAtlas:
   - Spam_Cupcake text borders_0
   - sporebloat
   - wildwood-wreath
+  - parasite
   - cute-dungeon
   - colored_packed
   - Player
@@ -15252,11 +15267,14 @@ SpriteAtlas:
   - poisoned_2
   - thornshield
   - jackal-fur
+  - germ
   - damage-tick
   - roguelikeDungeon_transparent
   - thornmail
   - hanging-vines-1x2
   - hanging-vines-bottom
+  - scrollbar
+  - mushroom-cap
   - item shadow
   - background
   - colored_original
@@ -15266,7 +15284,9 @@ SpriteAtlas:
   - charmberry
   - heart
   - happyland
+  - living-armor
   - Square
+  - infected
   - roguelikeDungeon_transparent_269
   - roguelikeDungeon_transparent_299
   - roguelikeDungeon_transparent_513

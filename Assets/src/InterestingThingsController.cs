@@ -72,12 +72,10 @@ public class InterestingThingsController : MonoBehaviour {
 
   /// interesting things: bodies and grasses
   IEnumerable<Entity> GetInterestingThings() {
-    if (player.IsDead) {
-      yield break;
-    }
-    foreach (var pos in player.floor.EnumerateCircle(player.pos, player.visibilityRange)) {
-      var actor = player.floor.tiles[pos].actor;
-      var grass = player.floor.grasses[pos];
+    var floor = GameModel.main.currentFloor;
+    foreach (var pos in floor.EnumerateCircle(player.pos, player.visibilityRange)) {
+      var actor = floor.tiles[pos].actor;
+      var grass = floor.grasses[pos];
       if (actor != null && actor != player && actor.isVisible) {
         yield return actor;
       }

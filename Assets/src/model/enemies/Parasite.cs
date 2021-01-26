@@ -66,7 +66,7 @@ public class ParasiteEgg : Body {
   }
 }
 
-[ObjectInfo("colored_transparent_packed_270", "oh noooooooo")]
+[ObjectInfo("parasite", "oh noooooooo")]
 public class ParasiteStatus : StackingStatus {
   public override StackingMode stackingMode => StackingMode.Independent;
   public override bool isDebuff => base.isDebuff;

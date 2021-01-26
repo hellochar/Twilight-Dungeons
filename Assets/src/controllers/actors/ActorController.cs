@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ActorController : BodyController {
-  public Actor actor => (Actor) body;
+  public Actor actor => (Actor)body;
+  public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
 
   // Start is called before the first frame update
@@ -25,6 +26,7 @@ public class ActorController : BodyController {
 
     actor.OnMove += HandleMove;
     actor.OnActionPerformed += HandleActionPerformed;
+    actor.OnTakeAnyDamage += HandleTakeAnyDamage;
 
     actor.statuses.OnAdded += HandleStatusAdded;
     actor.statuses.OnRemoved += HandleStatusRemoved;
@@ -36,6 +38,18 @@ public class ActorController : BodyController {
     // timeNextActionText.GetComponent<TMPro.TMP_Text>().text = actor.timeNextAction.ToString();
 
     Update();
+  }
+
+  private void HandleTakeAnyDamage(int dmg) {
+    if (dmg > 0) {
+      var tileGameObject = GameModelController.main.CurrentFloorController.GameObjectFor(actor.tile);
+      var blood = PrefabCache.Effects.Instantiate("Blood", tileGameObject.transform);
+      blood.GetComponentInChildren<SpriteRenderer>().color = bloodColor;
+      var scale = Random.Range(0.25f, 0.5f);
+      blood.transform.localScale = new Vector3(scale, scale, 1);
+      blood.transform.localRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+      blood.transform.localPosition = Random.insideUnitCircle * 0.25f;
+    }
   }
 
   private void HandleMove(Vector2Int arg1, Vector2Int arg2) {
@@ -153,7 +167,28 @@ public class ActorController : BodyController {
           new MoveNextToTargetTask(player, actor.pos),
           new AttackTask(player, actor)
         );
-      break;
+        break;
     }
+  }
+}
+
+public static class SpriteColorExtractor {
+  public static Color32 AverageColorFromTexture(Texture2D tex, float alphaThreshold = 0.2f) {
+    Color32[] texColors = tex.GetPixels32();
+    int total = 0;
+    float r = 0;
+    float g = 0;
+    float b = 0;
+
+    for (int i = 0; i < total; i++) {
+      if (texColors[i].a > alphaThreshold) {
+        r += texColors[i].r;
+        g += texColors[i].g;
+        b += texColors[i].b;
+        total++;
+      }
+    }
+
+    return new Color32((byte)(r / total), (byte)(g / total), (byte)(b / total), 1);
   }
 }

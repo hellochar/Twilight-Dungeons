@@ -4,7 +4,6 @@ using System.Linq;
 
 /// Trying to reapply an existing status will call "Stack"
 public abstract class Status : IStepModifier {
-  public virtual bool isDebuff => false;
   public event Action OnRemoved;
   private string firstRemoveStackTrace;
   private StatusList m_list;
@@ -27,7 +26,10 @@ public abstract class Status : IStepModifier {
       }
     }
   }
+
+  public virtual bool isDebuff => false;
   public Actor actor => list?.actor;
+  public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Status", ""));
 
   /// Called when list and actor are setup
   public virtual void Start() {}
@@ -35,7 +37,6 @@ public abstract class Status : IStepModifier {
   /// Called right before the status is removed
   public virtual void End() {}
 
-  public virtual string displayName => Util.WithSpaces(GetType().Name.Replace("Status", ""));
   public abstract string Info();
 
   /// The parameter will be of the same type as this type.

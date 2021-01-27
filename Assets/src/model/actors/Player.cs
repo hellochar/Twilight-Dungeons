@@ -5,15 +5,15 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Player : Actor {
+  public int water = 0;
   public int deepestDepthVisited = 1;
   internal readonly Item Hands;
-
+  private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
   public Inventory inventory { get; }
   public Equipment equipment { get; }
-  public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
 
+  public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
   public override float turnPriority => 10;
-  public int water = 0;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
@@ -31,8 +31,6 @@ public class Player : Actor {
     OnActionPerformed += HandleActionPerformed;
     statuses.OnAdded += HandleStatusAdded;
   }
-
-  private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
 
   private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (floor != null) {

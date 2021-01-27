@@ -33,7 +33,7 @@ public class ItemCharmBerry : Item, IStackable {
     stacks--;
   }
 
-private IEnumerable<ActorTask> CharmAI(AIActor actor) {
+  private IEnumerable<ActorTask> CharmAI(AIActor actor) {
     var player = GameModel.main.player;
 
     // player.OnEnterFloor += () => {

@@ -45,7 +45,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
     #if UNITY_EDITOR
-      LogEnemyHP();
+    // LogEnemyHP();
     #endif
   }
 

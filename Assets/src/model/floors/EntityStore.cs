@@ -69,8 +69,6 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
     if (entity.floor != null) {
       throw new Exception($"Trying to re-Put non-moving Entity {entity}!");
     }
-    /*
-    */
     PlacementBehavior(entity);
 
     grid[entity.pos.x, entity.pos.y] = entity;

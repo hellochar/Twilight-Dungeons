@@ -10,12 +10,7 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
   void Start() {
     // this will work even while the gameobject is inactive.
-    Settings.OnChanged += HandleSettingsChanged;
-    MatchSettings();
-  }
-
-  private void HandleSettingsChanged() {
-    MatchSettings();
+    Settings.OnChanged += MatchSettings;
   }
 
   void MatchSettings() {

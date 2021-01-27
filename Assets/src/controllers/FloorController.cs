@@ -118,7 +118,11 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     var itemOnGround = tile.item;
     var grass = tile.grass;
 
-    return new Entity[] { body, itemOnGround, grass, tile }.Where(e => e != null && e.isVisible).ToArray();
+    return new Entity[] { body, itemOnGround, grass }
+      .Where(e => e != null && e.isVisible)
+      /// always allow clicking the Tile.
+      .Append(tile)
+      .ToArray();
   }
 
   public void OnPointerDown(PointerEventData eventData) {

@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InterestingThingsController : MonoBehaviour {
+public class SidePanelController : MonoBehaviour {
   public Player player => GameModel.main.player;
   public Dictionary<string, GameObject> entries = new Dictionary<string, GameObject>();
   public Dictionary<string, Entity> interestingEntities;
@@ -15,8 +15,13 @@ public class InterestingThingsController : MonoBehaviour {
 
   void Start() {
     GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
+    Settings.OnChanged += MatchSettings;
     buttonPrefab.SetActive(false);
     UpdateItems();
+  }
+
+  private void MatchSettings() {
+    gameObject.SetActive(Settings.main.showSidePanel);
   }
 
   bool needsUpdate = false;

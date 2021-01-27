@@ -3712,7 +3712,7 @@ RectTransform:
   m_Children:
   - {fileID: 440820544}
   m_Father: {fileID: 676388685}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -9754,7 +9754,7 @@ GameObject:
   - component: {fileID: 1068907380}
   - component: {fileID: 1068907383}
   m_Layer: 5
-  m_Name: Interesting Things Panel
+  m_Name: Side Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9835,6 +9835,7 @@ MonoBehaviour:
   creaturesContainer: {fileID: 431245555}
   grassesContainer: {fileID: 2087598845}
   buttonPrefab: {fileID: 539203642}
+  needsUpdate: 0
 --- !u!1 &1069400810
 GameObject:
   m_ObjectHideFlags: 0
@@ -14436,6 +14437,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 273105572}
     m_Modifications:
+    - target: {fileID: 997625159063588157, guid: 8f8243337644080438505bcc1a3e58e5,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1158133316695950468, guid: 8f8243337644080438505bcc1a3e58e5,
         type: 3}
       propertyPath: m_textInfo.lineCount

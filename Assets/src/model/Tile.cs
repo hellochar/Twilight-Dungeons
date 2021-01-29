@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Tile : Entity, IModifierProvider {
+public abstract class Tile : Entity {
   public TileVisiblity visibility = TileVisiblity.Unexplored;
   private Vector2Int _pos;
 
@@ -14,7 +14,7 @@ public abstract class Tile : Entity, IModifierProvider {
     set { }
   }
 
-  public IEnumerable<object> MyModifiers => Util.Yield<object>(this, grass, item);
+  public override IEnumerable<object> MyModifiers => base.MyModifiers.Append(grass).Append(item);
 
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;

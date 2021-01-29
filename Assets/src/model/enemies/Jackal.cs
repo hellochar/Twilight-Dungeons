@@ -15,10 +15,10 @@ public class Jackal : AIActor {
     faction = Faction.Enemy;
     hp = baseMaxHp = 2;
     ai = AIs.JackalAI(this).GetEnumerator();
-    OnDeath += HandleDeath;
   }
 
-  private void HandleDeath() {
+  public override void HandleDeath() {
+    base.HandleDeath();
     var jackalsToAlert = floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal).ToList();
     GameModel.main.EnqueueEvent(() => {
       foreach (var jackal in jackalsToAlert) {

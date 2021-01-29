@@ -12,7 +12,6 @@ public class HydraHeart : AIActor, IBaseActionModifier {
     faction = Faction.Enemy;
     hp = baseMaxHp = 13;
     ai = AI().GetEnumerator();
-    OnDeath += HandleDeath;
   }
 
   private IEnumerable<ActorTask> AI() {
@@ -43,7 +42,8 @@ public class HydraHeart : AIActor, IBaseActionModifier {
 
   private bool CanSpawnHydraHeadAt(Vector2Int p) => floor.tiles[p].CanBeOccupied() && floor.TestVisibility(pos, p);
 
-  private void HandleDeath() {
+  public override void HandleDeath() {
+    base.HandleDeath();
     GameModel.main.EnqueueEvent(() => {
       foreach (var head in heads) {
         head.Kill();

@@ -66,7 +66,7 @@ public class ParasiteEgg : Body {
 }
 
 [ObjectInfo("parasite", "oh noooooooo")]
-public class ParasiteStatus : StackingStatus {
+public class ParasiteStatus : StackingStatus, IDeathHandler {
   public override StackingMode stackingMode => StackingMode.Independent;
   public override bool isDebuff => base.isDebuff;
   public event System.Action OnAttack;
@@ -75,12 +75,10 @@ public class ParasiteStatus : StackingStatus {
   }
 
   public override void Start() {
-    actor.OnDeath += HandleActorDeath;
     actor.OnHeal += HandleHeal;
   }
 
   public override void End() {
-    actor.OnDeath -= HandleActorDeath;
     actor.OnHeal -= HandleHeal;
   }
 
@@ -90,7 +88,7 @@ public class ParasiteStatus : StackingStatus {
   }
 
 
-  public void HandleActorDeath() {
+  public void HandleDeath() {
     var floor = actor.floor;
     var pos = actor.pos;
     GameModel.main.EnqueueEvent(() => {

@@ -12,20 +12,7 @@ public interface IBodyTakeAttackDamageHandler {
 }
 
 [Serializable]
-public class Body : Entity, IModifierProvider {
-  private static IEnumerable<object> SelfEnumerator<T>(T item) {
-    yield return item;
-  }
-  public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this);
-  [NonSerialized] /// nonserialized by design
-  public List<object> nonserializedModifiers = new List<object>();
-
-  [OnDeserialized]
-  public void OnDeserialized() {
-    nonserializedModifiers = new List<object>();
-  }
-
-
+public class Body : Entity {
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;

@@ -55,7 +55,7 @@ public class GameModel {
       var seed = UnityEngine.Random.Range(0, 100000);
 
       #if UNITY_EDITOR
-      // seed = 33415;
+      seed = 20002;
       // Analyze();
       #endif
 
@@ -129,7 +129,10 @@ public class GameModel {
       eventQueue.Clear();
 
       // invoke actions in this generation
-      queue.ForEach(a => a());
+      for (var i = 0; i < queue.Count; i++) {
+        queue[i].Invoke();
+      }
+      // queue.ForEach(a => a());
 
       // if no more triggers, we're done
       if (eventQueue.Count == 0) {

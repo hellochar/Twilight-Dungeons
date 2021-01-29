@@ -12,10 +12,10 @@ public class Boombug : AIActor {
     hp = baseMaxHp = 1;
     faction = Faction.Neutral;
     ai = AIs.BugAI(this).GetEnumerator();
-    OnDeath += HandleDeath;
   }
 
-  private void HandleDeath() {
+  public override void HandleDeath() {
+    base.HandleDeath();
     var floor = this.floor;
     // leave a corpse on death
     // explode and hurt everything nearby
@@ -50,17 +50,16 @@ public class ItemBoombugCorpse : Item, IStackable {
   }
 }
 
-public class BoombugCorpse : Actor {
+public class BoombugCorpse : Actor, IDeathHandler {
   private bool exploded = false;
   public event Action OnExploded;
   public BoombugCorpse(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
     timeNextAction += 1;
-    OnDeath += HandleDeath;
     SetTasks(new ExplodeTask(this));
   }
 
-  private void HandleDeath() {
+  public void HandleDeath() {
     if (!exploded) {
       // We died before we could explode! Leave a corpse item instead.
       var inventory = new Inventory(new ItemBoombugCorpse(1));

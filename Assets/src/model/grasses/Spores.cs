@@ -28,7 +28,6 @@ internal class SporeBloat : AIActor {
   public SporeBloat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
     faction = Faction.Neutral;
-    OnDeath += HandleDeath;
     ai = AI();
     ClearTasks();
   }
@@ -43,7 +42,8 @@ internal class SporeBloat : AIActor {
     });
   }
 
-  private void HandleDeath() {
+  public override void HandleDeath() {
+    base.HandleDeath();
     foreach (var actor in floor.AdjacentActors(pos).Where(actor => !(actor is SporeBloat))) {
       if (!actor.statuses.Has<SporedStatus>()) {
         actor.statuses.Add(new SporedStatus(20));

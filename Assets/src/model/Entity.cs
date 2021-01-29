@@ -1,12 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
+public interface IDeathHandler {
+  void HandleDeath();
+}
+
 [Serializable]
-public abstract class Entity {
-  [field:NonSerialized] /// TODO-SERIALIZATION handle
-  public event Action OnDeath;
+public abstract class Entity : IModifierProvider {
   public readonly Guid guid = System.Guid.NewGuid();
   public readonly HashSet<TimedEvent> timedEvents = new HashSet<TimedEvent>();
   public bool IsDead { get; private set; }
@@ -22,8 +26,15 @@ public abstract class Entity {
   public Actor actor => body as Actor;
   public virtual string displayName => Util.WithSpaces(GetType().Name);
   public virtual string description => ObjectInfo.GetDescriptionFor(this);
-
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
+  public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this);
+  [NonSerialized] /// nonserialized by design
+  public List<object> nonserializedModifiers = new List<object>();
+
+  [OnDeserialized]
+  public void OnDeserialized() {
+    nonserializedModifiers = new List<object>();
+  }
 
   public Entity() {
     this.timeCreated = GameModel.main.time;
@@ -67,7 +78,7 @@ public abstract class Entity {
     /// TODO remove references to this Actor if needed
     if (!IsDead) {
       IsDead = true;
-      OnDeath?.Invoke();
+      OnDeath();
       foreach (var timedEvent in timedEvents) {
         GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
       }
@@ -85,6 +96,12 @@ public abstract class Entity {
     timedEvents.Add(evt);
     model.turnManager.RegisterTimedEvent(evt);
     return evt;
+  }
+
+  private void OnDeath() {
+    foreach (var handler in this.Of<IDeathHandler>()) {
+      handler.HandleDeath();
+    }
   }
 }
 

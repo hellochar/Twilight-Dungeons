@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DeathScreen : MonoBehaviour {
+public class DeathScreen : MonoBehaviour, IDeathHandler {
   GameObject blackOverlay;
 
   void Start() {
     blackOverlay = transform.Find("BlackOverlay").gameObject;
-    GameModel.main.player.OnDeath += HandlePlayerDeath;
+    GameModel.main.player.nonserializedModifiers.Add(this);
     gameObject.SetActive(false);
   }
 
-  private void HandlePlayerDeath() {
+  public void HandleDeath() {
     gameObject.SetActive(true);
   }
 

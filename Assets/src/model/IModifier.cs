@@ -20,8 +20,12 @@ static class Modifiers {
         yield return t;
       }
       if (s is IModifierProvider p && p != provider) {
+        /// if p itself *is* a provider, we may double count if p's modifiers contain itself.
+        /// prevent this
         foreach (var subT in p.Of<T>()) {
-          yield return subT;
+          if (!subT.Equals(s)) {
+            yield return subT;
+          }
         }
       }
     }

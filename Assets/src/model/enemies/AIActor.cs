@@ -5,15 +5,14 @@ using UnityEngine;
 /// An actor whose actions are controlled by some sort of AI.
 /// This AI decides what actions the actor takes.
 /// TODO we should use composition for this instead, eventually
-public class AIActor : Actor {
+public class AIActor : Actor, IDeathHandler {
   protected IEnumerator<ActorTask> ai;
   public Inventory inventory = new Inventory(1);
   public AIActor(Vector2Int pos) : base(pos) {
-    OnDeath += HandleDeath;
     SetTasks(new SleepTask(this));
   }
 
-  private void HandleDeath() {
+  public virtual void HandleDeath() {
     var floor = this.floor;
     var pos = this.pos;
     GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));

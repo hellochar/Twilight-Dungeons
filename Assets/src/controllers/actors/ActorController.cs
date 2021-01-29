@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : BodyController, IBodyMoveHandler, IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler {
+public class ActorController : BodyController, IBodyMoveHandler, IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler, IDeathHandler {
   public Actor actor => (Actor)body;
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
@@ -16,8 +16,6 @@ public class ActorController : BodyController, IBodyMoveHandler, IActionPerforme
     base.Start();
 
     animator = sprite?.GetComponent<Animator>();
-
-    actor.OnDeath += HandleDeath;
 
     actor.OnAttackGround += HandleAttackGround;
 
@@ -55,7 +53,7 @@ public class ActorController : BodyController, IBodyMoveHandler, IActionPerforme
     AudioClipStore.main.move.PlayAtPoint(transform.position, 0.5f);
   }
 
-  private void HandleDeath() {
+  public virtual void HandleDeath() {
     AudioClipStore.main.death.PlayAtPoint(transform.position);
   }
 

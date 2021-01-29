@@ -9,14 +9,14 @@ public class PlayerController : ActorController {
   public override void Start() {
     base.Start();
     player.OnHeal += HandleHeal;
-    player.OnDeath += HandleDeath;
     player.inventory.OnItemAdded += HandleInventoryItemAdded;
     player.equipment.OnItemAdded += HandleEquipmentItemAdded;
     player.equipment.OnItemRemoved += HandleItemRemoved;
     GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
   }
 
-  private void HandleDeath() {
+  public override void HandleDeath() {
+    base.HandleDeath();
     var model = GameModel.main;
     model.EnqueueEvent(() => {
       model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());

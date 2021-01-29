@@ -35,13 +35,12 @@ class Coralmoss : Grass, ISteppable {
   public float turnPriority => 50;
 }
 
-internal class Coral : Body, IAnyDamageTakenModifier {
+internal class Coral : Body, IAnyDamageTakenModifier, IDeathHandler {
   public Coral(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 3;
-    OnDeath += HandleDeath;
   }
 
-  private void HandleDeath() {
+  public void HandleDeath() {
     var floor = this.floor;
     var item = new ItemOnGround(pos, new ItemCoralChunk(1), pos);
     GameModel.main.EnqueueEvent(() => {

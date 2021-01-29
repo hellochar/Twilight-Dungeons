@@ -8,7 +8,11 @@ using UnityEngine.Events;
 
 [Serializable]
 public class Floor {
+  public readonly int width;
+  public readonly int height;
   public int depth;
+  private PathfindingManager pathfindingManager;
+  private float lastStepTime = 0;
 
   /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
   public StaticEntityGrid<Tile> tiles;
@@ -17,7 +21,6 @@ public class Floor {
   public MovingEntityList<Body> bodies;
   public HashSet<Entity> entities;
   public List<ISteppable> steppableEntities;
-
 
   [field:NonSerialized] /// controller only (for now)
   public event Action<Entity> OnEntityAdded;
@@ -61,16 +64,11 @@ public class Floor {
     }
   }
 
-  private PathfindingManager pathfindingManager;
-
-  public readonly int width;
-
-  public readonly int height;
-
   public Floor(int depth, int width, int height) {
     this.depth = depth;
     this.width = width;
     this.height = height;
+    this.lastStepTime = GameModel.main.time;
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Grass>(this);
     this.items = new StaticEntityGrid<ItemOnGround>(this, ItemPlacementBehavior);
@@ -155,8 +153,6 @@ public class Floor {
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
   }
-
-  private float lastStepTime = 0;
 
   internal void RecordLastStepTime(float time) {
     lastStepTime = time;

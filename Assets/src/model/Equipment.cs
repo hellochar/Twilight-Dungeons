@@ -5,16 +5,16 @@
 public class Equipment : Inventory {
   public Equipment(Player player) : base(5) {
     Player = player;
-    OnItemAdded += HandleItemAdded;
-    OnItemRemoved += HandleItemRemoved;
   }
 
-  private void HandleItemAdded(Item item, Entity source) {
+  protected override void HandleItemAdded(Item item, Entity source) {
+    base.HandleItemAdded(item, source);
     var e = (EquippableItem) item;
     e.OnEquipped(Player);
   }
 
-  private void HandleItemRemoved(Item item) {
+  protected override void HandleItemRemoved(Item item) {
+    base.HandleItemRemoved(item);
     var e = (EquippableItem) item;
     e.OnUnequipped(Player);
   }

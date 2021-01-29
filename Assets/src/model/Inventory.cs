@@ -9,9 +9,9 @@ public class Inventory : IEnumerable<Item> {
   private Item[] items;
   public int capacity => items.Length;
   public virtual Item this[int i] => items[i];
-  [field:NonSerialized]
+  [field:NonSerialized] /// Controller only
   public event Action<Item, Entity> OnItemAdded;
-  [field:NonSerialized]
+  [field:NonSerialized] /// Controller only
   public event Action<Item> OnItemRemoved;
 
   public Inventory(params Item[] items) {
@@ -27,7 +27,7 @@ public class Inventory : IEnumerable<Item> {
         bool isConsumed = i.Merge(stackable);
         if (isConsumed) {
           item.Destroy();
-          OnItemAdded?.Invoke(item, source);
+          HandleItemAdded(item, source);
           return true;
         }
       }
@@ -54,7 +54,7 @@ public class Inventory : IEnumerable<Item> {
     }
     items[slot] = item;
     item.inventory = this;
-    OnItemAdded?.Invoke(item, source);
+    HandleItemAdded(item, source);
     return true;
   }
 
@@ -65,6 +65,14 @@ public class Inventory : IEnumerable<Item> {
     } else {
       return AddItem(item, slot ?? -1, source);
     }
+  }
+
+  protected virtual void HandleItemAdded(Item item, Entity source) {
+    OnItemAdded?.Invoke(item, source);
+  }
+
+  protected virtual void HandleItemRemoved(Item item) {
+    OnItemRemoved?.Invoke(item);
   }
 
   internal void TryDropAllItems(Floor floor, Vector2Int pos) {
@@ -108,7 +116,7 @@ public class Inventory : IEnumerable<Item> {
     if (slot < 0) {
       return false;
     }
-    OnItemRemoved?.Invoke(item);
+    HandleItemRemoved(item);
     items[slot] = null;
     item.inventory = null;
     return true;

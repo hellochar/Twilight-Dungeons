@@ -20,7 +20,7 @@ public abstract class Entity {
   public virtual string description => ObjectInfo.GetDescriptionFor(this);
 
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
-  [field:NonSerialized]
+  [field:NonSerialized] /// TODO-SERIALIZATION handle
   public event Action OnDeath;
 
   public Entity() {

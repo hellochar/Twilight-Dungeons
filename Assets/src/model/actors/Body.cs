@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-public delegate void OnDealAttackDamage(int dmg, Body target);
 public interface IBodyMoveHandler {
   void HandleMove(Vector2Int newPos, Vector2Int oldPos);
 }
@@ -18,7 +17,7 @@ public class Body : Entity, IModifierProvider {
     yield return item;
   }
   public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this);
-  [NonSerialized]
+  [NonSerialized] /// nonserialized by design
   public List<object> nonserializedModifiers = new List<object>();
 
   [OnDeserialized]
@@ -66,14 +65,14 @@ public class Body : Entity, IModifierProvider {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
-  [field:NonSerialized]
+  [field:NonSerialized] /// TODO-SERIALIZATION handle
   public event Action<int> OnTakeAnyDamage;
   /// <summary>amount, new hp</summary>
 
-  [field:NonSerialized]
+  [field:NonSerialized] /// TODO-SERIALIZATION handle
   public event Action<int, int> OnHeal;
 
-  [field:NonSerialized]
+  [field:NonSerialized] /// TODO-SERIALIZATION handle
   /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
   public event Action<int, Actor> OnAttacked;
   
@@ -111,7 +110,7 @@ public class Body : Entity, IModifierProvider {
   public void TakeAttackDamage(int damage, Actor source) {
     damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
-    source.OnDealAttackDamage?.Invoke(damage, this);
+    source.OnDealAttackDamage(damage, this);
     OnTakeAttackDamage(damage, hp, source);
     TakeDamage(damage);
   }

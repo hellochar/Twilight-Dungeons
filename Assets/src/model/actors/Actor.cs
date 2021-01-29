@@ -7,7 +7,14 @@ using UnityEngine;
 
 // Called when the attached actor attacks a target
 public interface IAttackHandler {
+  /// damage is after Actor modifiers, but before target modifiers
   void OnAttack(int damage, Body target);
+}
+
+/// Called when Actor deals attack damage (including 0). This includes 
+public interface IDealAttackDamageHandler {
+  /// damage is after both Actor modifiers and target modifiers
+  void OnDealAttackDamage(int damage, Body target);
 }
 
 public interface IActionPerformedHandler {
@@ -54,15 +61,13 @@ public class Actor : Body, ISteppable {
   [NonSerialized]
   protected List<ActorTask> taskQueue = new List<ActorTask>();
 
-  [field:NonSerialized] /// controller only, no saving needed
+  [field:NonSerialized] /// Controller only
   public event Action<ActorTask> OnSetTask;
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
-  [field:NonSerialized]
-  public OnDealAttackDamage OnDealAttackDamage;
   /// gets called on any ground targeted attack
-  [field:NonSerialized]
+  [field:NonSerialized] /// Controller only
   public event Action<Vector2Int> OnAttackGround;
 
   public Actor(Vector2Int pos) : base(pos) {
@@ -210,6 +215,13 @@ public class Actor : Body, ISteppable {
   private void OnActionPerformed(BaseAction final, BaseAction initial) {
     foreach (var handler in this.Of<IActionPerformedHandler>()) {
       handler.HandleActionPerformed(final, initial);
+    }
+  }
+
+  /// trigger this Actor dealing attack damage.
+  public void OnDealAttackDamage(int damage, Body target) {
+    foreach (var handler in this.Of<IDealAttackDamageHandler>()) {
+      handler.OnDealAttackDamage(damage, target);
     }
   }
 }

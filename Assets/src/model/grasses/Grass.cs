@@ -13,7 +13,7 @@ public class Grass : Entity {
     set { }
   }
 
-  [NonSerialized]
+  [NonSerialized] /// controller only
   public OnNoteworthyAction OnNoteworthyAction = delegate {};
 
   public Grass(Vector2Int pos) : base() {

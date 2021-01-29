@@ -23,7 +23,7 @@ public class GameModel {
 
   public int activeFloorIndex = 0;
   public float time;
-  [NonSerialized]
+  [NonSerialized] /// lazy instantiation will take care of this
   private TurnManager _turnManager;
   public TurnManager turnManager {
     get {
@@ -35,11 +35,11 @@ public class GameModel {
   }
   public Floor currentFloor { get => floors[activeFloorIndex]; }
 
-  [field:NonSerialized]
+  [field:NonSerialized] /// Controller only
   public event Action<Floor, Floor> OnPlayerChangeFloor;
 
   /// Events to process in response to state changes
-  [NonSerialized]
+  [NonSerialized] /// This should be empty on save
   private List<Action> eventQueue = new List<Action>();
 
   public static GameModel main;

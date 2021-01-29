@@ -10,8 +10,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
   public int water = 0;
   public int deepestDepthVisited = 1;
   internal readonly ItemHands Hands;
-  [NonSerialized]
-  private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
+  [NonSerialized] /// lazily instantiated
+  private HashSet<Actor> lastVisibleEnemies;
   public Inventory inventory { get; }
   public Equipment equipment { get; }
 
@@ -35,7 +35,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     GameModel.main.EnqueueEvent(() => {
       var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
       // if there's a newly visible enemy from last turn, cancel the current move task
-      var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => !lastVisibleEnemies.Contains(enemy));
+      var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => lastVisibleEnemies != null && !lastVisibleEnemies.Contains(enemy));
       if (isNewlyVisibleEnemy && task is FollowPathTask) {
         ClearTasks();
       }

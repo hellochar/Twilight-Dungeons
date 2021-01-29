@@ -18,9 +18,9 @@ public class Floor {
   public List<ISteppable> steppableEntities;
 
 
-  [field:NonSerialized]
+  [field:NonSerialized] /// controller only (for now)
   public event Action<Entity> OnEntityAdded;
-  [field:NonSerialized]
+  [field:NonSerialized] /// TODO-SERIALIZATION handle
   public event Action<Entity> OnEntityRemoved;
 
   /// min inclusive, max exclusive in terms of map width/height
@@ -29,14 +29,14 @@ public class Floor {
   public Vector2 center => new Vector2(width / 2.0f, height / 2.0f);
 
   /// abstract bsp root
-  [NonSerialized]
+  [NonSerialized] /// not used beyond generator
   internal Room root;
   /// all rooms (terminal bsp nodes). Sorted by 
-  [NonSerialized]
+  [NonSerialized] /// not used beyond generator
   internal List<Room> rooms;
-  [NonSerialized]
+  [NonSerialized] /// not used beyond generator
   internal Room upstairsRoom;
-  [NonSerialized]
+  [NonSerialized] /// not used beyond generator
   internal Room downstairsRoom;
 
   public Upstairs upstairs {
@@ -401,7 +401,7 @@ public class Floor {
 [Serializable]
 class PathfindingManager {
   /// if null, we need a recompute
-  [NonSerialized]
+  [NonSerialized] /// lazily instantiated
   private PathFind.Grid grid;
   private Floor floor;
   public PathfindingManager(Floor floor) {

@@ -36,7 +36,6 @@ public class Actor : Body, ISteppable {
 
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(statuses.list).Append(this.task);
 
-  [NonSerialized]
   public StatusList statuses;
   public override int maxHp => Modifiers.Process(this.MaxHPModifiers(), baseMaxHp);
 
@@ -48,9 +47,14 @@ public class Actor : Body, ISteppable {
     set => SetTasks(value);
   }
   public IEnumerable<ActorTask> tasks => taskQueue.AsEnumerable();
+
+  /// ActorTasks contain IEnumerators which cannot be serialized. We work
+  // around this by only saving the Player - and when they do load,
+  /// the taskQueue will be empty.
   [NonSerialized]
   protected List<ActorTask> taskQueue = new List<ActorTask>();
-  [field:NonSerialized]
+
+  [field:NonSerialized] /// controller only, no saving needed
   public event Action<ActorTask> OnSetTask;
 
   public int visibilityRange = 7;
@@ -70,7 +74,6 @@ public class Actor : Body, ISteppable {
 
   [OnDeserialized]
   public void OnDeserialized(StreamingContext c) {
-    statuses = new StatusList(this);
     taskQueue = new List<ActorTask>();
   }
 

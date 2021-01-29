@@ -30,13 +30,12 @@ public class HangingVines : Grass {
 
   private BoundStatus appliedStatus;
   public void HandleActorEnterBelow(Actor who) {
-    appliedStatus = new BoundStatus();
+    appliedStatus = new BoundStatus(this);
     who.statuses.Add(appliedStatus);
     OnNoteworthyAction();
-    appliedStatus.OnRemoved += HandleStatusRemoved;
   }
 
-  private void HandleStatusRemoved() {
+  public void BoundStatusEnded() {
     // when someone is able to break free; remove these vines
     appliedStatus = null;
     Kill();
@@ -92,10 +91,18 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
 }
 
 public class BoundStatus : StackingStatus, IBaseActionModifier {
+  private readonly HangingVines owner;
+
   public override bool isDebuff => true;
   public override StackingMode stackingMode => StackingMode.Max;
-  public BoundStatus() {
+  public BoundStatus(HangingVines owner) {
     stacks = 3;
+    this.owner = owner;
+  }
+
+  public override void End() {
+    owner.BoundStatusEnded();
+    base.End();
   }
 
   public override string Info() => $"You must break free of vines before you can move or attack!\n{stacks} stacks left.";

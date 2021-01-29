@@ -14,7 +14,7 @@ public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
     if (!isSharp) {
       isSharp = true;
       OnSharpened?.Invoke();
-      AddTimedEvent(10, () => Kill());
+      AddTimedEvent(10, Kill);
     }
   }
 

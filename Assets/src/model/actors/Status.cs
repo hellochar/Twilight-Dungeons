@@ -3,22 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// Trying to reapply an existing status will call "Stack"
+[Serializable]
 public abstract class Status : IStepModifier {
+  [field:NonSerialized] /// Controller only
   public event Action OnRemoved;
-  private string firstRemoveStackTrace;
   private StatusList m_list;
   /// <summary>Should only be set by the StatusList.</summary>
   public StatusList list {
     get => m_list;
     set {
       if (value == null && m_list != null) {
-        if (firstRemoveStackTrace != null) {
-          throw new Exception("Removing " + this + "twice! First stack trace was " + firstRemoveStackTrace);
-        } else {
-          firstRemoveStackTrace = Environment.StackTrace;
-          OnRemoved?.Invoke();
-          End();
-        }
+        OnRemoved?.Invoke();
+        End();
       }
       m_list = value;
       if (value != null) {
@@ -58,6 +54,7 @@ public abstract class Status : IStepModifier {
 
 /// Number stacking statuses will just "add" their numbers when re-applied rather than having the old one
 /// removed
+[Serializable]
 public abstract class StackingStatus : Status {
   public virtual StackingMode stackingMode => StackingMode.Add;
   private int m_stacks;
@@ -97,6 +94,7 @@ public abstract class StackingStatus : Status {
 
 public enum StackingMode { Add, Max, Ignore, Independent }
 
+[Serializable]
 public class StatusList {
   public Actor actor;
   public List<Status> list;

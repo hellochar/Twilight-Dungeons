@@ -72,6 +72,8 @@ public abstract class Entity {
     }
   }
 
+  /// Take great care - timed events are serialized by the method name as a string; anonymous delegates
+  /// names may change without warning. Code renames can also cause save corruption.
   public TimedEvent AddTimedEvent(float time, Action action) {
     GameModel model = GameModel.main;
     var evt = new TimedEvent(this, model.time + time, action);

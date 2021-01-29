@@ -5,6 +5,7 @@ using System.Linq;
 using Priority_Queue;
 using UnityEngine;
 
+[Serializable]
 public class TimedEvent {
   public readonly float time;
   public readonly Action action;

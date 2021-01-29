@@ -152,10 +152,7 @@ internal class PoisonedStatus : StackingStatus {
 
   public void IndependentStep() {
     if (stacks >= 3) {
-      actor.AddTimedEvent(0.01f, () => {
-        actor.TakeDamage(3);
-        stacks -= 3;
-      });
+      actor.AddTimedEvent(0.01f, TickDamage);
     }
     if (--duration <= 0) {
       --stacks;
@@ -164,6 +161,11 @@ internal class PoisonedStatus : StackingStatus {
     if (stacks > 0) {
       actor.AddTimedEvent(1, IndependentStep);
     }
+  }
+
+  public void TickDamage() {
+    actor.TakeDamage(3);
+    stacks -= 3;
   }
 
   public override string Info() => $"At 3 stacks, take 3 damage and remove stacks.\nLose one stack every 5 turns.";

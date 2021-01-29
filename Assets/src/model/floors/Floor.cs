@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -72,17 +73,19 @@ public class Floor {
     this.height = height;
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Grass>(this);
-    this.items = new StaticEntityGrid<ItemOnGround>(this, (item) => {
-      var newPosition = BreadthFirstSearch(item.pos, (_) => true)
-        .Where(ItemOnGround.CanOccupy)
-        .First()
-        .pos;
-      item.pos = newPosition;
-    });
+    this.items = new StaticEntityGrid<ItemOnGround>(this, ItemPlacementBehavior);
     this.bodies = new MovingEntityList<Body>(this);
     this.entities = new HashSet<Entity>();
     this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
+  }
+
+  private void ItemPlacementBehavior(ItemOnGround item) {
+    var newPosition = BreadthFirstSearch(item.pos, (_) => true)
+      .Where(ItemOnGround.CanOccupy)
+      .First()
+      .pos;
+    item.pos = newPosition;
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {
@@ -406,7 +409,12 @@ class PathfindingManager {
   private Floor floor;
   public PathfindingManager(Floor floor) {
     this.floor = floor;
-    /// TODO-SERIALIZE we need to re-add these i think
+    floor.OnEntityAdded += HandleEntityAdded;
+    floor.OnEntityRemoved += HandleEntityRemoved;
+  }
+
+  [OnDeserialized]
+  private void OnDeserialized() {
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
   }

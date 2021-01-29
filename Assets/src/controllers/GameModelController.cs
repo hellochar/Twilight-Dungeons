@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class GameModelController : MonoBehaviour {
   public static GameModelController main;
+  [NonSerialized]
   GameModel model;
   private GameObject floorPrefab;
 

@@ -11,6 +11,7 @@ using UnityEngine.UI;
 /// Renders one Item in the UI.
 public class ItemController : MonoBehaviour {
   private static GameObject ActionButtonPrefab;
+  [NonSerialized]
   public Item item;
   private Image image;
   private TMPro.TMP_Text stacksText;

@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public abstract class ItemSlotController : MonoBehaviour {
   protected GameObject itemChild;
   public abstract Item item { get; }
+  [NonSerialized]
   public Item activeItem;
 
   public virtual void Update() {

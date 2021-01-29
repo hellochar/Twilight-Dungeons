@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,6 +9,7 @@ using UnityEngine.UI;
 /// Adds and removes Tile prefabs to match the state of a Floor variable.
 public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler {
 
+  [NonSerialized]
   public Floor floor;
   public static Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
   private Dictionary<Entity, GameObject> gameObjectMap = new Dictionary<Entity, GameObject>();

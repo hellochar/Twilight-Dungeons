@@ -44,7 +44,6 @@ public enum OverlapBehavior { KillOld, RepositionNew }
 [Serializable]
 public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
   private T[,] grid;
-  /// TODO-SERIALIZATION re-set this!!!
   private readonly Action<T> PlacementBehavior;
 
   public int width => floor.width;

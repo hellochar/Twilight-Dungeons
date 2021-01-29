@@ -6,7 +6,9 @@ using UnityEngine;
  * Destroy - self handled
  */
 public class ActorTaskController : MonoBehaviour {
+  [NonSerialized]
   public Actor actor;
+  [NonSerialized]
   public ActorTask task;
 
   public virtual void Start() {

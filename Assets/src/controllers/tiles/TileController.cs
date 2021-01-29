@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TileController : MonoBehaviour, IEntityController, IEntityClickedHandler {
+  [NonSerialized]
   public Tile tile;
   private SpriteRenderer[] renderers;
   private SpriteMask mask;

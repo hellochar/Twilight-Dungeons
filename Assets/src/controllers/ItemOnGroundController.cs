@@ -9,6 +9,7 @@ using UnityEngine.UI;
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
 public class ItemOnGroundController : MonoBehaviour, IEntityController, IEntityClickedHandler {
+  [NonSerialized]
   public ItemOnGround itemOnGround;
   private SpriteRenderer spriteRenderer;
 

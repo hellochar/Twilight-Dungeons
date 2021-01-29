@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerStatusesController : MonoBehaviour, IStatusAddedHandler {
   GameObject statusIconPrefab;
+  [NonSerialized]
   Player player;
   // Start is called before the first frame update
   void Start() {

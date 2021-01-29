@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public enum PulseType { Smaller, Larger }
 
 public class GrassController : MonoBehaviour, IEntityController {
+  [NonSerialized]
   public Grass grass;
   public PulseType pulses = PulseType.Smaller;
 

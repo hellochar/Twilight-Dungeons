@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StatusIconController : MonoBehaviour {
+  [NonSerialized]
   public Status status;
   Image icon;
   TMPro.TMP_Text text;

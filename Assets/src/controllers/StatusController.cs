@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StatusController : MonoBehaviour {
+  [NonSerialized]
   public Status status;
   public virtual void Start() {
     status.OnRemoved += HandleRemoved;

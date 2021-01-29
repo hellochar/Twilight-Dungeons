@@ -7,18 +7,6 @@ public class Equipment : Inventory {
     Player = player;
   }
 
-  protected override void HandleItemAdded(Item item, Entity source) {
-    base.HandleItemAdded(item, source);
-    var e = (EquippableItem) item;
-    e.OnEquipped(Player);
-  }
-
-  protected override void HandleItemRemoved(Item item) {
-    base.HandleItemRemoved(item);
-    var e = (EquippableItem) item;
-    e.OnUnequipped(Player);
-  }
-
   public override Item this[int i] {
     get {
       // handle the weapon slot specially - if 

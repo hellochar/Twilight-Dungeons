@@ -39,7 +39,7 @@ public class Body : Entity, IModifierProvider {
           Tile newTile = floor.tiles[_pos];
           newTile.BodyEntered(this);
         } else {
-          OnMoveFailed?.Invoke(value, _pos);
+          OnMoveFailed(value);
         }
       }
     }
@@ -70,9 +70,7 @@ public class Body : Entity, IModifierProvider {
     }
   }
 
-  [field:NonSerialized]
-  /// <summary>failed position, old position</summary>
-  public event Action<Vector2Int, Vector2Int> OnMoveFailed;
+  protected virtual void OnMoveFailed(Vector2Int wantedPos) {}
 
   [field:NonSerialized]
   public event Action<int, int, Actor> OnTakeAttackDamage;

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
-public class Player : Actor, IBodyMoveHandler {
+public class Player : Actor, IBodyMoveHandler, IAttackHandler {
   public int water = 0;
   public int deepestDepthVisited = 1;
   internal readonly ItemHands Hands;
@@ -26,8 +26,6 @@ public class Player : Actor, IBodyMoveHandler {
     Hands = new ItemHands(this);
     hp = baseMaxHp = 12;
     /// TODO-SERIALIZATION hook these back up on re-serialize
-    OnAttack += HandleAttack;
-    OnMoveFailed += HandleMoveFailed;
     OnTakeAttackDamage += HandleTakeDamage;
     OnActionPerformed += HandleActionPerformed;
     statuses.OnAdded += HandleStatusAdded;
@@ -66,7 +64,7 @@ public class Player : Actor, IBodyMoveHandler {
     }
   }
 
-  private void HandleMoveFailed(Vector2Int arg1, Vector2Int arg2) {
+  protected override void OnMoveFailed(Vector2Int target) {
     ClearTasks();
   }
 
@@ -101,11 +99,8 @@ public class Player : Actor, IBodyMoveHandler {
     }
   }
 
-  void HandleAttack(int damage, Body target) {
+  public void OnAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
-    foreach (var handler in Modifiers.Of<IAttackHandler>(this)) {
-      handler.OnAttack(target);
-    }
     if (item is IDurable durable && target is Actor) {
       GameModel.main.EnqueueEvent(durable.ReduceDurability);
     }

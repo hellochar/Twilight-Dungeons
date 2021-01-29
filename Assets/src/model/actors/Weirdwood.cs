@@ -99,7 +99,7 @@ internal class VileGrowth : Grass, ISteppable {
 internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
   internal override string GetStats() => "After you make an attack, get a free movement.";
 
-  public void OnAttack(Body target) {
+  public void OnAttack(int damage, Body target) {
     player.statuses.Add(new FreeMoveStatus());
     this.ReduceDurability();
   }
@@ -131,7 +131,7 @@ internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandle
 
   public int maxDurability => 5;
 
-  public void OnAttack(Body target) {
+  public void OnAttack(int damage, Body target) {
     if (target is Actor actor) {
       actor.SetTasks(new RunAwayTask(actor, player.pos, 3));
     }

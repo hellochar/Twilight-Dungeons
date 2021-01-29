@@ -5,10 +5,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-public class ActionCosts : Dictionary<ActionType, float> {
-  public ActionCosts(IDictionary<ActionType, float> dictionary) : base(dictionary) {}
-  public ActionCosts() : base() {}
-  public ActionCosts Copy() => new ActionCosts(this);
+// Called when the attached actor attacks a target
+public interface IAttackHandler {
+  void OnAttack(int damage, Body target);
 }
 
 [Serializable]
@@ -48,9 +47,6 @@ public class Actor : Body, ISteppable {
   public Faction faction = Faction.Neutral;
   [field:NonSerialized]
   public OnDealAttackDamage OnDealAttackDamage;
-  /// gets called on a successful hit on a target
-  /// this is (so far) only gameplay events so it *can* be serialized
-  public event Action<int, Body> OnAttack;
   /// gets called on any ground targeted attack
   [field:NonSerialized]
   public event Action<Vector2Int> OnAttackGround;
@@ -73,8 +69,14 @@ public class Actor : Body, ISteppable {
     if (target.IsDead) {
       throw new CannotPerformActionException("Cannot attack dead target.");
     }
-    OnAttack?.Invoke(damage, target);
+    OnAttack(damage, target);
     target.Attacked(damage, this);
+  }
+
+  private void OnAttack(int damage, Body target) {
+    foreach (var handler in this.Of<IAttackHandler>()) {
+      handler.OnAttack(damage, target);
+    }
   }
 
   /// Attack the target, using this Actor's final attack damage.
@@ -194,6 +196,12 @@ public class Actor : Body, ISteppable {
 }
 
 public enum Faction { Ally, Neutral, Enemy }
+
+public class ActionCosts : Dictionary<ActionType, float> {
+  public ActionCosts(IDictionary<ActionType, float> dictionary) : base(dictionary) {}
+  public ActionCosts() : base() {}
+  public ActionCosts Copy() => new ActionCosts(this);
+}
 
 public class Attack {
   public readonly Body target;

@@ -5,27 +5,6 @@ using System.Linq;
 using Priority_Queue;
 using UnityEngine;
 
-[Serializable]
-public class TimedEvent {
-  public readonly float time;
-  public readonly Action action;
-  public readonly Entity entity;
-  public TimedEvent(Entity e, float time, Action action) {
-    this.entity = e;
-    this.time = time;
-    this.action = action;
-    e.OnDeath += HandleDeath;
-  }
-
-  private void HandleDeath() {
-    GameModel.main.turnManager.RemoveEvent(this);
-  }
-
-  public void Done() {
-    entity.OnDeath -= HandleDeath;
-  }
-}
-
 public class TurnManager {
   // private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
@@ -40,11 +19,12 @@ public class TurnManager {
     this.model = model;
   }
 
-  public void AddTimedEvent(TimedEvent evt) {
+  /// technically this is just a cache of all entities' timedEvents
+  public void RegisterTimedEvent(TimedEvent evt) {
     timedEvents.Enqueue(evt, evt.time);
   }
 
-  public void RemoveEvent(TimedEvent evt) {
+  public void UnregisterTimedEvent(TimedEvent evt) {
     timedEvents.TryRemove(evt);
   }
 
@@ -130,7 +110,7 @@ public class TurnManager {
           }
           first.action();
           first.Done();
-          RemoveEvent(first);
+          UnregisterTimedEvent(first);
           model.DrainEventQueue();
         }
       }

@@ -5,12 +5,16 @@ using UnityEngine;
 
 [Serializable]
 public abstract class Entity {
-  public bool IsDead { get; private set; }
+  [field:NonSerialized] /// TODO-SERIALIZATION handle
+  public event Action OnDeath;
   public readonly Guid guid = System.Guid.NewGuid();
-  public abstract Vector2Int pos { get; set; }
-  public float timeCreated { get; }
-  public float age => GameModel.main.time - timeCreated;
+  public readonly HashSet<TimedEvent> timedEvents = new HashSet<TimedEvent>();
+  public bool IsDead { get; private set; }
   public Floor floor { get; private set; }
+  public float timeCreated { get; }
+  public abstract Vector2Int pos { get; set; }
+
+  public float age => GameModel.main.time - timeCreated;
   public Tile tile => floor.tiles[pos];
   public Grass grass => floor.grasses[pos];
   public ItemOnGround item => floor.items[pos];
@@ -20,8 +24,6 @@ public abstract class Entity {
   public virtual string description => ObjectInfo.GetDescriptionFor(this);
 
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
-  [field:NonSerialized] /// TODO-SERIALIZATION handle
-  public event Action OnDeath;
 
   public Entity() {
     this.timeCreated = GameModel.main.time;
@@ -66,6 +68,9 @@ public abstract class Entity {
     if (!IsDead) {
       IsDead = true;
       OnDeath?.Invoke();
+      foreach (var timedEvent in timedEvents) {
+        GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
+      }
       floor.Remove(this);
     } else {
       Debug.LogWarning("Calling Kill() on already dead Entity! Ignoring");
@@ -77,7 +82,25 @@ public abstract class Entity {
   public TimedEvent AddTimedEvent(float time, Action action) {
     GameModel model = GameModel.main;
     var evt = new TimedEvent(this, model.time + time, action);
-    model.turnManager.AddTimedEvent(evt);
+    timedEvents.Add(evt);
+    model.turnManager.RegisterTimedEvent(evt);
     return evt;
+  }
+}
+
+[Serializable]
+public class TimedEvent {
+  public readonly float time;
+  /// serialized by method name as a string. Don't use anonymous delegates. Don't rename method.
+  public readonly Action action;
+  public readonly Entity owner;
+  public TimedEvent(Entity owner, float time, Action action) {
+    this.owner = owner;
+    this.time = time;
+    this.action = action;
+  }
+
+  public void Done() {
+    owner.timedEvents.Remove(this);
   }
 }

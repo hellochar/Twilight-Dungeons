@@ -45,6 +45,7 @@ public class Deathbloom : Grass, IActorEnterHandler {
   }
 }
 
+[Serializable]
 internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
   public ItemDeathbloomFlower(int stacks) {
     this.stacks = stacks;

@@ -33,6 +33,7 @@ public class Wildwood : Plant {
   }
 }
 
+[Serializable]
 [ObjectInfo("colored_transparent_packed_179", "It seems to bend and twist on its own, as if it were wielding you!")]
 internal class ItemWildwoodRod : EquippableItem, IWeapon, IDurable, IActionPerformedHandler {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;

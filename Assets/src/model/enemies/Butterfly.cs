@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo("butterfly", "")]
 public class ItemButterfly : Item, IUsable {
   public void Use(Actor a) {

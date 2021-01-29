@@ -1,3 +1,4 @@
+[System.Serializable]
 [ObjectInfo(spriteName: "pumpkin-helmet", flavorText: "It slows you down but it protects your noggin.")]
 internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenModifier, IActionCostModifier {
   public override EquipmentSlot slot => EquipmentSlot.Head;

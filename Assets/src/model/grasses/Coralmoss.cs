@@ -53,6 +53,8 @@ internal class Coral : Body, IAnyDamageTakenModifier, IDeathHandler {
   }
 }
 
+[System.Serializable]
+
 [ObjectInfo("coral", "rough to the touch")]
 internal class ItemCoralChunk : Item, IStackable {
   public ItemCoralChunk(int stacks) {

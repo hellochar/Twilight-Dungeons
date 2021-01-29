@@ -1,5 +1,6 @@
 using System;
 
+[Serializable]
 [ObjectInfo(spriteName: "redberry", flavorText: "Small but packed with goodness!")]
 class ItemRedberry : Item, IStackable, IUsable {
   public ItemRedberry(int stacks) {

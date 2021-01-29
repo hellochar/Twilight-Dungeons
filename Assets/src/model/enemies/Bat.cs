@@ -66,6 +66,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   }
 }
 
+[Serializable]
 [ObjectInfo("bat-tooth", "Sharp with a little hole on the end to extract blood.")]
 internal class ItemBatTooth : EquippableItem, IWeapon, IDealAttackDamageHandler {
   public ItemBatTooth() {

@@ -43,6 +43,7 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   internal override (int, int) BaseAttackDamage() => (2, 2);
 }
 
+[Serializable]
 [ObjectInfo(spriteName: "snail-shell", flavorText: "A dinky little thing.")]
 public class ItemSnailShell : Item, IStackable {
   public ItemSnailShell(int stacks) {

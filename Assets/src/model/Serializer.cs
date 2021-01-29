@@ -12,9 +12,10 @@ public static class Serializer {
     if (File.Exists(SAVE_PATH)) {
       Debug.Log("Loading save from " + SAVE_PATH);
       var bf = GetBinaryFormatter();
-      FileStream file = File.Open(SAVE_PATH, FileMode.Open);
-      model = (GameModel) bf.Deserialize(file);
-      file.Close();
+      using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
+        model = (GameModel) bf.Deserialize(file);
+        file.Close();
+      }
       return true;
     }
     model = null;
@@ -40,10 +41,11 @@ public static class Serializer {
 
   public static bool SaveToFile(GameModel model) {
     var bf = GetBinaryFormatter();
-    FileStream file = File.Create(SAVE_PATH);
-    bf.Serialize(file, model);
-    file.Close();
-    return true;
+    using(FileStream file = File.Create(SAVE_PATH)) {
+      bf.Serialize(file, model);
+      file.Close();
+      return true;
+    }
     // using (var stream = new MemoryStream()) {
     //   bf.Serialize(stream, model);
     //   stream.Position = 0;

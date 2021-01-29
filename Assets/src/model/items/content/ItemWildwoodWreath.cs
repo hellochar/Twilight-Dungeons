@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+[Serializable]
 public class ItemWildwoodWreath : EquippableItem, IDurable, IAttackHandler {
   public ItemWildwoodWreath() {
     durability = maxDurability;

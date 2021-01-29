@@ -78,6 +78,7 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   }
 }
 
+[Serializable]
 [ObjectInfo("spider-silk-shoes", "whoa")]
 internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Feet;

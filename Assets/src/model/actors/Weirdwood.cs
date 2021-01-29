@@ -35,6 +35,7 @@ public class Weirdwood : Plant {
   }
 }
 
+[Serializable]
 [ObjectInfo("vile-potion", "Weirdwood roots are notorious for their use in demonic rituals... You wonder why?")]
 internal class ItemVilePotion : Item, IStackable, IUsable {
   public ItemVilePotion(int stacks = 4) {
@@ -76,6 +77,7 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
   internal override string GetStats() => "Spawns Vile Growths in a line towards enemies in range 5.\nVile Growth does 1 damage per turn to the creature standing over it. Lasts 12 turns.";
 }
 
+[Serializable]
 internal class VileGrowth : Grass, ISteppable {
   int turns = 12;
   public VileGrowth(Vector2Int pos) : base(pos) {
@@ -95,6 +97,7 @@ internal class VileGrowth : Grass, ISteppable {
   public float turnPriority => 50;
 }
 
+[Serializable]
 [ObjectInfo("colored_transparent_packed_39", "")]
 internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
   internal override string GetStats() => "After you make an attack, get a free movement.";
@@ -115,6 +118,7 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
   public int maxDurability => 10;
 }
 
+[Serializable]
 [ObjectInfo("witchs-shiv", "Wendy the Witch,\nFound the Snitch,\nNow he's lying,\nIn a ditch")]
 internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandler {
   public override string displayName => "Witch's Shiv";

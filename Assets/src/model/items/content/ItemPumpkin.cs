@@ -1,3 +1,4 @@
+[System.Serializable]
 [ObjectInfo("pumpkin", "Round and smooth and full of raw calories.")]
 public class ItemPumpkin : Item, IEdible {
   public ItemPumpkin() {}

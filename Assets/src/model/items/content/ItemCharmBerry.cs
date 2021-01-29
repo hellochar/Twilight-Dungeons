@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+[Serializable]
 [ObjectInfo(spriteName: "charmberry", flavorText: "It's sweet, sour, and tart! Loved by creatures of all sorts.")]
 public class ItemCharmBerry : Item, IStackable {
   public int stacksMax => 5;

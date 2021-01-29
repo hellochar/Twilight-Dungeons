@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+[Serializable]
 class ItemWildwoodLeaf : Item, IStackable, IEdible {
   public ItemWildwoodLeaf(int stacks) {
     this.stacks = stacks;

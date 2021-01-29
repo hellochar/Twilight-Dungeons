@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [ObjectInfo("mushroom", "They have such an interesting taste!")]
 class ItemMushroom : Item, IStackable, IEdible {
   public ItemMushroom(int stacks) {

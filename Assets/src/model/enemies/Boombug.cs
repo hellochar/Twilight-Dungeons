@@ -23,6 +23,7 @@ public class Boombug : AIActor {
   }
 }
 
+[Serializable]
 [ObjectInfo(spriteName: "boombug", flavorText: "Evolution sure comes up with crazy shit sometimes...")]
 public class ItemBoombugCorpse : Item, IStackable {
   public ItemBoombugCorpse(int stacks) {

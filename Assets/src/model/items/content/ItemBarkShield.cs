@@ -1,3 +1,4 @@
+[System.Serializable]
 public class ItemBarkShield : EquippableItem, IDurable, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Shield;
 

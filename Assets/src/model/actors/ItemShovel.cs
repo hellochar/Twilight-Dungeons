@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class ItemShovel : Item {
   public void DigUp(Player player, Grass grass) {
     grass.Kill();
@@ -8,6 +9,7 @@ public class ItemShovel : Item {
   }
 }
 
+[Serializable]
 internal class ItemOfGrass : Item {
   private Type type;
 

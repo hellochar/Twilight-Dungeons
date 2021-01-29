@@ -57,6 +57,7 @@ class HangingVinesTrigger : Entity, IActorEnterHandler {
   }
 }
 
+[Serializable]
 internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackable {
   private int _stacks;
   public int stacks {

@@ -35,6 +35,7 @@ public class Kingshroom : Plant {
   }
 }
 
+[Serializable]
 [ObjectInfo("living-armor", "")]
 internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandler, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Body;
@@ -64,6 +65,7 @@ internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandl
   }
 }
 
+[Serializable]
 [ObjectInfo("mushroom-cap", "It looks like a muffin from a far, but up close you realize the black dots are spongy and porous to try and catch whatever's floating in the air.")]
 internal class ItemMuffinCap : EquippableItem, IDurable, IStatusAddedHandler {
   public ItemMuffinCap() {
@@ -87,6 +89,7 @@ internal class ItemMuffinCap : EquippableItem, IDurable, IStatusAddedHandler {
   internal override string GetStats() => "Prevents Spored Status, and heals you for 1 HP instead when you get it. ";
 }
 
+[Serializable]
 [ObjectInfo("colored_transparent_packed_657", "")]
 public class ItemKingshroomPowder : Item, IDurable {
   public ItemKingshroomPowder() {
@@ -107,6 +110,7 @@ public class ItemKingshroomPowder : Item, IDurable {
   internal override string GetStats() => "Infect an adjacent creature. Each turn, it takes 1 damage and spawns a Thick Mushroom adjacent to it.";
 }
 
+[Serializable]
 [ObjectInfo("infected")]
 class InfectedStatus : Status {
   public override void Step() {
@@ -121,6 +125,7 @@ class InfectedStatus : Status {
   public override bool Consume(Status other) => true;
 }
 
+[Serializable]
 [ObjectInfo("germ", "")]
 internal class ItemGerm : Item, IDurable, IUsable {
   public ItemGerm() {

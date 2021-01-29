@@ -16,6 +16,7 @@ public class Agave : Grass, IActorEnterHandler {
   }
 }
 
+[Serializable]
 [ObjectInfo("agave", "")]
 class ItemAgave : Item, IStackable {
   public ItemAgave(int stacks) {
@@ -57,6 +58,7 @@ class ItemAgave : Item, IStackable {
   internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey.";
 }
 
+[Serializable]
 [ObjectInfo("roguelikeSheet_transparent_647", "")]
 class ItemAgaveHoney : Item, IEdible {
   public void Eat(Actor a) {

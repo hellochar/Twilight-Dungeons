@@ -37,6 +37,7 @@ public class Thornleaf : Plant {
   }
 }
 
+[Serializable]
 [ObjectInfo("thornmail", "Spiky!")]
 internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Body;
@@ -64,8 +65,10 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
   internal override string GetStats() => "Max HP +4.\nReturn 1 damage when an enemy hits you.";
 }
 
+[Serializable]
 [ObjectInfo("thornshield", "Also spiky!")]
 internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
+  [Serializable]
   private class TakeLessDamage : IAttackDamageTakenModifier {
     private ItemThornShield itemThornShield;
 
@@ -78,6 +81,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
       return input - 1;
     }
   }
+  [Serializable]
   private class DealMoreDamage : IAttackDamageModifier {
     private ItemThornShield itemThornShield;
 
@@ -109,6 +113,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
   internal override string GetStats() => "Blocks 1 damage.\nDeal 1 more attack damage.\nBoth attacking and defending use durability.";
 }
 
+[Serializable]
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
 internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
   internal override string GetStats() => "Take 2 less damage.\nWhen you take damage, grow, sharpen, or trigger Bladegrass on all adjacent squares.";

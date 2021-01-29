@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using UnityEngine;
 
 public interface IBodyMoveHandler {
@@ -58,10 +55,6 @@ public class Body : Entity {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
-  [field:NonSerialized] /// TODO-SERIALIZATION handle
-  /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
-  public event Action<int, Actor> OnAttacked;
-  
   public Body(Vector2Int pos) : base() {
     this.pos = pos;
   }
@@ -87,7 +80,6 @@ public class Body : Entity {
   }
 
   public void Attacked(int damage, Actor source) {
-    OnAttacked?.Invoke(damage, source);
     TakeAttackDamage(damage, source);
   }
 

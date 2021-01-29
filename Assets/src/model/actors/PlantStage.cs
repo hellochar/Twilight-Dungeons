@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
-public abstract class PlantStage : IDeserializationCallback {
+public abstract class PlantStage {
   public Plant plant;
 
   /// set when the plant actually enters into this stage
@@ -12,7 +12,6 @@ public abstract class PlantStage : IDeserializationCallback {
   /// how long the plant has been in this stage specifically
   public float age => plant.age - ageEntered;
   public string name => GetType().Name;
-  [NonSerialized] /// TODO-SERIALIZATION remove this tag once you've marked all items as serializable
   public List<Inventory> harvestOptions = new List<Inventory>();
 
   public PlantStage NextStage { get; set; }
@@ -34,18 +33,6 @@ public abstract class PlantStage : IDeserializationCallback {
   public abstract void Step();
 
   public virtual string getUIText() { return ""; }
-
-  // [OnDeserialized]
-  // public void HandleDeserialized(StreamingContext context) {
-  // }
-
-  public void OnDeserialization(object sender) {
-    // temporary - re-trigger binding to run AddInventory() code
-    // TODO-SERIALIZATION - remove this once all the Items are marked serializable
-    // var plant = this.plant;
-    // this.plant = null;
-    // this.BindTo(plant);
-  }
 }
 
 [Serializable]

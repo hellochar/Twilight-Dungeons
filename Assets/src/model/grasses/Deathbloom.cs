@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
-[ObjectInfo(description: "Blooms when a creature dies adjacent to this.\nOnce bloomed, walk over it to obtain a Deathbloom Flower and spawn a new Deathbloom.")]
+[ObjectInfo(description: "Blooms when an adjacent creature dies.\nOnce bloomed, walk over it to obtain a Deathbloom Flower and spawn a new Deathbloom.")]
+[Serializable]
 public class Deathbloom : Grass, IActorEnterHandler {
   public bool isBloomed = false;
+  [field:NonSerialized] /// controller only
   public event Action OnBloomed;
 
   public Deathbloom(Vector2Int pos) : base(pos) {}
 
+  [OnDeserialized]
   protected override void HandleEnterFloor() {
     floor.OnEntityRemoved += HandleEntityRemoved;
   }
@@ -65,6 +69,8 @@ internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
     a.statuses.Add(new FrenziedStatus(10));
     stacks--;
   }
+
+  internal override string GetStats() => "Eat to get the Frenzied Status for 10 turns, providing +2 attack damage.";
 }
 
 internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {

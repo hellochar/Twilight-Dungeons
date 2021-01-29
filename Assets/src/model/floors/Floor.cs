@@ -20,7 +20,7 @@ public class Floor {
 
   [field:NonSerialized] /// controller only (for now)
   public event Action<Entity> OnEntityAdded;
-  [field:NonSerialized] /// TODO-SERIALIZATION handle
+  [field:NonSerialized] /// gameplay events are being manually re-registered on deserialization
   public event Action<Entity> OnEntityRemoved;
 
   /// min inclusive, max exclusive in terms of map width/height

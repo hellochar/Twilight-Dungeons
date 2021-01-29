@@ -101,9 +101,6 @@ public class StatusList {
   public Actor actor;
   public List<Status> list;
 
-  public event Action<Status> OnAdded;
-  public event Action<Status> OnRemoved;
-
   public StatusList(Actor actor, List<Status> statuses) {
     this.actor = actor;
     this.list = statuses;
@@ -117,7 +114,7 @@ public class StatusList {
     if (!consumed) {
       this.list.Add(status);
       status.list = this;
-      OnAdded?.Invoke(status);
+      OnStatusAdded(status);
     }
   }
 
@@ -135,11 +132,23 @@ public class StatusList {
   public void Remove(Status status) {
     this.list.Remove(status);
     status.list = null;
-    OnRemoved?.Invoke(status);
+    OnStatusRemoved(status);
   }
 
   internal T FindOfType<T>() where T : Status {
     return (T) (list.Find((s) => s is T));
+  }
+
+  private void OnStatusAdded(Status status) {
+    foreach (var handler in actor.Of<IStatusAddedHandler>()) {
+      handler.HandleStatusAdded(status);
+    }
+  }
+
+  private void OnStatusRemoved(Status status) {
+    foreach (var handler in actor.Of<IStatusRemovedHandler>()) {
+      handler.HandleStatusRemoved(status);
+    }
   }
 }
 

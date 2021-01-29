@@ -8,6 +8,9 @@ public delegate void OnDealAttackDamage(int dmg, Body target);
 public interface IBodyMoveHandler {
   void HandleMove(Vector2Int newPos, Vector2Int oldPos);
 }
+public interface IBodyTakeAttackDamageHandler {
+  void HandleTakeAttackDamage(int damage, int hp, Actor source);
+}
 
 [Serializable]
 public class Body : Entity, IModifierProvider {
@@ -63,18 +66,6 @@ public class Body : Entity, IModifierProvider {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
-  /// <summary>new position, old position</summary>
-  private void OnMove(Vector2Int newPos, Vector2Int oldPos) {
-    foreach (IBodyMoveHandler handler in this.Of<IBodyMoveHandler>()) {
-      handler.HandleMove(newPos, oldPos);
-    }
-  }
-
-  protected virtual void OnMoveFailed(Vector2Int wantedPos) {}
-
-  [field:NonSerialized]
-  public event Action<int, int, Actor> OnTakeAttackDamage;
-
   [field:NonSerialized]
   public event Action<int> OnTakeAnyDamage;
   /// <summary>amount, new hp</summary>
@@ -121,7 +112,7 @@ public class Body : Entity, IModifierProvider {
     damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
     source.OnDealAttackDamage?.Invoke(damage, this);
-    OnTakeAttackDamage?.Invoke(damage, hp, source);
+    OnTakeAttackDamage(damage, hp, source);
     TakeDamage(damage);
   }
 
@@ -141,6 +132,20 @@ public class Body : Entity, IModifierProvider {
     if (!IsDead) {
       hp = Math.Max(hp, 0);
       base.Kill();
+    }
+  }
+
+  protected virtual void OnMoveFailed(Vector2Int wantedPos) {}
+
+  private void OnMove(Vector2Int newPos, Vector2Int oldPos) {
+    foreach (var handler in this.Of<IBodyMoveHandler>()) {
+      handler.HandleMove(newPos, oldPos);
+    }
+  }
+
+  private void OnTakeAttackDamage(int dmg, int hp, Actor source) {
+    foreach (var handler in this.Of<IBodyTakeAttackDamageHandler>()) {
+      handler.HandleTakeAttackDamage(dmg, hp, source);
     }
   }
 }

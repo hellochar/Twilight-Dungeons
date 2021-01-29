@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : BodyController, IBodyMoveHandler {
+public class ActorController : BodyController, IBodyMoveHandler, IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler {
   public Actor actor => (Actor)body;
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
@@ -26,11 +26,9 @@ public class ActorController : BodyController, IBodyMoveHandler {
 
     actor.nonserializedModifiers.Add(this);
 
-    actor.OnActionPerformed += HandleActionPerformed;
     actor.OnTakeAnyDamage += HandleTakeAnyDamage;
 
-    actor.statuses.OnAdded += HandleStatusAdded;
-    actor.statuses.OnRemoved += HandleStatusRemoved;
+    /// create GameObjects any statuses that already exist
     foreach (var s in actor.statuses.list) {
       HandleStatusAdded(s);
     }
@@ -78,7 +76,7 @@ public class ActorController : BodyController, IBodyMoveHandler {
     // timeNextActionText.GetComponent<TMPro.TMP_Text>().text = actor.timeNextAction.ToString();
   }
 
-  protected virtual void HandleStatusAdded(Status status) {
+  public virtual void HandleStatusAdded(Status status) {
     var name = status.GetType().Name;
     if (animator != null) {
       animator.SetBool(name, true);
@@ -89,7 +87,7 @@ public class ActorController : BodyController, IBodyMoveHandler {
     }
   }
 
-  private void HandleStatusRemoved(Status status) {
+  public void HandleStatusRemoved(Status status) {
     if (animator != null) {
       animator.logWarnings = false;
       animator?.SetBool(status.GetType().Name, false);
@@ -112,7 +110,7 @@ public class ActorController : BodyController, IBodyMoveHandler {
     }
   }
 
-  protected virtual void HandleActionPerformed(BaseAction action, BaseAction initial) {
+  public virtual void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is StruggleBaseAction) {
       animator?.SetTrigger("Struggled");
     } else if (action is AttackBaseAction attack) {

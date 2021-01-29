@@ -10,6 +10,18 @@ public interface IAttackHandler {
   void OnAttack(int damage, Body target);
 }
 
+public interface IActionPerformedHandler {
+  void HandleActionPerformed(BaseAction final, BaseAction initial);
+}
+
+public interface IStatusAddedHandler {
+  void HandleStatusAdded(Status status);
+}
+
+public interface IStatusRemovedHandler {
+  void HandleStatusRemoved(Status status);
+}
+
 [Serializable]
 public class Actor : Body, ISteppable {
   public float timeNextAction { get; set; }
@@ -40,8 +52,6 @@ public class Actor : Body, ISteppable {
   protected List<ActorTask> taskQueue = new List<ActorTask>();
   [field:NonSerialized]
   public event Action<ActorTask> OnSetTask;
-  [field:NonSerialized]
-  public event Action<BaseAction, BaseAction> OnActionPerformed;
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
@@ -71,12 +81,6 @@ public class Actor : Body, ISteppable {
     }
     OnAttack(damage, target);
     target.Attacked(damage, this);
-  }
-
-  private void OnAttack(int damage, Body target) {
-    foreach (var handler in this.Of<IAttackHandler>()) {
-      handler.OnAttack(damage, target);
-    }
   }
 
   /// Attack the target, using this Actor's final attack damage.
@@ -181,7 +185,7 @@ public class Actor : Body, ISteppable {
   public BaseAction Perform(BaseAction action) {
     var finalAction = Modifiers.Process(this.BaseActionModifiers(), action);
     finalAction.Perform();
-    OnActionPerformed?.Invoke(finalAction, action);
+    OnActionPerformed(finalAction, action);
     return finalAction;
   }
 
@@ -192,6 +196,18 @@ public class Actor : Body, ISteppable {
     task.Ended();
     taskQueue.RemoveAt(0);
     TaskChanged();
+  }
+
+  private void OnAttack(int damage, Body target) {
+    foreach (var handler in this.Of<IAttackHandler>()) {
+      handler.OnAttack(damage, target);
+    }
+  }
+  
+  private void OnActionPerformed(BaseAction final, BaseAction initial) {
+    foreach (var handler in this.Of<IActionPerformedHandler>()) {
+      handler.HandleActionPerformed(final, initial);
+    }
   }
 }
 

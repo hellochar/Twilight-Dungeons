@@ -102,16 +102,14 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
   }
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
-    if (IsEquipped) {
-      var player = GameModel.main.player;
-      if (!(player.floor.grasses[oldPos] is Web)) {
-        player.floor.Put(new Web(oldPos));
-        stacks--;
-      }
-      if (!(player.grass is Web) && stacks > 0) {
-        player.floor.Put(new Web(player.pos));
-        stacks--;
-      }
+    var player = GameModel.main.player;
+    if (!(player.floor.grasses[oldPos] is Web)) {
+      player.floor.Put(new Web(oldPos));
+      stacks--;
+    }
+    if (!(player.grass is Web) && stacks > 0) {
+      player.floor.Put(new Web(player.pos));
+      stacks--;
     }
   }
 

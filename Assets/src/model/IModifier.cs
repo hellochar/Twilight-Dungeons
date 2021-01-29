@@ -75,7 +75,3 @@ interface IPathfindingCostModifier : IModifier<float> {}
 public interface IActorKilledHandler {
   void OnKilled(Actor a);
 }
-
-interface IActionPerformedHandler {
-  void HandleActionPerformed(BaseAction final, BaseAction initial);
-}

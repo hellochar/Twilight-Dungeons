@@ -38,7 +38,7 @@ public class Thornleaf : Plant {
 }
 
 [ObjectInfo("thornmail", "Spiky!")]
-internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier {
+internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Body;
 
   public int durability { get; set; }
@@ -49,15 +49,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier {
     durability = maxDurability;
   }
 
-  public override void OnEquipped(Player p) {
-    p.OnTakeAttackDamage += HandleTakeAttackDamage;
-  }
-
-  public override void OnUnequipped(Player p) {
-    p.OnTakeAttackDamage -= HandleTakeAttackDamage;
-  }
-
-  private void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
+  public void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     var player = GameModel.main.player;
     if (source != player) {
       source.TakeDamage(1);

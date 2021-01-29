@@ -65,20 +65,12 @@ internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandl
 }
 
 [ObjectInfo("mushroom-cap", "It looks like a muffin from a far, but up close you realize the black dots are spongy and porous to try and catch whatever's floating in the air.")]
-internal class ItemMuffinCap : EquippableItem, IDurable {
+internal class ItemMuffinCap : EquippableItem, IDurable, IStatusAddedHandler {
   public ItemMuffinCap() {
     durability = maxDurability;
   }
 
-  public override void OnEquipped(Player obj) {
-    obj.statuses.OnAdded += HandleStatusAdded;
-  }
-
-  public override void OnUnequipped(Player obj) {
-    obj.statuses.OnAdded -= HandleStatusAdded;
-  }
-
-  private void HandleStatusAdded(Status status) {
+  public void HandleStatusAdded(Status status) {
     if (status is SporedStatus) {
       status.actor.Heal(1);
       status.actor.statuses.Remove(status);

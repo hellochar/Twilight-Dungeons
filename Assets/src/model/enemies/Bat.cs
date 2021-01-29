@@ -4,21 +4,20 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Chases and attacks nearest creature.\nLifesteals.\nGoes into Deep Sleep after 7 turns awake.\nOccasionally drops Bat Tooth.")]
-public class Bat : AIActor {
+public class Bat : AIActor, IActionPerformedHandler {
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 7;
     ClearTasks();
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
     OnDealAttackDamage += HandleDealDamage;
-    OnActionPerformed += HandleActionPerformed;
     if (UnityEngine.Random.value < 0.2f) {
       inventory.AddItem(new ItemBatTooth());
     }
   }
 
   int turnsUntilSleep = 7;
-  private void HandleActionPerformed(BaseAction arg1, BaseAction arg2) {
+  public void HandleActionPerformed(BaseAction arg1, BaseAction arg2) {
     if (!(task is SleepTask)) {
       turnsUntilSleep--;
       if (turnsUntilSleep <= 0) {

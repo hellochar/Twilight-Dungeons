@@ -3,14 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ObjectInfo(description: "Goes into its shell when it takes damage.\nPauses after each action.\nChases you.")]
-public class Snail : AIActor {
-  public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
-    [ActionType.WAIT] = 1f,
-    [ActionType.ATTACK] = 1f,
-    [ActionType.MOVE] = 1f,
-  };
-
-  protected override ActionCosts actionCosts => Snail.StaticActionCosts;
+public class Snail : AIActor, IActionPerformedHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 4;
     faction = Faction.Enemy;
@@ -19,19 +12,13 @@ public class Snail : AIActor {
     if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
-    OnActionPerformed += HandleActionPerformed;
-    // OnMove += HandleMove;
   }
 
-  private void HandleActionPerformed(BaseAction final, BaseAction initial) {
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type != ActionType.WAIT) {
       InsertTasks(new WaitTask(this, 1));
     }
   }
-
-  // private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-  //   floor.Put(new GrassSlimeTrail(oldPos));
-  // }
 
   private void HandleTakeDamage(int dmg) {
     // curl up into your shell

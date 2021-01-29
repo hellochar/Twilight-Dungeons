@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
-public class Player : Actor, IBodyMoveHandler, IAttackHandler {
+public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler {
   public int water = 0;
   public int deepestDepthVisited = 1;
   internal readonly ItemHands Hands;
@@ -25,22 +25,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler {
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
     hp = baseMaxHp = 12;
-    /// TODO-SERIALIZATION hook these back up on re-serialize
-    OnTakeAttackDamage += HandleTakeDamage;
-    OnActionPerformed += HandleActionPerformed;
-    statuses.OnAdded += HandleStatusAdded;
   }
-
-  // [OnDeserialized]
-  // public new void OnDeserialized(StreamingContext context) {
-  //   Debug.Log("Player OnDeserialized");
-  //   OnAttack += HandleAttack;
-  //   OnMove += HandleMove;
-  //   OnMoveFailed += HandleMoveFailed;
-  //   OnTakeAttackDamage += HandleTakeDamage;
-  //   OnActionPerformed += HandleActionPerformed;
-  //   statuses.OnAdded += HandleStatusAdded;
-  // }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (floor != null) {
@@ -58,7 +43,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler {
     });
   }
 
-  private void HandleTakeDamage(int arg1, int arg2, Actor arg3) {
+  public void HandleTakeAttackDamage(int arg1, int arg2, Actor arg3) {
     if (task is FollowPathTask) {
       ClearTasks();
     }
@@ -68,19 +53,15 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler {
     ClearTasks();
   }
 
-  private void HandleActionPerformed(BaseAction final, BaseAction initial) {
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     // player didn't do what they intended! We should reset and give
     // player a choice.
     if (final != initial) {
       ClearTasks();
     }
-    // this is pretty much a delegate whose invocation list is declarative
-    foreach (var handler in Modifiers.Of<IActionPerformedHandler>(this)) {
-      handler.HandleActionPerformed(final, initial);
-    }
   }
 
-  private void HandleStatusAdded(Status status) {
+  public void HandleStatusAdded(Status status) {
     if (status.isDebuff) {
       // cancel current action
       ClearTasks();

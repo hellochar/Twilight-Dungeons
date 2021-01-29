@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class BerryBush : Plant {
   public override int maxWater => 4;
+  [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 999999;
 

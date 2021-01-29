@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+[System.Serializable]
 public class ItemHands : EquippableItem, IWeapon {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   private new Player player;

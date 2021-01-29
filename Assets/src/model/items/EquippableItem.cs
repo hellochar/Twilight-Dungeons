@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+[Serializable]
 public abstract class EquippableItem : Item {
   public abstract EquipmentSlot slot { get; }
-  public event Action<Player> OnEquipped;
-  public event Action<Player> OnUnequipped;
   protected Player player => GameModel.main.player;
   public bool IsEquipped => inventory != null;
 
@@ -19,14 +18,9 @@ public abstract class EquippableItem : Item {
     player.inventory.AddItem(this);
   }
 
-  public void TriggerEquipped(Player player) {
-    OnEquipped?.Invoke(player);
-  }
+  public virtual void OnEquipped(Player player) {}
 
-  public void TriggerUnequipped(Player player) {
-    OnUnequipped?.Invoke(player);
-  }
-
+  public virtual void OnUnequipped(Player player) {}
   public override List<MethodInfo> GetAvailableMethods(Player actor) {
     var methods = base.GetAvailableMethods(actor);
     if (actor.inventory.HasItem(this)) {

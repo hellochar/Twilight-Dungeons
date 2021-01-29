@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[Serializable]
 public class Item {
   public virtual string displayName =>
   /// get rid of the "Item" prefix

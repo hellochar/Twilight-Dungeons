@@ -24,6 +24,10 @@ public class SettingsController : MonoBehaviour {
     SceneManager.LoadSceneAsync("Scenes/Game");
   }
 
+  public void SaveGame() {
+    Serializer.SaveToFile(GameModel.main);
+  }
+
   public void Close() {
     gameObject.SetActive(false);
   }

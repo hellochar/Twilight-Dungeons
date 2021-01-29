@@ -72,15 +72,13 @@ public class Bat : AIActor {
 internal class ItemBatTooth : EquippableItem, IWeapon {
   public ItemBatTooth() {
     durability = maxDurability;
-    OnEquipped += HandleEquipped;
-    OnUnequipped += HandleUnequipped;
   }
 
-  private void HandleEquipped(Player obj) {
+  public override void OnEquipped(Player obj) {
     obj.OnDealAttackDamage += HandleDealAttackDamage;
   }
 
-  private void HandleUnequipped(Player obj) {
+  public override void OnUnequipped(Player obj) {
     obj.OnDealAttackDamage -= HandleDealAttackDamage;
   }
 

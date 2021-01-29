@@ -4,6 +4,7 @@ using UnityEngine;
 
 public delegate void OnDealAttackDamage(int dmg, Body target);
 
+[Serializable]
 public class Body : Entity, IModifierProvider {
   public override EntityLayer layer => EntityLayer.BODY;
   private static IEnumerable<object> SelfEnumerator<T>(T item) {
@@ -50,14 +51,25 @@ public class Body : Entity, IModifierProvider {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
+  [field:NonSerialized]
   /// <summary>new position, old position</summary>
   public event Action<Vector2Int, Vector2Int> OnMove;
+
+  [field:NonSerialized]
   /// <summary>failed position, old position</summary>
   public event Action<Vector2Int, Vector2Int> OnMoveFailed;
+
+  [field:NonSerialized]
   public event Action<int, int, Actor> OnTakeAttackDamage;
+
+  [field:NonSerialized]
   public event Action<int> OnTakeAnyDamage;
   /// <summary>amount, new hp</summary>
+
+  [field:NonSerialized]
   public event Action<int, int> OnHeal;
+
+  [field:NonSerialized]
   /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
   public event Action<int, Actor> OnAttacked;
   

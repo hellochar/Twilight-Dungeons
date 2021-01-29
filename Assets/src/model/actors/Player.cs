@@ -4,10 +4,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
+[Serializable]
 public class Player : Actor {
   public int water = 0;
   public int deepestDepthVisited = 1;
-  internal readonly Item Hands;
+  internal readonly ItemHands Hands;
+  [NonSerialized]
   private HashSet<Actor> lastVisibleEnemies = new HashSet<Actor>();
   public Inventory inventory { get; }
   public Equipment equipment { get; }

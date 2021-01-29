@@ -4,8 +4,10 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[Serializable]
 public class Kingshroom : Plant {
   public override int maxWater => 3;
+  [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 99999;
     public override void Step() { }
@@ -66,15 +68,13 @@ internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandl
 internal class ItemMuffinCap : EquippableItem, IDurable {
   public ItemMuffinCap() {
     durability = maxDurability;
-    OnEquipped += HandleEquipped;
-    OnUnequipped += HandleUnequipped;
   }
 
-  private void HandleEquipped(Player obj) {
+  public override void OnEquipped(Player obj) {
     obj.statuses.OnAdded += HandleStatusAdded;
   }
 
-  private void HandleUnequipped(Player obj) {
+  public override void OnUnequipped(Player obj) {
     obj.statuses.OnAdded -= HandleStatusAdded;
   }
 
@@ -161,7 +161,7 @@ class ThickMushroom : AIActor {
   }
 
   public IEnumerable<ActorTask> AI() {
-    while(true) {
+    while (true) {
       yield return new WaitTask(this, 999);
     }
   }

@@ -109,15 +109,13 @@ internal class ItemSpiderSandals : EquippableItem, IStackable {
 
   public ItemSpiderSandals(int stacks) {
     this.stacks = stacks;
-    OnEquipped += HandleEquipped;
-    OnUnequipped += HandleUnequipped;
   }
 
-  private void HandleEquipped(Player obj) {
+  public override void OnEquipped(Player obj) {
     obj.OnMove += HandleMove;
   }
 
-  private void HandleUnequipped(Player obj) {
+  public override void OnUnequipped(Player obj) {
     obj.OnMove -= HandleMove;
   }
 

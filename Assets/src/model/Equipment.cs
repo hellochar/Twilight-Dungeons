@@ -1,6 +1,7 @@
 
 /// Equipment is a more specialized inventory where only certain
 /// items, namely, IEquippable's, can be AddItem()-ed. 
+[System.Serializable]
 public class Equipment : Inventory {
   public Equipment(Player player) : base(5) {
     Player = player;
@@ -10,12 +11,12 @@ public class Equipment : Inventory {
 
   private void HandleItemAdded(Item item, Entity source) {
     var e = (EquippableItem) item;
-    e.TriggerEquipped(Player);
+    e.OnEquipped(Player);
   }
 
   private void HandleItemRemoved(Item item) {
     var e = (EquippableItem) item;
-    e.TriggerUnequipped(Player);
+    e.OnUnequipped(Player);
   }
 
   public override Item this[int i] {

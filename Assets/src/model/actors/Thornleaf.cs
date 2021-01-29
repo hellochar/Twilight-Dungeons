@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class Thornleaf : Plant {
   public override int maxWater => 5;
 
+  [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 99999;
     public override void Step() { }
@@ -45,15 +47,13 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier {
 
   public ItemThornmail() {
     durability = maxDurability;
-    OnEquipped += HandleEquipped;
-    OnUnequipped += HandleUnequipped;
   }
 
-  private void HandleEquipped(Player p) {
+  public override void OnEquipped(Player p) {
     p.OnTakeAttackDamage += HandleTakeAttackDamage;
   }
 
-  private void HandleUnequipped(Player p) {
+  public override void OnUnequipped(Player p) {
     p.OnTakeAttackDamage -= HandleTakeAttackDamage;
   }
 
@@ -126,16 +126,14 @@ internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModi
   public int maxDurability => 36;
 
   public ItemHeartOfThorns() {
-    OnEquipped += HandleEquipped;
-    OnUnequipped += HandleUnequipped;
     durability = maxDurability;
   }
 
-  private void HandleEquipped(Player player) {
+  public override void OnEquipped(Player player) {
     player.OnTakeAnyDamage += HandleTakeAnyDamage;
   }
 
-  private void HandleUnequipped(Player player) {
+  public override void OnUnequipped(Player player) {
     player.OnTakeAnyDamage -= HandleTakeAnyDamage;
   }
 

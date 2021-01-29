@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class ItemOnGround : Entity {
   public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
   public override EntityLayer layer => EntityLayer.ITEM;

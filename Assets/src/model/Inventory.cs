@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class Inventory : IEnumerable<Item> {
   private Item[] items;
   public int capacity => items.Length;
   public virtual Item this[int i] => items[i];
+  [field:NonSerialized]
   public event Action<Item, Entity> OnItemAdded;
+  [field:NonSerialized]
   public event Action<Item> OnItemRemoved;
 
   public Inventory(params Item[] items) {

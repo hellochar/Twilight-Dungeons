@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public abstract class EntityStore<T> : IEnumerable<T> where T : Entity {
   public Floor floor { get; }
 
@@ -40,8 +41,10 @@ public abstract class EntityStore<T> : IEnumerable<T> where T : Entity {
 public enum OverlapBehavior { KillOld, RepositionNew }
 
 /// Storing a dense grid of Entity's that don't move.
+[Serializable]
 public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
   private T[,] grid;
+  /// TODO-SERIALIZATION re-set this!!!
   private readonly Action<T> PlacementBehavior;
 
   public int width => floor.width;
@@ -90,6 +93,7 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
 }
 
 /// Storing a sparse list of entities that can move, both in positions and in floors.
+[Serializable]
 public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   private List<T> list = new List<T>();
 

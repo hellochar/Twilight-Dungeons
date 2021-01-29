@@ -4,6 +4,7 @@ using UnityEngine;
 
 public delegate void OnNoteworthyAction();
 
+[Serializable]
 public class Grass : Entity {
   public override EntityLayer layer => EntityLayer.GRASS;
   private Vector2Int _pos;
@@ -13,6 +14,7 @@ public class Grass : Entity {
     set { }
   }
 
+  [NonSerialized]
   public OnNoteworthyAction OnNoteworthyAction = delegate {};
 
   public Grass(Vector2Int pos) : base() {

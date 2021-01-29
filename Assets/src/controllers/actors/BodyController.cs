@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHandler {
   private static GameObject hpChangeTextPrefab;
+  [NonSerialized]
   public Body body;
   protected GameObject sprite;
   protected GameObject damageContainer;
@@ -66,7 +68,7 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
       // create new damage
       for (int i = damageContainer.transform.childCount; i < newDamage; i++) {
         var damageTickPrefab = PrefabCache.Effects.GetPrefabFor("Damage Tick");
-        var rotation = Quaternion.Euler(0, 0, Random.Range(45 / 2, 45 * 1.5f));
+        var rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(45 / 2, 45 * 1.5f));
         var damageTick = Instantiate(damageTickPrefab, new Vector3(), rotation, damageContainer.transform);
         damageTick.transform.localPosition = new Vector3(0, -0.25f, 0);
         // damageTick.transform.localPosition = Random.insideUnitCircle * Random.insideUnitCircle * Random.insideUnitCircle * Random.insideUnitCircle * 0.5f;

@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
+[Serializable]
 public class Floor {
   public int depth;
 
@@ -17,7 +18,9 @@ public class Floor {
   public List<ISteppable> steppableEntities;
 
 
+  [field:NonSerialized]
   public event Action<Entity> OnEntityAdded;
+  [field:NonSerialized]
   public event Action<Entity> OnEntityRemoved;
 
   /// min inclusive, max exclusive in terms of map width/height
@@ -26,10 +29,14 @@ public class Floor {
   public Vector2 center => new Vector2(width / 2.0f, height / 2.0f);
 
   /// abstract bsp root
+  [NonSerialized]
   internal Room root;
   /// all rooms (terminal bsp nodes). Sorted by 
+  [NonSerialized]
   internal List<Room> rooms;
+  [NonSerialized]
   internal Room upstairsRoom;
+  [NonSerialized]
   internal Room downstairsRoom;
 
   public Upstairs upstairs {
@@ -391,12 +398,15 @@ public class Floor {
 
 }
 
+[Serializable]
 class PathfindingManager {
   /// if null, we need a recompute
+  [NonSerialized]
   private PathFind.Grid grid;
   private Floor floor;
   public PathfindingManager(Floor floor) {
     this.floor = floor;
+    /// TODO-SERIALIZE we need to re-add these i think
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
   }

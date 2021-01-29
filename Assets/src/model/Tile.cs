@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public abstract class Tile : Entity {
   public override EntityLayer layer => EntityLayer.TILE;
   public TileVisiblity visibility = TileVisiblity.Unexplored;
@@ -13,7 +14,9 @@ public abstract class Tile : Entity {
     set { }
   }
 
+  [field:NonSerialized]
   public event Action<Actor> OnActorEnter;
+  [field:NonSerialized]
   public event Action<Actor> OnActorLeave;
 
   public Tile(Vector2Int pos) : base() {
@@ -70,10 +73,12 @@ public abstract class Tile : Entity {
   }
 }
 
+[Serializable]
 public enum TileVisiblity {
   Unexplored, Visible, Explored
 }
 
+[Serializable]
 public class Ground : Tile {
   public Ground(Vector2Int pos) : base(pos) { }
 }
@@ -84,6 +89,7 @@ public class FancyGround : Ground {
 }
 
 [ObjectInfo(description: "Blocks vision and movement.", flavorText: "This hard rock has weathered centuries of erosion.")]
+[Serializable]
 public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
   public override float BasePathfindingWeight() {
@@ -91,6 +97,7 @@ public class Wall : Tile {
   }
 }
 
+[Serializable]
 public class Upstairs : Tile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(1, 0);
@@ -106,6 +113,7 @@ public class Upstairs : Tile {
   }
 }
 
+[Serializable]
 public class Downstairs : Tile {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(-1, 0);
@@ -130,11 +138,13 @@ public class Downstairs : Tile {
 }
 
 [ObjectInfo(description: "Plant seeds in Soil.", flavorText: "Good soil is hard to come by in the caves...")]
+[Serializable]
 public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }
 }
 
 [ObjectInfo(description: "Tap to collect. Planting a seed costs 1 water.", flavorText: "Water water everywhere...")]
+[Serializable]
 public class Water : Tile {
   public Water(Vector2Int pos) : base(pos) {
   }

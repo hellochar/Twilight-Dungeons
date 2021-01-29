@@ -5,13 +5,19 @@ using UnityEngine;
 using Priority_Queue;
 using UnityEngine.Events;
 using System.Collections;
+using System.Runtime.Serialization;
 
+[Serializable]
 public class GameModel {
   public int seed;
   public Player player;
+  [NonSerialized]
   public Floor[] floors;
+  public Floor floor0;
+
   public int activeFloorIndex = 0;
   public float time;
+  [NonSerialized]
   private TurnManager _turnManager;
   public TurnManager turnManager {
     get {
@@ -23,47 +29,64 @@ public class GameModel {
   }
   public Floor currentFloor { get => floors[activeFloorIndex]; }
 
+  [field:NonSerialized]
   public event Action<Floor, Floor> OnPlayerChangeFloor;
 
   /// Events to process in response to state changes
+  [NonSerialized]
   private List<Action> eventQueue = new List<Action>();
 
   public static GameModel main;
 
-  public static void InitMain() {
-    var seed = UnityEngine.Random.Range(0, 100000);
+  public static void InitOrLoadMain() {
+    GameModel model;
+    if (Serializer.LoadFromFile(out model)) {
+      main = model;
+      main.RehookUpAfterSerialization();
+    } else {
+      var seed = UnityEngine.Random.Range(0, 100000);
 
-    #if UNITY_EDITOR
-    seed = 33415;
-    // Analyze();
-    #endif
+      #if UNITY_EDITOR
+      // seed = 33415;
+      // Analyze();
+      #endif
 
-    new GameModel(seed);
-    main.generate();
-    var step = main.StepUntilPlayerChoice();
-    // execute them all immediately
-    do { } while (step.MoveNext());
+      main = new GameModel(seed);
+      main.generate();
+      var step = main.StepUntilPlayerChoice();
+      // execute them all immediately
+      do { } while (step.MoveNext());
+    }
   }
 
   public GameModel(int seed) {
     this.seed = seed;
     UnityEngine.Random.InitState(seed);
-    main = this;
   }
 
   private void generate() {
     floors = FloorGenerator.generateAll();
+    floor0 = floors[0];
     player = new Player(new Vector2Int(3, floors[0].height/2));
     floors[0].Put(player);
+  }
+
+  // [OnDeserialized]
+  public void RehookUpAfterSerialization() {
+    eventQueue = new List<Action>();
+    /// TODO-SERIALIZATION generation is different because
+    /// seed is different
+    floors = FloorGenerator.generateAll();
+    floors[0] = floor0;
   }
 
   private static void Analyze() {
     var dict = new Dictionary<Type, int[]>();
     for (int i = 0; i < 10; i++) {
-      var model = new GameModel(UnityEngine.Random.Range(0, 999999));
-      model.generate();
+      main = new GameModel(UnityEngine.Random.Range(0, 999999));
+      main.generate();
       // Analyze(model, i, floor => floor.actors.Where((a) => a.faction == Faction.Enemy));
-      Analyze(model, i, floor => floor.grasses);
+      Analyze(main, i, floor => floor.grasses);
     }
     var l = dict.ToList().OrderByDescending((pair) => pair.Value[0]);
     var s = String.Join("\n", l.Select((pair) => $"{pair.Key}, {String.Join(", ", pair.Value)}"));

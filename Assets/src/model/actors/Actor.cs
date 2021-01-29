@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 public class ActionCosts : Dictionary<ActionType, float> {
@@ -10,6 +11,7 @@ public class ActionCosts : Dictionary<ActionType, float> {
   public ActionCosts Copy() => new ActionCosts(this);
 }
 
+[Serializable]
 public class Actor : Body, ISteppable {
   public float timeNextAction { get; set; }
   public virtual float turnPriority => 50;
@@ -23,6 +25,7 @@ public class Actor : Body, ISteppable {
 
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(statuses.list).Append(this.task);
 
+  [NonSerialized]
   public StatusList statuses;
   public override int maxHp => Modifiers.Process(this.MaxHPModifiers(), baseMaxHp);
 
@@ -34,16 +37,22 @@ public class Actor : Body, ISteppable {
     set => SetTasks(value);
   }
   public IEnumerable<ActorTask> tasks => taskQueue.AsEnumerable();
+  [NonSerialized]
   protected List<ActorTask> taskQueue = new List<ActorTask>();
+  [field:NonSerialized]
   public event Action<ActorTask> OnSetTask;
+  [field:NonSerialized]
   public event Action<BaseAction, BaseAction> OnActionPerformed;
 
   public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
+  [field:NonSerialized]
   public OnDealAttackDamage OnDealAttackDamage;
   /// gets called on a successful hit on a target
+  [field:NonSerialized]
   public event Action<int, Body> OnAttack;
   /// gets called on any ground targeted attack
+  [field:NonSerialized]
   public event Action<Vector2Int> OnAttackGround;
 
   public Actor(Vector2Int pos) : base(pos) {
@@ -51,6 +60,12 @@ public class Actor : Body, ISteppable {
     hp = baseMaxHp = 8;
     // this.timeNextAction = this.timeCreated + baseActionCost;
     this.timeNextAction = this.timeCreated;
+  }
+
+  [OnDeserialized]
+  public void OnDeserialized(StreamingContext c) {
+    statuses = new StatusList(this);
+    taskQueue = new List<ActorTask>();
   }
 
   /// create an Attack with the specified damage. This does *not* do damage modifiers.

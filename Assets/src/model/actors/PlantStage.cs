@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
-public abstract class PlantStage {
+[Serializable]
+public abstract class PlantStage : IDeserializationCallback {
   public Plant plant;
 
   /// set when the plant actually enters into this stage
@@ -10,6 +12,7 @@ public abstract class PlantStage {
   /// how long the plant has been in this stage specifically
   public float age => plant.age - ageEntered;
   public string name => GetType().Name;
+  [NonSerialized]
   public List<Inventory> harvestOptions = new List<Inventory>();
 
   public PlantStage NextStage { get; set; }
@@ -31,8 +34,21 @@ public abstract class PlantStage {
   public abstract void Step();
 
   public virtual string getUIText() { return ""; }
+
+  // [OnDeserialized]
+  // public void HandleDeserialized(StreamingContext context) {
+  // }
+
+  public void OnDeserialization(object sender) {
+    // temporary - re-trigger binding to run AddInventory() code
+    // TODO-SERIALIZATION - remove this once all the Items are marked serializable
+    // var plant = this.plant;
+    // this.plant = null;
+    // this.BindTo(plant);
+  }
 }
 
+[Serializable]
 class Seed : PlantStage {
   public override float StepTime => 320;
   public override void Step() {
@@ -42,6 +58,7 @@ class Seed : PlantStage {
   public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }
 
+[Serializable]
 class Young : PlantStage {
   public override float StepTime => 320;
   public override void Step() {
@@ -51,6 +68,7 @@ class Young : PlantStage {
   public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }
 
+[Serializable]
 class Sapling : PlantStage {
   public override float StepTime => 320;
   public override void Step() {

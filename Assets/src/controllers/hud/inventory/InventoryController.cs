@@ -6,6 +6,7 @@ using UnityEngine;
 
 /// Responsible for: creating and destroying slots
 public class InventoryController : MonoBehaviour {
+  [NonSerialized]
   public Inventory inventory;
   public bool trimExcess = false;
 

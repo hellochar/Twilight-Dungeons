@@ -28,6 +28,7 @@ public struct Settings {
     m_main = newSettings;
     var json = JsonUtility.ToJson(m_main);
     PlayerPrefs.SetString("settings", json);
+    PlayerPrefs.Save();
     OnChanged?.Invoke();
   }
 

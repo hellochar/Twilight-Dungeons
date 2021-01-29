@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public abstract class Plant : Body, ISteppable {
   public float timeNextAction { get; set; }
   /// put earlier than the player so they can act early

@@ -11,6 +11,7 @@ public enum EntityLayer {
   BODY = 8,
 }
 
+[Serializable]
 public abstract class Entity {
   public abstract EntityLayer layer { get; }
   public bool IsDead { get; private set; }
@@ -29,9 +30,12 @@ public abstract class Entity {
 
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
   /// called after the new floor is set
+  [field:NonSerialized]
   public event Action OnEnterFloor;
   /// called before the old floor is left
+  [field:NonSerialized]
   public event Action OnLeaveFloor;
+  [field:NonSerialized]
   public event Action OnDeath;
 
   public Entity() {

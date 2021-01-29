@@ -16,10 +16,15 @@ public class GameModelController : MonoBehaviour {
   public FloorController CurrentFloorController => currentFloorController;
 
   void Awake() {
-    GameModel.InitMain();
+    GameModel.InitOrLoadMain();
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
+    SceneManager.sceneUnloaded += HandleSceneUnloaded;
     main = this;
+  }
+
+  private void HandleSceneUnloaded(Scene arg0) {
+    // Serializer.SaveToPlayerPrefs(this.model);
   }
 
   // Start is called before the first frame update

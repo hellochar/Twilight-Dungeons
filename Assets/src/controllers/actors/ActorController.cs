@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : BodyController, IBodyMoveHandler, IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler, IDeathHandler {
+public class ActorController : BodyController,
+  IBodyMoveHandler, IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler, IDeathHandler {
   public Actor actor => (Actor)body;
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
@@ -24,8 +25,6 @@ public class ActorController : BodyController, IBodyMoveHandler, IActionPerforme
 
     actor.nonserializedModifiers.Add(this);
 
-    actor.OnTakeAnyDamage += HandleTakeAnyDamage;
-
     /// create GameObjects any statuses that already exist
     foreach (var s in actor.statuses.list) {
       HandleStatusAdded(s);
@@ -37,7 +36,8 @@ public class ActorController : BodyController, IBodyMoveHandler, IActionPerforme
     Update();
   }
 
-  private void HandleTakeAnyDamage(int dmg) {
+  public override void HandleTakeAnyDamage(int dmg) {
+    base.HandleTakeAnyDamage(dmg);
     if (dmg > 0) {
       var tileGameObject = GameModelController.main.CurrentFloorController.GameObjectFor(actor.tile);
       var blood = PrefabCache.Effects.Instantiate("Blood", tileGameObject.transform);

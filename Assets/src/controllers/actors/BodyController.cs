@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHandler {
+public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHandler, ITakeAnyDamageHandler {
   private static GameObject hpChangeTextPrefab;
   [NonSerialized]
   public Body body;
@@ -16,11 +16,10 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
     sprite = transform.Find("Sprite")?.gameObject;
     damageContainer = sprite?.transform.Find("Damage Container").gameObject;
 
-    body.OnTakeAnyDamage += HandleTakeDamage;
     body.OnHeal += HandleHeal;
   }
 
-  void HandleTakeDamage(int damage) {
+  public virtual void HandleTakeAnyDamage(int damage) {
     if (!body.isVisible) {
       return;
     }

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ObjectInfo(description: "Goes into its shell when it takes damage.\nPauses after each action.\nChases you.")]
-public class Snail : AIActor, IActionPerformedHandler {
+public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 4;
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
-    OnTakeAnyDamage += HandleTakeDamage;
     if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
@@ -20,7 +19,7 @@ public class Snail : AIActor, IActionPerformedHandler {
     }
   }
 
-  private void HandleTakeDamage(int dmg) {
+  public void HandleTakeAnyDamage(int dmg) {
     // curl up into your shell
     statuses.Add(new InShellStatus());
   }

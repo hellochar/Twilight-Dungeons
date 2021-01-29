@@ -10,6 +10,9 @@ public interface IBodyMoveHandler {
 public interface IBodyTakeAttackDamageHandler {
   void HandleTakeAttackDamage(int damage, int hp, Actor source);
 }
+public interface ITakeAnyDamageHandler {
+  void HandleTakeAnyDamage(int damage);
+}
 
 [Serializable]
 public class Body : Entity {
@@ -52,8 +55,6 @@ public class Body : Entity {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
-  [field:NonSerialized] /// TODO-SERIALIZATION handle
-  public event Action<int> OnTakeAnyDamage;
   /// <summary>amount, new hp</summary>
 
   [field:NonSerialized] /// TODO-SERIALIZATION handle
@@ -106,7 +107,7 @@ public class Body : Entity {
   public void TakeDamage(int damage) {
     damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
-    OnTakeAnyDamage?.Invoke(damage);
+    OnTakeAnyDamage(damage);
     hp -= damage;
     if (hp <= 0) {
       Kill();
@@ -132,6 +133,12 @@ public class Body : Entity {
   private void OnTakeAttackDamage(int dmg, int hp, Actor source) {
     foreach (var handler in this.Of<IBodyTakeAttackDamageHandler>()) {
       handler.HandleTakeAttackDamage(dmg, hp, source);
+    }
+  }
+
+  private void OnTakeAnyDamage(int dmg) {
+    foreach (var handler in this.Of<ITakeAnyDamageHandler>()) {
+      handler.HandleTakeAnyDamage(dmg);
     }
   }
 }

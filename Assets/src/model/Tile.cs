@@ -18,10 +18,9 @@ public abstract class Tile : Entity, IModifierProvider {
 
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;
-    OnEnterFloor += HandleEnterFloor;
   }
 
-  private void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     if (GameModel.main?.player != null) {
       if (floor == GameModel.main.player.floor && floor.TestVisibility(GameModel.main.player.pos, pos)) {
         visibility = TileVisiblity.Visible;

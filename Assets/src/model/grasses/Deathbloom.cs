@@ -8,16 +8,13 @@ public class Deathbloom : Grass, IActorEnterHandler {
   public bool isBloomed = false;
   public event Action OnBloomed;
 
-  public Deathbloom(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
-  }
+  public Deathbloom(Vector2Int pos) : base(pos) {}
 
-  private void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     floor.OnEntityRemoved += HandleEntityRemoved;
   }
 
-  private void HandleLeaveFloor() {
+  protected override void HandleLeaveFloor() {
     floor.OnEntityRemoved -= HandleEntityRemoved;
   }
 

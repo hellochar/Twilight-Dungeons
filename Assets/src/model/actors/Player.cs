@@ -24,8 +24,6 @@ public class Player : Actor {
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
     hp = baseMaxHp = 12;
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
     OnAttack += HandleAttack;
     OnMove += HandleMove;
     OnMoveFailed += HandleMoveFailed;
@@ -79,11 +77,11 @@ public class Player : Actor {
     }
   }
 
-  private void HandleLeaveFloor() {
+  protected override void HandleLeaveFloor() {
     floor.RemoveVisibility(this);
   }
 
-  private void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     floor.AddVisibility(this);
     var depth = floor.depth;
     if (depth > deepestDepthVisited) {

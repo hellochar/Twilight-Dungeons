@@ -10,16 +10,14 @@ public class HangingVines : Grass {
 
   public HangingVines(Vector2Int pos) : base(pos) {
     trigger = new HangingVinesTrigger(this);
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
     OnDeath += HandleDeath;
   }
 
-  private void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     floor.Put(trigger);
   }
 
-  private void HandleLeaveFloor() {
+  protected override void HandleLeaveFloor() {
     floor.Remove(trigger);
   }
 

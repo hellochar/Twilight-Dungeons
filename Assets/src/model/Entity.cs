@@ -20,12 +20,6 @@ public abstract class Entity {
   public virtual string description => ObjectInfo.GetDescriptionFor(this);
 
   public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
-  /// called after the new floor is set
-  [field:NonSerialized]
-  public event Action OnEnterFloor;
-  /// called before the old floor is left
-  [field:NonSerialized]
-  public event Action OnLeaveFloor;
   [field:NonSerialized]
   public event Action OnDeath;
 
@@ -36,13 +30,16 @@ public abstract class Entity {
   /// <summary>Only call this from Floor to internally update this Entity's floor pointer.</summary>
   public void SetFloor(Floor floor) {
     if (this.floor != null) {
-      OnLeaveFloor?.Invoke();
+      HandleLeaveFloor();
     }
     this.floor = floor;
     if (this.floor != null) {
-      OnEnterFloor?.Invoke();
+      HandleEnterFloor();
     }
   }
+
+  protected virtual void HandleEnterFloor() {}
+  protected virtual void HandleLeaveFloor() {}
 
   public float DistanceTo(Vector2Int other) {
     return Vector2Int.Distance(pos, other);

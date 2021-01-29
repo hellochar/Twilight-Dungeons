@@ -55,11 +55,9 @@ public class Spider : AIActor {
 }
 
 internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
-  public Web(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-  }
+  public Web(Vector2Int pos) : base(pos) {}
 
-  void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     if (actor != null) {
       HandleActorEnter(actor);
     }

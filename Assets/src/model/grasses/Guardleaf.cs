@@ -4,16 +4,13 @@ using UnityEngine;
 public class Guardleaf : Grass, IActorEnterHandler {
   public int guardLeft;
   public Guardleaf(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
     guardLeft = 5;
   }
 
-  private void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     actor?.statuses.Add(new GuardStatus());
   }
-
-  private void HandleLeaveFloor() {
+  protected override void HandleLeaveFloor() {
     actor?.statuses.RemoveOfType<GuardStatus>();
   }
 

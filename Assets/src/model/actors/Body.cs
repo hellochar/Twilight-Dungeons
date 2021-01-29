@@ -74,15 +74,13 @@ public class Body : Entity, IModifierProvider {
   
   public Body(Vector2Int pos) : base() {
     this.pos = pos;
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
   }
 
-  private void HandleLeaveFloor() {
+  protected override void HandleLeaveFloor() {
     tile.BodyLeft(this);
   }
 
-  private void HandleEnterFloor() {
+  protected override void HandleEnterFloor() {
     tile.BodyEntered(this);
   }
 

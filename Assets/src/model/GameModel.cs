@@ -79,7 +79,6 @@ public class GameModel {
     floors[0].Put(player);
   }
 
-  // [OnDeserialized]
   public void RehookUpAfterSerialization() {
     eventQueue = new List<Action>();
     /// TODO-SERIALIZATION generation is different because

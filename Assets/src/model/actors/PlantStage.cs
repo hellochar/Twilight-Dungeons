@@ -12,7 +12,7 @@ public abstract class PlantStage : IDeserializationCallback {
   /// how long the plant has been in this stage specifically
   public float age => plant.age - ageEntered;
   public string name => GetType().Name;
-  [NonSerialized]
+  [NonSerialized] /// TODO-SERIALIZATION remove this tag once you've marked all items as serializable
   public List<Inventory> harvestOptions = new List<Inventory>();
 
   public PlantStage NextStage { get; set; }

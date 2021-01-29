@@ -49,7 +49,7 @@ public class Actor : Body, ISteppable {
   [field:NonSerialized]
   public OnDealAttackDamage OnDealAttackDamage;
   /// gets called on a successful hit on a target
-  [field:NonSerialized]
+  /// this is (so far) only gameplay events so it *can* be serialized
   public event Action<int, Body> OnAttack;
   /// gets called on any ground targeted attack
   [field:NonSerialized]

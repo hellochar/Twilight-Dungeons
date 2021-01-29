@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ActorController : BodyController {
+public class ActorController : BodyController, IBodyMoveHandler {
   public Actor actor => (Actor)body;
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
@@ -24,7 +24,8 @@ public class ActorController : BodyController {
     actor.OnSetTask += HandleSetTask;
     HandleSetTask(actor.task);
 
-    actor.OnMove += HandleMove;
+    actor.nonserializedModifiers.Add(this);
+
     actor.OnActionPerformed += HandleActionPerformed;
     actor.OnTakeAnyDamage += HandleTakeAnyDamage;
 
@@ -52,7 +53,7 @@ public class ActorController : BodyController {
     }
   }
 
-  private void HandleMove(Vector2Int arg1, Vector2Int arg2) {
+  public void HandleMove(Vector2Int arg1, Vector2Int arg2) {
     AudioClipStore.main.move.PlayAtPoint(transform.position, 0.5f);
   }
 

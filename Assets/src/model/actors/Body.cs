@@ -1,15 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 public delegate void OnDealAttackDamage(int dmg, Body target);
+public interface IBodyMoveHandler {
+  void HandleMove(Vector2Int newPos, Vector2Int oldPos);
+}
 
 [Serializable]
 public class Body : Entity, IModifierProvider {
   private static IEnumerable<object> SelfEnumerator<T>(T item) {
     yield return item;
   }
-  public virtual IEnumerable<object> MyModifiers => SelfEnumerator(this);
+  public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this);
+  [NonSerialized]
+  public List<object> nonserializedModifiers = new List<object>();
+
+  [OnDeserialized]
+  public void OnDeserialized() {
+    nonserializedModifiers = new List<object>();
+  }
+
 
   private Vector2Int _pos;
   public override Vector2Int pos {
@@ -22,7 +35,7 @@ public class Body : Entity, IModifierProvider {
           var oldTile = floor.tiles[_pos];
           oldTile.BodyLeft(this);
           _pos = value;
-          OnMove?.Invoke(value, oldTile.pos);
+          OnMove(value, oldTile.pos);
           Tile newTile = floor.tiles[_pos];
           newTile.BodyEntered(this);
         } else {
@@ -40,8 +53,8 @@ public class Body : Entity, IModifierProvider {
     newTile.BodyLeft(other);
     _pos = newTile.pos;
     other._pos = oldTile.pos;
-    OnMove?.Invoke(_pos, oldTile.pos);
-    other.OnMove?.Invoke(oldTile.pos, _pos);
+    OnMove(_pos, oldTile.pos);
+    other.OnMove(oldTile.pos, _pos);
     newTile.BodyEntered(this);
     oldTile.BodyEntered(other);
   }
@@ -50,9 +63,12 @@ public class Body : Entity, IModifierProvider {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
-  [field:NonSerialized]
   /// <summary>new position, old position</summary>
-  public event Action<Vector2Int, Vector2Int> OnMove;
+  private void OnMove(Vector2Int newPos, Vector2Int oldPos) {
+    foreach (IBodyMoveHandler handler in this.Of<IBodyMoveHandler>()) {
+      handler.HandleMove(newPos, oldPos);
+    }
+  }
 
   [field:NonSerialized]
   /// <summary>failed position, old position</summary>

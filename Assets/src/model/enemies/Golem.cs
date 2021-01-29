@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Attacks and moves take twice as long.\nTakes 1 less damage from attacks.\nLeaves a trail of Rubble.", flavorText: "Eager to prove himself, Aurogan had managed to Will Life into the boulder on the Boulder Hill. The Council was impressed; then horrified; then flat.")]
-public class Golem : AIActor, IAttackDamageTakenModifier {
+public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.ATTACK] = 2f,
     [ActionType.MOVE] = 2f,
@@ -15,10 +15,9 @@ public class Golem : AIActor, IAttackDamageTakenModifier {
     faction = Faction.Enemy;
     hp = baseMaxHp = 10;
     ai = AI().GetEnumerator();
-    OnMove += HandleMove;
   }
 
-  private void HandleMove(Vector2Int pos, Vector2Int oldPos) {
+  public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
     floor.Put(new Rubble(oldPos, 1));
   }
 

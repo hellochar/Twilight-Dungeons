@@ -80,7 +80,7 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
 }
 
 [ObjectInfo("spider-silk-shoes", "whoa")]
-internal class ItemSpiderSandals : EquippableItem, IStackable {
+internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Feet;
   public int stacksMax => 15;
   private int _stacks;
@@ -101,23 +101,17 @@ internal class ItemSpiderSandals : EquippableItem, IStackable {
     this.stacks = stacks;
   }
 
-  public override void OnEquipped(Player obj) {
-    obj.OnMove += HandleMove;
-  }
-
-  public override void OnUnequipped(Player obj) {
-    obj.OnMove -= HandleMove;
-  }
-
-  private void HandleMove(Vector2Int pos, Vector2Int oldPos) {
-    var player = GameModel.main.player;
-    if (!(player.floor.grasses[oldPos] is Web)) {
-      player.floor.Put(new Web(oldPos));
-      stacks--;
-    }
-    if (!(player.grass is Web) && stacks > 0) {
-      player.floor.Put(new Web(player.pos));
-      stacks--;
+  public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
+    if (IsEquipped) {
+      var player = GameModel.main.player;
+      if (!(player.floor.grasses[oldPos] is Web)) {
+        player.floor.Put(new Web(oldPos));
+        stacks--;
+      }
+      if (!(player.grass is Web) && stacks > 0) {
+        player.floor.Put(new Web(player.pos));
+        stacks--;
+      }
     }
   }
 

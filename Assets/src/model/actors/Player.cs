@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
-public class Player : Actor {
+public class Player : Actor, IBodyMoveHandler {
   public int water = 0;
   public int deepestDepthVisited = 1;
   internal readonly ItemHands Hands;
@@ -24,15 +25,26 @@ public class Player : Actor {
     equipment = new Equipment(this);
     Hands = new ItemHands(this);
     hp = baseMaxHp = 12;
+    /// TODO-SERIALIZATION hook these back up on re-serialize
     OnAttack += HandleAttack;
-    OnMove += HandleMove;
     OnMoveFailed += HandleMoveFailed;
     OnTakeAttackDamage += HandleTakeDamage;
     OnActionPerformed += HandleActionPerformed;
     statuses.OnAdded += HandleStatusAdded;
   }
 
-  private void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+  // [OnDeserialized]
+  // public new void OnDeserialized(StreamingContext context) {
+  //   Debug.Log("Player OnDeserialized");
+  //   OnAttack += HandleAttack;
+  //   OnMove += HandleMove;
+  //   OnMoveFailed += HandleMoveFailed;
+  //   OnTakeAttackDamage += HandleTakeDamage;
+  //   OnActionPerformed += HandleActionPerformed;
+  //   statuses.OnAdded += HandleStatusAdded;
+  // }
+
+  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (floor != null) {
       floor.RemoveVisibility(this, oldPos);
       floor.AddVisibility(this, newPos);

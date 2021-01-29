@@ -4,13 +4,12 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Chases and attacks nearest creature.\nLifesteals.\nGoes into Deep Sleep after 7 turns awake.\nOccasionally drops Bat Tooth.")]
-public class Bat : AIActor, IActionPerformedHandler {
+public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 7;
     ClearTasks();
     faction = Faction.Enemy;
     ai = AI().GetEnumerator();
-    OnDealAttackDamage += HandleDealDamage;
     if (UnityEngine.Random.value < 0.2f) {
       inventory.AddItem(new ItemBatTooth());
     }
@@ -56,7 +55,7 @@ public class Bat : AIActor, IActionPerformedHandler {
     return null;
   }
 
-  private void HandleDealDamage(int dmg, Body target) {
+  public void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor && dmg > 0) {
       Heal(1);
     }
@@ -68,20 +67,12 @@ public class Bat : AIActor, IActionPerformedHandler {
 }
 
 [ObjectInfo("bat-tooth", "Sharp with a little hole on the end to extract blood.")]
-internal class ItemBatTooth : EquippableItem, IWeapon {
+internal class ItemBatTooth : EquippableItem, IWeapon, IDealAttackDamageHandler {
   public ItemBatTooth() {
     durability = maxDurability;
   }
 
-  public override void OnEquipped(Player obj) {
-    obj.OnDealAttackDamage += HandleDealAttackDamage;
-  }
-
-  public override void OnUnequipped(Player obj) {
-    obj.OnDealAttackDamage -= HandleDealAttackDamage;
-  }
-
-  private void HandleDealAttackDamage(int dmg, Body target) {
+  public void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor && dmg > 0) {
       GameModel.main.player.Heal(1);
     }

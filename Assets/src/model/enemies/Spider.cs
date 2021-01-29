@@ -5,13 +5,12 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Spins webs underneath itself.\nPrioritizes expanding its territory.\nAttacks deal no damage but apply Poison.\nAttacks anyone adjacent to it.")]
-public class Spider : AIActor {
+public class Spider : AIActor, IDealAttackDamageHandler {
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 5;
     ClearTasks();
     ai = AI().GetEnumerator();
-    OnDealAttackDamage += HandleDealDamage;
     if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSpiderSandals(15));
     }
@@ -45,7 +44,7 @@ public class Spider : AIActor {
     }
   }
 
-  private void HandleDealDamage(int dmg, Body target) {
+  public void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor a) {
       a.statuses.Add(new PoisonedStatus(1));
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Moves twice per turn. When Parasite deals damage, it applies the Infested Status and dies.", flavorText: "")]
-public class Parasite : AIActor {
+public class Parasite : AIActor, IDealAttackDamageHandler {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
     [ActionType.ATTACK] = 1f,
@@ -16,10 +16,9 @@ public class Parasite : AIActor {
     faction = Faction.Enemy;
     hp = baseMaxHp = 1;
     ai = AI().GetEnumerator();
-    OnDealAttackDamage += HandleDealAttackDamage;
   }
 
-  private void HandleDealAttackDamage(int dmg, Body target) {
+  public void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor actor && !(actor is Parasite)) {
       actor.statuses.Add(new ParasiteStatus(100));
       Kill();

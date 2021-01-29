@@ -14,7 +14,7 @@ public interface IAttackHandler {
 /// Called when Actor deals attack damage (including 0). This includes 
 public interface IDealAttackDamageHandler {
   /// damage is after both Actor modifiers and target modifiers
-  void OnDealAttackDamage(int damage, Body target);
+  void HandleDealAttackDamage(int damage, Body target);
 }
 
 public interface IActionPerformedHandler {
@@ -221,7 +221,7 @@ public class Actor : Body, ISteppable {
   /// trigger this Actor dealing attack damage.
   public void OnDealAttackDamage(int damage, Body target) {
     foreach (var handler in this.Of<IDealAttackDamageHandler>()) {
-      handler.OnDealAttackDamage(damage, target);
+      handler.HandleDealAttackDamage(damage, target);
     }
   }
 }

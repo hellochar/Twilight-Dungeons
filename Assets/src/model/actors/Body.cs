@@ -13,6 +13,9 @@ public interface IBodyTakeAttackDamageHandler {
 public interface ITakeAnyDamageHandler {
   void HandleTakeAnyDamage(int damage);
 }
+public interface IHealHandler {
+  void HandleHeal(int amount);
+}
 
 [Serializable]
 public class Body : Entity {
@@ -55,11 +58,6 @@ public class Body : Entity {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
 
-  /// <summary>amount, new hp</summary>
-
-  [field:NonSerialized] /// TODO-SERIALIZATION handle
-  public event Action<int, int> OnHeal;
-
   [field:NonSerialized] /// TODO-SERIALIZATION handle
   /// <summary>Invoked when another Actor attacks this one - (damage, target).</summary>
   public event Action<int, Actor> OnAttacked;
@@ -84,7 +82,7 @@ public class Body : Entity {
     }
     amount = Mathf.Clamp(amount, 0, maxHp - hp);
     hp += amount;
-    OnHeal?.Invoke(amount, hp);
+    OnHeal(amount);
     return amount;
   }
 
@@ -139,6 +137,12 @@ public class Body : Entity {
   private void OnTakeAnyDamage(int dmg) {
     foreach (var handler in this.Of<ITakeAnyDamageHandler>()) {
       handler.HandleTakeAnyDamage(dmg);
+    }
+  }
+
+  private void OnHeal(int amount) {
+    foreach (var handler in this.Of<IHealHandler>()) {
+      handler.HandleHeal(amount);
     }
   }
 }

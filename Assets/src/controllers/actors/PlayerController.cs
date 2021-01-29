@@ -8,7 +8,6 @@ public class PlayerController : ActorController {
 
   public override void Start() {
     base.Start();
-    player.OnHeal += HandleHeal;
     player.inventory.OnItemAdded += HandleInventoryItemAdded;
     player.equipment.OnItemAdded += HandleEquipmentItemAdded;
     player.equipment.OnItemRemoved += HandleItemRemoved;
@@ -27,7 +26,8 @@ public class PlayerController : ActorController {
     AudioClipStore.main.playerPickupItem.PlayAtPoint(transform.position);
   }
 
-  private void HandleHeal(int heal, int newHp) {
+  public override void HandleHeal(int heal) {
+    base.HandleHeal(heal);
     AudioClipStore.main.playerHeal.PlayAtPoint(transform.position);
   }
 

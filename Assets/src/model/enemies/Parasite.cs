@@ -33,9 +33,9 @@ public class Parasite : AIActor {
       var target = SelectTarget();
       if (target == null) {
         yield return new MoveRandomlyTask(this);
-        continue;
+      } else {
+        yield return new AttackGroundTask(this, target.pos, 1);
       }
-      yield return new AttackGroundTask(this, target.pos, 1);
     }
   }
 

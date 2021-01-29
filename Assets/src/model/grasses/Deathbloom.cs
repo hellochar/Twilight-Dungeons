@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Blooms when a creature dies adjacent to this.\nOnce bloomed, walk over it to obtain a Deathbloom Flower and spawn a new Deathbloom.")]
-public class Deathbloom : Grass {
+public class Deathbloom : Grass, IActorEnterHandler {
   public bool isBloomed = false;
   public event Action OnBloomed;
 
@@ -15,12 +15,10 @@ public class Deathbloom : Grass {
 
   private void HandleEnterFloor() {
     floor.OnEntityRemoved += HandleEntityRemoved;
-    tile.OnActorEnter += HandleActorEnter;
   }
 
   private void HandleLeaveFloor() {
     floor.OnEntityRemoved -= HandleEntityRemoved;
-    tile.OnActorEnter -= HandleActorEnter;
   }
 
   private void HandleEntityRemoved(Entity entity) {
@@ -30,7 +28,7 @@ public class Deathbloom : Grass {
     }
   }
 
-  private void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Actor actor) {
     if (isBloomed) {
       if (actor is Player p) {
         p.inventory.AddItem(new ItemDeathbloomFlower(1), this);

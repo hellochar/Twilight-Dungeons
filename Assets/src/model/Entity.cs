@@ -3,17 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EntityLayer {
-  NONE = 0,
-  TILE = 1,
-  GRASS = 2,
-  ITEM = 4,
-  BODY = 8,
-}
-
 [Serializable]
 public abstract class Entity {
-  public abstract EntityLayer layer { get; }
   public bool IsDead { get; private set; }
   public readonly Guid guid = System.Guid.NewGuid();
   public abstract Vector2Int pos { get; set; }

@@ -122,4 +122,10 @@ public static class Util {
       return $"{min} - {max} damage.";
     }
   }
+
+  public static IEnumerable<T> Yield<T>(params T[] items) {
+    foreach (T t in items) {
+      yield return t;
+    }
+  }
 }

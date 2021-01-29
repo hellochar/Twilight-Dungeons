@@ -3,21 +3,11 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.", flavorText: "One man's dead brother is a fungi's feast.")]
-public class Spores : Grass {
+public class Spores : Grass, IActorEnterHandler {
   public Spores(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
   }
 
-  private void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
-  }
-
-  private void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
-  }
-
-  private void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Actor actor) {
     if (!(actor is SporeBloat)) {
       Activate();
       Kill();

@@ -6,7 +6,6 @@ public delegate void OnNoteworthyAction();
 
 [Serializable]
 public class Grass : Entity {
-  public override EntityLayer layer => EntityLayer.GRASS;
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [ObjectInfo(description: "Blocks up to 5 attack damage dealt to any creature standing on the Guardleaf.")]
-public class Guardleaf : Grass {
+public class Guardleaf : Grass, IActorEnterHandler {
   public int guardLeft;
   public Guardleaf(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
@@ -10,16 +10,14 @@ public class Guardleaf : Grass {
   }
 
   private void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
     actor?.statuses.Add(new GuardStatus());
   }
 
   private void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
     actor?.statuses.RemoveOfType<GuardStatus>();
   }
 
-  void HandleActorEnter(Actor who) {
+  public void HandleActorEnter(Actor who) {
     actor.statuses.Add(new GuardStatus());
     OnNoteworthyAction();
   }

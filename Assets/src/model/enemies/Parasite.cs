@@ -91,7 +91,7 @@ public class ParasiteStatus : StackingStatus {
   }
 
 
-  private void HandleActorDeath() {
+  public void HandleActorDeath() {
     var floor = actor.floor;
     var pos = actor.pos;
     GameModel.main.EnqueueEvent(() => {

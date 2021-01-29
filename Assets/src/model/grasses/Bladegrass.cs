@@ -4,24 +4,11 @@ using System.Linq;
 using UnityEngine;
 
 [ObjectInfo(description: "Walk over to sharpen.\nOnce sharpened, any creature walking into this Bladegrass takes 2 damage and kills it.")]
-public class Bladegrass : Grass {
+public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public bool isSharp = false;
   public event Action OnSharpened;
-  public Bladegrass(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
-  }
-
-  private void HandleEnterFloor() {
-    tile.OnActorLeave += HandleActorLeave;
-    tile.OnActorEnter += HandleActorEnter;
-  }
-
-  private void HandleLeaveFloor() {
-    tile.OnActorLeave -= HandleActorLeave;
-    tile.OnActorEnter -= HandleActorEnter;
-  }
+  public Bladegrass(Vector2Int pos) : base(pos) {}
 
   public void Sharpen() {
     if (!isSharp) {
@@ -31,7 +18,7 @@ public class Bladegrass : Grass {
     }
   }
 
-  private void HandleActorLeave(Actor obj) {
+  public void HandleActorLeave(Actor obj) {
     Sharpen();
   }
 

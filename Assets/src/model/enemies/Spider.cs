@@ -54,38 +54,30 @@ public class Spider : AIActor {
   internal override (int, int) BaseAttackDamage() => (0, 0);
 }
 
-internal class Web : Grass {
+internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   public Web(Vector2Int pos) : base(pos) {
     OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
   }
 
   void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
-    tile.OnActorLeave += HandleActorLeave;
     if (actor != null) {
       HandleActorEnter(actor);
     }
   }
 
-  void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
-    tile.OnActorLeave -= HandleActorLeave;
-  }
-
-  void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Actor actor) {
     actor.statuses.Add(new WebStatus());
     OnNoteworthyAction();
   }
 
-  public static bool IsActorNice(Actor actor) {
-    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
-  }
-
-  private void HandleActorLeave(Actor actor) {
+  public void HandleActorLeave(Actor actor) {
     if (!IsActorNice(actor)) {
       Kill();
     }
+  }
+
+  public static bool IsActorNice(Actor actor) {
+    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
   }
 }
 

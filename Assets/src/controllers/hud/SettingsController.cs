@@ -28,6 +28,11 @@ public class SettingsController : MonoBehaviour {
     Serializer.SaveToFile(GameModel.main);
   }
 
+  public void LoadGame() {
+    GameModel.shouldLoad = true;
+    Restart();
+  }
+
   public void Close() {
     gameObject.SetActive(false);
   }

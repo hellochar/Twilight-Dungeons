@@ -5,21 +5,11 @@ using System.Reflection;
 using UnityEngine;
 
 [ObjectInfo(description: "Walk over it to harvest.")]
-public class Mushroom : Grass {
+public class Mushroom : Grass, IActorEnterHandler {
   public Mushroom(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
   }
 
-  void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
-  }
-
-  void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
-  }
-
-  private void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Actor actor) {
     if (actor == GameModel.main.player) {
       GameModel.main.player.inventory.AddItem(new ItemMushroom(1), this);
       Kill();

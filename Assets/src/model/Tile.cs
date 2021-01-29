@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Tile : Entity {
-  public override EntityLayer layer => EntityLayer.TILE;
+public abstract class Tile : Entity, IModifierProvider {
   public TileVisiblity visibility = TileVisiblity.Unexplored;
   private Vector2Int _pos;
 
@@ -14,10 +14,7 @@ public abstract class Tile : Entity {
     set { }
   }
 
-  [field:NonSerialized]
-  public event Action<Actor> OnActorEnter;
-  [field:NonSerialized]
-  public event Action<Actor> OnActorLeave;
+  public IEnumerable<object> MyModifiers => Util.Yield<object>(this, grass, item);
 
   public Tile(Vector2Int pos) : base() {
     this._pos = pos;
@@ -50,13 +47,21 @@ public abstract class Tile : Entity {
 
   internal void BodyLeft(Body body) {
     if (body is Actor actor) {
-      GameModel.main.EnqueueEvent(() => OnActorLeave?.Invoke(actor));
+      GameModel.main.EnqueueEvent(() => {
+        foreach (var handler in this.Of<IActorLeaveHandler>()) {
+          handler.HandleActorLeave(actor);
+        }
+      });
     }
   }
 
   internal void BodyEntered(Body body) {
     if (body is Actor actor) {
-      GameModel.main.EnqueueEvent(() => OnActorEnter?.Invoke(actor));
+      GameModel.main.EnqueueEvent(() => {
+        foreach (var handler in this.Of<IActorEnterHandler>()) {
+          handler.HandleActorEnter(actor);
+        }
+      });
     }
   }
 
@@ -71,6 +76,14 @@ public abstract class Tile : Entity {
   internal virtual bool CanBeOccupied() {
     return GetPathfindingWeight() != 0;
   }
+}
+
+public interface IActorEnterHandler {
+  void HandleActorEnter(Actor who);
+}
+
+public interface IActorLeaveHandler {
+  void HandleActorLeave(Actor who);
 }
 
 [Serializable]
@@ -114,16 +127,14 @@ public class Upstairs : Tile {
 }
 
 [Serializable]
-public class Downstairs : Tile {
+public class Downstairs : Tile, IActorEnterHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(-1, 0);
-  public Downstairs(Vector2Int pos) : base(pos) {
-    OnActorEnter += HandleActorEnter;
-  }
+  public Downstairs(Vector2Int pos) : base(pos) {}
 
-  public void HandleActorEnter(Body body) {
+  public void HandleActorEnter(Actor actor) {
     var player = GameModel.main.player;
-    if (body == player) {
+    if (actor == player) {
       // if we're on floor 0, go straight to the deepest floor
       // if we're on the deepest floor, go 1 deeper
       Floor nextFloor;

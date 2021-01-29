@@ -60,12 +60,12 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
       gameObjectMap.Remove(e);
       return;
     }
-    GameObject currentObject = gameObjectMap[e];
-    if (currentObject == null) {
+    if (gameObjectMap.TryGetValue(e, out var currentObject)) {
+      currentObject.AddComponent<FadeThenDestroy>();
+      gameObjectMap.Remove(e);
+    } else {
       Debug.LogWarning("" + e + " was removed from floor " + floor + " but didn't have a GameObject.");
     }
-    currentObject.AddComponent<FadeThenDestroy>();
-    gameObjectMap.Remove(e);
   }
 
   void HandleEntityAdded(Entity e) {
@@ -104,7 +104,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
       }
       gameObjectMap[entity] = gameObject;
     } else {
-      Debug.LogError($"Couldn't find prefab for {entity.GetType()}");
+      Debug.LogWarning($"Couldn't find prefab for {entity.GetType()}");
     }
   }
 

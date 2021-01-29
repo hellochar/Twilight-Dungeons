@@ -6,11 +6,21 @@ using UnityEngine;
 public class HangingVines : Grass {
   private Inventory inventory = new Inventory(new ItemVineWhip(1));
   public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
+  private HangingVinesTrigger trigger;
 
   public HangingVines(Vector2Int pos) : base(pos) {
+    trigger = new HangingVinesTrigger(this);
     OnEnterFloor += HandleEnterFloor;
     OnLeaveFloor += HandleLeaveFloor;
     OnDeath += HandleDeath;
+  }
+
+  private void HandleEnterFloor() {
+    floor.Put(trigger);
+  }
+
+  private void HandleLeaveFloor() {
+    floor.Remove(trigger);
   }
 
   private void HandleDeath() {
@@ -20,16 +30,8 @@ public class HangingVines : Grass {
     }
   }
 
-  private void HandleEnterFloor() {
-    tileBelow.OnActorEnter += HandleActorEnter;
-  }
-
-  private void HandleLeaveFloor() {
-    tileBelow.OnActorEnter -= HandleActorEnter;
-  }
-
   private BoundStatus appliedStatus;
-  private void HandleActorEnter(Actor who) {
+  public void HandleActorEnterBelow(Actor who) {
     appliedStatus = new BoundStatus();
     who.statuses.Add(appliedStatus);
     OnNoteworthyAction();
@@ -40,6 +42,22 @@ public class HangingVines : Grass {
     // when someone is able to break free; remove these vines
     appliedStatus = null;
     Kill();
+  }
+}
+
+class HangingVinesTrigger : Entity, IActorEnterHandler {
+  HangingVines owner;
+  public override Vector2Int pos {
+    get => owner.tileBelow.pos;
+    set { }
+  }
+
+  public HangingVinesTrigger(HangingVines owner) {
+    this.owner = owner;
+  }
+
+  public void HandleActorEnter(Actor obj) {
+    owner.HandleActorEnterBelow(obj);
   }
 }
 

@@ -6,7 +6,6 @@ public delegate void OnDealAttackDamage(int dmg, Body target);
 
 [Serializable]
 public class Body : Entity, IModifierProvider {
-  public override EntityLayer layer => EntityLayer.BODY;
   private static IEnumerable<object> SelfEnumerator<T>(T item) {
     yield return item;
   }

@@ -4,22 +4,11 @@ using System.Reflection;
 using UnityEngine;
 
 [ObjectInfo(description: "Walk over it to harvest.")]
-public class Agave : Grass {
+public class Agave : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => Mushroom.CanOccupy(tile);
-  public Agave(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
-  }
+  public Agave(Vector2Int pos) : base(pos) {}
 
-  void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
-  }
-
-  void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
-  }
-
-  private void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Actor actor) {
     if (actor == GameModel.main.player) {
       GameModel.main.player.inventory.AddItem(new ItemAgave(1), this);
       Kill();

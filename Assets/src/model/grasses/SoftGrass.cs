@@ -1,22 +1,11 @@
 using UnityEngine;
 
 [ObjectInfo(description: "Moving five times on Soft Grass gives you one Free Move.")]
-public class SoftGrass : Grass {
+public class SoftGrass : Grass, IActorEnterHandler{
   public SoftGrass(Vector2Int pos) : base(pos) {
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
   }
 
-  void HandleEnterFloor() {
-    /// TODO make this declarative instead of manually registering events
-    tile.OnActorEnter += HandleActorEnter;
-  }
-
-  private void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
-  }
-
-  void HandleActorEnter(Actor who) {
+  public void HandleActorEnter(Actor who) {
     if (who is Player player) {
       player.statuses.Add(new SoftGrassStatus(1));
       OnNoteworthyAction();

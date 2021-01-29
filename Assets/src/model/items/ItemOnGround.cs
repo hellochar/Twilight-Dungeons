@@ -2,9 +2,8 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class ItemOnGround : Entity {
+public class ItemOnGround : Entity, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
-  public override EntityLayer layer => EntityLayer.ITEM;
 
   private Vector2Int _pos;
   public override Vector2Int pos {
@@ -20,19 +19,9 @@ public class ItemOnGround : Entity {
     this._pos = pos;
     this.item = item;
     Debug.AssertFormat(item.inventory == null, "Item's inventory should be null");
-    OnEnterFloor += HandleEnterFloor;
-    OnLeaveFloor += HandleLeaveFloor;
   }
 
-  private void HandleEnterFloor() {
-    tile.OnActorEnter += HandleActorEnter;
-  }
-
-  private void HandleLeaveFloor() {
-    tile.OnActorEnter -= HandleActorEnter;
-  }
-
-  private void HandleActorEnter(Actor actor) {
+  public void HandleActorEnter(Actor actor) {
     if (actor is Player player) {
       if (player.inventory.AddItem(item, this)) {
         Kill();

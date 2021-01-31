@@ -7,7 +7,11 @@ public class StatusController : MonoBehaviour {
   [NonSerialized]
   public Status status;
   public virtual void Start() {
-    status.OnRemoved += HandleRemoved;
+    if (status.list == null) {
+      HandleRemoved();
+    } else {
+      status.OnRemoved += HandleRemoved;
+    }
   }
 
   private void HandleRemoved() {

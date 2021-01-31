@@ -28,7 +28,7 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
       GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
       Instantiate(damagedSpritePrefab, Util.withZ(body.pos), Quaternion.identity);
     }
-    UpdateDamageTicks();
+    // UpdateDamageTicks();
   }
 
   public virtual void HandleHeal(int heal) {
@@ -41,7 +41,7 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
 
     GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);
-    UpdateDamageTicks();
+    // UpdateDamageTicks();
   }
 
   void UpdateDamageTicks() {

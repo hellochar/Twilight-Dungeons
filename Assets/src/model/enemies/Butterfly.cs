@@ -17,48 +17,35 @@ public class ItemButterfly : Item, IUsable {
 [ObjectInfo(description: "Every 5 turns, Butterfly will duplicate the Grass you're standing on to the cardinally adjacent squares.")]
 public class Butterfly : AIActor {
 
+  private static float DUPLICATE_CD = 5;
+  float cooldown = 0;
+
   public Butterfly(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     hp = baseMaxHp = 1;
-    ai = AI().GetEnumerator();
+    statuses.Add(new CharmedStatus());
   }
 
-  private IEnumerable<ActorTask> AI() {
-    statuses.Add(new CharmedStatus());
-
+  protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
 
-    // player.OnEnterFloor += () => {
-    //   GameModel.main.EnqueueEvent(() => {
-    //     var freeTile = player.floor.GetAdjacentTiles(player.pos).Where((tile) => tile.CanBeOccupied()).First();
-    //     GameModel.main.PutActorAt(actor, player.floor, freeTile.pos);
-    //   });
-    // };
-
-    var DUPLICATE_CD = 5;
-
-    var cooldown = 0;
-
-    while (true) {
-      // we want to duplicate
-      if (cooldown <= 0) {
-        // find a grass
-        var playerGrass = player.grass;
-        if (playerGrass != null) {
-          // we're on top of a grass, duplicate!
-          yield return new GenericTask(this, (_) => {
-            DuplicateGrass(playerGrass);
-            cooldown = DUPLICATE_CD;
-          });
-          continue;
-        }
+    // we want to duplicate
+    if (cooldown <= 0) {
+      // find a grass
+      var playerGrass = player.grass;
+      if (playerGrass != null) {
+        // we're on top of a grass, duplicate!
+        return new GenericTask(this, (_) => {
+          DuplicateGrass(playerGrass);
+          cooldown = DUPLICATE_CD;
+        });
       }
-      // we can't duplicate, either because there's nothing nearby or we're on CD
-      if (cooldown > 0) {
-        cooldown--;
-      }
-      yield return new ChaseTargetTask(this, player);
     }
+    // we can't duplicate, either because there's nothing nearby or we're on CD
+    if (cooldown > 0) {
+      cooldown--;
+    }
+    return new ChaseTargetTask(this, player);
   }
 
   private void DuplicateGrass(Grass grass) {

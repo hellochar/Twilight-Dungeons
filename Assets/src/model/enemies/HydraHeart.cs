@@ -11,13 +11,16 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   public HydraHeart(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 13;
-    ai = AI().GetEnumerator();
   }
 
-  private IEnumerable<ActorTask> AI() {
-    while(true) {
-      yield return new WaitTask(this, 3);
-      yield return new GenericTask(this, (_) => SpawnHydraHead());
+  private bool needsWait = true;
+  protected override ActorTask GetNextTask() {
+    if (needsWait) {
+      needsWait = false;
+      return new WaitTask(this, 3);
+    } else {
+      needsWait = true;
+      return new GenericTask(this, (_) => SpawnHydraHead());
     }
   }
 
@@ -72,22 +75,19 @@ public class HydraHead : AIActor, IBaseActionModifier {
   public HydraHead(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 3;
-    ai = AI().GetEnumerator();
   }
 
   internal override (int, int) BaseAttackDamage() => (1, 2);
 
-  private IEnumerable<ActorTask> AI() {
-    while (true) {
-      var potentialTargets = floor
-        .AdjacentBodies(pos)
-        .Where(HydraHeart.IsTarget);
-      if (potentialTargets.Any()) {
-        var target = Util.RandomPick(potentialTargets);
-        yield return new AttackTask(this, target);
-      } else {
-        yield return new WaitTask(this, 1);
-      }
+  protected override ActorTask GetNextTask() {
+    var potentialTargets = floor
+      .AdjacentBodies(pos)
+      .Where(HydraHeart.IsTarget);
+    if (potentialTargets.Any()) {
+      var target = Util.RandomPick(potentialTargets);
+      return new AttackTask(this, target);
+    } else {
+      return new WaitTask(this, 1);
     }
   }
 

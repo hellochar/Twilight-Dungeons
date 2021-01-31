@@ -15,7 +15,6 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
   public Parasite(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 1;
-    ai = AI().GetEnumerator();
   }
 
   public void HandleDealAttackDamage(int dmg, Body target) {
@@ -27,14 +26,12 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
 
   internal override (int, int) BaseAttackDamage() => (1, 1);
 
-  private IEnumerable<ActorTask> AI() {
-    while (true) {
-      var target = SelectTarget();
-      if (target == null) {
-        yield return new MoveRandomlyTask(this);
-      } else {
-        yield return new AttackGroundTask(this, target.pos, 1);
-      }
+  protected override ActorTask GetNextTask() {
+    var target = SelectTarget();
+    if (target == null) {
+      return new MoveRandomlyTask(this);
+    } else {
+      return new AttackGroundTask(this, target.pos, 1);
     }
   }
 
@@ -57,8 +54,8 @@ public class ParasiteEgg : Body {
     tiles.Shuffle();
     foreach (var tile in tiles.Take(2)) {
       var p = new Parasite(tile.pos);
-      var sleepTask = p.task as SleepTask;
-      sleepTask.wakeUpNextTurn = true;
+      p.timeNextAction += 1;
+      p.ClearTasks();
       floor.Put(p);
     }
     Kill();

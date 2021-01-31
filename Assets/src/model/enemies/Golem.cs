@@ -14,7 +14,6 @@ public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
   public Golem(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 10;
-    ai = AI().GetEnumerator();
   }
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
@@ -23,18 +22,16 @@ public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
 
   internal override (int, int) BaseAttackDamage() => (4, 5);
 
-  private IEnumerable<ActorTask> AI() {
+  protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    while (true) {
-      if (isVisible) {
-        if (IsNextTo(player)) {
-          yield return new AttackTask(this, player);
-        } else {
-          yield return new ChaseTargetTask(this, player);
-        }
+    if (isVisible) {
+      if (IsNextTo(player)) {
+        return new AttackTask(this, player);
       } else {
-        yield return new MoveRandomlyTask(this);
+        return new ChaseTargetTask(this, player);
       }
+    } else {
+      return new MoveRandomlyTask(this);
     }
   }
 

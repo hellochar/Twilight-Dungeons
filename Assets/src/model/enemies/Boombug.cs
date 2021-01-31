@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Boombug : AIActor {
@@ -11,7 +12,16 @@ public class Boombug : AIActor {
   public Boombug(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
     faction = Faction.Neutral;
-    ai = AIs.BugAI(this).GetEnumerator();
+  }
+
+  protected override ActorTask GetNextTask() {
+    if (UnityEngine.Random.value < 0.5f) {
+      return new WaitTask(actor, UnityEngine.Random.Range(1, 5));
+    } else {
+      var range5Tiles = actor.floor.EnumerateCircle(actor.pos, 5).Where((pos) => actor.floor.tiles[pos].CanBeOccupied());
+      var target = Util.RandomPick(range5Tiles);
+      return new MoveToTargetTask(actor, target);
+    }
   }
 
   public override void HandleDeath() {
@@ -53,6 +63,7 @@ public class ItemBoombugCorpse : Item, IStackable {
 
 public class BoombugCorpse : Actor, IDeathHandler {
   private bool exploded = false;
+  [field:NonSerialized] /// controller only
   public event Action OnExploded;
   public BoombugCorpse(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
@@ -80,10 +91,10 @@ public class BoombugCorpse : Actor, IDeathHandler {
     OnExploded?.Invoke();
     foreach (var tile in floor.GetAdjacentTiles(pos)) {
       if (tile != this.tile) {
-        if (tile.actor != null && tile.actor != this) {
-          this.Attack(tile.actor);
+        if (tile.body != null && tile.body != this) {
+          this.Attack(tile.body);
         }
-        if (actor == null && tile.grass != null) {
+        if (tile.body == null && tile.grass != null) {
           tile.grass.Kill();
         }
       }

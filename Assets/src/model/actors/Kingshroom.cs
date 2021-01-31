@@ -20,7 +20,7 @@ public class Kingshroom : Plant {
       ));
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Kingshroom)),
-        new ItemMuffinCap(),
+        new ItemMushroomCap(),
         new ItemKingshroomPowder()
       ));
       harvestOptions.Add(new Inventory(
@@ -37,7 +37,7 @@ public class Kingshroom : Plant {
 
 [Serializable]
 [ObjectInfo("living-armor", "")]
-internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandler, IAttackDamageTakenModifier {
+internal class ItemLivingArmor : EquippableItem, ISticky, IDurable, IActionPerformedHandler, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Body;
   public ItemLivingArmor() {
     durability = maxDurability;
@@ -55,27 +55,20 @@ internal class ItemLivingArmor : EquippableItem, IDurable, IActionPerformedHandl
 
   public int Modify(int input) => input - 2;
 
-  internal override string GetStats() => "Blocks 2 attack damage.\nMoving reduces durability.";
-
-  public override List<MethodInfo> GetAvailableMethods(Player actor) {
-    var methods = base.GetAvailableMethods(actor);
-    methods.Remove(GetType().GetMethod("Unequip"));
-    methods.Remove(GetType().GetMethod("Drop"));
-    return methods;
-  }
+  internal override string GetStats() => "Blocks 2 attack damage.\nMoving reduces durability.\nCannot be unequipped.";
 }
 
 [Serializable]
-[ObjectInfo("mushroom-cap", "It looks like a muffin from a far, but up close you realize the black dots are spongy and porous to try and catch whatever's floating in the air.")]
-internal class ItemMuffinCap : EquippableItem, IDurable, IStatusAddedHandler {
-  public ItemMuffinCap() {
+[ObjectInfo("mushroom-cap", "Spongy and porous holes dot the top, catching and eating air particulates.")]
+internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
+  public ItemMushroomCap() {
     durability = maxDurability;
   }
 
   public void HandleStatusAdded(Status status) {
     if (status is SporedStatus) {
       status.actor.Heal(1);
-      status.actor.statuses.Remove(status);
+      status.Remove();
       this.ReduceDurability();
     }
   }
@@ -86,7 +79,7 @@ internal class ItemMuffinCap : EquippableItem, IDurable, IStatusAddedHandler {
 
   public int maxDurability => 5;
 
-  internal override string GetStats() => "Prevents Spored Status, and heals you for 1 HP instead when you get it. ";
+  internal override string GetStats() => "If you'd get the Spored Status, prevent it and heal 1 HP instead.";
 }
 
 [Serializable]
@@ -149,17 +142,14 @@ internal class ItemGerm : Item, IDurable, IUsable {
 }
 
 
-class ThickMushroom : AIActor {
+class ThickMushroom : Actor {
   public ThickMushroom(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     hp = baseMaxHp = 3;
-    ClearTasks();
-    ai = AI().GetEnumerator();
+    timeNextAction += 999999;
   }
 
-  public IEnumerable<ActorTask> AI() {
-    while (true) {
-      yield return new WaitTask(this, 999);
-    }
+  public override float Step() {
+    return 999999;
   }
 }

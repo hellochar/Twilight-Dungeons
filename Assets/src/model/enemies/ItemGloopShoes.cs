@@ -1,6 +1,6 @@
 [System.Serializable]
 [ObjectInfo(spriteName: "goop", flavorText: "Weirdly healing")]
-public class ItemGloopShoes : EquippableItem, IDurable, IBaseActionModifier {
+public class ItemGloopShoes : EquippableItem, ISticky, IDurable, IBaseActionModifier {
   public override EquipmentSlot slot => EquipmentSlot.Feet;
   private int turnsLeft = 50;
 

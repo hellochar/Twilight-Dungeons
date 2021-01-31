@@ -7,7 +7,8 @@ using UnityEngine.Events;
 
 [Serializable]
 public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler {
-  public int water = 0;
+  private float timeLastLostWater = 0;
+  public float water = 0;
   public int deepestDepthVisited = 1;
   internal readonly ItemHands Hands;
   [NonSerialized] /// lazily instantiated
@@ -54,6 +55,12 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    GameModel.main.EnqueueEvent(() => {
+      if (water > 0 && GameModel.main.time - timeLastLostWater > 10) {
+        water -= 0.01f;
+        timeLastLostWater = GameModel.main.time;
+      }
+    });
     // player didn't do what they intended! We should reset and give
     // player a choice.
     if (final != initial) {

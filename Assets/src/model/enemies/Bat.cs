@@ -9,7 +9,6 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
     hp = baseMaxHp = 7;
     ClearTasks();
     faction = Faction.Enemy;
-    ai = AI().GetEnumerator();
     if (UnityEngine.Random.value < 0.2f) {
       inventory.AddItem(new ItemBatTooth());
     }
@@ -29,20 +28,16 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   }
 
   /// bats hide in corners and occasionally attack the closest target
-  private IEnumerable<ActorTask> AI() {
-    while (true) {
-      var target = SelectTarget();
-      if (target == null) {
-        yield return new MoveRandomlyTask(this);
-        continue;
-      }
-      if (IsNextTo(target)) {
-        yield return new AttackTask(this, target);
-        continue;
-      }
-      // chase until you are next to any target
-      yield return new ChaseDynamicTargetTask(this, SelectTarget);
+  protected override ActorTask GetNextTask() {
+    var target = SelectTarget();
+    if (target == null) {
+      return new MoveRandomlyTask(this);
     }
+    if (IsNextTo(target)) {
+      return new AttackTask(this, target);
+    }
+    // chase until you are next to any target
+    return new ChaseDynamicTargetTask(this, SelectTarget);
   }
 
   Actor SelectTarget() {

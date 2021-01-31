@@ -43,9 +43,11 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
   public void OnPointerUp(PointerEventData eventData) {
     // do the press
-    button.GetComponent<Button>().OnPointerClick(eventData);
-    isPressed = false;
-    UnsetButtonSprite();
+    if (isPressed) {
+      button.GetComponent<Button>().OnPointerClick(eventData);
+      isPressed = false;
+      UnsetButtonSprite();
+    }
   }
 
   /// if touch leaves the dpad area, cancel the touch.
@@ -76,13 +78,15 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   void UnsetButtonSprite() {
     if (button != null) {
       button.GetComponent<Image>().sprite = buttonOriginalSprite;
+      button = null;
+      buttonOriginalSprite = null;
     }
   }
 
   /// hard-coded
   private Transform stopButton => transform.GetChild(4);
 
-  private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x / 2;
+  private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x * 0.66f;
 
   private GameObject GetPressedButtonFromTouchPosition(Vector3 touchPosition3) {
     Vector2 touchPos = Util.getXY(touchPosition3);

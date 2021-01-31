@@ -25,6 +25,15 @@ public abstract class EquippableItem : Item {
     } else if (actor.equipment.HasItem(this)) {
       methods.Add(GetType().GetMethod("Unequip"));
     }
+    if (this is ISticky) {
+      methods.Remove(GetType().GetMethod("Unequip"));
+      methods.Remove(GetType().GetMethod("Drop"));
+    }
     return methods;
   }
+}
+
+/// cannot be unequipped
+public interface ISticky {
+
 }

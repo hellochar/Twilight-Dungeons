@@ -28,18 +28,15 @@ internal class SporeBloat : AIActor {
   public SporeBloat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
     faction = Faction.Neutral;
-    ai = AI();
-    ClearTasks();
+    SetTasks(
+      new WaitTask(this, 1),
+      new MoveRandomlyTask(this),
+      new TelegraphedTask(this, 1, new GenericBaseAction(this, (_) => Kill()))
+    );
   }
 
-  private IEnumerator<ActorTask> AI() {
-    yield return new WaitTask(this, 1);
-    yield return new MoveRandomlyTask(this);
-    GameModel.main.EnqueueEvent(() => statuses.Add(new SurprisedStatus()));
-    yield return new WaitTask(this, 1); // gets consumed by the surprised
-    yield return new GenericTask(this, (_) => {
-      Kill();
-    });
+  protected override ActorTask GetNextTask() {
+    return new GenericTask(this, (_) => Kill());
   }
 
   public override void HandleDeath() {

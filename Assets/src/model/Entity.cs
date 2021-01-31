@@ -22,12 +22,13 @@ public abstract class Entity : IModifierProvider {
   public Tile tile => floor.tiles[pos];
   public Grass grass => floor.grasses[pos];
   public ItemOnGround item => floor.items[pos];
+  public Trigger trigger => floor?.triggers[pos]; /// TODO remove null from floor
   public Body body => floor.bodies[pos];
   public Actor actor => body as Actor;
   public virtual string displayName => Util.WithSpaces(GetType().Name);
   public virtual string description => ObjectInfo.GetDescriptionFor(this);
-  public bool isVisible => IsDead ? false : tile.visibility == TileVisiblity.Visible;
-  public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this);
+  public virtual bool isVisible => !IsDead && tile.visibility == TileVisiblity.Visible;
+  public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this).Append(trigger);
   [NonSerialized] /// nonserialized by design
   public List<object> nonserializedModifiers = new List<object>();
 

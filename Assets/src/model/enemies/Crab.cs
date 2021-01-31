@@ -9,27 +9,25 @@ public class Crab : AIActor {
   public Crab(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 7;
-    ai = AI().GetEnumerator();
   }
 
   internal override (int, int) BaseAttackDamage() => (2, 3);
 
-  private IEnumerable<ActorTask> AI() {
+  protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    while (true) {
-      var nextPos = pos + direction;
-      var nextTile = floor.tiles[nextPos];
-      if (nextTile.BasePathfindingWeight() == 0 || nextTile.actor is Crab) {
-        // can't walk there; change directions
-        direction.x = -1 * direction.x;
-        yield return new WaitTask(this, 1).Open();
+
+    var nextPos = pos + direction;
+    var nextTile = floor.tiles[nextPos];
+    if (nextTile.BasePathfindingWeight() == 0 || nextTile.actor is Crab) {
+      // can't walk there; change directions
+      direction.x = -1 * direction.x;
+      return new WaitTask(this, 1).Open();
+    } else {
+      if (nextTile.body == null) {
+        return new MoveToTargetTask(this, nextPos).Open();
       } else {
-        if (nextTile.body == null) {
-          yield return new MoveToTargetTask(this, nextPos).Open();
-        } else {
-          // something's blocking the way; attack it
-          yield return new AttackTask(this, nextTile.actor).Open();
-        }
+        // something's blocking the way; attack it
+        return new AttackTask(this, nextTile.actor).Open();
       }
     }
   }

@@ -63,8 +63,10 @@ public class PlantController : BodyController {
 
   public async void HandlePlayersChoice() {
       GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
-      await Task.Delay(100);
-      TogglePopup();
+      if (GameModel.main.player.IsNextTo(plant)) {
+        await Task.Delay(100);
+        TogglePopup();
+      }
   }
 
   public void TogglePopup() {

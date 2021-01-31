@@ -120,10 +120,8 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     var itemOnGround = tile.item;
     var grass = tile.grass;
 
-    return new Entity[] { body, itemOnGround, grass }
+    return new Entity[] { body, itemOnGround, grass, tile }
       .Where(e => e != null && e.isVisible)
-      /// always allow clicking the Tile.
-      .Append(tile)
       .ToArray();
   }
 
@@ -139,9 +137,13 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
   private InputHold hold;
   void Update() {
-    if (hold != null && hold.ShouldTrigger(Time.time)) {
-      hold.triggered = true;
-      ShowObjectInfoPopupOverTouch();
+    if (hold != null) {
+      if (CameraZoom.IsZoomGuardActive) {
+        hold = null;
+      } else if (hold.ShouldTrigger(Time.time)) {
+        hold.triggered = true;
+        ShowObjectInfoPopupOverTouch();
+      }
     }
   }
 

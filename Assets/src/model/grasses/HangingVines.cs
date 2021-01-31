@@ -6,18 +6,18 @@ using UnityEngine;
 public class HangingVines : Grass, IDeathHandler {
   private Inventory inventory = new Inventory(new ItemVineWhip(1));
   public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
-  private HangingVinesTrigger trigger;
+  private HangingVinesTrigger triggerBelow;
 
   public HangingVines(Vector2Int pos) : base(pos) {
-    trigger = new HangingVinesTrigger(this);
+    triggerBelow = new HangingVinesTrigger(this);
   }
 
   protected override void HandleEnterFloor() {
-    floor.Put(trigger);
+    floor.Put(triggerBelow);
   }
 
   protected override void HandleLeaveFloor() {
-    floor.Remove(trigger);
+    floor.Remove(triggerBelow);
   }
 
   public void HandleDeath() {
@@ -41,7 +41,9 @@ public class HangingVines : Grass, IDeathHandler {
   }
 }
 
-class HangingVinesTrigger : Entity, IActorEnterHandler {
+public abstract class Trigger : Entity {}
+
+class HangingVinesTrigger : Trigger, IActorEnterHandler {
   HangingVines owner;
   public override Vector2Int pos {
     get => owner.tileBelow.pos;

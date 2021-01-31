@@ -7,7 +7,6 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 4;
     faction = Faction.Enemy;
-    ai = AI().GetEnumerator();
     if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
@@ -24,19 +23,16 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
     statuses.Add(new InShellStatus());
   }
 
-  private IEnumerable<ActorTask> AI() {
-    while (true) {
-      if (isVisible) {
-        if (IsNextTo(GameModel.main.player)) {
-          yield return new AttackTask(this, GameModel.main.player);
-        } else {
-          while (!actor.IsNextTo(GameModel.main.player)) {
-            yield return new ChaseTargetTask(this, GameModel.main.player);
-          }
-        }
+  protected override ActorTask GetNextTask() {
+    var player = GameModel.main.player;
+    if (isVisible) {
+      if (IsNextTo(player)) {
+        return new AttackTask(this, player);
       } else {
-        yield return new MoveRandomlyTask(this);
+        return new ChaseTargetTask(this, player);
       }
+    } else {
+      return new MoveRandomlyTask(this);
     }
   }
 

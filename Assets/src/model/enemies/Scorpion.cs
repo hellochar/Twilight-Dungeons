@@ -12,7 +12,19 @@ public class Scorpion : AIActor {
   public Scorpion(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 5;
-    ai = AIs.JackalAI(this).GetEnumerator();
+  }
+
+  protected override ActorTask GetNextTask() {
+    var player = GameModel.main.player;
+    if (isVisible) {
+      if (IsNextTo(player)) {
+        return new AttackTask(this, player);
+      } else {
+        return new ChaseTargetTask(this, player);
+      }
+    } else {
+      return new MoveRandomlyTask(this);
+    }
   }
 
   internal override (int, int) BaseAttackDamage() => (1, 1);

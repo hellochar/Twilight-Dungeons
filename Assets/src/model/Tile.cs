@@ -7,6 +7,8 @@ using UnityEngine;
 public abstract class Tile : Entity {
   public TileVisiblity visibility = TileVisiblity.Unexplored;
   private Vector2Int _pos;
+  /// <summary>Tiles are visible if they've ever been seen.</summary>
+  public override bool isVisible => !IsDead && tile.visibility != TileVisiblity.Unexplored;
 
   public override Vector2Int pos {
     get => _pos;

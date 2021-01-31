@@ -18,6 +18,7 @@ public class Floor {
   public StaticEntityGrid<Tile> tiles;
   public StaticEntityGrid<Grass> grasses;
   public StaticEntityGrid<ItemOnGround> items;
+  public StaticEntityGrid<Trigger> triggers;
   public MovingEntityList<Body> bodies;
   public HashSet<Entity> entities;
   public List<ISteppable> steppableEntities;
@@ -72,6 +73,7 @@ public class Floor {
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Grass>(this);
     this.items = new StaticEntityGrid<ItemOnGround>(this, ItemPlacementBehavior);
+    this.triggers = new StaticEntityGrid<Trigger>(this);
     this.bodies = new MovingEntityList<Body>(this);
     this.entities = new HashSet<Entity>();
     this.steppableEntities = new List<ISteppable>();
@@ -107,6 +109,8 @@ public class Floor {
       grasses.Put(grass);
     } else if (entity is ItemOnGround item) {
       items.Put(item);
+    } else if (entity is Trigger t) {
+      triggers.Put(t);
     }
 
     /// HACK
@@ -143,6 +147,8 @@ public class Floor {
       grasses.Remove(g);
     } else if (entity is ItemOnGround item) {
       items.Remove(item);
+    } else if (entity is Trigger t) {
+      triggers.Remove(t);
     }
 
     /// HACK

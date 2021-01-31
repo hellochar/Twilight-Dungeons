@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// An actor whose actions are controlled by some sort of AI.
-/// This AI decides what actions the actor takes.
-/// TODO we should use composition for this instead, eventually
-public class AIActor : Actor, IDeathHandler {
-  protected IEnumerator<ActorTask> ai;
+[Serializable]
+public abstract class AIActor : Actor, IDeathHandler {
   public Inventory inventory = new Inventory(1);
   public AIActor(Vector2Int pos) : base(pos) {
     SetTasks(new SleepTask(this));
@@ -21,18 +19,12 @@ public class AIActor : Actor, IDeathHandler {
   private static int MaxRetries = 2;
 
   public void SetAI(IEnumerator<ActorTask> ai) {
-    this.ai = ai;
+    /// TODO implement
+    // this.ai = ai;
     ClearTasks();
   }
 
-  private ActorTask MoveAIEnumerator() {
-    if (ai.MoveNext()) {
-      return ai.Current;
-    } else {
-      Debug.LogError("AI Enumerator ended!" + this);
-      return new WaitTask(this, 99999);
-    }
-  }
+  protected abstract ActorTask GetNextTask();
 
   public override float Step() {
     // the first step will likely be "no action" so retries starts at -1
@@ -40,7 +32,7 @@ public class AIActor : Actor, IDeathHandler {
       try {
         return base.Step();
       } catch (NoActionException) {
-        SetTasks(MoveAIEnumerator());
+        SetTasks(GetNextTask());
       }
     }
     Debug.LogWarning(this + " reached MaxSkippedActions!");

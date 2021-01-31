@@ -10,37 +10,32 @@ public class Spider : AIActor, IDealAttackDamageHandler {
     faction = Faction.Enemy;
     hp = baseMaxHp = 5;
     ClearTasks();
-    ai = AI().GetEnumerator();
     if (UnityEngine.Random.value < 0.1f) {
       inventory.AddItem(new ItemSpiderSandals(15));
     }
     // OnMove += HandleMove;
   }
 
-  private IEnumerable<ActorTask> AI() {
-    while (true) {
-      if (grass == null || !(grass is Web)) {
-        yield return new GenericTask(this, (_) => {
-          floor.Put(new Web(this.pos));
-        });
-        continue;
-      }
+  protected override ActorTask GetNextTask() {
+    if (grass == null || !(grass is Web)) {
+      return new GenericTask(this, (_) => {
+        floor.Put(new Web(this.pos));
+      });
+    }
 
-      var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));
-      if (intruders.Any()) {
-        var target = Util.RandomPick(intruders);
-        yield return new AttackTask(this, target);
-        continue;
-      }
+    var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));
+    if (intruders.Any()) {
+      var target = Util.RandomPick(intruders);
+      return new AttackTask(this, target);
+    }
 
-      var nonWebbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && !(tile.grass is Web));
-      var webbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && (tile.grass is Web));
+    var nonWebbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && !(tile.grass is Web));
+    var webbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && (tile.grass is Web));
 
-      if (nonWebbedAdjacentTiles.Any()) {
-        yield return new MoveToTargetTask(this, Util.RandomPick(nonWebbedAdjacentTiles).pos);
-      } else {
-        yield return new MoveToTargetTask(this, Util.RandomPick(webbedAdjacentTiles).pos);
-      }
+    if (nonWebbedAdjacentTiles.Any()) {
+      return new MoveToTargetTask(this, Util.RandomPick(nonWebbedAdjacentTiles).pos);
+    } else {
+      return new MoveToTargetTask(this, Util.RandomPick(webbedAdjacentTiles).pos);
     }
   }
 
@@ -54,7 +49,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 }
 
 internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
-  public Web(Vector2Int pos) : base(pos) {}
+  public Web(Vector2Int pos) : base(pos) { }
 
   protected override void HandleEnterFloor() {
     if (actor != null) {

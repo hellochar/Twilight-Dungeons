@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Chases and attacks nearest creature.\nLifesteals.\nGoes into Deep Sleep after 7 turns awake.\nOccasionally drops Bat Tooth.")]
 public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   public Bat(Vector2Int pos) : base(pos) {
@@ -22,9 +23,14 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
         var sleep = new SleepTask(this, 5, true);
         SetTasks(sleep);
       }
-    } else {
+    }
+  }
+
+  protected override void TaskChanged() {
+    if (task is SleepTask) {
       turnsUntilSleep = 7;
     }
+    base.TaskChanged();
   }
 
   /// bats hide in corners and occasionally attack the closest target

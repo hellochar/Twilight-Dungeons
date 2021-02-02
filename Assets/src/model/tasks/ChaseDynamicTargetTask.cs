@@ -1,5 +1,6 @@
 using System;
 
+[System.Serializable]
 internal class ChaseDynamicTargetTask : ChaseTargetTask {
   private Func<Actor> targetDecider;
 
@@ -7,8 +8,8 @@ internal class ChaseDynamicTargetTask : ChaseTargetTask {
     this.targetDecider = targetDecider;
   }
 
-  public override void OnGetNextPosition() {
+  public override void PreStep() {
     this.targetActor = targetDecider();
-    base.OnGetNextPosition();
+    base.PreStep();
   }
 }

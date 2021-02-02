@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class Boombug : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.WAIT] = 2f,
@@ -107,11 +108,13 @@ public class BoombugCorpse : Actor, IDeathHandler {
   }
 }
 
-public class ExplodeTask : ActorTask {
+/// this doesn't contain gameplay logic; it's just to signal creating an ExplodeTask visual marker
+[System.Serializable]
+public class ExplodeTask : DoOnceTask {
   public ExplodeTask(Actor actor) : base(actor) {
   }
 
-  public override IEnumerator<BaseAction> Enumerator() {
-    yield return new WaitBaseAction(actor);
+  protected override BaseAction GetNextActionImpl() {
+    return new WaitBaseAction(actor);
   }
 }

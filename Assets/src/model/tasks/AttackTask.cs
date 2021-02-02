@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+[System.Serializable]
 public class AttackTask : DoOnceTask {
   public AttackTask(Actor actor, Body target) : base(actor) {
     this.target = target;
@@ -7,7 +8,7 @@ public class AttackTask : DoOnceTask {
 
   public Body target { get; }
 
-  public override IEnumerator<BaseAction> Enumerator() {
-    yield return new AttackBaseAction(actor, target);
+  protected override BaseAction GetNextActionImpl() {
+    return new AttackBaseAction(actor, target);
   }
 }

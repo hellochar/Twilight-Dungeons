@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [ObjectInfo(description: "Constricts any creature that walks into its hook.\nYou may destroy the Hanging Vines by tapping the stem.")]
 public class HangingVines : Grass, IDeathHandler {
   private Inventory inventory = new Inventory(new ItemVineWhip(1));
@@ -41,8 +42,10 @@ public class HangingVines : Grass, IDeathHandler {
   }
 }
 
+[Serializable]
 public abstract class Trigger : Entity {}
 
+[Serializable]
 class HangingVinesTrigger : Trigger, IActorEnterHandler {
   HangingVines owner;
   public override Vector2Int pos {
@@ -92,6 +95,7 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
   internal override string GetStats() => "Damage is equal to number of stacks.\nDestroyed on use.";
 }
 
+[System.Serializable]
 public class BoundStatus : StackingStatus, IBaseActionModifier {
   private readonly HangingVines owner;
 

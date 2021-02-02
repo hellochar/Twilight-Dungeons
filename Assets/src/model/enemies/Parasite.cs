@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Moves twice per turn. When Parasite deals damage, it applies the Infested Status and dies.", flavorText: "")]
 public class Parasite : AIActor, IDealAttackDamageHandler {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
@@ -43,6 +44,7 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
   }
 }
 
+[System.Serializable]
 public class ParasiteEgg : Body {
   public ParasiteEgg(Vector2Int pos) : base(pos) {
     AddTimedEvent(10, Hatch);
@@ -62,10 +64,12 @@ public class ParasiteEgg : Body {
   }
 }
 
+[System.Serializable]
 [ObjectInfo("parasite", "oh noooooooo")]
 public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler {
   public override StackingMode stackingMode => StackingMode.Independent;
   public override bool isDebuff => base.isDebuff;
+  [field:NonSerialized] /// controller only
   public event System.Action OnAttack;
 
   public ParasiteStatus(int stacks) : base(stacks) {

@@ -74,7 +74,7 @@ public class TurnManager {
     bool isFirstIteration = true;
     int guard = 0;
     do {
-      if (guard++ > 1000) {
+      if (guard++ > 1000 && !model.player.IsDead) {
         Debug.Log("Stopping step because it's been 1000 turns since player had a turn");
         break;
       }

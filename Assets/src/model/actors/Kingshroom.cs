@@ -142,6 +142,7 @@ internal class ItemGerm : Item, IDurable, IUsable {
 }
 
 
+[Serializable]
 class ThickMushroom : Actor {
   public ThickMushroom(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;

@@ -32,6 +32,7 @@ class ItemMushroom : Item, IStackable, IEdible {
   internal override string GetStats() => $"Get {stacks} stacks of the Pumped Up status.";
 }
 
+[System.Serializable]
 [ObjectInfo("mushroom", "Yummy")]
 class PumpedUpStatus : StackingStatus, IActionCostModifier, IActionPerformedHandler {
   public PumpedUpStatus(int stacks) : base(stacks) {}

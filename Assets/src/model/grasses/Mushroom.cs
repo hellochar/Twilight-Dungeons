@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Walk over it to harvest.")]
 public class Mushroom : Grass, IActorEnterHandler {
   public Mushroom(Vector2Int pos) : base(pos) {

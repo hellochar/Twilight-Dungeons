@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 /// Don't do anything until the Player's in view
-class SleepTask : ActorTask, IAnyDamageTakenModifier {
+[System.Serializable]
+class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
+  public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private bool done;
   private int? maxTurns;
   private readonly bool isDeepSleep;
@@ -14,12 +16,16 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
     this.isDeepSleep = isDeepSleep;
   }
 
-  /// doubles damage taken while sleeping, also should wake up!
+  /// doubles attack damage taken while sleeping
   public int Modify(int input) {
-    if (input > 0) {
+    return input * 2;
+  }
+
+  /// wake up when hurt!
+  public void HandleTakeAnyDamage(int damage) {
+    if (damage > 0) {
       WakeUp();
     }
-    return input * 2;
   }
 
   protected virtual bool ShouldWakeUp() {
@@ -27,55 +33,63 @@ class SleepTask : ActorTask, IAnyDamageTakenModifier {
       return true;
     }
 
+    if (maxTurns != null && maxTurns <= 0) {
+      return true;
+    }
+
     if (isDeepSleep) {
       return false;
     }
 
-    var chanceToWakeUpWhileVisible = 1;
-    return actor.isVisible && UnityEngine.Random.value < chanceToWakeUpWhileVisible;
+    return actor.isVisible;
   }
 
-  public override IEnumerator<BaseAction> Enumerator() {
-    while (!ShouldWakeUp()) {
-      if (maxTurns != null) {
-        maxTurns--;
-        if (maxTurns <= 0) {
-          break;
+  protected override BaseAction GetNextActionImpl() {
+    if (maxTurns != null) {
+      maxTurns--;
+    }
+    if (ShouldWakeUp()) {
+      // end of sleep - wake up adjacent sleeping Actors
+      foreach (var actor in actor.floor.AdjacentActors(actor.pos)) {
+        if (actor.task is SleepTask s && !s.isDeepSleep) {
+          // hack to wake them up
+          s.wakeUpNextTurn = true;
         }
       }
-      yield return new WaitBaseAction(actor);
+      WakeUp();
+      return new WaitBaseAction(actor);
+    } else {
+      return new WaitBaseAction(actor);
     }
-    // end of sleep - wake up adjacent sleeping Actors
-    foreach (var actor in actor.floor.AdjacentActors(actor.pos)) {
-      if (actor.task is SleepTask s && !s.isDeepSleep) {
-        // hack to wake them up
-        s.wakeUpNextTurn = true;
-      }
-    }
-    WakeUp();
-    yield return new WaitBaseAction(actor);
   }
 
   public void WakeUp() {
     if (!done) {
-      done = true;
-      GameModel.main.EnqueueEvent(() => {
-        actor.statuses.Add(new SurprisedStatus());
-      });
+      actor.statuses.Add(new SurprisedStatus());
       wakeUpNextTurn = true;
+      done = true;
     }
   }
 
   public override bool IsDone() => done;
 }
 
+[System.Serializable]
 class SurprisedStatus : Status, IBaseActionModifier {
   public override bool isDebuff => true;
   public override string Info() => "";
+  private bool remove = false;
 
   public BaseAction Modify(BaseAction input) {
-    Remove();
-    return input;
+    /// The SurprisedStatus only affects one action but it ends at the start of the second action,
+    /// so the player can see the (!)
+    if (remove) {
+      Remove();
+      return input;
+    } else {
+      remove = true;
+      return new WaitBaseAction(input.actor);
+    }
   }
 
   public override bool Consume(Status other) => true;

@@ -12,6 +12,7 @@ public class ItemPumpkin : Item, IEdible {
   internal override string GetStats() => "Gives you the Well Fed buff.\nMakes a nice helmet after you eat it.";
 }
 
+[System.Serializable]
 [ObjectInfo("pumpkin", "Yummy")]
 class WellFedStatus : StackingStatus, IBaseActionModifier, IAttackDamageModifier {
   public WellFedStatus(int stacks) : base(stacks) {}

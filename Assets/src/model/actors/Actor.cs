@@ -55,10 +55,6 @@ public class Actor : Body, ISteppable {
   }
   public IEnumerable<ActorTask> tasks => taskQueue.AsEnumerable();
 
-  /// ActorTasks contain IEnumerators which cannot be serialized. We work
-  // around this by only saving the Player - and when they do load,
-  /// the taskQueue will be empty.
-  [NonSerialized]
   protected List<ActorTask> taskQueue = new List<ActorTask>();
 
   [field:NonSerialized] /// Controller only
@@ -75,11 +71,6 @@ public class Actor : Body, ISteppable {
     hp = baseMaxHp = 8;
     // this.timeNextAction = this.timeCreated + baseActionCost;
     this.timeNextAction = this.timeCreated;
-  }
-
-  [OnDeserialized]
-  public void OnDeserialized(StreamingContext c) {
-    taskQueue = new List<ActorTask>();
   }
 
   /// create an Attack with the specified damage. This does *not* do damage modifiers.
@@ -148,7 +139,7 @@ public class Actor : Body, ISteppable {
   }
 
   /// Call when this.task is changed
-  protected void TaskChanged() {
+  protected virtual void TaskChanged() {
     OnSetTask?.Invoke(this.task);
   }
 
@@ -165,18 +156,19 @@ public class Actor : Body, ISteppable {
     if (task == null) {
       throw new NoActionException();
     }
+    task.PreStep();
     /// clear out all done actions from the queue
-    while (!task.MoveNext()) {
+    while (task.IsDone()) {
       // this mutates action
       GoToNextTask();
       if (task == null) {
         throw new NoActionException();
+      } else {
+        task.PreStep();
       }
     }
-    // at this point, we know the following things:
-    // action is not null
-    // action.MoveNext() has been called and it returned true
-    var action = task.Current;
+    // at this point, we know task is not null and it is not done
+    var action = task.GetNextAction();
     BaseAction finalAction = Perform(action);
     if (IsDead) {
       throw new ActorDiedException();
@@ -184,7 +176,7 @@ public class Actor : Body, ISteppable {
     Modifiers.Process(this.StepModifiers(), null);
 
     // handle close-ended actions
-    while (task != null && task.IsDoneOrForceOpen()) {
+    while (task != null && task.WhenToCheckIsDone.HasFlag(TaskStage.After) && task.IsDone()) {
       GoToNextTask();
     }
     return GetActionCost(finalAction);

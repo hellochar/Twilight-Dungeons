@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.", flavorText: "One man's dead brother is a fungi's feast.")]
 public class Spores : Grass, IActorEnterHandler {
   public Spores(Vector2Int pos) : base(pos) {
@@ -23,6 +24,7 @@ public class Spores : Grass, IActorEnterHandler {
   }
 }
 
+[System.Serializable]
 [ObjectInfo(description: "Explodes, applying the Spored Status on to adjacent creatures.", flavorText: "Massive and swollen and looking to spread its seed...")]
 internal class SporeBloat : AIActor {
   public SporeBloat(Vector2Int pos) : base(pos) {
@@ -49,6 +51,7 @@ internal class SporeBloat : AIActor {
   }
 }
 
+[System.Serializable]
 [ObjectInfo("spored-status", "eww")]
 internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier, IActorKilledHandler {
   public override StackingMode stackingMode => StackingMode.Max;

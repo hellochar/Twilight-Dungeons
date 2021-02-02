@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Blocks up to 5 attack damage dealt to any creature standing on the Guardleaf.")]
 public class Guardleaf : Grass, IActorEnterHandler {
   public int guardLeft;
@@ -27,6 +28,7 @@ public class Guardleaf : Grass, IActorEnterHandler {
   }
 }
 
+[System.Serializable]
 [ObjectInfo("guardroot", "Big leaves")]
 public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
   public override int stacks {

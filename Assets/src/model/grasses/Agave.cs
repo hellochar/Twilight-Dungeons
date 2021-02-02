@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Walk over it to harvest.")]
 public class Agave : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => Mushroom.CanOccupy(tile);

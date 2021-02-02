@@ -3,6 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Flags]
+public enum TaskStage {
+  /// <summary>Check right before the actor's turn, so that this task might
+  /// chain into another task.</summary>
+  Before = 1,
+  /// <summary> Check right after this task's action was just performed, so
+  /// that the player knows what the creature's next task is.</summary>
+  After = 2
+}
+
 /**
  * A task comprised of zero or more individual actions that an 
  * actor takes to help reach some goal.
@@ -19,78 +29,48 @@ using UnityEngine;
  * that gets called right after the generated BaseAction has been taken. If IsDone()
  * is true, then the action Ends immediately.
  */
-public abstract class ActorTask : IEnumerator<BaseAction> {
+[Serializable]
+public abstract class ActorTask {
   public string Name { get; set; }
-  public virtual Actor actor { get; }
-
-  /// default implementation is not done (aka open-ended).
-  /// Note: IsDone() should return true if .MoveNext() would
-  /// return false. Don't call this directly; instead use the extension method
-  public virtual bool IsDone() => false;
+  public Actor actor { get; }
+  /// when to check whether this task is "done":
+  public virtual TaskStage WhenToCheckIsDone => TaskStage.Before;
 
   protected ActorTask(Actor actor) {
     Name = Util.WithSpaces(GetType().Name.Replace("Task", ""));
     this.actor = actor;
   }
 
-  /// <summary>Called by Actor when this task has ended.</summary>
-  internal virtual void Ended() { }
-
   public ActorTask Named(string name) {
     Name = name;
     return this;
   }
 
-  public abstract IEnumerator<BaseAction> Enumerator();
+  /// called before the IsDone()/GetNextAction() calls
+  public virtual void PreStep() {}
 
-  private IEnumerator<BaseAction> _enumeratorInstance;
-  private IEnumerator<BaseAction> EnumeratorInstance {
-    get {
-      if (_enumeratorInstance == null) {
-        _enumeratorInstance = Enumerator();
-      }
-      return _enumeratorInstance;
-    }
+  public virtual BaseAction GetNextAction() {
+    return GetNextActionImpl();
   }
 
-  public BaseAction Current => EnumeratorInstance.Current;
+  public abstract bool IsDone();
 
-  object IEnumerator.Current => EnumeratorInstance.Current;
+  protected abstract BaseAction GetNextActionImpl();
 
-  public virtual bool MoveNext() {
-    return EnumeratorInstance.MoveNext();
-  }
-
-  public void Reset() {
-    EnumeratorInstance.Reset();
-  }
-
-  public void Dispose() {
-    EnumeratorInstance.Dispose();
-  }
-
-  public bool forceOpen = false;
-  /// force this task to be open ended.
-  public ActorTask Open() {
-    forceOpen = true;
-    return this;
-  }
+  /// <summary>Called by Actor when this task has ended.</summary>
+  internal virtual void Ended() { }
 }
 
-public static class ActorTaskExtensions {
-  // x && !false = x && true = x
-  public static bool IsDoneOrForceOpen(this ActorTask task) => task.IsDone() && !task.forceOpen;
-}
-
+[System.Serializable]
 /// A close-ended action that, once it has been stepped once, is done.
 public abstract class DoOnceTask : ActorTask {
+  public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private bool hasDoneOnce = false;
-
   protected DoOnceTask(Actor actor) : base(actor) { }
 
-  public override bool MoveNext() {
+  public sealed override BaseAction GetNextAction() {
     hasDoneOnce = true;
-    return base.MoveNext();
+    return base.GetNextAction();
   }
 
   public override sealed bool IsDone() => hasDoneOnce;

@@ -16,10 +16,10 @@ public class GameModel {
   /// * You never visit an "older" floor once it's "completed"
   /// * A floor can be completely generated from just a Seed number, plus the random generation algorithm (TODO-SERIALIZE we'll need to store encounter weights)
   /// The primary reason for this is that both AIActor#ai and Actor#ActorTask are type IEnumerable, which is impossible to serialize
-  [NonSerialized]
+  // [NonSerialized]
   public Floor[] floors;
   /// floor0, on the other hand, *will* be saved.
-  public Floor floor0;
+  // public Floor floor0;
 
   public int activeFloorIndex = 0;
   public float time;
@@ -74,7 +74,7 @@ public class GameModel {
 
   private void generate() {
     floors = FloorGenerator.generateAll();
-    floor0 = floors[0];
+    // floor0 = floors[0];
     player = new Player(new Vector2Int(3, floors[0].height/2));
     floors[0].Put(player);
   }
@@ -83,8 +83,8 @@ public class GameModel {
     eventQueue = new List<Action>();
     /// TODO-SERIALIZATION generation is different because
     /// seed is different
-    floors = FloorGenerator.generateAll();
-    floors[0] = floor0;
+    // floors = FloorGenerator.generateAll();
+    // floors[0] = floor0;
   }
 
   private static void Analyze() {

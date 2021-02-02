@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 [ObjectInfo(description: "Walk over to sharpen.\nOnce sharpened, any creature walking into this Bladegrass takes 2 damage and kills it.")]
 public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public bool isSharp = false;
+  [field:NonSerialized]
   public event Action OnSharpened;
   public Bladegrass(Vector2Int pos) : base(pos) {}
 

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Spins webs underneath itself.\nPrioritizes expanding its territory.\nAttacks deal no damage but apply Poison.\nAttacks anyone adjacent to it.")]
 public class Spider : AIActor, IDealAttackDamageHandler {
   public Spider(Vector2Int pos) : base(pos) {
@@ -48,6 +49,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
   internal override (int, int) BaseAttackDamage() => (0, 0);
 }
 
+[System.Serializable]
 internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   public Web(Vector2Int pos) : base(pos) { }
 
@@ -111,6 +113,7 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
   internal override string GetStats() => "Take no penalty from webs.\nLeave a trail of webs when you move.";
 }
 
+[System.Serializable]
 internal class WebStatus : Status, IActionCostModifier {
   public ActionCosts Modify(ActionCosts costs) {
     if (!Web.IsActorNice(actor)) {
@@ -134,6 +137,7 @@ internal class WebStatus : Status, IActionCostModifier {
 }
 
 /// stacks = turns
+[System.Serializable]
 [ObjectInfo("poisoned-status", "You feel sick to your stomach...")]
 internal class PoisonedStatus : StackingStatus {
   int duration = 5;

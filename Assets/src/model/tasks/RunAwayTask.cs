@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class RunAwayTask : ActorTask {
+  public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private Vector2Int fearPoint;
   public int turns;
   public int turnsRemaining;
@@ -15,19 +17,21 @@ public class RunAwayTask : ActorTask {
     this.hasSurpriseTurn = hasSurpriseTurn;
   }
 
-  public override IEnumerator<BaseAction> Enumerator() {
+  protected override BaseAction GetNextActionImpl() {
     if (hasSurpriseTurn) {
-      yield return new WaitBaseAction(actor);
+      hasSurpriseTurn = false;
+      return new WaitBaseAction(actor);
     }
-    for (; turnsRemaining > 0; turnsRemaining--) {
-      var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
-      if (adjacentTiles.Any()) {
-        var furthestTile = adjacentTiles.Aggregate((t1, t2) =>
-          Vector2Int.Distance(fearPoint, t1.pos) > Vector2Int.Distance(fearPoint, t2.pos) ? t1 : t2);
-        yield return new MoveBaseAction(actor, furthestTile.pos);
-      } else {
-        yield return new WaitBaseAction(actor);
-      }
+    turnsRemaining--;
+    var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
+    if (adjacentTiles.Any()) {
+      var furthestTile = adjacentTiles.Aggregate((t1, t2) =>
+        Vector2Int.Distance(fearPoint, t1.pos) > Vector2Int.Distance(fearPoint, t2.pos) ? t1 : t2);
+      return new MoveBaseAction(actor, furthestTile.pos);
+    } else {
+      return new WaitBaseAction(actor);
     }
   }
+
+  public override bool IsDone() => turnsRemaining <= 0;
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class TelegraphedTask : ActorTask {
+  public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private int turns;
   private BaseAction then;
   private bool done;
@@ -11,12 +13,14 @@ public class TelegraphedTask : ActorTask {
     this.then = then;
   }
 
-  public override IEnumerator<BaseAction> Enumerator() {
-    for (int i = 0; i < turns; i++) {
-      yield return new WaitBaseAction(actor);
+  protected override BaseAction GetNextActionImpl() {
+    // 3, 2, 1
+    if (turns > 0) {
+      turns--;
+      return new WaitBaseAction(actor);
     }
     done = true;
-    yield return then;
+    return then;
   }
 
   public override bool IsDone() => done;

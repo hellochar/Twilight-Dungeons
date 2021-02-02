@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [ObjectInfo(description: "Chases you.\nTelegraphs attacks.")]
 public class Blob : AIActor {
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;

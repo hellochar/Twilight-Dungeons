@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[System.Serializable]
 class Coralmoss : Grass, ISteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground && !(tile.body is Coral);
   public Coralmoss(Vector2Int pos) : base(pos) {
@@ -35,6 +36,7 @@ class Coralmoss : Grass, ISteppable {
   public float turnPriority => 50;
 }
 
+[System.Serializable]
 internal class Coral : Body, IAnyDamageTakenModifier, IDeathHandler {
   public Coral(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 3;

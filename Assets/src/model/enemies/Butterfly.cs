@@ -14,6 +14,7 @@ public class ItemButterfly : Item, IUsable {
   }
 }
 
+[System.Serializable]
 [ObjectInfo(description: "Every 5 turns, Butterfly will duplicate the Grass you're standing on to the cardinally adjacent squares.")]
 public class Butterfly : AIActor {
 

@@ -28,13 +28,27 @@ public class ItemCharmBerry : Item, IStackable {
   internal override string GetStats() => "Makes a target loyal to you; they will follow you and attack nearby enemies, but cannot traverse floors. Enemies will not re-direct their focus to attack them.";
 
   public void Charm(AIActor actor) {
-    actor.SetAI(CharmAI(actor).GetEnumerator());
+    actor.SetAI(new CharmAI(actor));
     actor.statuses.Add(new CharmedStatus());
     actor.faction = Faction.Ally;
     stacks--;
   }
+}
 
-  private IEnumerable<ActorTask> CharmAI(AIActor actor) {
+[Serializable]
+public abstract class AI {
+  public abstract ActorTask GetNextTask();
+}
+
+[Serializable]
+public class CharmAI : AI {
+  public AIActor actor;
+
+  public CharmAI(AIActor actor) {
+    this.actor = actor;
+  }
+
+  public override ActorTask GetNextTask() {
     var player = GameModel.main.player;
 
     // player.OnEnterFloor += () => {
@@ -44,37 +58,37 @@ public class ItemCharmBerry : Item, IStackable {
     //   });
     // };
 
-    // diagonals only count as distance 1
-    int DiamondDistance(Actor a) => Math.Min(Math.Abs(a.pos.x - player.pos.x), Math.Abs(a.pos.y - player.pos.y));
-
-    Actor TargetDecider() {
-      var targets = player.ActorsInSight(Faction.Enemy).OrderBy(DiamondDistance);
-      if (targets.Any()) {
-        var closestDistance = DiamondDistance(targets.First());
-        /// consider targets tied for closest distance
-        var closestDistanceTargets = targets.TakeWhile((a) => DiamondDistance(a) == closestDistance);
-        /// out of those, pick the one closest to you
-        var target = closestDistanceTargets.OrderBy(actor.DistanceTo).First();
-        return target;
-      }
-      return null;
+    var target = TargetDecider();
+    if (target == null) {
+      return new MoveNextToTargetTask(actor, GameModel.main.player.pos);
     }
-
-    while(true) {
-      if (TargetDecider() != null) {
-        var task = new ChaseDynamicTargetTask(actor, TargetDecider);
-        yield return task;
-        var target = task.GetTargetActor();
-        if (target != null && actor.IsNextTo(target)) {
-          yield return new AttackTask(actor, target);
-        }
-      } else {
-        yield return new MoveNextToTargetTask(actor, GameModel.main.player.pos);
-      }
+    if (actor.IsNextTo(target)) {
+      return new AttackTask(actor, target);
     }
+    return new ChaseDynamicTargetTask(actor, TargetDecider);
   }
+
+  Actor TargetDecider() {
+    var targets = GameModel.main.player.ActorsInSight(Faction.Enemy).OrderBy(DiamondDistance);
+    if (targets.Any()) {
+      var closestDistance = DiamondDistance(targets.First());
+      /// consider targets tied for closest distance
+      var closestDistanceTargets = targets.TakeWhile((a) => DiamondDistance(a) == closestDistance);
+      /// out of those, pick the one closest to you
+      var target = closestDistanceTargets.OrderBy(actor.DistanceTo).First();
+      return target;
+    }
+    return null;
+  }
+
+  // diagonals only count as distance 1
+  private static int DiamondDistance(Actor a) => Math.Min(
+    Math.Abs(a.pos.x - GameModel.main.player.pos.x),
+    Math.Abs(a.pos.y - GameModel.main.player.pos.y)
+  );
 }
 
+[System.Serializable]
 internal class CharmedStatus : Status {
   public CharmedStatus() {
   }

@@ -97,6 +97,7 @@ public class Ground : Tile {
   public Ground(Vector2Int pos) : base(pos) { }
 }
 
+[Serializable]
 public class FancyGround : Ground {
   public FancyGround(Vector2Int pos) : base(pos) {
   }

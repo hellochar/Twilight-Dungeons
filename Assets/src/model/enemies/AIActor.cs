@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public abstract class AIActor : Actor, IDeathHandler {
   public Inventory inventory = new Inventory(1);
+  private AI aiOverride;
   public AIActor(Vector2Int pos) : base(pos) {
     SetTasks(new SleepTask(this));
   }
@@ -18,9 +19,8 @@ public abstract class AIActor : Actor, IDeathHandler {
 
   private static int MaxRetries = 2;
 
-  public void SetAI(IEnumerator<ActorTask> ai) {
-    /// TODO implement
-    // this.ai = ai;
+  public void SetAI(AI ai) {
+    this.aiOverride = ai;
     ClearTasks();
   }
 
@@ -32,7 +32,11 @@ public abstract class AIActor : Actor, IDeathHandler {
       try {
         return base.Step();
       } catch (NoActionException) {
-        SetTasks(GetNextTask());
+        if (aiOverride != null) {
+          SetTasks(aiOverride.GetNextTask());
+        } else {
+          SetTasks(GetNextTask());
+        }
       }
     }
     Debug.LogWarning(this + " reached MaxSkippedActions!");

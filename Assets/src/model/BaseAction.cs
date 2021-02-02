@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 /// BaseActions always last exactly one turn
+[System.Serializable]
 public abstract class BaseAction {
   public readonly Actor actor;
   public abstract ActionType Type { get; }
@@ -21,6 +22,7 @@ public enum ActionType {
   GENERIC
 }
 
+[System.Serializable]
 public sealed class MoveBaseAction : BaseAction {
   public override ActionType Type => ActionType.MOVE;
   public readonly Vector2Int pos;
@@ -38,6 +40,7 @@ public sealed class MoveBaseAction : BaseAction {
   }
 }
 
+[System.Serializable]
 public sealed class AttackBaseAction : BaseAction {
   public override ActionType Type => ActionType.ATTACK;
   public readonly Body target;
@@ -54,6 +57,7 @@ public sealed class AttackBaseAction : BaseAction {
   }
 }
 
+[System.Serializable]
 public sealed class AttackGroundBaseAction : BaseAction {
   public override ActionType Type => ActionType.ATTACK;
   public readonly Vector2Int targetPosition;
@@ -69,6 +73,7 @@ public sealed class AttackGroundBaseAction : BaseAction {
   }
 }
 
+[System.Serializable]
 public sealed class WaitBaseAction : BaseAction {
   public override ActionType Type => ActionType.WAIT;
 
@@ -78,8 +83,10 @@ public sealed class WaitBaseAction : BaseAction {
   public override void Perform() {}
 }
 
+[System.Serializable]
 public sealed class GenericBaseAction : BaseAction {
   public override ActionType Type => ActionType.GENERIC;
+  /// TODO-SERIALIZE audit all these actions
   public readonly Action<Actor> action;
   public GenericBaseAction(Actor actor, Action<Actor> action) : base(actor) {
     this.action = action;
@@ -90,6 +97,7 @@ public sealed class GenericBaseAction : BaseAction {
   }
 }
 
+[System.Serializable]
 public class StruggleBaseAction : BaseAction {
   public override ActionType Type => ActionType.MOVE;
   public StruggleBaseAction(Actor actor) : base(actor) {

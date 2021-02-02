@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Moving five times on Soft Grass gives you one Free Move.")]
 public class SoftGrass : Grass, IActorEnterHandler{
   public SoftGrass(Vector2Int pos) : base(pos) {
@@ -12,6 +13,8 @@ public class SoftGrass : Grass, IActorEnterHandler{
     }
   }
 }
+
+[System.Serializable]
 [ObjectInfo(spriteName: "colored_transparent_packed_95", flavorText: "Feels nice on your feet.")]
 public class SoftGrassStatus : StackingStatus, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Ignore;
@@ -38,6 +41,7 @@ public class SoftGrassStatus : StackingStatus, IBaseActionModifier {
   public override string Info() => "Every fifth move is free!";
 }
 
+[System.Serializable]
 [ObjectInfo("colored_transparent_packed_850", "")]
 public class FreeMoveStatus : Status, IActionCostModifier, IBaseActionModifier {
   public FreeMoveStatus() {}

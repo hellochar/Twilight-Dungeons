@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>Close-ended.</summary>
+[System.Serializable]
 public class WaitTask : ActorTask {
+  public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private int turns;
 
   public int Turns => turns;
@@ -12,11 +14,9 @@ public class WaitTask : ActorTask {
     this.turns = turns;
   }
 
-  public override IEnumerator<BaseAction> Enumerator() {
-    do {
-      turns--;
-      yield return new WaitBaseAction(actor);
-    } while (turns > 0);
+  protected override BaseAction GetNextActionImpl() {
+    turns--;
+    return new WaitBaseAction(actor);
   }
 
   public override bool IsDone() => turns <= 0;

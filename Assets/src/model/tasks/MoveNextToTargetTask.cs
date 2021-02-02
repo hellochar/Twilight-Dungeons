@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class MoveNextToTargetTask : FollowPathTask {
   public MoveNextToTargetTask(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor.pos, target)) { }
 

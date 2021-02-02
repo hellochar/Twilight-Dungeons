@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Only moves horizontally.\nAttacks anything in its path.", flavorText: "")]
 public class Crab : AIActor {
   public override float turnPriority => 40;
@@ -21,13 +22,13 @@ public class Crab : AIActor {
     if (nextTile.BasePathfindingWeight() == 0 || nextTile.actor is Crab) {
       // can't walk there; change directions
       direction.x = -1 * direction.x;
-      return new WaitTask(this, 1).Open();
+      return new WaitTask(this, 1);
     } else {
       if (nextTile.body == null) {
-        return new MoveToTargetTask(this, nextPos).Open();
+        return new MoveToTargetTask(this, nextPos);
       } else {
         // something's blocking the way; attack it
-        return new AttackTask(this, nextTile.actor).Open();
+        return new AttackTask(this, nextTile.body);
       }
     }
   }

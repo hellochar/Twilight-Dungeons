@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Goes into its shell when it takes damage.\nPauses after each action.\nChases you.")]
 public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
@@ -95,6 +96,7 @@ public class ItemSnailShell : Item, IStackable {
 //   }
 // }
 
+[System.Serializable]
 internal class InShellStatus : StackingStatus, IAttackDamageTakenModifier, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Max;
   public InShellStatus(int stacks) : base(stacks) { }
@@ -113,6 +115,7 @@ internal class InShellStatus : StackingStatus, IAttackDamageTakenModifier, IBase
   }
 }
 
+[System.Serializable]
 internal class SlimedStatus : Status, IActionCostModifier, IBaseActionModifier {
   public override bool isDebuff => true;
   public SlimedStatus() : base() {}

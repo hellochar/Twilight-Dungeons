@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Chases you.\nAttacks and moves twice.")]
 public class Scorpion : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {

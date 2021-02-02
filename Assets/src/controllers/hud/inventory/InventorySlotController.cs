@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class InventorySlotController : ItemSlotController {
   /// the ragged border/fill representing the slot
   private Image image;
   public int slotIndex;
+  [NonSerialized]
   protected Inventory inventory;
   public override Item item => inventory[slotIndex];
 

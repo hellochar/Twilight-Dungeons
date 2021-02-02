@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 [ObjectInfo(description: "Runs away for one turn after attacking.", flavorText: "")]
 public class Wildekin : AIActor, IAttackHandler {
   public Wildekin(Vector2Int pos) : base(pos) {

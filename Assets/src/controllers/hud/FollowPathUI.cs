@@ -7,6 +7,7 @@ using UnityEngine;
 public class FollowPathUI : MonoBehaviour {
   private GameObject reticle;
   private GameObject pathDotPrefab;
+  [NonSerialized]
   private Player player;
   public List<GameObject> pathDots;
 

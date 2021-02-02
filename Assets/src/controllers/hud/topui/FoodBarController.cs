@@ -5,6 +5,7 @@ using UnityEngine;
 public class FoodBarController : MonoBehaviour {
   private RectTransform rectTransform;
   private GameObject barFilled;
+  [System.NonSerialized]
   private Player player;
   void Start() {
     rectTransform = GetComponent<RectTransform>();

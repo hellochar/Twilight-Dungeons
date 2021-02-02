@@ -28,6 +28,12 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     hp = baseMaxHp = 12;
   }
 
+  [OnSerializing]
+  private void OnSerializing(StreamingContext context) {
+    /// clear player tasks on save
+    ClearTasks();
+  }
+
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (floor != null) {
       floor.RemoveVisibility(this, oldPos);

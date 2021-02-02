@@ -16,7 +16,7 @@ public class WaterController : TileController {
     var player = GameModel.main.player;
     player.SetTasks(
       new MoveNextToTargetTask(player, water.pos),
-      new GenericTask(player, (_) => water.Collect(player))
+      new GenericPlayerTask(player, () => water.Collect(player))
     );
   }
 }

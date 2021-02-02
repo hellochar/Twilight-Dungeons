@@ -12,9 +12,7 @@ public class UpstairsController : TileController {
     Player player = GameModel.main.player;
     player.SetTasks(
       new MoveNextToTargetTask(player, tile.pos),
-      new GenericTask(player, (p) => {
-        upstairs.GoHome();
-      })
+      new GenericPlayerTask(player, upstairs.GoHome)
     );
   }
 }

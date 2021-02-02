@@ -33,12 +33,12 @@ internal class SporeBloat : AIActor {
     SetTasks(
       new WaitTask(this, 1),
       new MoveRandomlyTask(this),
-      new TelegraphedTask(this, 1, new GenericBaseAction(this, (_) => Kill()))
+      new TelegraphedTask(this, 1, new GenericBaseAction(this, Kill))
     );
   }
 
   protected override ActorTask GetNextTask() {
-    return new GenericTask(this, (_) => Kill());
+    return new GenericTask(this, Kill);
   }
 
   public override void HandleDeath() {

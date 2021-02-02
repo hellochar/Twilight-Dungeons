@@ -36,10 +36,7 @@ public class Butterfly : AIActor {
       var playerGrass = player.grass;
       if (playerGrass != null) {
         // we're on top of a grass, duplicate!
-        return new GenericTask(this, (_) => {
-          DuplicateGrass(playerGrass);
-          cooldown = DUPLICATE_CD;
-        });
+        return new GenericOneArgTask<Grass>(this, DuplicateGrass, playerGrass);
       }
     }
     // we can't duplicate, either because there's nothing nearby or we're on CD
@@ -56,5 +53,6 @@ public class Butterfly : AIActor {
       var newGrass = (Grass)constructorInfo.Invoke(new object[] { tile.pos });
       grass.floor.Put(newGrass);
     }
+    cooldown = DUPLICATE_CD;
   }
 }

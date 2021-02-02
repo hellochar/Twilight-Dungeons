@@ -151,9 +151,7 @@ public class ActorController : BodyController,
     switch (actor.faction) {
       case Faction.Ally:
         if (player.IsNextTo(actor)) {
-          player.task = new GenericTask(player, (_) => {
-            player.SwapPositions(actor);
-          }, ActionType.MOVE);
+          player.task = new SwapPositionsTask(player, actor);
         } else {
           player.task = new MoveNextToTargetTask(player, actor.pos);
         }

@@ -8,13 +8,13 @@ using UnityEngine.EventSystems;
 public class SoilController : TileController {
   public override void PointerClick(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
-    ItemSeed seed = (ItemSeed)player.inventory.ToList().Find(item => item is ItemSeed);
+    ItemSeed seed = (ItemSeed) player.inventory.ToList().Find(item => item is ItemSeed);
     if (seed != null) {
       player.SetTasks(
         new MoveNextToTargetTask(player, tile.pos),
-        new GenericTask(player, (p) => {
-          if (p.IsNextTo(tile)) {
-            seed.Plant((Soil)tile);
+        new GenericPlayerTask(player, () => {
+          if (player.IsNextTo(tile)) {
+            seed.Plant((Soil) tile);
           }
         })
       );

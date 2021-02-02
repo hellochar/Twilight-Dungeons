@@ -85,15 +85,16 @@ public sealed class WaitBaseAction : BaseAction {
 
 [System.Serializable]
 public sealed class GenericBaseAction : BaseAction {
-  public override ActionType Type => ActionType.GENERIC;
-  /// TODO-SERIALIZE audit all these actions
-  public readonly Action<Actor> action;
-  public GenericBaseAction(Actor actor, Action<Actor> action) : base(actor) {
+  private ActionType m_type;
+  public override ActionType Type => m_type;
+  public readonly Action action;
+  public GenericBaseAction(Actor actor, Action action, ActionType type = ActionType.GENERIC) : base(actor) {
+    m_type = type;
     this.action = action;
   }
 
   public override void Perform() {
-    action.Invoke(actor);
+    action();
   }
 }
 

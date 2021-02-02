@@ -40,7 +40,7 @@ class ItemAgave : Item, IStackable {
   }
 
   public void Refine(Player player) {
-    player.SetTasks(new GenericTask(player, (_) => RefineImpl(player)));
+    player.SetTasks(new GenericPlayerTask(player, () => RefineImpl(player)));
   }
 
   private void RefineImpl(Player player) {

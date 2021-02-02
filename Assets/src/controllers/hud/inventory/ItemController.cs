@@ -104,8 +104,8 @@ public class ItemController : MonoBehaviour {
       );
       player.SetTasks(
         new MoveNextToTargetTask(player, soil.pos),
-        new GenericTask(player, (p) => {
-          if (p.IsNextTo(soil)) {
+        new GenericPlayerTask(player, () => {
+          if (player.IsNextTo(soil)) {
             seed.Plant(soil);
           }
         })
@@ -125,7 +125,7 @@ public class ItemController : MonoBehaviour {
       var enemy = await MapSelector.SelectUI(player.floor.AdjacentActors(player.pos).Where((a) => a != player));
       player.SetTasks(
         new ChaseTargetTask(player, enemy),
-        new GenericTask(player, (_) => {
+        new GenericPlayerTask(player, () => {
           powder.Infect(player, enemy);
         })
       );
@@ -144,7 +144,7 @@ public class ItemController : MonoBehaviour {
       var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor).Cast<AIActor>());
       player.SetTasks(
         new ChaseTargetTask(player, enemy),
-        new GenericTask(player, (_) => {
+        new GenericPlayerTask(player, () => {
           charmBerry.Charm(enemy);
         })
       );
@@ -168,7 +168,7 @@ public class ItemController : MonoBehaviour {
           .Where((p) => p.CanBeOccupied() && p.isVisible)
       );
       player.SetTasks(
-        new GenericTask(player, (_) => {
+        new GenericPlayerTask(player, () => {
           corpse.Throw(player, tile.pos);
         })
       );
@@ -186,7 +186,7 @@ public class ItemController : MonoBehaviour {
     try {
       var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Concat(player.ActorsInSight(Faction.Neutral)));
       player.SetTasks(
-        new GenericTask(player, (_) => {
+        new GenericPlayerTask(player, () => {
           shell.Throw(player, enemy);
         })
       );

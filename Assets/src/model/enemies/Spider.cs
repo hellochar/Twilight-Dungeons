@@ -17,11 +17,13 @@ public class Spider : AIActor, IDealAttackDamageHandler {
     // OnMove += HandleMove;
   }
 
+  private void DoNotRename_PutWeb() {
+    floor.Put(new Web(pos));
+  }
+
   protected override ActorTask GetNextTask() {
     if (grass == null || !(grass is Web)) {
-      return new GenericTask(this, (_) => {
-        floor.Put(new Web(this.pos));
-      });
+      return new GenericTask(this, DoNotRename_PutWeb);
     }
 
     var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));

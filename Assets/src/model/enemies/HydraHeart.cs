@@ -21,7 +21,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
       return new WaitTask(this, 3);
     } else {
       needsWait = true;
-      return new GenericTask(this, (_) => SpawnHydraHead());
+      return new GenericTask(this, SpawnHydraHead);
     }
   }
 

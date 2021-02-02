@@ -11,16 +11,7 @@ using System.Runtime.Serialization;
 public class GameModel {
   public int seed;
   public Player player;
-
-  /// We will regenerate this by saving the Seed for each unexplored floor. A few conditions:
-  /// * You never visit an "older" floor once it's "completed"
-  /// * A floor can be completely generated from just a Seed number, plus the random generation algorithm (TODO-SERIALIZE we'll need to store encounter weights)
-  /// The primary reason for this is that both AIActor#ai and Actor#ActorTask are type IEnumerable, which is impossible to serialize
-  // [NonSerialized]
   public Floor[] floors;
-  /// floor0, on the other hand, *will* be saved.
-  // public Floor floor0;
-
   public int activeFloorIndex = 0;
   public float time;
   [NonSerialized] /// lazy instantiation will take care of this
@@ -81,10 +72,6 @@ public class GameModel {
 
   public void RehookUpAfterSerialization() {
     eventQueue = new List<Action>();
-    /// TODO-SERIALIZATION generation is different because
-    /// seed is different
-    // floors = FloorGenerator.generateAll();
-    // floors[0] = floor0;
   }
 
   private static void Analyze() {

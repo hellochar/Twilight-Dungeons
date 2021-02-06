@@ -10,9 +10,21 @@ public class LoadMainScene : MonoBehaviour {
 
   void Start() {
     blackOverlay = transform.Find("BlackOverlay").gameObject;
+    if (!Serializer.HasSave()) {
+      transform.Find("Continue").gameObject.SetActive(false);
+    }
   }
 
-  public void StartGame() {
+  public void NewGame() {
+    StartGame();
+  }
+
+  public void Continue() {
+    GameModel.shouldLoad = true;
+    StartGame();
+  }
+
+  private void StartGame() {
     StartCoroutine(TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
   }
 

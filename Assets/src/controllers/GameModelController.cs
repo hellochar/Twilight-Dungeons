@@ -20,12 +20,7 @@ public class GameModelController : MonoBehaviour {
     GameModel.InitOrLoadMain();
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
-    SceneManager.sceneUnloaded += HandleSceneUnloaded;
     main = this;
-  }
-
-  private void HandleSceneUnloaded(Scene arg0) {
-    // Serializer.SaveToPlayerPrefs(this.model);
   }
 
   // Start is called before the first frame update
@@ -36,6 +31,23 @@ public class GameModelController : MonoBehaviour {
     model.turnManager.OnPlayersChoice += HandlePlayersChoice;
     model.turnManager.OnPlayerCannotPerform += HandlePlayerCannotPerform;
     // AudioClipStore.main.gameStart.Play();
+  }
+
+  void OnApplicationFocus(bool hasFocus) {
+    /// save
+    if (!hasFocus) {
+      Serializer.SaveToFile(GameModel.main);
+    }
+  }
+
+  void OnApplicationPause(bool isPaused) {
+    if (isPaused) {
+      Serializer.SaveToFile(GameModel.main);
+    }
+  }
+
+  void OnApplicationQuit() {
+    Serializer.SaveToFile(GameModel.main);
   }
 
   private Coroutine gameLoop;

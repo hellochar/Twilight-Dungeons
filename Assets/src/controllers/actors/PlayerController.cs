@@ -20,6 +20,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     model.EnqueueEvent(() => {
       model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
     });
+
+    #if !UNITY_EDITOR
+    Serializer.DeleteSave();
+    #endif
   }
 
   private void HandleInventoryItemAdded(Item arg1, Entity arg2) {

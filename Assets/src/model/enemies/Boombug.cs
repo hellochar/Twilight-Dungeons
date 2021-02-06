@@ -62,6 +62,7 @@ public class ItemBoombugCorpse : Item, IStackable {
   }
 }
 
+[Serializable]
 public class BoombugCorpse : Actor, IDeathHandler {
   private bool exploded = false;
   [field:NonSerialized] /// controller only
@@ -91,13 +92,11 @@ public class BoombugCorpse : Actor, IDeathHandler {
     exploded = true;
     OnExploded?.Invoke();
     foreach (var tile in floor.GetAdjacentTiles(pos)) {
-      if (tile != this.tile) {
-        if (tile.body != null && tile.body != this) {
-          this.Attack(tile.body);
-        }
-        if (tile.body == null && tile.grass != null) {
-          tile.grass.Kill(this);
-        }
+      if (tile.body != null && tile.body != this) {
+        this.Attack(tile.body);
+      }
+      if ((tile.body == null || tile == this.tile) && tile.grass != null) {
+        tile.grass.Kill(this);
       }
     }
     Kill(this);

@@ -39,6 +39,12 @@ public static class Serializer {
     // }
   }
 
+  public static bool HasSave() => File.Exists(SAVE_PATH);
+
+  public static void DeleteSave() {
+    File.Delete(SAVE_PATH);
+  }
+
   public static bool SaveToFile(GameModel model) {
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(SAVE_PATH)) {

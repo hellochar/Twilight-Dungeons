@@ -52,8 +52,10 @@ public class ActorController : BodyController,
   public virtual void HandleDeath(Entity source) {
     if (source == GameModel.main.player) {
       var audioSource = GetComponent<AudioSource>();
-      audioSource.pitch = Random.Range(0.75f, 1.25f);
-      audioSource.Play();
+      if (audioSource != null) {
+        audioSource.pitch = Random.Range(0.75f, 1.25f);
+        audioSource.Play();
+      }
     }
   }
 

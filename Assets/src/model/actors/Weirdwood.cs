@@ -85,10 +85,10 @@ internal class VileGrowth : Grass, ISteppable {
   }
 
   public float Step() {
-    actor?.TakeDamage(1);
+    actor?.TakeDamage(1, GameModel.main.player);
     OnNoteworthyAction();
     if (--turns <= 0) {
-      Kill();
+      Kill(this);
     }
     return 1;
   }

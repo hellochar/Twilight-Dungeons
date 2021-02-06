@@ -53,7 +53,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
   public void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     var player = GameModel.main.player;
     if (source != player) {
-      source.TakeDamage(1);
+      source.TakeDamage(1, player);
       this.ReduceDurability();
     }
   }

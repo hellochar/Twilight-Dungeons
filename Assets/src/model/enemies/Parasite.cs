@@ -21,7 +21,7 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
   public void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor actor && !(actor is Parasite)) {
       actor.statuses.Add(new ParasiteStatus(100));
-      Kill();
+      Kill(this);
     }
   }
 
@@ -60,7 +60,7 @@ public class ParasiteEgg : Body {
       p.ClearTasks();
       floor.Put(p);
     }
-    Kill();
+    Kill(this);
   }
 }
 
@@ -80,8 +80,7 @@ public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler {
     Remove();
   }
 
-
-  public void HandleDeath() {
+  public void HandleDeath(Entity source) {
     var floor = actor.floor;
     var pos = actor.pos;
     GameModel.main.EnqueueEvent(() => {

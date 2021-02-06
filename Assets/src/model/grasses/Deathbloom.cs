@@ -39,7 +39,7 @@ public class Deathbloom : Grass, IActorEnterHandler {
           var newDeathbloom = new Deathbloom(tile.pos);
           floor.Put(newDeathbloom);
         }
-        Kill();
+        Kill(p);
       }
     }
   }

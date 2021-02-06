@@ -13,7 +13,7 @@ public class Mushroom : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     if (actor == GameModel.main.player) {
       GameModel.main.player.inventory.AddItem(new ItemMushroom(1), this);
-      Kill();
+      Kill(actor);
     }
   }
 

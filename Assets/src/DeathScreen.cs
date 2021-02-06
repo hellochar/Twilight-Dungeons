@@ -12,7 +12,7 @@ public class DeathScreen : MonoBehaviour, IDeathHandler {
     gameObject.SetActive(false);
   }
 
-  public void HandleDeath() {
+  public void HandleDeath(Entity source) {
     gameObject.SetActive(true);
   }
 

@@ -23,7 +23,7 @@ public class Guardleaf : Grass, IActorEnterHandler {
   internal void removeGuard(int reduction) {
     guardLeft -= reduction;
     if (guardLeft <= 0) {
-      GameModel.main.EnqueueEvent(Kill);
+      GameModel.main.EnqueueEvent(KillSelf);
     }
   }
 }

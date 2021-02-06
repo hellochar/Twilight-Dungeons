@@ -12,7 +12,7 @@ public class Agave : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     if (actor == GameModel.main.player) {
       GameModel.main.player.inventory.AddItem(new ItemAgave(1), this);
-      Kill();
+      Kill(actor);
     }
   }
 }

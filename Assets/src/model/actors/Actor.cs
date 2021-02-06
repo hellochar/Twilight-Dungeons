@@ -108,18 +108,18 @@ public class Actor : Body, ISteppable {
       Attack(target);
     } else if (grass != null) {
       // kill the grass when it gets attacked
-      grass.Kill();
+      grass.Kill(this);
     }
   }
 
-  public override void Kill() {
+  public override void Kill(Entity source) {
     if (!IsDead) {
       taskQueue.Clear();
       TaskChanged();
       foreach (var handler in Modifiers.Of<IActorKilledHandler>(this)) {
         handler.OnKilled(this);
       }
-      base.Kill();
+      base.Kill(source);
     }
   }
 
@@ -176,7 +176,7 @@ public class Actor : Body, ISteppable {
     Modifiers.Process(this.StepModifiers(), null);
 
     // handle close-ended actions
-    while (task != null && task.WhenToCheckIsDone.HasFlag(TaskStage.After) && task.IsDone()) {
+    while (task != null && (task.WhenToCheckIsDone.HasFlag(TaskStage.After) && !task.forceOnlyCheckBefore) && task.IsDone()) {
       GoToNextTask();
     }
     return GetActionCost(finalAction);

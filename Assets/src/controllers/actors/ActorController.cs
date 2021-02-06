@@ -49,11 +49,12 @@ public class ActorController : BodyController,
     }
   }
 
-  public virtual void HandleDeath() {
-    var audioSource = GetComponent<AudioSource>();
-    audioSource.Play();
-    audioSource.pitch = Random.Range(0.75f, 1.25f);
-    // AudioClipStore.main.death.PlayAtPoint(transform.position);
+  public virtual void HandleDeath(Entity source) {
+    if (source == GameModel.main.player) {
+      var audioSource = GetComponent<AudioSource>();
+      audioSource.pitch = Random.Range(0.75f, 1.25f);
+      audioSource.Play();
+    }
   }
 
   // Update is called once per frame

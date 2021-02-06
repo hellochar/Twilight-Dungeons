@@ -80,7 +80,6 @@ public abstract class Plant : Body, ISteppable {
 
   internal void Harvest(int choiceIndex) {
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
-    // just a pseudonym
-    Kill();
+    Kill(GameModel.main.player);
   }
 }

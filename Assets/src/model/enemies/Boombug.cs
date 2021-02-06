@@ -25,8 +25,8 @@ public class Boombug : AIActor {
     }
   }
 
-  public override void HandleDeath() {
-    base.HandleDeath();
+  public override void HandleDeath(Entity source) {
+    base.HandleDeath(source);
     var floor = this.floor;
     // leave a corpse on death
     // explode and hurt everything nearby
@@ -72,7 +72,7 @@ public class BoombugCorpse : Actor, IDeathHandler {
     SetTasks(new ExplodeTask(this));
   }
 
-  public void HandleDeath() {
+  public void HandleDeath(Entity source) {
     if (!exploded) {
       // We died before we could explode! Leave a corpse item instead.
       var inventory = new Inventory(new ItemBoombugCorpse(1));
@@ -96,11 +96,11 @@ public class BoombugCorpse : Actor, IDeathHandler {
           this.Attack(tile.body);
         }
         if (tile.body == null && tile.grass != null) {
-          tile.grass.Kill();
+          tile.grass.Kill(this);
         }
       }
     }
-    Kill();
+    Kill(this);
   }
 
   internal override (int, int) BaseAttackDamage() {

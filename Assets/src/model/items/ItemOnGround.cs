@@ -24,7 +24,7 @@ public class ItemOnGround : Entity, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     if (actor is Player player) {
       if (player.inventory.AddItem(item, this)) {
-        Kill();
+        Kill(player);
       }
     }
   }

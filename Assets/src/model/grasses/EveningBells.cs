@@ -13,7 +13,7 @@ public class EveningBells : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     if (actor != GameModel.main.player) {
       actor.SetTasks(new SleepTask(actor, 3, true));
-      GameModel.main.EnqueueEvent(Kill);
+      GameModel.main.EnqueueEvent(() => Kill(actor));
     }
   }
 }

@@ -187,10 +187,19 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
   public void OnPointerClick(PointerEventData eventData) {
     if (!CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
-      var worldPos = eventData.pointerCurrentRaycast.worldPosition;
-      var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
-      UserInteractAt(pos, eventData);
+      var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
+      var pressPos = RaycastToTilePos(eventData.pointerPressRaycast);
+      // don't trigger a click if you've touch-dragged over multiple tiles to prevent accidental touches
+      if (pressPos == pos) {
+        UserInteractAt(pos, eventData);
+      }
     }
+  }
+
+  private static Vector2Int RaycastToTilePos(RaycastResult raycast) {
+    var worldPos = raycast.worldPosition;
+    var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+    return pos;
   }
 
   public void UserInteractAt(Vector2Int pos, PointerEventData eventData) {

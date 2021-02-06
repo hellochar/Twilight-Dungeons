@@ -7,6 +7,6 @@ public class Astoria : Grass, IActorEnterHandler {
 
   public void HandleActorEnter(Actor actor) {
     actor.Heal(4);
-    Kill();
+    Kill(actor);
   }
 }

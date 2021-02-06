@@ -11,7 +11,7 @@ public class Spores : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     if (!(actor is SporeBloat)) {
       Activate();
-      Kill();
+      Kill(actor);
     }
   }
 
@@ -32,17 +32,17 @@ internal class SporeBloat : AIActor {
     faction = Faction.Neutral;
     SetTasks(
       new WaitTask(this, 1),
-      new MoveRandomlyTask(this),
-      new TelegraphedTask(this, 1, new GenericBaseAction(this, Kill))
+      new MoveRandomlyTask(this).OnlyCheckBefore(),
+      new TelegraphedTask(this, 1, new GenericBaseAction(this, KillSelf))
     );
   }
 
   protected override ActorTask GetNextTask() {
-    return new GenericTask(this, Kill);
+    return new GenericTask(this, KillSelf);
   }
 
-  public override void HandleDeath() {
-    base.HandleDeath();
+  public override void HandleDeath(Entity source) {
+    base.HandleDeath(source);
     foreach (var actor in floor.AdjacentActors(pos).Where(actor => !(actor is SporeBloat))) {
       if (!actor.statuses.Has<SporedStatus>()) {
         actor.statuses.Add(new SporedStatus(20));

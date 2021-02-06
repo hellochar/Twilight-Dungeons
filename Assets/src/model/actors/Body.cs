@@ -90,25 +90,25 @@ public class Body : Entity {
     damage = Math.Max(damage, 0);
     source.OnDealAttackDamage(damage, this);
     OnTakeAttackDamage(damage, hp, source);
-    TakeDamage(damage);
+    TakeDamage(damage, source);
   }
 
   /// Take damage from any source.
-  public void TakeDamage(int damage) {
+  public void TakeDamage(int damage, Entity source) {
     damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
     OnTakeAnyDamage(damage);
     hp -= damage;
     if (hp <= 0) {
-      Kill();
+      Kill(source);
     }
   }
 
-  public override void Kill() {
+  public override void Kill(Entity source) {
     /// TODO remove references to this Actor if needed
     if (!IsDead) {
       hp = Math.Max(hp, 0);
-      base.Kill();
+      base.Kill(source);
     }
   }
 

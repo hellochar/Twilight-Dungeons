@@ -30,8 +30,8 @@ public class Jackal : AIActor {
     }
   }
 
-  public override void HandleDeath() {
-    base.HandleDeath();
+  public override void HandleDeath(Entity source) {
+    base.HandleDeath(source);
     var jackalsToAlert = floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal).ToList();
     GameModel.main.EnqueueEvent(() => {
       foreach (var jackal in jackalsToAlert) {

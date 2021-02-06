@@ -11,7 +11,7 @@ public abstract class AIActor : Actor, IDeathHandler {
     SetTasks(new SleepTask(this));
   }
 
-  public virtual void HandleDeath() {
+  public virtual void HandleDeath(Entity source) {
     var floor = this.floor;
     var pos = this.pos;
     GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));

@@ -31,13 +31,9 @@ public class Butterfly : AIActor {
     var player = GameModel.main.player;
 
     // we want to duplicate
-    if (cooldown <= 0) {
-      // find a grass
-      var playerGrass = player.grass;
-      if (playerGrass != null) {
-        // we're on top of a grass, duplicate!
-        return new GenericOneArgTask<Grass>(this, DuplicateGrass, playerGrass);
-      }
+    if (cooldown <= 0 && player.grass != null) {
+      // we're on top of a grass, duplicate!
+      return new TelegraphedTask(this, 1, new GenericBaseAction(this, DuplicateGrass));
     }
     // we can't duplicate, either because there's nothing nearby or we're on CD
     if (cooldown > 0) {
@@ -46,13 +42,16 @@ public class Butterfly : AIActor {
     return new ChaseTargetTask(this, player);
   }
 
-  private void DuplicateGrass(Grass grass) {
-    var neighborTiles = grass.floor.GetCardinalNeighbors(grass.pos).Where((tile) => tile is Ground && tile.grass == null);
-    var constructorInfo = grass.GetType().GetConstructor(new System.Type[1] { typeof(Vector2Int) });
-    foreach (var tile in neighborTiles) {
-      var newGrass = (Grass)constructorInfo.Invoke(new object[] { tile.pos });
-      grass.floor.Put(newGrass);
+  private void DuplicateGrass() {
+    var grass = GameModel.main.player.grass;
+    if (grass != null) {
+      var neighborTiles = grass.floor.GetCardinalNeighbors(grass.pos).Where((tile) => tile is Ground && tile.grass == null);
+      var constructorInfo = grass.GetType().GetConstructor(new System.Type[1] { typeof(Vector2Int) });
+      foreach (var tile in neighborTiles) {
+        var newGrass = (Grass)constructorInfo.Invoke(new object[] { tile.pos });
+        grass.floor.Put(newGrass);
+      }
+      cooldown = DUPLICATE_CD;
     }
-    cooldown = DUPLICATE_CD;
   }
 }

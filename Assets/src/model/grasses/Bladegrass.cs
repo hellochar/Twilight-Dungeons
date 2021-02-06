@@ -16,7 +16,7 @@ public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
     if (!isSharp) {
       isSharp = true;
       OnSharpened?.Invoke();
-      AddTimedEvent(10, Kill);
+      AddTimedEvent(10, KillSelf);
     }
   }
 
@@ -26,8 +26,8 @@ public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
 
   public void HandleActorEnter(Actor actor) {
     if (isSharp) {
-      Kill();
-      actor.TakeDamage(2);
+      Kill(actor);
+      actor.TakeDamage(2, this);
     }
   }
 }

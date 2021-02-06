@@ -33,6 +33,7 @@ public enum TaskStage {
 public abstract class ActorTask {
   public string Name { get; set; }
   public Actor actor { get; }
+  public bool forceOnlyCheckBefore = false;
   /// when to check whether this task is "done":
   public virtual TaskStage WhenToCheckIsDone => TaskStage.Before;
 
@@ -59,6 +60,11 @@ public abstract class ActorTask {
 
   /// <summary>Called by Actor when this task has ended.</summary>
   internal virtual void Ended() { }
+
+  public ActorTask OnlyCheckBefore() {
+    forceOnlyCheckBefore = true;
+    return this;
+  }
 }
 
 [System.Serializable]

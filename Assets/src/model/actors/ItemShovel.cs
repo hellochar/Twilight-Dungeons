@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class ItemShovel : Item {
   public void DigUp(Player player, Grass grass) {
-    grass.Kill();
+    grass.Kill(player);
     player.inventory.AddItem(new ItemOfGrass(grass.GetType()));
   }
 }

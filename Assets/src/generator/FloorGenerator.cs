@@ -105,6 +105,7 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     floor.depth = 20;
+    Encounters.AddHydra(floor, room0);
     // Encounters.AddWildekins(floor, room0);
     // Encounters.AddCrabs(floor, room0);
     // Encounters.AddParasite(floor, room0);
@@ -194,7 +195,9 @@ public class FloorGenerator {
 
     // clear stairs so player doesn't walk right into bad grasses or get immediately surrounded by enemies
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
-      tile.grass?.Kill();
+      if (tile.grass != null) {
+        floor.Remove(tile.grass);
+      }
       if (tile.actor != null) {
         var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(room0).Where((x) => x.CanBeOccupied()));
         // move the actor to a different spot in the map

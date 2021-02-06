@@ -22,7 +22,7 @@ class Coralmoss : Grass, ISteppable {
     if (age > 8) {
       GameModel.main.EnqueueEvent(() => {
         floor.Put(new Coral(pos));
-        Kill();
+        KillSelf();
       });
     }
     return 8;
@@ -42,7 +42,7 @@ internal class Coral : Body, IAnyDamageTakenModifier, IDeathHandler {
     hp = baseMaxHp = 3;
   }
 
-  public void HandleDeath() {
+  public void HandleDeath(Entity source) {
     var floor = this.floor;
     var item = new ItemOnGround(pos, new ItemCoralChunk(1), pos);
     GameModel.main.EnqueueEvent(() => {

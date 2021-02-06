@@ -24,7 +24,7 @@ class Poisonmoss : Grass, ISteppable {
       );
       if (tile != null) {
         OnNoteworthyAction();
-        tile.grass.Kill();
+        tile.grass.Kill(this);
         floor.Put(new Poisonmoss(tile.pos));
       }
     }

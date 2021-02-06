@@ -63,7 +63,7 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
   private void KillOldOnCollision(T entity) {
     var old = this[entity.pos];
     if (old != null) {
-      old.Kill();
+      old.Kill(entity);
     }
   }
 

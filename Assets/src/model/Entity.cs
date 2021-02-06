@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 public interface IDeathHandler {
-  void HandleDeath();
+  void HandleDeath(Entity source);
 }
 
 [Serializable]
@@ -75,11 +75,15 @@ public abstract class Entity : IModifierProvider {
     return $"{base.ToString()} ({guid.ToString().Substring(0, 6)})";
   }
 
-  public virtual void Kill() {
+  public void KillSelf() {
+    Kill(this);
+  }
+
+  public virtual void Kill(Entity source) {
     /// TODO remove references to this Actor if needed
     if (!IsDead) {
       IsDead = true;
-      OnDeath();
+      OnDeath(source);
       foreach (var timedEvent in timedEvents) {
         GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
       }
@@ -99,9 +103,9 @@ public abstract class Entity : IModifierProvider {
     return evt;
   }
 
-  private void OnDeath() {
+  private void OnDeath(Entity source) {
     foreach (var handler in this.Of<IDeathHandler>()) {
-      handler.HandleDeath();
+      handler.HandleDeath(source);
     }
   }
 }

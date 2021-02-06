@@ -14,8 +14,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
   }
 
-  public override void HandleDeath() {
-    base.HandleDeath();
+  public override void HandleDeath(Entity source) {
+    base.HandleDeath(source);
     var model = GameModel.main;
     model.EnqueueEvent(() => {
       model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());

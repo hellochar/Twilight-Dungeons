@@ -21,7 +21,7 @@ public class HangingVines : Grass, IDeathHandler {
     floor.Remove(triggerBelow);
   }
 
-  public void HandleDeath() {
+  public void HandleDeath(Entity source) {
     inventory.TryDropAllItems(floor, tileBelow.pos);
     if (appliedStatus != null) {
       appliedStatus.Remove();
@@ -37,8 +37,9 @@ public class HangingVines : Grass, IDeathHandler {
 
   public void BoundStatusEnded() {
     // when someone is able to break free; remove these vines
+    var actor = appliedStatus.actor;
     appliedStatus = null;
-    Kill();
+    Kill(actor);
   }
 }
 

@@ -111,7 +111,7 @@ class InfectedStatus : Status {
     if (tile != null) {
       actor.floor.Put(new ThickMushroom(tile.pos));
     }
-    GameModel.main.EnqueueEvent(() => actor.TakeDamage(1));
+    GameModel.main.EnqueueEvent(() => actor.TakeDamage(1, GameModel.main.player));
   }
 
   public override string Info() => "Each turn, take 1 damage and spawn a Thick Mushroom adjacent to you.";

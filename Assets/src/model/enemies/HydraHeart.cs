@@ -18,10 +18,10 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   protected override ActorTask GetNextTask() {
     if (needsWait) {
       needsWait = false;
-      return new WaitTask(this, 3);
+      return new WaitTask(this, 2);
     } else {
       needsWait = true;
-      return new GenericTask(this, SpawnHydraHead);
+      return new TelegraphedTask(this, 1, new GenericBaseAction(this, SpawnHydraHead));
     }
   }
 
@@ -46,11 +46,11 @@ public class HydraHeart : AIActor, IBaseActionModifier {
 
   private bool CanSpawnHydraHeadAt(Vector2Int p) => floor.tiles[p].CanBeOccupied() && floor.TestVisibility(pos, p);
 
-  public override void HandleDeath() {
-    base.HandleDeath();
+  public override void HandleDeath(Entity source) {
+    base.HandleDeath(source);
     GameModel.main.EnqueueEvent(() => {
       foreach (var head in heads) {
-        head.Kill();
+        head.Kill(source);
       }
     });
   }

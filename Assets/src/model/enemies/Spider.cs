@@ -70,7 +70,7 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
 
   public void HandleActorLeave(Actor actor) {
     if (!IsActorNice(actor)) {
-      Kill();
+      Kill(actor);
     }
   }
 
@@ -167,7 +167,7 @@ internal class PoisonedStatus : StackingStatus {
   }
 
   public void TickDamage() {
-    actor.TakeDamage(3);
+    actor.TakeDamage(3, actor);
     stacks -= 3;
   }
 

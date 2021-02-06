@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerController : ActorController {
+public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamageHandler {
   Player player => (Player) actor;
 
   public override void Start() {
@@ -26,9 +26,22 @@ public class PlayerController : ActorController {
     AudioClipStore.main.playerPickupItem.PlayAtPoint(transform.position);
   }
 
+  public void HandleMove(Vector2Int arg1, Vector2Int arg2) {
+    AudioClipStore.main.move.PlayAtPoint(transform.position, 0.5f);
+  }
+
   public override void HandleHeal(int heal) {
     base.HandleHeal(heal);
     AudioClipStore.main.playerHeal.PlayAtPoint(transform.position);
+  }
+
+  public override void HandleTakeAnyDamage(int dmg) {
+    if (dmg > 0) {
+      var store = AudioClipStore.main;
+      var clip = Util.RandomPickParams(store.playerHurt1, store.playerHurt2, store.playerHurt3);
+      clip.PlayAtPoint(transform.position);
+    }
+    base.HandleTakeAnyDamage(dmg);
   }
 
   private void HandleItemRemoved(Item obj) {
@@ -71,6 +84,8 @@ public class PlayerController : ActorController {
       AudioClipStore.main.playerWait.PlayAtPoint(transform.position);
     } else if (action is GenericBaseAction) {
       AudioClipStore.main.playerGeneric.PlayAtPoint(transform.position);
+    } else if (action.Type == ActionType.ATTACK) {
+      AudioClipStore.main.attack.PlayAtPoint(transform.position);
     }
     base.HandleActionPerformed(action, initial);
   }

@@ -37,8 +37,10 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 
     if (nonWebbedAdjacentTiles.Any()) {
       return new MoveToTargetTask(this, Util.RandomPick(nonWebbedAdjacentTiles).pos);
-    } else {
+    } else if (webbedAdjacentTiles.Any()) {
       return new MoveToTargetTask(this, Util.RandomPick(webbedAdjacentTiles).pos);
+    } else {
+      return new WaitTask(this, 1);
     }
   }
 

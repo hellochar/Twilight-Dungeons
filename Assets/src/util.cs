@@ -50,6 +50,10 @@ public static class Util {
     return RandomPick(AdjacentDirections);
   }
 
+  public static T RandomPickParams<T>(params T[] items) {
+    return RandomPick(items);
+  }
+
   public static T RandomPick<T>(IEnumerable<T> items) {
     if (items.Count() == 0) {
       return default(T);

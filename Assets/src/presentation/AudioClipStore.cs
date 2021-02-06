@@ -15,6 +15,7 @@ public class AudioClipStore : MonoBehaviour {
   public AudioClip playerHeal;
   public AudioClip playerGeneric;
   public AudioClip playerPickupItem;
+  public AudioClip playerHurt1, playerHurt2, playerHurt3;
   public AudioClip playerTakeStairs;
   public AudioClip playerWait;
   public AudioClip popupOpen;

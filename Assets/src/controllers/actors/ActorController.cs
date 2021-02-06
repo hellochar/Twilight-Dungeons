@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ActorController : BodyController,
-  IBodyMoveHandler, IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler, IDeathHandler {
+  IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler, IDeathHandler {
   public Actor actor => (Actor)body;
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
@@ -49,12 +49,11 @@ public class ActorController : BodyController,
     }
   }
 
-  public void HandleMove(Vector2Int arg1, Vector2Int arg2) {
-    AudioClipStore.main.move.PlayAtPoint(transform.position, 0.5f);
-  }
-
   public virtual void HandleDeath() {
-    AudioClipStore.main.death.PlayAtPoint(transform.position);
+    var audioSource = GetComponent<AudioSource>();
+    audioSource.Play();
+    audioSource.pitch = Random.Range(0.75f, 1.25f);
+    // AudioClipStore.main.death.PlayAtPoint(transform.position);
   }
 
   // Update is called once per frame
@@ -113,7 +112,6 @@ public class ActorController : BodyController,
       animator?.SetTrigger("Struggled");
     } else if (action is AttackBaseAction attack) {
       PlayAttackAnimation(attack.target.pos);
-      AudioClipStore.main.attack.PlayAtPoint(transform.position);
     } else if (action is AttackGroundBaseAction attackGround) {
       PlayAttackAnimation(attackGround.targetPosition);
     } else if (action is GenericBaseAction g) {
@@ -121,7 +119,6 @@ public class ActorController : BodyController,
     }
   }
 
-  /// also triggers audio
   private void PlayAttackAnimation(Vector2Int pos) {
     if (sprite != null) {
       // go -1 to be "in front"
@@ -133,11 +130,6 @@ public class ActorController : BodyController,
   private void HandleAttackGround(Vector2Int pos) {
     GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
-    if (actor.floor.bodies[pos] == null) {
-      AudioClipStore.main.attackMiss.PlayAtPoint(transform.position);
-    } else {
-      AudioClipStore.main.attack.PlayAtPoint(transform.position);
-    }
   }
 
   public override void PointerClick(PointerEventData pointerEventData) {

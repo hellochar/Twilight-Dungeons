@@ -3633,8 +3633,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 338125421}
   m_HandleRect: {fileID: 338125420}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.9999999
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11082,13 +11082,16 @@ MonoBehaviour:
   move: {fileID: 8300000, guid: 9cef2e9eb303ce848a7eca34bd7b3db3, type: 3}
   attack: {fileID: 8300000, guid: d10f3f4e65ce2a04a9bdfdc95321cb03, type: 3}
   attackMiss: {fileID: 8300000, guid: a51b4121dd87b6c478c5edd795bb0954, type: 3}
-  death: {fileID: 8300000, guid: 9c8f219ee16f67643a9406b4dc35200e, type: 3}
+  death: {fileID: 8300000, guid: 90e1d83d695c53d43ac4bc5e27d533fb, type: 3}
   gameStart: {fileID: 8300000, guid: b90d05541402a6449b524e444f566921, type: 3}
   plantHarvest: {fileID: 8300000, guid: 33305f8266d805148b775092fcba0370, type: 3}
   playerEquip: {fileID: 8300000, guid: 7252eaa1a71b02449a7fbab15d3adb06, type: 3}
   playerHeal: {fileID: 8300000, guid: 9c388620a48e53e4db46d291663fb80f, type: 3}
   playerGeneric: {fileID: 8300000, guid: ca0afa29983afb041ac7a7333067ef30, type: 3}
   playerPickupItem: {fileID: 8300000, guid: 8282c21177df90543b0dc6b90bf2d504, type: 3}
+  playerHurt1: {fileID: 8300000, guid: a141e53569aee3c4e9f58a4f27e0ee8e, type: 3}
+  playerHurt2: {fileID: 8300000, guid: 7f59efdd524f272428c04a29fba0fbe8, type: 3}
+  playerHurt3: {fileID: 8300000, guid: 7dec716d17d168f4197b61212482fcaf, type: 3}
   playerTakeStairs: {fileID: 8300000, guid: 15a70094f6269f24a9b5f3d20058fbd8, type: 3}
   playerWait: {fileID: 8300000, guid: 8f1809281b62f6b418f3ff60108474de, type: 3}
   popupOpen: {fileID: 8300000, guid: 23b53b4318151e9498c7bf9d99c86916, type: 3}
@@ -11400,7 +11403,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -11596,7 +11599,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 40, y: 40}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1396789651
 MonoBehaviour:

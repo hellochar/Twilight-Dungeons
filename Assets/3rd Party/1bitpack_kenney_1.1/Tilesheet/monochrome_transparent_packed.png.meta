@@ -38,6 +38,9 @@ TextureImporter:
   - first:
       213: 6733317360203888005
     second: tumorous-growth
+  - first:
+      213: 2754235656897080690
+    second: monochrome_transparent_packed_11
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -357,7 +360,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -365,6 +368,27 @@ TextureImporter:
       bones: []
       spriteID: 5857ce6e67c817d50800000000000000
       internalID: 6733317360203888005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monochrome_transparent_packed_11
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 144
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27da015ccb2093620800000000000000
+      internalID: 2754235656897080690
       vertices: []
       indices: 
       edges: []

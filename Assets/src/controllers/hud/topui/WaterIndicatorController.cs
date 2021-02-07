@@ -9,6 +9,6 @@ public class WaterIndicatorController : MonoBehaviour {
   }
 
   void Update() {
-    text.text = GameModel.main.player.water.ToString();
+    text.text = GameModel.main.player.water.ToString("0.##");
   }
 }

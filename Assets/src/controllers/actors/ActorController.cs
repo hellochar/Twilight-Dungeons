@@ -102,6 +102,10 @@ public class ActorController : BodyController,
         animator.SetBool("SleepingTask", false);
       }
     }
+    if (actor == GameModel.main.player && task is WaitTask) {
+      /// do not double-show a wait icon on the player; a bigger one is created by PlayerController
+      return;
+    }
     var taskObject = PrefabCache.Tasks.MaybeInstantiateFor(task, transform);
     if (taskObject != null) {
       ActorTaskController actorTaskController = taskObject.GetComponent<ActorTaskController>();

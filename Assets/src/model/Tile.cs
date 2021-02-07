@@ -163,7 +163,7 @@ public class Water : Tile {
   }
 
   public void Collect(Player player) {
-    player.water++;
+    player.water += 1.1f;
     floor.Put(new Ground(pos));
   }
 }

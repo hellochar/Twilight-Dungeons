@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class SidePanelController : MonoBehaviour {
   public Player player => GameModel.main.player;
   public Dictionary<string, GameObject> entries = new Dictionary<string, GameObject>();
-  public Dictionary<string, Entity> interestingEntities;
+  public Dictionary<string, Entity> entities;
   public GameObject creaturesContainer;
   public GameObject grassesContainer;
   public GameObject buttonPrefab;
@@ -26,7 +26,7 @@ public class SidePanelController : MonoBehaviour {
 
   bool needsUpdate = false;
   private void HandlePlayersChoice() {
-    GameModel.main.EnqueueEvent(() => needsUpdate = true);
+    needsUpdate = true;
   }
 
 
@@ -38,8 +38,8 @@ public class SidePanelController : MonoBehaviour {
   }
 
   void UpdateItems() {
-    interestingEntities = GetInterestingThings().GroupBy(e => e.displayName).ToDictionary((grouping) => grouping.Key, (grouping) => grouping.First());
-    var toRemove = entries.Keys.Except(interestingEntities.Keys).ToList();
+    entities = GetInterestingThings().GroupBy(e => e.displayName).ToDictionary((grouping) => grouping.Key, (grouping) => grouping.First());
+    var toRemove = entries.Keys.Except(entities.Keys).ToList();
 
     // remove old items
     foreach (var name in toRemove) {
@@ -48,8 +48,8 @@ public class SidePanelController : MonoBehaviour {
     }
 
     // add new items
-    foreach (var name in interestingEntities.Keys) {
-      var entity = interestingEntities[name];
+    foreach (var name in entities.Keys) {
+      var entity = entities[name];
       if (!entries.ContainsKey(name)) {
         var contentBox = entity is Grass ? grassesContainer : creaturesContainer;
         var buttonObject = Instantiate(buttonPrefab, contentBox.transform.position, Quaternion.identity, contentBox.transform);
@@ -58,7 +58,7 @@ public class SidePanelController : MonoBehaviour {
 
         var button = buttonObject.GetComponent<Button>();
         button.onClick.AddListener(() => {
-          var firstEntityOfType = interestingEntities[name];
+          var firstEntityOfType = entities[name];
           GameModelController.main.CurrentFloorController.ShowPopupFor(firstEntityOfType);
           // TODO create popup for entity
         });

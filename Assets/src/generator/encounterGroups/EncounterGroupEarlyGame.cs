@@ -11,6 +11,26 @@ public static class EncounterGroupEarlyGame {
         { 0.35f, AddSpiders },
       },
 
+      Grasses = new WeightedRandomBag<Encounter> {
+        { 1f, AddSoftGrass },
+
+        { 0.75f, AddBladegrass },
+
+        { 0.5f, AddGuardleaf },
+        { 0.5f, ScatteredBoombugs },
+        { 0.5f, AddEveningBells },
+        { 0.5f, AddDeathbloom },
+
+        { 0.4f, AddWebs },
+
+        { 0.35f, AddSpore },
+        { 0.35f, AddAgave },
+        { 0.35f, AddHangingVines },
+
+        { 0.2f, AddPoisonmoss },
+        { 0.2f, AddViolets },
+      },
+
       Spice = new WeightedRandomBag<Encounter> {
         { 5f, Empty },
 

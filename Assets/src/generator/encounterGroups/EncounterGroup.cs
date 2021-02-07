@@ -11,27 +11,7 @@ public class EncounterGroup {
   /// to increase the interesting encounters and keep players guessing.</summary>
   public WeightedRandomBag<Encounter> Spice;
   /// <summary>The core grass spawns.</summary>
-  public WeightedRandomBag<Encounter> Grasses = new WeightedRandomBag<Encounter> {
-    { 1f, AddSoftGrass },
-
-    { 0.75f, AddBladegrass },
-
-    { 0.5f, AddAgave },
-    { 0.5f, AddHangingVines },
-
-    { 0.4f, AddGuardleaf },
-    { 0.4f, AddSpore },
-    { 0.4f, AddWebs },
-    { 0.4f, ScatteredBoombugs },
-
-    { 0.3f, AddEveningBells },
-
-    { 0.2f, AddTunnelroot },
-    { 0.2f, AddViolets },
-    { 0.2f, AddBrambles },
-    { 0.2f, AddPoisonmoss },
-    { 0.2f, AddDeathbloom },
-  };
+  public WeightedRandomBag<Encounter> Grasses;
 
   ///<summary>Walls, blockades, tile modifications.</summary>
   public WeightedRandomBag<Encounter> Walls = WallsStatic;

@@ -52,7 +52,8 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
           mask.enabled = true;
           // don't show entities or statuses
           mask.backSortingLayerID = sortingLayerStatuses;
-          mask.backSortingOrder = 99999;
+          /// max for sprite masks - signed 16 bit max
+          mask.backSortingOrder = 32767;
         }
         foreach (var renderer in renderers) {
           renderer.enabled = true;

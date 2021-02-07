@@ -149,7 +149,7 @@ public class Encounters {
   });
 
   public static Encounter AddHydra = new Encounter((floor, room) => {
-    var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).First();
+    var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).FirstOrDefault();
     if (tile != null) {
       floor.Put(new HydraHeart(tile.pos));
     }
@@ -287,11 +287,12 @@ public class Encounters {
   });
 
   public static Encounter AddTunnelroot = new Encounter((floor, room) => {
-    var tiles = floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null).ToList();
-    tiles.Shuffle();
-    if (tiles.Count >= 2) {
-      var root1 = new Tunnelroot(tiles[0].pos);
-      var root2 = new Tunnelroot(tiles[1].pos);
+    var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
+    /// special - put partner anywhere else on the floor
+    var partner = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
+    if (start != null && partner != null) {
+      var root1 = new Tunnelroot(start.pos);
+      var root2 = new Tunnelroot(partner.pos);
       floor.Put(root1);
       floor.Put(root2);
       root1.PartnerWith(root2);

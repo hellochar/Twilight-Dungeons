@@ -26,6 +26,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
           category = "Grasses/";
           break;
         case Plant p:
+          category = "Plants/";
           break;
         case Body b:
           category = "Actors/";

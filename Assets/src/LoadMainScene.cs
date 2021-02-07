@@ -16,15 +16,25 @@ public class LoadMainScene : MonoBehaviour {
   }
 
   public void NewGame() {
-    StartGame();
+    GameModel.GenerateNewGameAndSetMain();
+    GoToGameScene();
   }
 
   public void Continue() {
-    GameModel.shouldLoad = true;
-    StartGame();
+    try {
+      GameModel.main = Serializer.LoadFromFile();
+      GoToGameScene();
+    } catch (Exception e) {
+      var popup = Popups.Create("Could Not Load", e.Message, "", null);
+      // var controller = popup.GetComponent<PopupController>();
+      // controller.OnClose += () => SceneManager.LoadSceneAsync("Scenes/Intro");
+    }
   }
 
-  private void StartGame() {
+  private void GoToGameScene() {
+    foreach (var button in GetComponentsInChildren<Button>()) {
+      button.interactable = false;
+    }
     StartCoroutine(TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
   }
 

@@ -6,37 +6,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public static class Serializer {
-  public const string SAVE0 = "save0";
   public static string SAVE_PATH => Application.persistentDataPath + "/save0.dat";
-  public static bool LoadFromFile(out GameModel model) {
-    if (File.Exists(SAVE_PATH)) {
-      Debug.Log("Loading save from " + SAVE_PATH);
-      var bf = GetBinaryFormatter();
-      using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
-        model = (GameModel) bf.Deserialize(file);
-        file.Close();
-      }
-      return true;
+  /// <summary>Does *not* set main.</summary>
+  public static GameModel LoadFromFile() {
+    Debug.Log("Loading save from " + SAVE_PATH);
+    var bf = GetBinaryFormatter();
+    using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
+      var model = (GameModel) bf.Deserialize(file);
+      file.Close();
+      return model;
     }
-    model = null;
-    return false;
-    // if (PlayerPrefs.HasKey(SAVE0)) {
-    //   var savedGameString = PlayerPrefs.GetString(SAVE0);
-    //   var bf = GetBinaryFormatter();
-    //   try {
-    //     using (var stream = GenerateStreamFromString(savedGameString)) {
-    //       model = (GameModel)bf.Deserialize(stream);
-    //       return true;
-    //     }
-    //   } catch (Exception e) {
-    //     Debug.LogError(e);
-    //     model = null;
-    //     return false;
-    //   }
-    // } else {
-    //   model = null;
-    //   return false;
-    // }
   }
 
   public static bool HasSave() => File.Exists(SAVE_PATH);
@@ -49,19 +28,10 @@ public static class Serializer {
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(SAVE_PATH)) {
       bf.Serialize(file, model);
+      Debug.Log($"Saved {SAVE_PATH}");
       file.Close();
       return true;
     }
-    // using (var stream = new MemoryStream()) {
-    //   bf.Serialize(stream, model);
-    //   stream.Position = 0;
-    //   var streamReader = new StreamReader(stream);
-    //   var savedGameString = streamReader.ReadToEnd();
-    //   PlayerPrefs.SetString(SAVE0, savedGameString);
-    //   PlayerPrefs.Save();
-    //   Debug.Log("SAVE0 size" + savedGameString.Length);
-    //   return true;
-    // }
   }
 
   private static BinaryFormatter GetBinaryFormatter() {

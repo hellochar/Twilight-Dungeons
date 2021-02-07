@@ -34,28 +34,21 @@ public class GameModel {
   private List<Action> eventQueue = new List<Action>();
 
   public static GameModel main;
-  public static bool shouldLoad = false;
 
-  public static void InitOrLoadMain() {
-    GameModel model;
-    if (shouldLoad && Serializer.LoadFromFile(out model)) {
-      shouldLoad = false;
-      main = model;
-      main.RehookUpAfterSerialization();
-    } else {
-      var seed = UnityEngine.Random.Range(0, 100000);
+  /// Also sets GameModel.main.
+  public static void GenerateNewGameAndSetMain() {
+    var seed = UnityEngine.Random.Range(0, 100000);
 
-      #if UNITY_EDITOR
-      seed = 88332;
-      // Analyze();
-      #endif
+    #if UNITY_EDITOR
+    seed = 99384;
+    // Analyze();
+    #endif
 
-      main = new GameModel(seed);
-      main.generate();
-      var step = main.StepUntilPlayerChoice();
-      // execute them all immediately
-      do { } while (step.MoveNext());
-    }
+    main = new GameModel(seed);
+    main.generate();
+    var step = main.StepUntilPlayerChoice();
+    // execute them all immediately
+    do { } while (step.MoveNext());
   }
 
   public GameModel(int seed) {
@@ -63,15 +56,17 @@ public class GameModel {
     UnityEngine.Random.InitState(seed);
   }
 
+  [OnDeserialized]
+  void HandleDeserialized() {
+    eventQueue = new List<Action>();
+  }
+
   private void generate() {
+    Debug.Log("generating from seed " + seed);
     floors = FloorGenerator.generateAll();
     // floor0 = floors[0];
     player = new Player(new Vector2Int(3, floors[0].height/2));
     floors[0].Put(player);
-  }
-
-  public void RehookUpAfterSerialization() {
-    eventQueue = new List<Action>();
   }
 
   private static void Analyze() {

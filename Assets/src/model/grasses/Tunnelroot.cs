@@ -33,7 +33,7 @@ public class Tunnelroot : Grass, IActorEnterHandler, IDeathHandler {
       Debug.LogWarning("Unpartnered Tunnelroot!");
     }
 
-    if (partner.body == null && isOpen) {
+    if (!partner.IsDead && partner.body == null && isOpen) {
       Close();
       partner.Close();
       who.pos = partner.pos;

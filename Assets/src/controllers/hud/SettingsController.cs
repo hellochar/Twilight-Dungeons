@@ -29,7 +29,7 @@ public class SettingsController : MonoBehaviour {
   }
 
   public void LoadGame() {
-    GameModel.shouldLoad = true;
+    GameModel.main = Serializer.LoadFromFile();
     Restart();
   }
 

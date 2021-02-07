@@ -17,7 +17,11 @@ public class GameModelController : MonoBehaviour {
   public FloorController CurrentFloorController => currentFloorController;
 
   void Awake() {
-    GameModel.InitOrLoadMain();
+    #if UNITY_EDITOR
+    if (GameModel.main == null) {
+      GameModel.GenerateNewGameAndSetMain();
+    }
+    #endif
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     main = this;
@@ -33,13 +37,14 @@ public class GameModelController : MonoBehaviour {
     // AudioClipStore.main.gameStart.Play();
   }
 
-  void OnApplicationFocus(bool hasFocus) {
-    /// save
-    if (!hasFocus) {
-      Serializer.SaveToFile(GameModel.main);
-    }
-  }
+  // void OnApplicationFocus(bool hasFocus) {
+  //   /// save
+  //   if (!hasFocus) {
+  //     Serializer.SaveToFile(GameModel.main);
+  //   }
+  // }
 
+#if !UNITY_EDITOR
   void OnApplicationPause(bool isPaused) {
     if (isPaused) {
       Serializer.SaveToFile(GameModel.main);
@@ -49,6 +54,7 @@ public class GameModelController : MonoBehaviour {
   void OnApplicationQuit() {
     Serializer.SaveToFile(GameModel.main);
   }
+#endif
 
   private Coroutine gameLoop;
   public void HandleSetPlayerTask(ActorTask action) {

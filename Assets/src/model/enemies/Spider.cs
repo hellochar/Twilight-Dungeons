@@ -23,7 +23,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 
   protected override ActorTask GetNextTask() {
     if (grass == null || !(grass is Web)) {
-      return new GenericTask(this, DoNotRename_PutWeb);
+      return new TelegraphedTask(this, 1, new GenericBaseAction(this, DoNotRename_PutWeb));
     }
 
     var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));

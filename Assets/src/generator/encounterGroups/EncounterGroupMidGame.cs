@@ -17,6 +17,9 @@ public static class EncounterGroupMidGame {
 
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
+        { 0.25f, AddTunnelroot },
+        { 0.25f, AddViolets },
+        { 0.25f, Twice(AddTunnelroot) },
         { 0.25f, Twice(ScatteredBoombugs) },
         { 0.25f, Twice(AddGuardleaf) },
 

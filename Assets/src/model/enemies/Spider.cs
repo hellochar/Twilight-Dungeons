@@ -54,6 +54,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 }
 
 [System.Serializable]
+[ObjectInfo(description: "Moving off a web will destroy it, but your move takes twice as long.")]
 internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   public Web(Vector2Int pos) : base(pos) { }
 
@@ -137,7 +138,7 @@ internal class WebStatus : Status, IActionCostModifier {
 
   public override bool Consume(Status other) => true;
 
-  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Move twice as slow through webs!";
+  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Move twice as slow out of webs!";
 }
 
 /// stacks = turns

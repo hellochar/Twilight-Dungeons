@@ -33,7 +33,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5137199
+    totalSpriteSurfaceArea: 5137455
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -1795,6 +1795,7 @@ SpriteAtlas:
   - {fileID: -6703305794410399575, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -3902071884278208034, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: 2542525495126258572, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
+  - {fileID: 2754235656897080690, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: 6498992187095088715, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -5258339883686333690, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -1563979499396834108, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -9681,6 +9682,7 @@ SpriteAtlas:
   - monochrome-up-filled
   - 1bit-circle
   - monochrome-stop-empty
+  - monochrome_transparent_packed_11
   - deathbloom-large
   - vines
   - softgrass

@@ -35,6 +35,8 @@ public static class EncounterGroupEverything {
 
         { 0.05f, AddEveningBells },
         { 0.05f, AddPoisonmoss },
+        { 0.05f, AddTunnelroot },
+        { 0.05f, AddViolets },
 
         { 0.02f, AddScorpions },
         { 0.02f, AddParasite },

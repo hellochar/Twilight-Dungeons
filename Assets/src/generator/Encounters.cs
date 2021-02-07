@@ -240,16 +240,30 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var numSoftGrass = Random.Range(numTiles / 4, numTiles / 2);
-      foreach (var tile in bfs.Take(numSoftGrass)) {
+      var num = Random.Range(numTiles / 4, numTiles / 2);
+      foreach (var tile in bfs.Take(num)) {
         var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
       }
     }
   });
 
+  public static Encounter AddViolets = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Bladegrass.CanOccupy));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var start = Util.RandomPick(occupiableTiles);
+      var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
+      var num = Random.Range(numTiles / 3, (int)(numTiles * 2f / 3));
+      foreach (var tile in bfs.Take(num)) {
+        var grass = new Violets(tile.pos);
+        floor.Put(grass);
+      }
+    }
+  });
+
   public static Encounter AddGuardleaf = new Encounter((floor, room) => {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => Guardleaf.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
@@ -258,6 +272,18 @@ public class Encounters {
       foreach (var tile in bfs.Take(num)) {
         floor.Put(new Guardleaf(tile.pos));
       }
+    }
+  });
+
+  public static Encounter AddTunnelroot = new Encounter((floor, room) => {
+    var tiles = floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null).ToList();
+    tiles.Shuffle();
+    if (tiles.Count >= 2) {
+      var root1 = new Tunnelroot(tiles[0].pos);
+      var root2 = new Tunnelroot(tiles[1].pos);
+      floor.Put(root1);
+      floor.Put(root2);
+      root1.PartnerWith(root2);
     }
   });
 

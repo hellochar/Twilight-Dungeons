@@ -19,12 +19,16 @@ public class EncounterGroup {
     { 0.5f, AddAgave },
     { 0.5f, AddHangingVines },
 
-    { 0.4f, AddEveningBells },
     { 0.4f, AddGuardleaf },
     { 0.4f, AddSpore },
     { 0.4f, AddWebs },
     { 0.4f, ScatteredBoombugs },
 
+    { 0.3f, AddEveningBells },
+
+    { 0.2f, AddTunnelroot },
+    { 0.2f, AddViolets },
+    { 0.2f, AddBrambles },
     { 0.2f, AddPoisonmoss },
     { 0.2f, AddDeathbloom },
   };

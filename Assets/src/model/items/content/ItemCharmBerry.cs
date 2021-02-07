@@ -69,23 +69,17 @@ public class CharmAI : AI {
   }
 
   Actor TargetDecider() {
-    var targets = GameModel.main.player.ActorsInSight(Faction.Enemy).OrderBy(DiamondDistance);
+    var targets = GameModel.main.player.ActorsInSight(Faction.Enemy).OrderBy(Util.DiamondDistanceToPlayer);
     if (targets.Any()) {
-      var closestDistance = DiamondDistance(targets.First());
+      var closestDistance = Util.DiamondDistanceToPlayer(targets.First());
       /// consider targets tied for closest distance
-      var closestDistanceTargets = targets.TakeWhile((a) => DiamondDistance(a) == closestDistance);
+      var closestDistanceTargets = targets.TakeWhile((a) => Util.DiamondDistanceToPlayer(a) == closestDistance);
       /// out of those, pick the one closest to you
       var target = closestDistanceTargets.OrderBy(actor.DistanceTo).First();
       return target;
     }
     return null;
   }
-
-  // diagonals only count as distance 1
-  private static int DiamondDistance(Actor a) => Math.Min(
-    Math.Abs(a.pos.x - GameModel.main.player.pos.x),
-    Math.Abs(a.pos.y - GameModel.main.player.pos.y)
-  );
 }
 
 [System.Serializable]

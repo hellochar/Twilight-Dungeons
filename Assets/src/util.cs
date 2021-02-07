@@ -132,4 +132,10 @@ public static class Util {
       yield return t;
     }
   }
+
+  // diagonals only count as distance 1
+  public static int DiamondDistanceToPlayer(Actor a) => Math.Min(
+    Math.Abs(a.pos.x - GameModel.main.player.pos.x),
+    Math.Abs(a.pos.y - GameModel.main.player.pos.y)
+  );
 }

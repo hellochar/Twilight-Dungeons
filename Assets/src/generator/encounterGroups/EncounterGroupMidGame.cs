@@ -5,9 +5,10 @@ public static class EncounterGroupMidGame {
     return new EncounterGroup() {
       Mobs = new WeightedRandomBag<Encounter> {
         { 1f, AddScorpions },
-        { 1f, AddGolems },
         { 1f, AddWildekins },
         { 1f, AddCrabs },
+        { 1f, AddThistlebog },
+        { 0.6f, AddGolems },
         // need a 3rd 1f midgame mob
         { 0.5f, AddHydra },
         { 0.4f, AddParasite },
@@ -19,6 +20,7 @@ public static class EncounterGroupMidGame {
         { 0.25f, AddPoisonmoss },
         { 0.25f, AddTunnelroot },
         { 0.25f, AddViolets },
+        { 0.25f, AddBrambles },
         { 0.25f, Twice(AddTunnelroot) },
         { 0.25f, Twice(ScatteredBoombugs) },
         { 0.25f, Twice(AddGuardleaf) },

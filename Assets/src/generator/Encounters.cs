@@ -102,15 +102,11 @@ public class Encounters {
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
       (1, 1),
-      (1, 1),
-      (1, 2),
       (1, 2),
       (2, 2),
-      (2, 2),
-      (2, 3),
       (2, 3),
       (2, 4),
-      (2, 4)
+      (3, 4)
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Scorpion(tile.pos));
@@ -147,7 +143,7 @@ public class Encounters {
   public static Encounter AddParasite = new Encounter((floor, room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    foreach (var tile in tiles.Take(1)) {
+    foreach (var tile in tiles.Take(3)) {
       floor.Put(new Parasite(tile.pos));
     }
   });
@@ -162,15 +158,31 @@ public class Encounters {
   public static Encounter AddWildekins = new Encounter((floor, room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
+      (1, 1),
       (1, 2),
-      (2, 2),
+      (1, 3),
       (2, 3),
       (2, 4),
-      (3, 4),
       (3, 4)
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Wildekin(tile.pos));
+    }
+  });
+
+  public static Encounter AddThistlebog = new Encounter((floor, room) => {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    tiles.Shuffle();
+    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
+      (1, 1),
+      (1, 2),
+      (1, 3),
+      (1, 4),
+      (2, 4),
+      (2, 4)
+    );
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Thistlebog(tile.pos));
     }
   });
 
@@ -316,7 +328,23 @@ public class Encounters {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => tile.grass == null && tile is Ground).ToList();
     var num = Random.Range(tiles.Count / 8, tiles.Count / 2);
     foreach (var tile in tiles.Take(num)) {
-      floor.Put(new Web(tile.pos));
+      // about 50% chance that out of 5 open squares, one will have a space.
+      // this optimizes the ability for the player to squeeze into "holes" in
+      // the web and run enemies into them
+      if (Random.value < 0.87f) {
+        floor.Put(new Web(tile.pos));
+      }
+    }
+  });
+
+  public static Encounter AddBrambles = new Encounter((floor, room) => {
+    var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => Brambles.CanOccupy(tile) && tile.grass == null).ToList();
+    var num = Random.Range(tiles.Count / 6, tiles.Count / 2);
+    while (num >= 2) {
+      var tile = tiles[tiles.Count - 1];
+      floor.Put(new Brambles(tile.pos));
+      tiles.RemoveRange(tiles.Count - 2, 2);
+      num -= 2;
     }
   });
 

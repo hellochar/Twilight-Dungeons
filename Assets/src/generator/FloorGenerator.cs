@@ -94,11 +94,11 @@ public class FloorGenerator {
       floor.Put(plant);
     }
 
-    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood), typeof(Kingshroom) };
-    // AddMaturePlant(typeof(Weirdwood));
-    // AddMaturePlant(typeof(Weirdwood));
-    AddMaturePlant(Util.RandomPick(types));
-    AddMaturePlant(Util.RandomPick(types));
+    var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood), typeof(Kingshroom), typeof(Frizzlefen) };
+    AddMaturePlant(typeof(Frizzlefen));
+    AddMaturePlant(typeof(Frizzlefen));
+    // AddMaturePlant(Util.RandomPick(types));
+    // AddMaturePlant(Util.RandomPick(types));
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);

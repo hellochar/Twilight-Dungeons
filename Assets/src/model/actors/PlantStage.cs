@@ -37,7 +37,12 @@ public abstract class PlantStage {
 
 [Serializable]
 class Seed : PlantStage {
-  public override float StepTime => 320;
+  private readonly float stepTime;
+  public override float StepTime => stepTime;
+  public Seed(float stepTime = 320) {
+    this.stepTime = stepTime;
+  }
+
   public override void Step() {
     GoNextStage();
   }

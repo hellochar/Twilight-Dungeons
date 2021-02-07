@@ -2807,7 +2807,7 @@ MonoBehaviour:
   paddingTop: 0.5
   paddingRight: 3
   paddingBottom: 4
-  paddingLeft: 3
+  paddingLeft: 4
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11403,7 +11403,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

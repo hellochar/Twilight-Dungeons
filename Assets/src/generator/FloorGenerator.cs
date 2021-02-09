@@ -111,6 +111,28 @@ public class FloorGenerator {
 
     return floor;
   }
+
+  public Floor generateTutorialFloor(int depth) {
+    /// story before this:
+    /// your uncle is dying and needs medicine. Only the fruit of the Yendor Tree can save you.
+    /// It is a mythical tree that grows deep underground
+    /// Ezra 
+
+    /// things to explicitly teach:
+    /// tap to move (or use D-Pad)
+    /// move into enemy to attack
+    /// pick items up by moving over them
+    /// collect water
+    /// tap hold to learn about an item
+    Floor floor = new Floor(depth, 30, 12);
+
+    // fill with floor tiles by default
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Ground(p));
+    }
+
+    return floor;
+  }
   
   public Floor generateRestFloor(int depth) {
     Floor floor = new Floor(depth, 22, 14);

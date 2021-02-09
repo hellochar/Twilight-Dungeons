@@ -102,20 +102,23 @@ class ItemBarkmeal : Item, IEdible {
 }
 
 [Serializable]
+[ObjectInfo("colored_transparent_packed_675")]
 class SturdyStatus : StackingStatus, IMaxHPModifier {
   public SturdyStatus() : base(150) {}
-  public override StackingMode stackingMode => StackingMode.Add;
+  public override StackingMode stackingMode => StackingMode.Independent;
   public override void Start() {
     actor.Heal(4);
+  }
+
+  public override void Step() {
+    stacks--;
   }
 
   public override void End() {
     actor.TakeAttackDamage(4, actor);
   }
 
-  public override string Info() {
-    throw new NotImplementedException();
-  }
+  public override string Info() => "+4 max HP. When Sturdy ends, take 4 attack damage.";
 
   public int Modify(int input) {
     return input + 4;

@@ -36,6 +36,10 @@ public class ActorController : BodyController,
     Update();
   }
 
+  public void ShowSpeechBubble() {
+    PrefabCache.Effects.Instantiate("Speech", transform);
+  }
+
   public override void HandleTakeAnyDamage(int dmg) {
     base.HandleTakeAnyDamage(dmg);
     if (dmg > 0) {

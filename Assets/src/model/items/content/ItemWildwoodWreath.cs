@@ -12,7 +12,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IAttackHandler {
   public int maxDurability => 15;
 
   public void OnAttack(int damage, Body target) {
-    player.statuses.Add(new StatusWild(2));
+    player.statuses.Add(new StatusWild(3));
     this.ReduceDurability();
   }
 

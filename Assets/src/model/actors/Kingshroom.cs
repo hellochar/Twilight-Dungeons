@@ -106,12 +106,16 @@ public class ItemKingshroomPowder : Item, IDurable {
 [Serializable]
 [ObjectInfo("infected")]
 class InfectedStatus : Status {
-  public override void Step() {
+  public override void Start() {
+    actor.AddTimedEvent(1, IndependentStep);
+  }
+  void IndependentStep() {
     var tile = Util.RandomPick(actor.floor.GetAdjacentTiles(actor.pos).Where((t) => t.CanBeOccupied()));
     if (tile != null) {
       actor.floor.Put(new ThickMushroom(tile.pos));
     }
-    GameModel.main.EnqueueEvent(() => actor.TakeDamage(1, GameModel.main.player));
+    actor.TakeDamage(1, GameModel.main.player);
+    actor.AddTimedEvent(1, IndependentStep);
   }
 
   public override string Info() => "Each turn, take 1 damage and spawn a Thick Mushroom adjacent to you.";

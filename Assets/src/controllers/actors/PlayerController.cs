@@ -14,6 +14,18 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
   }
 
+  void OnApplicationPause(bool isPaused) {
+    if (isPaused) {
+      player.ClearTasks();
+    }
+  }
+
+  void OnApplicationFocus(bool hasFocus) {
+    if (!hasFocus) {
+      player.ClearTasks();
+    }
+  }
+
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);
     var model = GameModel.main;

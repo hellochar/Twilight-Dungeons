@@ -126,8 +126,10 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
       .ToArray();
   }
 
+  public static bool isInputAllowed = true;
+
   public void OnPointerDown(PointerEventData eventData) {
-    if (!CameraZoom.IsZoomGuardActive) {
+    if (!CameraZoom.IsZoomGuardActive && isInputAllowed) {
       hold = new InputHold(Time.time);
     }
   }
@@ -138,7 +140,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
   private InputHold hold;
   void Update() {
-    if (hold != null) {
+    if (hold != null && isInputAllowed) {
       if (CameraZoom.IsZoomGuardActive) {
         hold = null;
       } else if (hold.ShouldTrigger(Time.time)) {
@@ -187,7 +189,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
   }
 
   public void OnPointerClick(PointerEventData eventData) {
-    if (!CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
+    if (isInputAllowed && !CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
       var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
       var pressPos = RaycastToTilePos(eventData.pointerPressRaycast);
       // don't trigger a click if you've touch-dragged over multiple tiles to prevent accidental touches

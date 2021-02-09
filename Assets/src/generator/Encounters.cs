@@ -454,6 +454,14 @@ public class Encounters {
     }
   });
 
+  public static Encounter FiftyRandomAstoria = new Encounter((floor, room) => {
+    var positions = FloorUtils.EmptyTilesInRoom(floor, room);
+    positions.Shuffle();
+    foreach (var tile in positions.Take(50)) {
+      floor.Put(new Astoria(tile.pos));
+    }
+  });
+
   public static Encounter OneAstoria = new Encounter((floor, room) => {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();

@@ -39,8 +39,8 @@ public class LoadMainScene : MonoBehaviour {
   }
 
   public static IEnumerator TransitionToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad) {
-    yield return b.StartCoroutine(FadeToBlack(overlay));
     SceneManager.LoadSceneAsync(sceneToLoad);
+    yield return b.StartCoroutine(FadeToBlack(overlay));
   }
 
   public static IEnumerator FadeToBlack(Image overlay, float duration = 0.5f) {

@@ -7,7 +7,7 @@ public class DeathScreen : MonoBehaviour, IDeathHandler {
   GameObject blackOverlay;
 
   void Start() {
-    blackOverlay = transform.Find("BlackOverlay").gameObject;
+    blackOverlay = transform.parent.Find("BlackOverlay").gameObject;
     GameModel.main.player.nonserializedModifiers.Add(this);
     gameObject.SetActive(false);
   }

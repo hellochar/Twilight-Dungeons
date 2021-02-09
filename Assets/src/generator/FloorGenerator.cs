@@ -47,10 +47,69 @@ public class FloorGenerator {
     floors.Add(generateMultiRoomFloor(29, 24, 13, 9, true));
     floors.Add(generateMultiRoomFloor(30, 22, 12, 10, true));
     floors.Add(generateMultiRoomFloor(31, 45, 11, 15, true));
-    floors.Add(generateRewardFloor(32, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
+    floors.Add(generateEndFloor(32));
     // floors.Add(generateBossFloor(33));
-    // floors.Add(generateEndFloor(34));
     return floors.ToArray();
+  }
+
+  public Floor generateEndFloor(int depth) {
+    Floor floor = new Floor(depth, 36, 36);
+
+    // fill with floor tiles by default
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Ground(p));
+    }
+
+    FloorUtils.SurroundWithWalls(floor);
+    FloorUtils.NaturalizeEdges(floor);
+
+    var room0 = new Room(floor);
+    floor.rooms = new List<Room> { room0 };
+    floor.root = room0;
+
+    // create concentric rings of walls
+    foreach (var pos in floor.EnumerateFloor()) {
+      var distance = Vector2.Distance(pos, room0.center);
+      // distance 3.5 - 4 = -0.5
+      // distance 4.5 - 4 = 
+      var closestRing = Mathf.Round(distance / 6) * 6;
+      var angle = Mathf.Atan2(pos.y - room0.center.y, pos.x - room0.center.x) * Mathf.Rad2Deg;
+      var holeAngle = 360 * Util.Rand(closestRing);
+      var angleDelta = Mathf.DeltaAngle(angle, holeAngle);
+      if (Mathf.Abs(distance - closestRing) < 0.5f /*&& angleDelta < 30*/ && distance > 4) {
+        floor.Put(new Wall(pos));
+      }
+    }
+
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+
+    for (var i = 0; i < 12; i++) {
+      Encounters.AddWater(floor, room0);
+    }
+    Encounters.FiftyRandomAstoria(floor, room0);
+    for (var i = 0; i < 12; i++) {
+      Encounters.AddGuardleaf(floor, room0);
+      Encounters.AddGuardleaf(floor, room0);
+      Encounters.AddGuardleaf(floor, room0);
+      Encounters.AddGuardleaf(floor, room0);
+    }
+
+    foreach (var t in floor.EnumerateFloor().Where(p => floor.tiles[p] is Ground && floor.grasses[p] == null)) {
+      floor.Put(new SoftGrass(t));
+    }
+
+    foreach (var pos in floor.EnumerateCircle(room0.center, 2.5f)) {
+      var grass = floor.grasses[pos];
+      if (grass != null) {
+        floor.Remove(grass);
+      }
+      floor.Put(new FancyGround(pos));
+    }
+
+    /// add Ezra right in the middle
+    floor.Put(new Ezra(room0.center));
+
+    return floor;
   }
   
   public Floor generateRestFloor(int depth) {
@@ -95,10 +154,8 @@ public class FloorGenerator {
     }
 
     var types = new List<System.Type> { typeof(BerryBush), typeof(Wildwood), typeof(Thornleaf), typeof(Weirdwood), typeof(Kingshroom), typeof(Frizzlefen) };
-    AddMaturePlant(typeof(Frizzlefen));
-    AddMaturePlant(typeof(Frizzlefen));
-    // AddMaturePlant(Util.RandomPick(types));
-    // AddMaturePlant(Util.RandomPick(types));
+    // AddMaturePlant(typeof(Frizzlefen));
+    AddMaturePlant(Util.RandomPick(types));
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);

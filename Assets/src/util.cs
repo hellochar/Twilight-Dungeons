@@ -133,6 +133,10 @@ public static class Util {
     }
   }
 
+  public static float Rand(float input) {
+    return Mathf.Sin(input * 192391.2359f) % 1;
+  }
+
   // diagonals only count as distance 1
   public static int DiamondDistanceToPlayer(Actor a) => Math.Min(
     Math.Abs(a.pos.x - GameModel.main.player.pos.x),

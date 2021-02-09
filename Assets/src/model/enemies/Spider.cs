@@ -128,9 +128,6 @@ internal class WebStatus : Status, IActionCostModifier {
   }
 
   public override void Step() {
-    if (actor.floor == null) {
-      throw new Exception("Stepping Web status even though the actor's left the floor!");
-    }
     if (!(actor.grass is Web)) {
       Remove();
     }

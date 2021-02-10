@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class LoadMainScene : MonoBehaviour {
   GameObject blackOverlay;
+  public AudioClip playerMove;
 
   void Start() {
     blackOverlay = transform.Find("BlackOverlay").gameObject;
@@ -19,7 +20,7 @@ public class LoadMainScene : MonoBehaviour {
 
   public void NewGame() {
     StartCoroutine(WalkPlayer());
-    FadeOutButtons();
+    FadeOutButtonsAndMusic();
     //// TODO async this; need to stop using UnityEngine code.
     GameModel.GenerateNewGameAndSetMain();
     GoToGameScene();
@@ -27,7 +28,7 @@ public class LoadMainScene : MonoBehaviour {
 
   public async void Continue() {
     StartCoroutine(WalkPlayer());
-    FadeOutButtons();
+    FadeOutButtonsAndMusic();
     try {
       await Task.Run(() => {
         GameModel.main = Serializer.LoadFromFile();
@@ -46,6 +47,7 @@ public class LoadMainScene : MonoBehaviour {
     while (Vector3.Distance(player.transform.position, target) > Mathf.Epsilon) {
       Vector3 currentTarget = player.transform.position;
       currentTarget.x += 1;
+      playerMove.PlayAtPoint(player.transform.position, 0.5f);
       while (Vector3.Distance(player.transform.position, currentTarget) > .005f) {
         player.transform.position = Vector3.Lerp(player.transform.position, currentTarget, 20 * Time.deltaTime);
         yield return new WaitForEndOfFrame();
@@ -56,10 +58,10 @@ public class LoadMainScene : MonoBehaviour {
     }
   }
 
-  private void FadeOutButtons() {
+  private void FadeOutButtonsAndMusic() {
+    StartCoroutine(EzraController.FadeOut(Camera.main.GetComponent<AudioSource>(), 1));
     foreach (var button in GetComponentsInChildren<Button>()) {
       button.interactable = false;
-      button.gameObject.AddComponent<FadeThenDestroy>();
     }
   }
 

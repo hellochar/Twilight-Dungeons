@@ -19,6 +19,7 @@ public class LoadMainScene : MonoBehaviour {
 
   public void NewGame() {
     StartCoroutine(WalkPlayer());
+    FadeOutButtons();
     //// TODO async this; need to stop using UnityEngine code.
     GameModel.GenerateNewGameAndSetMain();
     GoToGameScene();
@@ -26,6 +27,7 @@ public class LoadMainScene : MonoBehaviour {
 
   public async void Continue() {
     StartCoroutine(WalkPlayer());
+    FadeOutButtons();
     try {
       await Task.Run(() => {
         GameModel.main = Serializer.LoadFromFile();
@@ -54,10 +56,14 @@ public class LoadMainScene : MonoBehaviour {
     }
   }
 
-  private void GoToGameScene() {
+  private void FadeOutButtons() {
     foreach (var button in GetComponentsInChildren<Button>()) {
       button.interactable = false;
+      button.gameObject.AddComponent<FadeThenDestroy>();
     }
+  }
+
+  private void GoToGameScene() {
     StartCoroutine(TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
   }
 

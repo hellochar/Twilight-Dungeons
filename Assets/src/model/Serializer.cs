@@ -6,7 +6,11 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public static class Serializer {
-  public static string SAVE_PATH => Application.persistentDataPath + "/save0.dat";
+  public static string SAVE_PATH;
+  static Serializer() {
+    SAVE_PATH = Application.persistentDataPath + "/save0.dat";
+  }
+
   /// <summary>Does *not* set main.</summary>
   public static GameModel LoadFromFile() {
     Debug.Log("Loading save from " + SAVE_PATH);

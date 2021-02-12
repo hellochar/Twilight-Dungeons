@@ -22,8 +22,16 @@ public class LoadMainScene : MonoBehaviour {
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
     //// TODO async this; need to stop using UnityEngine code.
-    GameModel.GenerateNewGameAndSetMain();
-    GoToGameScene();
+    try {
+      // await Task.Run(() => {
+      GameModel.GenerateNewGameAndSetMain();
+      // });
+      GoToGameScene();
+    } catch(Exception e) {
+      /// TODO report to error server
+      var popup = Popups.Create("Error Creating Game", e.Message, "", null);
+      throw e;
+    }
   }
 
   public async void Continue() {
@@ -71,15 +79,29 @@ public class LoadMainScene : MonoBehaviour {
 
   public static IEnumerator TransitionToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad) {
     SceneManager.LoadSceneAsync(sceneToLoad);
-    yield return b.StartCoroutine(FadeToBlack(overlay));
+    yield return b.StartCoroutine(FadeTo(overlay));
   }
 
-  public static IEnumerator FadeToBlack(Image overlay, float duration = 0.5f) {
+  public static IEnumerator FadeTo(Image overlay, float duration = 0.5f, Color? color = null) {
+    if (color == null) {
+      color = new Color(0, 0, 0, 1);
+    }
+    var start = Time.time;
+    var t = 0f;
+    var initColor = overlay.color;
+    do {
+      t = (Time.time - start) / duration;
+      overlay.color = Color.Lerp(initColor, color.Value, t);
+      yield return new WaitForEndOfFrame();
+    } while (t < 1);
+  }
+
+  public static IEnumerator AnimateLinear(float duration, Action<float> callback) {
     var start = Time.time;
     var t = 0f;
     do {
       t = (Time.time - start) / duration;
-      overlay.color = Color.Lerp(new Color(0, 0, 0, 0), new Color(0, 0, 0, 1), t);
+      callback(t);
       yield return new WaitForEndOfFrame();
     } while (t < 1);
   }

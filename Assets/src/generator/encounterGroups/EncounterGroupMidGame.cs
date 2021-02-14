@@ -8,6 +8,7 @@ public static class EncounterGroupMidGame {
         { 1f, AddWildekins },
         { 1f, AddCrabs },
         { 1f, AddThistlebog },
+        { 0.5f, AddGrasper },
         { 0.5f, AddGolems },
         { 0.5f, AddHydra },
         { 0.4f, AddParasite },
@@ -59,6 +60,7 @@ public static class EncounterGroupMidGame {
         // { 0.05f, AddParasite },
 
         { 0.1f, AddHydra },
+        { 0.1f, AddGrasper },
         { 0.1f, AddDeathbloom },
         { 0.1f, AddSpore },
 

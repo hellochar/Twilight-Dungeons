@@ -14,6 +14,7 @@ public static class EncounterGroupEverything {
         { 0.2f, AddThistlebog },
         { 0.2f, AddGolems },
         { 0.1f, AddHydra },
+        { 0.1f, AddGrasper },
       },
 
       Grasses = new WeightedRandomBag<Encounter> {
@@ -68,6 +69,7 @@ public static class EncounterGroupEverything {
         { 0.02f, AddGolems },
 
         { 0.01f, AddHydra },
+        { 0.01f, AddGrasper },
       },
     };
   }

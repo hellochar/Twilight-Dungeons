@@ -13,7 +13,7 @@ public class FloorGenerator {
   public Floor[] generateAllFloors() {
     var floors = new List<Floor>();
     EncounterGroup = EncounterGroup.EarlyGame();
-    floors.Add(generateRestFloor(0));
+    floors.Add(generateFloor0(0));
     floors.Add(generateSingleRoomFloor(1, 9, 9));
     floors.Add(generateSingleRoomFloor(2, 10, 10));
     floors.Add(generateSingleRoomFloor(3, 11, 11));
@@ -26,7 +26,7 @@ public class FloorGenerator {
     floors.Add(generateSingleRoomFloor(10, 14, 7, 2, 2));
     floors.Add(generateSingleRoomFloor(11, 20, 9, 3, 2));
     EncounterGroup = EncounterGroup.EarlyMidMixed();
-    floors.Add(generateSingleRoomFloor(12, 10, 10, 2, 2, true)); // make this a miniboss level
+    floors.Add(generateBossFloor(12, 14, 3)); // make this a miniboss level
     floors.Add(generateSingleRoomFloor(13, 12, 12, 3, 2));
     floors.Add(generateSingleRoomFloor(14, 15, 11, 3, 3));
     floors.Add(generateSingleRoomFloor(15, 20, 9, 4, 3));
@@ -134,7 +134,7 @@ public class FloorGenerator {
     return floor;
   }
   
-  public Floor generateRestFloor(int depth) {
+  public Floor generateFloor0(int depth) {
     Floor floor = new Floor(depth, 22, 14);
 
     // fill with floor tiles by default
@@ -184,10 +184,10 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     floor.depth = 20;
-    Encounters.InsetLayerWithOpening(floor, room0);
+    Encounters.AddGrasper(floor, room0);
     // Encounters.AddHydra(floor, room0);
     // Encounters.AddViolets(floor, room0);
-    // Encounters.AddTunnelroot(floor, room0);
+    Encounters.AddTunnelroot(floor, room0);
     // Encounters.AddWildekins(floor, room0);
     // Encounters.AddCrabs(floor, room0);
     // Encounters.AddParasite(floor, room0);
@@ -315,6 +315,54 @@ public class FloorGenerator {
     floor.upstairsRoom = room0;
     floor.downstairsRoom = room0;
 
+    return floor;
+  }
+
+  public Floor generateBossFloor(int depth, int size, int numGrasses = 1) {
+    Floor floor = new Floor(depth, size, size);
+    // fill with wall
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Wall(p));
+    }
+
+    Room room0 = new Room(floor);
+    foreach (var pos in floor.EnumerateCircle(room0.center, size / 2)) {
+      floor.Put(new Ground(pos));
+    }
+
+    FloorUtils.SurroundWithWalls(floor);
+    FloorUtils.NaturalizeEdges(floor);
+
+    // one wall variation
+    Encounters.WallPillars(floor, room0);
+
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), true);
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2), true);
+
+    floor.root = room0;
+    floor.rooms = new List<Room>();
+    floor.upstairsRoom = room0;
+    floor.downstairsRoom = room0;
+
+    // add boss
+    floor.Put(new BlobBoss(room0.center));
+
+    // add grasses
+    for (var i = 0; i < numGrasses; i++) {
+      EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+    }
+
+    // // fill remaining squares with soft grass
+    // foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {
+    //   floor.Put(new SoftGrass(tile.pos));
+    // }
+
+    if (floor.tiles[floor.upstairs.landing] is Wall) {
+      floor.Put(new Ground(floor.upstairs.landing));
+    }
+    if (floor.tiles[floor.downstairs.landing] is Wall) {
+      floor.Put(new Ground(floor.downstairs.landing));
+    }
     return floor;
   }
 

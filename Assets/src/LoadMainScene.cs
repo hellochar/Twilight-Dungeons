@@ -21,17 +21,23 @@ public class LoadMainScene : MonoBehaviour {
   public void NewGame() {
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
-    //// TODO async this; need to stop using UnityEngine code.
-    try {
-      // await Task.Run(() => {
+    #if UNITY_EDITOR
+    // don't catch errors in dev so you get better stack trace
       GameModel.GenerateNewGameAndSetMain();
-      // });
       GoToGameScene();
-    } catch(Exception e) {
-      /// TODO report to error server
-      var popup = Popups.Create("Error Creating Game", e.Message, "", null);
-      throw e;
-    }
+    #else
+      try {
+        //// TODO async this; need to stop using UnityEngine code.
+        // await Task.Run(() => {
+        GameModel.GenerateNewGameAndSetMain();
+        // });
+        GoToGameScene();
+      } catch(Exception e) {
+        /// TODO report to error server
+        var popup = Popups.Create("Error Creating Game", e.Message, "", null);
+        throw e.GetBaseException();
+      }
+    #endif
   }
 
   public async void Continue() {

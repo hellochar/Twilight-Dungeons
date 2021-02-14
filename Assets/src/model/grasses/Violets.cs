@@ -17,7 +17,7 @@ public class Violets : Grass, ISteppable {
 
   public float Step() {
     if (isOpen) {
-      actor?.statuses.Add(new ConfusedStatus(1));
+      actor?.statuses.Add(new ConfusedStatus(3));
     }
     countUp++;
     if (countUp >= turnsToChange) {
@@ -29,7 +29,7 @@ public class Violets : Grass, ISteppable {
 }
 
 [System.Serializable]
-[ObjectInfo("colored_transparent_packed_660")]
+[ObjectInfo("confused")]
 public class ConfusedStatus : StackingStatus, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Max;
   public override string Info() => "Your next turn must be spent moving in a random direction.";

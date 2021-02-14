@@ -97,7 +97,7 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
 }
 
 [System.Serializable]
-public class BoundStatus : StackingStatus, IBaseActionModifier {
+public class BoundStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler {
   private readonly HangingVines owner;
 
   public override bool isDebuff => true;
@@ -108,8 +108,15 @@ public class BoundStatus : StackingStatus, IBaseActionModifier {
   }
 
   public override void End() {
-    owner.BoundStatusEnded();
+    owner?.BoundStatusEnded();
     base.End();
+  }
+
+  // if they somehow do move (e.g. forced movement), remove this status
+  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    if (newPos != oldPos) {
+      Remove();
+    }
   }
 
   public override string Info() => $"You must break free of vines before you can move or attack!\n{stacks} stacks left.";

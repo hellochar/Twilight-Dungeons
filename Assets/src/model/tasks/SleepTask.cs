@@ -75,6 +75,7 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
 }
 
 [System.Serializable]
+[ObjectInfo("colored_transparent_packed_658", description: "You're surprised! You must spend the next turn shaking it off.")]
 class SurprisedStatus : Status, IBaseActionModifier {
   public override bool isDebuff => true;
   public override string Info() => "";
@@ -87,8 +88,14 @@ class SurprisedStatus : Status, IBaseActionModifier {
       Remove();
       return input;
     } else {
-      remove = true;
-      return new WaitBaseAction(input.actor);
+      // treat player differently - remove status immediately, and do a struggle
+      if (actor == GameModel.main.player) {
+        Remove();
+        return new StruggleBaseAction(actor);
+      } else {
+        remove = true;
+        return new WaitBaseAction(input.actor);
+      }
     }
   }
 

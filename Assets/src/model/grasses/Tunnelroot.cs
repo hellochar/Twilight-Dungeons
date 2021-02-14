@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -7,9 +9,13 @@ public class Tunnelroot : Grass, IActorEnterHandler, IDeathHandler {
 
   private Tunnelroot partner;
   private bool isOpen = true;
+  [field:NonSerialized] /// controller only
+  public event Action<bool> OnOpenChanged;
 
   public Tunnelroot(Vector2Int pos) : base(pos) {
   }
+
+  public bool IsOpen() => isOpen;
 
   public void PartnerWith(Tunnelroot other) {
     if (other.partner != null) {
@@ -20,12 +26,14 @@ public class Tunnelroot : Grass, IActorEnterHandler, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    // kill partner at the same time
-    GameModel.main.EnqueueEvent(() => {
-      if (!partner.IsDead) {
-        partner.Kill(this);
-      }
-    });
+    if (source != partner) {
+      // kill partner at the same time
+      GameModel.main.EnqueueEvent(() => {
+        if (!partner.IsDead) {
+          partner.Kill(this);
+        }
+      });
+    }
   }
 
   public void HandleActorEnter(Actor who) {
@@ -34,19 +42,25 @@ public class Tunnelroot : Grass, IActorEnterHandler, IDeathHandler {
     }
 
     if (!partner.IsDead && partner.body == null && isOpen) {
-      Close();
-      partner.Close();
-      who.pos = partner.pos;
+      // Close();
+      // partner.Close();
+      var newTile = floor.BreadthFirstSearch(partner.pos, (tile) => true).Skip(1).Where(t => t.CanBeOccupied()).FirstOrDefault();
+      if (newTile != null) {
+        who.pos = newTile.pos;
+        who.statuses.Add(new SurprisedStatus());
+      }
     }
   }
 
   private void Close() {
     isOpen = false;
+    OnOpenChanged?.Invoke(isOpen);
     AddTimedEvent(5, Reopen);
     OnNoteworthyAction();
   }
 
   void Reopen() {
     isOpen = true;
+    OnOpenChanged?.Invoke(isOpen);
   }
 }

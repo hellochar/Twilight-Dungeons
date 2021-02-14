@@ -146,7 +146,12 @@ public class TurnManager {
 
       model.DrainEventQueue();
 
-      bool shouldStagger = !isFirstIteration && entity is Entity e && e.isVisible && (e is Actor || forceStaggerThisTurn);
+      bool shouldStagger =
+        !isFirstIteration &&
+        !(entity is IIgnoreStagger) && 
+        entity is Entity e &&
+        e.isVisible &&
+        (e is Actor || forceStaggerThisTurn);
       if (shouldStagger) {
         forceStaggerThisTurn = false;
         // stagger actors just a bit for juice

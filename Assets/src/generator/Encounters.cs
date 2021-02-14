@@ -155,6 +155,14 @@ public class Encounters {
     }
   });
 
+  public static Encounter AddGrasper = new Encounter((floor, room) => {
+    // put it on a wall
+    var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null));
+    if (tile != null) {
+      floor.Put(new Grasper(tile.pos));
+    }
+  });
+
   public static Encounter AddWildekins = new Encounter((floor, room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
@@ -246,7 +254,7 @@ public class Encounters {
   });
 
   public static Encounter AddBladegrass = new Encounter((floor, room) => {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Bladegrass.CanOccupy));
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(tile => Bladegrass.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
@@ -260,7 +268,7 @@ public class Encounters {
   });
 
   public static Encounter AddViolets = new Encounter((floor, room) => {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Bladegrass.CanOccupy));
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(tile => Violets.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);

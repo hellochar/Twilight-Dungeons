@@ -53,6 +53,8 @@ public sealed class AttackBaseAction : BaseAction {
   public override void Perform() {
     if (actor.IsNextTo(target)) {
       actor.Attack(target);
+    } else {
+      throw new CannotPerformActionException("Cannot reach target!");
     }
   }
 }

@@ -2,10 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PrologueController : MonoBehaviour {
+public class PrologueController : MonoBehaviour, IPointerClickHandler {
   public GameObject tapPrompt;
+  public AudioSource source;
+
+  private string prologueCopyFull;
+
+  void Awake() {
+    var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
+    prologueCopyFull = textComponent.text;
+  }
 
   void Start() {
     if (HasPlayed()) {
@@ -15,18 +24,21 @@ public class PrologueController : MonoBehaviour {
     }
   }
 
-  void Play() {
-    // PlayerPrefs.SetInt("hasSeenPrologue", 1);
-    StartCoroutine(PlayPrologueAsync());
+  public void Play() {
+    PlayerPrefs.SetInt("hasSeenPrologue", 1);
     gameObject.SetActive(true);
+    GetComponentInChildren<TMPro.TMP_Text>().color = Color.white;
+    GetComponent<Image>().color = Color.black;
+    StartCoroutine(PlayPrologueAsync());
   }
 
   IEnumerator PlayPrologueAsync() {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
-    var prologueCopyFull = textComponent.text;
-    var prologuePages = prologueCopyFull.Split(new string[] { "---" }, System.StringSplitOptions.None);
+    textComponent.text = "";
+    yield return new WaitForSeconds(0.1f);
+    var prologuePages = prologueCopyFull.Split(new string[] { "---" }, System.StringSplitOptions.RemoveEmptyEntries);
     foreach (var page in prologuePages) {
-      yield return StartCoroutine(ShowPage(textComponent, page));
+      yield return StartCoroutine(ShowPage(textComponent, page.Trim()));
       /// pause for a bit after the page stops
       yield return new WaitForSeconds(0.05f);
     }
@@ -45,12 +57,24 @@ public class PrologueController : MonoBehaviour {
 
   // wait for player to touch
   IEnumerator ShowPage(TMPro.TMP_Text component, string text) {
-    for (var length = 0; length < text.Length; length++) {
-      if (Input.GetMouseButton(0)) {
+    // var paragraphs = text.Split(new string[] { "\n\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+    // foreach (var paragraph in paragraphs) {
+    //   yield return new WaitForSeconds(0.05f);
+    // }
+    for (var length = 0; length <= text.Length; length++) {
+      if (hasClicked) {
+        hasClicked = false;
         length = text.Length;
       }
       component.text = text.Substring(0, length);
-      yield return new WaitForSeconds(0.05f);
+      if (length > 0 && text[length - 1] == '\n') {
+        yield return StartCoroutine(WaitForTap(.5f));
+      } else {
+        if (!source.isPlaying) {
+          source.Play();
+        }
+        yield return new WaitForSeconds(0.035f);
+      }
     }
 
     var waitStart = Time.time;
@@ -61,7 +85,8 @@ public class PrologueController : MonoBehaviour {
         tapPrompt.SetActive(true);
         // tapPrompt.GetComponent<Animator>().Play("motion", -1, 0);
       }
-      if (Input.GetMouseButtonDown(0)) {
+      if (hasClicked) {
+        hasClicked = false;
         tapPrompt.SetActive(false);
         yield break;
       }
@@ -69,12 +94,25 @@ public class PrologueController : MonoBehaviour {
     }
   }
 
+  // do NOT consume the hasClicked
+  IEnumerator WaitForTap(float duration) {
+    var start = Time.time;
+    var t = 0f;
+    do {
+      t = (Time.time - start) / duration;
+      if (hasClicked) {
+        yield break;
+      }
+      yield return new WaitForEndOfFrame();
+    } while (t < 1);
+  }
+
   bool HasPlayed() {
     return PlayerPrefs.HasKey("hasSeenPrologue");
   }
 
-  // Update is called once per frame
-  void Update() {
-
+  private bool hasClicked = false;
+  public void OnPointerClick(PointerEventData eventData) {
+    hasClicked = true;
   }
 }

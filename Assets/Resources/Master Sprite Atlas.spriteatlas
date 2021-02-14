@@ -33,7 +33,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5145136
+    totalSpriteSurfaceArea: 5171824
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -1797,6 +1797,7 @@ SpriteAtlas:
   - {fileID: -1820778394629667666, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
   - {fileID: 21300000, guid: a2a493b3652ea624d8b4a95595992591, type: 3}
   - {fileID: 21300000, guid: ccd511f3395cc5742bd0c45b9afb2c7c, type: 3}
+  - {fileID: 21300000, guid: 436f9534bacc2f5458e5415e478a9771, type: 3}
   - {fileID: 21300000, guid: f1de2e44133ace9459b37fc194a10e16, type: 3}
   - {fileID: 6733317360203888005, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -3032536096966241093, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -4692,6 +4693,8 @@ SpriteAtlas:
   - {fileID: -3278524096712110203, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
   - {fileID: -2892910820977171364, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
   - {fileID: -6207193392188836992, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
+  - {fileID: -3460289646400586548, guid: 009bad99a3c5909468c08008342a2fc3, type: 3}
+  - {fileID: -4782383278740892784, guid: 009bad99a3c5909468c08008342a2fc3, type: 3}
   - {fileID: 5684552838703836615, guid: 3b8e3da917b348743aee822aeb3d55ab, type: 3}
   - {fileID: -4927540249515241657, guid: 3b8e3da917b348743aee822aeb3d55ab, type: 3}
   - {fileID: -5243772346084840235, guid: 3b8e3da917b348743aee822aeb3d55ab, type: 3}
@@ -6324,6 +6327,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 99422c8b147686a44a6234118382d285, type: 3}
   - {fileID: 21300000, guid: b8a8be8b9a434574396282e110f0a107, type: 3}
   - {fileID: 21300000, guid: 8b767c9b3454c1343b789c3b90cb4049, type: 3}
+  - {fileID: 21300000, guid: d49c25cbd651a534ca365cb069ea2b43, type: 3}
   - {fileID: 21300000, guid: aa67a1eb66e794745a9bf5412e72c38a, type: 3}
   - {fileID: 21300000, guid: b27b62fb718136741b2e77f198079a47, type: 3}
   - {fileID: 21300000, guid: 93cb4bfbf0123a5458ad10d2a85cd3bb, type: 3}
@@ -7412,12 +7416,14 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2dd03ccd0a5dcbb4cab08e9b386ffca3, type: 3}
   - {fileID: 21300000, guid: d10473ddcf13dbe46a911763432a4655, type: 3}
   - {fileID: 21300000, guid: 62d7722e2d7563b468471d867555b6cb, type: 3}
+  - {fileID: 21300000, guid: 0d72523ecfaf46f47856da981213e3f8, type: 3}
   - {fileID: 21300000, guid: c2f7f23e6e084f240a0a5f87fc5c3b51, type: 3}
   - {fileID: 21300000, guid: 9295d66e7959a084fa6a62a35e3675cd, type: 3}
   - {fileID: 21300000, guid: 047e017ea14be984488b0cc0fb65fc58, type: 3}
   - {fileID: 21300000, guid: d323feae203eaa14f9c8cb43e26ca88b, type: 3}
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: c87b69eeeb4926d498a1f51a2bd74586, type: 3}
+  - {fileID: 21300000, guid: 0ef9b2fe09d6ead499277654c5526d7a, type: 3}
   - {fileID: 21300000, guid: f7aac50f633140940b092ed05755b914, type: 3}
   - {fileID: 21300000, guid: baa91f6f3c3ba6a45bdb64450293936d, type: 3}
   - {fileID: 21300000, guid: 24e1cc9fda07a6f4fb2960d8e24f024e, type: 3}
@@ -9705,6 +9711,7 @@ SpriteAtlas:
   - shield-placeholder
   - boombug
   - kingshroom
+  - sleeping-bag
   - 1bit 16px patterns and tiles - outlines
   - tumorous-growth
   - monochrome-blob
@@ -12600,6 +12607,8 @@ SpriteAtlas:
   - snail_2
   - snail_1
   - snail_0
+  - tap-prompt_0
+  - tap-prompt_1
   - explosion_5
   - explosion_4
   - explosion_1
@@ -14232,6 +14241,7 @@ SpriteAtlas:
   - timeline
   - Clock
   - spored-status
+  - uncle
   - brambles
   - Textures_v02
   - evening-bell
@@ -15320,12 +15330,14 @@ SpriteAtlas:
   - item shadow
   - background
   - colored_original
+  - leaf
   - guardroot
   - coralmoss
   - thick-stick
   - vile-potion
   - charmberry
   - heart
+  - tree-of-yendor
   - happyland
   - stompinboots
   - living-armor

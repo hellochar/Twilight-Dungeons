@@ -562,4 +562,21 @@ public class Encounters {
     }
   });
 
+  public static Encounter InsetLayerWithOpening = new Encounter((floor, room) => {
+    var insetLength = Random.Range(3, 6);
+    var inset = floor.EnumeratePerimeter(insetLength).ToList();
+    var start = Random.Range(0, inset.Count);
+    // rotate inset to the right some random amount
+    inset = inset.Skip(start).Concat(inset.Take(start)).ToList();
+    // remove a 3 long hole to walk through
+    var openingLength = 2;
+    while (Random.value < 0.66f && openingLength < inset.Count / 2) {
+      openingLength++;
+    }
+    foreach (var pos in inset.Skip(3)) {
+      floor.Put(new Wall(pos));
+    }
+  });
+
+
 }

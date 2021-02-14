@@ -184,6 +184,7 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     floor.depth = 20;
+    Encounters.InsetLayerWithOpening(floor, room0);
     // Encounters.AddHydra(floor, room0);
     // Encounters.AddViolets(floor, room0);
     // Encounters.AddTunnelroot(floor, room0);

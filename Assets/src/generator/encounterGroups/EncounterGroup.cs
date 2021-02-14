@@ -26,6 +26,7 @@ public class EncounterGroup {
     { 0.5f, WallPillars },
     { 0.5f, ChunkInMiddle },
     { 0.5f, LineWithOpening },
+    { 0.5f, InsetLayerWithOpening },
   };
   public static WeightedRandomBag<Encounter> RewardsStatic = new WeightedRandomBag<Encounter> {
     { 1f, AddMushroom },

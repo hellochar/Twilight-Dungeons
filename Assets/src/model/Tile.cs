@@ -98,6 +98,12 @@ public class Ground : Tile {
 }
 
 [Serializable]
+[ObjectInfo(description: "Grass cannot grow on Hard Ground.")]
+public class HardGround : Tile {
+  public HardGround(Vector2Int pos) : base(pos) { }
+}
+
+[Serializable]
 public class FancyGround : Ground {
   public FancyGround(Vector2Int pos) : base(pos) {
   }

@@ -14,6 +14,8 @@ interface IModifierProvider {
 static class Modifiers {
   /// this recurses into IModifierProviders that may live in the enumerable, and ultimately flattens them all into one
   public static IEnumerable<T> Of<T>(this IModifierProvider provider) {
+    // create defensive copy to prevent concurrent modification
+    // var enumerable = provider.MyModifiers.ToList();
     var enumerable = provider.MyModifiers;
     foreach (var s in enumerable) {
       if (s is T t) {

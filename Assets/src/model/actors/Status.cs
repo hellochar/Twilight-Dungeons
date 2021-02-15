@@ -49,8 +49,10 @@ public abstract class Status : IStepModifier {
 
   /// <summary>Schedule this status for removal.</summary>
   public void Remove() {
-    list?.Remove(this);
-    // GameModel.main.EnqueueEvent(() => list?.Remove(this));
+    /// Must be scheduled because Remove() may be called within
+    /// a Modifiers.Of() handler; modifying the list would
+    /// cause a concurrent modification
+    GameModel.main.EnqueueEvent(() => list?.Remove(this));
   }
 }
 

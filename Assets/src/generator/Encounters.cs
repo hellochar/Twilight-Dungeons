@@ -297,7 +297,7 @@ public class Encounters {
   public static Encounter AddTunnelroot = new Encounter((floor, room) => {
     var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
     /// special - put partner anywhere else on the floor
-    var partner = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
+    var partner = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((tile) => tile != start && Tunnelroot.CanOccupy(tile) && tile.grass == null));
     if (start != null && partner != null) {
       var root1 = new Tunnelroot(start.pos);
       var root2 = new Tunnelroot(partner.pos);
@@ -308,7 +308,7 @@ public class Encounters {
   });
 
   public static Encounter AddPoisonmoss = new Encounter((floor, room) => {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Poisonmoss.CanOccupy));
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(t => Poisonmoss.CanOccupy(t) && t.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);

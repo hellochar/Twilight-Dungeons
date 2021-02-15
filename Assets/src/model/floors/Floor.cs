@@ -379,36 +379,23 @@ public class Floor {
     }
   }
 
-  public void PlaceUpstairs(Vector2Int pos, bool addWalls = true) {
+  public void PlaceUpstairs(Vector2Int pos) {
     Put(new Upstairs(pos));
-    // surround sides with wall, but ensure right tile is open
-    if (addWalls) {
-      Put(new Wall(pos + new Vector2Int(-1, -1)));
-      Put(new Wall(pos + new Vector2Int(-1, 0)));
-      Put(new Wall(pos + new Vector2Int(-1, 1)));
-
-      Put(new Wall(pos + new Vector2Int(0, -1)));
-      Put(new Wall(pos + new Vector2Int(0, 1)));
-
-      Put(new Ground(pos + new Vector2Int(1, 0)));
+    // surround with Hard Ground
+    var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();
+    foreach (var ground in adjacentGrounds) {
+      Put(new HardGround(ground.pos));
     }
   }
 
-  public void PlaceDownstairs(Vector2Int pos, bool addWalls = true) {
+  public void PlaceDownstairs(Vector2Int pos) {
     Put(new Downstairs(pos));
-    // surround sides with wall, but ensure left tile is open
-    if (addWalls) {
-      Put(new Ground(pos + new Vector2Int(-1, 0)));
-
-      Put(new Wall(pos + new Vector2Int(0, -1)));
-      Put(new Wall(pos + new Vector2Int(0, 1)));
-
-      Put(new Wall(pos + new Vector2Int(1, -1)));
-      Put(new Wall(pos + new Vector2Int(1, 0)));
-      Put(new Wall(pos + new Vector2Int(1, 1)));
+    // surround with Hard Ground
+    var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();
+    foreach (var ground in adjacentGrounds) {
+      Put(new HardGround(ground.pos));
     }
   }
-
 }
 
 [Serializable]

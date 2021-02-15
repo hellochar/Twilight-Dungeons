@@ -222,8 +222,8 @@ public class FloorGenerator {
 
     var room0 = new Room(floor);
 
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
-    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
     Encounters.PlaceFancyGround(floor, room0);
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
@@ -268,28 +268,36 @@ public class FloorGenerator {
     // Encounters.AddParasite(floor, room0);
     #endif
 
+    TidyUpAroundUpstairs(floor);
+
+    return floor;
+  }
+
+  /// It sucks to walk down to a new level and immediately get
+  /// constricted by a HangingVines, or just surrounded by enemies.
+  /// Prevent these negative gameplay experiences.
+  private void TidyUpAroundUpstairs(Floor floor) {
+    /// sometimes the Wall generators may put Walls right in the landing spot. Prevent that.
     if (floor.tiles[floor.upstairs.landing] is Wall) {
-      floor.Put(new Ground(floor.upstairs.landing));
+      floor.Put(new HardGround(floor.upstairs.landing));
     }
     if (floor.tiles[floor.downstairs.landing] is Wall) {
-      floor.Put(new Ground(floor.downstairs.landing));
+      floor.Put(new HardGround(floor.downstairs.landing));
     }
 
-    // Clear stairs area right around stairs so player doesn't walk right
-    // into bad grasses or get immediately surrounded by enemies
+    // Clear hanging vines and move immediately adjacent enemies
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
-      if (tile.grass != null) {
+      if (tile.grass is HangingVines) {
+        // do NOT call Kill(); we don't want the vine whip to drop.
         floor.Remove(tile.grass);
       }
       if (tile.actor != null) {
         // TODO pick a spot that graspers can inhabit
-        var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(room0).Where((x) => x.CanBeOccupied()));
+        var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((x) => x.CanBeOccupied()));
         // move the actor to a different spot in the map
         tile.actor.pos = newSpot.pos;
       }
     }
-
-    return floor;
   }
 
   private Floor tryGenerateSingleRoomFloor(int depth, int width, int height) {
@@ -309,8 +317,8 @@ public class FloorGenerator {
     EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
 
     FloorUtils.NaturalizeEdges(floor);
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y), false);
-    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y), false);
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -338,8 +346,8 @@ public class FloorGenerator {
     Encounters.WallPillars(floor, room0);
     Encounters.WallPillars(floor, room0);
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), true);
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2), true);
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -354,12 +362,7 @@ public class FloorGenerator {
       floor.Put(new SoftGrass(tile.pos));
     }
 
-    if (floor.tiles[floor.upstairs.landing] is Wall) {
-      floor.Put(new Ground(floor.upstairs.landing));
-    }
-    if (floor.tiles[floor.downstairs.landing] is Wall) {
-      floor.Put(new Ground(floor.downstairs.landing));
-    }
+    TidyUpAroundUpstairs(floor);
     return floor;
   }
 
@@ -399,8 +402,8 @@ public class FloorGenerator {
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), true);
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2), true);
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -415,12 +418,7 @@ public class FloorGenerator {
       floor.Put(new SoftGrass(tile.pos));
     }
 
-    if (floor.tiles[floor.upstairs.landing] is Wall) {
-      floor.Put(new Ground(floor.upstairs.landing));
-    }
-    if (floor.tiles[floor.downstairs.landing] is Wall) {
-      floor.Put(new Ground(floor.downstairs.landing));
-    }
+    TidyUpAroundUpstairs(floor);
     return floor;
   }
 

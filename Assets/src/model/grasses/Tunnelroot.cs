@@ -27,7 +27,7 @@ public class Tunnelroot : Grass, IActorEnterHandler {
 
   protected override void HandleLeaveFloor() {
     base.HandleLeaveFloor();
-    if (partner.floor != null) {
+    if (partner != null && partner.floor != null) {
       // let my floor = null code finish first and *then* remove partner, otherwise we recurse infinitely
       GameModel.main.EnqueueEvent(() => {
         partner.floor.Remove(partner);

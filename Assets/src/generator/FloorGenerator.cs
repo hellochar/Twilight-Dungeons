@@ -25,20 +25,20 @@ public class FloorGenerator {
     floors.Add(generateSingleRoomFloor(9, 13, 9, 2, 2));
     floors.Add(generateSingleRoomFloor(10, 14, 7, 2, 2));
     floors.Add(generateSingleRoomFloor(11, 20, 9, 3, 2));
+    floors.Add(generateBlobBossFloor(12));
     EncounterGroup = EncounterGroup.EarlyMidMixed();
-    floors.Add(generateBossFloor(12, 14, 3)); // make this a miniboss level
     floors.Add(generateSingleRoomFloor(13, 12, 12, 3, 2));
     floors.Add(generateSingleRoomFloor(14, 15, 11, 3, 3));
     floors.Add(generateSingleRoomFloor(15, 20, 9, 4, 3));
     floors.Add(generateRewardFloor(16, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
     floors.Add(generateMultiRoomFloor(17, 15, 15, 6));
-    floors.Add(generateMultiRoomFloor(18, 20, 20, 6));
-    floors.Add(generateMultiRoomFloor(19, 30, 20, 7));
-    floors.Add(generateMultiRoomFloor(20, 20, 20, 8, true));
-    floors.Add(generateMultiRoomFloor(21, 24, 16, 9));
-    floors.Add(generateMultiRoomFloor(22, 30, 12, 10));
-    floors.Add(generateMultiRoomFloor(23, 30, 20, 15));
-    floors.Add(generateRewardFloor(24, Encounters.Twice(Encounters.AddWater), Encounters.ThreeAstoriasInCorner));
+    floors.Add(generateMultiRoomFloor(18, 30, 20, 7));
+    floors.Add(generateMultiRoomFloor(19, 20, 20, 8, true));
+    floors.Add(generateMultiRoomFloor(20, 24, 16, 9));
+    floors.Add(generateMultiRoomFloor(21, 30, 12, 10));
+    floors.Add(generateMultiRoomFloor(22, 30, 20, 15));
+    floors.Add(generateRewardFloor(23, Encounters.Twice(Encounters.AddWater), Encounters.ThreeAstoriasInCorner));
+    floors.Add(generateSporeColonyBossFloor(24));
     EncounterGroup = EncounterGroup.MidGame();
     floors.Add(generateSingleRoomFloor(25, 11, 11, 1, 2, true));
     floors.Add(generateMultiRoomFloor(26, 20, 13, 5, true));
@@ -318,15 +318,15 @@ public class FloorGenerator {
     return floor;
   }
 
-  public Floor generateBossFloor(int depth, int size, int numGrasses = 1) {
-    Floor floor = new Floor(depth, size, size);
+  public Floor generateBlobBossFloor(int depth) {
+    Floor floor = new Floor(depth, 14, 14);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
     }
 
     Room room0 = new Room(floor);
-    foreach (var pos in floor.EnumerateCircle(room0.center, size / 2)) {
+    foreach (var pos in floor.EnumerateCircle(room0.center, 7)) {
       floor.Put(new Ground(pos));
     }
 
@@ -347,10 +347,66 @@ public class FloorGenerator {
     // add boss
     floor.Put(new BlobBoss(room0.center));
 
-    // // add grasses
-    // for (var i = 0; i < numGrasses; i++) {
-    //   EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
-    // }
+    // fill remaining squares with soft grass
+    foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {
+      floor.Put(new SoftGrass(tile.pos));
+    }
+
+    if (floor.tiles[floor.upstairs.landing] is Wall) {
+      floor.Put(new Ground(floor.upstairs.landing));
+    }
+    if (floor.tiles[floor.downstairs.landing] is Wall) {
+      floor.Put(new Ground(floor.downstairs.landing));
+    }
+    return floor;
+  }
+
+  public Floor generateSporeColonyBossFloor(int depth) {
+    Floor floor = new Floor(depth, 27, 27);
+    // fill with wall
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Wall(p));
+    }
+
+    Room room0 = new Room(floor);
+
+    void CutOutCircle(Vector2Int center, float radius) {
+      foreach (var pos in floor.EnumerateCircle(center, 6)) {
+        floor.Put(new Ground(pos));
+      }
+      // connect it back to center
+      var tunnelPath3x3 = floor
+        .EnumerateLine(center, room0.center)
+        .SelectMany((pos) => floor.GetAdjacentTiles(pos).Select(t => t.pos));
+      foreach (var point in tunnelPath3x3) {
+        floor.Put(new Ground(point));
+      }
+    }
+    CutOutCircle(room0.center, 6);
+    var sideRoomInset = 7;
+    var sideRoomRadius = 3f;
+    CutOutCircle(new Vector2Int(sideRoomInset, sideRoomInset), sideRoomRadius);
+    CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInset, sideRoomInset), sideRoomRadius);
+    CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInset, floor.height - 1 - sideRoomInset), sideRoomRadius);
+    CutOutCircle(new Vector2Int(sideRoomInset, floor.height - 1 - sideRoomInset), sideRoomRadius);
+
+    // start and end paths
+    CutOutCircle(new Vector2Int(4, floor.height / 2), 3);
+    CutOutCircle(new Vector2Int(floor.width - 4, floor.height / 2), 3);
+
+    FloorUtils.SurroundWithWalls(floor);
+    FloorUtils.NaturalizeEdges(floor);
+
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), true);
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2), true);
+
+    floor.root = room0;
+    floor.rooms = new List<Room>();
+    floor.upstairsRoom = room0;
+    floor.downstairsRoom = room0;
+
+    // add boss
+    floor.Put(new BlobBoss(room0.center));
 
     // fill remaining squares with soft grass
     foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {

@@ -48,3 +48,14 @@ public class BlobBoss : AIActor, ITakeAnyDamageHandler, IBodyMoveHandler {
     floor.grasses[oldPos]?.Kill(this);
   }
 }
+
+// public class SporeColonyBoss : AIActor {
+//   public SporeColonyBoss(Vector2Int pos) : base(pos) {
+//     hp = baseMaxHp = 
+//     faction = Faction.Enemy;
+//   }
+
+//   protected override ActorTask GetNextTask() {
+//     throw new NotImplementedException();
+//   }
+// }

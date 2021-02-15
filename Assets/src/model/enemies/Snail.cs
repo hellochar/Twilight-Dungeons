@@ -46,7 +46,7 @@ public class ItemSnailShell : Item, IStackable {
   public ItemSnailShell(int stacks) {
     this.stacks = stacks;
   }
-  public int stacksMax => 1;
+  public int stacksMax => 3;
 
   private int _stacks;
   public int stacks {
@@ -69,32 +69,6 @@ public class ItemSnailShell : Item, IStackable {
 
   internal override string GetStats() => "Deals 3 damage when thrown.";
 }
-
-// internal class GrassSlimeTrail : Grass {
-//   private Vector2Int oldPos;
-//   int timeAlive = 5;
-
-//   public GrassSlimeTrail(Vector2Int pos) : base(pos) {
-//     timeNextAction = timeCreated + 1;
-//     OnEnterFloor += HandleEnterFloor;
-//     OnLeaveFloor += HandleLeaveFloor;
-//   }
-
-//   private void HandleEnterFloor() {
-
-//   }
-
-//   private void HandleLeaveFloor() {
-//     throw new NotImplementedException();
-//   }
-
-//   protected override float Step() {
-//     if (age > timeAlive) {
-//       Kill();
-//     }
-//     return 1;
-//   }
-// }
 
 [System.Serializable]
 internal class InShellStatus : StackingStatus, IAttackDamageTakenModifier, IBaseActionModifier {

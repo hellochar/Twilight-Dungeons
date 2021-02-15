@@ -333,7 +333,7 @@ public class FloorGenerator {
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
-    // one wall variation
+    Encounters.WallPillars(floor, room0);
     Encounters.WallPillars(floor, room0);
 
     floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), true);
@@ -347,15 +347,15 @@ public class FloorGenerator {
     // add boss
     floor.Put(new BlobBoss(room0.center));
 
-    // add grasses
-    for (var i = 0; i < numGrasses; i++) {
-      EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
-    }
-
-    // // fill remaining squares with soft grass
-    // foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {
-    //   floor.Put(new SoftGrass(tile.pos));
+    // // add grasses
+    // for (var i = 0; i < numGrasses; i++) {
+    //   EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
     // }
+
+    // fill remaining squares with soft grass
+    foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {
+      floor.Put(new SoftGrass(tile.pos));
+    }
 
     if (floor.tiles[floor.upstairs.landing] is Wall) {
       floor.Put(new Ground(floor.upstairs.landing));

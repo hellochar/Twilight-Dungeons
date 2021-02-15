@@ -539,9 +539,14 @@ public class Encounters {
     var positions = floor.EnumerateRoom(room).ToList();
     positions.Shuffle();
     var num = Random.Range(3, (positions.Count + 1) / 2);
+    var isWall = Random.value < 0.8f;
     foreach (var pos in positions.Take(num)) {
       if (!floor.GetAdjacentTiles(pos).Any((t) => t is Wall)) {
-        floor.Put(new Wall(pos));
+        if (isWall) {
+          floor.Put(new Wall(pos));
+        } else {
+          floor.Put(new Rubble(pos));
+        }
       }
     }
   });
@@ -549,8 +554,13 @@ public class Encounters {
   public static Encounter ChunkInMiddle = new Encounter((floor, room) => {
     var chunkSize = Random.Range(1, 6);
     var positions = floor.BreadthFirstSearch(room.center, (tile) => true).Take(chunkSize).Select(t => t.pos);
+    var isWall = Random.value < 0.8f;
     foreach (var pos in positions) {
-      floor.Put(new Wall(pos));
+      if (isWall) {
+        floor.Put(new Wall(pos));
+      } else {
+        floor.Put(new Rubble(pos));
+      }
     }
   });
 

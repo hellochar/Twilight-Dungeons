@@ -4,7 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 [ObjectInfo(description: "Walking into the Tunnelroot teleports you to a paired Tunnelroot elsewhere on this level. 5 turn cooldown.")]
-public class Tunnelroot : Grass, IActorEnterHandler, IDeathHandler {
+public class Tunnelroot : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
 
   private Tunnelroot partner;
@@ -25,13 +25,12 @@ public class Tunnelroot : Grass, IActorEnterHandler, IDeathHandler {
     this.partner = other;
   }
 
-  public void HandleDeath(Entity source) {
-    if (source != partner) {
-      // kill partner at the same time
+  protected override void HandleLeaveFloor() {
+    base.HandleLeaveFloor();
+    if (partner.floor != null) {
+      // let my floor = null code finish first and *then* remove partner, otherwise we recurse infinitely
       GameModel.main.EnqueueEvent(() => {
-        if (!partner.IsDead) {
-          partner.Kill(this);
-        }
+        partner.floor.Remove(partner);
       });
     }
   }

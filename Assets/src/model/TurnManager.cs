@@ -41,27 +41,29 @@ public class TurnManager {
 
   internal IEnumerator StepUntilPlayersChoice() {
     var enumerator = StepUntilPlayersChoiceImpl();
-    while (true) {
-      var hasNext = false;
-      #if UNITY_EDITOR
-      hasNext = enumerator.MoveNext();
-      #else
-      try {
+    try {
+      while (true) {
+        var hasNext = false;
+        #if UNITY_EDITOR
         hasNext = enumerator.MoveNext();
-      } catch (Exception e) {
-        Debug.LogError(e);
-        Messages.Create(e.Message);
-      }
-      #endif
+        #else
+        try {
+          hasNext = enumerator.MoveNext();
+        } catch (Exception e) {
+          Debug.LogError(e);
+          Messages.Create(e.Message);
+        }
+        #endif
 
-      if (hasNext) {
-        yield return enumerator.Current;
-      } else {
-        break;
+        if (hasNext) {
+          yield return enumerator.Current;
+        } else {
+          break;
+        }
       }
+    } finally {
+      OnPlayersChoice?.Invoke();
     }
-
-    OnPlayersChoice?.Invoke();
   }
 
   public static float JUICE_STAGGER_SECONDS = 0.02f;

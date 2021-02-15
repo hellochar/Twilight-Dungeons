@@ -275,12 +275,14 @@ public class FloorGenerator {
       floor.Put(new Ground(floor.downstairs.landing));
     }
 
-    // clear stairs so player doesn't walk right into bad grasses or get immediately surrounded by enemies
+    // Clear stairs area right around stairs so player doesn't walk right
+    // into bad grasses or get immediately surrounded by enemies
     foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
       if (tile.grass != null) {
         floor.Remove(tile.grass);
       }
       if (tile.actor != null) {
+        // TODO pick a spot that graspers can inhabit
         var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(room0).Where((x) => x.CanBeOccupied()));
         // move the actor to a different spot in the map
         tile.actor.pos = newSpot.pos;

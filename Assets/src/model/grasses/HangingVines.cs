@@ -28,21 +28,21 @@ public class HangingVines : Grass, IDeathHandler {
     }
   }
 
-  private BoundStatus appliedStatus;
+  private ConstrictedStatus appliedStatus;
   public void HandleActorEnterBelow(Actor who) {
-    appliedStatus = new BoundStatus(this);
+    appliedStatus = new ConstrictedStatus(this);
     who.statuses.Add(appliedStatus);
     OnNoteworthyAction();
   }
 
-  public void BoundStatusEnded() {
+  public void ConstrictedStatusEnded() {
     // when someone is able to break free; remove these vines
     var actor = appliedStatus.actor;
     appliedStatus = null;
     Kill(actor);
   }
 
-  internal void BoundCreatureDied() {
+  internal void ConstrictedCreatureDied() {
     // simply unset the reference
     appliedStatus = null;
   }
@@ -102,25 +102,25 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
 }
 
 [System.Serializable]
-[ObjectInfo("bound-status", flavorText: "Thick, damp vines entangle you!")]
-public class BoundStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler, IDeathHandler {
+[ObjectInfo("constricted-status", flavorText: "Thick, damp vines tighten around you!")]
+public class ConstrictedStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler, IDeathHandler {
   private readonly HangingVines owner;
 
   public override bool isDebuff => true;
   public override StackingMode stackingMode => StackingMode.Max;
-  public BoundStatus(HangingVines owner) {
+  public ConstrictedStatus(HangingVines owner) {
     stacks = 3;
     this.owner = owner;
   }
 
   public override void End() {
-    owner.BoundStatusEnded();
+    owner.ConstrictedStatusEnded();
     base.End();
   }
 
   public void HandleDeath(Entity source) {
     // signal back to the hanging vines that the creature died with this status on it.
-    owner.BoundCreatureDied();
+    owner.ConstrictedCreatureDied();
   }
 
   // if they somehow do move (e.g. forced movement), remove this status

@@ -51,10 +51,6 @@ public class ObjectInfo {
       spriteName = "slimed",
       flavorText = "Sticky, gooey, and warm. Eeeew."
     },
-    [typeof(BoundStatus)] = new ObjectInfo {
-      spriteName = "bound-status",
-      flavorText = "Thick, damp vines entangle you!"
-    },
     [typeof(FrenziedStatus)] = new ObjectInfo {
       spriteName = "3Red",
       flavorText = "You're engulfed in a rage!"

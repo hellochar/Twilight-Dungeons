@@ -41,6 +41,11 @@ public class HangingVines : Grass, IDeathHandler {
     appliedStatus = null;
     Kill(actor);
   }
+
+  internal void BoundCreatureDied() {
+    // simply unset the reference
+    appliedStatus = null;
+  }
 }
 
 [Serializable]
@@ -97,7 +102,8 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
 }
 
 [System.Serializable]
-public class BoundStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler {
+[ObjectInfo("bound-status", flavorText: "Thick, damp vines entangle you!")]
+public class BoundStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler, IDeathHandler {
   private readonly HangingVines owner;
 
   public override bool isDebuff => true;
@@ -108,8 +114,13 @@ public class BoundStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler
   }
 
   public override void End() {
-    owner?.BoundStatusEnded();
+    owner.BoundStatusEnded();
     base.End();
+  }
+
+  public void HandleDeath(Entity source) {
+    // signal back to the hanging vines that the creature died with this status on it.
+    owner.BoundCreatureDied();
   }
 
   // if they somehow do move (e.g. forced movement), remove this status

@@ -30,7 +30,8 @@ public abstract class Status : IStepModifier {
   /// Called when list and actor are setup
   public virtual void Start() {}
 
-  /// Called right before the status is removed
+  /// Called right before the status is removed. NOT called if the actor dies
+  /// with the status on it!
   public virtual void End() {}
 
   public abstract string Info();
@@ -48,7 +49,8 @@ public abstract class Status : IStepModifier {
 
   /// <summary>Schedule this status for removal.</summary>
   public void Remove() {
-    GameModel.main.EnqueueEvent(() => list?.Remove(this));
+    list?.Remove(this);
+    // GameModel.main.EnqueueEvent(() => list?.Remove(this));
   }
 }
 

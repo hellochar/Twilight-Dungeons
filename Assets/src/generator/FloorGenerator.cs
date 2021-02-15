@@ -1,17 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 public class FloorGenerator {
   public EncounterGroup EncounterGroup;
 
-  public static Floor[] generateAll() {
+  public static Floor[] generateAll(int seed) {
     var generator = new FloorGenerator();
-    return generator.generateAllFloors();
+    return generator.generateAllFloors(seed);
   }
 
-  public Floor[] generateAllFloors() {
+  static List<int> FLOOR_SEEDS = new List<int>();
+
+  public Floor[] generateAllFloors(int seed) {
     var floors = new List<Floor>();
+    MyRandom.SetSeed(seed);
+    /// generate floor seeds first
+    for (int i = 0; i < 33; i++) {
+      FLOOR_SEEDS.Add(MyRandom.Next());
+    }
     EncounterGroup = EncounterGroup.EarlyGame();
     floors.Add(generateFloor0(0));
     floors.Add(generateSingleRoomFloor(1, 9, 9));
@@ -53,6 +61,7 @@ public class FloorGenerator {
   }
 
   public Floor generateEndFloor(int depth) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 36, 36);
 
     // fill with floor tiles by default
@@ -135,6 +144,7 @@ public class FloorGenerator {
   }
   
   public Floor generateFloor0(int depth) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 22, 14);
 
     // fill with floor tiles by default
@@ -211,6 +221,7 @@ public class FloorGenerator {
   }
 
   public Floor generateRewardFloor(int depth, params Encounter[] extraEncounters) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 16, 10);
 
     // fill with floor tiles by default
@@ -242,6 +253,7 @@ public class FloorGenerator {
   /// Good for a contained experience.
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor;
     do {
       floor = tryGenerateSingleRoomFloor(depth, width, height);
@@ -329,6 +341,7 @@ public class FloorGenerator {
   }
 
   public Floor generateBlobBossFloor(int depth) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 14, 14);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -367,6 +380,7 @@ public class FloorGenerator {
   }
 
   public Floor generateSporeColonyBossFloor(int depth) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 27, 27);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -427,6 +441,7 @@ public class FloorGenerator {
   /// one mob, one grass, one random encounter.
   /// </summary>
   public Floor generateMultiRoomFloor(int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false) {
+    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor;
     do {
       floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
@@ -451,7 +466,7 @@ public class FloorGenerator {
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
     var deadEndEncounters = EncounterGroup.Spice.Clone();
     foreach (var room in deadEndRooms) {
-      if (Random.value < 0.05f) {
+      if (MyRandom.value < 0.05f) {
         Encounters.SurroundWithRubble(floor, room);
       }
       var encounter = deadEndEncounters.GetRandomAndDiscount();
@@ -576,4 +591,22 @@ public class FloorGenerator {
     return path.Any();
   }
 
+}
+
+public static class MyRandom {
+  public static float value => (float) generator.NextDouble();
+  private static Random generator = new Random();
+  public static void SetSeed(int seed) {
+    Debug.Log("set seed to " + seed.ToString("X"));
+    generator = new Random(seed);
+  }
+
+  /// min inclusive, max exclusive
+  internal static int Range(int min, int max) {
+    return generator.Next(min, max);
+  }
+
+  internal static int Next() {
+    return generator.Next();
+  }
 }

@@ -12,7 +12,7 @@ public class Violets : Grass, ISteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public Violets(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated + 1;
-    countUp = Random.Range(0, 4);
+    countUp = MyRandom.Range(0, 4);
   }
 
   public float Step() {

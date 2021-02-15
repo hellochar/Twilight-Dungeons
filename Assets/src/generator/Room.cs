@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using Random = MyRandom;
 
 /// Represents a room in a floor; internally implements a BSP tree
 public class Room {

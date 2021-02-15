@@ -10,7 +10,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
     hp = baseMaxHp = 7;
     ClearTasks();
     faction = Faction.Enemy;
-    if (UnityEngine.Random.value < 0.2f) {
+    if (MyRandom.value < 0.2f) {
       inventory.AddItem(new ItemBatTooth());
     }
   }

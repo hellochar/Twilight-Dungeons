@@ -54,18 +54,20 @@ public static class Util {
     return RandomPick(items);
   }
 
+  /// TODO move to MyRandom
   public static T RandomPick<T>(IEnumerable<T> items) {
     if (items.Count() == 0) {
       return default(T);
     }
-    return items.ElementAt(UnityEngine.Random.Range(0, items.Count()));
+    return items.ElementAt(MyRandom.Range(0, items.Count()));
   }
 
+  /// TODO move to MyRandom
   public static void Shuffle<T>(this IList<T> list) {
     int n = list.Count;
     while (n > 1) {
       n--;
-      int k = UnityEngine.Random.Range(0, n + 1);
+      int k = MyRandom.Range(0, n + 1);
       T value = list[k];
       list[k] = list[n];
       list[n] = value;

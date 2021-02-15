@@ -95,7 +95,7 @@ public class Actor : Body, ISteppable {
 
   internal virtual int GetFinalAttackDamage() {
     var (min, max) = BaseAttackDamage();
-    var baseDamage = UnityEngine.Random.Range(min, max + 1);
+    var baseDamage = MyRandom.Range(min, max + 1);
     var finalDamage = Modifiers.Process(this.AttackDamageModifiers(), baseDamage);
     return finalDamage;
   }

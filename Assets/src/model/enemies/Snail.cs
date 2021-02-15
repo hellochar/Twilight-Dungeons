@@ -8,7 +8,7 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 4;
     faction = Faction.Enemy;
-    if (UnityEngine.Random.value < 0.1f) {
+    if (MyRandom.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));
     }
   }

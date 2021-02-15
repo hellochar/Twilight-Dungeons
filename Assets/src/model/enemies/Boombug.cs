@@ -16,8 +16,8 @@ public class Boombug : AIActor {
   }
 
   protected override ActorTask GetNextTask() {
-    if (UnityEngine.Random.value < 0.5f) {
-      return new WaitTask(actor, UnityEngine.Random.Range(1, 5));
+    if (MyRandom.value < 0.5f) {
+      return new WaitTask(actor, MyRandom.Range(1, 5));
     } else {
       var range5Tiles = actor.floor.EnumerateCircle(actor.pos, 5).Where((pos) => actor.floor.tiles[pos].CanBeOccupied());
       var target = Util.RandomPick(range5Tiles);

@@ -9,6 +9,6 @@ public class SpriteRandomizer : MonoBehaviour {
     if (renderer == null) {
       renderer = GetComponent<SpriteRenderer>();
     }
-    renderer.sprite = Util.RandomPick(sprites);
+    renderer.sprite = sprites[Random.Range(0, sprites.Length)];
   }
 }

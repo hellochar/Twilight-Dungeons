@@ -5,7 +5,7 @@ using UnityEngine;
 [ObjectInfo(description: "Only moves horizontally.\nAttacks anything in its path.", flavorText: "")]
 public class Crab : AIActor {
   public override float turnPriority => 40;
-  private Vector2Int direction = new Vector2Int(UnityEngine.Random.value < 0.5 ? -1 : 1, 0);
+  private Vector2Int direction = new Vector2Int(MyRandom.value < 0.5 ? -1 : 1, 0);
 
   public Crab(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;

@@ -29,7 +29,8 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
 
   public T GetRandom() {
     var accumulatedWeight = GetAccumulatedWeight();
-    float r = UnityEngine.Random.value * accumulatedWeight;
+    /// TODO audit locations of WeightedRandomBag and make sure the stream isn't being corrupted
+    float r = MyRandom.value * accumulatedWeight;
     var accum = 0f;
 
     foreach (Entry entry in entries) {

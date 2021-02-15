@@ -10,6 +10,8 @@ using System.Runtime.Serialization;
 [Serializable]
 public class GameModel {
   public int seed;
+  // public System.Random randomRoot;
+  // public System.Random randomFloor;
   public Player player;
   public Floor[] floors;
   public int activeFloorIndex = 0;
@@ -37,10 +39,10 @@ public class GameModel {
 
   /// Also sets GameModel.main.
   public static void GenerateNewGameAndSetMain() {
-    var seed = UnityEngine.Random.Range(0, 100000);
+    var seed = new System.Random().Next();
 
     #if UNITY_EDITOR
-    seed = 67539;
+    // seed = 0x107d3;
     // Analyze();
     #endif
 
@@ -53,7 +55,6 @@ public class GameModel {
 
   public GameModel(int seed) {
     this.seed = seed;
-    UnityEngine.Random.InitState(seed);
   }
 
   [OnDeserialized]
@@ -62,8 +63,8 @@ public class GameModel {
   }
 
   private void generate() {
-    Debug.Log("generating from seed " + seed);
-    floors = FloorGenerator.generateAll();
+    Debug.Log("generating from seed " + seed.ToString("X"));
+    floors = FloorGenerator.generateAll(seed);
     // floor0 = floors[0];
     player = new Player(new Vector2Int(3, floors[0].height/2));
     floors[0].Put(player);
@@ -72,7 +73,7 @@ public class GameModel {
   private static void Analyze() {
     var dict = new Dictionary<Type, int[]>();
     for (int i = 0; i < 10; i++) {
-      main = new GameModel(UnityEngine.Random.Range(0, 999999));
+      main = new GameModel(new System.Random().Next());
       main.generate();
       // Analyze(model, i, floor => floor.actors.Where((a) => a.faction == Faction.Enemy));
       Analyze(main, i, floor => floor.grasses);

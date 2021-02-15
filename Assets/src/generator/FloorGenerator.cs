@@ -184,10 +184,10 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     floor.depth = 20;
-    Encounters.AddGrasper(floor, room0);
+    // Encounters.AddGrasper(floor, room0);
     // Encounters.AddHydra(floor, room0);
     // Encounters.AddViolets(floor, room0);
-    Encounters.AddTunnelroot(floor, room0);
+    // Encounters.AddTunnelroot(floor, room0);
     // Encounters.AddWildekins(floor, room0);
     // Encounters.AddCrabs(floor, room0);
     // Encounters.AddParasite(floor, room0);

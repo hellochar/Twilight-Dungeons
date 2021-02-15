@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamageHandler {
   Player player => (Player) actor;
@@ -79,10 +80,17 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   public override void Update() {
     if (Input.GetKeyDown(KeyCode.V)) {
-      player.SetTasks(new SleepTask(player));
+      player.SetTasks(new SleepTask(player, 100, true));
     }
     if (Input.GetKeyDown(KeyCode.Space)) {
       player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
+    }
+    if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl)) {
+      Serializer.SaveToFile(GameModel.main);
+    }
+    if (Input.GetKeyDown(KeyCode.L) &Input.GetKey(KeyCode.LeftControl)) {
+      GameModel.main = Serializer.LoadFromFile();
+      SceneManager.LoadSceneAsync("Scenes/Game");
     }
     var model = GameModel.main;
     if (Input.GetKeyDown(KeyCode.Equals)) {

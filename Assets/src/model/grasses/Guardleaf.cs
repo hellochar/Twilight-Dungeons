@@ -44,10 +44,15 @@ public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
   public override string Info() => $"The Guardleaf will block {stacks} more attack damage.";
 
   public int Modify(int input) {
-    var reduction = Mathf.Min(input, leaf.guardLeft);
-    leaf.removeGuard(reduction);
-    leaf.OnNoteworthyAction();
-    return input - reduction;
+    if (leaf != null) {
+      var reduction = Mathf.Min(input, leaf.guardLeft);
+      leaf.removeGuard(reduction);
+      leaf.OnNoteworthyAction();
+      return input - reduction;
+    } else {
+      Remove();
+      return input;
+    }
   }
 
   public override void Step() {

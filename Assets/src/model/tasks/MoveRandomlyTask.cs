@@ -11,8 +11,8 @@ class MoveRandomlyTask : DoOnceTask {
   }
 
   public static BaseAction GetRandomMove(Actor actor) {
-    var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
-    if (adjacentTiles.Any()) {
+    var adjacentTiles = actor.floor?.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
+    if (adjacentTiles?.Any() ?? false) {
       Vector2Int pos = Util.RandomPick(adjacentTiles).pos;
       return new MoveBaseAction(actor, pos);
     } else {

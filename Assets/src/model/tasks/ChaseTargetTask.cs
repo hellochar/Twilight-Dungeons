@@ -22,7 +22,6 @@ public class ChaseTargetTask : MoveNextToTargetTask {
       if (extraMovesCutoff > 0 && this.path.Count >= extraMovesCutoff) {
         this.path.RemoveRange(this.path.Count - extraMovesCutoff, extraMovesCutoff);
       }
-      UnityEngine.Debug.Log(string.Join(", ", this.path));
     }
   }
 }

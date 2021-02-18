@@ -33,12 +33,12 @@ public class FloorGenerator {
     midGame = EncounterGroup.MidGame();
     floorGenerators = new List<Func<Floor>>() {
       () => throw new Exception("shouldn't be calling generator on depth 0"), // unused
-      () => generateSingleRoomFloor(1, 9, 9),
+      () => generateSingleRoomFloor(1, 11, 11),
       () => generateSingleRoomFloor(2, 10, 10),
-      () => generateSingleRoomFloor(3, 11, 11),
+      () => generateSingleRoomFloor(3, 9, 9),
       () => generateSingleRoomFloor(4, 11, 11, 1, 1, true),
-      () => generateSingleRoomFloor(5, 20, 11, 2),
-      () => generateSingleRoomFloor(6, 15, 11, 2),
+      () => generateSingleRoomFloor(5, 15, 11, 2),
+      () => generateSingleRoomFloor(6, 13, 11, 2),
       () => generateSingleRoomFloor(7, 11, 11, 2),
       () => generateRewardFloor(8, EncounterGroup.PlantsStatic.GetRandomAndDiscount(0.9f)),
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),
@@ -171,7 +171,7 @@ public class FloorGenerator {
   }
   
   public Floor generateFloor0(int depth) {
-    Floor floor = new Floor(depth, 22, 14);
+    Floor floor = new Floor(depth, 18, 14);
 
     // fill with floor tiles by default
     foreach (var p in floor.EnumerateFloor()) {
@@ -185,7 +185,7 @@ public class FloorGenerator {
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     var soils = new List<Soil>();
-    for (int x = 2; x < floor.width - 2; x += 2) {
+    for (int x = 3; x < floor.width - 3; x += 3) {
       int y = floor.height / 2 - 2;
       if (floor.tiles[x, y] is Ground) {
         soils.Add(new Soil(new Vector2Int(x, y)));
@@ -220,6 +220,7 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     floor.depth = 20;
+    // Encounters.AddMushroom(floor, room0);
     // Encounters.AddGrasper(floor, room0);
     // Encounters.AddHydra(floor, room0);
     // Encounters.AddViolets(floor, room0);

@@ -192,7 +192,7 @@ public class Actor : Body, ISteppable {
   /// Precondition: this.action's enumerator is ended, but the action is still in the queue.
   /// This will remove this.action from the queue and call .Finish() on it, which will
   /// indirectly set this.action to the next one in the queue
-  protected virtual void GoToNextTask() {
+  public virtual void GoToNextTask() {
     task.Ended();
     taskQueue.RemoveAt(0);
     TaskChanged();

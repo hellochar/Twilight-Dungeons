@@ -111,7 +111,7 @@ public class Inventory : IEnumerable<Item> {
   }
 
   /// Be careful when calling this method not to lose the item into the nether, unless intentional
-  internal bool RemoveItem(Item item) {
+  internal virtual bool RemoveItem(Item item) {
     int slot = Array.IndexOf(items, item);
     if (slot < 0) {
       return false;

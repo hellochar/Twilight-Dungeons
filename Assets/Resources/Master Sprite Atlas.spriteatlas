@@ -33,7 +33,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5174128
+    totalSpriteSurfaceArea: 5174384
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -6340,6 +6340,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b27b62fb718136741b2e77f198079a47, type: 3}
   - {fileID: 21300000, guid: 93cb4bfbf0123a5458ad10d2a85cd3bb, type: 3}
   - {fileID: 21300000, guid: bee8f60c7fb13ce4d92888b0cde0746f, type: 3}
+  - {fileID: 21300000, guid: eb83db0cb481f074c92478cb20b58183, type: 3}
   - {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50, type: 3}
   - {fileID: 21300000, guid: 32d6fb5c079f8d14f80c66248b48637e, type: 3}
   - {fileID: 21300000, guid: f37e899c45953164489e1a943b9381b1, type: 3}
@@ -7992,7 +7993,7 @@ SpriteAtlas:
   - Purple_5
   - bat-tooth
   - water-droplet
-  - bound-status
+  - constricted-status
   - plated-armor
   - thornbush-sapling
   - coral
@@ -12325,7 +12326,7 @@ SpriteAtlas:
   - heart_animated_2
   - gear
   - spores
-  - bound-particle
+  - constricted-particle
   - pumpkin
   - agave
   - pixeland_167
@@ -14263,6 +14264,7 @@ SpriteAtlas:
   - Textures_v02
   - evening-bell
   - ui_split
+  - hard-ground
   - parasite-egg
   - health_bar
   - border

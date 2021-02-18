@@ -25,6 +25,11 @@ public class Equipment : Inventory {
   public override bool AddItem(Item item, Entity source = null) {
     if (item is EquippableItem equippable) {
       var slot = (int) equippable.slot;
+      // ensure there isn't a sticky item in the existing slot
+      if (this[slot] is ISticky) {
+        throw new CannotPerformActionException("Cannot unequip " + this[slot].displayName);
+        // return false;
+      }
       return base.AddItem(item, slot, source);
     } else {
       return false;

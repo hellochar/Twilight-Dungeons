@@ -21,6 +21,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(12);
+    inventory.AddItem(new ItemGloopShoes());
+    inventory.AddItem(new ItemSpiderSandals(15));
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

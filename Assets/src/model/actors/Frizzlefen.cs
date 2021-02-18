@@ -153,6 +153,6 @@ class BlockStatus : StackingStatus, IAttackDamageTakenModifier {
   public int Modify(int input) {
     var blockAmount = stacks;
     stacks = 0;
-    return input - stacks;
+    return input - blockAmount;
   }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 [System.Serializable]
 class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
   public override TaskStage WhenToCheckIsDone => TaskStage.After;
-  private bool done;
+  private bool done = false;
   private int? maxTurns;
   private readonly bool isDeepSleep;
 
@@ -24,7 +24,8 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
   /// wake up when hurt!
   public void HandleTakeAnyDamage(int damage) {
     if (damage > 0) {
-      WakeUp();
+      // end this task immediately (will trigger Ended())
+      actor.GoToNextTask();
     }
   }
 
@@ -56,19 +57,13 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
           s.wakeUpNextTurn = true;
         }
       }
-      WakeUp();
-      return new WaitBaseAction(actor);
-    } else {
-      return new WaitBaseAction(actor);
-    }
-  }
-
-  public void WakeUp() {
-    if (!done) {
-      actor.statuses.Add(new SurprisedStatus());
-      wakeUpNextTurn = true;
       done = true;
     }
+    return new WaitBaseAction(actor);
+  }
+
+  internal override void Ended() {
+    actor.statuses.Add(new SurprisedStatus());
   }
 
   public override bool IsDone() => done;

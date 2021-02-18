@@ -38,14 +38,15 @@ public class GameModelController : MonoBehaviour {
     // AudioClipStore.main.gameStart.Play();
   }
 
-  // void OnApplicationFocus(bool hasFocus) {
-  //   /// save
-  //   if (!hasFocus) {
-  //     Serializer.SaveToFile(GameModel.main);
-  //   }
-  // }
 
 #if !UNITY_EDITOR
+  void OnApplicationFocus(bool hasFocus) {
+    /// save
+    if (!hasFocus) {
+      Serializer.SaveToFile(GameModel.main);
+    }
+  }
+
   void OnApplicationPause(bool isPaused) {
     if (isPaused) {
       Serializer.SaveToFile(GameModel.main);

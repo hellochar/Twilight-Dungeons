@@ -81,7 +81,7 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
 }
 
 [Serializable]
-[ObjectInfo("spider-silk-shoes", "whoa")]
+[ObjectInfo("spider-silk-shoes", "Finely woven from the web of spiders.")]
 internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Feet;
   public int stacksMax => 15;

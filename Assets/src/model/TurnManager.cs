@@ -11,7 +11,7 @@ public class TurnManager {
   public event Action OnPlayersChoice;
   public event Action<ISteppable> OnStep;
   public event Action OnTimePassed;
-  public event Action<CannotPerformActionException> OnPlayerCannotPerform;
+  public Action<CannotPerformActionException> OnPlayerCannotPerform = delegate {};
   public ISteppable activeEntity;
   public bool forceStaggerThisTurn = false;
   private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
@@ -136,7 +136,7 @@ public class TurnManager {
         }
       } catch (CannotPerformActionException exception) {
         if (entity == model.player) {
-          OnPlayerCannotPerform?.Invoke(exception);
+          OnPlayerCannotPerform(exception);
           break;
         } else {
           // TODO make this better

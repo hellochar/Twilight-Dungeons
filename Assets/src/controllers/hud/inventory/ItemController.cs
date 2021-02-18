@@ -48,7 +48,13 @@ public class ItemController : MonoBehaviour {
         // player.SetTasks(new GenericTask(player, (_) => {
         //   method.Invoke(item, new object[] { player });
         // }).Named(method.Name));
-        method.Invoke(item, new object[] { player });
+        try {
+          method.Invoke(item, new object[] { player });
+        } catch (TargetInvocationException outer) {
+          if (outer.InnerException is CannotPerformActionException e) {
+            GameModel.main.turnManager.OnPlayerCannotPerform(e);
+          }
+        }
         PopupInteractionDone(popup);
       })).ToList();
 

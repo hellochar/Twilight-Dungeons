@@ -23,5 +23,5 @@ public class ItemGloopShoes : EquippableItem, ISticky, IDurable, IBaseActionModi
     return input;
   }
 
-  internal override string GetStats() => $"Every 50 turns ({turnsLeft} left), heal 1 HP.";
+  internal override string GetStats() => $"Cannot be unequipped.\nEvery 50 turns ({turnsLeft} left), heal 1 HP.";
 }

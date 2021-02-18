@@ -23,12 +23,12 @@ public class Frizzlefen : Plant {
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Frizzlefen)),
         new ItemThickBranch(),
-        new ItemPlatedArmor()
+        new ItemThickBranch()
       ));
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Frizzlefen)),
-        new ItemThickBranch(),
-        new ItemBarkmeal()
+        new ItemBarkmeal(),
+        new ItemPlatedArmor()
       ));
       harvestOptions.Add(new Inventory(
         new ItemStompinBoots()
@@ -94,34 +94,24 @@ class ItemPlatedArmor : EquippableItem, IDurable, IAttackDamageTakenModifier {
 [ObjectInfo("colored_transparent_packed_675")]
 class ItemBarkmeal : Item, IEdible {
   public void Eat(Actor a) {
-    a.statuses.Add(new SturdyStatus());
+    a.Heal(2);
+    a.statuses.Add(new BarkmealStatus());
     Destroy();
   }
 
-  internal override string GetStats() => "Eat to heal 4 HP and get the Sturdy buff, which gives +4 max HP, for 150 turns. You are dealt 4 attack damage when the buff ends.";
+  internal override string GetStats() => "Eat to heal 2 HP and permanently get +4 max HP.";
 }
 
 [Serializable]
 [ObjectInfo("colored_transparent_packed_675")]
-class SturdyStatus : StackingStatus, IMaxHPModifier {
-  public SturdyStatus() : base(150) {}
-  public override StackingMode stackingMode => StackingMode.Independent;
-  public override void Start() {
-    actor.Heal(4);
-  }
+class BarkmealStatus : StackingStatus, IMaxHPModifier {
+  public override StackingMode stackingMode => StackingMode.Add;
+  public BarkmealStatus() : base() {}
 
-  public override void Step() {
-    stacks--;
-  }
-
-  public override void End() {
-    actor.TakeAttackDamage(4, actor);
-  }
-
-  public override string Info() => "+4 max HP. When Sturdy ends, take 4 attack damage.";
+  public override string Info() => $"+{stacks} max HP.";
 
   public int Modify(int input) {
-    return input + 4;
+    return input + stacks;
   }
 }
 

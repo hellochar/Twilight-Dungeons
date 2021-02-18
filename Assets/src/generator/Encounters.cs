@@ -274,6 +274,10 @@ public class Encounters {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
       var num = Random.Range(numTiles / 3, (int)(numTiles * 2f / 3));
+      if (Random.value < 0.2f) {
+        /// fill up every square
+        num = bfs.Count();
+      }
       foreach (var tile in bfs.Take(num)) {
         var grass = new Violets(tile.pos);
         floor.Put(grass);

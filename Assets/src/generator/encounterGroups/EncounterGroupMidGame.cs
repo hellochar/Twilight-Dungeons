@@ -15,8 +15,7 @@ public static class EncounterGroupMidGame {
       },
 
       Grasses = new WeightedRandomBag<Encounter> {
-        { 1f, AddViolets },
-
+        { 0.75f, AddViolets },
         { 0.75f, AddTunnelroot },
 
         { 0.5f, Twice(AddHangingVines) },

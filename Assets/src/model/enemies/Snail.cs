@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Goes into its shell when it takes damage.\nPauses after each action.\nChases you.")]
+[ObjectInfo(description: "Goes into its shell for 3 turns when it takes damage.\nWhile in its shell, it takes 2 less damage.\nPauses after each action.\nChases you.")]
 public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 4;

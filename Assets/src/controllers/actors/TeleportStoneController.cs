@@ -9,8 +9,8 @@ public class TeleportStoneController : ActorController {
   public new ParticleSystem particleSystem;
 
   void OnEnable() {
-    var player = GameModel.main.player;
-    if (player.deepestDepthVisited == 0) {
+    var model = GameModel.main;
+    if (model.depth == 0) {
       particleSystem.gameObject.SetActive(false);
     } else {
       particleSystem.gameObject.SetActive(true);

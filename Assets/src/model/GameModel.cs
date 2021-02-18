@@ -10,12 +10,14 @@ using System.Runtime.Serialization;
 [Serializable]
 public class GameModel {
   public int seed;
-  // public System.Random randomRoot;
-  // public System.Random randomFloor;
   public Player player;
-  public Floor[] floors;
-  public int activeFloorIndex = 0;
-  public float time;
+  public Floor home;
+  public Floor cave;
+  public int depth = 0;
+  public float time = 0;
+  public List<int> floorSeeds;
+  private FloorGenerator generator;
+
   [NonSerialized] /// lazy instantiation will take care of this
   private TurnManager _turnManager;
   public TurnManager turnManager {
@@ -26,7 +28,7 @@ public class GameModel {
       return _turnManager;
     }
   }
-  public Floor currentFloor { get => floors[activeFloorIndex]; }
+  public Floor currentFloor => depth == 0 ? home : cave;
 
   [field:NonSerialized] /// Controller only
   public event Action<Floor, Floor> OnPlayerChangeFloor;
@@ -42,7 +44,7 @@ public class GameModel {
     var seed = new System.Random().Next();
 
     #if UNITY_EDITOR
-    // seed = 0x107d3;
+    seed = 0xa858d50;
     // Analyze();
     #endif
 
@@ -64,36 +66,43 @@ public class GameModel {
 
   private void generate() {
     Debug.Log("generating from seed " + seed.ToString("X"));
-    floors = FloorGenerator.generateAll(seed);
-    // floor0 = floors[0];
-    player = new Player(new Vector2Int(3, floors[0].height/2));
-    floors[0].Put(player);
+    MyRandom.SetSeed(seed);
+    floorSeeds = new List<int>();
+    /// generate floor seeds first
+    for (int i = 0; i < 33; i++) {
+      floorSeeds.Add(MyRandom.Next());
+    }
+    generator = new FloorGenerator(floorSeeds);
+    home = generator.generateFloor0(0);
+    cave = generator.generateCaveFloor(1);
+    player = new Player(new Vector2Int(3, home.height/2));
+    home.Put(player);
   }
 
-  private static void Analyze() {
-    var dict = new Dictionary<Type, int[]>();
-    for (int i = 0; i < 10; i++) {
-      main = new GameModel(new System.Random().Next());
-      main.generate();
-      // Analyze(model, i, floor => floor.actors.Where((a) => a.faction == Faction.Enemy));
-      Analyze(main, i, floor => floor.grasses);
-    }
-    var l = dict.ToList().OrderByDescending((pair) => pair.Value[0]);
-    var s = String.Join("\n", l.Select((pair) => $"{pair.Key}, {String.Join(", ", pair.Value)}"));
-    Debug.Log(s);
+  // private static void Analyze() {
+  //   var dict = new Dictionary<Type, int[]>();
+  //   for (int i = 0; i < 10; i++) {
+  //     main = new GameModel(new System.Random().Next());
+  //     main.generate();
+  //     // Analyze(model, i, floor => floor.actors.Where((a) => a.faction == Faction.Enemy));
+  //     Analyze(main, i, floor => floor.grasses);
+  //   }
+  //   var l = dict.ToList().OrderByDescending((pair) => pair.Value[0]);
+  //   var s = String.Join("\n", l.Select((pair) => $"{pair.Key}, {String.Join(", ", pair.Value)}"));
+  //   Debug.Log(s);
 
-    void Analyze<T>(GameModel model, int index, Func<Floor, IEnumerable<T>> selector) {
-      foreach (var floor in model.floors) {
-        foreach (var actor in selector(floor)) {
-          var t = actor.GetType();
-          if (!dict.ContainsKey(t)) {
-            dict.Add(t, new int[10]);
-          }
-          dict[t][index]++;
-        }
-      }
-    }
-  }
+  //   void Analyze<T>(GameModel model, int index, Func<Floor, IEnumerable<T>> selector) {
+  //     foreach (var floor in model.floors) {
+  //       foreach (var actor in selector(floor)) {
+  //         var t = actor.GetType();
+  //         if (!dict.ContainsKey(t)) {
+  //           dict.Add(t, new int[10]);
+  //         }
+  //         dict[t][index]++;
+  //       }
+  //     }
+  //   }
+  // }
 
 
   public void EnqueueEvent(Action cb) {
@@ -129,22 +138,30 @@ public class GameModel {
     return turnManager.StepUntilPlayersChoice();
   }
 
-  internal void PutPlayerAt(Floor newFloor, bool isGoingUpstairs) {
+  /// depth should be either 0, cave.depth, or cave.depth + 1
+  internal void PutPlayerAt(int depth) {
+    Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
     Floor oldFloor = player.floor;
 
-    int newIndex = Array.FindIndex(floors, f => f == newFloor);
-    this.activeFloorIndex = newIndex;
+    this.depth = depth;
     Vector2Int newPlayerPosition;
-    if (isGoingUpstairs) {
+    // this could take a while
+    var newFloor = depth == 0 ? home : depth == cave.depth ? cave : generator.generateCaveFloor(depth);
+
+    // going home
+    if (depth == 0) {
       newPlayerPosition = newFloor.downstairs.landing;
     } else {
-      newPlayerPosition = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height/ 2);
+      newPlayerPosition = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height / 2);
     }
     oldFloor.Remove(player);
     oldFloor.RecordLastStepTime(this.time);
     player.pos = newPlayerPosition;
     newFloor.CatchUpStep(this.time);
     newFloor.Put(player);
+    if (newFloor.depth == cave.depth + 1) {
+      cave = newFloor;
+    }
     OnPlayerChangeFloor?.Invoke(oldFloor, newFloor);
   }
 
@@ -159,14 +176,7 @@ public class GameModel {
   /// SteppableEntity's on the current floor, and
   /// Plants on any floor
   internal IEnumerable<ISteppable> GetAllEntitiesInPlay() {
-    var enumerable = Enumerable.Empty<ISteppable>();
-    foreach (var f in floors) {
-      if (f == currentFloor) {
-        enumerable = enumerable.Concat(f.steppableEntities);
-      } else {
-        enumerable = enumerable.Concat(f.bodies.Where((a) => a is Plant).Cast<Plant>());
-      }
-    }
+    var enumerable = home.bodies.Where((a) => a is Plant).Cast<ISteppable>().Concat(currentFloor.steppableEntities);
     return enumerable;
   }
 }

@@ -129,8 +129,7 @@ public class Upstairs : Tile {
       throw new CannotPerformActionException("There are enemies around!");
     }
 
-    Floor prevFloor = GameModel.main.floors[0];
-    GameModel.main.PutPlayerAt(prevFloor, true);
+    GameModel.main.PutPlayerAt(0);
   }
 }
 
@@ -141,17 +140,18 @@ public class Downstairs : Tile, IActorEnterHandler {
   public Downstairs(Vector2Int pos) : base(pos) {}
 
   public void HandleActorEnter(Actor actor) {
-    var player = GameModel.main.player;
+    var model = GameModel.main;
+    var player = model.player;
     if (actor == player) {
-      // if we're on floor 0, go straight to the deepest floor
-      // if we're on the deepest floor, go 1 deeper
-      Floor nextFloor;
+      // if we're home, go back to the cave
+      // if we're in the cave, go 1 deeper
+      int nextDepth;
       if (floor.depth == 0) {
-        nextFloor = GameModel.main.floors[player.deepestDepthVisited];
+        nextDepth = model.cave.depth;
       } else {
-        nextFloor = GameModel.main.floors[floor.depth + 1];
+        nextDepth = floor.depth + 1;
       }
-      GameModel.main.PutPlayerAt(nextFloor, false);
+      GameModel.main.PutPlayerAt(nextDepth);
     }
   }
 }

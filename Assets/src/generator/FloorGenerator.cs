@@ -1,67 +1,97 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using Random = System.Random;
 
+[Serializable]
 public class FloorGenerator {
+  [NonSerialized] /// TODO-SERIALIZE fix this
   public EncounterGroup EncounterGroup;
+  public List<int> floorSeeds;
+  [NonSerialized] /// TODO-SERIALIZE fix this
+  private EncounterGroup earlyGame, everything, midGame;
+  [NonSerialized] /// these are hard-coded and reinstantiated when the program runs
+  public List<Func<Floor>> floorGenerators;
 
-  public static Floor[] generateAll(int seed) {
-    var generator = new FloorGenerator();
-    return generator.generateAllFloors(seed);
+  [OnDeserialized]
+  void HandleDeserialized() {
+    InitFloorGenerators();
   }
 
-  static List<int> FLOOR_SEEDS = new List<int>();
+  public FloorGenerator(List<int> floorSeeds) {
+    this.floorSeeds = floorSeeds;
 
-  public Floor[] generateAllFloors(int seed) {
-    var floors = new List<Floor>();
-    MyRandom.SetSeed(seed);
-    /// generate floor seeds first
-    for (int i = 0; i < 33; i++) {
-      FLOOR_SEEDS.Add(MyRandom.Next());
+    InitFloorGenerators();
+  }
+
+  private void InitFloorGenerators() {
+    /// TODO-SERIALIZE store the weights
+    earlyGame = EncounterGroup.EarlyGame();
+    everything = EncounterGroup.EarlyMidMixed();
+    midGame = EncounterGroup.MidGame();
+    floorGenerators = new List<Func<Floor>>() {
+      () => throw new Exception("shouldn't be calling generator on depth 0"), // unused
+      () => generateSingleRoomFloor(1, 9, 9),
+      () => generateSingleRoomFloor(2, 10, 10),
+      () => generateSingleRoomFloor(3, 11, 11),
+      () => generateSingleRoomFloor(4, 11, 11, 1, 1, true),
+      () => generateSingleRoomFloor(5, 20, 11, 2),
+      () => generateSingleRoomFloor(6, 15, 11, 2),
+      () => generateSingleRoomFloor(7, 11, 11, 2),
+      () => generateRewardFloor(8, EncounterGroup.PlantsStatic.GetRandomAndDiscount(0.9f)),
+      () => generateSingleRoomFloor(9, 13, 9, 2, 2),
+      () => generateSingleRoomFloor(10, 14, 7, 2, 2),
+      () => generateSingleRoomFloor(11, 20, 9, 3, 2),
+      () => generateBlobBossFloor(12),
+      () => generateSingleRoomFloor(13, 12, 12, 3, 2),
+      () => generateSingleRoomFloor(14, 15, 11, 3, 3),
+      () => generateSingleRoomFloor(15, 20, 9, 4, 3),
+      () => generateRewardFloor(16, EncounterGroup.PlantsStatic.GetRandomAndDiscount(0.9f)),
+      () => generateMultiRoomFloor(17, 15, 15, 6),
+      () => generateMultiRoomFloor(18, 30, 20, 7),
+      () => generateMultiRoomFloor(19, 20, 20, 8, true),
+      () => generateMultiRoomFloor(20, 24, 16, 9),
+      () => generateMultiRoomFloor(21, 30, 12, 10),
+      () => generateMultiRoomFloor(22, 30, 20, 15),
+      () => generateRewardFloor(23, Encounters.Twice(Encounters.AddWater), Encounters.ThreeAstoriasInCorner),
+      () => generateSporeColonyBossFloor(24),
+      () => generateSingleRoomFloor(25, 11, 11, 1, 2, true),
+      () => generateMultiRoomFloor(26, 20, 13, 5, true),
+      () => generateMultiRoomFloor(27, 30, 13, 7, true),
+      () => generateMultiRoomFloor(28, 30, 12, 8, true),
+      () => generateMultiRoomFloor(29, 24, 13, 9, true),
+      () => generateMultiRoomFloor(30, 22, 12, 10, true),
+      () => generateMultiRoomFloor(31, 45, 11, 15, true),
+      () => generateEndFloor(32),
+    };
+  }
+
+  public Floor generateCaveFloor(int depth) {
+    /// The generators rely on the following state:
+    /// (1) encounter group
+    /// (2) MyRandom seed
+
+    /// configure the EncounterGroup
+    if (depth <= 12) {
+      EncounterGroup = earlyGame;
+    } else if (depth <= 24) {
+      EncounterGroup = everything;
+    } else {
+      EncounterGroup = midGame;
     }
-    EncounterGroup = EncounterGroup.EarlyGame();
-    floors.Add(generateFloor0(0));
-    floors.Add(generateSingleRoomFloor(1, 9, 9));
-    floors.Add(generateSingleRoomFloor(2, 10, 10));
-    floors.Add(generateSingleRoomFloor(3, 11, 11));
-    floors.Add(generateSingleRoomFloor(4, 11, 11, 1, 1, true));
-    floors.Add(generateSingleRoomFloor(5, 20, 11, 2));
-    floors.Add(generateSingleRoomFloor(6, 15, 11, 2));
-    floors.Add(generateSingleRoomFloor(7, 11, 11, 2));
-    floors.Add(generateRewardFloor(8, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
-    floors.Add(generateSingleRoomFloor(9, 13, 9, 2, 2));
-    floors.Add(generateSingleRoomFloor(10, 14, 7, 2, 2));
-    floors.Add(generateSingleRoomFloor(11, 20, 9, 3, 2));
-    floors.Add(generateBlobBossFloor(12));
-    EncounterGroup = EncounterGroup.EarlyMidMixed();
-    floors.Add(generateSingleRoomFloor(13, 12, 12, 3, 2));
-    floors.Add(generateSingleRoomFloor(14, 15, 11, 3, 3));
-    floors.Add(generateSingleRoomFloor(15, 20, 9, 4, 3));
-    floors.Add(generateRewardFloor(16, EncounterGroup.Plants.GetRandomAndDiscount(0.9f)));
-    floors.Add(generateMultiRoomFloor(17, 15, 15, 6));
-    floors.Add(generateMultiRoomFloor(18, 30, 20, 7));
-    floors.Add(generateMultiRoomFloor(19, 20, 20, 8, true));
-    floors.Add(generateMultiRoomFloor(20, 24, 16, 9));
-    floors.Add(generateMultiRoomFloor(21, 30, 12, 10));
-    floors.Add(generateMultiRoomFloor(22, 30, 20, 15));
-    floors.Add(generateRewardFloor(23, Encounters.Twice(Encounters.AddWater), Encounters.ThreeAstoriasInCorner));
-    floors.Add(generateSporeColonyBossFloor(24));
-    EncounterGroup = EncounterGroup.MidGame();
-    floors.Add(generateSingleRoomFloor(25, 11, 11, 1, 2, true));
-    floors.Add(generateMultiRoomFloor(26, 20, 13, 5, true));
-    floors.Add(generateMultiRoomFloor(27, 30, 13, 7, true));
-    floors.Add(generateMultiRoomFloor(28, 30, 12, 8, true));
-    floors.Add(generateMultiRoomFloor(29, 24, 13, 9, true));
-    floors.Add(generateMultiRoomFloor(30, 22, 12, 10, true));
-    floors.Add(generateMultiRoomFloor(31, 45, 11, 15, true));
-    floors.Add(generateEndFloor(32));
-    // floors.Add(generateBossFloor(33));
-    return floors.ToArray();
+
+    /// set the seed
+    MyRandom.SetSeed(floorSeeds[depth]);
+
+    // pick the generator
+    var generator = floorGenerators[depth];
+    var floor = generator();
+    return floor;
   }
 
   public Floor generateEndFloor(int depth) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 36, 36);
 
     // fill with floor tiles by default
@@ -122,17 +152,14 @@ public class FloorGenerator {
   }
 
   public Floor generateTutorialFloor(int depth) {
-    /// story before this:
-    /// your uncle is dying and needs medicine. Only the fruit of the Yendor Tree can save you.
-    /// It is a mythical tree that grows deep underground
-    /// Ezra 
-
     /// things to explicitly teach:
     /// tap to move (or use D-Pad)
     /// move into enemy to attack
     /// pick items up by moving over them
     /// collect water
     /// tap hold to learn about an item
+    /// game is turn based
+    /// game is all about tactical movement
     Floor floor = new Floor(depth, 30, 12);
 
     // fill with floor tiles by default
@@ -144,7 +171,6 @@ public class FloorGenerator {
   }
   
   public Floor generateFloor0(int depth) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 22, 14);
 
     // fill with floor tiles by default
@@ -221,7 +247,6 @@ public class FloorGenerator {
   }
 
   public Floor generateRewardFloor(int depth, params Encounter[] extraEncounters) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 16, 10);
 
     // fill with floor tiles by default
@@ -253,7 +278,6 @@ public class FloorGenerator {
   /// Good for a contained experience.
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor;
     do {
       floor = tryGenerateSingleRoomFloor(depth, width, height);
@@ -341,7 +365,6 @@ public class FloorGenerator {
   }
 
   public Floor generateBlobBossFloor(int depth) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 14, 14);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -380,7 +403,6 @@ public class FloorGenerator {
   }
 
   public Floor generateSporeColonyBossFloor(int depth) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor = new Floor(depth, 27, 27);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -441,7 +463,6 @@ public class FloorGenerator {
   /// one mob, one grass, one random encounter.
   /// </summary>
   public Floor generateMultiRoomFloor(int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false) {
-    MyRandom.SetSeed(FLOOR_SEEDS[depth]);
     Floor floor;
     do {
       floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
@@ -593,6 +614,7 @@ public class FloorGenerator {
 
 }
 
+[Serializable]
 public static class MyRandom {
   public static float value => (float) generator.NextDouble();
   private static Random generator = new Random();

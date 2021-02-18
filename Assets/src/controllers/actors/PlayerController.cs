@@ -94,9 +94,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     }
     var model = GameModel.main;
     if (Input.GetKeyDown(KeyCode.Equals)) {
-      GameModel.main.PutPlayerAt(model.floors[model.activeFloorIndex + 1], false);
-    } else if (Input.GetKeyDown(KeyCode.Minus)) {
-      GameModel.main.PutPlayerAt(model.floors[model.activeFloorIndex - 1], false);
+      GameModel.main.PutPlayerAt(model.depth + 1);
     }
     base.Update();
   }

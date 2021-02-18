@@ -9,7 +9,6 @@ using UnityEngine.Events;
 public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler {
   private float timeLastLostWater = 0;
   public float water = 0;
-  public int deepestDepthVisited = 1;
   internal readonly ItemHands Hands;
   [NonSerialized] /// lazily instantiated
   private HashSet<Actor> lastVisibleEnemies;
@@ -89,10 +88,6 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
 
   protected override void HandleEnterFloor() {
     floor.AddVisibility(this);
-    var depth = floor.depth;
-    if (depth > deepestDepthVisited) {
-      deepestDepthVisited = depth;
-    }
   }
 
   public void OnAttack(int damage, Body target) {

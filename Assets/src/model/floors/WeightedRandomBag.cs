@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// https://gamedev.stackexchange.com/a/162996
+[Serializable]
 public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, ICloneable {
 
+  [Serializable]
   private class Entry {
     public float weight;
     public T item;

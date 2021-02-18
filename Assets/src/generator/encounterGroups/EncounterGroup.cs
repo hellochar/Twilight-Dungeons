@@ -1,5 +1,6 @@
 using static Encounters;
 
+[System.Serializable]
 public class EncounterGroup {
   public static EncounterGroup EarlyGame() => EncounterGroupEarlyGame.EarlyGame();
   public static EncounterGroup EarlyMidMixed() => EncounterGroupEverything.Everything();

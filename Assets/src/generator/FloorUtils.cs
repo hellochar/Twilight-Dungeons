@@ -27,10 +27,23 @@ public static class FloorUtils {
     return tiles;
   }
 
+  public static IEnumerable<Vector2Int> Line3x3(Floor floor, Vector2Int start, Vector2Int end) {
+      return floor.EnumerateLine(start, end).SelectMany((pos) => floor.GetAdjacentTiles(pos).Select(t => t.pos));
+  }
+
   // surround floor perimeter with walls
   public static void SurroundWithWalls(Floor floor) {
     foreach (var p in floor.EnumeratePerimeter()) {
       floor.Put(new Wall(p));
+    }
+  }
+
+  public static void PutGround(Floor floor, IEnumerable<Vector2Int> points = null) {
+    if (points == null) {
+      points = floor.EnumerateFloor();
+    }
+    foreach (var pos in points) {
+      floor.Put(new Ground(pos));
     }
   }
 

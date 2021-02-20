@@ -44,13 +44,13 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
     }
     // turn text to black
     yield return StartCoroutine(FadeText());
-    yield return StartCoroutine(LoadMainScene.FadeTo(GetComponent<Image>(), 2, new Color(0, 0, 0, 0)));
+    yield return StartCoroutine(Intro.FadeTo(GetComponent<Image>(), 2, new Color(0, 0, 0, 0)));
     gameObject.SetActive(false);
   }
 
   IEnumerator FadeText() {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
-    return LoadMainScene.AnimateLinear(2, (t) => {
+    return Intro.AnimateLinear(2, (t) => {
       textComponent.color = Color.Lerp(new Color(1, 1, 1, 1), new Color(1, 1, 1, 0), t);
     });
   }

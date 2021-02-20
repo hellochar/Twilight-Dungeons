@@ -45,7 +45,7 @@ public class EzraController : ActorController {
 
     /// TODO play victory music
     var blackOverlay = GameObject.Find("BlackOverlay");
-    yield return StartCoroutine(LoadMainScene.FadeTo(blackOverlay.GetComponent<Image>(), 5));
+    yield return StartCoroutine(Intro.FadeTo(blackOverlay.GetComponent<Image>(), 5));
   }
 
   IEnumerator ZoomInCamera() {

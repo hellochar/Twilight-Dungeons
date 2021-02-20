@@ -80,12 +80,32 @@ public class Floor {
     pathfindingManager = new PathfindingManager(this);
   }
 
+  /// what should happen when the player goes downstairs
+  internal virtual void PlayerGoDownstairs() {
+    // if we're home, go back to the cave
+    // if we're in the cave, go 1 deeper
+    int nextDepth;
+    if (depth == 0) {
+      nextDepth = GameModel.main.cave.depth;
+    } else {
+      nextDepth = depth + 1;
+    }
+    GameModel.main.PutPlayerAt(nextDepth);
+  }
+
+
   private void ItemPlacementBehavior(ItemOnGround item) {
     var newPosition = BreadthFirstSearch(item.pos, (_) => true)
       .Where(ItemOnGround.CanOccupy)
       .First()
       .pos;
     item.pos = newPosition;
+  }
+
+  internal void RemoveAll(IEnumerable<Entity> entities) {
+    foreach (var entity in entities) {
+      Remove(entity);
+    }
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {
@@ -349,9 +369,13 @@ public class Floor {
     for (float t = 0; t <= offset.magnitude; t += 0.5f) {
       Vector2 point = startPoint + offset.normalized * t;
       Vector2Int p = new Vector2Int(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y));
-      yield return p;
+      if (InBounds(p)) {
+        yield return p;
+      }
     }
-    yield return endPoint;
+    if (InBounds(endPoint)) {
+      yield return endPoint;
+    }
   }
 
   public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true, bool depthFirst = false) {
@@ -395,6 +419,23 @@ public class Floor {
     foreach (var ground in adjacentGrounds) {
       Put(new HardGround(ground.pos));
     }
+  }
+}
+
+enum FloorMessage {
+  BlobRoomEntered,
+  JackalRoomEntered,
+  BerryBushRoomEntered,
+  TutorialEnd
+}
+class TutorialFloor : Floor {
+  public Action<FloorMessage> OnMessage = delegate { };
+  internal BerryBush berryBush;
+
+  public TutorialFloor(int depth, int width, int height) : base(depth, width, height) {}
+
+  internal override void PlayerGoDownstairs() {
+    OnMessage(FloorMessage.TutorialEnd);
   }
 }
 

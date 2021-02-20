@@ -95,10 +95,7 @@ public class FloorGenerator {
     Floor floor = new Floor(depth, 36, 36);
 
     // fill with floor tiles by default
-    foreach (var p in floor.EnumerateFloor()) {
-      floor.Put(new Ground(p));
-    }
-
+    FloorUtils.PutGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
@@ -160,12 +157,92 @@ public class FloorGenerator {
     /// tap hold to learn about an item
     /// game is turn based
     /// game is all about tactical movement
-    Floor floor = new Floor(depth, 30, 12);
+    TutorialFloor floor = new TutorialFloor(depth, 50, 9);
 
-    // fill with floor tiles by default
+    Room startRoom = new Room(new Vector2Int(1, 1), new Vector2Int(7, 7));
+    Room oneBlob = new Room(new Vector2Int(11, 1), new Vector2Int(17, 7));
+    Room jackalsAndGuardleaf = new Room(new Vector2Int(21, 1), new Vector2Int(27, 7));
+    Room berryBushAndWater = new Room(new Vector2Int(31, 1), new Vector2Int(37, 7));
+    Room blobsAndSpider = new Room(new Vector2Int(41, 1), new Vector2Int(47, 7));
+
+    // fill with walls
     foreach (var p in floor.EnumerateFloor()) {
-      floor.Put(new Ground(p));
+      floor.Put(new Wall(p));
     }
+
+    var cY = startRoom.center.y;
+
+    // first room:
+    FloorUtils.PutGround(floor, floor.EnumerateRoom(startRoom));
+    FloorUtils.PutGround(floor, floor.EnumerateLine(startRoom.center, oneBlob.center));
+    // add rubble
+    for (var pos = new Vector2Int(8, cY); pos.x < 11; pos.x += 1) {
+      floor.Put(new Rubble(pos));
+    }
+
+    // second room - one blob
+    FloorUtils.PutGround(floor, floor.EnumerateRoom(oneBlob));
+    FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, oneBlob.center, jackalsAndGuardleaf.center));
+    floor.Put(new Blob(oneBlob.center));
+
+    Trigger blobRoomTrigger = null;
+    blobRoomTrigger = new Trigger(new Vector2Int(10, cY), BlobRoomEntered);
+    void BlobRoomEntered(Actor _) {
+      floor.Remove(blobRoomTrigger);
+      GameModel.main.EnqueueEvent(() => floor.OnMessage(FloorMessage.BlobRoomEntered));
+    }
+    floor.Put(blobRoomTrigger);
+
+    // third room - three jackals and guardleaf
+    FloorUtils.PutGround(floor, floor.EnumerateRoom(jackalsAndGuardleaf));
+    FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, jackalsAndGuardleaf.center, berryBushAndWater.center));
+    floor.Put(new Jackal(jackalsAndGuardleaf.center));
+    floor.Put(new Jackal(jackalsAndGuardleaf.center + Vector2Int.up));
+    floor.Put(new Jackal(jackalsAndGuardleaf.center + Vector2Int.down));
+    var guardleafCenter = new Vector2Int(jackalsAndGuardleaf.min.x + 1, cY);
+    floor.Put(new Guardleaf(guardleafCenter));
+    floor.Put(new Guardleaf(guardleafCenter + Vector2Int.up));
+    floor.Put(new Guardleaf(guardleafCenter + Vector2Int.down));
+    floor.Put(new Guardleaf(guardleafCenter + Vector2Int.left));
+
+    List<Trigger> jackalRoomTriggers = new List<Trigger>();
+    jackalRoomTriggers.Add(new Trigger(new Vector2Int(20, cY), JackalRoomEntered));
+    jackalRoomTriggers.Add(new Trigger(new Vector2Int(20, cY + 1), JackalRoomEntered));
+    jackalRoomTriggers.Add(new Trigger(new Vector2Int(20, cY - 1), JackalRoomEntered));
+    void JackalRoomEntered(Actor _) {
+      floor.RemoveAll(jackalRoomTriggers);
+      GameModel.main.EnqueueEvent(() => floor.OnMessage(FloorMessage.JackalRoomEntered));
+    }
+    floor.PutAll(jackalRoomTriggers);
+
+    // fourth room - a berry bush
+    FloorUtils.PutGround(floor, floor.EnumerateRoom(berryBushAndWater));
+    FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, berryBushAndWater.center, blobsAndSpider.center));
+    floor.Put(new Soil(berryBushAndWater.center));
+    var bush = new BerryBush(berryBushAndWater.center);
+    bush.GoNextStage();
+    floor.Put(bush);
+    bush.stage.harvestOptions.RemoveAt(2);
+    bush.stage.harvestOptions.RemoveAt(1);
+    floor.berryBush = bush;
+    Encounters.AddWater(floor, berryBushAndWater);
+
+    List<Trigger> berryBushTriggers = new List<Trigger>();
+    berryBushTriggers.Add(new Trigger(new Vector2Int(30, cY), BerryBushRoomEntered));
+    void BerryBushRoomEntered(Actor _) {
+      floor.RemoveAll(berryBushTriggers);
+      GameModel.main.EnqueueEvent(() => floor.OnMessage(FloorMessage.BerryBushRoomEntered));
+    }
+    floor.PutAll(berryBushTriggers);
+
+    // last room - two blobs and a bat, filled with soft grass
+    FloorUtils.PutGround(floor, floor.EnumerateRoom(blobsAndSpider));
+    floor.Put(new Blob(blobsAndSpider.center));
+    floor.Put(new Blob(blobsAndSpider.center + Vector2Int.up));
+    floor.Put(new Bat(blobsAndSpider.center + Vector2Int.down));
+    floor.PlaceDownstairs(new Vector2Int(blobsAndSpider.max.x, cY));
+
+    FloorUtils.NaturalizeEdges(floor);
 
     return floor;
   }
@@ -174,9 +251,7 @@ public class FloorGenerator {
     Floor floor = new Floor(depth, 18, 14);
 
     // fill with floor tiles by default
-    foreach (var p in floor.EnumerateFloor()) {
-      floor.Put(new Ground(p));
-    }
+    FloorUtils.PutGround(floor);
 
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
@@ -251,9 +326,7 @@ public class FloorGenerator {
     Floor floor = new Floor(depth, 16, 10);
 
     // fill with floor tiles by default
-    foreach (var p in floor.EnumerateFloor()) {
-      floor.Put(new Ground(p));
-    }
+    FloorUtils.PutGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
@@ -346,9 +419,7 @@ public class FloorGenerator {
     }
 
     Room room0 = new Room(floor);
-    foreach (var pos in floor.EnumerateRoom(room0)) {
-      floor.Put(new Ground(pos));
-    }
+    FloorUtils.PutGround(floor, floor.EnumerateRoom(room0));
 
     // one wall variation
     EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
@@ -373,10 +444,7 @@ public class FloorGenerator {
     }
 
     Room room0 = new Room(floor);
-    foreach (var pos in floor.EnumerateCircle(room0.center, 7)) {
-      floor.Put(new Ground(pos));
-    }
-
+    FloorUtils.PutGround(floor, floor.EnumerateCircle(room0.center, 7));
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
@@ -413,16 +481,9 @@ public class FloorGenerator {
     Room room0 = new Room(floor);
 
     void CutOutCircle(Vector2Int center, float radius) {
-      foreach (var pos in floor.EnumerateCircle(center, 6)) {
-        floor.Put(new Ground(pos));
-      }
+      FloorUtils.PutGround(floor, floor.EnumerateCircle(center, 6));
       // connect it back to center
-      var tunnelPath3x3 = floor
-        .EnumerateLine(center, room0.center)
-        .SelectMany((pos) => floor.GetAdjacentTiles(pos).Select(t => t.pos));
-      foreach (var point in tunnelPath3x3) {
-        floor.Put(new Ground(point));
-      }
+      FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, center, room0.center));
     }
     CutOutCircle(room0.center, 6);
     var sideRoomInset = 7;
@@ -546,20 +607,12 @@ public class FloorGenerator {
     rooms.ForEach(room => room.randomlyShrink());
 
     foreach (var (a, b) in ComputeRoomConnections(rooms, root)) {
-      /// create a 3x3 tunnel
-      var tunnelPath3x3 = floor
-        .EnumerateLine(a, b)
-        .SelectMany((pos) => floor.GetAdjacentTiles(pos).Select(t => t.pos));
-      foreach (var point in tunnelPath3x3) {
-        floor.Put(new Ground(point));
-      }
+      FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, a, b));
     }
 
     rooms.ForEach(room => {
       // fill each room with floor
-      foreach (var pos in floor.EnumerateRoom(room)) {
-        floor.Put(new Ground(pos));
-      }
+      FloorUtils.PutGround(floor, floor.EnumerateRoom(room));
     });
 
     FloorUtils.NaturalizeEdges(floor);

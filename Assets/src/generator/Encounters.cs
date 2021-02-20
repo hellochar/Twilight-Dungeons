@@ -253,6 +253,14 @@ public class Encounters {
     }
   });
 
+  public static Encounter FillWithSoftGrass = new Encounter((floor, room) => {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
+    foreach (var tile in occupiableTiles) {
+      var grass = new SoftGrass(tile.pos);
+      floor.Put(grass);
+    }
+  });
+
   public static Encounter AddBladegrass = new Encounter((floor, room) => {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(tile => Bladegrass.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;

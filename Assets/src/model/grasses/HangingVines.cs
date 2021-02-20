@@ -7,10 +7,10 @@ using UnityEngine;
 public class HangingVines : Grass, IDeathHandler {
   private Inventory inventory = new Inventory(new ItemVineWhip(1));
   public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
-  private HangingVinesTrigger triggerBelow;
+  private Trigger triggerBelow;
 
   public HangingVines(Vector2Int pos) : base(pos) {
-    triggerBelow = new HangingVinesTrigger(this);
+    triggerBelow = new Trigger(tileBelow.pos, HandleActorEnterBelow);
   }
 
   protected override void HandleEnterFloor() {
@@ -49,22 +49,23 @@ public class HangingVines : Grass, IDeathHandler {
 }
 
 [Serializable]
-public abstract class Trigger : Entity {}
-
-[Serializable]
-class HangingVinesTrigger : Trigger, IActorEnterHandler {
-  HangingVines owner;
+/// not movable
+public class Trigger : Entity, IActorEnterHandler {
+  /// be careful with action serialization
+  public Action<Actor> action;
+  private Vector2Int _pos;
   public override Vector2Int pos {
-    get => owner.tileBelow.pos;
+    get => _pos;
     set { }
   }
 
-  public HangingVinesTrigger(HangingVines owner) {
-    this.owner = owner;
+  public Trigger(Vector2Int pos, Action<Actor> action) {
+    _pos = pos;
+    this.action = action;
   }
 
-  public void HandleActorEnter(Actor obj) {
-    owner.HandleActorEnterBelow(obj);
+  public virtual void HandleActorEnter(Actor who) {
+    action(who);
   }
 }
 

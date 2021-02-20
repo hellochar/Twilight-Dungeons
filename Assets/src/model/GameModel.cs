@@ -41,22 +41,24 @@ public class GameModel {
 
   /// Also sets GameModel.main.
   public static void GenerateNewGameAndSetMain() {
-    var seed = new System.Random().Next();
-
-    #if UNITY_EDITOR
-    seed = 0xa858d50;
-    // Analyze();
-    #endif
-
-    main = new GameModel(seed);
+    main = new GameModel();
     main.generate();
     var step = main.StepUntilPlayerChoice();
     // execute them all immediately
     do { } while (step.MoveNext());
   }
 
-  public GameModel(int seed) {
-    this.seed = seed;
+  public static void GenerateTutorialAndSetMain() {
+    main = new GameModel();
+    main.generateTutorial();
+  }
+
+  public GameModel() {
+    this.seed = new System.Random().Next();
+    #if UNITY_EDITOR
+    this.seed = 0xa858d50;
+    #endif
+
   }
 
   [OnDeserialized]
@@ -76,6 +78,19 @@ public class GameModel {
     home = generator.generateFloor0(0);
     cave = generator.generateCaveFloor(1);
     player = new Player(new Vector2Int(3, home.height/2));
+    home.Put(player);
+  }
+
+  private void generateTutorial() {
+    MyRandom.SetSeed(seed);
+    floorSeeds = new List<int>();
+    /// generate floor seeds first
+    for (int i = 0; i < 33; i++) {
+      floorSeeds.Add(MyRandom.Next());
+    }
+    generator = new FloorGenerator(floorSeeds);
+    home = generator.generateTutorialFloor(0);
+    player = new Player(new Vector2Int(4, 4));
     home.Put(player);
   }
 

@@ -5,10 +5,10 @@ using System;
 public struct Settings {
   public static event Action OnChanged;
 
-  private static Settings m_main = GetOrCreateDefaultSettings();
+  private static Settings m_main = LoadOrGetDefaultSettings();
   public static Settings main => m_main;
 
-  public static Settings GetOrCreateDefaultSettings() {
+  public static Settings LoadOrGetDefaultSettings() {
     try {
       if (PlayerPrefs.HasKey("settings")) {
         var savedJson = PlayerPrefs.GetString("settings");
@@ -18,17 +18,23 @@ public struct Settings {
     } catch(Exception e) {
       Debug.LogError(e);
     }
+    return Default();
+  }
+
+  public static Settings Default() {
     return new Settings {
       moveMode = MoveMode.DPad | MoveMode.TouchTile,
       showSidePanel = true,
     };
   }
 
-  public static void Set(Settings newSettings) {
+  public static void Set(Settings newSettings, bool save = true) {
     m_main = newSettings;
-    var json = JsonUtility.ToJson(m_main);
-    PlayerPrefs.SetString("settings", json);
-    PlayerPrefs.Save();
+    if (save) {
+      var json = JsonUtility.ToJson(m_main);
+      PlayerPrefs.SetString("settings", json);
+      PlayerPrefs.Save();
+    }
     OnChanged?.Invoke();
   }
 

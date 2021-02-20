@@ -12,7 +12,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
   [NonSerialized]
   public Floor floor;
   public static Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
-  private Dictionary<Entity, GameObject> gameObjectMap = new Dictionary<Entity, GameObject>();
+  protected Dictionary<Entity, GameObject> gameObjectMap = new Dictionary<Entity, GameObject>();
 
   public static GameObject GetEntityPrefab(Entity e) {
     var type = e.GetType();
@@ -43,7 +43,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
   }
 
   // Start is called before the first frame update
-  void Start() {
+  public virtual void Start() {
     this.InstantiateGameObjectsToMatchFloor();
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;

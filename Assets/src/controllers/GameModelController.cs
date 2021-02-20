@@ -20,7 +20,8 @@ public class GameModelController : MonoBehaviour {
     #if UNITY_EDITOR
     if (GameModel.main == null) {
       // GameModel.main = Serializer.LoadFromFile();
-      GameModel.GenerateNewGameAndSetMain();
+      // GameModel.GenerateNewGameAndSetMain();
+      GameModel.GenerateTutorialAndSetMain();
     }
     #endif
     this.model = GameModel.main;
@@ -77,10 +78,14 @@ public class GameModelController : MonoBehaviour {
 
   private FloorController GetOrCreateFloorController(Floor floor) {
     if (!floorControllers.ContainsKey(floor)) {
-      GameObject floorInstance = Instantiate(floorPrefab);
-      FloorController floorComponent = floorInstance.GetComponent<FloorController>();
-      floorComponent.floor = floor;
-      floorControllers.Add(floor, floorComponent);
+      GameObject instance = Instantiate(floorPrefab);
+      FloorController controller = instance.GetComponent<FloorController>();
+      if (floor is TutorialFloor) {
+        Destroy(controller);
+        controller = instance.AddComponent<TutorialFloorController>();
+      }
+      controller.floor = floor;
+      floorControllers.Add(floor, controller);
     }
     return floorControllers[floor];
   }
@@ -120,7 +125,7 @@ public class GameModelController : MonoBehaviour {
     img.color = new Color(0, 0, 0, 0);
     var player = GameObject.Find("Player");
     player.SetActive(false);
-    yield return StartCoroutine(LoadMainScene.FadeTo(img, 0.5f));
+    yield return StartCoroutine(Intro.FadeTo(img, 0.5f));
     yield return new WaitForSeconds(0.5f);
     ActivateNewFloor(model.currentFloor);
     player.SetActive(true);

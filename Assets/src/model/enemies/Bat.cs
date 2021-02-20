@@ -8,7 +8,7 @@ using UnityEngine;
 public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 7;
-    ClearTasks();
+    // ClearTasks();
     faction = Faction.Enemy;
     if (MyRandom.value < 0.2f) {
       inventory.AddItem(new ItemBatTooth());

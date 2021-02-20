@@ -7,9 +7,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LoadMainScene : MonoBehaviour {
+public class Intro : MonoBehaviour {
   GameObject blackOverlay;
   public AudioClip playerMove;
+
+  void Awake() {
+    // unset current game.
+    GameModel.main = null;
+  }
 
   void Start() {
     blackOverlay = transform.Find("BlackOverlay").gameObject;

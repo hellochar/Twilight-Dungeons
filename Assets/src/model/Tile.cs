@@ -140,18 +140,8 @@ public class Downstairs : Tile, IActorEnterHandler {
   public Downstairs(Vector2Int pos) : base(pos) {}
 
   public void HandleActorEnter(Actor actor) {
-    var model = GameModel.main;
-    var player = model.player;
-    if (actor == player) {
-      // if we're home, go back to the cave
-      // if we're in the cave, go 1 deeper
-      int nextDepth;
-      if (floor.depth == 0) {
-        nextDepth = model.cave.depth;
-      } else {
-        nextDepth = floor.depth + 1;
-      }
-      GameModel.main.PutPlayerAt(nextDepth);
+    if (actor == GameModel.main.player) {
+      floor.PlayerGoDownstairs();
     }
   }
 }

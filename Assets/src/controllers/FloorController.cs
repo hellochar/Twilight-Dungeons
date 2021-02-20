@@ -131,11 +131,13 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
   public void OnPointerDown(PointerEventData eventData) {
     if (!CameraZoom.IsZoomGuardActive && isInputAllowed) {
       hold = new InputHold(Time.time);
+      HoldProgressBar.main.HoldStart();
     }
   }
 
   public void OnPointerUp(PointerEventData eventData) {
     hold = null;
+    HoldProgressBar.main.HoldEnd();
   }
 
   private InputHold hold;
@@ -143,9 +145,13 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     if (hold != null && isInputAllowed) {
       if (CameraZoom.IsZoomGuardActive) {
         hold = null;
-      } else if (hold.ShouldTrigger(Time.time)) {
-        hold.triggered = true;
-        ShowObjectInfoPopupOverTouch();
+      } else {
+        var time = Time.time;
+        HoldProgressBar.main.HoldUpdate(hold.PercentDone(time));
+        if (hold.ShouldTrigger(time)) {
+          hold.triggered = true;
+          ShowObjectInfoPopupOverTouch();
+        }
       }
     }
   }
@@ -247,5 +253,7 @@ class InputHold {
     this.threshold = threshold;
   }
 
-  public bool ShouldTrigger(float t) => !triggered && (t - time > threshold);
+  public float PercentDone(float t) => Mathf.Clamp((t - time) / threshold, 0, 1);
+
+  public bool ShouldTrigger(float t) => !triggered && PercentDone(t) >= 1;
 }

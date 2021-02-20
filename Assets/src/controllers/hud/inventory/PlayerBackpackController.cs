@@ -13,9 +13,12 @@ public class PlayerBackpackController : MonoBehaviour {
 
   private void HandleItemAdded(Item item, Entity source) {
     if (source != null) {
-      var sprite = ObjectInfo.GetSpriteFor(item);
-      /// Create the animation of the item coming in/out of the backpack slot
-      SpriteFlyAnimation.Create(sprite, Util.withZ(source.pos), "Inventory Toggle");
+      var inventoryToggle = GameObject.Find("Inventory Toggle");
+      if (inventoryToggle != null) {
+        var sprite = ObjectInfo.GetSpriteFor(item);
+        /// Create the animation of the item coming in/out of the backpack slot
+        SpriteFlyAnimation.Create(sprite, Util.withZ(source.pos), inventoryToggle);
+      }
     }
   }
 

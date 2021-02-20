@@ -24,17 +24,19 @@ public class SidePanelController : MonoBehaviour {
     gameObject.SetActive(Settings.main.showSidePanel);
   }
 
-  bool needsUpdate = false;
   private void HandlePlayersChoice() {
-    needsUpdate = true;
+    UpdateItems();
   }
 
 
   void Update() {
-    if (needsUpdate) {
-      UpdateItems();
-      needsUpdate = false;
-    }
+    // 1 is the title, 2 is the inactive Button prefab
+    var hasCreatures = creaturesContainer.transform.childCount > 2;
+    // 1 is the title
+    var hasGrasses = grassesContainer.transform.childCount > 1;
+
+    creaturesContainer.SetActive(hasCreatures);
+    grassesContainer.SetActive(hasGrasses);
   }
 
   void UpdateItems() {
@@ -65,14 +67,6 @@ public class SidePanelController : MonoBehaviour {
         buttonObject.GetComponentInChildren<TMPro.TMP_Text>().text = name;
       }
     }
-
-    // 1 is the title, 2 is the inactive Button prefab
-    var hasCreatures = creaturesContainer.transform.childCount > 2;
-    // 1 is the title
-    var hasGrasses = grassesContainer.transform.childCount > 1;
-
-    creaturesContainer.SetActive(hasCreatures);
-    grassesContainer.SetActive(hasGrasses);
   }
 
   /// interesting things: bodies and grasses

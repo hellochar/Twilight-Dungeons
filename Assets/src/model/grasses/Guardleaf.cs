@@ -10,15 +10,15 @@ public class Guardleaf : Grass, IActorEnterHandler {
   }
 
   protected override void HandleEnterFloor() {
-    actor?.statuses.Add(new GuardStatus());
+    actor?.statuses.Add(new GuardedStatus());
   }
 
   protected override void HandleLeaveFloor() {
-    actor?.statuses.RemoveOfType<GuardStatus>();
+    actor?.statuses.RemoveOfType<GuardedStatus>();
   }
 
   public void HandleActorEnter(Actor who) {
-    actor.statuses.Add(new GuardStatus());
+    actor.statuses.Add(new GuardedStatus());
     OnNoteworthyAction();
   }
 
@@ -31,14 +31,14 @@ public class Guardleaf : Grass, IActorEnterHandler {
 }
 
 [System.Serializable]
-[ObjectInfo("guardroot", "Big leaves")]
-public class GuardStatus : StackingStatus, IAttackDamageTakenModifier {
+[ObjectInfo("guardroot", "Huge leaves, sprouting out from the ground, gently twist themselves around you in a protective cover.")]
+public class GuardedStatus : StackingStatus, IAttackDamageTakenModifier {
   public override int stacks {
     get => leaf?.guardLeft ?? 0;
     set { }
   }
 
-  public GuardStatus() {}
+  public GuardedStatus() {}
 
   private Guardleaf leaf => actor?.grass as Guardleaf;
   public override string Info() => $"The Guardleaf will block {stacks} more attack damage.";

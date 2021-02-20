@@ -21,5 +21,7 @@ public class ItemSeed : Item {
     }
   }
 
+  internal override string GetStats() => $"Plant this on a Soil (needs 1 water).\nGrows into a Mature {Util.WithSpaces(plantType.Name)} in 320 turns.";
+
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GrowAtStart : MonoBehaviour {
-  static float ANIMATION_TIME = 0.25f;
+  public float ANIMATION_TIME = 0.25f;
   private Vector3 initialScale;
   private float startTime;
   // Start is called before the first frame update

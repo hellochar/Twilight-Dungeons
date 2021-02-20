@@ -3,10 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SpriteFlyAnimation : MonoBehaviour {
-  public static GameObject Create(Sprite sprite, Vector3 worldPos, string hudTargetName) {
-    return Create(sprite, worldPos, GameObject.Find(hudTargetName));
-  }
-
   public static GameObject Create(Sprite sprite, Vector3 worldPos, GameObject hudTarget) {
     var controller = PrefabCache.UI.Instantiate("Sprite Fly", GameObject.Find("Canvas").transform).GetComponent<SpriteFlyAnimation>();
     controller.sprite = sprite;

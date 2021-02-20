@@ -56,7 +56,7 @@ public class GameModel {
   public GameModel() {
     this.seed = new System.Random().Next();
     #if UNITY_EDITOR
-    this.seed = 0xa858d50;
+    // this.seed = 0xa858d50;
     #endif
 
   }
@@ -82,6 +82,7 @@ public class GameModel {
   }
 
   private void generateTutorial() {
+    player = new Player(new Vector2Int(4, 4));
     MyRandom.SetSeed(seed);
     floorSeeds = new List<int>();
     /// generate floor seeds first
@@ -89,8 +90,7 @@ public class GameModel {
       floorSeeds.Add(MyRandom.Next());
     }
     generator = new FloorGenerator(floorSeeds);
-    home = generator.generateTutorialFloor(0);
-    player = new Player(new Vector2Int(4, 4));
+    home = new TutorialFloor();
     home.Put(player);
   }
 

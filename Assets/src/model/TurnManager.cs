@@ -123,7 +123,6 @@ public class TurnManager {
 
       try {
         entity.DoStep();
-        OnStep?.Invoke(entity);
       } catch (NoActionException) {
         if (entity == model.player) {
           // stop turn loop if it's the player
@@ -147,6 +146,7 @@ public class TurnManager {
       }
 
       model.DrainEventQueue();
+      OnStep?.Invoke(entity);
 
       bool shouldStagger =
         !isFirstIteration &&

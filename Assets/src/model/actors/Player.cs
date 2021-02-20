@@ -8,7 +8,14 @@ using UnityEngine.Events;
 [Serializable]
 public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler {
   private float timeLastLostWater = 0;
-  public float water = 0;
+  private float m_water;
+  public float water {
+    get => m_water;
+    set {
+      m_water = value;
+      OnGetWater?.Invoke();
+    }
+  }
   internal readonly ItemHands Hands;
   [NonSerialized] /// lazily instantiated
   private HashSet<Actor> lastVisibleEnemies;
@@ -17,12 +24,12 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
 
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
   public override float turnPriority => 10;
+  [field:NonSerialized] /// controller only
+  public event Action OnGetWater;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(12);
-    inventory.AddItem(new ItemGloopShoes());
-    inventory.AddItem(new ItemSpiderSandals(15));
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

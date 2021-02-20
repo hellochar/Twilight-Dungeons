@@ -23,6 +23,7 @@ public abstract class Tile : Entity {
   }
 
   protected override void HandleEnterFloor() {
+    /// set correct visibility when the tile is dynamically added
     if (GameModel.main?.player != null) {
       if (floor == GameModel.main.player.floor && floor.TestVisibility(GameModel.main.player.pos, pos)) {
         visibility = TileVisiblity.Visible;
@@ -101,6 +102,11 @@ public class Ground : Tile {
 [ObjectInfo(description: "Grass cannot grow on Hard Ground.")]
 public class HardGround : Tile {
   public HardGround(Vector2Int pos) : base(pos) { }
+
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+    grass?.Kill(this);
+  }
 }
 
 [Serializable]
@@ -124,6 +130,11 @@ public class Upstairs : Tile {
   public Vector2Int landing => pos + new Vector2Int(1, 0);
   public Upstairs(Vector2Int pos) : base(pos) {}
 
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+    grass?.Kill(this);
+  }
+
   public void GoHome() {
     if (GameModel.main.player.IsInCombat()) {
       throw new CannotPerformActionException("There are enemies around!");
@@ -138,6 +149,11 @@ public class Downstairs : Tile, IActorEnterHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(-1, 0);
   public Downstairs(Vector2Int pos) : base(pos) {}
+
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+    grass?.Kill(this);
+  }
 
   public void HandleActorEnter(Actor actor) {
     if (actor == GameModel.main.player) {

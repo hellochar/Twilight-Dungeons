@@ -422,23 +422,6 @@ public class Floor {
   }
 }
 
-enum FloorMessage {
-  BlobRoomEntered,
-  JackalRoomEntered,
-  BerryBushRoomEntered,
-  TutorialEnd
-}
-class TutorialFloor : Floor {
-  public Action<FloorMessage> OnMessage = delegate { };
-  internal BerryBush berryBush;
-
-  public TutorialFloor(int depth, int width, int height) : base(depth, width, height) {}
-
-  internal override void PlayerGoDownstairs() {
-    OnMessage(FloorMessage.TutorialEnd);
-  }
-}
-
 [Serializable]
 class PathfindingManager {
   /// if null, we need a recompute

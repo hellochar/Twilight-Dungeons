@@ -116,5 +116,6 @@ public class Intro : MonoBehaviour {
       callback(t);
       yield return new WaitForEndOfFrame();
     } while (t < 1);
+    callback(1);
   }
 }

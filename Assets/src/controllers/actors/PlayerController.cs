@@ -86,7 +86,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
     }
     if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl)) {
-      Serializer.SaveToFile(GameModel.main);
+      Serializer.SaveMainToFile();
     }
     if (Input.GetKeyDown(KeyCode.L) &Input.GetKey(KeyCode.LeftControl)) {
       GameModel.main = Serializer.LoadFromFile();

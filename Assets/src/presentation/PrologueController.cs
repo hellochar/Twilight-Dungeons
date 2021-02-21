@@ -39,13 +39,16 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
     var prologuePages = prologueCopyFull.Split(new string[] { "---" }, System.StringSplitOptions.RemoveEmptyEntries);
     foreach (var page in prologuePages) {
       yield return StartCoroutine(ShowPage(textComponent, page.Trim()));
-      /// pause for a bit after the page stops
+      /// Pause for a bit after the page stops.
       yield return new WaitForSeconds(0.05f);
     }
-    // turn text to black
+
+    // Turn text to black.
     yield return StartCoroutine(FadeText());
-    yield return StartCoroutine(Intro.FadeTo(GetComponent<Image>(), 2, new Color(0, 0, 0, 0)));
-    gameObject.SetActive(false);
+
+    GameModel.GenerateTutorialAndSetMain();
+    var intro = GameObject.Find("Canvas").GetComponent<Intro>();
+    intro.GoToGameScene();
   }
 
   IEnumerator FadeText() {

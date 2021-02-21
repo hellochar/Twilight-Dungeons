@@ -20,8 +20,8 @@ public class GameModelController : MonoBehaviour {
     #if UNITY_EDITOR
     if (GameModel.main == null) {
       // GameModel.main = Serializer.LoadFromFile();
-      // GameModel.GenerateNewGameAndSetMain();
-      GameModel.GenerateTutorialAndSetMain();
+      GameModel.GenerateNewGameAndSetMain();
+      // GameModel.GenerateTutorialAndSetMain();
     }
     #endif
     this.model = GameModel.main;
@@ -44,18 +44,18 @@ public class GameModelController : MonoBehaviour {
   void OnApplicationFocus(bool hasFocus) {
     /// save
     if (!hasFocus) {
-      Serializer.SaveToFile(GameModel.main);
+      Serializer.SaveMainToFile();
     }
   }
 
   void OnApplicationPause(bool isPaused) {
     if (isPaused) {
-      Serializer.SaveToFile(GameModel.main);
+      Serializer.SaveMainToFile();
     }
   }
 
   void OnApplicationQuit() {
-    Serializer.SaveToFile(GameModel.main);
+    Serializer.SaveMainToFile();
   }
 #endif
 

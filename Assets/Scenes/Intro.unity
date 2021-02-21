@@ -809,16 +809,16 @@ MonoBehaviour:
 
 
     Her
-    notes detail the location of ancient, dangerous caves with a unique ecology:
-    grass that twists into knives; oaks that shoot up overnight; earthen hulks.
+    notes detail the location of ancient, dangerous caves with a unique ecology.
+    Grass that twists into knives. Oaks that shoot up overnight. Earthen hulks.
 
 
-    She
-    believes deep within these caves lies the Tree of Life.
+    Deep
+    within these caves lies the Tree of Life.
 
 
-    You have not heard
-    from her in weeks.
+    You have not heard from her in
+    weeks.
 
 
     ---
@@ -943,7 +943,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -16, y: 8}
-  m_SizeDelta: {x: 120, y: 30}
+  m_SizeDelta: {x: 200.7907, y: 30}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &811695336
 MonoBehaviour:
@@ -1063,6 +1063,7 @@ GameObject:
   - component: {fileID: 928389249}
   - component: {fileID: 928389248}
   - component: {fileID: 928389251}
+  - component: {fileID: 928389252}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1232,6 +1233,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &928389252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928389247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 231b05586036c2d46aa5ecd580c731f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1021473145
 GameObject:
   m_ObjectHideFlags: 0
@@ -2051,7 +2064,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Rewatch Intro
+  m_text: Replay Intro/Tutorial
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 2218378521326946172, guid: da3d4f5b7f892d7498f8d6aa917cac50,
@@ -2087,7 +2100,7 @@ MonoBehaviour:
   m_fontSizeMax: 128
   m_fontStyle: 0
   m_HorizontalAlignment: 4
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2095,7 +2108,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

@@ -83,6 +83,7 @@ public class GameModel {
 
   private void generateTutorial() {
     player = new Player(new Vector2Int(2, 4));
+    // player = new Player(new Vector2Int(50, 4));
     MyRandom.SetSeed(seed);
     floorSeeds = new List<int>();
     /// generate floor seeds first

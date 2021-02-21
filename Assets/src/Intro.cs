@@ -79,13 +79,13 @@ public class Intro : MonoBehaviour {
   }
 
   private void FadeOutButtonsAndMusic() {
-    StartCoroutine(EzraController.FadeOut(Camera.main.GetComponent<AudioSource>(), 1));
+    StartCoroutine(FadeAudio(Camera.main.GetComponent<AudioSource>(), 1, 0));
     foreach (var button in GetComponentsInChildren<Button>()) {
       button.interactable = false;
     }
   }
 
-  private void GoToGameScene() {
+  public void GoToGameScene() {
     StartCoroutine(TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
   }
 
@@ -118,4 +118,12 @@ public class Intro : MonoBehaviour {
     } while (t < 1);
     callback(1);
   }
+
+  public static IEnumerator FadeAudio(AudioSource audioSource, float FadeTime, float targetVolume) {
+    float startVolume = audioSource.volume;
+    yield return AnimateLinear(FadeTime, (t) => {
+      audioSource.volume = Mathf.Lerp(startVolume, targetVolume, t);
+    });
+  }
+
 }

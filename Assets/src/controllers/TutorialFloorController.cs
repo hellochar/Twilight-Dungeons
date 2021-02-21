@@ -132,18 +132,19 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
 
     // come in from left
     AnimateHorizontally(sidePanel, -900);
-    StartCoroutine(DelayedMessage());
-    IEnumerator DelayedMessage() {
-      yield return new WaitForSeconds(3f);
-      Messages.Create("Some enemies attack each other!", 5);
-    }
   }
 
   private void HandleTutorialEnded() {
     Settings.Set(Settings.LoadOrGetDefaultSettings());
-    /// quit the scenario and go back to the main screen
     var blackOverlay = GameObject.Find("BlackOverlay");
-    StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+    if (Serializer.HasSave()) {
+      /// quit the tutorial.
+      StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+    } else {
+      GameModel.GenerateNewGameAndSetMain();
+      /// if there's no save, go straight to the real game
+      StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+    }
   }
 
   void AnimateHorizontally(GameObject gameObject, float startX, float duration = 2) {

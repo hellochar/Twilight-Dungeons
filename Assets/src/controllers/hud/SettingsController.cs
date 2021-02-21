@@ -25,7 +25,7 @@ public class SettingsController : MonoBehaviour {
   }
 
   public void SaveGame() {
-    Serializer.SaveToFile(GameModel.main);
+    Serializer.SaveMainToFile();
   }
 
   public void LoadGame() {

@@ -21,7 +21,7 @@ public class EzraController : ActorController {
 
   IEnumerator WinGame() {
     FloorController.isInputAllowed = false;
-    StartCoroutine(FadeOut(Camera.main.GetComponent<AudioSource>(), 1));
+    StartCoroutine(Intro.FadeAudio(Camera.main.GetComponent<AudioSource>(), 1, 0));
     yield return StartCoroutine(ZoomInCamera());
 
     /// lasts 3 seconds
@@ -60,17 +60,4 @@ public class EzraController : ActorController {
       yield return new WaitForEndOfFrame();
     } while (t < 1);
   }
-  public static IEnumerator FadeOut(AudioSource audioSource, float FadeTime) {
-    float startVolume = audioSource.volume;
-
-    while (audioSource.volume > 0) {
-      audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
-
-      yield return null;
-    }
-
-    audioSource.Stop();
-    audioSource.volume = startVolume;
-  }
-
 }

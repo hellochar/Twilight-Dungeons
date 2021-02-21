@@ -28,7 +28,13 @@ public static class Serializer {
     File.Delete(SAVE_PATH);
   }
 
-  public static bool SaveToFile(GameModel model) {
+  public static bool SaveMainToFile() {
+    var model = GameModel.main;
+    if (model.home is TutorialFloor) {
+      // don't save tutorial
+      return true;
+    }
+
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(SAVE_PATH)) {
       bf.Serialize(file, model);

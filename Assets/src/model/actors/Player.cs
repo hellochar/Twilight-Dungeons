@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
+[ObjectInfo(description: "Only you can use and equip items.\nOnly you can take stairs.", flavorText: "Though your illness makes you physically weak, your knowledge of flora and fauna helps you navigate these strange caves.")]
 public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler {
   private float timeLastLostWater = 0;
   private float m_water;

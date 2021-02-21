@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TutorialFloorController : FloorController, IStatusAddedHandler {
   private TutorialFloor tutFloor => (TutorialFloor) floor;
-  GameObject dPad, hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, sidePanel, depth;
+  GameObject dPad, hpBar, waterIndicator, inventoryToggle, inventoryContainer, gear, statuses, sidePanel, depth;
   List<GameObject> allUI;
 
   // Start is called before the first frame update
@@ -28,54 +28,36 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     inventoryContainer = GameObject.Find("Inventory Container");
     sidePanel = GameObject.Find("Side Panel");
     depth = GameObject.Find("Depth");
-    allUI = new List<GameObject>() { dPad, hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, sidePanel, depth };
+    gear = GameObject.Find("Gear");
+    allUI = new List<GameObject>() { dPad, hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, sidePanel, depth, gear };
 
     foreach (var ui in allUI) {
       ui.SetActive(false);
     }
 
-    tutFloor.OnMessage += (message) => {
-      switch (message) {
-        case FloorMessage.BlobRoomEntered:
-          BlobRoomEntered();
-          break;
-        case FloorMessage.JackalRoomEntered:
-          JackalRoomEntered();
-          break;
-        case FloorMessage.BerryBushRoomEntered:
-          BerryBushRoomEntered();
-          break;
-        case FloorMessage.FinalRoomEntered:
-          FinalRoomEntered();
-          break;
-        case FloorMessage.TutorialEnd:
-          TutorialEnd();
-          break;
-      }
-    };
-
     Player player = GameModel.main.player;
-    player.nonserializedModifiers.Add(this);
-    player.inventory.OnItemAdded += HandleItemAdded;
-    player.OnGetWater += HandleGetWater;
-  }
 
-  private void FinalRoomEntered() {
-    // come in from left
-    AnimateHorizontally(sidePanel, -900);
-    StartCoroutine(DelayedMessage());
-    IEnumerator DelayedMessage() {
-      yield return new WaitForSeconds(3f);
-      Messages.Create("Some enemies attack each other!", 3);
-    }
-  }
-
-  void OnDestroy() {
-    Settings.Set(Settings.LoadOrGetDefaultSettings());
+    // the order of these statements follows the order in which the player will hit them in the tutorial
+    GameModel.main.turnManager.OnStep += DetectBlobVisible;           // blob room
+    player.nonserializedModifiers.Add(this);                          // guardleaf status
+    GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
+    GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
+    player.inventory.OnItemAdded += HandleFirstItemAdded;             // after harvesting and picking up the first item
+    player.inventory.OnItemAdded += HandleAllFourItemsPickedUp;       // after picking up all 4 items
+    player.OnGetWater += HandleGetWater;                              // after getting water
+    GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
+    tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
 
   /// show dpad, show HP, and explain "tap hold"
-  private void BlobRoomEntered() {
+  void DetectBlobVisible(ISteppable _) {
+    if (!tutFloor.blob.isVisible) {
+      return;
+    }
+
+    GameModel.main.turnManager.OnStep -= DetectBlobVisible;
+    GameModel.main.player.ClearTasks();
+
     // 900px is Canvas's canvas scalar reference resolution
     GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
     // Add 100px buffer because the dPad's anchoredPosition is relative to the center of the pad, which means
@@ -86,6 +68,82 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
       yield return new WaitForSeconds(0.25f);
       Messages.Create("Tap-and-hold on the Blob to learn about it.", 5);
     }
+  }
+
+  public void HandleStatusAdded(Status status) {
+    if (!statuses.activeSelf) {
+      AnimateHorizontally(statuses, 900);
+    }
+  }
+
+  /// purpose - have a challenge fighting jackals; learn about the importance of Grasses.
+  void DetectJackalsVisible(ISteppable _) {
+    if (!tutFloor.jackals.Any(j => j.isVisible)) {
+      return;
+    }
+    GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
+    GameModel.main.player.ClearTasks();
+
+    StartCoroutine(DelayedMessage());
+    IEnumerator DelayedMessage() {
+      yield return new WaitForSeconds(0.25f);
+      Messages.Create("Jackals move fast! Guardleaf will protect you.", 5);
+    }
+  }
+
+  private void DetectEnteredBerryBushRoom(ISteppable obj) {
+    if (GameModel.main.player.pos.x < 30) {
+      return;
+    }
+    GameModel.main.turnManager.OnStep -= DetectEnteredBerryBushRoom;
+    GameModel.main.player.ClearTasks();
+
+    Messages.Create("Tap the Berry Bush to Harvest it!");
+  }
+
+  private void HandleFirstItemAdded(Item arg1, Entity arg2) {
+    GameModel.main.player.inventory.OnItemAdded -= HandleFirstItemAdded;
+
+    AnimateHorizontally(inventoryToggle, 900);
+    AnimateHorizontally(inventoryContainer, 900);
+  }
+
+  int itemsPickedUp = 0;
+  private void HandleAllFourItemsPickedUp(Item arg1, Entity arg2) {
+    if (++itemsPickedUp < 4) {
+      return;
+    }
+    GameModel.main.player.inventory.OnItemAdded -= HandleAllFourItemsPickedUp;
+
+    Messages.Create("Plant the seeds to grow more Berry Bushes!");
+  }
+
+  private void HandleGetWater() {
+    AnimateHorizontally(waterIndicator, -900);
+    GameModel.main.player.OnGetWater -= HandleGetWater;
+  }
+
+  private void DetectEnteredFinalRoom(ISteppable obj) {
+    if (GameModel.main.player.pos.x < 40) {
+      return;
+    }
+    GameModel.main.turnManager.OnStep -= DetectEnteredFinalRoom;
+    GameModel.main.player.ClearTasks();
+
+    // come in from left
+    AnimateHorizontally(sidePanel, -900);
+    StartCoroutine(DelayedMessage());
+    IEnumerator DelayedMessage() {
+      yield return new WaitForSeconds(3f);
+      Messages.Create("Some enemies attack each other!", 5);
+    }
+  }
+
+  private void HandleTutorialEnded() {
+    Settings.Set(Settings.LoadOrGetDefaultSettings());
+    /// quit the scenario and go back to the main screen
+    var blackOverlay = GameObject.Find("BlackOverlay");
+    StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
   }
 
   void AnimateHorizontally(GameObject gameObject, float startX, float duration = 2) {
@@ -103,46 +161,5 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
         dpad.enabled = true;
       }
     }));
-  }
-
-  public void HandleStatusAdded(Status status) {
-    if (!statuses.activeSelf) {
-      AnimateHorizontally(statuses, 900);
-    }
-  }
-
-  private void HandleItemAdded(Item arg1, Entity arg2) {
-    AnimateHorizontally(inventoryToggle, 900);
-    AnimateHorizontally(inventoryContainer, 900);
-    GameModel.main.player.inventory.OnItemAdded -= HandleItemAdded;
-  }
-
-  private void HandleGetWater() {
-    AnimateHorizontally(waterIndicator, -900);
-    GameModel.main.player.OnGetWater -= HandleGetWater;
-  }
-
-
-  /// purpose - have a challenge fighting jackals; learn about the importance of Grasses.
-  private void JackalRoomEntered() {
-    StartCoroutine(DelayedMessage());
-    IEnumerator DelayedMessage() {
-      yield return new WaitForSeconds(0.25f);
-      Messages.Create("Jackals move fast! Guardleaf will protect you.", 5);
-    }
-  }
-
-  private void BerryBushRoomEntered() {
-    // waterIndicator.SetActive(true);
-    Messages.Create("Tap the Berry Bush to Harvest it!");
-    // once they harvest
-    // "Great! You now have items to help you survive, as well as Berry Bush seeds to re-plant."
-    // "Plant your berry bush seeds now. You'll need one water per seed. Collect water by tapping on it."
-  }
-
-  private void TutorialEnd() {
-    /// quit the scenario and go back to the main screen
-    var blackOverlay = GameObject.Find("BlackOverlay");
-    StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
   }
 }

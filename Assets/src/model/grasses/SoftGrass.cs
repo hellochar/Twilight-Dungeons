@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Moving five times on Soft Grass gives you one Free Move.")]
+[ObjectInfo(description: "Moving five times on Soft Grass gives the Player one Free Move.", flavorText: "Feels nice on your feet.")]
 public class SoftGrass : Grass, IActorEnterHandler{
   public SoftGrass(Vector2Int pos) : base(pos) {
   }
@@ -38,7 +38,7 @@ public class SoftGrassStatus : StackingStatus, IBaseActionModifier {
     }
   }
 
-  public override string Info() => "Every fifth move is free!";
+  public override string Info() => "Moving five times on Soft Grass gives the Player one Free Move.";
 }
 
 [System.Serializable]

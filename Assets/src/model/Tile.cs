@@ -94,12 +94,13 @@ public enum TileVisiblity {
 }
 
 [Serializable]
+[ObjectInfo(description: "Creatures can walk here. Grass can grow here.", flavorText: "Earth - the first element.")]
 public class Ground : Tile {
   public Ground(Vector2Int pos) : base(pos) { }
 }
 
 [Serializable]
-[ObjectInfo(description: "Grass cannot grow on Hard Ground.")]
+[ObjectInfo(description: "Grass cannot grow on Hard Ground.", flavorText: "Any workable earth has been blown or washed away.")]
 public class HardGround : Tile {
   public HardGround(Vector2Int pos) : base(pos) { }
 
@@ -110,12 +111,13 @@ public class HardGround : Tile {
 }
 
 [Serializable]
+[ObjectInfo(flavorText: "")]
 public class FancyGround : Ground {
   public FancyGround(Vector2Int pos) : base(pos) {
   }
 }
 
-[ObjectInfo(description: "Blocks vision and movement.", flavorText: "This hard rock has weathered centuries of erosion.")]
+[ObjectInfo(description: "Blocks vision and movement.", flavorText: "Hard earth that has weathered centuries of erosion; it's not going anywhere.")]
 [Serializable]
 public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
@@ -125,6 +127,7 @@ public class Wall : Tile {
 }
 
 [Serializable]
+[ObjectInfo(description: "Tap to go back up to the top floor.")]
 public class Upstairs : Tile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(1, 0);
@@ -145,6 +148,7 @@ public class Upstairs : Tile {
 }
 
 [Serializable]
+[ObjectInfo(description: "Tap to go down a floor.")]
 public class Downstairs : Tile, IActorEnterHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(-1, 0);
@@ -162,7 +166,7 @@ public class Downstairs : Tile, IActorEnterHandler {
   }
 }
 
-[ObjectInfo(description: "Plant seeds in Soil.", flavorText: "Good soil is hard to come by in the caves...")]
+[ObjectInfo(description: "Tap to plant a Seed from your inventory.", flavorText: "Fresh, moist, and perfect for growing. Hard to come by in the caves.")]
 [Serializable]
 public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }

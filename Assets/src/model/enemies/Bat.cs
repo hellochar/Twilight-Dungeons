@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Chases and attacks nearest creature.\nLifesteals.\nGoes into Deep Sleep after 7 turns awake.\nOccasionally drops Bat Tooth.")]
+[ObjectInfo(description: "Targets the nearest creature.\nHeals when it deals damage.\nGoes into Deep Sleep after 7 turns awake.", flavorText: "“Eat, sleep, fly, repeat!\nAs far as I'm concerned, you're meat!”\n\t\t - Northland nursery rhyme")]
 public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   public Bat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 7;

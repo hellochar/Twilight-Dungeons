@@ -4,10 +4,10 @@ using System.Linq;
 using UnityEngine;
 
 class TutorialFloor : Floor {
-  public Action<FloorMessage> OnMessage = delegate { };
-  internal BerryBush berryBush;
-  internal Blob blob;
-  private List<Actor> jackals;
+  public BerryBush berryBush;
+  public Blob blob;
+  public List<Actor> jackals;
+  public event Action OnTutorialEnded;
 
   public TutorialFloor() : base(-1, 53, 9) {
     /// things to explicitly teach:
@@ -59,7 +59,6 @@ class TutorialFloor : Floor {
     // second room - one blob
     this.blob = new Blob(new Vector2Int(15, 4));
     Put(blob);
-    GameModel.main.turnManager.OnStep += DetectBlobVisible;
 
     // third room - three jackals and guardleaf
     this.jackals = new List<Actor>();
@@ -73,7 +72,6 @@ class TutorialFloor : Floor {
     Put(new Guardleaf(guardleafCenter + Vector2Int.up));
     Put(new Guardleaf(guardleafCenter + Vector2Int.down));
     Put(new Guardleaf(guardleafCenter + Vector2Int.left));
-    GameModel.main.turnManager.OnStep += DetectJackalsVisible;
 
     // fourth room - a berry bush
     Put(new Soil(berryBushAndWater.center));
@@ -84,7 +82,6 @@ class TutorialFloor : Floor {
     berryBush.stage.harvestOptions.RemoveAt(2);
     berryBush.stage.harvestOptions.RemoveAt(1);
     Encounters.AddWater(this, berryBushAndWater);
-    GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;
 
     // last room - two blobs and a bat, filled with soft grass
     Encounters.FillWithSoftGrass(this, blobsAndBat);
@@ -92,50 +89,9 @@ class TutorialFloor : Floor {
     Put(new Blob(blobsAndBat.center + Vector2Int.up));
     Put(new Bat(blobsAndBat.center + new Vector2Int(-1, -2)));
     PlaceDownstairs(new Vector2Int(blobsAndBat.max.x, cY));
-    GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;
-  }
-
-  private void DetectEnteredFinalRoom(ISteppable obj) {
-    if (GameModel.main.player.pos.x >= 40) {
-      GameModel.main.turnManager.OnStep -= DetectEnteredFinalRoom;
-      OnMessage(FloorMessage.FinalRoomEntered);
-      GameModel.main.player.ClearTasks();
-    }
-  }
-
-  private void DetectEnteredBerryBushRoom(ISteppable obj) {
-    if (GameModel.main.player.pos.x >= 30) {
-      GameModel.main.turnManager.OnStep -= DetectEnteredBerryBushRoom;
-      OnMessage(FloorMessage.BerryBushRoomEntered);
-      GameModel.main.player.ClearTasks();
-    }
-  }
-
-  void DetectBlobVisible(ISteppable _) {
-    if (blob.isVisible) {
-      GameModel.main.turnManager.OnStep -= DetectBlobVisible;
-      OnMessage(FloorMessage.BlobRoomEntered);
-      GameModel.main.player.ClearTasks();
-    }
-  }
-
-  void DetectJackalsVisible(ISteppable _) {
-    if (jackals.Any(j => j.isVisible)) {
-      GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
-      OnMessage(FloorMessage.JackalRoomEntered);
-      GameModel.main.player.ClearTasks();
-    }
   }
 
   internal override void PlayerGoDownstairs() {
-    OnMessage(FloorMessage.TutorialEnd);
+    OnTutorialEnded?.Invoke();
   }
-}
-
-enum FloorMessage {
-  BlobRoomEntered,
-  JackalRoomEntered,
-  BerryBushRoomEntered,
-  FinalRoomEntered,
-  TutorialEnd,
 }

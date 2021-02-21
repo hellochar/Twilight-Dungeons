@@ -77,12 +77,12 @@ public class GameModel {
     generator = new FloorGenerator(floorSeeds);
     home = generator.generateFloor0(0);
     cave = generator.generateCaveFloor(1);
-    player = new Player(new Vector2Int(3, home.height/2));
+    player = new Player(new Vector2Int(2, home.height/2));
     home.Put(player);
   }
 
   private void generateTutorial() {
-    player = new Player(new Vector2Int(4, 4));
+    player = new Player(new Vector2Int(2, 4));
     MyRandom.SetSeed(seed);
     floorSeeds = new List<int>();
     /// generate floor seeds first

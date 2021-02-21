@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Telegraphs attacks for 1 turn.\nChases you.")]
+[ObjectInfo(description: "Telegraphs attacks for 1 turn.\nChases you.", flavorText: "An odorless mass advances towards you with a steady, brainless determination.")]
 public class Blob : AIActor {
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
   public Blob(Vector2Int pos) : base(pos) {

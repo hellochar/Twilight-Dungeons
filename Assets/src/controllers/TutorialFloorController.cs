@@ -87,7 +87,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(0.25f);
-      Messages.Create("Jackals move fast! Guardleaf will protect you.", 5);
+      Messages.Create("Jackals move fast! The Guardleaf will protect you.", 5);
     }
   }
 

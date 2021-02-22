@@ -13,7 +13,6 @@ using UnityEngine;
 /// Barkmeal - Eat to obtain a buff that heals 4 and gives 4 max HP for 100 turns.
 /// Stompin Boots - when you walk onto any Grass, kill it. Gain a status that blocks the next 1 damage.
 public class Frizzlefen : Plant {
-  public override int maxWater => 3;
   [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 99999;

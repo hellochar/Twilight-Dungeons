@@ -78,11 +78,4 @@ public class PlantController : BodyController {
     popupOpen = false;
     plant.Harvest(choiceIndex);
   }
-
-  internal void Water(Player player) {
-    if (player.water > 0) {
-      player.water--;
-      plant.water++;
-    }
-  }
 }

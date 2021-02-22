@@ -5,7 +5,6 @@ using UnityEngine;
 
 [Serializable]
 public class Thornleaf : Plant {
-  public override int maxWater => 5;
 
   [Serializable]
   class Mature : PlantStage {

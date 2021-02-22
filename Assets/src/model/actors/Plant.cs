@@ -8,17 +8,6 @@ public abstract class Plant : Body, ISteppable {
   /// put earlier than the player so they can act early
   public float turnPriority => 0;
 
-  private int m_water = 2;
-  public int water {
-    get => m_water;
-    set {
-      m_water = Mathf.Clamp(value, 0, maxWater);
-      if (water > 0) {
-        timeNextAction = Mathf.Min(timeNextAction, GameModel.main.time + stage.StepTime);
-      }
-    }
-  }
-
   public float percentGrown {
     get {
       if (stage.NextStage == null) {
@@ -29,7 +18,6 @@ public abstract class Plant : Body, ISteppable {
     }
   }
 
-  public abstract int maxWater { get; }
   private PlantStage _stage;
   public PlantStage stage {
     get => _stage;
@@ -39,7 +27,7 @@ public abstract class Plant : Body, ISteppable {
       timeNextAction = GameModel.main.time + _stage.StepTime;
     }
   }
-  public override string displayName => $"{base.displayName} ({stage.name})";
+  public override string displayName => $"{base.displayName}{ (stage.NextStage == null ? "" : " (" + stage.name + ")") }";
 
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
@@ -49,10 +37,6 @@ public abstract class Plant : Body, ISteppable {
   }
 
   public float Step() {
-    if (water <= 0) {
-      return 99999;
-    }
-    water--;
     var stageBefore = stage;
     stage.Step();
     if (stageBefore == stage) {
@@ -71,11 +55,7 @@ public abstract class Plant : Body, ISteppable {
 
   internal string GetUIText() {
     var uiText = stage.getUIText();
-    if (water > 0) {
-      return uiText;
-    } else {
-      return uiText + "\nNeeds water to keep growing!";
-    }
+    return uiText;
   }
 
   internal void Harvest(int choiceIndex) {

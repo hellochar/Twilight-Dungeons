@@ -4,7 +4,6 @@ using UnityEngine;
 
 [Serializable]
 public class Weirdwood : Plant {
-  public override int maxWater => 5;
   [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 99999;

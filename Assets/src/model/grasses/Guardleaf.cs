@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Blocks up to 5 attack damage dealt to any creature standing on the Guardleaf.")]
+[ObjectInfo(description: "Blocks up to 5 attack damage dealt to the creature standing on the Guardleaf.", flavorText: "Huge leaves, sprouting out from the ground, gently twist themselves around you in a protective cover.")]
 public class Guardleaf : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public int guardLeft;

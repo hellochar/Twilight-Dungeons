@@ -28,7 +28,6 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
     PlayerPrefs.SetInt("hasSeenPrologue", 1);
     gameObject.SetActive(true);
     GetComponentInChildren<TMPro.TMP_Text>().color = Color.white;
-    GetComponent<Image>().color = Color.black;
     StartCoroutine(PlayPrologueAsync());
   }
 

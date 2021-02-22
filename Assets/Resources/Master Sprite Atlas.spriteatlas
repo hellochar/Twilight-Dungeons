@@ -33,7 +33,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5174384
+    totalSpriteSurfaceArea: 5174640
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -4405,6 +4405,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 45f265a897d4c604092c4d7a58ab63eb, type: 3}
   - {fileID: 21300000, guid: 5fe55fb858146144aabef4d64ac925e4, type: 3}
   - {fileID: 21300000, guid: 54eca3d84122d7840a50c82d66e7c75a, type: 3}
+  - {fileID: 21300000, guid: 7940bcd8c09c7974e81132867820f257, type: 3}
   - {fileID: -5750959877437155064, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: 1123546238895616638, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: -9128439656174682321, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
@@ -12329,6 +12330,7 @@ SpriteAtlas:
   - constricted-particle
   - pumpkin
   - agave
+  - peace
   - pixeland_167
   - pixeland_164
   - pixeland_165

@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 5630940
+    totalSpriteSurfaceArea: 5631964
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -68,6 +68,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 45ad99319893c174b9528e9d30062aa6, type: 3}
   - {fileID: 21300000, guid: bab8bb41f981cd649a1e50040d3b29da, type: 3}
   - {fileID: 21300000, guid: 94ec90513cc275148a5d11caf062a4da, type: 3}
+  - {fileID: 21300000, guid: 89882f71cb7576848931d1fc509bd862, type: 3}
   - {fileID: 21300000, guid: 328524a1f9c496047a7e4d34ad95c8bc, type: 3}
   - {fileID: 21300000, guid: b72444a1a06d5b84f823895a9959900e, type: 3}
   - {fileID: 21300000, guid: 08508fb1398e67849aee030fc1035f23, type: 3}
@@ -7994,6 +7995,7 @@ SpriteAtlas:
   - frizzlefen
   - poisoned-status
   - 1-bit 16px icons part-1 outlines
+  - strength
   - hydra-head
   - poisonmoss
   - Path Dot

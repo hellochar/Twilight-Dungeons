@@ -38,6 +38,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     Player player = GameModel.main.player;
 
     // the order of these statements follows the order in which the player will hit them in the tutorial
+    StartTutorial();
     GameModel.main.turnManager.OnStep += DetectBlobVisible;           // blob room
     player.nonserializedModifiers.Add(this);                          // guardleaf status
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
@@ -47,6 +48,14 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     player.OnGetWater += HandleGetWater;                              // after getting water
     GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
     tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
+  }
+
+  void StartTutorial() {
+    StartCoroutine(DelayedMessage());
+    IEnumerator DelayedMessage() {
+      yield return new WaitForSeconds(1f);
+      Messages.Create("Tap to move or attack.", 3);
+    }
   }
 
   /// show dpad, show HP, and explain "tap hold"

@@ -1,5 +1,8 @@
 using UnityEngine;
 using System;
+using UnityEngine.Audio;
+
+public delegate void SettingsModifier(ref Settings s);
 
 [Serializable]
 public struct Settings {
@@ -25,7 +28,15 @@ public struct Settings {
     return new Settings {
       moveMode = MoveMode.DPad | MoveMode.TouchTile,
       showSidePanel = true,
+      music = true,
+      soundEffects = true
     };
+  }
+
+  public static void Update(SettingsModifier modify) {
+    var newSettings = main;
+    modify(ref newSettings);
+    Settings.Set(newSettings);
   }
 
   public static void Set(Settings newSettings, bool save = true) {
@@ -40,6 +51,8 @@ public struct Settings {
 
   public MoveMode moveMode;
   public bool showSidePanel;
+  public bool music;
+  public bool soundEffects;
 }
 
 [Flags]

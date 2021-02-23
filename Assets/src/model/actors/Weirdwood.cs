@@ -72,7 +72,7 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
     }
   }
 
-  internal override string GetStats() => "Spawns Vile Growths in a line towards enemies in range 5.\nVile Growth does 1 damage per turn to the creature standing over it. Lasts 12 turns.";
+  internal override string GetStats() => "Spawns Vile Growths in lines towards every enemy in range 5.\nVile Growth does 1 damage per turn to any creature standing over it. Lasts 12 turns.";
 }
 
 [Serializable]

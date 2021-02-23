@@ -14,10 +14,14 @@ public class SettingsController : MonoBehaviour {
 
   public TMPro.TMP_Dropdown movementDropdown;
   public Toggle sidePanelToggle;
+  public Toggle musicToggle;
+  public Toggle soundEffectsToggle;
 
   void Start() {
     movementDropdown.SetValueWithoutNotify(ChoiceToMoveMode.IndexOf(Settings.main.moveMode));
     sidePanelToggle.SetIsOnWithoutNotify(Settings.main.showSidePanel);
+    musicToggle.SetIsOnWithoutNotify(Settings.main.music);
+    soundEffectsToggle.SetIsOnWithoutNotify(Settings.main.soundEffects);
   }
 
   public void Restart() {
@@ -38,15 +42,11 @@ public class SettingsController : MonoBehaviour {
     gameObject.SetActive(false);
   }
 
-  public void SetMoveMode(int choice) {
-    var newSettings = Settings.main;
-    newSettings.moveMode = ChoiceToMoveMode[choice];
-    Settings.Set(newSettings);
-  }
+  public void SetMoveMode(int choice) => Settings.Update((ref Settings s) => s.moveMode = ChoiceToMoveMode[choice]);
 
-  public void SetSidePanel(bool on) {
-    var newSettings = Settings.main;
-    newSettings.showSidePanel = on;
-    Settings.Set(newSettings);
-  }
+  public void SetSidePanel(bool on) => Settings.Update((ref Settings s) => s.showSidePanel = on);
+
+  public void SetMusic(bool on) => Settings.Update((ref Settings s) => s.music = on);
+
+  public void SetSoundEffects(bool on) => Settings.Update((ref Settings s) => s.soundEffects = on);
 }

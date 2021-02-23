@@ -12096,3 +12096,72 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1001 &7420711473924766510
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 656.2371
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 275.4668
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -123.42661
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735289, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420711474293735291, guid: 3b0762711420c1a408409df692178c0c,
+        type: 3}
+      propertyPath: m_Name
+      value: Match Audio Mixer Settings
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3b0762711420c1a408409df692178c0c, type: 3}

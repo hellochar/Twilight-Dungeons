@@ -81,8 +81,10 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
     return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
   }
 
-  internal void WebRemoved() {
-    Kill(actor);
+  internal void WebRemoved(Actor actor) {
+    if (!IsActorNice(actor)) {
+      Kill(actor);
+    }
   }
 }
 
@@ -133,7 +135,7 @@ internal class WebStatus : Status, IBaseActionModifier {
   }
 
   public override void End() {
-    owner.WebRemoved();
+    owner.WebRemoved(actor);
   }
 
   public override void Step() {

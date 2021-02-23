@@ -14,6 +14,7 @@ public class MatchAudioMixerSettings : MonoBehaviour {
       Destroy(this.gameObject);
       return;
     }
+    DontDestroyOnLoad(this.gameObject);
     instance = this;
     Settings.OnChanged += MatchSettings;
     MatchSettings();

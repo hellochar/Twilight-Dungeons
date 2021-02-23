@@ -18,17 +18,9 @@ public class TunnelrootController : GrassController {
 
   private void HandleOpenChanged(bool isOpen) {
     if (isOpen && sr.sprite != open) {
-      StartCoroutine(TransitionSprite(closed, middle, open));
+      StartCoroutine(Transitions.SpriteSwap(sr, 0.5f, closed, middle, open));
     } else if (!isOpen && sr.sprite != closed) {
-      StartCoroutine(TransitionSprite(open, middle, closed));
+      StartCoroutine(Transitions.SpriteSwap(sr, 0.5f, open, middle, closed));
     }
-  }
-
-  public IEnumerator TransitionSprite(Sprite start, Sprite mid, Sprite end) {
-    sr.sprite = start;
-    yield return new WaitForSeconds(.13f);
-    sr.sprite = mid;
-    yield return new WaitForSeconds(.13f);
-    sr.sprite = end;
   }
 }

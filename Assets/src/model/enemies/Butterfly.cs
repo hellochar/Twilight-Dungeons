@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo("butterfly", "")]
+[ObjectInfo("butterfly", flavorText: "Delicate and gentle, this Butterfly seems drawn to you, waiting for your command.")]
 public class ItemButterfly : Item, IUsable {
   public void Use(Actor a) {
     var tile = Util.RandomPick(a.floor.GetAdjacentTiles(a.pos).Where((t) => t.CanBeOccupied()));
@@ -12,10 +12,12 @@ public class ItemButterfly : Item, IUsable {
       Destroy();
     }
   }
+
+  internal override string GetStats() => "Summons an allied Butterfly. Every 5 turns, the Butterfly duplicates the Grass you're standing on to the four cardinally adjacent tiles.";
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Every 5 turns, Butterfly will duplicate the Grass you're standing on to the cardinally adjacent squares.")]
+[ObjectInfo(description: "Every 5 turns, the Butterfly duplicates the Grass you're standing on to the four cardinally adjacent tiles.")]
 public class Butterfly : AIActor {
 
   private static float DUPLICATE_CD = 5;

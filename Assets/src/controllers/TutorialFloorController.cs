@@ -148,11 +148,11 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     var blackOverlay = GameObject.Find("BlackOverlay");
     if (Serializer.HasSave()) {
       /// quit the tutorial.
-      StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
     } else {
       GameModel.GenerateNewGameAndSetMain();
       /// if there's no save, go straight to the real game
-      StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
     }
   }
 
@@ -165,7 +165,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     }
     var rt = gameObject.GetComponent<RectTransform>();
     var target = rt.anchoredPosition;
-    StartCoroutine(Intro.AnimateLinear(duration, (t) => {
+    StartCoroutine(Transitions.AnimateLinear(duration, (t) => {
       rt.anchoredPosition = Vector2.Lerp(new Vector2(startX, target.y), target, EasingFunctions.EaseOutCubic(0, 1, t));
       if (t == 1 && dpad != null) {
         dpad.enabled = true;

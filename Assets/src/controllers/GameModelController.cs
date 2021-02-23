@@ -130,7 +130,7 @@ public class GameModelController : MonoBehaviour {
     img.color = new Color(0, 0, 0, 0);
     var player = GameObject.Find("Player");
     player.SetActive(false);
-    yield return StartCoroutine(Intro.FadeTo(img, 0.5f));
+    yield return StartCoroutine(Transitions.FadeTo(img, 0.5f));
     yield return new WaitForSeconds(0.5f);
     ActivateNewFloor(model.currentFloor);
     player.SetActive(true);

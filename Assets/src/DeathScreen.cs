@@ -18,10 +18,10 @@ public class DeathScreen : MonoBehaviour, IDeathHandler {
 
   public void Restart() {
     GameModel.GenerateNewGameAndSetMain();
-    StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
   }
 
   public void MainMenu() {
-    StartCoroutine(Intro.TransitionToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
   }
 }

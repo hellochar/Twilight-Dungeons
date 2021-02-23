@@ -21,7 +21,7 @@ public class EzraController : ActorController {
 
   IEnumerator WinGame() {
     FloorController.isInputAllowed = false;
-    StartCoroutine(Intro.FadeAudio(Camera.main.GetComponent<AudioSource>(), 1, 0));
+    StartCoroutine(Transitions.FadeAudio(Camera.main.GetComponent<AudioSource>(), 1, 0));
     yield return StartCoroutine(ZoomInCamera());
 
     /// lasts 3 seconds
@@ -45,7 +45,7 @@ public class EzraController : ActorController {
 
     /// TODO play victory music
     var blackOverlay = GameObject.Find("BlackOverlay");
-    yield return StartCoroutine(Intro.FadeTo(blackOverlay.GetComponent<Image>(), 5));
+    yield return StartCoroutine(Transitions.FadeTo(blackOverlay.GetComponent<Image>(), 5));
   }
 
   IEnumerator ZoomInCamera() {

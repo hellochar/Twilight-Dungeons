@@ -11,6 +11,7 @@ public class SidePanelController : MonoBehaviour {
   public Dictionary<string, Entity> entities;
   public GameObject creaturesContainer;
   public GameObject grassesContainer;
+  public GameObject othersContainer;
   public GameObject buttonPrefab;
 
   void Start() {
@@ -34,9 +35,11 @@ public class SidePanelController : MonoBehaviour {
     var hasCreatures = creaturesContainer.transform.childCount > 2;
     // 1 is the title
     var hasGrasses = grassesContainer.transform.childCount > 1;
+    var hasOthers = othersContainer.transform.childCount > 1;
 
     creaturesContainer.SetActive(hasCreatures);
     grassesContainer.SetActive(hasGrasses);
+    othersContainer.SetActive(hasOthers);
   }
 
   void UpdateItems() {
@@ -53,7 +56,7 @@ public class SidePanelController : MonoBehaviour {
     foreach (var name in entities.Keys) {
       var entity = entities[name];
       if (!entries.ContainsKey(name)) {
-        var contentBox = entity is Grass ? grassesContainer : creaturesContainer;
+        var contentBox = entity is Grass ? grassesContainer : entity is Actor ? creaturesContainer : othersContainer;
         var buttonObject = Instantiate(buttonPrefab, contentBox.transform.position, Quaternion.identity, contentBox.transform);
         buttonObject.SetActive(true);
         entries[name] = buttonObject;

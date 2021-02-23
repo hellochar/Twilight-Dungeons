@@ -9,6 +9,6 @@ public class FadeInAudio : MonoBehaviour {
     source = GetComponent<AudioSource>();
     var finalVolume = source.volume;
     source.volume = 0;
-    StartCoroutine(Intro.FadeAudio(source, 2, finalVolume));
+    StartCoroutine(Transitions.FadeAudio(source, 2, finalVolume));
   }
 }

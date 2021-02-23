@@ -7,6 +7,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.b
+      value: 0.5362024
+      objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.g
+      value: 0.617
+      objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: bloodColor.r
+      value: 0.5582381
+      objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_RootOrder
@@ -65,7 +80,7 @@ PrefabInstance:
     - target: {fileID: 6870171582872785322, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Name
-      value: Thistlebog Variant
+      value: Thistlebog
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}

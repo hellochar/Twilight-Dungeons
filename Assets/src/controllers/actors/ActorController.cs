@@ -23,8 +23,6 @@ public class ActorController : BodyController,
     actor.OnSetTask += HandleSetTask;
     HandleSetTask(actor.task);
 
-    actor.nonserializedModifiers.Add(this);
-
     /// create GameObjects any statuses that already exist
     foreach (var s in actor.statuses.list) {
       HandleStatusAdded(s);

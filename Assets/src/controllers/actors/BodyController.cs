@@ -9,6 +9,8 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
   protected GameObject sprite;
   protected GameObject damageContainer;
   public virtual void Start() {
+    body.nonserializedModifiers.Add(this);
+
     if (hpChangeTextPrefab == null) {
       hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
     }

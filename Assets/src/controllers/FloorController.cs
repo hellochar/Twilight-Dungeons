@@ -173,7 +173,7 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     string description = entity.description + "\n\n";
     if (entity is Body b) {
       if (b is Actor a) {
-        description += $"{Util.DescribeDamageSpread(a.BaseAttackDamage())}\n";
+        description += Util.DescribeDamageSpread(a.BaseAttackDamage());
       }
       description += $"Max HP: {b.maxHp}\n";
     }

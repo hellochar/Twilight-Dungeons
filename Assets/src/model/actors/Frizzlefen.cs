@@ -92,19 +92,18 @@ class ItemPlatedArmor : EquippableItem, IDurable, IAttackDamageTakenModifier {
 [ObjectInfo("colored_transparent_packed_675")]
 class ItemBarkmeal : Item, IEdible {
   public void Eat(Actor a) {
-    a.Heal(2);
     a.statuses.Add(new BarkmealStatus());
     Destroy();
   }
 
-  internal override string GetStats() => "Eat to heal 2 HP and permanently get +4 max HP.";
+  internal override string GetStats() => "Eat to permanently gain +4 max HP.";
 }
 
 [Serializable]
 [ObjectInfo("colored_transparent_packed_675")]
 class BarkmealStatus : StackingStatus, IMaxHPModifier {
   public override StackingMode stackingMode => StackingMode.Add;
-  public BarkmealStatus() : base() {}
+  public BarkmealStatus() : base(4) {}
 
   public override string Info() => $"+{stacks} max HP.";
 

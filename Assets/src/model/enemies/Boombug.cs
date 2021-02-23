@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
+[ObjectInfo(description: "Does not attack.\nLeaves an explosive corpse on death.", flavorText: "How such a creature was able to survive and breed is Nature's mystery.")]
 public class Boombug : AIActor {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.WAIT] = 2f,
@@ -35,7 +36,7 @@ public class Boombug : AIActor {
 }
 
 [Serializable]
-[ObjectInfo(spriteName: "boombug", flavorText: "Evolution sure comes up with crazy shit sometimes...")]
+[ObjectInfo(spriteName: "boombug", flavorText: "This boombug corpse has been defused, but can be easily triggered again...")]
 public class ItemBoombugCorpse : Item, IStackable {
   public ItemBoombugCorpse(int stacks) {
     this.stacks = stacks;
@@ -56,6 +57,8 @@ public class ItemBoombugCorpse : Item, IStackable {
     }
   }
 
+  internal override string GetStats() => "Throw at any visible tile to leave an explosive Boombug Corpse there.";
+
   public void Throw(Player player, Vector2Int position) {
     player.floor.Put(new BoombugCorpse(position));
     stacks--;
@@ -63,6 +66,7 @@ public class ItemBoombugCorpse : Item, IStackable {
 }
 
 [Serializable]
+[ObjectInfo("Explodes after one turn, dealing 3 damage and destroying unprotected Grasses in adjacent squares.\nAttacking it will defuse the corpse.")]
 public class BoombugCorpse : Actor, IDeathHandler {
   private bool exploded = false;
   [field:NonSerialized] /// controller only

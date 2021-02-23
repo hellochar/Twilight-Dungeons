@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Walking into the Tunnelroot teleports you to a paired Tunnelroot elsewhere on this level. 5 turn cooldown.")]
+[ObjectInfo(description: "Walking into the Tunnelroot teleports you to the paired Tunnelroot elsewhere on this level.")]
 public class Tunnelroot : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
 

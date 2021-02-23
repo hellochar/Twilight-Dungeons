@@ -308,8 +308,13 @@ public class Encounters {
 
   public static Encounter AddTunnelroot = new Encounter((floor, room) => {
     var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
-    /// special - put partner anywhere else on the floor
-    var partner = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((tile) => tile != start && Tunnelroot.CanOccupy(tile) && tile.grass == null));
+    /// special - put partner far away on this floor
+    var partner = Util.RandomPick(
+      floor.EnumerateRoomTiles(floor.root)
+        .Where((tile) => tile != start && Tunnelroot.CanOccupy(tile) && tile.grass == null)
+        .OrderBy(start.DistanceTo)
+        .Take(40)
+    );
     if (start != null && partner != null) {
       var root1 = new Tunnelroot(start.pos);
       var root2 = new Tunnelroot(partner.pos);

@@ -43,12 +43,12 @@ public class Item {
 
 public static class ItemExtensions {
   public static string GetStatsFull(this Item item) {
-    var text = item.GetStats();
+    var text = item.GetStats() + "\n";
     if (item is IWeapon w) {
-      text += $"\n{Util.DescribeDamageSpread(w.AttackSpread)}";
+      text += Util.DescribeDamageSpread(w.AttackSpread);
     }
     if (item is IDurable d) {
-      text += $"\nDurability: {d.durability}/{d.maxDurability}.";
+      text += $"Durability: {d.durability}/{d.maxDurability}.";
     }
     return text.Trim();
   }

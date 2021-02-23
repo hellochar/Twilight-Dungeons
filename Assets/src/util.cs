@@ -122,10 +122,13 @@ public static class Util {
 
   public static string DescribeDamageSpread((int, int) spread) {
     var (min, max) = spread;
+    if (min == 0 && max == 0) {
+      return "";
+    }
     if (min == max) {
-      return $"{min} damage.";
+      return $"{min} damage.\n";
     } else {
-      return $"{min} - {max} damage.";
+      return $"{min} - {max} damage.\n";
     }
   }
 

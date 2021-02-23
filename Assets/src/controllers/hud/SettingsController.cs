@@ -21,6 +21,7 @@ public class SettingsController : MonoBehaviour {
   }
 
   public void Restart() {
+    GameModel.GenerateNewGameAndSetMain();
     SceneManager.LoadSceneAsync("Scenes/Game");
   }
 

@@ -89,8 +89,7 @@ public class Actor : Body, ISteppable {
 
   /// get one instance of an attack damage from this Actor
   internal virtual (int, int) BaseAttackDamage() {
-    Debug.LogWarning(this + " using base GetAttackDamage");
-    return (1, 2);
+    return (0, 0);
   }
 
   internal virtual int GetFinalAttackDamage() {

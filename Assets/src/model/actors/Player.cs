@@ -9,8 +9,8 @@ using UnityEngine.Events;
 [ObjectInfo(description: "Only you can use and equip items.\nOnly you can take stairs.", flavorText: "Though your illness makes you physically weak, your knowledge of flora and fauna helps you navigate these strange caves.")]
 public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler {
   private float timeLastLostWater = 0;
-  private float m_water;
-  public float water {
+  private int m_water;
+  public int water {
     get => m_water;
     set {
       m_water = value;
@@ -73,7 +73,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     GameModel.main.EnqueueEvent(() => {
       if (GameModel.main.time - timeLastLostWater > 10) {
         if (water > 0) {
-          water -= 0.01f;
+          water -= 1;
         }
         timeLastLostWater = GameModel.main.time;
       }

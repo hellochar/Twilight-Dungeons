@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -44,6 +45,10 @@ class ItemAgave : Item, IStackable {
   }
 
   private void RefineImpl(Player player) {
+    if (player.water < 25) {
+      throw new CannotPerformActionException("Need 25 water!");
+    }
+    player.water -= 25;
     player.floor.Put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
     Destroy();
   }
@@ -56,17 +61,21 @@ class ItemAgave : Item, IStackable {
     return methods;
   }
 
-  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey.";
+  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey (costs 0.25 water).";
 }
 
 [Serializable]
-[ObjectInfo("roguelikeSheet_transparent_647", "")]
+[ObjectInfo("roguelikeSheet_transparent_647", flavorText: "A restorative and tasty treat!")]
 class ItemAgaveHoney : Item, IEdible {
   public void Eat(Actor a) {
-    a.Heal(1);
-    // a.statuses.Add(new WellFedStatus(10));
-    Destroy();
+    var debuffs = a.statuses.list.Where((s) => s.isDebuff);
+    if (debuffs.Count() > 0) {
+      foreach (var debuff in debuffs) {
+        debuff.Remove();
+      }
+      Destroy();
+    }
   }
 
-  internal override string GetStats() => "Perhaps the tastiest thing you've ever tried!";
+  internal override string GetStats() => "Removes all debuffs (red outlined Statuses).";
 }

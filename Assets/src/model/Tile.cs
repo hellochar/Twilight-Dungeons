@@ -172,14 +172,14 @@ public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }
 }
 
-[ObjectInfo(description: "Tap to collect. Planting a seed costs 1 water.", flavorText: "Water water everywhere...")]
+[ObjectInfo(description: "Tap to collect. Planting a seed costs 100 water.", flavorText: "Water water everywhere...")]
 [Serializable]
 public class Water : Tile {
   public Water(Vector2Int pos) : base(pos) {
   }
 
   public void Collect(Player player) {
-    player.water += 1.1f;
+    player.water += MyRandom.Range(105, 120);
     floor.Put(new Ground(pos));
   }
 }

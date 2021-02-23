@@ -8,9 +8,11 @@ public class StatusIconController : MonoBehaviour {
   [NonSerialized]
   public Status status;
   Image icon;
+  public GameObject redOutline;
   TMPro.TMP_Text text;
 
   void Start() {
+    redOutline.SetActive(status.isDebuff);
     icon = transform.Find("Icon").GetComponent<Image>();
     icon.sprite = ObjectInfo.GetSpriteFor(status);
     text = transform.Find("Text (TMP)").GetComponent<TMPro.TMP_Text>();

@@ -1,13 +1,12 @@
 [System.Serializable]
-[ObjectInfo(spriteName: "pumpkin-helmet", flavorText: "It slows you down but it protects your noggin.")]
-internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenModifier, IActionCostModifier {
+[ObjectInfo(spriteName: "pumpkin-helmet", flavorText: "Protects your noggin from gentle hits, but a hearty thwak will break it.")]
+internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }
-  public int maxDurability { get; protected set; }
+  public int maxDurability => 9;
 
   public ItemPumpkinHelmet() {
-    this.maxDurability = 30;
-    this.durability = maxDurability;
+    durability = maxDurability;
   }
 
   public int Modify(int damage) {
@@ -15,10 +14,11 @@ internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenM
     return damage - 1;
   }
 
-  public ActionCosts Modify(ActionCosts input) {
-    input[ActionType.ATTACK] *= 1.5f;
-    return input;
-  }
+  internal override string GetStats() => "Blocks 1 damage. If you still take attack damage, the Pumpkin Helmet breaks.";
 
-  internal override string GetStats() => "Reduces damage taken by 1.\nYou attack 50% slower.";
+  public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
+    if (damage > 0) {
+      Destroy();
+    }
+  }
 }

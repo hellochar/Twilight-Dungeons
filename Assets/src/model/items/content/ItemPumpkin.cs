@@ -1,30 +1,26 @@
 [System.Serializable]
-[ObjectInfo("pumpkin", "Round and smooth and full of raw calories.")]
+[ObjectInfo("pumpkin", "Round and heavy and filled with raw calories.")]
 public class ItemPumpkin : Item, IEdible {
   public ItemPumpkin() {}
 
   public void Eat(Actor a) {
-    a.statuses.Add(new WellFedStatus(50));
+    a.statuses.Add(new StrengthStatus(6));
     a.floor.Put(new ItemOnGround(a.pos, new ItemPumpkinHelmet(), a.pos));
     Destroy();
   }
 
-  internal override string GetStats() => "Gives you the Well Fed buff.\nMakes a nice helmet after you eat it.";
+  internal override string GetStats() => "Gives 6 stacks of Strength.\nMakes a nice helmet after you eat it.";
 }
 
 [System.Serializable]
-[ObjectInfo("pumpkin", "Yummy")]
-class WellFedStatus : StackingStatus, IBaseActionModifier, IAttackDamageModifier {
-  public WellFedStatus(int stacks) : base(stacks) {}
-
-  public BaseAction Modify(BaseAction input) {
-    stacks--;
-    return input;
-  }
+[ObjectInfo("strength", "Yummy")]
+class StrengthStatus : StackingStatus, IAttackDamageModifier {
+  public StrengthStatus(int stacks) : base(stacks) {}
 
   public int Modify(int input) {
+    stacks--;
     return input + 1;
   }
 
-  public override string Info() => $"Deal +1 damage!";
+  public override string Info() => $"Your next {stacks} attacks deal +1 damage!";
 }

@@ -24,18 +24,13 @@ public class SettingsController : MonoBehaviour {
     soundEffectsToggle.SetIsOnWithoutNotify(Settings.main.sfx);
   }
 
-  public void Restart() {
-    GameModel.GenerateNewGameAndSetMain();
-    SceneManager.LoadSceneAsync("Scenes/Game");
-  }
-
   public void SaveGame() {
     Serializer.SaveMainToFile();
   }
 
   public void LoadGame() {
     GameModel.main = Serializer.LoadFromFile();
-    Restart();
+    SceneManager.LoadSceneAsync("Scenes/Game");
   }
 
   public void Close() {

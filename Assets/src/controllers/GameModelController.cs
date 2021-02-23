@@ -56,9 +56,12 @@ public class GameModelController : MonoBehaviour {
     }
   }
 
-  void OnApplicationQuit() {
-    Serializer.SaveMainToFile();
-  }
+  /// We cannot save on quit because it's not guaranteed our process will have the grace period
+  /// to finish writing to disk; this risks corrupting the save. OnApplicationPause should cover
+  /// us.
+  // void OnApplicationQuit() {
+  //   Serializer.SaveMainToFile();
+  // }
 #endif
 
   private Coroutine gameLoop;

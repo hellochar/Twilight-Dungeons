@@ -44,7 +44,6 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),
       () => generateSingleRoomFloor(10, 14, 7, 2, 2),
       () => generateSingleRoomFloor(11, 20, 9, 3, 2),
-      () => generateSingleRoomFloor(11, 20, 9, 3, 2),
       () => generateSingleRoomFloor(12, 20, 9, 4, 3, true),
       // () => generateBlobBossFloor(12),
       () => generateSingleRoomFloor(13, 12, 12, 4, 3),
@@ -91,6 +90,9 @@ public class FloorGenerator {
     // pick the generator
     var generator = floorGenerators[depth];
     var floor = generator();
+    if (floor.depth != depth) {
+      throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
+    }
     return floor;
   }
 

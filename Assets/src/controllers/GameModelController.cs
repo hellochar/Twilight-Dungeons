@@ -19,8 +19,11 @@ public class GameModelController : MonoBehaviour {
   void Awake() {
     #if UNITY_EDITOR
     if (GameModel.main == null) {
-      // GameModel.main = Serializer.LoadFromFile();
-      GameModel.GenerateNewGameAndSetMain();
+      if (Serializer.HasSave()) {
+        GameModel.main = Serializer.LoadFromFile();
+      } else {
+        GameModel.GenerateNewGameAndSetMain();
+      }
       // GameModel.GenerateTutorialAndSetMain();
     }
     #endif
@@ -36,7 +39,6 @@ public class GameModelController : MonoBehaviour {
     player.OnSetTask += HandleSetPlayerTask;
     model.turnManager.OnPlayersChoice += HandlePlayersChoice;
     model.turnManager.OnPlayerCannotPerform += HandlePlayerCannotPerform;
-    // AudioClipStore.main.gameStart.Play();
   }
 
 

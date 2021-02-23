@@ -21,7 +21,7 @@ public class SettingsController : MonoBehaviour {
     movementDropdown.SetValueWithoutNotify(ChoiceToMoveMode.IndexOf(Settings.main.moveMode));
     sidePanelToggle.SetIsOnWithoutNotify(Settings.main.showSidePanel);
     musicToggle.SetIsOnWithoutNotify(Settings.main.music);
-    soundEffectsToggle.SetIsOnWithoutNotify(Settings.main.soundEffects);
+    soundEffectsToggle.SetIsOnWithoutNotify(Settings.main.sfx);
   }
 
   public void Restart() {
@@ -48,5 +48,5 @@ public class SettingsController : MonoBehaviour {
 
   public void SetMusic(bool on) => Settings.Update((ref Settings s) => s.music = on);
 
-  public void SetSoundEffects(bool on) => Settings.Update((ref Settings s) => s.soundEffects = on);
+  public void SetSoundEffects(bool on) => Settings.Update((ref Settings s) => s.sfx = on);
 }

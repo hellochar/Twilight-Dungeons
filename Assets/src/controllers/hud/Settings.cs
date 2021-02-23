@@ -29,7 +29,7 @@ public struct Settings {
       moveMode = MoveMode.DPad | MoveMode.TouchTile,
       showSidePanel = true,
       music = true,
-      soundEffects = true
+      sfx = true
     };
   }
 
@@ -52,7 +52,7 @@ public struct Settings {
   public MoveMode moveMode;
   public bool showSidePanel;
   public bool music;
-  public bool soundEffects;
+  public bool sfx;
 }
 
 [Flags]

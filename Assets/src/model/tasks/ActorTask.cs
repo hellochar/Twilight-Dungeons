@@ -58,7 +58,7 @@ public abstract class ActorTask {
 
   protected abstract BaseAction GetNextActionImpl();
 
-  /// <summary>Called by Actor when this task has ended.</summary>
+  /// <summary>Called by Actor when this task has ended (after it's Stepped).</summary>
   internal virtual void Ended() { }
 
   public ActorTask OnlyCheckBefore() {

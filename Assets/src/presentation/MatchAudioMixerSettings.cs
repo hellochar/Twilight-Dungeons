@@ -21,6 +21,6 @@ public class MatchAudioMixerSettings : MonoBehaviour {
 
   private void MatchSettings() {
     mixer.SetFloat("musicVolume", Settings.main.music ? 0 : -80);
-    mixer.SetFloat("sfxVolume", Settings.main.soundEffects ? 0 : -80);
+    mixer.SetFloat("sfxVolume", Settings.main.sfx ? 0 : -80);
   }
 }

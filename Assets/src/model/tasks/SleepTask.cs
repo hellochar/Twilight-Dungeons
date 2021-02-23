@@ -24,7 +24,8 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
   /// wake up when hurt!
   public void HandleTakeAnyDamage(int damage) {
     if (damage > 0) {
-      // end this task immediately (will trigger Ended())
+      // Wake up early by ending this task immediately (will trigger Ended())
+      actor.statuses.Add(new SurprisedStatus());
       actor.GoToNextTask();
     }
   }
@@ -58,12 +59,9 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
         }
       }
       done = true;
+      actor.statuses.Add(new SurprisedStatus());
     }
     return new WaitBaseAction(actor);
-  }
-
-  internal override void Ended() {
-    actor.statuses.Add(new SurprisedStatus());
   }
 
   public override bool IsDone() => done;

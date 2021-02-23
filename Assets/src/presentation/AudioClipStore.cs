@@ -9,7 +9,6 @@ public class AudioClipStore : MonoBehaviour {
   public AudioClip attack;
   public AudioClip attackMiss;
   public AudioClip death;
-  public AudioClip gameStart;
   public AudioClip plantHarvest;
   public AudioClip playerEquip;
   public AudioClip playerHeal;
@@ -29,10 +28,14 @@ public class AudioClipStore : MonoBehaviour {
 
 public static class AudioClipExtensions {
   public static void PlayAtPoint(this AudioClip clip, Vector3 position, float volume = 1) {
-    AudioSource.PlayClipAtPoint(clip, position, volume);
+    if (Settings.main.sfx) {
+      AudioSource.PlayClipAtPoint(clip, position, volume);
+    }
   }
 
   public static void Play(this AudioClip clip, float volume = 1) {
-    AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, volume);
+    if (Settings.main.sfx) {
+      AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, volume);
+    }
   }
 }

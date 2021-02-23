@@ -314,6 +314,15 @@ public class FloorGenerator {
         tile.actor.pos = newSpot.pos;
       }
     }
+
+    /// HACK I've decided that grass shouldn't *initially spawn* right next to the stairs,
+    /// but that post-generation, grass should still be able. So we'll now only use HardGround
+    /// during generation, and then replace it with normal ground
+    foreach (var pos in floor.EnumerateFloor()) {
+      if (floor.tiles[pos] is HardGround) {
+        floor.Put(new Ground(pos));
+      }
+    }
   }
 
   private Floor tryGenerateSingleRoomFloor(int depth, int width, int height) {

@@ -79,9 +79,8 @@ public class ActorController : BodyController,
   }
 
   public virtual void HandleStatusAdded(Status status) {
-    var name = status.GetType().Name;
     if (animator != null) {
-      animator.SetBool(name, true);
+      animator.SetBool(status.GetType().Name, true);
     }
     var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, transform);
     if (obj != null) {
@@ -89,7 +88,7 @@ public class ActorController : BodyController,
     }
   }
 
-  public void HandleStatusRemoved(Status status) {
+  public virtual void HandleStatusRemoved(Status status) {
     if (animator != null) {
       animator.logWarnings = false;
       animator?.SetBool(status.GetType().Name, false);

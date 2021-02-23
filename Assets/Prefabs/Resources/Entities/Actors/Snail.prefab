@@ -13,6 +13,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bloodColor: {r: 0.7254902, g: 0.77647066, b: 0.43137258, a: 0.5019608}
+  sr: {fileID: 0}
+  normal: {fileID: -6207193392188836992, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
+  inShell33: {fileID: -2892910820977171364, guid: 334dfa9942a478b42af429f39c199dc7,
+    type: 3}
+  inShell66: {fileID: -3278524096712110203, guid: 334dfa9942a478b42af429f39c199dc7,
+    type: 3}
+  inShell: {fileID: 8991455535210373810, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
 --- !u!1001 &7253282335293987306
 PrefabInstance:
   m_ObjectHideFlags: 0

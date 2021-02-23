@@ -28,8 +28,6 @@ public class BerryBush : Plant {
       harvestOptions.Add(new Inventory(new ItemCharmBerry(3)));
       base.BindTo(plant);
     }
-
-    public override string getUIText() => $"Grows 3 berries in {plant.timeNextAction - plant.age} turns.";
   }
 
   public BerryBush(Vector2Int pos) : base(pos, new Seed()) {

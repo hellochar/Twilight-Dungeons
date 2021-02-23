@@ -10,10 +10,10 @@ public class HangingVines : Grass, IDeathHandler {
   private Trigger triggerBelow;
 
   public HangingVines(Vector2Int pos) : base(pos) {
-    triggerBelow = new Trigger(tileBelow.pos, HandleActorEnterBelow);
   }
 
   protected override void HandleEnterFloor() {
+    triggerBelow = new Trigger(tileBelow.pos, HandleActorEnterBelow);
     floor.Put(triggerBelow);
   }
 

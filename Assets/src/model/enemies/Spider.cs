@@ -54,7 +54,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Moving off a web will destroy it, but your move takes twice as long.")]
+[ObjectInfo(description: "Prevents movement; non-Spider creatures must spend one turn breaking the web.")]
 internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   public Web(Vector2Int pos) : base(pos) { }
 
@@ -64,8 +64,10 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
     }
   }
 
+  private WebStatus status;
   public void HandleActorEnter(Actor actor) {
-    actor.statuses.Add(new WebStatus());
+    status = new WebStatus(this);
+    actor.statuses.Add(status);
     OnNoteworthyAction();
   }
 
@@ -77,6 +79,10 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
 
   public static bool IsActorNice(Actor actor) {
     return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
+  }
+
+  internal void WebRemoved() {
+    Kill(actor);
   }
 }
 
@@ -119,12 +125,15 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
 }
 
 [System.Serializable]
-internal class WebStatus : Status, IActionCostModifier {
-  public ActionCosts Modify(ActionCosts costs) {
-    if (!Web.IsActorNice(actor)) {
-      costs[ActionType.MOVE] *= 2;
-    }
-    return costs;
+internal class WebStatus : Status, IBaseActionModifier {
+  Web owner;
+
+  public WebStatus(Web owner) {
+    this.owner = owner;
+  }
+
+  public override void End() {
+    owner.WebRemoved();
   }
 
   public override void Step() {
@@ -135,7 +144,18 @@ internal class WebStatus : Status, IActionCostModifier {
 
   public override bool Consume(Status other) => true;
 
-  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Move twice as slow out of webs!";
+  public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Prevents your next movement.";
+
+  public BaseAction Modify(BaseAction input) {
+    if (Web.IsActorNice(actor)) {
+      return input;
+    }
+    if (input.Type == ActionType.MOVE) {
+      Remove();
+      return new StruggleBaseAction(input.actor);
+    }
+    return input;
+  }
 }
 
 /// stacks = turns

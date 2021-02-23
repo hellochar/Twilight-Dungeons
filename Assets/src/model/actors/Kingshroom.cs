@@ -26,7 +26,6 @@ public class Kingshroom : Plant {
         new ItemLivingArmor()
       ));
     }
-    public override string getUIText() => $"Ready to harvest.";
   }
 
   public Kingshroom(Vector2Int pos) : base(pos, new Seed()) {

@@ -12,6 +12,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   /// Set by the PlantController creating this one
   public PlantController plantController;
   private Plant plant => plantController.plant;
+  public GameObject tutorialExtras;
 
   void Start() {
     AudioClipStore.main.popupOpen.Play(0.2f);
@@ -38,20 +39,30 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
     image.sprite = mature.sprite;
     image.color = mature.color;
 
+    if (plant.floor is TutorialFloor) {
+      tutorialExtras.SetActive(true);
+    }
+
     Update();
   }
 
   private void SetupHarvestOption(Transform transform, Inventory inventory, int index) {
     transform.Find("Inventory").GetComponent<InventoryController>().inventory = inventory;
-    transform.Find("HarvestButton").GetComponent<Button>().onClick.AddListener(() => {
-      plantController.Harvest(index);
-    });
+    Button button = transform.Find("HarvestButton").GetComponent<Button>();
+    if (plant.floor is TutorialFloor && index > 0) {
+      // disable past index 0
+      button.interactable = false;
+    } else {
+      button.onClick.AddListener(() => {
+        plantController.Harvest(index);
+      });
+    }
   }
 
   void Update() {
     uiName.text = plant.displayName;
     // uiInfo.text = plant.GetUIText();
-    uiInfo.text = plant.percentGrown == 1 ? "Ready to harvest!" : $"{plant.percentGrown.ToString("P")} grown.";
+    uiInfo.text = plant.percentGrown == 1 ? "Choose one Harvest!" : $"{plant.percentGrown.ToString("P")} grown.";
   }
 
   public void OnPointerClick(PointerEventData eventData) {

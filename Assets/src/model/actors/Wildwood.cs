@@ -24,7 +24,6 @@ public class Wildwood : Plant {
         new ItemWildwoodRod()
       ));
     }
-    public override string getUIText() => $"Ready to harvest.";
   }
 
   public Wildwood(Vector2Int pos) : base(pos, new Seed()) {

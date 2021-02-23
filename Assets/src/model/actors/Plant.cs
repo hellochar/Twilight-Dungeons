@@ -53,11 +53,6 @@ public abstract class Plant : Body, ISteppable {
     }
   }
 
-  internal string GetUIText() {
-    var uiText = stage.getUIText();
-    return uiText;
-  }
-
   internal void Harvest(int choiceIndex) {
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
     Kill(GameModel.main.player);

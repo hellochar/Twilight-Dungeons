@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 2
+  m_PixelsPerUnitMultiplier: 3
 --- !u!114 &1180969070870680810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,7 +111,8 @@ MonoBehaviour:
     m_PressedSprite: {fileID: 2721462656526381566, guid: 59a4a8eada9da7c4299d17c07cb14daf,
       type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: -3669082898999264299, guid: 59a4a8eada9da7c4299d17c07cb14daf,
+      type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted

@@ -26,7 +26,6 @@ public class Weirdwood : Plant {
       //   new ItemWildwoodRod()
       // ));
     }
-    public override string getUIText() => $"Ready to harvest.";
   }
 
   public Weirdwood(Vector2Int pos) : base(pos, new Seed()) {

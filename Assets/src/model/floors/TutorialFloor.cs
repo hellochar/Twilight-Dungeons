@@ -79,8 +79,6 @@ class TutorialFloor : Floor {
     this.berryBush = new BerryBush(berryBushAndWater.center);
     berryBush.GoNextStage();
     Put(berryBush);
-    berryBush.stage.harvestOptions.RemoveAt(2);
-    berryBush.stage.harvestOptions.RemoveAt(1);
     Encounters.AddWater(this, berryBushAndWater);
 
     // last room - two blobs and a bat, filled with soft grass
@@ -92,6 +90,6 @@ class TutorialFloor : Floor {
   }
 
   internal override void PlayerGoDownstairs() {
-    OnTutorialEnded?.Invoke();
+    GameModel.main.turnManager.OnPlayersChoice += () => OnTutorialEnded?.Invoke();
   }
 }

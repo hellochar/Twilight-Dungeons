@@ -27,8 +27,6 @@ public class Thornleaf : Plant {
         new ItemHeartOfThorns()
       ));
     }
-
-    public override string getUIText() => $"Ready to harvest.";
   }
 
   public Thornleaf(Vector2Int pos) : base(pos, new Seed()) {

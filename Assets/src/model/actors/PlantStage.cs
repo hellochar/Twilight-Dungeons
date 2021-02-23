@@ -31,8 +31,6 @@ public abstract class PlantStage {
 
   public abstract float StepTime { get; }
   public abstract void Step();
-
-  public virtual string getUIText() { return ""; }
 }
 
 [Serializable]
@@ -46,8 +44,6 @@ class Seed : PlantStage {
   public override void Step() {
     GoNextStage();
   }
-
-  public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }
 
 [Serializable]
@@ -56,8 +52,6 @@ class Young : PlantStage {
   public override void Step() {
     GoNextStage();
   }
-
-  public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }
 
 [Serializable]
@@ -66,6 +60,4 @@ class Sapling : PlantStage {
   public override void Step() {
     GoNextStage();
   }
-
-  public override string getUIText() => $"Grows in {StepTime - this.age} turns.";
 }

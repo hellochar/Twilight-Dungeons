@@ -33,7 +33,6 @@ public class Frizzlefen : Plant {
         new ItemStompinBoots()
       ));
     }
-    public override string getUIText() => $"Ready to harvest.";
   }
 
   public Frizzlefen(Vector2Int pos) : base(pos, new Seed(400)) {

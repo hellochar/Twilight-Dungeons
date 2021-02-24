@@ -56,7 +56,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (dmg > 0) {
       var store = AudioClipStore.main;
       var clip = Util.RandomPickParams(store.playerHurt1, store.playerHurt2, store.playerHurt3);
-      clip.PlayAtPoint(transform.position);
+      clip.PlayAtPoint(transform.position, 1.2f);
     }
     base.HandleTakeAnyDamage(dmg);
     /// treat tutorial specially

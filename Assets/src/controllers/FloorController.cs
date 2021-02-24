@@ -180,18 +180,19 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     var entityGameObject = gameObjectMap[entity];
 
     var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
-    var sprite = Instantiate(spritePrefab);
-    var image = sprite.GetComponentInChildren<Image>();
-    image.sprite = entityGameObject.GetComponentInChildren<SpriteRenderer>().sprite;
+    var spriteGameObject = Instantiate(spritePrefab);
+    var image = spriteGameObject.GetComponentInChildren<Image>();
+    var sprite = ObjectInfo.GetSpriteFor(entity) ?? entityGameObject.GetComponentInChildren<SpriteRenderer>()?.sprite;
+    image.sprite = sprite;
     image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
 
     Popups.Create(
       title: entity.displayName,
       info: description.Trim(),
       flavor: ObjectInfo.GetFlavorTextFor(entity),
-      sprite: sprite
+      sprite: spriteGameObject
     );
-    Destroy(sprite);
+    Destroy(spriteGameObject);
   }
 
   public void OnPointerClick(PointerEventData eventData) {

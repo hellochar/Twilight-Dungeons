@@ -95,25 +95,22 @@ public class GameModelController : MonoBehaviour {
     return floorControllers[floor];
   }
 
-  private bool isTransitioning = false;
+  private bool isTransitioningBetweenHome = false;
   // Update is called once per frame
   void Update() {
     // when the GameModel's current floor has changed, update the renderer to match
-    if (model.currentFloor != currentFloorController.floor && !isTransitioning) {
-      var depthDifference = Math.Abs(model.currentFloor.depth - currentFloorController.floor.depth);
-      if (depthDifference > 1) {
-        isTransitioning = true;
+    if (model.currentFloor != currentFloorController.floor && !isTransitioningBetweenHome) {
+      int newDepth = model.currentFloor.depth;
+      int oldDepth = currentFloorController.floor.depth;
+      if (oldDepth == 0 || newDepth == 0) {
         // we teleported; do a slow animation
-        StartCoroutine(TransitionFloorSlow());
+        StartCoroutine(TransitionBetweenHomeFloor());
       } else {
-        DeactivateCurrentFloorController();
+        // we're never going to visit this depth again; destroy it
+        Destroy(currentFloorController.gameObject);
         ActivateNewFloor(model.currentFloor);
       }
     }
-  }
-
-  void DeactivateCurrentFloorController() {
-    currentFloorController.gameObject.SetActive(false);
   }
 
   void ActivateNewFloor(Floor floor) {
@@ -122,8 +119,11 @@ public class GameModelController : MonoBehaviour {
     currentFloorController = newFloorController;
   }
 
-  IEnumerator TransitionFloorSlow() {
-    DeactivateCurrentFloorController();
+  IEnumerator TransitionBetweenHomeFloor() {
+    isTransitioningBetweenHome = true;
+    // deactivate home or cave
+    currentFloorController.gameObject.SetActive(false);
+
     // add black overlay
     var overlay = PrefabCache.UI.Instantiate("BlackOverlay", GameObject.Find("Canvas").transform);
     var img = overlay.GetComponent<Image>();
@@ -134,7 +134,7 @@ public class GameModelController : MonoBehaviour {
     yield return new WaitForSeconds(0.5f);
     ActivateNewFloor(model.currentFloor);
     player.SetActive(true);
-    isTransitioning = false;
+    isTransitioningBetweenHome = false;
     var ftd = overlay.AddComponent<FadeThenDestroy>();
     ftd.shrink = 0;
     ftd.fadeTime = 0.5f;

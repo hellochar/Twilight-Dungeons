@@ -2,7 +2,8 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class ItemOnGround : Entity, IActorEnterHandler {
+[ObjectInfo(description: "Tap to pick up this item and see what it does.")]
+public class ItemOnGround : Entity {
   public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
 
   private Vector2Int _pos;
@@ -21,11 +22,10 @@ public class ItemOnGround : Entity, IActorEnterHandler {
     Debug.AssertFormat(item.inventory == null, "Item's inventory should be null");
   }
 
-  public void HandleActorEnter(Actor actor) {
-    if (actor is Player player) {
-      if (player.inventory.AddItem(item, this)) {
-        Kill(player);
-      }
+  internal void PickUp() {
+    var player = GameModel.main.player;
+    if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
+      Kill(player);
     }
   }
 }

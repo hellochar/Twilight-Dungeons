@@ -45,6 +45,8 @@ public class Tunnelroot : Grass, IActorEnterHandler {
       // partner.Close();
       var newTile = floor.BreadthFirstSearch(partner.pos, (tile) => true).Skip(1).Where(t => t.CanBeOccupied()).FirstOrDefault();
       if (newTile != null) {
+        OnNoteworthyAction();
+        partner.OnNoteworthyAction();
         who.pos = newTile.pos;
         who.statuses.Add(new SurprisedStatus());
       }

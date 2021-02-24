@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Applies Poison to the creature standing over it every turn.\nTurns adjacent Grass into Poisonmoss.")]
+[ObjectInfo(description: "Applies Poison to the creature standing over it every turn.\nGradually turns adjacent Grass into Poisonmoss.")]
 class Poisonmoss : Grass, ISteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground;
 
@@ -15,8 +15,8 @@ class Poisonmoss : Grass, ISteppable {
       OnNoteworthyAction();
       actor.statuses.Add(new PoisonedStatus(1));
     }
-    // every 3 turns, grow
-    if (age % 3 == 2) {
+    // every 6 turns, grow
+    if (age % 6 == 5) {
       var tile = Util.RandomPick(floor
         .GetAdjacentTiles(pos)
         /// take over non-poisonmoss tiles!

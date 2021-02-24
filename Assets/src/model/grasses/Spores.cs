@@ -25,7 +25,7 @@ public class Spores : Grass, IActorEnterHandler {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Explodes, applying the Spored Status on to adjacent creatures.", flavorText: "Massive and swollen and looking to spread its seed...")]
+[ObjectInfo(description: "Explodes, applying the Spored Status on to adjacent creatures.", flavorText: "Inflated and swollen and looking to spread its seed.")]
 internal class SporeBloat : AIActor {
   public SporeBloat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
@@ -52,12 +52,13 @@ internal class SporeBloat : AIActor {
 }
 
 [System.Serializable]
-[ObjectInfo("spored-status", "eww")]
-internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier, IActorKilledHandler {
+[ObjectInfo("spored-status", "You inhaled the spore seeds! Your breathing is labored.")]
+internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier, IActorKilledHandler, IActionPerformedHandler {
+  public override bool isDebuff => true;
   public override StackingMode stackingMode => StackingMode.Max;
   public SporedStatus(int stacks) : base(stacks) {}
 
-  public override string Info() => $"Deal 2 less attack damage!\nMove twice as slow.\nWhen you die, Spores grow at your position.\n{stacks} turns remaining.";
+  public override string Info() => $"Deal 2 less attack damage!\nMove slowly.\nMoving removes two stacks.\nWhen you die, Spores grow at your position.\n{stacks} turns remaining.";
 
   public override void Step() {
     stacks--;
@@ -74,5 +75,11 @@ internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCost
 
   public void OnKilled(Actor a) {
     a.floor.Put(new Spores(a.pos));
+  }
+
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    if (final.Type == ActionType.MOVE) {
+      stacks--;
+    }
   }
 }

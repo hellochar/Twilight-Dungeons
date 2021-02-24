@@ -152,12 +152,17 @@ public class Encounters {
     var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).FirstOrDefault();
     if (tile != null) {
       floor.Put(new HydraHeart(tile.pos));
+      var adjacentGround = Util.RandomPick(floor.GetAdjacentTiles(tile.pos).Where(t => t is Ground && t.pos != tile.pos));
+      /// add 1 water next to each hydra to incentivize attacking it
+      if (adjacentGround != null) {
+        floor.Put(new Water(adjacentGround.pos));
+      }
     }
   });
 
   public static Encounter AddGrasper = new Encounter((floor, room) => {
-    // put it on a wall
-    var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null));
+    // put it on a wall that's next to a Ground
+    var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null && floor.GetAdjacentTiles(t.pos).Any(t2 => t2 is Ground)));
     if (tile != null) {
       floor.Put(new Grasper(tile.pos));
     }
@@ -276,17 +281,15 @@ public class Encounters {
   });
 
   public static Encounter AddViolets = new Encounter((floor, room) => {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(tile => Violets.CanOccupy(tile) && tile.grass == null));
+    var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where(tile => Violets.CanOccupy(tile) && tile.grass == null).ToList();
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
-      var start = Util.RandomPick(occupiableTiles);
-      var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
       var num = Random.Range(numTiles / 3, (int)(numTiles * 2f / 3));
       if (Random.value < 0.2f) {
         /// fill up every square
-        num = bfs.Count();
+        num = numTiles;
       }
-      foreach (var tile in bfs.Take(num)) {
+      foreach (var tile in occupiableTiles.Take(num)) {
         var grass = new Violets(tile.pos);
         floor.Put(grass);
       }
@@ -312,7 +315,7 @@ public class Encounters {
     var partner = Util.RandomPick(
       floor.EnumerateRoomTiles(floor.root)
         .Where((tile) => tile != start && Tunnelroot.CanOccupy(tile) && tile.grass == null)
-        .OrderBy(start.DistanceTo)
+        .OrderByDescending(start.DistanceTo)
         .Take(40)
     );
     if (start != null && partner != null) {
@@ -530,6 +533,15 @@ public class Encounters {
       floor.Put(new Water(tile.pos));
     }
   });
+
+  public static Encounter AddOneWater = new Encounter((floor, room) => {
+    var numWaters = 1;
+    var startPos = room.center;
+    foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
+      floor.Put(new Water(tile.pos));
+    }
+  });
+
 
   public static Encounter AddJackalHide = new Encounter((floor, room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));

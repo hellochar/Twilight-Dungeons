@@ -128,6 +128,7 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
 
 [System.Serializable]
 internal class WebStatus : Status, IBaseActionModifier {
+  public override bool isDebuff => !Web.IsActorNice(actor);
   Web owner;
 
   public WebStatus(Web owner) {
@@ -175,21 +176,27 @@ internal class PoisonedStatus : StackingStatus {
 
   public void IndependentStep() {
     if (stacks >= 3) {
+      /// trigger right after your turn, unless you move slowly, in which case it should just trigger immediately
       actor.AddTimedEvent(0.01f, TickDamage);
-    }
-    if (--duration <= 0) {
-      --stacks;
-      duration = 5;
-    }
-    if (stacks > 0) {
-      actor.AddTimedEvent(1, IndependentStep);
+    } else {
+      if (--duration <= 0) {
+        --stacks;
+        duration = 5;
+      }
+      if (stacks > 0) {
+        actor.AddTimedEvent(1, IndependentStep);
+      }
     }
   }
 
   public void TickDamage() {
     actor.TakeDamage(3, actor);
     stacks -= 3;
+    if (stacks > 0) {
+      // match timing back up
+      actor.AddTimedEvent(0.99f, IndependentStep);
+    }
   }
 
-  public override string Info() => $"At 3 stacks, take 3 damage and remove stacks.\nLose one stack every 5 turns.";
+  public override string Info() => $"At 3 stacks, take 3 damage and remove 3 stacks.\nLose one stack every 5 turns.";
 }

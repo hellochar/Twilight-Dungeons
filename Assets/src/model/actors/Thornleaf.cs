@@ -113,7 +113,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 [Serializable]
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
 internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
-  internal override string GetStats() => "Take 2 less damage.\nWhen you take damage, grow, sharpen, or trigger Bladegrass on all adjacent squares.";
+  internal override string GetStats() => "Take 2 less damage from all sources.\nWhen you would take damage from any source, grow, sharpen, or trigger Bladegrass on all adjacent squares.";
 
   public override EquipmentSlot slot => EquipmentSlot.Head;
   public int durability { get; set; }

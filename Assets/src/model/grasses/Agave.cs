@@ -61,21 +61,22 @@ class ItemAgave : Item, IStackable {
     return methods;
   }
 
-  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey (costs 0.25 water).";
+  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey (costs 25 water).";
 }
 
 [Serializable]
 [ObjectInfo("roguelikeSheet_transparent_647", flavorText: "A restorative and tasty treat!")]
 class ItemAgaveHoney : Item, IEdible {
   public void Eat(Actor a) {
+    a.Heal(1);
     var debuffs = a.statuses.list.Where((s) => s.isDebuff);
     if (debuffs.Count() > 0) {
       foreach (var debuff in debuffs) {
         debuff.Remove();
       }
-      Destroy();
     }
+    Destroy();
   }
 
-  internal override string GetStats() => "Removes all debuffs (red outlined Statuses).";
+  internal override string GetStats() => "Heals 1 HP. Removes all debuffs (red outlined Statuses).";
 }

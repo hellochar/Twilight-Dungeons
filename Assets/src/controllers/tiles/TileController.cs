@@ -71,6 +71,6 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
   }
 
   private static Color unexploredMask = new Color(0, 0, 0);
-  private static Color exploredMask = new Color(0.3f, 0.3f, 0.3f);
+  private static Color exploredMask = new Color(0.3f, 0.3f, 0.45f);
   private static Color visibleMask = new Color(1, 1, 1);
 }

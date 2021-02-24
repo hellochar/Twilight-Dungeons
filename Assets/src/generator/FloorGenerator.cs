@@ -225,6 +225,7 @@ public class FloorGenerator {
     floor.depth = 0;
     #endif
 
+    TidyUpAroundStairs(floor);
     return floor;
   }
 
@@ -241,15 +242,17 @@ public class FloorGenerator {
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
-    Encounters.PlaceFancyGround(floor, room0);
+    // Encounters.PlaceFancyGround(floor, room0);
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
     // EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
     // Encounters.AddTeleportStone(floor, room0);
+    Encounters.AddOneWater(floor, room0);
     foreach (var encounter in extraEncounters) {
       encounter(floor, room0);
     }
 
-    // just do nothing on this floor
+    TidyUpAroundStairs(floor);
+
     return floor;
   }
 
@@ -284,7 +287,7 @@ public class FloorGenerator {
     // Encounters.AddParasite(floor, room0);
     #endif
 
-    TidyUpAroundUpstairs(floor);
+    TidyUpAroundStairs(floor);
 
     return floor;
   }
@@ -292,26 +295,28 @@ public class FloorGenerator {
   /// It sucks to walk down to a new level and immediately get
   /// constricted by a HangingVines, or just surrounded by enemies.
   /// Prevent these negative gameplay experiences.
-  private void TidyUpAroundUpstairs(Floor floor) {
+  private void TidyUpAroundStairs(Floor floor) {
     /// sometimes the Wall generators may put Walls right in the landing spot. Prevent that.
-    if (floor.tiles[floor.upstairs.landing] is Wall) {
+    if (floor.upstairs != null && floor.tiles[floor.upstairs.landing] is Wall) {
       floor.Put(new HardGround(floor.upstairs.landing));
     }
-    if (floor.tiles[floor.downstairs.landing] is Wall) {
+    if (floor.downstairs != null && floor.tiles[floor.downstairs.landing] is Wall) {
       floor.Put(new HardGround(floor.downstairs.landing));
     }
 
     // Clear hanging vines and move immediately adjacent enemies
-    foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
-      if (tile.grass is HangingVines) {
-        // do NOT call Kill(); we don't want the vine whip to drop.
-        floor.Remove(tile.grass);
-      }
-      if (tile.actor != null) {
-        // TODO pick a spot that graspers can inhabit
-        var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((x) => x.CanBeOccupied()));
-        // move the actor to a different spot in the map
-        tile.actor.pos = newSpot.pos;
+    if (floor.upstairs != null) {
+      foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
+        if (tile.grass is HangingVines) {
+          // do NOT call Kill(); we don't want the vine whip to drop.
+          floor.Remove(tile.grass);
+        }
+        if (tile.actor != null) {
+          // TODO pick a spot that graspers can inhabit
+          var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((x) => x.CanBeOccupied()));
+          // move the actor to a different spot in the map
+          tile.actor.pos = newSpot.pos;
+        }
       }
     }
 
@@ -382,7 +387,7 @@ public class FloorGenerator {
       floor.Put(new SoftGrass(tile.pos));
     }
 
-    TidyUpAroundUpstairs(floor);
+    TidyUpAroundStairs(floor);
     return floor;
   }
 
@@ -431,7 +436,7 @@ public class FloorGenerator {
       floor.Put(new SoftGrass(tile.pos));
     }
 
-    TidyUpAroundUpstairs(floor);
+    TidyUpAroundStairs(floor);
     return floor;
   }
 
@@ -486,6 +491,8 @@ public class FloorGenerator {
         encounter(floor, room);
       }
     });
+
+    TidyUpAroundStairs(floor);
 
     return floor;
   }

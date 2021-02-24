@@ -2,15 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Moves slowly.\nAt range 2, creates a ring of Brambles around you that disappear after 10 turns.", flavorText: "")]
-public class Thistlebog : AIActor {
+[ObjectInfo(description: "Moves slowly.\nSummons a ring of Brambles around you that disappear after 10 turns (needs vision).\nInterrupted when taking damage.", flavorText: "Four limbs and a face are the only bits of humanity left in this husk.")]
+public class Thistlebog : AIActor, ITakeAnyDamageHandler {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 2f,
   };
   protected override ActionCosts actionCosts => StaticActionCosts;
-
   public override float turnPriority => 50;
 
+  private float cooldown = 0;
   public Thistlebog(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 15;
@@ -23,25 +23,24 @@ public class Thistlebog : AIActor {
     if (cooldown > 0) {
       cooldown -= dt;
     }
-    Debug.Log(cooldown);
     return dt;
   }
 
-  protected override ActorTask GetNextTask() {
-    var player = GameModel.main.player;
+  public void HandleTakeAnyDamage(int damage) {
+    if (damage > 0 && task is TelegraphedTask) {
+      ClearTasks();
+      statuses.Add(new SurprisedStatus());
+    }
+  }
 
+  protected override ActorTask GetNextTask() {
     if (isVisible && cooldown <= 0) {
-      if (Util.DiamondDistanceToPlayer(this) <= 2) {
-        return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
-      } else {
-        return new ChaseTargetTask(this, player, 1);
-      }
+      return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
     } else {
       return new MoveRandomlyTask(this);
     }
   }
 
-  private float cooldown = 0;
   private void SummonBramblesAroundPlayer() {
     if (isVisible && cooldown <= 0) {
       cooldown = 10;

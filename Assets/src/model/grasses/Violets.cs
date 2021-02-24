@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Alternately opens and closes every 12 turns.\nWhile open, Pacifies the creature standing over it.")]
+[ObjectInfo(spriteName: "Purple_5", description: "Alternately opens and closes every 12 turns.\nWhile open, Pacifies the creature standing over it.")]
 public class Violets : Grass, ISteppable, IActorEnterHandler {
   public const int turnsToChange = 12;
   public float timeNextAction { get; set; }

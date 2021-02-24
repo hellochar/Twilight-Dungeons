@@ -9,7 +9,7 @@ internal class ChaseDynamicTargetTask : ChaseTargetTask {
   }
 
   public override void PreStep() {
-    this.targetActor = targetDecider();
+    this.targetBody = targetDecider();
     base.PreStep();
   }
 }

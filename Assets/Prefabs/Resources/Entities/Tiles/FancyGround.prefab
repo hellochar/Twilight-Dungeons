@@ -21,8 +21,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 8848465696421099746, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+      objectReference: {fileID: 21300000, guid: eb83db0cb481f074c92478cb20b58183,
         type: 3}
+    - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -36,6 +41,11 @@ PrefabInstance:
     - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
       propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
@@ -55,16 +65,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
-        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -80,13 +80,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6311159287284332325, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
-      propertyPath: sprites.Array.size
-      value: 2
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6311159287284332325, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
-      propertyPath: m_Enabled
-      value: 0
+      propertyPath: sprites.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6311159287284332325, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}

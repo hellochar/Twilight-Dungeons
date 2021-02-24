@@ -98,7 +98,7 @@ internal class VileGrowth : Grass, ISteppable {
 [Serializable]
 [ObjectInfo("colored_transparent_packed_39", "")]
 internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
-  internal override string GetStats() => "After you make an attack, get a free movement.";
+  internal override string GetStats() => "After you make an attack, get a Free Move.";
 
   public void OnAttack(int damage, Body target) {
     player.statuses.Add(new FreeMoveStatus());

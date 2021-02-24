@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Attacks and moves take twice as long.\nTakes 1 less damage from attacks.\nLeaves a trail of Rubble.", flavorText: "Eager to prove himself, Aurogan had managed to Will Life into the boulder on the Boulder Hill. The Council was impressed; then horrified; then flat.")]
+[ObjectInfo(description: "Attacks and moves slowly.\nBlocks 1 damage.\nLeaves a trail of Rubble.", flavorText: "Eager to prove himself, Aurogan managed to Will Life into the boulder of the Boulder Hill. The Council was impressed, then horrified, then flattened.")]
 public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.ATTACK] = 2f,

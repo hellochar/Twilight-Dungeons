@@ -20,8 +20,9 @@ public abstract class Entity : IModifierProvider {
 
   public float age => GameModel.main.time - timeCreated;
   public Tile tile => floor.tiles[pos];
-  public Grass grass => floor.grasses[pos];
-  public ItemOnGround item => floor.items[pos];
+  /// TODO remove null from floor
+  public Grass grass => floor?.grasses[pos];
+  public ItemOnGround item => floor?.items[pos];
   public Trigger trigger => floor?.triggers[pos]; /// TODO remove null from floor
   public Body body => floor.bodies[pos];
   public Actor actor => body as Actor;

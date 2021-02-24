@@ -76,10 +76,10 @@ public class SidePanelController : MonoBehaviour {
   IEnumerable<Entity> GetInterestingThings() {
     var floor = GameModel.main.currentFloor;
     foreach (var pos in floor.EnumerateCircle(player.pos, player.visibilityRange)) {
-      var actor = floor.tiles[pos].actor;
+      var body = floor.tiles[pos].body;
       var grass = floor.grasses[pos];
-      if (actor != null && actor != player && actor.isVisible) {
-        yield return actor;
+      if (body != null && body != player && body.isVisible) {
+        yield return body;
       }
       if (grass != null && grass.isVisible) {
         yield return grass;

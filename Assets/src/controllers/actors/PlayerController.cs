@@ -94,12 +94,14 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl)) {
       Serializer.SaveMainToFile();
     }
-    if (Input.GetKeyDown(KeyCode.L) &Input.GetKey(KeyCode.LeftControl)) {
+    if (Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) {
       GameModel.main = Serializer.LoadFromFile();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
     var model = GameModel.main;
     if (Input.GetKeyDown(KeyCode.Equals)) {
+      var e = GameModel.main.StepUntilPlayerChoice();
+      while(e.MoveNext()) { }
       GameModel.main.PutPlayerAt(model.depth + 1);
     }
     base.Update();

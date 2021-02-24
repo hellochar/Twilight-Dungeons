@@ -81,7 +81,7 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
       return; // don't do anything to dead actors
     }
     player.SetTasks(
-      new MoveNextToTargetTask(player, body.pos),
+      new ChaseTargetTask(player, body),
       new AttackTask(player, body)
     );
   }

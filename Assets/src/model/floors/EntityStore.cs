@@ -95,8 +95,11 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
 [Serializable]
 public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   private List<T> list = new List<T>();
+  private readonly Action<T> PlacementBehavior;
 
-  public MovingEntityList(Floor floor) : base(floor) {}
+  public MovingEntityList(Floor floor, Action<T> placementBehavior = null) : base(floor) {
+    this.PlacementBehavior = placementBehavior;
+  }
 
   protected override T Get(int x, int y) => list.FirstOrDefault(a => a.pos.x == x && a.pos.y == y);
 
@@ -105,6 +108,12 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   public override void Put(T entity) {
     if (!floor.tiles[entity.pos.x, entity.pos.y].CanBeOccupied()) {
       Debug.LogWarning("Adding " + entity + " over a tile that cannot be occupied!");
+    }
+    /// we've collided with another entity; do the placement behavior.
+    /// note we do NOT do this if you're on a wall, since Graspers
+    /// should be able to be on Walls
+    if (this[entity.pos] != null && PlacementBehavior != null) {
+      PlacementBehavior(entity);
     }
     // remove new Entity from old floor
     if (entity.floor != null) {

@@ -98,6 +98,9 @@ public class ObjectInfo {
   private Sprite _sprite;
   public Sprite sprite {
     get {
+      if (spriteName == null) {
+        return null;
+      }
       if (_sprite == null) {
         _sprite = MasterSpriteAtlas.atlas.GetSprite(spriteName);
         if (_sprite == null) {

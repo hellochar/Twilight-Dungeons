@@ -74,7 +74,7 @@ public class Floor {
     this.grasses = new StaticEntityGrid<Grass>(this);
     this.items = new StaticEntityGrid<ItemOnGround>(this, ItemPlacementBehavior);
     this.triggers = new StaticEntityGrid<Trigger>(this);
-    this.bodies = new MovingEntityList<Body>(this);
+    this.bodies = new MovingEntityList<Body>(this, BodyPlacementBehavior);
     this.entities = new HashSet<Entity>();
     this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
@@ -93,6 +93,13 @@ public class Floor {
     GameModel.main.PutPlayerAt(nextDepth);
   }
 
+  private void BodyPlacementBehavior(Body body) {
+    var newPosition = BreadthFirstSearch(body.pos, (_) => true)
+      .Where(tile => tile.CanBeOccupied())
+      .First()
+      .pos;
+    body.pos = newPosition;
+  }
 
   private void ItemPlacementBehavior(ItemOnGround item) {
     var newPosition = BreadthFirstSearch(item.pos, (_) => true)

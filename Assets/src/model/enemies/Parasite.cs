@@ -4,13 +4,11 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Moves twice per turn. When Parasite deals damage, it applies the Infested Status and dies.", flavorText: "")]
+[ObjectInfo(description: "When Parasite deals damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves quickly but randomly.", flavorText: "Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.")]
 public class Parasite : AIActor, IDealAttackDamageHandler {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
-    [ActionType.ATTACK] = 1f,
   };
-  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
 
   protected override ActionCosts actionCosts => StaticActionCosts;
   public Parasite(Vector2Int pos) : base(pos) {
@@ -19,9 +17,9 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
   }
 
   public void HandleDealAttackDamage(int dmg, Body target) {
-    if (target is Actor actor && !(actor is Parasite)) {
+    if (dmg > 0 && target is Actor actor && !(actor is Parasite)) {
       actor.statuses.Add(new ParasiteStatus(100));
-      Kill(this);
+      KillSelf();
     }
   }
 
@@ -29,10 +27,10 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
 
   protected override ActorTask GetNextTask() {
     var target = SelectTarget();
-    if (target == null) {
-      return new MoveRandomlyTask(this);
+    if (target is Actor actor) {
+      return new AttackTask(this, target);
     } else {
-      return new AttackGroundTask(this, target.pos, 1);
+      return new MoveRandomlyTask(this);
     }
   }
 
@@ -45,9 +43,10 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
 }
 
 [System.Serializable]
+[ObjectInfo(description: "Hatches into two Parasites after 5 turns.")]
 public class ParasiteEgg : Body {
   public ParasiteEgg(Vector2Int pos) : base(pos) {
-    AddTimedEvent(10, Hatch);
+    AddTimedEvent(5, Hatch);
     hp = baseMaxHp = 5;
   }
 
@@ -60,15 +59,15 @@ public class ParasiteEgg : Body {
       p.ClearTasks();
       floor.Put(p);
     }
-    Kill(this);
+    KillSelf();
   }
 }
 
 [System.Serializable]
-[ObjectInfo("parasite", "oh noooooooo")]
+[ObjectInfo("parasite", flavorText: "You can feel something crawling under your skin.")]
 public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler {
   public override StackingMode stackingMode => StackingMode.Independent;
-  public override bool isDebuff => base.isDebuff;
+  public override bool isDebuff => true;
   [field:NonSerialized] /// controller only
   public event System.Action OnAttack;
 

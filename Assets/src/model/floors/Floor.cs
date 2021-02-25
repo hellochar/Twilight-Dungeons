@@ -80,19 +80,6 @@ public class Floor {
     pathfindingManager = new PathfindingManager(this);
   }
 
-  /// what should happen when the player goes downstairs
-  internal virtual void PlayerGoDownstairs() {
-    // if we're home, go back to the cave
-    // if we're in the cave, go 1 deeper
-    int nextDepth;
-    if (depth == 0) {
-      nextDepth = GameModel.main.cave.depth;
-    } else {
-      nextDepth = depth + 1;
-    }
-    GameModel.main.PutPlayerAt(nextDepth);
-  }
-
   private void BodyPlacementBehavior(Body body) {
     var newPosition = BreadthFirstSearch(body.pos, (_) => true)
       .Where(tile => tile.CanBeOccupied())
@@ -109,16 +96,17 @@ public class Floor {
     item.pos = newPosition;
   }
 
-  internal void RemoveAll(IEnumerable<Entity> entities) {
-    foreach (var entity in entities) {
-      Remove(entity);
+  /// what should happen when the player goes downstairs
+  internal virtual void PlayerGoDownstairs() {
+    // if we're home, go back to the cave
+    // if we're in the cave, go 1 deeper
+    int nextDepth;
+    if (depth == 0) {
+      nextDepth = GameModel.main.cave.depth;
+    } else {
+      nextDepth = depth + 1;
     }
-  }
-
-  internal void PutAll(IEnumerable<Entity> entities) {
-    foreach (var entity in entities) {
-      Put(entity);
-    }
+    GameModel.main.PutPlayerAt(nextDepth);
   }
 
   public void Put(Entity entity) {
@@ -147,13 +135,6 @@ public class Floor {
 
     entity.SetFloor(this);
     this.OnEntityAdded?.Invoke(entity);
-  }
-
-  /// Sets all terminal room connections by checking every pair of rooms if they're directly connected:
-  /// find a path between rooms A and B
-  /// If each tile on the path only belongs to A or B (or no room), then they're directly connected
-  internal void ComputeConnectivity() {
-    throw new NotImplementedException();
   }
 
   public void Remove(Entity entity) {
@@ -185,6 +166,18 @@ public class Floor {
 
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
+  }
+
+  internal void PutAll(IEnumerable<Entity> entities) {
+    foreach (var entity in entities) {
+      Put(entity);
+    }
+  }
+
+  internal void RemoveAll(IEnumerable<Entity> entities) {
+    foreach (var entity in entities) {
+      Remove(entity);
+    }
   }
 
   internal void RecordLastStepTime(float time) {

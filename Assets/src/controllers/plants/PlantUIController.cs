@@ -39,7 +39,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
     image.sprite = mature.sprite;
     image.color = mature.color;
 
-    if (plant.floor is TutorialFloor) {
+    if (plant.floor is TutorialFloor && plant.stage.NextStage == null) {
       tutorialExtras.SetActive(true);
     }
 

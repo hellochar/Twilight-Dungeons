@@ -6,7 +6,9 @@ public class Astoria : Grass, IActorEnterHandler {
   public Astoria(Vector2Int pos) : base(pos) {}
 
   public void HandleActorEnter(Actor actor) {
-    actor.Heal(4);
-    Kill(actor);
+    if (actor.hp < actor.maxHp) {
+      actor.Heal(4);
+      Kill(actor);
+    }
   }
 }

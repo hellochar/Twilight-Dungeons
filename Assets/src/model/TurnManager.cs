@@ -25,6 +25,7 @@ public class TurnManager {
   }
 
   public void UnregisterTimedEvent(TimedEvent evt) {
+    evt.UnregisterFromOwner();
     timedEvents.TryRemove(evt);
   }
 
@@ -107,11 +108,16 @@ public class TurnManager {
         // trigger any events that need to happen
         while (timedEvents.Count > 0) {
           var first = timedEvents.First;
+          /// if the timed event is registered for an inactive floor
+          /// (aka a depth 3 entity, when we're on depth 4) - just remove it
+          if (first.owner.floor != model.currentFloor) {
+            UnregisterTimedEvent(first);
+            continue;
+          }
           if (first.time > model.time) {
             break;
           }
           first.action();
-          first.Done();
           UnregisterTimedEvent(first);
           model.DrainEventQueue();
         }

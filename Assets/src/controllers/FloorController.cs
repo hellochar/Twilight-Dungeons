@@ -52,6 +52,11 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     #endif
   }
 
+  void OnDestroyed() {
+    floor.OnEntityAdded -= HandleEntityAdded;
+    floor.OnEntityRemoved -= HandleEntityRemoved;
+  }
+
   void LogEnemyHP() {
     var enemies = floor.bodies.Where((b) => b is Actor x && x.faction == Faction.Enemy);
     var allHP = enemies.Select((a) => a.maxHp).Sum();

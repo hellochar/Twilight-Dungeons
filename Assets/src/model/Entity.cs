@@ -45,10 +45,12 @@ public abstract class Entity : IModifierProvider {
   /// <summary>Only call this from Floor to internally update this Entity's floor pointer.</summary>
   public void SetFloor(Floor floor) {
     if (this.floor != null) {
+      UnregisterTimedEvents();
       HandleLeaveFloor();
     }
     this.floor = floor;
     if (this.floor != null) {
+      RegisterTimedEvents();
       HandleEnterFloor();
     }
   }
@@ -85,12 +87,21 @@ public abstract class Entity : IModifierProvider {
     if (!IsDead) {
       IsDead = true;
       OnDeath(source);
-      foreach (var timedEvent in timedEvents) {
-        GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
-      }
       floor.Remove(this);
     } else {
       Debug.LogWarning("Calling Kill() on already dead Entity! Ignoring");
+    }
+  }
+
+  public void UnregisterTimedEvents() {
+    foreach (var timedEvent in timedEvents) {
+      GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
+    }
+  }
+
+  public void RegisterTimedEvents() {
+    foreach (var timedEvent in timedEvents) {
+      GameModel.main.turnManager.RegisterTimedEvent(timedEvent);
     }
   }
 
@@ -114,6 +125,7 @@ public abstract class Entity : IModifierProvider {
 [Serializable]
 public class TimedEvent {
   public readonly float time;
+
   /// serialized by method name as a string. Don't use anonymous delegates. Don't rename method.
   public readonly Action action;
   public readonly Entity owner;
@@ -123,7 +135,10 @@ public class TimedEvent {
     this.action = action;
   }
 
-  public void Done() {
+  /// If the owner's floor is the current floor
+  internal bool IsInvalid() => owner.floor != GameModel.main.currentFloor;
+
+  public void UnregisterFromOwner() {
     owner.timedEvents.Remove(this);
   }
 }

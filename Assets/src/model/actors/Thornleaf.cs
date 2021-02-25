@@ -37,7 +37,7 @@ public class Thornleaf : Plant {
 [Serializable]
 [ObjectInfo("thornmail", "Spiky!")]
 internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTakeAttackDamageHandler {
-  public override EquipmentSlot slot => EquipmentSlot.Body;
+  public override EquipmentSlot slot => EquipmentSlot.Armor;
 
   public int durability { get; set; }
 
@@ -115,7 +115,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
   internal override string GetStats() => "Take 2 less damage from all sources.\nWhen you would take damage from any source, grow, sharpen, or trigger Bladegrass on all adjacent squares.";
 
-  public override EquipmentSlot slot => EquipmentSlot.Head;
+  public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
   public int maxDurability => 36;
 

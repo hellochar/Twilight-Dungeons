@@ -78,7 +78,7 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   }
 
   public static bool IsActorNice(Actor actor) {
-    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Feet] is ItemSpiderSandals);
+    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Footwear] is ItemSpiderSandals);
   }
 
   internal void WebRemoved(Actor actor) {
@@ -91,7 +91,7 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
 [Serializable]
 [ObjectInfo("spider-silk-shoes", "Finely woven from the web of spiders.")]
 internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler {
-  public override EquipmentSlot slot => EquipmentSlot.Feet;
+  public override EquipmentSlot slot => EquipmentSlot.Footwear;
   public int stacksMax => 15;
   private int _stacks;
   public int stacks {

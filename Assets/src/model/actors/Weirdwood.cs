@@ -109,7 +109,7 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
     durability = maxDurability;
   }
 
-  public override EquipmentSlot slot => EquipmentSlot.Feet;
+  public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
   public int durability { get; set; }
 

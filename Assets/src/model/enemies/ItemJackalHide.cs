@@ -1,7 +1,7 @@
 [System.Serializable]
 [ObjectInfo(spriteName: "jackal-fur", flavorText: "Patches of matted fur strewn together.")]
 public class ItemJackalHide : EquippableItem, IMaxHPModifier {
-  public override EquipmentSlot slot => EquipmentSlot.Body;
+  public override EquipmentSlot slot => EquipmentSlot.Armor;
 
   public ItemJackalHide() {}
 

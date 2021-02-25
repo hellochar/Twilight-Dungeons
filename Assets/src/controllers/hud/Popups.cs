@@ -8,9 +8,10 @@ public static class Popups {
 
   public static GameObject Create(
     string title,
+    string category,
     string info,
     string flavor,
-    GameObject sprite,
+    GameObject sprite = null,
     Transform parent = null,
     List<GameObject> buttons = null
   ) {
@@ -20,6 +21,9 @@ public static class Popups {
     /// TODO refactor into a Controller class
     var titleText = popup.transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();
     titleText.text = title;
+
+    var categoryText = popup.transform.Find("Frame/Title/Category").GetComponent<TMPro.TMP_Text>();
+    categoryText.text = category;
 
     var infoText = popup.transform.Find("Frame/Stats").GetComponent<TMPro.TMP_Text>();
     infoText.text = info;

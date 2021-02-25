@@ -66,7 +66,7 @@ class ItemThickBranch : EquippableItem, IWeapon, IDurable, IActionCostModifier {
 [Serializable]
 [ObjectInfo("plated-armor")]
 class ItemPlatedArmor : EquippableItem, IDurable, IAttackDamageTakenModifier {
-  public override EquipmentSlot slot => EquipmentSlot.Body;
+  public override EquipmentSlot slot => EquipmentSlot.Armor;
 
   public int durability { get; set; }
   int damageBlock => (maxDurability + 1) - durability;
@@ -115,7 +115,7 @@ class BarkmealStatus : StackingStatus, IMaxHPModifier {
 [Serializable]
 [ObjectInfo("stompinboots", "A thick crust and good sole to protect your feet for years to come.")]
 class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
-  public override EquipmentSlot slot => EquipmentSlot.Feet;
+  public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
   public int durability { get; set; }
 

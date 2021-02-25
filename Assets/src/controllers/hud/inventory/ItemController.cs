@@ -77,6 +77,7 @@ public class ItemController : MonoBehaviour {
 
     popup = Popups.Create(
       title: item.displayName,
+      category: GetCategoryForItem(item),
       info: item.GetStatsFull(),
       flavor: ObjectInfo.GetFlavorTextFor(item),
       sprite: image.gameObject,
@@ -84,6 +85,15 @@ public class ItemController : MonoBehaviour {
     );
     var popupMatchItem = popup.AddComponent<ItemPopupController>();
     popupMatchItem.item = item;
+  }
+
+  private static string GetCategoryForItem(Item item) {
+    switch (item) {
+      case EquippableItem e:
+        return e.slot.ToString();
+      default:
+        return "Item";
+    }
   }
 
   private GameObject MakeButton(string name, Action onClicked) {

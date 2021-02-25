@@ -40,6 +40,7 @@ public class StatusIconController : MonoBehaviour {
   public void OpenPopup() {
     Popups.Create(
       title: status.displayName,
+      category: status.isDebuff ? "Debuff" : "Status",
       info: status.Info(),
       flavor: ObjectInfo.GetFlavorTextFor(status),
       sprite: transform.Find("Icon").gameObject

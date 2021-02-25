@@ -38,9 +38,9 @@ public class Equipment : Inventory {
 }
 
 public enum EquipmentSlot {
-  Head = 0,
+  Headwear = 0,
   Weapon = 1,
-  Body = 2, 
+  Armor = 2, 
   Shield = 3,
-  Feet = 4
+  Footwear = 4
 }

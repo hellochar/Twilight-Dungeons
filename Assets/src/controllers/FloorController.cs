@@ -188,11 +188,25 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     Popups.Create(
       title: entity.displayName,
+      category: GetCategoryForEntity(entity),
       info: description.Trim(),
       flavor: ObjectInfo.GetFlavorTextFor(entity),
       sprite: spriteGameObject
     );
     Destroy(spriteGameObject);
+  }
+
+  private static string GetCategoryForEntity(Entity entity) {
+    switch (entity) {
+      case Tile t:
+        return "Tile";
+      case Actor a:
+        return "Creature";
+      case Grass g:
+        return "Grass";
+      default:
+        return "Other";
+    }
   }
 
   public void OnPointerClick(PointerEventData eventData) {

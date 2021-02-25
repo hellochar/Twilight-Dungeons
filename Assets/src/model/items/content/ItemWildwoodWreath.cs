@@ -7,7 +7,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IAttackHandler {
     durability = maxDurability;
   }
 
-  public override EquipmentSlot slot => EquipmentSlot.Head;
+  public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
   public int maxDurability => 15;
 

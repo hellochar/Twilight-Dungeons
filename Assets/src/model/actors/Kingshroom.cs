@@ -36,7 +36,7 @@ public class Kingshroom : Plant {
 [Serializable]
 [ObjectInfo("living-armor", "")]
 internal class ItemLivingArmor : EquippableItem, ISticky, IDurable, IActionPerformedHandler, IAttackDamageTakenModifier {
-  public override EquipmentSlot slot => EquipmentSlot.Body;
+  public override EquipmentSlot slot => EquipmentSlot.Armor;
   public ItemLivingArmor() {
     durability = maxDurability;
   }
@@ -71,7 +71,7 @@ internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
     }
   }
 
-  public override EquipmentSlot slot => EquipmentSlot.Head;
+  public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
   public int durability { get; set; }
 

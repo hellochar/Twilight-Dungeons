@@ -32,13 +32,13 @@ public static class Popups {
     flavorText.text = flavor;
 
     // Add sprite
-    var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
     if (sprite != null) {
+      var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
       var spriteGameObject = UnityEngine.Object.Instantiate(sprite, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
       RectTransform spriteRectTransform = spriteGameObject.GetComponent<RectTransform>();
-      spriteRectTransform.anchorMax = new Vector2(1, 1);
-      spriteRectTransform.anchorMin = new Vector2();
-      spriteRectTransform.sizeDelta = new Vector2();
+      spriteRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+      spriteRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+      spriteRectTransform.sizeDelta = new Vector2(48, 48);
     }
 
     // Add buttons

@@ -127,3 +127,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     return ActorsInSight(Faction.Enemy).Any();
   }
 }
+
+// public static class PlayerUtils {
+//   public void AddItem()
+// }

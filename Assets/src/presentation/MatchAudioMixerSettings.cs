@@ -6,18 +6,15 @@ using UnityEngine.Audio;
 
 public class MatchAudioMixerSettings : MonoBehaviour {
   public AudioMixer mixer;
-  public static MatchAudioMixerSettings instance;
 
+  /// Each scene should have one MixerMatchSettings object.
   void Start() {
-    /// hacky way to ensure there's only one of these. Each scene should have one MixerMatchSettings object.
-    if (instance != null) {
-      Destroy(this.gameObject);
-      return;
-    }
-    DontDestroyOnLoad(this.gameObject);
-    instance = this;
     Settings.OnChanged += MatchSettings;
     MatchSettings();
+  }
+
+  void OnDestroyed() {
+    Settings.OnChanged -= MatchSettings;
   }
 
   private void MatchSettings() {

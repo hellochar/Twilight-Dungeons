@@ -21,14 +21,18 @@ public class SidePanelController : MonoBehaviour {
     UpdateItems();
   }
 
+  void OnDestroy() {
+    GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
+    Settings.OnChanged -= MatchSettings;
+  }
+
   private void MatchSettings() {
-    gameObject.SetActive(Settings.main.showSidePanel);
+    gameObject?.SetActive(Settings.main.showSidePanel);
   }
 
   private void HandlePlayersChoice() {
     UpdateItems();
   }
-
 
   void Update() {
     // 1 is the title, 2 is the inactive Button prefab

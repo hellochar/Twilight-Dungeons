@@ -45,12 +45,10 @@ public abstract class Entity : IModifierProvider {
   /// <summary>Only call this from Floor to internally update this Entity's floor pointer.</summary>
   public void SetFloor(Floor floor) {
     if (this.floor != null) {
-      UnregisterTimedEvents();
       HandleLeaveFloor();
     }
     this.floor = floor;
     if (this.floor != null) {
-      RegisterTimedEvents();
       HandleEnterFloor();
     }
   }
@@ -93,17 +91,17 @@ public abstract class Entity : IModifierProvider {
     }
   }
 
-  public void UnregisterTimedEvents() {
-    foreach (var timedEvent in timedEvents) {
-      GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
-    }
-  }
+  // public void UnregisterTimedEvents() {
+  //   foreach (var timedEvent in timedEvents) {
+  //     GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
+  //   }
+  // }
 
-  public void RegisterTimedEvents() {
-    foreach (var timedEvent in timedEvents) {
-      GameModel.main.turnManager.RegisterTimedEvent(timedEvent);
-    }
-  }
+  // public void RegisterTimedEvents() {
+  //   foreach (var timedEvent in timedEvents) {
+  //     GameModel.main.turnManager.RegisterTimedEvent(timedEvent);
+  //   }
+  // }
 
   /// Take great care - timed events are serialized by the method name as a string; anonymous delegates
   /// names may change without warning. Code renames can also cause save corruption.

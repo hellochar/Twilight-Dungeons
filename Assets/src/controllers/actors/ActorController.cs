@@ -59,6 +59,7 @@ public class ActorController : BodyController,
         audioSource.Play();
       }
     }
+    PrefabCache.Effects.Instantiate("LightCast", transform);
   }
 
   // Update is called once per frame

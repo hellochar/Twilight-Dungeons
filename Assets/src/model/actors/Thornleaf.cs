@@ -35,7 +35,7 @@ public class Thornleaf : Plant {
 }
 
 [Serializable]
-[ObjectInfo("thornmail", "Spiky!")]
+[ObjectInfo("thornmail", "A layer of spiky leaves is fashioned on top of a comfortable inner mesh.")]
 internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
 
@@ -59,11 +59,11 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
     return input + 4;
   }
 
-  internal override string GetStats() => "Max HP +4.\nReturn 1 damage when an enemy hits you.";
+  internal override string GetStats() => "Max HP +4.\nDeal 1 damage when an enemy hits you.";
 }
 
 [Serializable]
-[ObjectInfo("thornshield", "Also spiky!")]
+[ObjectInfo("thornshield", "Thornleaf timber is actually quite supple, allowing you to get a good bash in once in a while.")]
 internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
   [Serializable]
   private class TakeLessDamage : IAttackDamageTakenModifier {
@@ -107,13 +107,13 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
     Modifiers = new List<object> { new TakeLessDamage(this), new DealMoreDamage(this) };
   }
 
-  internal override string GetStats() => "Blocks 1 damage.\nDeal 1 more attack damage.\nBoth attacking and defending use durability.";
+  internal override string GetStats() => "Blocks 1 damage.\nDeal 1 more attack damage.\nBoth attacking and blocking use durability.";
 }
 
 [Serializable]
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
 internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
-  internal override string GetStats() => "Take 2 less damage from all sources.\nWhen you would take damage from any source, grow, sharpen, or trigger Bladegrass on all adjacent squares.";
+  internal override string GetStats() => "Take 2 less damage from all sources.\nWhen you would take damage from any source, grow, sharpen, or trigger Bladegrass on all adjacent tiles.";
 
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }

@@ -113,7 +113,7 @@ class BarkmealStatus : StackingStatus, IMaxHPModifier {
 }
 
 [Serializable]
-[ObjectInfo("stompinboots", "A thick crust and good sole to protect your feet for years to come.")]
+[ObjectInfo("stompinboots", "A thick crust and good sole can protect your feet for years to come.")]
 class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
@@ -124,22 +124,24 @@ class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (player.grass != null) {
       player.grass.Kill(player);
-      player.statuses.Add(new BlockStatus());
+      player.statuses.Add(new ArmoredStatus());
     }
   }
 
-  internal override string GetStats() => "Everlasting.\nWhen you walk on to any Grass, kill it and gain 1 Block.";
+  internal override string GetStats() => "Everlasting.\nWhen you walk on to any Grass, kill it and gain 1 stack of Armored.";
 }
 
 [Serializable]
 [ObjectInfo("colored_transparent_packed_228")]
-class BlockStatus : StackingStatus, IAttackDamageTakenModifier {
+class ArmoredStatus : StackingStatus, IAttackDamageTakenModifier {
   public override StackingMode stackingMode => StackingMode.Add;
-  public override string Info() => $"Block {stacks} damage from the next attack.";
+  public override string Info() => $"Block 1 damage from the next {stacks} attacks!";
 
   public int Modify(int input) {
-    var blockAmount = stacks;
-    stacks = 0;
-    return input - blockAmount;
+    if (input > 0) {
+      stacks--;
+      return input - 1;
+    }
+    return input;
   }
 }

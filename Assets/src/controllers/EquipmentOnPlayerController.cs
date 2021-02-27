@@ -14,7 +14,13 @@ public class EquipmentOnPlayerController : ItemSlotController {
     itemChild = transform.Find("ItemOnPlayer")?.gameObject;
   }
 
+  protected override void UpdateUnused() {
+    activeItem.OnDestroyed -= HandleItemDestroyed;
+    base.UpdateUnused();
+  }
+
   protected override GameObject UpdateInUse(Item item) {
+    item.OnDestroyed += HandleItemDestroyed;
     var showOnPlayer = ObjectInfo.InfoFor(item).showOnPlayer;
     if (showOnPlayer) {
       var child = Instantiate(itemPrefab, new Vector3(), Quaternion.identity, this.transform);
@@ -24,5 +30,28 @@ public class EquipmentOnPlayerController : ItemSlotController {
       return child;
     }
     return null;
+  }
+
+  private void HandleItemDestroyed() {
+    StartCoroutine(PlayItemBreakingAnimation3x());
+  }
+
+  IEnumerator PlayItemBreakingAnimation3x() {
+    var clone = Instantiate(this.itemChild, this.itemChild.transform.parent);
+    clone.SetActive(false);
+    PlayItemBreakingAnimation(clone);
+    yield return new WaitForSeconds(0.3f);
+    PlayItemBreakingAnimation(clone);
+    yield return new WaitForSeconds(0.3f);
+    PlayItemBreakingAnimation(clone);
+    Destroy(clone);
+  }
+
+  private void PlayItemBreakingAnimation(GameObject itemChild) {
+    var newChild = Instantiate(itemChild, itemChild.transform.parent);
+    newChild.SetActive(true);
+    var ftd = newChild.AddComponent<FadeThenDestroy>();
+    ftd.fadeTime = 0.5f;
+    ftd.shrink = -3;
   }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,7 +12,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     base.Start();
     player.inventory.OnItemAdded += HandleInventoryItemAdded;
     player.equipment.OnItemAdded += HandleEquipmentItemAdded;
-    player.equipment.OnItemRemoved += HandleItemRemoved;
+    player.equipment.OnItemRemoved += HandleEquipmentItemRemoved;
+    player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
   }
 
   void OnApplicationPause(bool isPaused) {
@@ -72,12 +74,20 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     }
   }
 
-  private void HandleItemRemoved(Item obj) {
+  private void HandleEquipmentItemRemoved(Item obj) {
     PlayEquipSound();
   }
 
   private void HandleEquipmentItemAdded(Item arg1, Entity arg2) {
     PlayEquipSound();
+  }
+
+  private void HandleEquipmentDestroyed(Item obj) {
+    IEnumerator DelayedPlay() {
+      yield return new WaitForSeconds(0.25f);
+      AudioClipStore.main.playerEquipmentBreak.PlayAtPoint(transform.position);
+    }
+    StartCoroutine(DelayedPlay());
   }
 
   private void PlayEquipSound() {

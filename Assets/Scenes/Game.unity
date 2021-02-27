@@ -3366,7 +3366,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 338125421}
   m_HandleRect: {fileID: 338125420}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -10559,6 +10559,8 @@ MonoBehaviour:
   death: {fileID: 8300000, guid: 90e1d83d695c53d43ac4bc5e27d533fb, type: 3}
   plantHarvest: {fileID: 8300000, guid: 33305f8266d805148b775092fcba0370, type: 3}
   playerEquip: {fileID: 8300000, guid: 7252eaa1a71b02449a7fbab15d3adb06, type: 3}
+  playerEquipmentBreak: {fileID: 8300000, guid: 51ada07a8b7d68a45aa55c159e9f6d6f,
+    type: 3}
   playerHeal: {fileID: 8300000, guid: 9c388620a48e53e4db46d291663fb80f, type: 3}
   playerGeneric: {fileID: 8300000, guid: ca0afa29983afb041ac7a7333067ef30, type: 3}
   playerPickupItem: {fileID: 8300000, guid: 8282c21177df90543b0dc6b90bf2d504, type: 3}
@@ -10876,7 +10878,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

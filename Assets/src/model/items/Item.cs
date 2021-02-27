@@ -12,8 +12,12 @@ public class Item {
 
   public virtual Inventory inventory { get; set; }
 
+  public event Action OnDestroyed;
+
   public void Destroy(object unused = null) {
     if (inventory != null) {
+      OnDestroyed?.Invoke();
+      inventory.OnItemDestroyed?.Invoke(this);
       inventory.RemoveItem(this);
     }
   }

@@ -8,11 +8,14 @@ using UnityEngine;
 public class Inventory : IEnumerable<Item> {
   private Item[] items;
   public int capacity => items.Length;
+
   public virtual Item this[int i] => items[i];
   [field:NonSerialized] /// Controller only
   public event Action<Item, Entity> OnItemAdded;
   [field:NonSerialized] /// Controller only
   public event Action<Item> OnItemRemoved;
+  [NonSerialized] // controller only
+  public Action<Item> OnItemDestroyed = delegate { };
 
   public Inventory(params Item[] items) {
     this.items = items;

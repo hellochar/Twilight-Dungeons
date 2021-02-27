@@ -597,12 +597,3 @@ public class FloorGenerator {
     return path.Any();
   }
 }
-
-public static class Tips {
-  public static Dictionary<int, string> tipMap = new Dictionary<int, string>() {
-    [0] = "You can come back to the home floor at any time by taking the upstairs.",
-    [1] = "Healing is scarce. Your HP is of utmost importance.",
-    [2] = "Equipping and unequipping items is instant.",
-    [8] = "You found a new Mature plant! Harvest some seeds and re-plant them in the home floor."
-  };
-}

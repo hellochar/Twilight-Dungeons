@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 /// expects this GameObject to have one child for each of this plant's state with matching names.
 public class PlantController : BodyController {
   public Plant plant => (Plant) body;
+  public GameObject particles;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
   private GameObject activePlantStageObject;
   private GameObject ui = null;
@@ -30,12 +31,15 @@ public class PlantController : BodyController {
   // Start is called before the first frame update
   public override void Start() {
     foreach (Transform t in transform) {
-      plantStageObjects.Add(t.gameObject.name, t.gameObject);
-      t.gameObject.SetActive(false);
-      t.localPosition = new Vector3(0, 0, t.localPosition.z);
+      if (t.gameObject.name != "Particle Systems") {
+        plantStageObjects.Add(t.gameObject.name, t.gameObject);
+        t.gameObject.SetActive(false);
+        t.localPosition = new Vector3(0, t.localPosition.y, t.localPosition.z);
+      }
     }
     activePlantStageObject = plantStageObjects[plant.stage.name];
     activePlantStageObject.SetActive(true);
+    particles.SetActive(plant.stage.name == "Seed");
     base.Start();
   }
 
@@ -44,6 +48,7 @@ public class PlantController : BodyController {
       activePlantStageObject.SetActive(false);
       activePlantStageObject = plantStageObjects[plant.stage.name];
       activePlantStageObject.SetActive(true);
+      particles.SetActive(plant.stage.name == "Seed");
     }
   }
 

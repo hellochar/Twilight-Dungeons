@@ -10,8 +10,13 @@ public class ItemSeed : Item {
   }
 
   public void Plant(Soil soil) {
-    if (GameModel.main.player.water >= 100) {
-      GameModel.main.player.water -= 100;
+    var model = GameModel.main;
+    Player player = model.player;
+    if (model.depth != 0) {
+      throw new CannotPerformActionException("Plant on the home floor.");
+    }
+    if (player.water >= 100) {
+      player.water -= 100;
       var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
       var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
       soil.floor.Put(plant);

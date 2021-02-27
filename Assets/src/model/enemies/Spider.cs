@@ -64,6 +64,13 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
     }
   }
 
+  protected override void HandleLeaveFloor() {
+    base.HandleLeaveFloor();
+    if (status != null && status.actor != null) {
+      status.Remove();
+    }
+  }
+
   private WebStatus status;
   public void HandleActorEnter(Actor actor) {
     status = new WebStatus(this);
@@ -165,6 +172,7 @@ internal class WebStatus : Status, IBaseActionModifier {
 [System.Serializable]
 [ObjectInfo("poisoned-status", "You feel sick to your stomach...")]
 internal class PoisonedStatus : StackingStatus {
+  public override bool isDebuff => true;
   int duration = 5;
   public PoisonedStatus(int stacks) : base() {
     this.stacks = stacks;

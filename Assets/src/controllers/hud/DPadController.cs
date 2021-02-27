@@ -18,7 +18,11 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   }
 
   void MatchSettings() {
-    gameObject?.SetActive(Settings.main.moveMode.HasFlag(MoveMode.DPad));
+    if (this == null) {
+      Settings.OnChanged -= MatchSettings;
+    } else {
+      gameObject?.SetActive(Settings.main.moveMode.HasFlag(MoveMode.DPad));
+    }
   }
 
   public void MovePlayer(int dx, int dy) {

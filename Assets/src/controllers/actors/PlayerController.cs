@@ -12,7 +12,6 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.inventory.OnItemAdded += HandleInventoryItemAdded;
     player.equipment.OnItemAdded += HandleEquipmentItemAdded;
     player.equipment.OnItemRemoved += HandleItemRemoved;
-    GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
   }
 
   void OnApplicationPause(bool isPaused) {
@@ -25,6 +24,12 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (!hasFocus) {
       player.ClearTasks();
     }
+  }
+
+  public override void HandleStatusAdded(Status status) {
+    base.HandleStatusAdded(status);
+    var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
+    worldText.GetComponent<TMPro.TMP_Text>().text = status.displayName;
   }
 
   public override void HandleDeath(Entity source) {
@@ -74,11 +79,6 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   private void HandleEquipmentItemAdded(Item arg1, Entity arg2) {
     PlayEquipSound();
   }
-
-  private void HandlePlayerChangeFloor(Floor arg1, Floor arg2) {
-    // AudioClipStore.main.playerTakeStairs.Play(1);
-  }
-
 
   private void PlayEquipSound() {
     AudioClipStore.main.playerEquip.PlayAtPoint(transform.position);

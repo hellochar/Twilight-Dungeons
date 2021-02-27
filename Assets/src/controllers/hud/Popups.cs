@@ -20,7 +20,11 @@ public static class Popups {
 
     /// TODO refactor into a Controller class
     var titleText = popup.transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();
-    titleText.text = title;
+    if (title == null) {
+      titleText.gameObject.SetActive(false);
+    } else {
+      titleText.text = title;
+    }
 
     var categoryText = popup.transform.Find("Frame/Title/Category").GetComponent<TMPro.TMP_Text>();
     categoryText.text = category;
@@ -32,8 +36,10 @@ public static class Popups {
     flavorText.text = flavor;
 
     // Add sprite
-    if (sprite != null) {
-      var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
+    var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
+    if (sprite == null) {
+      spriteContainer.SetActive(false);
+    } else {
       var spriteGameObject = UnityEngine.Object.Instantiate(sprite, spriteContainer.GetComponent<RectTransform>().position, Quaternion.identity, spriteContainer.transform);
       RectTransform spriteRectTransform = spriteGameObject.GetComponent<RectTransform>();
       spriteRectTransform.anchorMax = new Vector2(0.5f, 0.5f);

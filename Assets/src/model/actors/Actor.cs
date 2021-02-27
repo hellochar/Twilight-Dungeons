@@ -173,6 +173,7 @@ public class Actor : Body, ISteppable {
       throw new ActorDiedException();
     }
     Modifiers.Process(this.StepModifiers(), null);
+    task?.PostStep();
 
     // handle close-ended actions
     while (task != null && (task.WhenToCheckIsDone.HasFlag(TaskStage.After) && !task.forceOnlyCheckBefore) && task.IsDone()) {

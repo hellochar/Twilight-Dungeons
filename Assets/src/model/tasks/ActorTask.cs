@@ -50,6 +50,8 @@ public abstract class ActorTask {
   /// called before the IsDone()/GetNextAction() calls
   public virtual void PreStep() {}
 
+  public virtual void PostStep() {}
+
   public virtual BaseAction GetNextAction() {
     return GetNextActionImpl();
   }

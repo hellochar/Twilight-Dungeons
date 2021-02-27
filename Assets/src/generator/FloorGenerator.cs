@@ -32,7 +32,7 @@ public class FloorGenerator {
     everything = EncounterGroup.EarlyMidMixed();
     midGame = EncounterGroup.MidGame();
     floorGenerators = new List<Func<Floor>>() {
-      () => throw new Exception("shouldn't be calling generator on depth 0"), // unused
+      () => generateFloor0(0),
       () => generateSingleRoomFloor(1, 11, 11),
       () => generateSingleRoomFloor(2, 10, 10),
       () => generateSingleRoomFloor(3, 9, 9),
@@ -90,6 +90,15 @@ public class FloorGenerator {
     // pick the generator
     var generator = floorGenerators[depth];
     var floor = generator();
+    /// add a signpost onto the floor
+    if (Tips.tipMap.ContainsKey(floor.depth)) {
+      /// put it near the upstairs
+      var signpostSearchStartPos = floor.upstairs?.landing ?? new Vector2Int(3, floor.height / 2);
+      var signpostPos = floor.BreadthFirstSearch(signpostSearchStartPos, (tile) => true).Skip(9).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
+      if (signpostPos != null) {
+        floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
+      }
+    }
     if (floor.depth != depth) {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
@@ -587,4 +596,13 @@ public class FloorGenerator {
     var path = floor.FindPath(floor.downstairs.pos, floor.upstairs.pos);
     return path.Any();
   }
+}
+
+public static class Tips {
+  public static Dictionary<int, string> tipMap = new Dictionary<int, string>() {
+    [0] = "You can come back to the home floor at any time by taking the upstairs.",
+    [1] = "Healing is scarce. Your HP is of utmost importance.",
+    [2] = "Equipping and unequipping items is instant.",
+    [8] = "You found a new Mature plant! Harvest some seeds and re-plant them in the home floor."
+  };
 }

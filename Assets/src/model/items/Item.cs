@@ -12,6 +12,7 @@ public class Item {
 
   public virtual Inventory inventory { get; set; }
 
+  [field:NonSerialized] /// controller only
   public event Action OnDestroyed;
 
   public void Destroy(object unused = null) {

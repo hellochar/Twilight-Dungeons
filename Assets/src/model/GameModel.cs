@@ -75,7 +75,7 @@ public class GameModel {
       floorSeeds.Add(MyRandom.Next());
     }
     generator = new FloorGenerator(floorSeeds);
-    home = generator.generateFloor0(0);
+    home = generator.generateCaveFloor(0);
     cave = generator.generateCaveFloor(1);
     player = new Player(new Vector2Int(2, home.height/2));
     home.Put(player);

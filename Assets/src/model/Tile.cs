@@ -100,6 +100,14 @@ public class Ground : Tile {
 }
 
 [Serializable]
+public class Signpost : Ground {
+  public string text;
+  public Signpost(Vector2Int pos, string text = "") : base(pos) {
+    this.text = text;
+  }
+}
+
+[Serializable]
 [ObjectInfo(description: "Grass cannot grow on Hard Ground.", flavorText: "Any workable earth has been blown or washed away.")]
 public class HardGround : Tile {
   public HardGround(Vector2Int pos) : base(pos) { }

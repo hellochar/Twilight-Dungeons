@@ -7,14 +7,34 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler {
+  bool isPressed = false;
+  private bool queueButtonPress = false;
+  GameObject activeButton;
+  Sprite buttonOriginalSprite;
+  private PointerEventData lastEventData;
+  private float lastTapTime = -1;
+
+  /// hard-coded
+  private Transform stopButton => transform.GetChild(4);
+  private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x * 0.6f;
 
   void Start() {
     // this will work even while the gameobject is inactive.
     Settings.OnChanged += MatchSettings;
+    GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
+  }
+
+  void HandlePlayersChoice() {
+    // we must queue the button press because at this point in the callback, the GameModel's other handler
+    // might not have run yet, which we rely on to set the player's action
+    if (isPressed) {
+      queueButtonPress = true;
+    }
   }
 
   void OnDestroyed() {
     Settings.OnChanged -= MatchSettings;
+    GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
   }
 
   void MatchSettings() {
@@ -28,6 +48,8 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   public void MovePlayer(int dx, int dy) {
     var floorController = GameModelController.main.CurrentFloorController;
     var pos = GameModel.main.player.pos + new Vector2Int(dx, dy);
+    Debug.Log("Moving player to " + pos);
+    /// this potentially does *anything* - set player action, open a popup, or be a no-op.
     floorController.UserInteractAt(pos, null);
   }
 
@@ -43,58 +65,70 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   public void Down() => MovePlayer(0, -1);
   public void DownRight() => MovePlayer(1, -1);
 
-  bool isPressed = false;
   public void OnPointerDown(PointerEventData eventData) {
+    lastEventData = eventData;
+    lastTapTime = Time.time;
     isPressed = true;
-    UpdatePressedButton();
+    UpdateActiveButton();
+    /// do the initial press
+    activeButton.GetComponent<Button>().OnPointerClick(eventData);
   }
 
-  public void OnPointerUp(PointerEventData eventData) {
-    // do the press
-    if (isPressed) {
-      button.GetComponent<Button>().OnPointerClick(eventData);
-      isPressed = false;
-      UnsetButtonSprite();
-    }
-  }
+  public void OnPointerUp(PointerEventData eventData) => Unpress();
 
   /// if touch leaves the dpad area, cancel the touch.
-  public void OnPointerExit(PointerEventData eventData) {
+  public void OnPointerExit(PointerEventData eventData) => Unpress();
+
+  void Unpress() {
     isPressed = false;
     UnsetButtonSprite();
   }
 
   void Update() {
     if (isPressed) {
-      UpdatePressedButton();
+      UpdateActiveButton();
+      if (ShouldCancelPress()) {
+        Unpress();
+      } else {
+        /// only do queued button presses after .5 seconds of holding
+        /// this prevents an undesirable "double move" if you get free moves
+        if (queueButtonPress && (Time.time - lastTapTime > 0.5f)) {
+          activeButton.GetComponent<Button>().OnPointerClick(lastEventData);
+          queueButtonPress = false;
+        }
+      }
     }
   }
 
-  GameObject button;
-  Sprite buttonOriginalSprite;
-  void UpdatePressedButton() {
+  /// cancel the press if there's a popup or plant ui
+  /// 
+  /// for press and hold, the question is *when* to re-trigger a press?
+  /// if we're moving on normal ground, we should retrigger at a regular interval
+  /// (when it's the player's choice).
+  /// if we hit a popup of some sort, then stop the press.
+
+  private bool ShouldCancelPress() {
+    return GameObject.FindGameObjectWithTag("Popup") != null;
+  }
+
+  void UpdateActiveButton() {
     GameObject newButton = GetPressedButtonFromTouchPosition(Input.mousePosition);
-    if (button != newButton) {
+    if (activeButton != newButton) {
       UnsetButtonSprite();
 
-      button = newButton;
-      buttonOriginalSprite = button.GetComponent<Image>().sprite;
-      button.GetComponent<Image>().sprite = button.GetComponent<Button>().spriteState.pressedSprite;
+      activeButton = newButton;
+      buttonOriginalSprite = activeButton.GetComponent<Image>().sprite;
+      activeButton.GetComponent<Image>().sprite = activeButton.GetComponent<Button>().spriteState.pressedSprite;
     }
   }
 
   void UnsetButtonSprite() {
-    if (button != null) {
-      button.GetComponent<Image>().sprite = buttonOriginalSprite;
-      button = null;
+    if (activeButton != null) {
+      activeButton.GetComponent<Image>().sprite = buttonOriginalSprite;
+      activeButton = null;
       buttonOriginalSprite = null;
     }
   }
-
-  /// hard-coded
-  private Transform stopButton => transform.GetChild(4);
-
-  private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x * 0.66f;
 
   private GameObject GetPressedButtonFromTouchPosition(Vector3 touchPosition3) {
     Vector2 touchPos = Util.getXY(touchPosition3);

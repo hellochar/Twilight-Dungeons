@@ -10,6 +10,8 @@ public class GameModelController : MonoBehaviour {
   [NonSerialized]
   GameModel model;
   private GameObject floorPrefab;
+  private Coroutine gameLoop;
+  public bool isPlayersChoice => gameLoop == null;
 
   private Dictionary<Floor, FloorController> floorControllers = new Dictionary<Floor, FloorController>();
 
@@ -64,9 +66,8 @@ public class GameModelController : MonoBehaviour {
   // }
 #endif
 
-  private Coroutine gameLoop;
   public void HandleSetPlayerTask(ActorTask action) {
-    if (gameLoop == null && action != null) {
+    if (isPlayersChoice && action != null) {
       gameLoop = StartCoroutine(model.StepUntilPlayerChoice());
     }
   }

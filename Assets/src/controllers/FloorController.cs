@@ -135,14 +135,32 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
   public void OnPointerDown(PointerEventData eventData) {
     if (!CameraZoom.IsZoomGuardActive && isInputAllowed) {
-      hold = new InputHold(Time.time);
+      hold = new InputHold(Time.time, eventData);
       HoldProgressBar.main.HoldStart();
     }
   }
 
   public void OnPointerUp(PointerEventData eventData) {
+    if (isInputAllowed && !CameraZoom.IsZoomGuardActive && !(hold?.triggered ?? false)) {
+      var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
+      var tappedEntity = GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
+      if (tappedEntity != null) {
+        ShowPopupFor(tappedEntity);
+      }
+    }
     hold = null;
     HoldProgressBar.main.HoldEnd();
+  }
+
+  public void OnPointerClick(PointerEventData eventData) {
+    // if (isInputAllowed && !CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
+    //   var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
+    //   var pressPos = RaycastToTilePos(eventData.pointerPressRaycast);
+    //   // don't trigger a click if you've touch-dragged over multiple tiles to prevent accidental touches
+    //   if (pressPos == pos) {
+    //     UserInteractAt(pos, eventData);
+    //   }
+    // }
   }
 
   private InputHold hold;
@@ -155,7 +173,11 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         HoldProgressBar.main.HoldUpdate(hold.PercentDone(time));
         if (hold.ShouldTrigger(time)) {
           hold.triggered = true;
-          ShowObjectInfoPopupOverTouch();
+          var mousePosition = Input.mousePosition;
+          var worldPos = Camera.main.ScreenToWorldPoint(mousePosition);
+          var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+          UserInteractAt(pos, hold.pointerEventData);
+          // ShowObjectInfoPopupOverTouch();
         }
       }
     }
@@ -214,17 +236,6 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     }
   }
 
-  public void OnPointerClick(PointerEventData eventData) {
-    if (isInputAllowed && !CameraZoom.IsZoomGuardActive && Settings.main.moveMode.HasFlag(MoveMode.TouchTile)) {
-      var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
-      var pressPos = RaycastToTilePos(eventData.pointerPressRaycast);
-      // don't trigger a click if you've touch-dragged over multiple tiles to prevent accidental touches
-      if (pressPos == pos) {
-        UserInteractAt(pos, eventData);
-      }
-    }
-  }
-
   private static Vector2Int RaycastToTilePos(RaycastResult raycast) {
     var worldPos = raycast.worldPosition;
     var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
@@ -265,12 +276,13 @@ public class FloorController : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 class InputHold {
   public const float THRESHOLD = 0.5f;
   public readonly float time;
-  public readonly float threshold;
+  public readonly PointerEventData pointerEventData;
+  public readonly float threshold = THRESHOLD;
   public bool triggered = false;
 
-  public InputHold(float time, float threshold = THRESHOLD) {
+  public InputHold(float time, PointerEventData pointerEventData) {
     this.time = time;
-    this.threshold = threshold;
+    this.pointerEventData = pointerEventData;
   }
 
   public float PercentDone(float t) => Mathf.Clamp((t - time) / threshold, 0, 1);

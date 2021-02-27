@@ -23,7 +23,7 @@ public class ActorController : BodyController,
     actor.OnSetTask += HandleSetTask;
     HandleSetTask(actor.task);
 
-    /// create GameObjects any statuses that already exist
+    /// match statuses that already exist
     foreach (var s in actor.statuses.list) {
       HandleStatusAdded(s);
     }

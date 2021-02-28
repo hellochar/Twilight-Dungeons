@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BumpAndReturn : MonoBehaviour {
   static float ANIMATION_TIME = 0.25f;
-  // set externally
+  public float intensity = 0.75f;
   public Vector3 target;
 
   private Vector3 startLocal;
@@ -35,7 +35,7 @@ public class BumpAndReturn : MonoBehaviour {
       Destroy(this);
       return;
     }
-    float lerp = Mathf.Pow(Mathf.Cos(Mathf.PI / 2 + Mathf.PI * Mathf.Sqrt(t)), 4) * 0.5f;
+    float lerp = Mathf.Pow(Mathf.Cos(Mathf.PI / 2 + Mathf.PI * Mathf.Sqrt(t)), 4) * intensity;
     transform.localPosition = Vector3.Lerp(startLocal, targetLocal, lerp);
   }
 }

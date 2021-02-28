@@ -28,6 +28,31 @@ PrefabInstance:
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: 92bfdcc90d35b554da2e76d2fadbe75f, type: 3}
     - target: {fileID: 4539323523712159779, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
       propertyPath: m_RootOrder

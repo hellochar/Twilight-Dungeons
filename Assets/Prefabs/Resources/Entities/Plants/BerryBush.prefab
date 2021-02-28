@@ -10,7 +10,37 @@ PrefabInstance:
     - target: {fileID: 1090504782704060601, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
       propertyPath: m_Name
-      value: _Plant
+      value: BerryBush
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.b
+      value: 0.17254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.g
+      value: 0.6784314
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.r
+      value: 0.48235297
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: a9924e6c1af1e9b43a50306908b604c5, type: 3}
+    - target: {fileID: 2192973851886963830, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4539323523712159779, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
@@ -67,5 +97,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8844925212396796699, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a9924e6c1af1e9b43a50306908b604c5,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da91ef38d5aabdc489fdd4740e26fadf, type: 3}

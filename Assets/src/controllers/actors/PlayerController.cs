@@ -101,18 +101,21 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (Input.GetKeyDown(KeyCode.Space)) {
       player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
     }
-    if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl)) {
+    if (Input.GetKeyDown(KeyCode.S)) {
       Serializer.SaveMainToFile();
     }
-    if (Input.GetKeyDown(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) {
+    if (Input.GetKeyDown(KeyCode.L)) {
       GameModel.main = Serializer.LoadFromFile();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
-    var model = GameModel.main;
+    if (Input.GetKeyDown(KeyCode.N)) {
+      GameModel.GenerateNewGameAndSetMain();
+      SceneManager.LoadSceneAsync("Scenes/Game");
+    }
     if (Input.GetKeyDown(KeyCode.Equals)) {
       var e = GameModel.main.StepUntilPlayerChoice();
       while(e.MoveNext()) { }
-      GameModel.main.PutPlayerAt(model.depth + 1);
+      GameModel.main.PutPlayerAt(GameModel.main.depth + 1);
     }
     base.Update();
   }

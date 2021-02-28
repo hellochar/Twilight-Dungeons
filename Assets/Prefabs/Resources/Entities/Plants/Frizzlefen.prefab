@@ -14,8 +14,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1769799323776536715, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.x
+      value: 0.69
+      objectReference: {fileID: 0}
+    - target: {fileID: 1769799323776536715, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
       propertyPath: m_SpriteTilingProperty.pivot.y
-      value: 0.25
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 1769799323776536715, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
@@ -27,6 +32,31 @@ PrefabInstance:
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.b
+      value: 0.2627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.g
+      value: 0.6156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestColor.r
+      value: 0.9843138
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946441417897497391, guid: da91ef38d5aabdc489fdd4740e26fadf,
+        type: 3}
+      propertyPath: harvestTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: 45ad99319893c174b9528e9d30062aa6, type: 3}
     - target: {fileID: 2400209312587648795, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
       propertyPath: m_IsActive

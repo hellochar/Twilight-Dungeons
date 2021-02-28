@@ -5135,6 +5135,7 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -5166,9 +5167,12 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
   platformSettings:
   - serializedVersion: 3
@@ -18205,48 +18209,6 @@ TextureImporter:
       bones: []
       spriteID: 06a5d5889f3d9e3b0800000000000000
       internalID: -5482618002658731424
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: wildwood
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 304
-        width: 16
-        height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a7224aefafb6455b0800000000000000
-      internalID: -5380556929042734470
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: weirdwood
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 304
-        width: 16
-        height: 32
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6358e494f6e60f4c0800000000000000
-      internalID: -4255780223614810826
       vertices: []
       indices: 
       edges: []

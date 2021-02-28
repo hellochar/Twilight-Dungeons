@@ -10,7 +10,7 @@ public class PlantController : BodyController {
   public Plant plant => (Plant) body;
   public GameObject particles;
   private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
-  private GameObject activePlantStageObject;
+  public GameObject activePlantStageObject;
   private GameObject ui = null;
   public bool popupOpen {
     get => ui != null;
@@ -40,7 +40,17 @@ public class PlantController : BodyController {
     activePlantStageObject = plantStageObjects[plant.stage.name];
     activePlantStageObject.SetActive(true);
     particles.SetActive(plant.stage.name == "Seed");
+    plant.OnHarvested += HandleHarvested;
     base.Start();
+  }
+
+  private void HandleHarvested() {
+    var particles = PrefabCache.Effects.Instantiate("Harvest Particles", transform.parent);
+    particles.transform.localPosition = transform.localPosition;
+    var ps = particles.GetComponent<ParticleSystem>();
+    var shape = ps.shape;
+    shape.spriteRenderer = activePlantStageObject.GetComponent<SpriteRenderer>();
+    shape.texture = shape.spriteRenderer.sprite.texture;
   }
 
   public void Update() {

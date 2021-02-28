@@ -7,6 +7,8 @@ public abstract class Plant : Body, ISteppable {
   public float timeNextAction { get; set; }
   /// put earlier than the player so they can act early
   public float turnPriority => 0;
+  [field:NonSerialized] /// controller only
+  public event Action OnHarvested;
 
   public float percentGrown {
     get {
@@ -55,6 +57,7 @@ public abstract class Plant : Body, ISteppable {
 
   internal void Harvest(int choiceIndex) {
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
+    OnHarvested?.Invoke();
     Kill(GameModel.main.player);
   }
 }

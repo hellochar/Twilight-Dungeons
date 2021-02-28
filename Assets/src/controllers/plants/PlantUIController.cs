@@ -34,7 +34,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       Destroy(harvests.gameObject);
     }
 
-    var mature = plantController.transform.GetComponentsInChildren<SpriteRenderer>(true).Last();
+    var mature = plantController.activePlantStageObject.GetComponent<SpriteRenderer>();
     var image = transform.Find("Frame/Image").GetComponent<Image>();
     image.sprite = mature.sprite;
     image.color = mature.color;

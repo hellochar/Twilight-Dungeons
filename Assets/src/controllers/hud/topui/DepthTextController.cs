@@ -7,19 +7,24 @@ using UnityEngine;
 public class DepthTextController : MonoBehaviour {
   private TMPro.TMP_Text text;
   void Start() {
-    text = GetComponent<TMPro.TMP_Text>();
+    text = transform.Find("Text").GetComponent<TMPro.TMP_Text>();
     text.text = "";
   }
 
   // Update is called once per frame
   void Update() {
-    var timeSpan = TimeSpan.FromSeconds(Time.timeSinceLevelLoad);
-    var timeSpanText = timeSpan.ToString(@"hh\:mm\:ss");
-    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time + "\n" + timeSpanText + "\nSeed " + GameModel.main.seed.ToString("X");
-    // text.text += "\nTime " + GameModel.main.time;
-    // text.text += "\nStatuses: " + string.Join(", ", GameModel.main.player.statuses.list.Select(x => x.ToString()));
-    // if (GameModel.main.turnManager != null) {
-    //   this.tmpComponent.text += "\nTurn order: " + GameModel.main.turnManager.ToString();
-    // }
+    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time;
+  }
+
+  public void ShowPopup() {
+    var playTime = TimeSpan.FromSeconds(Time.timeSinceLevelLoad).ToString(@"hh\:mm\:ss");
+    var info = $"Playtime {playTime}\nSeed " + GameModel.main.seed.ToString("X");
+    Popups.Create(
+      title: null,
+      category: "",
+      info: info,
+      flavor: "",
+      errorText: GameModel.main.turnManager.latestException?.ToString()
+    );
   }
 }

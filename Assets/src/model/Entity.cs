@@ -73,7 +73,7 @@ public abstract class Entity : IModifierProvider {
   }
 
   public override string ToString() {
-    return $"{base.ToString()} ({guid.ToString().Substring(0, 6)})";
+    return $"{base.ToString()} ({pos.x}, {pos.y}) {(IsDead ? "Dead" : "")} {(floor == null ? "floor=null" : "")}";
   }
 
   public void KillSelf() {

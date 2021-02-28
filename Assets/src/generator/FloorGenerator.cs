@@ -89,7 +89,21 @@ public class FloorGenerator {
 
     // pick the generator
     var generator = floorGenerators[depth];
-    var floor = generator();
+    Floor floor = null;
+
+    int guard = 0;
+    while (floor == null && guard++ < 20) {
+      try {
+        floor = generator();
+      } catch (Exception e) {
+        Debug.LogError(e);
+        GameModel.main.turnManager.latestException = e;
+      }
+    }
+    if (floor == null) {
+      throw GameModel.main.turnManager.latestException;
+    }
+
     /// add a signpost onto the floor
     if (Tips.tipMap.ContainsKey(floor.depth)) {
       /// put it near the upstairs

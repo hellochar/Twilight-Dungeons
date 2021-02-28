@@ -56,7 +56,7 @@ public class GameModel {
   public GameModel() {
     this.seed = new System.Random().Next();
     #if UNITY_EDITOR
-    // this.seed = 0x706e711;
+    this.seed = 0x3f7e08b;
     #endif
 
   }

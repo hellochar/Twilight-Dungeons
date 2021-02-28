@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PopupController : MonoBehaviour {
   public event Action OnClose;
+  public GameObject errorContainer;
+
   void Start() {
     // fill up the parent
     var rectTransform = GetComponent<RectTransform>();
@@ -12,6 +14,12 @@ public class PopupController : MonoBehaviour {
     rectTransform.offsetMin = new Vector2();
 
     AudioClipStore.main?.popupOpen.Play(0.2f);
+  }
+
+  public void SetErrorText(string errorText) {
+    errorContainer.SetActive(errorText != null);
+    var text = errorContainer.transform.Find("Viewport/Content/Text").GetComponent<TMPro.TMP_Text>();
+    text.text = errorText;
   }
 
   void OnDestroy() {

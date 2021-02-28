@@ -13,7 +13,8 @@ public static class Popups {
     string flavor,
     GameObject sprite = null,
     Transform parent = null,
-    List<GameObject> buttons = null
+    List<GameObject> buttons = null,
+    string errorText = null
   ) {
     GameObject popup = InstantiatePopup(parent);
     var controller = popup.GetComponent<PopupController>();
@@ -22,6 +23,7 @@ public static class Popups {
     var titleText = popup.transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();
     if (title == null) {
       titleText.gameObject.SetActive(false);
+      popup.transform.Find("Frame/Bottom Decorater Positioner").gameObject.SetActive(false);
     } else {
       titleText.text = title;
     }
@@ -31,6 +33,8 @@ public static class Popups {
 
     var infoText = popup.transform.Find("Frame/Stats").GetComponent<TMPro.TMP_Text>();
     infoText.text = info;
+
+    controller.SetErrorText(errorText);
 
     var flavorText = popup.transform.Find("Frame/Flavor Text").GetComponent<TMPro.TMP_Text>();
     flavorText.text = flavor;

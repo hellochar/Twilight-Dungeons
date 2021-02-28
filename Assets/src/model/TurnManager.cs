@@ -15,6 +15,8 @@ public class TurnManager {
   public ISteppable activeEntity;
   public bool forceStaggerThisTurn = false;
   private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
+  [NonSerialized]
+  public Exception latestException;
   public TurnManager(GameModel model) {
     this.model = model;
   }
@@ -52,7 +54,7 @@ public class TurnManager {
           hasNext = enumerator.MoveNext();
         } catch (Exception e) {
           Debug.LogError(e);
-          Messages.Create(e.Message);
+          latestException = e;
         }
         #endif
 

@@ -53,12 +53,15 @@ public class Grasper : AIActor, IBaseActionModifier {
     }
   }
 
+  // take great care - this can be called after Grasper is dead
   internal void TendrilDied(Tendril tendril, Entity source) {
     if (source == this) {
       return;
     }
 
-    statuses.Add(new SurprisedStatus());
+    if (!IsDead) {
+      statuses.Add(new SurprisedStatus());
+    }
 
     // find the tendril along the length
     var index = tendrils.IndexOf(tendril);

@@ -67,7 +67,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
 
   public void OnPointerClick(PointerEventData eventData) {
     // Clicking the overlay will trigger this method since the overlay is a child
-    if (eventData.pointerEnter.name == "Overlay") {
+    if (eventData == null || eventData.pointerEnter.name == "Overlay") {
       plantController.popupOpen = false;
       return;
     }

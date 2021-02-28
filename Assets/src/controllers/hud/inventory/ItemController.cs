@@ -13,7 +13,8 @@ public class ItemController : MonoBehaviour {
   private static GameObject ActionButtonPrefab;
   [NonSerialized]
   public Item item;
-  private Image image;
+  public GameObject maturePlantBackground;
+  public Image itemImage;
   private TMPro.TMP_Text stacksText;
 
   void Start() {
@@ -23,10 +24,22 @@ public class ItemController : MonoBehaviour {
     /// on click - toggle the popup for this item
     GetComponent<Button>().onClick.AddListener(HandleItemClicked);
 
-    image = GetComponentInChildren<Image>(true);
     var wantedSprite = ObjectInfo.GetSpriteFor(item);
     if (wantedSprite != null) {
-      image.sprite = wantedSprite;
+      itemImage.sprite = wantedSprite;
+    }
+
+    if (item is ItemSeed seed) {
+      var plantType = seed.plantType;
+      var plantPrefab = Resources.Load<GameObject>($"Entities/Plants/{plantType.Name}");
+      var maturePlant = plantPrefab.transform.Find("Mature");
+      var renderer = maturePlant.GetComponent<SpriteRenderer>();
+      maturePlantBackground.GetComponent<Image>().sprite = renderer.sprite;
+      var pos = itemImage.transform.localPosition;
+      pos.y -= 2;
+      itemImage.transform.localPosition = pos;
+    } else {
+      maturePlantBackground.SetActive(false);
     }
 
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
@@ -80,7 +93,7 @@ public class ItemController : MonoBehaviour {
       category: GetCategoryForItem(item),
       info: item.GetStatsFull(),
       flavor: ObjectInfo.GetFlavorTextFor(item),
-      sprite: image.gameObject,
+      sprite: itemImage.gameObject,
       buttons: buttons
     );
     var popupMatchItem = popup.AddComponent<ItemPopupController>();

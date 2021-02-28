@@ -70,6 +70,7 @@ public class Trigger : Entity, IActorEnterHandler {
 }
 
 [Serializable]
+[ObjectInfo("vine-whip", flavorText: "Just the sound of it whipping through the air makes you a little nervous.")]
 internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackable {
   private int _stacks;
   public int stacks {

@@ -55,17 +55,3 @@ public class PacifiedStatus : Status, IBaseActionModifier {
 
   public override bool Consume(Status other) => true;
 }
-
-[System.Serializable]
-[ObjectInfo("confused")]
-public class ConfusedStatus : StackingStatus, IBaseActionModifier {
-  public override StackingMode stackingMode => StackingMode.Max;
-  public override string Info() => "Your next turn must be spent moving in a random direction.";
-
-  public ConfusedStatus(int stacks) : base(stacks) {}
-
-  public BaseAction Modify(BaseAction input) {
-    stacks--;
-    return MoveRandomlyTask.GetRandomMove(input.actor);
-  }
-}

@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
+using UnityEngine;
 
 [Serializable]
-public class ItemWildwoodWreath : EquippableItem, IDurable, IAttackHandler {
+public class ItemWildwoodWreath : EquippableItem, IDurable, IBodyMoveHandler {
   public ItemWildwoodWreath() {
     durability = maxDurability;
   }
@@ -11,10 +12,31 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IAttackHandler {
   public int durability { get; set; }
   public int maxDurability => 15;
 
-  public void OnAttack(int damage, Body target) {
-    player.statuses.Add(new StatusWild(3));
-    this.ReduceDurability();
+  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    var target = Util.RandomPick(player.floor.AdjacentActors(player.pos).Where(a => a.faction != Faction.Ally));
+    if (target != null) {
+      target.statuses.Add(new ConfusedStatus(5));
+      this.ReduceDurability();
+    }
   }
 
-  internal override string GetStats() => "Attacking an enemy gives you the Wild status for 2 turns.";
+  internal override string GetStats() => "Moving applies the Confused Status to one nearby creature.\nConfused enemies move randomly and do not attack.";
+}
+
+[System.Serializable]
+[ObjectInfo("confused")]
+public class ConfusedStatus : StackingStatus, IBaseActionModifier {
+  public override StackingMode stackingMode => StackingMode.Max;
+  public override string Info() => "Your next turn must be spent moving in a random direction.";
+
+  public ConfusedStatus(int stacks) : base(stacks) {}
+
+  public BaseAction Modify(BaseAction input) {
+    stacks--;
+    if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {
+      return MoveRandomlyTask.GetRandomMove(input.actor);
+    } else {
+      return input;
+    }
+  }
 }

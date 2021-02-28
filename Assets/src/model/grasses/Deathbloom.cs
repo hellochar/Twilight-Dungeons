@@ -32,7 +32,6 @@ public class Deathbloom : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     if (isBloomed) {
       if (actor is Player p) {
-        Kill(p);
         var item = new ItemDeathbloomFlower(1);
         if (!p.inventory.AddItem(item, this)) {
           floor.Put(new ItemOnGround(pos, item, pos));
@@ -43,6 +42,7 @@ public class Deathbloom : Grass, IActorEnterHandler {
           var newDeathbloom = new Deathbloom(tile.pos);
           floor.Put(newDeathbloom);
         }
+        Kill(p);
       }
     }
   }

@@ -45,7 +45,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
     player.inventory.OnItemAdded += HandleFirstItemAdded;             // after harvesting and picking up the first item
     player.inventory.OnItemAdded += HandleAllFourItemsPickedUp;       // after picking up all 4 items
-    player.OnGetWater += HandleGetWater;                              // after getting water
+    player.OnChangeWater += HandleChangeWater;                        // after getting water
     GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
     tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
@@ -127,9 +127,9 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     Messages.Create("Plant the seeds to grow more Berry Bushes!");
   }
 
-  private void HandleGetWater() {
+  private void HandleChangeWater(int delta) {
     AnimateHorizontally(waterIndicator, -900);
-    GameModel.main.player.OnGetWater -= HandleGetWater;
+    GameModel.main.player.OnChangeWater -= HandleChangeWater;
   }
 
   private void DetectEnteredFinalRoom(ISteppable obj) {

@@ -14,6 +14,18 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemAdded += HandleEquipmentItemAdded;
     player.equipment.OnItemRemoved += HandleEquipmentItemRemoved;
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
+    player.OnChangeWater += HandleChangeWater;
+  }
+
+  private void HandleChangeWater(int delta) {
+    /// ignore passive water lost
+    if (Math.Abs(delta) > 1) {
+      AudioClipStore.main.playerChangeWater.PlayAtPoint(transform.position);
+      var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
+      SpriteFlyAnimation.Create(MasterSpriteAtlas.atlas.GetSprite("water_0"), transform.position, GameObject.Find("Water Droplet"));
+      // worldText.GetComponent<RectTransform>().anchoredPosition3D = transform.position;
+      worldText.GetComponent<TMPro.TMP_Text>().text = $"{delta.ToString("+0;-#")}";
+    }
   }
 
   void OnApplicationPause(bool isPaused) {
@@ -63,7 +75,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (dmg > 0) {
       var store = AudioClipStore.main;
       var clip = Util.RandomPickParams(store.playerHurt1, store.playerHurt2, store.playerHurt3);
-      clip.PlayAtPoint(transform.position, 1.2f);
+      clip.PlayAtPoint(transform.position, 3f);
     }
     base.HandleTakeAnyDamage(dmg);
     /// treat tutorial specially

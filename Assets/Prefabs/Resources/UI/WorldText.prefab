@@ -101,7 +101,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 12.312
+  m_text: +118 <sprite name=water>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 762a019b23b379749a11bbe83cf0ec1c, type: 2}
   m_sharedMaterial: {fileID: 4285048069238282656, guid: 762a019b23b379749a11bbe83cf0ec1c,
@@ -121,7 +121,7 @@ MonoBehaviour:
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
+  m_spriteAsset: {fileID: 11400000, guid: 4fc15c6e00d5f6d419affd2c2bda7ef4, type: 2}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
   m_TextStyleHashCode: -1183493901
@@ -215,3 +215,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 124c75ac2fc1e2c4cb8b79d895311bd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 3290673702114271255}

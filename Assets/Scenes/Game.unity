@@ -270,7 +270,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 4.97
+  m_text: 497
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 2218378521326946172, guid: da3d4f5b7f892d7498f8d6aa917cac50,
@@ -3367,7 +3367,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 338125421}
   m_HandleRect: {fileID: 338125420}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -10559,6 +10559,7 @@ MonoBehaviour:
   attackMiss: {fileID: 8300000, guid: a51b4121dd87b6c478c5edd795bb0954, type: 3}
   death: {fileID: 8300000, guid: 90e1d83d695c53d43ac4bc5e27d533fb, type: 3}
   plantHarvest: {fileID: 8300000, guid: 33305f8266d805148b775092fcba0370, type: 3}
+  playerChangeWater: {fileID: 8300000, guid: e4ff01c02b42d344eae01c4e29abd18c, type: 3}
   playerEquip: {fileID: 8300000, guid: 7252eaa1a71b02449a7fbab15d3adb06, type: 3}
   playerEquipmentBreak: {fileID: 8300000, guid: 51ada07a8b7d68a45aa55c159e9f6d6f,
     type: 3}
@@ -12671,7 +12672,7 @@ GameObject:
   - component: {fileID: 1935002844}
   - component: {fileID: 1935002843}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Water Droplet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

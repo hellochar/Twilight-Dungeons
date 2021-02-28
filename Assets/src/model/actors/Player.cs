@@ -13,8 +13,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
   public int water {
     get => m_water;
     set {
+      var diff = value - m_water;
       m_water = value;
-      OnGetWater?.Invoke();
+      OnChangeWater?.Invoke(diff);
     }
   }
   internal readonly ItemHands Hands;
@@ -25,8 +26,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
 
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
   public override float turnPriority => 10;
-  [field:NonSerialized] /// controller only
-  public event Action OnGetWater;
+  [field:NonSerialized] /// controller only, int delta
+  public event Action<int> OnChangeWater;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;

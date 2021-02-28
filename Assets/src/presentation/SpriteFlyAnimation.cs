@@ -4,11 +4,15 @@ using UnityEngine.UI;
 
 public class SpriteFlyAnimation : MonoBehaviour {
   public static GameObject Create(Sprite sprite, Vector3 worldPos, GameObject hudTarget) {
-    var controller = PrefabCache.UI.Instantiate("Sprite Fly", GameObject.Find("Canvas").transform).GetComponent<SpriteFlyAnimation>();
-    controller.sprite = sprite;
-    controller.startWorldPos = worldPos;
-    controller.hudTarget = hudTarget;
-    return controller.gameObject;
+    if (hudTarget != null) {
+      var controller = PrefabCache.UI.Instantiate("Sprite Fly", GameObject.Find("Canvas").transform).GetComponent<SpriteFlyAnimation>();
+      controller.sprite = sprite;
+      controller.startWorldPos = worldPos;
+      controller.hudTarget = hudTarget;
+      return controller.gameObject;
+    } else {
+      return null;
+    }
   }
 
   public Sprite sprite;

@@ -48,6 +48,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -70,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1328045225
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: 8065629897906335937, guid: d784a55b6df56d4408e1227fafa167e4,
     type: 3}
@@ -115,6 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 124c75ac2fc1e2c4cb8b79d895311bd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 2135219747863030734}
 --- !u!1 &2135219747863030734
 GameObject:
   m_ObjectHideFlags: 0

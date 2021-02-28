@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DestroyAtAnimationEnd : MonoBehaviour {
-  public void HandleAnimationEnd() {
-    Destroy(gameObject.transform.parent.gameObject);
-  }
-
-  public void DestroyThisObject() {
-    Destroy(gameObject);
+  public GameObject target;
+  public void DestroyTarget() {
+    Destroy(target);
   }
 }

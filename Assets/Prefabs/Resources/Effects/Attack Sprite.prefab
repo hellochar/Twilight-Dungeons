@@ -79,6 +79,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -101,7 +102,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1328045225
-  m_SortingLayer: 4
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Sprite: {fileID: -6005119224221696302, guid: af4df3188a01af048a678513709d8278,
     type: 3}
@@ -146,3 +147,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 124c75ac2fc1e2c4cb8b79d895311bd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 965468179941145250}

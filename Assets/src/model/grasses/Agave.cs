@@ -45,8 +45,11 @@ class ItemAgave : Item, IStackable {
   }
 
   private void RefineImpl(Player player) {
+    if (stacks < stacksMax) {
+      throw new CannotPerformActionException("Gather 4 stacks of Agave first.");
+    }
     if (player.water < 25) {
-      throw new CannotPerformActionException("Need 25 water!");
+      throw new CannotPerformActionException("Need 25 water.");
     }
     player.water -= 25;
     player.floor.Put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
@@ -55,9 +58,7 @@ class ItemAgave : Item, IStackable {
 
   public override List<MethodInfo> GetAvailableMethods(Player player) {
     var methods = base.GetAvailableMethods(player);
-    if (stacks == stacksMax) {
-      methods.Add(GetType().GetMethod("Refine"));
-    }
+    methods.Add(GetType().GetMethod("Refine"));
     return methods;
   }
 
@@ -74,6 +75,7 @@ class ItemAgaveHoney : Item, IEdible {
       foreach (var debuff in debuffs) {
         debuff.Remove();
       }
+      GameModel.main.DrainEventQueue();
     }
     Destroy();
   }

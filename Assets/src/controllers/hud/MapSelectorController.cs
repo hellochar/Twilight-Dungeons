@@ -11,6 +11,7 @@ public class MapSelectorController : MonoBehaviour {
   public event Action<Entity> OnSelected;
   public event Action OnCancelled;
   public IEnumerable<Entity> entities;
+  private GameObject canvas;
 
   // Start is called before the first frame update
   void Start() {
@@ -22,14 +23,23 @@ public class MapSelectorController : MonoBehaviour {
       highlight.SetActive(true);
       highlight.GetComponent<Button>().onClick.AddListener(() => Selected(e));
     }
+
+    this.canvas = GameObject.Find("Canvas");
+    canvas.SetActive(false);
+  }
+
+  void OnDestroyed() {
+    canvas.SetActive(true);
   }
 
   public void Selected(Entity e) {
+    canvas.SetActive(true);
     OnSelected?.Invoke(e);
     Destroy(gameObject);
   }
 
   public void Cancel() {
+    canvas.SetActive(true);
     OnCancelled?.Invoke();
     Destroy(gameObject);
   }

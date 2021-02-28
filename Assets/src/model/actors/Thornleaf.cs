@@ -96,7 +96,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
   public IEnumerable<object> MyModifiers => Modifiers;
 
-  public override EquipmentSlot slot => EquipmentSlot.Shield;
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
 
   public int durability { get; set; }
 

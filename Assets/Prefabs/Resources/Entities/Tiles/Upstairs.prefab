@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eff0d41c42e3ae41a06ba3ffea49c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 2041375652281131246}
 --- !u!1001 &2899907266663670379
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19,6 +21,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -36,6 +43,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -47,16 +59,6 @@ PrefabInstance:
     - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
@@ -91,6 +93,12 @@ PrefabInstance:
 --- !u!1 &4967548742386034076 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
+    type: 3}
+  m_PrefabInstance: {fileID: 2899907266663670379}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2041375652281131246 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3777084247053353605, guid: 16637295e55e2db4dbd4caafff2523df,
     type: 3}
   m_PrefabInstance: {fileID: 2899907266663670379}
   m_PrefabAsset: {fileID: 0}

@@ -149,7 +149,7 @@ AnimatorStateTransition:
     m_ConditionEvent: InShellStatus
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: WebStatus
+    m_ConditionEvent: WebbedStatus
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5969829175027619702}
@@ -221,10 +221,10 @@ AnimatorStateTransition:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WebStatus
+  m_Name: WebbedStatus
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: WebStatus
+    m_ConditionEvent: WebbedStatus
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8092112104089604669}
@@ -273,7 +273,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: WebStatus
+  - m_Name: WebbedStatus
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0

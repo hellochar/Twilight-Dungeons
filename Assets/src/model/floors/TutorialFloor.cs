@@ -87,6 +87,8 @@ class TutorialFloor : Floor {
     Put(new Blob(blobsAndBat.center + Vector2Int.up));
     Put(new Bat(blobsAndBat.center + new Vector2Int(-1, -2)));
     PlaceDownstairs(new Vector2Int(blobsAndBat.max.x, cY));
+
+    FloorUtils.TidyUpAroundStairs(this);
   }
 
   internal override void PlayerGoDownstairs() {

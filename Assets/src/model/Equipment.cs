@@ -41,6 +41,6 @@ public enum EquipmentSlot {
   Headwear = 0,
   Weapon = 1,
   Armor = 2, 
-  Shield = 3,
+  Offhand = 3,
   Footwear = 4
 }

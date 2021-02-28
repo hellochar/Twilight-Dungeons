@@ -226,6 +226,7 @@ public class Encounters {
 
   public static Encounter MatureKingshroom = (floor, room) => AddPlantInCenter(floor, room, typeof(Kingshroom));
   public static Encounter MatureFrizzlefen = (floor, room) => AddPlantInCenter(floor, room, typeof(Frizzlefen));
+  public static Encounter MatureChangErsWillow = (floor, room) => AddPlantInCenter(floor, room, typeof(ChangErsWillow));
 
   private static void AddPlantInCenter(Floor floor, Room room, System.Type type) {
     Tile tile = FloorUtils.TilesFromCenter(floor, room).FirstOrDefault();

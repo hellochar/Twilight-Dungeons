@@ -10,7 +10,9 @@ public class DamageFlashController : MonoBehaviour, ITakeAnyDamageHandler {
   }
 
   public void HandleTakeAnyDamage(int damage) {
-    animator.SetTrigger("Hit");
+    if (damage > 0) {
+      animator.SetTrigger("Hit");
+    }
   }
 
   // Update is called once per frame

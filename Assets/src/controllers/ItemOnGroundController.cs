@@ -42,10 +42,7 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IEntityC
   public void PointerClick(PointerEventData pointerEventData) {
     if (itemOnGround.isVisible) {
       Player player = GameModel.main.player;
-      player.SetTasks(
-        new MoveNextToTargetTask(player, itemOnGround.pos),
-        new GenericPlayerTask(player, itemOnGround.PickUp)
-      );
+      player.SetTasks(new MoveToTargetTask(player, itemOnGround.pos));
     }
   }
 }

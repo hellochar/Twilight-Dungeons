@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class TileController : MonoBehaviour, IEntityController, IEntityClickedHandler {
   [NonSerialized]
   public Tile tile;
-  private SpriteRenderer[] renderers;
+  public SpriteRenderer[] renderers;
   private SpriteMask mask;
   private int sortingLayerStatuses; 
   private int sortingLayerDefault;
@@ -16,7 +16,6 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
   public virtual void Start() {
     sortingLayerStatuses = SortingLayer.NameToID("Statuses");
     sortingLayerDefault = SortingLayer.NameToID("Default");
-    this.renderers = GetComponentsInChildren<SpriteRenderer>();
     this.mask = GetComponent<SpriteMask>();
     Update();
   }

@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Spins webs underneath itself.\nPrioritizes expanding its territory.\nAttacks deal no damage but apply Poison.\nAttacks anyone adjacent to it.")]
+[ObjectInfo(description: "Spins Webs underneath itself.\nAttacks deal no damage but apply Poison.\nAttacks any creature next to it.")]
 public class Spider : AIActor, IDealAttackDamageHandler {
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
@@ -54,7 +54,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Prevents movement; non-Spider creatures must spend one turn breaking the web.")]
+[ObjectInfo(description: "Prevents movement; creatures must spend one turn breaking the Web.")]
 internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   public Web(Vector2Int pos) : base(pos) { }
 
@@ -71,9 +71,9 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
     }
   }
 
-  private WebStatus status;
+  private WebbedStatus status;
   public void HandleActorEnter(Actor actor) {
-    status = new WebStatus(this);
+    status = new WebbedStatus(this);
     actor.statuses.Add(status);
     OnNoteworthyAction();
   }
@@ -134,11 +134,11 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
 }
 
 [System.Serializable]
-internal class WebStatus : Status, IBaseActionModifier {
+internal class WebbedStatus : Status, IBaseActionModifier {
   public override bool isDebuff => !Web.IsActorNice(actor);
   Web owner;
 
-  public WebStatus(Web owner) {
+  public WebbedStatus(Web owner) {
     this.owner = owner;
   }
 

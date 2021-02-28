@@ -64,7 +64,7 @@ public class ActorController : BodyController,
 
   // Update is called once per frame
   public virtual void Update() {
-    float lerpSpeed = 20f / actor.GetActionCost(ActionType.MOVE);
+    float lerpSpeed = 16f / actor.GetActionCost(ActionType.MOVE);
     // sync positions
     if (Vector2.Distance(Util.getXY(this.transform.position), this.actor.pos) > 3) {
       this.transform.position = Util.withZ(this.actor.pos, this.transform.position.z);

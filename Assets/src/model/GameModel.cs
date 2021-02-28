@@ -125,7 +125,7 @@ public class GameModel {
     eventQueue.Add(cb);
   }
 
-  internal void DrainEventQueue() {
+  public void DrainEventQueue() {
     // take care - events could add more events, which then add more events
     // guard against infinite events
     int maxEventGenerations = 32;

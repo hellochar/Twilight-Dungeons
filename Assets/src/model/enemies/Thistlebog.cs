@@ -29,6 +29,7 @@ public class Thistlebog : AIActor, ITakeAnyDamageHandler {
   public void HandleTakeAnyDamage(int damage) {
     if (damage > 0 && task is TelegraphedTask) {
       ClearTasks();
+      SetTasks(new WaitTask(this, 1));
       statuses.Add(new SurprisedStatus());
     }
   }

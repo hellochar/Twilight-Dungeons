@@ -1,5 +1,5 @@
 [System.Serializable]
-[ObjectInfo(spriteName: "goop", flavorText: "Weirdly healing")]
+[ObjectInfo(spriteName: "goop", flavorText: "Thick, gluey Blob innards are pasted onto your feet, but it feels great.")]
 public class ItemGloopShoes : EquippableItem, ISticky, IDurable, IBaseActionModifier {
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
   private int turnsLeft = 50;

@@ -15,6 +15,6 @@ public class StatusController : MonoBehaviour {
   }
 
   private void HandleRemoved() {
-    Destroy(this.gameObject);
+    Destroy(gameObject);
   }
 }

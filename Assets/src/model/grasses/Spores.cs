@@ -27,12 +27,14 @@ public class Spores : Grass, IActorEnterHandler {
 [System.Serializable]
 [ObjectInfo(description: "Explodes, applying the Spored Status on to adjacent creatures.", flavorText: "Inflated and swollen and looking to spread its seed.")]
 internal class SporeBloat : AIActor {
+  public override float turnPriority => 25;
   public SporeBloat(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
     faction = Faction.Neutral;
     SetTasks(
       new WaitTask(this, 1),
       new MoveRandomlyTask(this).OnlyCheckBefore(),
+      new WaitTask(this, 1),
       new TelegraphedTask(this, 1, new GenericBaseAction(this, KillSelf))
     );
   }

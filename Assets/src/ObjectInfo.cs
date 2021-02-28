@@ -43,7 +43,7 @@ public class ObjectInfo {
       spriteName = "hanging-vines-bottom",
       flavorText = "Just the sound of it whipping through the air makes you a little nervous."
     },
-    [typeof(WebStatus)] = new ObjectInfo {
+    [typeof(WebbedStatus)] = new ObjectInfo {
       spriteName = "web",
       flavorText = "Sticky, gooey, and warm. Eeeew."
     },

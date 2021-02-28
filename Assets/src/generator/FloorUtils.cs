@@ -4,6 +4,45 @@ using System.Linq;
 using UnityEngine;
 
 public static class FloorUtils {
+
+  /// It sucks to walk down to a new level and immediately get
+  /// constricted by a HangingVines, or just surrounded by enemies.
+  /// Prevent these negative gameplay experiences.
+  public static void TidyUpAroundStairs(Floor floor) {
+    /// sometimes the Wall generators may put Walls right in the landing spot. Prevent that.
+    if (floor.upstairs != null && floor.tiles[floor.upstairs.landing] is Wall) {
+      floor.Put(new HardGround(floor.upstairs.landing));
+    }
+    if (floor.downstairs != null && floor.tiles[floor.downstairs.landing] is Wall) {
+      floor.Put(new HardGround(floor.downstairs.landing));
+    }
+
+    // Clear hanging vines and move immediately adjacent enemies
+    if (floor.upstairs != null) {
+      foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
+        if (tile.grass is HangingVines) {
+          // do NOT call Kill(); we don't want the vine whip to drop.
+          floor.Remove(tile.grass);
+        }
+        if (tile.actor != null) {
+          // TODO pick a spot that graspers can inhabit
+          var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((x) => x.CanBeOccupied()));
+          // move the actor to a different spot in the map
+          tile.actor.pos = newSpot.pos;
+        }
+      }
+    }
+
+    /// HACK I've decided that grass shouldn't *initially spawn* right next to the stairs,
+    /// but that post-generation, grass should still be able. So we'll now only use HardGround
+    /// during generation, and then replace it with normal ground
+    foreach (var pos in floor.EnumerateFloor()) {
+      if (floor.tiles[pos] is HardGround) {
+        floor.Put(new Ground(pos));
+      }
+    }
+  }
+
   public static List<Tile> TilesSortedByCorners(Floor floor, Room room) {
     var tiles = floor.EnumerateRoomTiles(room).ToList();
     tiles.Sort((x, y) => (int)Mathf.Sign(Vector2.Distance(y.pos, room.centerFloat) - Vector2.Distance(x.pos, room.centerFloat)));

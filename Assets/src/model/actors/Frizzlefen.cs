@@ -134,8 +134,11 @@ class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
 [Serializable]
 [ObjectInfo("colored_transparent_packed_228")]
 class ArmoredStatus : StackingStatus, IAttackDamageTakenModifier {
-  public override StackingMode stackingMode => StackingMode.Add;
   public override string Info() => $"Block 1 damage from the next {stacks} attacks!";
+  public override StackingMode stackingMode => StackingMode.Add;
+
+  public ArmoredStatus(int stacks) : base(stacks) {}
+  public ArmoredStatus() : this(1) {}
 
   public int Modify(int input) {
     if (input > 0) {

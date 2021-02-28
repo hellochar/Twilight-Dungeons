@@ -62,7 +62,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   void Update() {
     uiName.text = plant.displayName;
     // uiInfo.text = plant.GetUIText();
-    uiInfo.text = plant.percentGrown == 1 ? "Choose one Harvest!" : $"{plant.percentGrown.ToString("P")} grown.";
+    uiInfo.text = plant.percentGrown == 1 ? "Choose one Harvest! Tap items to learn about them." : $"{plant.percentGrown.ToString("P")} grown.";
   }
 
   public void OnPointerClick(PointerEventData eventData) {

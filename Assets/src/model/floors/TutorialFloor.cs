@@ -11,14 +11,14 @@ class TutorialFloor : Floor {
 
   public TutorialFloor() : base(-1, 53, 9) {
     /// things to explicitly teach:
-    /// tap to move (or use D-Pad)
-    /// move into enemy to attack
+    /// DPad to move
+    /// move into things to attack
     /// pick items up by moving over them
     /// collect water
     /// tap hold to learn about an item
     /// game is turn based
     /// game is all about tactical movement
-    Room startRoom = new Room(new Vector2Int(1, 1), new Vector2Int(5, 7));
+    Room startRoom = new Room(new Vector2Int(0, 0), new Vector2Int(5, 8));
     Room oneBlob = new Room(new Vector2Int(10, 1), new Vector2Int(17, 7));
     Room jackalsAndGuardleaf = new Room(new Vector2Int(21, 1), new Vector2Int(27, 7));
     Room berryBushAndWater = new Room(new Vector2Int(31, 1), new Vector2Int(37, 7));
@@ -63,7 +63,7 @@ class TutorialFloor : Floor {
     // third room - three jackals and guardleaf
     this.jackals = new List<Actor>();
     var guardleafCenter = new Vector2Int(jackalsAndGuardleaf.min.x - 1, cY);
-    var jackalCenter = guardleafCenter + new Vector2Int(6, 0);
+    var jackalCenter = guardleafCenter + new Vector2Int(7, 0);
     jackals.Add(new Jackal(jackalCenter));
     jackals.Add(new Jackal(jackalCenter + Vector2Int.up));
     jackals.Add(new Jackal(jackalCenter + Vector2Int.down));
@@ -72,6 +72,7 @@ class TutorialFloor : Floor {
     Put(new Guardleaf(guardleafCenter + Vector2Int.up));
     Put(new Guardleaf(guardleafCenter + Vector2Int.down));
     Put(new Guardleaf(guardleafCenter + Vector2Int.left));
+    Put(new Guardleaf(guardleafCenter + Vector2Int.right));
 
     // fourth room - a berry bush
     Put(new Soil(berryBushAndWater.center));

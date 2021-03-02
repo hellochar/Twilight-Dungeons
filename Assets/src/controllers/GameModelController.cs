@@ -20,14 +20,14 @@ public class GameModelController : MonoBehaviour {
 
   void Awake() {
     #if UNITY_EDITOR
-    if (GameModel.main == null) {
-      if (Serializer.HasSave()) {
-        GameModel.main = Serializer.LoadFromFile();
-      } else {
-        GameModel.GenerateNewGameAndSetMain();
-      }
-      // GameModel.GenerateTutorialAndSetMain();
-    }
+    GameModel.GenerateTutorialAndSetMain();
+    // if (GameModel.main == null) {
+    //   if (Serializer.HasSave()) {
+    //     GameModel.main = Serializer.LoadFromFile();
+    //   } else {
+    //     GameModel.GenerateNewGameAndSetMain();
+    //   }
+    // }
     #endif
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");

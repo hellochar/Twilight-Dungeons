@@ -24,11 +24,11 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     }
     AudioClipStore.main.playerChangeWater.PlayAtPoint(transform.position);
     var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
-
     if (delta > 0) {
+      worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("+0");
       SpriteFlyAnimation.Create(MasterSpriteAtlas.atlas.GetSprite("water_0"), transform.position, GameObject.Find("Water Droplet"));
-      // worldText.GetComponent<RectTransform>().anchoredPosition3D = transform.position;
-      worldText.GetComponent<TMPro.TMP_Text>().text = $"{delta.ToString("+0;-#")}";
+    } else {
+      worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("-# <sprite name=water>");
     }
   }
 

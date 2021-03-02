@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TutorialFloorController : FloorController, IStatusAddedHandler {
   private TutorialFloor tutFloor => (TutorialFloor) floor;
-  GameObject dPad, hpBar, waterIndicator, inventoryToggle, inventoryContainer, gear, statuses, sidePanel, depth;
+  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, gear, statuses, depth;
   List<GameObject> allUI;
 
   // Start is called before the first frame update
@@ -20,16 +20,14 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     Settings.Set(Settings.Default(), false);
 
     // hide all the UI by default
-    dPad = GameObject.Find("DPad");
     hpBar = GameObject.Find("Hearts");
     statuses = GameObject.Find("Statuses");
     waterIndicator = GameObject.Find("Water Indicator");
     inventoryToggle = GameObject.Find("Inventory Toggle");
     inventoryContainer = GameObject.Find("Inventory Container");
-    sidePanel = GameObject.Find("Side Panel");
     depth = GameObject.Find("Depth");
     gear = GameObject.Find("Gear");
-    allUI = new List<GameObject>() { dPad, hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, sidePanel, depth, gear };
+    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, gear };
 
     foreach (var ui in allUI) {
       ui.SetActive(false);
@@ -54,11 +52,11 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(1f);
-      Messages.Create("Tap to move or attack.", 3);
+      Messages.Create("Use D-Pad to move.", 5);
     }
   }
 
-  /// show dpad, show HP, and explain "tap hold"
+  /// show HP, and explain "tap hold"
   void DetectBlobVisible(ISteppable _) {
     if (!tutFloor.blob.isVisible) {
       return;
@@ -69,13 +67,10 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
 
     // 900px is Canvas's canvas scalar reference resolution
     GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
-    // Add 100px buffer because the dPad's anchoredPosition is relative to the center of the pad, which means
-    // there's left-bleed
-    GameModel.main.player.AddTimedEvent(9, () => AnimateHorizontally(dPad, 1000));
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(0.25f);
-      Messages.Create("Tap-and-hold on the Blob to learn about it.", 5);
+      Messages.Create("Tap the Blob to learn about it.", 5);
     }
   }
 
@@ -107,7 +102,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     GameModel.main.turnManager.OnStep -= DetectEnteredBerryBushRoom;
     GameModel.main.player.ClearTasks();
 
-    Messages.Create("Tap the Berry Bush to Harvest it!");
+    Messages.Create("Harvest the Berry Bush!");
   }
 
   private void HandleFirstItemAdded(Item arg1, Entity arg2) {
@@ -139,8 +134,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     GameModel.main.turnManager.OnStep -= DetectEnteredFinalRoom;
     GameModel.main.player.ClearTasks();
 
-    // come in from left
-    AnimateHorizontally(sidePanel, -900);
+    Messages.Create("Bats will attack other creatures!");
   }
 
   private void HandleTutorialEnded() {

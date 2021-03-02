@@ -216,6 +216,10 @@ public class Actor : Body, ISteppable {
       handler.HandleDealAttackDamage(damage, target);
     }
   }
+
+  public override string ToString() {
+    return base.ToString() + $"HP {hp}/{maxHp} Statuses: {string.Join(", ", statuses)}";
+  }
 }
 
 public enum Faction { Ally, Neutral, Enemy }

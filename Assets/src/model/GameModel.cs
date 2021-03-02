@@ -58,8 +58,17 @@ public class GameModel {
     #if UNITY_EDITOR
     this.seed = 0x3f7e08b;
     #endif
-
   }
+
+  #if UNITY_EDITOR
+  [OnSerializing]
+  void HandleSerializing() {
+    if (eventQueue.Any()) {
+      Debug.LogError("Serializing during not null event queue! " + eventQueue.Count);
+      DrainEventQueue();
+    }
+  }
+  #endif
 
   [OnDeserialized]
   void HandleDeserialized() {

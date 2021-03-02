@@ -183,6 +183,7 @@ internal class PoisonedStatus : StackingStatus {
   }
 
   public void IndependentStep() {
+    // Debug.Log(actor + ", stacks " + stacks + ", " + GameModel.main.time);
     if (stacks >= 3) {
       /// trigger right after your turn, unless you move slowly, in which case it should just trigger immediately
       actor.AddTimedEvent(0.01f, TickDamage);
@@ -200,6 +201,7 @@ internal class PoisonedStatus : StackingStatus {
   public void TickDamage() {
     actor.TakeDamage(3, actor);
     stacks -= 3;
+    // Debug.Log("Ticking damage on " + actor + ", new stacks " + stacks + ", " + GameModel.main.time);
     if (stacks > 0) {
       // match timing back up
       actor.AddTimedEvent(0.99f, IndependentStep);

@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 7755122
+    totalSpriteSurfaceArea: 7756082
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -53,6 +53,7 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: 40e68100d86f0c34ea0d7aea9966ff25, type: 3}
   - {fileID: 21300000, guid: 3c3cf210ca4c9344fac5f56eb3c57f5e, type: 3}
+  - {fileID: 21300000, guid: 9a0cbb104258f8b43827164363e96190, type: 3}
   - {fileID: 21300000, guid: 98a7e8608a1c1424881ada22e392c9a5, type: 3}
   - {fileID: 21300000, guid: 6c1f5dc0c34f91c4684c813c41bb843e, type: 3}
   - {fileID: -5025174812137501099, guid: 8dafc7f001ea89746a4d15b485422b74, type: 3}
@@ -66,6 +67,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5a016511f8250034d931de1d88b8502d, type: 3}
   - {fileID: 21300000, guid: 858e243180d885844a9369806b7f2044, type: 3}
   - {fileID: 21300000, guid: 45ad99319893c174b9528e9d30062aa6, type: 3}
+  - {fileID: 21300000, guid: 63aa1441b050666429e8b695d76f0f20, type: 3}
   - {fileID: 21300000, guid: bab8bb41f981cd649a1e50040d3b29da, type: 3}
   - {fileID: 21300000, guid: 94ec90513cc275148a5d11caf062a4da, type: 3}
   - {fileID: 21300000, guid: 17da3c51170850f41b3d3ddeaeb45236, type: 3}
@@ -1820,6 +1822,7 @@ SpriteAtlas:
   - {fileID: -1820778394629667666, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
   - {fileID: 21300000, guid: a2a493b3652ea624d8b4a95595992591, type: 3}
   - {fileID: 21300000, guid: ccd511f3395cc5742bd0c45b9afb2c7c, type: 3}
+  - {fileID: 21300000, guid: 423675349ef54b54ea991dfa899a486a, type: 3}
   - {fileID: 21300000, guid: 436f9534bacc2f5458e5415e478a9771, type: 3}
   - {fileID: 21300000, guid: f1de2e44133ace9459b37fc194a10e16, type: 3}
   - {fileID: 6733317360203888005, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -2226,8 +2229,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 172c1716d1422b04ba7d115615c688c1, type: 3}
   - {fileID: 1917699227143800744, guid: b9f79d364c160a74984f0639eda855cf, type: 3}
   - {fileID: 21300000, guid: 6f5b0f462c22f2e45b60aa8ee7d8ccdb, type: 3}
+  - {fileID: 21300000, guid: 471958565c52b4f428341d2c54949380, type: 3}
   - {fileID: 21300000, guid: c582f276f700821448285f69440db231, type: 3}
   - {fileID: 21300000, guid: 0dbaa1a6308aaec499d6fb8d31e5c06a, type: 3}
+  - {fileID: 21300000, guid: c10a43a61c3bd5b4b81894b716acf188, type: 3}
   - {fileID: 7643223167750920818, guid: 9b0796a629340dc4b9e9eca2b9bf61e2, type: 3}
   - {fileID: -6983973593612313454, guid: 9b0796a629340dc4b9e9eca2b9bf61e2, type: 3}
   - {fileID: -2654603554066692212, guid: 9b0796a629340dc4b9e9eca2b9bf61e2, type: 3}
@@ -6409,6 +6414,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 93cb4bfbf0123a5458ad10d2a85cd3bb, type: 3}
   - {fileID: 21300000, guid: bee8f60c7fb13ce4d92888b0cde0746f, type: 3}
   - {fileID: 21300000, guid: eb83db0cb481f074c92478cb20b58183, type: 3}
+  - {fileID: 21300000, guid: 60be7e1c431b9d54c85f5de87f926665, type: 3}
   - {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50, type: 3}
   - {fileID: 21300000, guid: 683eba5cb2c942e43af1f6be8dc55890, type: 3}
   - {fileID: 21300000, guid: 32d6fb5c079f8d14f80c66248b48637e, type: 3}
@@ -8038,6 +8044,7 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - 1bit 16px patterns and tiles
   - slimed
+  - background-pattern-leaves
   - grasper
   - heart_animated_1
   - heart_animated_2_1
@@ -8051,6 +8058,7 @@ SpriteAtlas:
   - MegaPixelArt32x32pxIcons_SpriteSheet
   - web
   - frizzlefen
+  - flower-buds
   - poisoned-status
   - 1-bit 16px icons part-1 outlines
   - TornadoStatic_96x96
@@ -9805,6 +9813,7 @@ SpriteAtlas:
   - shield-placeholder
   - boombug
   - kingshroom
+  - sign
   - sleeping-bag
   - 1bit 16px patterns and tiles - outlines
   - tumorous-growth
@@ -10211,8 +10220,10 @@ SpriteAtlas:
   - PoisonClaw_96x96
   - Spam_Cupcake text borders_0
   - sporebloat
+  - wall
   - wildwood-wreath
   - parasite
+  - catkin
   - LightCast_96_3
   - LightCast_96_2
   - LightCast_96_1
@@ -14394,6 +14405,7 @@ SpriteAtlas:
   - evening-bell
   - ui_split
   - hard-ground
+  - fade-top
   - parasite-egg
   - Explosion_2_64x64
   - health_bar

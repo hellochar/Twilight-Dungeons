@@ -89,6 +89,9 @@ internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
   }
 
   internal void WebRemoved(Actor actor) {
+    if (IsDead || actor.floor != floor) {
+      return;
+    }
     if (!IsActorNice(actor)) {
       Kill(actor);
     }
@@ -143,7 +146,7 @@ internal class WebbedStatus : Status, IBaseActionModifier {
   }
 
   public override void End() {
-    owner.WebRemoved(actor);
+    owner?.WebRemoved(actor);
   }
 
   public override void Step() {

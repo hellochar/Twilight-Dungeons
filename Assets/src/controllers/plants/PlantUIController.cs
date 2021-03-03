@@ -64,9 +64,9 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
     // uiInfo.text = plant.GetUIText();
     uiInfo.text = plant.percentGrown == 1 ?
       "Choose one Harvest! Tap items to learn about them." :
-      $"{plant.percentGrown.ToString("{0:0%}")} grown. Come back later.";
+      $"{plant.percentGrown.ToString("0.0%")} grown. Come back later.";
     if (plant.percentGrown < 1) {
-      uiInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2();
+      // uiInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2();
     }
   }
 

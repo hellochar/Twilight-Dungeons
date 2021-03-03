@@ -28,7 +28,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("+0");
       SpriteFlyAnimation.Create(MasterSpriteAtlas.atlas.GetSprite("water_0"), transform.position, GameObject.Find("Water Droplet"));
     } else {
-      worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("-# <sprite name=water>");
+      worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("# <sprite name=water>");
     }
   }
 

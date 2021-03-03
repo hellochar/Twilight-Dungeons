@@ -7,18 +7,14 @@ using UnityEngine;
 
 public static class Serializer {
   public static string SAVE_PATH;
-  public static string CHECKPOINT_PATH;
   public static string GARDEN_PATH;
   static Serializer() {
     SAVE_PATH = Application.persistentDataPath + "/save0.dat";
-    CHECKPOINT_PATH = Application.persistentDataPath + "/checkpoint.dat";
-    CHECKPOINT_PATH = Application.persistentDataPath + "/garden.dat";
+    GARDEN_PATH = Application.persistentDataPath + "/garden.dat";
   }
 
   /// <summary>Does *not* set main.</summary>
-  public static GameModel LoadSave0() => Load(SAVE_PATH);
-
-  public static GameModel Load(string path) {
+  public static GameModel LoadSave0() {
     Debug.Log("Loading save from " + SAVE_PATH);
     var bf = GetBinaryFormatter();
     using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
@@ -43,11 +39,11 @@ public static class Serializer {
     return Save(model, SAVE_PATH);
   }
 
-  public static bool Save(object modelOrFloor, string path) {
+  private static bool Save(GameModel model, string path) {
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(path)) {
-      bf.Serialize(file, modelOrFloor);
-      Debug.Log($"Saved {SAVE_PATH}");
+      bf.Serialize(file, model);
+      Debug.Log($"Saved {path}");
       file.Close();
       return true;
     }

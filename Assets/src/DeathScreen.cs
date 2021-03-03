@@ -16,12 +16,6 @@ public class DeathScreen : MonoBehaviour, IDeathHandler {
     gameObject.SetActive(true);
   }
 
-  public void Retry() {
-    GameModel.main = Serializer.Load(Serializer.CHECKPOINT_PATH);
-    GameModel.main.retries++;
-    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
-  }
-
   public void NewGame() {
     GameModel.GenerateNewGameAndSetMain();
     StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));

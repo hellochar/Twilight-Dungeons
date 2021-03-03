@@ -33,7 +33,9 @@ public class EquipmentOnPlayerController : ItemSlotController {
   }
 
   private void HandleItemDestroyed() {
-    StartCoroutine(PlayItemBreakingAnimation3x());
+    if (this != null) {
+      StartCoroutine(PlayItemBreakingAnimation3x());
+    }
   }
 
   IEnumerator PlayItemBreakingAnimation3x() {

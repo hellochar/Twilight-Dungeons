@@ -135,7 +135,7 @@ public class Wall : Tile {
 }
 
 [Serializable]
-[ObjectInfo(description: "Go back to the home floor.")]
+[ObjectInfo(description: "Go back home.")]
 public class Upstairs : Tile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(1, 0);

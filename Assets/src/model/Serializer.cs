@@ -8,9 +8,11 @@ using UnityEngine;
 public static class Serializer {
   public static string SAVE_PATH;
   public static string CHECKPOINT_PATH;
+  public static string GARDEN_PATH;
   static Serializer() {
     SAVE_PATH = Application.persistentDataPath + "/save0.dat";
     CHECKPOINT_PATH = Application.persistentDataPath + "/checkpoint.dat";
+    CHECKPOINT_PATH = Application.persistentDataPath + "/garden.dat";
   }
 
   /// <summary>Does *not* set main.</summary>
@@ -38,25 +40,13 @@ public static class Serializer {
       // don't save tutorial
       return true;
     }
-
-    var bf = GetBinaryFormatter();
-    using(FileStream file = File.Create(SAVE_PATH)) {
-      bf.Serialize(file, model);
-      Debug.Log($"Saved {SAVE_PATH}");
-      file.Close();
-      return true;
-    }
+    return Save(model, SAVE_PATH);
   }
 
-  public static bool Save(GameModel model, string path) {
-    if (model.home is TutorialFloor) {
-      // don't save tutorial
-      return true;
-    }
-
+  public static bool Save(object modelOrFloor, string path) {
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(path)) {
-      bf.Serialize(file, model);
+      bf.Serialize(file, modelOrFloor);
       Debug.Log($"Saved {SAVE_PATH}");
       file.Close();
       return true;

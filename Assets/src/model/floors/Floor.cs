@@ -109,6 +109,10 @@ public class Floor {
     GameModel.main.PutPlayerAt(nextDepth);
   }
 
+  public int EnemiesLeft() {
+    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Count();
+  }
+
   public void Put(Entity entity) {
     this.entities.Add(entity);
 

@@ -169,7 +169,11 @@ public class Downstairs : Tile, IActorEnterHandler {
 
   public void HandleActorEnter(Actor actor) {
     if (actor == GameModel.main.player) {
-      floor.PlayerGoDownstairs();
+      if (floor.EnemiesLeft() == 0) {
+        floor.PlayerGoDownstairs();
+      } else {
+        Messages.Create("Clear level first.");
+      }
     }
   }
 }

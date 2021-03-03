@@ -23,7 +23,7 @@ public class GameModelController : MonoBehaviour {
     // GameModel.GenerateTutorialAndSetMain();
     if (GameModel.main == null) {
       if (Serializer.HasSave()) {
-        GameModel.main = Serializer.LoadFromFile();
+        GameModel.main = Serializer.LoadSave0();
       } else {
         GameModel.GenerateNewGameAndSetMain();
       }

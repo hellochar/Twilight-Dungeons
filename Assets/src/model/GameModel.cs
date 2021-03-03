@@ -15,6 +15,7 @@ public class GameModel {
   public Floor cave;
   public int depth = 0;
   public float time = 0;
+  public int retries = 0;
   public List<int> floorSeeds;
   private FloorGenerator generator;
 
@@ -188,6 +189,8 @@ public class GameModel {
       cave = newFloor;
     }
     OnPlayerChangeFloor?.Invoke(oldFloor, newFloor);
+    // save last checkpoint
+    Serializer.Save(this, Serializer.CHECKPOINT_PATH);
   }
 
   internal void PutActorAt(Actor actor, Floor floor, Vector2Int pos) {

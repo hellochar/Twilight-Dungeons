@@ -135,7 +135,7 @@ public class Wall : Tile {
 }
 
 [Serializable]
-[ObjectInfo(description: "Tap to go back up to the top floor.")]
+[ObjectInfo(description: "Go back to the home floor.")]
 public class Upstairs : Tile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(1, 0);
@@ -156,7 +156,7 @@ public class Upstairs : Tile {
 }
 
 [Serializable]
-[ObjectInfo(description: "Tap to go down a floor.")]
+[ObjectInfo(description: "Go deeper into the dungeon.")]
 public class Downstairs : Tile, IActorEnterHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(-1, 0);
@@ -174,13 +174,13 @@ public class Downstairs : Tile, IActorEnterHandler {
   }
 }
 
-[ObjectInfo(description: "Tap to plant a Seed from your inventory.", flavorText: "Fresh, moist, and perfect for growing. Hard to come by in the caves.")]
+[ObjectInfo(description: "Plant seeds here.", flavorText: "Fresh, moist, and perfect for growing. Hard to come by in the caves.")]
 [Serializable]
 public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }
 }
 
-[ObjectInfo(description: "Tap to collect. Planting a seed costs 100 water.", flavorText: "Water water everywhere...")]
+[ObjectInfo(description: "Walk into to collect.", flavorText: "Water water everywhere...")]
 [Serializable]
 public class Water : Tile {
   public Water(Vector2Int pos) : base(pos) {

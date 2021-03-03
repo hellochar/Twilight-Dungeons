@@ -51,7 +51,7 @@ public class Intro : MonoBehaviour {
     FadeOutButtonsAndMusic();
     try {
       await Task.Run(() => {
-        GameModel.main = Serializer.LoadFromFile();
+        GameModel.main = Serializer.LoadSave0();
       });
       GoToGameScene();
     } catch (Exception e) {

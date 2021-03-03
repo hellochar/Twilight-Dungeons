@@ -7,12 +7,16 @@ using UnityEngine;
 
 public static class Serializer {
   public static string SAVE_PATH;
+  public static string CHECKPOINT_PATH;
   static Serializer() {
     SAVE_PATH = Application.persistentDataPath + "/save0.dat";
+    CHECKPOINT_PATH = Application.persistentDataPath + "/checkpoint.dat";
   }
 
   /// <summary>Does *not* set main.</summary>
-  public static GameModel LoadFromFile() {
+  public static GameModel LoadSave0() => Load(SAVE_PATH);
+
+  public static GameModel Load(string path) {
     Debug.Log("Loading save from " + SAVE_PATH);
     var bf = GetBinaryFormatter();
     using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
@@ -24,7 +28,7 @@ public static class Serializer {
 
   public static bool HasSave() => File.Exists(SAVE_PATH);
 
-  public static void DeleteSave() {
+  public static void DeleteSave0() {
     File.Delete(SAVE_PATH);
   }
 
@@ -37,6 +41,21 @@ public static class Serializer {
 
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(SAVE_PATH)) {
+      bf.Serialize(file, model);
+      Debug.Log($"Saved {SAVE_PATH}");
+      file.Close();
+      return true;
+    }
+  }
+
+  public static bool Save(GameModel model, string path) {
+    if (model.home is TutorialFloor) {
+      // don't save tutorial
+      return true;
+    }
+
+    var bf = GetBinaryFormatter();
+    using(FileStream file = File.Create(path)) {
       bf.Serialize(file, model);
       Debug.Log($"Saved {SAVE_PATH}");
       file.Close();

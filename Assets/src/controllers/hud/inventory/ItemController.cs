@@ -104,6 +104,8 @@ public class ItemController : MonoBehaviour {
     switch (item) {
       case EquippableItem e:
         return e.slot.ToString();
+      case IEdible e:
+        return "Food";
       default:
         return "Item";
     }

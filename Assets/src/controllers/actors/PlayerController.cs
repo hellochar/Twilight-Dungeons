@@ -121,7 +121,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       Serializer.SaveMainToFile();
     }
     if (Input.GetKeyDown(KeyCode.L)) {
-      GameModel.main = Serializer.LoadFromFile();
+      GameModel.main = Serializer.LoadSave0();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
     if (Input.GetKeyDown(KeyCode.N)) {

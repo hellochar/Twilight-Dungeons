@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ public class ItemController : MonoBehaviour {
       itemImage.sprite = wantedSprite;
     }
 
-    if (item is ItemSeed seed) {
+    if (item is ItemSeed seed && GameModel.main.player.inventory.HasItem(item)) {
       var plantType = seed.plantType;
       var plantPrefab = Resources.Load<GameObject>($"Entities/Plants/{plantType.Name}");
       var maturePlant = plantPrefab.transform.Find("Mature");

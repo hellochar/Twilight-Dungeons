@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Walking into the Tunnelroot teleports you to the paired Tunnelroot elsewhere on this level.")]
+[ObjectInfo(description: "Walking into the Tunnelroot teleports you to the paired Tunnelroot elsewhere on this level.\nEnemy creatures are surprised on teleport.")]
 public class Tunnelroot : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
 
@@ -48,7 +48,9 @@ public class Tunnelroot : Grass, IActorEnterHandler {
         OnNoteworthyAction();
         partner.OnNoteworthyAction();
         who.pos = newTile.pos;
-        who.statuses.Add(new SurprisedStatus());
+        if (who != GameModel.main.player) {
+          who.statuses.Add(new SurprisedStatus());
+        }
       }
     }
   }

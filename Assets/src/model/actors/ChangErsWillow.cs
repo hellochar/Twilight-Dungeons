@@ -39,7 +39,7 @@ public class ChangErsWillow : Plant {
 class ItemFlowerBuds : Item, IDurable, IEdible {
   public int durability { get; set; }
 
-  public int maxDurability => 4;
+  public int maxDurability => 3;
 
   public ItemFlowerBuds() {
     durability = maxDurability;
@@ -144,7 +144,7 @@ internal class ItemCrescentVengeance : EquippableItem, IWeapon, IDurable {
       }
 
       var amountToLose = m_durability - value;
-      var stacksLost = Mathf.Max(amountToLose, status.stacks);
+      var stacksLost = Mathf.Min(amountToLose, status.stacks);
       status.stacks -= stacksLost;
       amountToLose -= stacksLost;
 

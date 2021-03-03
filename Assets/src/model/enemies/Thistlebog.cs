@@ -36,7 +36,11 @@ public class Thistlebog : AIActor, ITakeAnyDamageHandler {
 
   protected override ActorTask GetNextTask() {
     if (isVisible && cooldown <= 0) {
-      return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
+      if (Util.DiamondDistanceToPlayer(this) <= 2) {
+        return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
+      } else {
+        return new ChaseTargetTask(this, GameModel.main.player, 1);
+      }
     } else {
       return new MoveRandomlyTask(this);
     }

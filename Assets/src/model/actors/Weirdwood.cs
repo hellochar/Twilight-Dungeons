@@ -34,7 +34,7 @@ public class Weirdwood : Plant {
 }
 
 [Serializable]
-[ObjectInfo("vile-potion", "Weirdwood roots are notorious for their use in demonic rituals... You wonder why?")]
+[ObjectInfo("vile-potion", "Weirdwood roots are notoriously used in demonic rituals... You wonder why?")]
 internal class ItemVilePotion : Item, IStackable, IUsable {
   public ItemVilePotion(int stacks = 4) {
     this.stacks = stacks;
@@ -57,8 +57,9 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
 
 
   public void Use(Actor actor) {
+    var player = (Player) actor;
     var floor = actor.floor;
-    var enemies = floor.ActorsInCircle(actor.pos, 6).Where((a) => a.faction == Faction.Enemy);
+    var enemies = player.ActorsInSight(Faction.Enemy);
     var start = actor.pos;
     if (enemies.Any()) {
       foreach (var enemy in enemies) {
@@ -72,7 +73,7 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
     }
   }
 
-  internal override string GetStats() => "Spawns Vile Growths in lines towards every enemy in range 5.\nVile Growth does 1 damage per turn to any creature standing over it. Lasts 12 turns.";
+  internal override string GetStats() => "Spawns Vile Growths in lines towards every visible enemy.\nVile Growth does 1 damage per turn to any creature standing over it. Lasts 12 turns.";
 }
 
 [Serializable]

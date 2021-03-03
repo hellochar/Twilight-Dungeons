@@ -77,9 +77,10 @@ public sealed class AttackGroundBaseAction : BaseAction {
 
 [System.Serializable]
 public sealed class WaitBaseAction : BaseAction {
-  public override ActionType Type => ActionType.WAIT;
+  public override ActionType Type { get; }
 
-  public WaitBaseAction(Actor actor) : base(actor) {
+  public WaitBaseAction(Actor actor, ActionType type = ActionType.WAIT) : base(actor) {
+    Type = type;
   }
 
   public override void Perform() {}

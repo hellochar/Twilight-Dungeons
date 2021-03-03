@@ -12,6 +12,6 @@ public static class Tips {
     [7] = "Some enemies are best dealt with using hit-and-dodge tactics, while others must be faced head on!",
     [8] = "You found a new Mature plant! Harvest some seeds and re-plant them in the home floor.",
     [9] = "Make full use of Grasses in order to save item durability!",
-    [10] = "You can deduce an enemy's exact HP by comparing the total damage done to their max HP."
+    [10] = "Deduce an enemy's exact HP by keeping track of total damage dealt to it."
   };
 }

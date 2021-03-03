@@ -16,7 +16,7 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
   /// hard-coded
   private Transform stopButton => transform.GetChild(4);
-  private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x * 0.6f;
+  private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x * 0.66f;
 
   void Start() {
     // this will work even while the gameobject is inactive.

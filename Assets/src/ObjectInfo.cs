@@ -39,10 +39,6 @@ public class ObjectInfo {
       spriteName = "wildwood-leaf",
       flavorText = "Named for its ability to thrive in harsh conditions, this blueish leaf has a variety of uses."
     },
-    [typeof(ItemVineWhip)] = new ObjectInfo {
-      spriteName = "hanging-vines-bottom",
-      flavorText = "Just the sound of it whipping through the air makes you a little nervous."
-    },
     [typeof(WebbedStatus)] = new ObjectInfo {
       spriteName = "web",
       flavorText = "Sticky, gooey, and warm. Eeeew."

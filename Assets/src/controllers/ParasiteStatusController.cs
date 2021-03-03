@@ -20,7 +20,7 @@ public class ParasiteStatusController : StatusController {
     var sprite = transform.Find("Sprite");
 
     var startPos = sprite.localPosition;
-    var endPos = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), startPos.z);
+    var endPos = new Vector3(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f), startPos.z);
 
     var start = Time.time;
     var dt = 0f;

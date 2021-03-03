@@ -162,7 +162,7 @@ public class Encounters {
 
   public static Encounter AddGrasper = new Encounter((floor, room) => {
     // put it on a wall that's next to a Ground
-    var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null && floor.GetAdjacentTiles(t.pos).Any(t2 => t2 is Ground)));
+    var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null && floor.GetCardinalNeighbors(t.pos).Any(t2 => t2 is Ground)));
     if (tile != null) {
       floor.Put(new Grasper(tile.pos));
     }
@@ -184,17 +184,8 @@ public class Encounters {
   });
 
   public static Encounter AddThistlebog = new Encounter((floor, room) => {
-    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
-    tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
-      (1, 1),
-      (1, 2),
-      (1, 3),
-      (1, 4),
-      (2, 4),
-      (2, 4)
-    );
-    foreach (var tile in tiles.Take(num)) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
       floor.Put(new Thistlebog(tile.pos));
     }
   });

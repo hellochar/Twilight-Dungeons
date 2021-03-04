@@ -301,8 +301,8 @@ public class FloorGenerator {
 
     // a reward (optional)
     if (reward) {
-      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
       Encounters.AddWater(floor, room0);
+      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
     }
 
     EncounterGroup.Spice.GetRandom()(floor, room0);

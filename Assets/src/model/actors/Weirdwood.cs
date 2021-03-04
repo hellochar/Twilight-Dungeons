@@ -77,6 +77,7 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
 }
 
 [Serializable]
+[ObjectInfo("vile-growth", description: "Deals 1 damage per turn to any creature standing over it.", flavorText: "Toxic tentacles erupt from the floor!")]
 internal class VileGrowth : Grass, ISteppable {
   int turns = 12;
   public VileGrowth(Vector2Int pos) : base(pos) {

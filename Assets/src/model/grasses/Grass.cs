@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 public delegate void OnNoteworthyAction();
@@ -15,6 +16,10 @@ public class Grass : Entity {
 
   [NonSerialized] /// controller only
   public OnNoteworthyAction OnNoteworthyAction = delegate {};
+  [OnDeserialized]
+  void HandleDeserialized() {
+    OnNoteworthyAction = delegate {};
+  }
 
   public Grass(Vector2Int pos) : base() {
     this._pos = pos;

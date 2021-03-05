@@ -105,6 +105,16 @@ public class Signpost : Ground {
   public Signpost(Vector2Int pos, string text = "") : base(pos) {
     this.text = text;
   }
+
+  public void ShowSignpost() {
+    Popups.Create(
+      title: "Tip",
+      category: "",
+      info: text,
+      flavor: "",
+      sprite: null
+    );
+  }
 }
 
 [Serializable]

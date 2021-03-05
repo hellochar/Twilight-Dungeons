@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TileController : MonoBehaviour, IEntityController, IEntityClickedHandler {
+public class TileController : MonoBehaviour, IEntityController, IPlayerInteractHandler {
   [NonSerialized]
   public Tile tile;
   public SpriteRenderer[] renderers;
@@ -63,7 +63,7 @@ public class TileController : MonoBehaviour, IEntityController, IEntityClickedHa
     }
   }
 
-  public virtual void PointerClick(PointerEventData pointerEventData) {
+  public virtual void HandleInteracted(PointerEventData pointerEventData) {
     if (tile.visibility != TileVisiblity.Unexplored) {
       GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, tile.pos);
     }

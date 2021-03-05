@@ -169,7 +169,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     base.HandleActionPerformed(action, initial);
   }
 
-  public override void PointerClick(PointerEventData pointerEventData) {
+  public override void HandleInteracted(PointerEventData pointerEventData) {
     if (player.task != null) {
       player.ClearTasks();
     } else {

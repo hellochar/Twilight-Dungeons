@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class EzraController : ActorController {
-  public override void PointerClick(PointerEventData pointerEventData) {
+  public override void HandleInteracted(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (actor.IsDead) {
       return; // don't do anything to dead actors
@@ -20,7 +20,7 @@ public class EzraController : ActorController {
   }
 
   IEnumerator WinGame() {
-    FloorController.isInputAllowed = false;
+    InteractionController.isInputAllowed = false;
     StartCoroutine(Transitions.FadeAudio(Camera.main.GetComponent<AudioSource>(), 1, 0));
     yield return StartCoroutine(ZoomInCamera());
 

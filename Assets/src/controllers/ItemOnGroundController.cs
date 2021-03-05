@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
-public class ItemOnGroundController : MonoBehaviour, IEntityController, IEntityClickedHandler {
+public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler {
   [NonSerialized]
   public ItemOnGround itemOnGround;
   private SpriteRenderer spriteRenderer;
@@ -39,7 +39,7 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IEntityC
     transform.position = end;
   }
 
-  public void PointerClick(PointerEventData pointerEventData) {
+  public void HandleInteracted(PointerEventData pointerEventData) {
     if (itemOnGround.isVisible) {
       Player player = GameModel.main.player;
       player.SetTasks(new MoveToTargetTask(player, itemOnGround.pos));

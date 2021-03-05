@@ -46,10 +46,10 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   }
 
   public void MovePlayer(int dx, int dy) {
-    var floorController = GameModelController.main.CurrentFloorController;
+    var interactionController = GameModelController.main.CurrentFloorController.GetComponent<InteractionController>();
     var pos = GameModel.main.player.pos + new Vector2Int(dx, dy);
     /// this potentially does *anything* - set player action, open a popup, or be a no-op.
-    floorController.UserInteractAt(pos, null);
+    interactionController.Interact(pos, null);
   }
 
   public void UpLeft() => MovePlayer(-1, 1);

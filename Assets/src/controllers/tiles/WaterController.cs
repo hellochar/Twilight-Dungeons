@@ -12,7 +12,7 @@ public class WaterController : TileController {
     animator.Play("Idle", -1, time % 1f);
   }
 
-  public override void PointerClick(PointerEventData pointerEventData) {
+  public override void HandleInteracted(PointerEventData pointerEventData) {
     var player = GameModel.main.player;
     player.SetTasks(
       new MoveNextToTargetTask(player, water.pos),

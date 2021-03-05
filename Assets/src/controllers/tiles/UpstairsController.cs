@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 public class UpstairsController : TileController {
   public Upstairs upstairs => (Upstairs) tile;
 
-  public override void PointerClick(PointerEventData pointerEventData) {
+  public override void HandleInteracted(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     player.SetTasks(
       new MoveNextToTargetTask(player, tile.pos),

@@ -141,7 +141,7 @@ public class ActorController : BodyController,
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
-  public override void PointerClick(PointerEventData pointerEventData) {
+  public override void HandleInteracted(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (actor.IsDead) {
       return; // don't do anything to dead actors

@@ -62,7 +62,7 @@ public class PlantController : BodyController {
     }
   }
 
-  public override void PointerClick(PointerEventData pointerEventData) {
+  public override void HandleInteracted(PointerEventData pointerEventData) {
     if (!GameModel.main.player.IsNextTo(plant)) {
       MoveNextToTargetTask task = new MoveNextToTargetTask(GameModel.main.player, plant.pos);
       GameModel.main.player.task = task;

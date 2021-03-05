@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHandler, ITakeAnyDamageHandler, IHealHandler {
+public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITakeAnyDamageHandler, IHealHandler {
   private static GameObject hpChangeTextPrefab;
   [NonSerialized]
   public Body body;
@@ -75,7 +75,7 @@ public class BodyController : MonoBehaviour, IEntityController, IEntityClickedHa
     });
   }
 
-  public virtual void PointerClick(PointerEventData pointerEventData) {
+  public virtual void HandleInteracted(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (body.IsDead) {
       return; // don't do anything to dead actors

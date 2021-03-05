@@ -16,20 +16,19 @@ public class SoftGrass : Grass, IActorEnterHandler{
 
 [System.Serializable]
 [ObjectInfo(spriteName: "colored_transparent_packed_95", flavorText: "Feels nice on your feet.")]
-public class SoftGrassStatus : StackingStatus, IBaseActionModifier {
+public class SoftGrassStatus : StackingStatus, IBodyMoveHandler {
   public override StackingMode stackingMode => StackingMode.Ignore;
   public SoftGrassStatus(int stacks) : base(stacks) {}
 
-  public BaseAction Modify(BaseAction input) {
-    if (input.Type == ActionType.MOVE) {
+  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    if (newPos != oldPos && actor.floor.grasses[newPos] is SoftGrass) {
       stacks++;
       if (stacks == 5) {
-        GameModel.main.EnqueueEvent(() => input.actor.statuses.Add(new FreeMoveStatus()));
+        GameModel.main.EnqueueEvent(() => actor.statuses.Add(new FreeMoveStatus()));
       } else if (stacks > 5) {
         stacks = 1;
       }
     }
-    return input;
   }
 
   public override void Step() {

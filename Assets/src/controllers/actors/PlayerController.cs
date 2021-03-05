@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -46,8 +47,27 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   public override void HandleStatusAdded(Status status) {
     base.HandleStatusAdded(status);
-    var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
-    worldText.GetComponent<TMPro.TMP_Text>().text = status.displayName;
+    EnqueueOverheadText(status.displayName);
+  }
+
+  private Queue<string> overheadTextQueue = new Queue<string>();
+  private Coroutine overheadTextQueueCoroutine;
+  private void EnqueueOverheadText(string s) {
+    overheadTextQueue.Enqueue(s);
+    /// ensure coroutine is started
+    if (overheadTextQueueCoroutine == null) {
+      overheadTextQueueCoroutine = StartCoroutine(StaggerOverheadText());
+    }
+  }
+
+  private IEnumerator StaggerOverheadText() {
+    while (overheadTextQueue.Any()) {
+      var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
+      worldText.GetComponent<TMPro.TMP_Text>().text = overheadTextQueue.Dequeue();
+      // worldText lasts 2 seconds; go a bit faster
+      yield return new WaitForSeconds(0.5f);
+    }
+    overheadTextQueueCoroutine = null;
   }
 
   public override void HandleDeath(Entity source) {

@@ -19,8 +19,6 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   private float stopButtonRadius => stopButton.GetComponent<RectTransform>().sizeDelta.x * 0.66f;
 
   void Start() {
-    // this will work even while the gameobject is inactive.
-    Settings.OnChanged += MatchSettings;
     GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
   }
 
@@ -33,16 +31,7 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
   }
 
   void OnDestroyed() {
-    Settings.OnChanged -= MatchSettings;
     GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
-  }
-
-  void MatchSettings() {
-    if (this == null) {
-      Settings.OnChanged -= MatchSettings;
-    } else {
-      gameObject?.SetActive(Settings.main.moveMode.HasFlag(MoveMode.DPad));
-    }
   }
 
   public void MovePlayer(int dx, int dy) {

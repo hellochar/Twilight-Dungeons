@@ -26,7 +26,6 @@ public struct Settings {
 
   public static Settings Default() {
     return new Settings {
-      moveMode = MoveMode.DPad | MoveMode.TouchTile,
       showSidePanel = true,
       music = true,
       sfx = true
@@ -49,14 +48,7 @@ public struct Settings {
     OnChanged?.Invoke();
   }
 
-  public MoveMode moveMode;
   public bool showSidePanel;
   public bool music;
   public bool sfx;
-}
-
-[Flags]
-public enum MoveMode {
-  DPad = 1,
-  TouchTile = 2
 }

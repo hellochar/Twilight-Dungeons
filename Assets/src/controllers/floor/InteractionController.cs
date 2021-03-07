@@ -78,10 +78,17 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     switch (e) {
       case Signpost s:
         s.ShowSignpost();
-        // Interact(e.pos, null);
         break;
       case Plant p:
         Interact(e.pos, null);
+        break;
+      case ItemOnGround i:
+        var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
+        var spriteGameObject = Instantiate(spritePrefab);
+        var image = spriteGameObject.GetComponentInChildren<Image>();
+        var sprite = ObjectInfo.GetSpriteFor(i) ?? floorController.gameObjectMap[i].gameObject.GetComponentInChildren<SpriteRenderer>()?.sprite;
+        image.sprite = sprite;
+        ItemController.ShowItemPopup(i.item, spriteGameObject);
         break;
       default:
         ShowPopupFor(e);

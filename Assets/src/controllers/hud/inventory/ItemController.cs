@@ -47,6 +47,10 @@ public class ItemController : MonoBehaviour {
   }
 
   private void HandleItemClicked() {
+    ShowItemPopup(item, itemImage.gameObject);
+  }
+
+  public static void ShowItemPopup(Item item, GameObject image) {
     GameObject popup = null;
     List<GameObject> buttons = null;
 
@@ -93,7 +97,7 @@ public class ItemController : MonoBehaviour {
       category: GetCategoryForItem(item),
       info: item.GetStatsFull(),
       flavor: ObjectInfo.GetFlavorTextFor(item),
-      sprite: itemImage.gameObject,
+      sprite: image,
       buttons: buttons
     );
     var popupMatchItem = popup.AddComponent<ItemPopupController>();
@@ -111,23 +115,18 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  private GameObject MakeButton(string name, Action onClicked) {
+  private static GameObject MakeButton(string name, Action onClicked) {
     var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
     button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
     return button;
   }
 
-  private void PopupInteractionDone(GameObject popup) {
-    Player player = GameModel.main.player;
+  private static void PopupInteractionDone(GameObject popup) {
     Destroy(popup);
-    // if (player.IsInCombat()) {
-    //   CloseInventory();
-    // }
   }
 
-  public async void PlantWithUI(ItemSeed seed, Player player, GameObject popup) {
-    CloseInventory();
+  public static async void PlantWithUI(ItemSeed seed, Player player, GameObject popup) {
     popup.SetActive(false);
     try {
       var soil = await MapSelector.SelectUI(
@@ -149,8 +148,7 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  public async void PowderInfectWithUI(ItemKingshroomPowder powder, Player player, GameObject popup) {
-    CloseInventory();
+  public static async void PowderInfectWithUI(ItemKingshroomPowder powder, Player player, GameObject popup) {
     popup.SetActive(false);
     try {
       var enemy = await MapSelector.SelectUI(player.floor.AdjacentActors(player.pos).Where((a) => a != player));
@@ -168,8 +166,7 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  public async void CharmWithUI(ItemCharmBerry charmBerry, Player player, GameObject popup) {
-    CloseInventory();
+  public static async void CharmWithUI(ItemCharmBerry charmBerry, Player player, GameObject popup) {
     popup.SetActive(false);
     try {
       var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor).Cast<AIActor>());
@@ -187,8 +184,7 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  public async void ThrowBoombugCorpseWithUI(ItemBoombugCorpse corpse, Player player, GameObject popup) {
-    CloseInventory();
+  public static async void ThrowBoombugCorpseWithUI(ItemBoombugCorpse corpse, Player player, GameObject popup) {
     popup.SetActive(false);
     var floor = player.floor;
     try {
@@ -210,8 +206,7 @@ public class ItemController : MonoBehaviour {
       popup.SetActive(true);
     }
   }
-  public async void ThrowSnailShellWithUI(ItemSnailShell shell, Player player, GameObject popup) {
-    CloseInventory();
+  public static async void ThrowSnailShellWithUI(ItemSnailShell shell, Player player, GameObject popup) {
     popup.SetActive(false);
     var floor = player.floor;
     try {
@@ -229,16 +224,12 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  public void OpenInventory() {
+  public static void OpenInventory() {
     /// suuuper hack
     GameObject.Find("Canvas")
       .GetComponentsInChildren<Transform>(true)
       .First((c) => c.gameObject.name == "Inventory Container")
       .gameObject.SetActive(true);
-  }
-
-  public void CloseInventory() {
-    // GameObject.Find("Inventory Container")?.SetActive(false);
   }
 
   // Update is called once per frame

@@ -85,10 +85,11 @@ public class GameModelController : MonoBehaviour {
   private FloorController GetOrCreateFloorController(Floor floor) {
     if (!floorControllers.ContainsKey(floor)) {
       GameObject instance = Instantiate(floorPrefab);
-      FloorController controller = instance.GetComponent<FloorController>();
+      FloorController controller;
       if (floor is TutorialFloor) {
-        Destroy(controller);
         controller = instance.AddComponent<TutorialFloorController>();
+      } else {
+        controller = instance.AddComponent<FloorController>();
       }
       controller.floor = floor;
       floorControllers.Add(floor, controller);

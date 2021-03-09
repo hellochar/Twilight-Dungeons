@@ -3,17 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITakeAnyDamageHandler, IHealHandler {
-  private static GameObject hpChangeTextPrefab;
   [NonSerialized]
   public Body body;
   protected GameObject sprite;
   protected GameObject damageContainer;
   public virtual void Start() {
     body.nonserializedModifiers.Add(this);
-
-    if (hpChangeTextPrefab == null) {
-      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
-    }
 
     sprite = transform.Find("Sprite")?.gameObject;
     damageContainer = sprite?.transform.Find("Damage Container").gameObject;
@@ -23,9 +18,6 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     if (!body.isVisible) {
       return;
     }
-    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
-    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
-
     if(damage > 0) {
       GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
       Instantiate(damagedSpritePrefab, Util.withZ(body.pos), Quaternion.identity);
@@ -40,9 +32,6 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     GameObject healEffectPrefab = Resources.Load<GameObject>("Effects/Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(body.pos), Quaternion.identity, transform);
     healEffect.transform.localPosition = new Vector3(0, 0, 0);
-
-    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
-    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, true);
     // UpdateDamageTicks();
   }
 

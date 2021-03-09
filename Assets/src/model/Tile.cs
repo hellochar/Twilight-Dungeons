@@ -182,7 +182,10 @@ public class Downstairs : Tile, IActorEnterHandler {
       if (floor.EnemiesLeft() == 0) {
         floor.PlayerGoDownstairs();
       } else {
-        Messages.Create("Clear level first.");
+        var enemiesLeft = GameObject.Find("Enemies Left");
+        var pulse = enemiesLeft.AddComponent<PulseAnimation>();
+        pulse.pulseScale = 1.25f;
+        // Messages.Create("Clear level first.");
       }
     }
   }

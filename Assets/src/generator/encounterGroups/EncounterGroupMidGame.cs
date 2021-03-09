@@ -40,6 +40,8 @@ public static class EncounterGroupMidGame {
       Spice = new WeightedRandomBag<Encounter> {
         { 3f, Empty },
 
+        { 1f, AddFruitingBodies },
+
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
         { 0.25f, AddTunnelroot },

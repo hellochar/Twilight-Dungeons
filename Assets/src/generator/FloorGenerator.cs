@@ -116,6 +116,10 @@ public class FloorGenerator {
     if (floor.depth != depth) {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
+
+    #if UNITY_EDITOR
+    Encounters.AddFruitingBodies(floor, floor.root);
+    #endif
     return floor;
   }
 

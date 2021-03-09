@@ -379,6 +379,17 @@ public class Encounters {
     }
   });
 
+  public static Encounter AddFruitingBodies = new Encounter((floor, room) => {
+    var positions = FloorUtils.EmptyTilesInRoom(floor, room);
+    positions.Shuffle();
+    var num = Random.Range(3, (positions.Count + 1) / 4);
+    foreach (var tile in positions.Take(num)) {
+      if (!floor.GetAdjacentTiles(tile.pos).Any((t) => t.actor is FruitingBody)) {
+        floor.Put(new FruitingBody(tile.pos));
+      }
+    }
+  });
+
   public static Encounter AddEveningBells = new Encounter((floor, room) => {
     var locations = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => !Mushroom.CanOccupy(tile)));
     var num = 1;

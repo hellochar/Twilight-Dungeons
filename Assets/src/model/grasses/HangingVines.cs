@@ -116,13 +116,13 @@ public class ConstrictedStatus : StackingStatus, IBaseActionModifier, IBodyMoveH
   }
 
   public override void End() {
-    owner.ConstrictedStatusEnded();
+    owner?.ConstrictedStatusEnded();
     base.End();
   }
 
   public void HandleDeath(Entity source) {
     // signal back to the hanging vines that the creature died with this status on it.
-    owner.ConstrictedCreatureDied();
+    owner?.ConstrictedCreatureDied();
   }
 
   // if they somehow do move (e.g. forced movement), remove this status

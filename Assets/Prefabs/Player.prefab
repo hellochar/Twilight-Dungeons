@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bloodColor: {r: 0.75, g: 0, b: 0, a: 1}
+  hideWaitTask: 1
 --- !u!96 &1793344527109329488
 TrailRenderer:
   serializedVersion: 2

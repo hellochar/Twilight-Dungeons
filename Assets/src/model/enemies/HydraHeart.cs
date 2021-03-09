@@ -68,7 +68,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
 
 [System.Serializable]
 [ObjectInfo(description: "Attacks anything adjacent to it.\nStationary.", flavorText: "A fleshy tube with a gaping jaw at the end, grasping at any food nearby.")]
-public class HydraHead : AIActor, IBaseActionModifier {
+public class HydraHead : AIActor, IBaseActionModifier, IIgnoreStagger {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.ATTACK] = 2f,
   };

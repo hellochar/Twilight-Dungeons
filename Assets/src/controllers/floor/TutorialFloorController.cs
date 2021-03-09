@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TutorialFloorController : FloorController, IStatusAddedHandler {
   private TutorialFloor tutFloor => (TutorialFloor) floor;
-  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, gear, statuses, depth;
+  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, gear, statuses, depth, sidePanel, enemiesLeft;
   List<GameObject> allUI;
 
   // Start is called before the first frame update
@@ -27,7 +27,9 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     inventoryContainer = GameObject.Find("Inventory Container");
     depth = GameObject.Find("Depth");
     gear = GameObject.Find("Gear");
-    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, gear };
+    sidePanel = GameObject.Find("Side Panel");
+    enemiesLeft = GameObject.Find("Enemies Left");
+    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, gear, sidePanel, enemiesLeft };
 
     foreach (var ui in allUI) {
       ui.SetActive(false);
@@ -133,8 +135,9 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     }
     GameModel.main.turnManager.OnStep -= DetectEnteredFinalRoom;
     GameModel.main.player.ClearTasks();
+    AnimateHorizontally(enemiesLeft, 900);
 
-    Messages.Create("Bats will attack other creatures!");
+    Messages.Create("Bats attack other creatures!");
   }
 
   private void HandleTutorialEnded() {

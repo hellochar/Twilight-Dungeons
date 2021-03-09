@@ -78,7 +78,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     });
 
     #if !UNITY_EDITOR
-    Serializer.DeleteSave();
+    Serializer.DeleteSave0();
     #endif
   }
 

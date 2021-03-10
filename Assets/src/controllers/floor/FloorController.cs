@@ -13,6 +13,7 @@ public class FloorController : MonoBehaviour {
   public Floor floor;
   public static Dictionary<System.Type, GameObject> EntityPrefabs = new Dictionary<System.Type, GameObject>();
   public Dictionary<Entity, GameObject> gameObjectMap = new Dictionary<Entity, GameObject>();
+  public static FloorController current => GameModelController.main.CurrentFloorController;
 
   public static GameObject GetEntityPrefab(Entity e) {
     var type = e.GetType();
@@ -116,4 +117,42 @@ public class FloorController : MonoBehaviour {
     }
   }
 
+  /// Layer here refers to Entity layers - tile (lowest), grass, item, body (highest)
+  public Entity[] GetVisibleEntitiesInLayerOrder(Vector2Int pos) {
+    if (!floor.InBounds(pos)) {
+      return new Entity[0];
+    }
+
+    var tile = floor.tiles[pos];
+    var body = tile.body;
+    var itemOnGround = tile.item;
+    var grass = tile.grass;
+
+    return new Entity[] { body, itemOnGround, grass, tile }
+      .Where(e => e != null && e.isVisible)
+      .ToArray();
+  }
+
+  public bool TryGetFirstControllerComponent<T>(Entity[] entities, out T component, out Entity e) {
+    foreach (var entity in entities) {
+      if (TryGetControllerComponent<T>(entity, out component)) {
+        e = entity;
+        return true;
+      }
+    }
+    e = null;
+    component = default(T);
+    return false;
+  }
+
+  /// find gameObject for entity in floor controller, see if it has a IPlayerInteractHandler
+  public bool TryGetControllerComponent<T>(Entity e, out T component) {
+    if (e != null && gameObjectMap.TryGetValue(e, out var gameObject)) {
+      if (gameObject.TryGetComponent<T>(out component)) {
+        return true;
+      }
+    }
+    component = default(T);
+    return false;
+  }
 }

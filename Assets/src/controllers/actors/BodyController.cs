@@ -3,11 +3,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITakeAnyDamageHandler, IHealHandler {
+  private static GameObject hpChangeTextPrefab;
   [NonSerialized]
   public Body body;
   protected GameObject sprite;
   protected GameObject damageContainer;
+  public bool showDamageMarks = true;
+
   public virtual void Start() {
+    if (hpChangeTextPrefab == null) {
+      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
+    }
+
     body.nonserializedModifiers.Add(this);
 
     sprite = transform.Find("Sprite")?.gameObject;
@@ -18,9 +25,15 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     if (!body.isVisible) {
       return;
     }
-    if(damage > 0) {
-      GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
-      Instantiate(damagedSpritePrefab, Util.withZ(body.pos), Quaternion.identity);
+
+    if (showDamageMarks) {
+      GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
+      hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
+
+      if(damage > 0) {
+        GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
+        Instantiate(damagedSpritePrefab, Util.withZ(body.pos), Quaternion.identity);
+      }
     }
     // UpdateDamageTicks();
   }

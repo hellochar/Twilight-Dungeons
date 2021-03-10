@@ -100,20 +100,26 @@ public class Ground : Tile {
 }
 
 [Serializable]
+[ObjectInfo("sign")]
 public class Signpost : Ground {
+  public bool hasRead;
   public string text;
   public Signpost(Vector2Int pos, string text = "") : base(pos) {
     this.text = text;
+    hasRead = PlayerPrefs.HasKey("read-tip-"+text.GetHashCode());
   }
 
   public void ShowSignpost() {
     Popups.Create(
-      title: "Tip",
+      title: "Tips",
       category: "",
-      info: text,
+      /// hack - add a linebreak before to put some space
+      info: "\n" + text,
       flavor: "",
       sprite: null
     );
+    hasRead = true;
+    PlayerPrefs.SetInt("read-tip-"+text.GetHashCode(), 1);
   }
 }
 
@@ -157,11 +163,13 @@ public class Upstairs : Tile {
   }
 
   public void GoHome() {
-    if (GameModel.main.player.IsInCombat()) {
-      throw new CannotPerformActionException("There are enemies around!");
+    if (floor.EnemiesLeft() == 0) {
+      GameModel.main.PutPlayerAt(0);
+    } else {
+      var enemiesLeft = GameObject.Find("Enemies Left");
+      var pulse = enemiesLeft.AddComponent<PulseAnimation>();
+      pulse.pulseScale = 1.25f;
     }
-
-    GameModel.main.PutPlayerAt(0);
   }
 }
 
@@ -197,7 +205,7 @@ public class Soil : Tile {
   public Soil(Vector2Int pos) : base(pos) { }
 }
 
-[ObjectInfo(description: "Walk into to collect.", flavorText: "Water water everywhere...")]
+[ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]
 [Serializable]
 public class Water : Tile {
   public Water(Vector2Int pos) : base(pos) {

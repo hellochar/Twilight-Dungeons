@@ -6,7 +6,10 @@ using UnityEngine;
 class TutorialFloor : Floor {
   public BerryBush berryBush;
   public Blob blob;
+  public Guardleaf guardleaf;
   public List<Actor> jackals;
+  public Bat bat;
+
   public event Action OnTutorialEnded;
 
   public TutorialFloor() : base(-1, 53, 9) {
@@ -71,7 +74,8 @@ class TutorialFloor : Floor {
     Put(new Guardleaf(guardleafCenter));
     Put(new Guardleaf(guardleafCenter + Vector2Int.up));
     Put(new Guardleaf(guardleafCenter + Vector2Int.down));
-    Put(new Guardleaf(guardleafCenter + Vector2Int.left));
+    this.guardleaf = new Guardleaf(guardleafCenter + Vector2Int.left);
+    Put(this.guardleaf);
     Put(new Guardleaf(guardleafCenter + Vector2Int.right));
 
     // fourth room - a berry bush
@@ -86,7 +90,8 @@ class TutorialFloor : Floor {
     Encounters.FillWithSoftGrass(this, blobsAndBat);
     Put(new Blob(blobsAndBat.center));
     Put(new Blob(blobsAndBat.center + Vector2Int.up));
-    Put(new Bat(blobsAndBat.center + new Vector2Int(-1, -2)));
+    this.bat = new Bat(blobsAndBat.center + new Vector2Int(-1, -2));
+    Put(this.bat);
     PlaceDownstairs(new Vector2Int(blobsAndBat.max.x, cY));
 
     FloorUtils.TidyUpAroundStairs(this);

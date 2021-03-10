@@ -20,7 +20,7 @@ public class GameModelController : MonoBehaviour {
 
   void Awake() {
     #if UNITY_EDITOR
-    // GameModel.GenerateTutorialAndSetMain();
+    GameModel.GenerateTutorialAndSetMain();
     if (GameModel.main == null) {
       if (Serializer.HasSave()) {
         GameModel.main = Serializer.LoadSave0();

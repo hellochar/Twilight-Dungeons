@@ -40,9 +40,9 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     var isShortTap = hold == null || !hold.triggered;
     if (isInputAllowed && !CameraZoom.IsZoomGuardActive && isShortTap) {
       var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
-      var tappedEntity = GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
+      var tappedEntity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
       if (tappedEntity != null) {
-        Details(tappedEntity);
+        Tap(tappedEntity);
       }
     }
     hold = null;
@@ -68,19 +68,26 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {
-    var entities = GetVisibleEntitiesInLayerOrder(worldPos);
-    if (TryGetFirstPlayerInteractHandler(out var handler, entities)) {
+    var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
+    if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out _)) {
       handler.HandleInteracted(eventData);
     }
   }
 
-  public void Details(Entity e) {
-    switch (e) {
+  public void Tap(Entity entity) {
+    var entityGameObject = floorController.GameObjectFor(entity);
+    /// HACK destroy highlight once it's tapped
+    var highlight = entityGameObject.transform.Find("Highlight(Clone)");
+    if (highlight != null) {
+      Destroy(highlight.gameObject);
+    }
+
+    switch (entity) {
       case Signpost s:
         s.ShowSignpost();
         break;
       case Plant p:
-        Interact(e.pos, null);
+        Interact(entity.pos, null);
         break;
       case ItemOnGround i:
         var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
@@ -91,12 +98,12 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         ItemController.ShowItemPopup(i.item, spriteGameObject);
         break;
       default:
-        ShowPopupFor(e);
+        ShowPopupFor(entity, entityGameObject);
         break;
     }
   }
 
-  void ShowPopupFor(Entity entity) {
+  void ShowPopupFor(Entity entity, GameObject entityGameObject) {
     string description = entity.description + "\n\n";
     if (entity is Body b) {
       if (b is Actor a) {
@@ -104,7 +111,6 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       }
       description += $"Max HP: {b.maxHp}\n";
     }
-    var entityGameObject = floorController.gameObjectMap[entity];
 
     var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
     var spriteGameObject = Instantiate(spritePrefab);
@@ -123,44 +129,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     Destroy(spriteGameObject);
   }
 
-  /// Layer here refers to Entity layers - tile (lowest), grass, item, body (highest)
-  public Entity[] GetVisibleEntitiesInLayerOrder(Vector2Int pos) {
-    if (!floor.InBounds(pos)) {
-      return new Entity[0];
-    }
-
-    var tile = floor.tiles[pos];
-    var body = tile.body;
-    var itemOnGround = tile.item;
-    var grass = tile.grass;
-
-    return new Entity[] { body, itemOnGround, grass, tile }
-      .Where(e => e != null && e.isVisible)
-      .ToArray();
-  }
-
   /// get the *first* handler out of a list of entities
-  bool TryGetFirstPlayerInteractHandler(out IPlayerInteractHandler handler, params Entity[] entities) {
-    foreach (var entity in entities) {
-      if (TryGetPlayerInteractHandler(entity, out handler)) {
-        return true;
-      }
-    }
-    handler = null;
-    return false;
-  }
-
-  /// find gameObject for entity in floor controller, see if it has a IPlayerInteractHandler
-  bool TryGetPlayerInteractHandler(Entity e, out IPlayerInteractHandler handler) {
-    if (e != null && floorController.gameObjectMap.TryGetValue(e, out var gameObject)) {
-      if (gameObject.TryGetComponent<IPlayerInteractHandler>(out handler)) {
-        return true;
-      }
-    }
-    handler = null;
-    return false;
-  }
-
   private static Vector2Int RaycastToTilePos(RaycastResult raycast) {
     var worldPos = raycast.worldPosition;
     var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));

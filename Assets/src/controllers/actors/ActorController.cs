@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class ActorController : BodyController,
   IActionPerformedHandler, IStatusAddedHandler, IStatusRemovedHandler, IDeathHandler {
-  private static GameObject hpChangeTextPrefab;
   public Actor actor => (Actor)body;
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
@@ -14,10 +13,6 @@ public class ActorController : BodyController,
   public override void Start() {
     if (body == null) {
       body = GameModel.main.player;
-    }
-
-    if (hpChangeTextPrefab == null) {
-      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
     }
 
     base.Start();
@@ -46,9 +41,6 @@ public class ActorController : BodyController,
 
   public override void HandleTakeAnyDamage(int dmg) {
     base.HandleTakeAnyDamage(dmg);
-
-    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
-    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-dmg, false);
 
     if (dmg > 0) {
       var tileGameObject = GameModelController.main.CurrentFloorController.GameObjectFor(actor.tile);

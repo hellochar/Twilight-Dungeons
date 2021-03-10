@@ -118,7 +118,7 @@ public class FloorGenerator {
     }
 
     #if UNITY_EDITOR
-    Encounters.AddFruitingBodies(floor, floor.root);
+    // Encounters.AddFruitingBodies(floor, floor.root);
     #endif
     return floor;
   }

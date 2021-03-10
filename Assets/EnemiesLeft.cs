@@ -17,8 +17,19 @@ public class EnemiesLeft : MonoBehaviour {
   void Update() {
     var floor = GameModel.main.currentFloor;
     image.enabled = floor.depth != 0;
-    var enemiesLeft = floor.EnemiesLeft();
-    var enemiesText = (enemiesLeft > 3) ? "???" : enemiesLeft.ToString();
-    text.text = floor.depth == 0 ? "" : $"{floor.EnemiesLeft()} enemies left.";
+    switch (floor.EnemiesLeft()) {
+      case var x when floor.depth == 0:
+        text.text = "";
+        break;
+      case 0:
+        text.text = "Cleared!";
+        break;
+      case var x when x > 3:
+        text.text = "Defeat all enemies.";
+        break;
+      case var x:
+        text.text = $"{x} enemies left.";
+        break;
+    }
   }
 }

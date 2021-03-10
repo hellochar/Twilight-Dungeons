@@ -21,7 +21,7 @@ public class TileController : MonoBehaviour, IEntityController, IPlayerInteractH
   }
 
   // Update is called once per frame
-  void Update() {
+  public virtual void Update() {
     switch (tile.visibility) {
       case TileVisiblity.Unexplored:
         foreach (var renderer in renderers) {

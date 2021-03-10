@@ -105,7 +105,7 @@ class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
 
 [Serializable]
 [ObjectInfo("stiffarm")]
-class ItemStiffarm : EquippableItem, IDurable, IWeapon, IDealAttackDamageHandler, IAttackDamageTakenModifier, ISticky {
+class ItemStiffarm : EquippableItem, IDurable, IWeapon, IAttackDamageTakenModifier, ISticky {
   internal override string GetStats() => "You're infected with from Stiffarm!\nYou take +1 damage from attacks.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   public int durability { get; set; }
@@ -114,10 +114,6 @@ class ItemStiffarm : EquippableItem, IDurable, IWeapon, IDealAttackDamageHandler
 
   public ItemStiffarm() {
     durability = maxDurability;
-  }
-
-  public void HandleDealAttackDamage(int damage, Body target) {
-    this.ReduceDurability();
   }
 
   public int Modify(int input) {

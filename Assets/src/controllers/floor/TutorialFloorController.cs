@@ -35,6 +35,8 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
       ui.SetActive(false);
     }
 
+    AddHighlights();
+
     Player player = GameModel.main.player;
 
     // the order of these statements follows the order in which the player will hit them in the tutorial
@@ -48,6 +50,13 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     player.OnChangeWater += HandleChangeWater;                        // after getting water
     GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
     tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
+  }
+
+  void AddHighlights() {
+    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.blob).transform);
+    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.guardleaf).transform);
+    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.jackals[0]).transform);
+    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.berryBush).transform);
   }
 
   void StartTutorial() {

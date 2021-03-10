@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class WaterController : TileController {
+public class WaterController : TileController, IOnTopActionHandler {
   Water water => (Water) tile;
 
   public override void Start() {
@@ -12,11 +12,15 @@ public class WaterController : TileController {
     animator.Play("Idle", -1, time % 1f);
   }
 
-  public override void HandleInteracted(PointerEventData pointerEventData) {
-    var player = GameModel.main.player;
-    player.SetTasks(
-      new MoveNextToTargetTask(player, water.pos),
-      new GenericPlayerTask(player, () => water.Collect(player))
-    );
+  public void HandleOnTopAction() {
+    Player player = GameModel.main.player;
+    player.task = new GenericPlayerTask(player, () => water.Collect(player));
   }
+
+  public string OnTopActionName => "Collect";
+}
+
+public interface IOnTopActionHandler {
+  string OnTopActionName { get; }
+  void HandleOnTopAction();
 }

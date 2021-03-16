@@ -38,6 +38,12 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
     var image = transform.Find("Frame/Image").GetComponent<Image>();
     image.sprite = mature.sprite;
     image.color = mature.color;
+    if (plant.percentGrown < 1) {
+      var p = image.rectTransform.anchoredPosition;
+      p.x = 0;
+      image.rectTransform.anchoredPosition = p;
+      uiInfo.rectTransform.anchoredPosition = new Vector2();
+    }
 
     if (plant.floor is TutorialFloor && plant.stage.NextStage == null) {
       tutorialExtras.SetActive(true);

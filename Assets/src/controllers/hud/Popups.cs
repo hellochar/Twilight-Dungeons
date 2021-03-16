@@ -13,7 +13,7 @@ public static class Popups {
     string flavor,
     GameObject sprite = null,
     Transform parent = null,
-    List<GameObject> buttons = null,
+    List<(string, Action)> buttons = null,
     string errorText = null
   ) {
     GameObject popup = InstantiatePopup(parent);
@@ -53,10 +53,8 @@ public static class Popups {
 
     // Add buttons
     var buttonsContainer = popup.transform.Find("Frame/Actions");
-    if (buttons != null && buttons.Count > 0) {
-      buttons.ForEach((b) => {
-        b.transform.SetParent(buttonsContainer, false);
-      });
+    if (buttons != null) {
+      buttons.ForEach((b) => MakeButton(b.Item1, b.Item2, buttonsContainer, popup));
     } else {
       buttonsContainer.gameObject.SetActive(false);
       // if there's no actions, clicking the frame itself will toggle the popup
@@ -77,4 +75,17 @@ public static class Popups {
     }
     return UnityEngine.Object.Instantiate(PopupPrefab, new Vector3(), Quaternion.identity, parent);
   }
+
+  private static GameObject ActionButtonPrefab;
+  private static GameObject MakeButton(string name, Action onClicked, Transform parent, GameObject popup) {
+    if (ActionButtonPrefab == null) {
+      ActionButtonPrefab = Resources.Load<GameObject>("UI/Action Button");
+    }
+    var button = UnityEngine.Object.Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity, parent);
+    button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
+    button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
+    button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));
+    return button;
+  }
+
 }

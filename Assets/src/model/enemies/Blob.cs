@@ -81,7 +81,7 @@ public class FruitingBody : AIActor, IIgnoreStagger {
 [Serializable]
 [ObjectInfo("tanglefoot")]
 class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
-  internal override string GetStats() => "You're infected with Tanglefoot!\nMoving over a Tile without grass will occasionally Constrict you and grow a Guardleaf at your location.";
+  internal override string GetStats() => "You're infected with Tanglefoot!\nMoving over a Tile without grass will occasionally Constrict you and grow a Guardleaf at your location.\nDoes not trigger at home.";
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
   public int durability { get; set; }
@@ -93,6 +93,9 @@ class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    if (player.floor.depth == 0) {
+      return;
+    }
     var canTrigger = newPos != oldPos && player.grass == null;
     var shouldTrigger = MyRandom.value < 0.02f;
     if (canTrigger && shouldTrigger) {

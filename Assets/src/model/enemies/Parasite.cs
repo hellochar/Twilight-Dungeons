@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "When Parasite deals damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves quickly but randomly.", flavorText: "Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.")]
+[ObjectInfo(description: "Once Parasite deals attack damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves quickly but randomly.", flavorText: "Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.")]
 public class Parasite : AIActor, IDealAttackDamageHandler {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,

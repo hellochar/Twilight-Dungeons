@@ -27,13 +27,25 @@ public class Equipment : Inventory {
       var slot = (int) equippable.slot;
       // ensure there isn't a sticky item in the existing slot
       if (this[slot] is ISticky) {
-        throw new CannotPerformActionException("Cannot unequip " + this[slot].displayName);
+        throw new CannotPerformActionException(this[slot].displayName + " is stuck to your body!");
         // return false;
       }
       return base.AddItem(item, slot, source);
     } else {
       return false;
     }
+  }
+
+  protected override void HandleItemAdded(Item item, Entity source) {
+    base.HandleItemAdded(item, source);
+    var e = item as EquippableItem;
+    e.OnEquipped();
+  }
+
+  protected override void HandleItemRemoved(Item item) {
+    base.HandleItemRemoved(item);
+    var e = item as EquippableItem;
+    e.OnUnequipped();
   }
 }
 

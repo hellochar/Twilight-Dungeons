@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SignpostController : TileController, IOnTopActionHandler {
+public class SignpostController : TileController, IOnTopActionHandler, ITapHandler {
   public Signpost signpost => (Signpost) tile;
   public string OnTopActionName => "Read";
 
@@ -18,7 +18,11 @@ public class SignpostController : TileController, IOnTopActionHandler {
     /// hack - destroy highlight
     var highlight = transform.Find("Highlight(Clone)");
     if (highlight != null) {
-      Destroy(highlight.gameObject);
+      highlight.gameObject.AddComponent<FadeThenDestroy>();
     }
+  }
+
+  public void Tapped() {
+    signpost.ShowSignpost();
   }
 }

@@ -6,10 +6,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class PlantController : BodyController {
+public class PlantController : BodyController, ITapHandler {
   public Plant plant => (Plant) body;
   public GameObject particles;
-  private Dictionary<string, GameObject> plantStageObjects = new Dictionary<string, GameObject>();
+  public GameObject seed;
+  public GameObject mature;
+  [NonSerialized]
   public GameObject activePlantStageObject;
   private GameObject ui = null;
   public bool popupOpen {
@@ -30,15 +32,14 @@ public class PlantController : BodyController {
 
   // Start is called before the first frame update
   public override void Start() {
-    foreach (Transform t in transform) {
-      if (t.gameObject.name != "Particle Systems") {
-        plantStageObjects.Add(t.gameObject.name, t.gameObject);
-        t.gameObject.SetActive(false);
-        t.localPosition = new Vector3(0, t.localPosition.y, t.localPosition.z);
-      }
-    }
-    activePlantStageObject = plantStageObjects[plant.stage.name];
+    seed.SetActive(false);
+    mature.SetActive(false);
+    seed.transform.localPosition = new Vector3(0, seed.transform.localPosition.y, seed.transform.localPosition.z);
+    mature.transform.localPosition = new Vector3(0, mature.transform.localPosition.y, mature.transform.localPosition.z);
+
+    activePlantStageObject = plant.stage.name == "Seed" ? seed : mature;
     activePlantStageObject.SetActive(true);
+
     particles.SetActive(plant.stage.name == "Seed");
     plant.OnHarvested += HandleHarvested;
     base.Start();
@@ -56,10 +57,14 @@ public class PlantController : BodyController {
   public void Update() {
     if (activePlantStageObject.name != plant.stage.name) {
       activePlantStageObject.SetActive(false);
-      activePlantStageObject = plantStageObjects[plant.stage.name];
+      activePlantStageObject = plant.stage.name == "Seed" ? seed : mature;
       activePlantStageObject.SetActive(true);
       particles.SetActive(plant.stage.name == "Seed");
     }
+  }
+
+  public void Tapped() {
+    HandleInteracted(null);
   }
 
   public override void HandleInteracted(PointerEventData pointerEventData) {

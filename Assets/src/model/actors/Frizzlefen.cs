@@ -128,7 +128,11 @@ class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
     }
   }
 
-  internal override string GetStats() => "Everlasting.\nWhen you walk on to any Grass, kill it and gain 1 stack of Armored.";
+  public override void OnUnequipped() {
+    player.statuses.RemoveOfType<ArmoredStatus>();
+  }
+
+  internal override string GetStats() => "Everlasting.\nWhen you walk on to any Grass, kill it and gain 1 stack of Armored.\nRemove all Armored status when you unequip.";
 }
 
 [Serializable]

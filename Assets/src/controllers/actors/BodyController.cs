@@ -42,6 +42,9 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     if (!body.isVisible) {
       return;
     }
+    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
+    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, false);
+
     GameObject healEffectPrefab = Resources.Load<GameObject>("Effects/Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(body.pos), Quaternion.identity, transform);
     healEffect.transform.localPosition = new Vector3(0, 0, 0);

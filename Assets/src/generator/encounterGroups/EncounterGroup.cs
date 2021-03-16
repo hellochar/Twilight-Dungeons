@@ -43,6 +43,7 @@ public class EncounterGroup {
     { 1f, MatureWildWood },
     { 1f, MatureWeirdwood },
     { 1f, MatureKingshroom },
-    { 1f, MatureFrizzlefen }
+    { 1f, MatureFrizzlefen },
+    { 1f, MatureChangErsWillow }
   };
 }

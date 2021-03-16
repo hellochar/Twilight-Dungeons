@@ -46,7 +46,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
     player.inventory.OnItemAdded += HandleFirstItemAdded;             // after harvesting and picking up the first item
-    player.inventory.OnItemAdded += HandleAllFourItemsPickedUp;       // after picking up all 4 items
+    player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
     player.OnChangeWater += HandleChangeWater;                        // after getting water
     GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
     tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
@@ -57,6 +57,8 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.guardleaf).transform);
     PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.jackals[0]).transform);
     PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.berryBush).transform);
+    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.astoria).transform);
+    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
   }
 
   void StartTutorial() {
@@ -81,7 +83,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(0.25f);
-      Messages.Create("Tap the Blob to learn about it.", 5);
+      Messages.Create("Tap on things to learn about them.", 5);
     }
   }
 
@@ -102,12 +104,12 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(0.25f);
-      Messages.Create("Jackals move fast! The Guardleaf will protect you.", 5);
+      Messages.Create("Jackals move fast. Use the Guardleaf!", 5);
     }
   }
 
   private void DetectEnteredBerryBushRoom(ISteppable obj) {
-    if (GameModel.main.player.pos.x < 30) {
+    if (!tutFloor.berryBush.isVisible) {
       return;
     }
     GameModel.main.turnManager.OnStep -= DetectEnteredBerryBushRoom;
@@ -123,14 +125,11 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     AnimateHorizontally(inventoryContainer, 900);
   }
 
-  int itemsPickedUp = 0;
-  private void HandleAllFourItemsPickedUp(Item arg1, Entity arg2) {
-    if (++itemsPickedUp < 4) {
-      return;
+  private void HandleSeedPickup(Item item, Entity arg2) {
+    if (item is ItemSeed) {
+      GameModel.main.player.inventory.OnItemAdded -= HandleSeedPickup;
+      Messages.Create("Plant the Seed!");
     }
-    GameModel.main.player.inventory.OnItemAdded -= HandleAllFourItemsPickedUp;
-
-    Messages.Create("Plant the seeds to grow more Berry Bushes!");
   }
 
   private void HandleChangeWater(int delta) {
@@ -139,7 +138,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   }
 
   private void DetectEnteredFinalRoom(ISteppable obj) {
-    if (GameModel.main.player.pos.x < 40) {
+    if (GameModel.main.player.pos.x < tutFloor.endRoom.min.x - 1) {
       return;
     }
     GameModel.main.turnManager.OnStep -= DetectEnteredFinalRoom;

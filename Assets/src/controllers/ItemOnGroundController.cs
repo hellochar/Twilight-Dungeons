@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
-public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler {
+public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITapHandler {
   [NonSerialized]
   public ItemOnGround itemOnGround;
   private SpriteRenderer spriteRenderer;
@@ -44,5 +44,13 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerI
       Player player = GameModel.main.player;
       player.SetTasks(new MoveToTargetTask(player, itemOnGround.pos));
     }
+  }
+
+  public void Tapped() {
+    var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
+    var spriteGameObject = Instantiate(spritePrefab);
+    var image = spriteGameObject.GetComponentInChildren<Image>();
+    image.sprite = spriteRenderer.sprite;
+    ItemController.ShowItemPopup(itemOnGround.item, spriteGameObject);
   }
 }

@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 /// Renders one Item in the UI.
 public class ItemController : MonoBehaviour {
-  private static GameObject ActionButtonPrefab;
   [NonSerialized]
   public Item item;
   public GameObject maturePlantBackground;
@@ -18,9 +17,6 @@ public class ItemController : MonoBehaviour {
   private TMPro.TMP_Text stacksText;
 
   void Start() {
-    if (ActionButtonPrefab == null) {
-      ActionButtonPrefab = Resources.Load<GameObject>("UI/Action Button");
-    }
     /// on click - toggle the popup for this item
     GetComponent<Button>().onClick.AddListener(HandleItemClicked);
 
@@ -52,7 +48,7 @@ public class ItemController : MonoBehaviour {
 
   public static void ShowItemPopup(Item item, GameObject image) {
     GameObject popup = null;
-    List<GameObject> buttons = null;
+    List<(string, Action)> buttons = null;
 
     Player player = GameModel.main.player;
     if (item.inventory == player.inventory || item.inventory == player.equipment) {
@@ -61,34 +57,36 @@ public class ItemController : MonoBehaviour {
       // put more fundamental actions later
       methods.Reverse();
 
-      buttons = methods.Select((method) => MakeButton(method.Name, () => {
-        // player.SetTasks(new GenericTask(player, (_) => {
-        //   method.Invoke(item, new object[] { player });
-        // }).Named(method.Name));
-        try {
-          method.Invoke(item, new object[] { player });
-        } catch (TargetInvocationException outer) {
-          if (outer.InnerException is CannotPerformActionException e) {
-            GameModel.main.turnManager.OnPlayerCannotPerform(e);
+      buttons = methods.Select((method) => {
+        Action action = () => {
+          // player.SetTasks(new GenericTask(player, (_) => {
+          //   method.Invoke(item, new object[] { player });
+          // }).Named(method.Name));
+          try {
+            method.Invoke(item, new object[] { player });
+          } catch (TargetInvocationException outer) {
+            if (outer.InnerException is CannotPerformActionException e) {
+              GameModel.main.turnManager.OnPlayerCannotPerform(e);
+            }
           }
-        }
-        PopupInteractionDone(popup);
-      })).ToList();
+        }; 
+        return (method.Name, action);
+      }).ToList();
 
       if (item is ItemSeed seed) {
-        buttons.Insert(0, MakeButton("Plant", () => PlantWithUI(seed, player, popup)));
+        buttons.Insert(0, ("Plant", () => PlantWithUI(seed, player, popup)));
       }
       if (item is ItemCharmBerry charmBerry) {
-        buttons.Insert(0, MakeButton("Charm", () => CharmWithUI(charmBerry, player, popup)));
+        buttons.Insert(0, ("Charm", () => CharmWithUI(charmBerry, player, popup)));
       }
       if (item is ItemKingshroomPowder spores) {
-        buttons.Insert(0, MakeButton("Use", () => PowderInfectWithUI(spores, player, popup)));
+        buttons.Insert(0, ("Use", () => PowderInfectWithUI(spores, player, popup)));
       }
       if (item is ItemBoombugCorpse boombugCorpse) {
-        buttons.Insert(0, MakeButton("Throw", () => ThrowBoombugCorpseWithUI(boombugCorpse, player, popup)));
+        buttons.Insert(0, ("Throw", () => ThrowBoombugCorpseWithUI(boombugCorpse, player, popup)));
       }
       if (item is ItemSnailShell snailShell) {
-        buttons.Insert(0, MakeButton("Throw", () => ThrowSnailShellWithUI(snailShell, player, popup)));
+        buttons.Insert(0, ("Throw", () => ThrowSnailShellWithUI(snailShell, player, popup)));
       }
     }
 
@@ -115,41 +113,16 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  private static GameObject MakeButton(string name, Action onClicked) {
-    var button = Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity);
-    button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
-    button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
-    return button;
-  }
-
-  private static void PopupInteractionDone(GameObject popup) {
-    Destroy(popup);
-  }
-
   public static async void PlantWithUI(ItemSeed seed, Player player, GameObject popup) {
-    popup.SetActive(false);
     try {
       var soil = await MapSelector.SelectUI(
         GameModel.main.currentFloor.tiles.Where(tile => tile is Soil && tile.isVisible && tile.CanBeOccupied()).Cast<Soil>()
       );
-      player.SetTasks(
-        new MoveNextToTargetTask(player, soil.pos),
-        new GenericPlayerTask(player, () => {
-          if (player.IsNextTo(soil)) {
-            seed.Plant(soil);
-          }
-        })
-      );
-      PopupInteractionDone(popup);
-    } catch (PlayerSelectCanceledException) {
-      // if player cancels selection, go back to before
-      OpenInventory();
-      popup.SetActive(true);
-    }
+      seed.MoveAndPlant(soil);
+    } catch (PlayerSelectCanceledException) {}
   }
 
   public static async void PowderInfectWithUI(ItemKingshroomPowder powder, Player player, GameObject popup) {
-    popup.SetActive(false);
     try {
       var enemy = await MapSelector.SelectUI(player.floor.AdjacentActors(player.pos).Where((a) => a != player));
       player.SetTasks(
@@ -158,16 +131,10 @@ public class ItemController : MonoBehaviour {
           powder.Infect(player, enemy);
         })
       );
-      PopupInteractionDone(popup);
-    } catch (PlayerSelectCanceledException) {
-      // if player cancels selection, go back to before
-      OpenInventory();
-      popup.SetActive(true);
-    }
+    } catch (PlayerSelectCanceledException) {}
   }
 
   public static async void CharmWithUI(ItemCharmBerry charmBerry, Player player, GameObject popup) {
-    popup.SetActive(false);
     try {
       var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor).Cast<AIActor>());
       player.SetTasks(
@@ -176,16 +143,10 @@ public class ItemController : MonoBehaviour {
           charmBerry.Charm(enemy);
         })
       );
-      PopupInteractionDone(popup);
-    } catch (PlayerSelectCanceledException) {
-      // if player cancels selection, go back to before
-      OpenInventory();
-      popup.SetActive(true);
-    }
+    } catch (PlayerSelectCanceledException) {}
   }
 
   public static async void ThrowBoombugCorpseWithUI(ItemBoombugCorpse corpse, Player player, GameObject popup) {
-    popup.SetActive(false);
     var floor = player.floor;
     try {
       var tile = await MapSelector.SelectUI(
@@ -199,15 +160,9 @@ public class ItemController : MonoBehaviour {
           corpse.Throw(player, tile.pos);
         })
       );
-      PopupInteractionDone(popup);
-    } catch (PlayerSelectCanceledException) {
-      // if player cancels selection, go back to before
-      OpenInventory();
-      popup.SetActive(true);
-    }
+    } catch (PlayerSelectCanceledException) {}
   }
   public static async void ThrowSnailShellWithUI(ItemSnailShell shell, Player player, GameObject popup) {
-    popup.SetActive(false);
     var floor = player.floor;
     try {
       var enemy = await MapSelector.SelectUI(player.ActorsInSight(Faction.Enemy).Concat(player.ActorsInSight(Faction.Neutral)));
@@ -216,20 +171,7 @@ public class ItemController : MonoBehaviour {
           shell.Throw(player, enemy);
         })
       );
-      PopupInteractionDone(popup);
-    } catch (PlayerSelectCanceledException) {
-      // if player cancels selection, go back to before
-      OpenInventory();
-      popup.SetActive(true);
-    }
-  }
-
-  public static void OpenInventory() {
-    /// suuuper hack
-    GameObject.Find("Canvas")
-      .GetComponentsInChildren<Transform>(true)
-      .First((c) => c.gameObject.name == "Inventory Container")
-      .gameObject.SetActive(true);
+    } catch (PlayerSelectCanceledException) {}
   }
 
   // Update is called once per frame

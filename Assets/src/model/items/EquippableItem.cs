@@ -18,6 +18,9 @@ public abstract class EquippableItem : Item {
     player.inventory.AddItem(this);
   }
 
+  public virtual void OnEquipped() {}
+  public virtual void OnUnequipped() {}
+
   public override List<MethodInfo> GetAvailableMethods(Player actor) {
     var methods = base.GetAvailableMethods(actor);
     if (actor.inventory.HasItem(this)) {

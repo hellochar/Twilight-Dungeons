@@ -107,7 +107,7 @@ public class Inventory : IEnumerable<Item> {
 
   private int? GetFirstFreeSlot() {
     var index = Array.FindIndex(items, 0, items.Length, (t) => t == null);
-    if (index < 0) {
+    if (index == -1) {
       return null;
     }
     return index;

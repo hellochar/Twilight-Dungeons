@@ -111,7 +111,7 @@ public class Signpost : Ground {
 
   public void ShowSignpost() {
     Popups.Create(
-      title: "Tips",
+      title: "Tip",
       category: "",
       /// hack - add a linebreak before to put some space
       info: "\n" + text,
@@ -193,7 +193,6 @@ public class Downstairs : Tile, IActorEnterHandler {
         var enemiesLeft = GameObject.Find("Enemies Left");
         var pulse = enemiesLeft.AddComponent<PulseAnimation>();
         pulse.pulseScale = 1.25f;
-        // Messages.Create("Clear level first.");
       }
     }
   }
@@ -207,12 +206,18 @@ public class Soil : Tile {
 
 [ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]
 [Serializable]
-public class Water : Tile {
+public class Water : Tile, IActorEnterHandler {
   public Water(Vector2Int pos) : base(pos) {
   }
 
-  public void Collect(Player player) {
-    player.water += MyRandom.Range(105, 120);
+  public void Collect() {
+    GameModel.main.player.water += MyRandom.Range(105, 120);
     floor.Put(new Ground(pos));
+  }
+
+  public void HandleActorEnter(Actor who) {
+    if (who == GameModel.main.player) {
+      Collect();
+    }
   }
 }

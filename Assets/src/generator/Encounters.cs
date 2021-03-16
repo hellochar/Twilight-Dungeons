@@ -222,7 +222,6 @@ public class Encounters {
   private static void AddPlantInCenter(Floor floor, Room room, System.Type type) {
     Tile tile = FloorUtils.TilesFromCenter(floor, room).FirstOrDefault();
     if (tile != null) {
-      floor.Put(new Soil(tile.pos));
       var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
       var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
       plant.GoNextStage();

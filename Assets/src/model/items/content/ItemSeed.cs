@@ -9,16 +9,28 @@ public class ItemSeed : Item {
     this.plantType = plantType;
   }
 
-  public void Plant(Soil soil) {
+  public void MoveAndPlant(Soil soil) {
     var model = GameModel.main;
     Player player = model.player;
     if (model.depth != 0) {
       throw new CannotPerformActionException("Plant on the home floor.");
     }
+    player.SetTasks(
+      new MoveNextToTargetTask(player, soil.pos),
+      new GenericPlayerTask(player, () => {
+        if (player.IsNextTo(soil)) {
+          Plant(soil);
+        }
+      })
+    );
+  }
+
+  public void Plant(Soil soil) {
+    var player = GameModel.main.player;
     if (player.water >= 100) {
       player.water -= 100;
       var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-      var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
+      var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
       soil.floor.Put(plant);
       Destroy();
     } else {

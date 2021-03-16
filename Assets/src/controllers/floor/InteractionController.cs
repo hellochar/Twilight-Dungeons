@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,35 +80,22 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     /// HACK destroy highlight once it's tapped
     var highlight = entityGameObject.transform.Find("Highlight(Clone)");
     if (highlight != null) {
-      Destroy(highlight.gameObject);
+      highlight.gameObject.AddComponent<FadeThenDestroy>();
     }
 
-    switch (entity) {
-      case Signpost s:
-        s.ShowSignpost();
-        break;
-      case Plant p:
-        Interact(entity.pos, null);
-        break;
-      case ItemOnGround i:
-        var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
-        var spriteGameObject = Instantiate(spritePrefab);
-        var image = spriteGameObject.GetComponentInChildren<Image>();
-        var sprite = ObjectInfo.GetSpriteFor(i) ?? floorController.gameObjectMap[i].gameObject.GetComponentInChildren<SpriteRenderer>()?.sprite;
-        image.sprite = sprite;
-        ItemController.ShowItemPopup(i.item, spriteGameObject);
-        break;
-      default:
-        ShowPopupFor(entity, entityGameObject);
-        break;
+    if (entityGameObject.TryGetComponent<ITapHandler>(out var handler)) {
+      handler.Tapped();
+      return;
     }
+
+    ShowPopupFor(entity, entityGameObject);
   }
 
   void ShowPopupFor(Entity entity, GameObject entityGameObject) {
     string description = entity.description + "\n\n";
     if (entity is Body b) {
       if (b is Actor a) {
-        description += Util.DescribeDamageSpread(a.BaseAttackDamage());
+        description += "Deals " + Util.DescribeDamageSpread(a.BaseAttackDamage());
       }
       description += $"Max HP: {b.maxHp}\n";
     }
@@ -118,13 +106,24 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     var sprite = ObjectInfo.GetSpriteFor(entity) ?? entityGameObject.GetComponentInChildren<SpriteRenderer>()?.sprite;
     image.sprite = sprite;
     image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
+    List<(string, Action)> buttons = null;
+    if (entity is Soil soil) {
+      buttons = new List<(string, Action)>();
+      var player = GameModel.main.player;
+      var seeds = player.inventory.Where((i) => i is ItemSeed).Cast<ItemSeed>();
+      foreach (ItemSeed seed in seeds) {
+        Action action = () => seed.MoveAndPlant(soil);
+        buttons.Add(("Plant " + Util.WithSpaces(seed.plantType.Name), action));
+      }
+    }
 
     Popups.Create(
       title: entity.displayName,
       category: GetCategoryForEntity(entity),
       info: description.Trim(),
       flavor: ObjectInfo.GetFlavorTextFor(entity),
-      sprite: spriteGameObject
+      sprite: spriteGameObject,
+      buttons: buttons
     );
     Destroy(spriteGameObject);
   }

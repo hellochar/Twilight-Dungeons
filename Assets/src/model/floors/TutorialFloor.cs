@@ -9,47 +9,42 @@ class TutorialFloor : Floor {
   public Guardleaf guardleaf;
   public List<Actor> jackals;
   public Bat bat;
+  public Astoria astoria;
+  public Room portRoom, blobRoom, dogsRoom, bushRoom, endRoom;
 
   public event Action OnTutorialEnded;
 
-  public TutorialFloor() : base(-1, 53, 9) {
-    /// things to explicitly teach:
-    /// DPad to move
-    /// move into things to attack
-    /// pick items up by moving over them
-    /// collect water
-    /// tap hold to learn about an item
-    /// game is turn based
-    /// game is all about tactical movement
-    Room startRoom = new Room(new Vector2Int(0, 0), new Vector2Int(5, 8));
-    Room oneBlob = new Room(new Vector2Int(10, 1), new Vector2Int(17, 7));
-    Room jackalsAndGuardleaf = new Room(new Vector2Int(21, 1), new Vector2Int(27, 7));
-    Room berryBushAndWater = new Room(new Vector2Int(31, 1), new Vector2Int(37, 7));
-    Room blobsAndBat = new Room(new Vector2Int(41, 1), new Vector2Int(51, 7));
+  public TutorialFloor() : base(-1, 73, 9) {
+    this.portRoom = new Room(new Vector2Int(0, 0), new Vector2Int(5, 8));
+    this.blobRoom = new Room(new Vector2Int(portRoom.max.x + 5, 1), new Vector2Int(portRoom.max.x + 5 + 11, 7));
+    this.dogsRoom = new Room(new Vector2Int(blobRoom.max.x + 4, 1), new Vector2Int(blobRoom.max.x + 4 + 14, 7));
+    this.bushRoom = new Room(new Vector2Int(dogsRoom.max.x + 4, 1), new Vector2Int(dogsRoom.max.x + 4 + 7, 7));
+    this.endRoom =  new Room(new Vector2Int(bushRoom.max.x + 4, 1), new Vector2Int(bushRoom.max.x + 4 + 10, 7));
 
     // fill with walls
     foreach (var p in EnumerateFloor()) {
       Put(new Wall(p));
     }
 
-    var cY = startRoom.center.y;
+    var cY = portRoom.center.y;
 
     // first room:
-    FloorUtils.PutGround(this, EnumerateRoom(startRoom));
-    FloorUtils.PutGround(this, EnumerateLine(startRoom.center, oneBlob.center));
+    FloorUtils.PutGround(this, EnumerateRoom(portRoom));
+    FloorUtils.PutGround(this, EnumerateLine(portRoom.center, blobRoom.center));
 
-    FloorUtils.PutGround(this, EnumerateRoom(oneBlob));
-    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, oneBlob.center, jackalsAndGuardleaf.center));
-    Put(new Wall(new Vector2Int(19, cY - 1)));
-    Put(new Wall(new Vector2Int(19, cY + 1)));
+    FloorUtils.PutGround(this, EnumerateRoom(blobRoom));
+    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, blobRoom.center, dogsRoom.center));
+    Put(new Wall(new Vector2Int(blobRoom.max.x + 1, cY - 1)));
+    Put(new Rubble(new Vector2Int(blobRoom.max.x + 1, cY)));
+    Put(new Wall(new Vector2Int(blobRoom.max.x + 1, cY + 1)));
 
-    FloorUtils.PutGround(this, EnumerateRoom(jackalsAndGuardleaf));
-    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, jackalsAndGuardleaf.center, berryBushAndWater.center));
+    FloorUtils.PutGround(this, EnumerateRoom(dogsRoom));
+    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, dogsRoom.center, bushRoom.center));
 
-    FloorUtils.PutGround(this, EnumerateRoom(berryBushAndWater));
-    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, berryBushAndWater.center, blobsAndBat.center));
+    FloorUtils.PutGround(this, EnumerateRoom(bushRoom));
+    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, bushRoom.center, endRoom.center));
 
-    FloorUtils.PutGround(this, EnumerateRoom(blobsAndBat));
+    FloorUtils.PutGround(this, EnumerateRoom(endRoom));
     FloorUtils.NaturalizeEdges(this);
 
     // add rubble in first room
@@ -61,38 +56,39 @@ class TutorialFloor : Floor {
 
     // second room - one blob
     this.blob = new Blob(new Vector2Int(15, 4));
-    Put(blob);
+    Put(this.blob);
 
     // third room - three jackals and guardleaf
     this.jackals = new List<Actor>();
-    var guardleafCenter = new Vector2Int(jackalsAndGuardleaf.min.x - 1, cY);
+    var guardleafCenter = new Vector2Int(dogsRoom.min.x - 1, cY);
     var jackalCenter = guardleafCenter + new Vector2Int(7, 0);
-    jackals.Add(new Jackal(jackalCenter));
-    jackals.Add(new Jackal(jackalCenter + Vector2Int.up));
-    jackals.Add(new Jackal(jackalCenter + Vector2Int.down));
-    PutAll(jackals);
+    this.jackals.Add(new Jackal(jackalCenter));
+    this.jackals.Add(new Jackal(jackalCenter + Vector2Int.up));
+    this.jackals.Add(new Jackal(jackalCenter + Vector2Int.down));
+    PutAll(this.jackals);
     Put(new Guardleaf(guardleafCenter));
     Put(new Guardleaf(guardleafCenter + Vector2Int.up));
     Put(new Guardleaf(guardleafCenter + Vector2Int.down));
     this.guardleaf = new Guardleaf(guardleafCenter + Vector2Int.left);
     Put(this.guardleaf);
     Put(new Guardleaf(guardleafCenter + Vector2Int.right));
+    Put(this.astoria = new Astoria(new Vector2Int(dogsRoom.max.x, cY + 1)));
 
     // fourth room - a berry bush
-    Put(new Soil(berryBushAndWater.center));
-    Put(new Soil(berryBushAndWater.center + new Vector2Int(3, 0)));
-    this.berryBush = new BerryBush(berryBushAndWater.center);
+    Put(new Soil(bushRoom.center));
+    Put(new Soil(bushRoom.center + new Vector2Int(3, 0)));
+    this.berryBush = new BerryBush(bushRoom.center);
     berryBush.GoNextStage();
     Put(berryBush);
-    Encounters.AddWater(this, berryBushAndWater);
+    Encounters.AddWater(this, bushRoom);
 
     // last room - two blobs and a bat, filled with soft grass
-    Encounters.FillWithSoftGrass(this, blobsAndBat);
-    Put(new Blob(blobsAndBat.center));
-    Put(new Blob(blobsAndBat.center + Vector2Int.up));
-    this.bat = new Bat(blobsAndBat.center + new Vector2Int(-1, -2));
+    Encounters.FillWithSoftGrass(this, endRoom);
+    Put(new Blob(endRoom.center));
+    Put(new Blob(endRoom.center + Vector2Int.up));
+    this.bat = new Bat(endRoom.center + new Vector2Int(-1, -2));
     Put(this.bat);
-    PlaceDownstairs(new Vector2Int(blobsAndBat.max.x, cY));
+    PlaceDownstairs(new Vector2Int(endRoom.max.x, cY));
 
     FloorUtils.TidyUpAroundStairs(this);
   }

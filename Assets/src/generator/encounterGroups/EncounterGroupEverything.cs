@@ -42,8 +42,6 @@ public static class EncounterGroupEverything {
       Spice = new WeightedRandomBag<Encounter> {
         { 5f, Empty },
 
-        { 1f, AddFruitingBodies },
-
         { 0.5f, AFewBlobs },
         { 0.5f, JackalPile },
         { 0.5f, AFewSnails },
@@ -59,6 +57,7 @@ public static class EncounterGroupEverything {
         { 0.1f, AddSpiders },
         { 0.1f, AddGuardleaf },
         { 0.1f, AddSpore },
+        { 0.1f, AddFruitingBodies },
 
         { 0.05f, AddEveningBells },
         { 0.05f, AddPoisonmoss },

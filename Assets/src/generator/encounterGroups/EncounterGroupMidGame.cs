@@ -40,8 +40,6 @@ public static class EncounterGroupMidGame {
       Spice = new WeightedRandomBag<Encounter> {
         { 3f, Empty },
 
-        { 1f, AddFruitingBodies },
-
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
         { 0.25f, AddViolets },
@@ -56,7 +54,7 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddScorpions },
         { 0.2f, AddWildekins },
         { 0.2f, AddCrabs },
-        //// adding extra parasites is just fucking annoying tbh
+        { 0.2f, AddFruitingBodies },
         { 0.05f, AddParasite8x },
 
         { 0.1f, AddHydra },

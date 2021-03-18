@@ -34,11 +34,11 @@ public static class EncounterGroupEarlyGame {
       Spice = new WeightedRandomBag<Encounter> {
         { 5f, Empty },
 
-        { 1f, AddFruitingBodies },
         { 0.5f, AFewBlobs },
         { 0.5f, JackalPile },
         { 0.5f, AFewSnails },
 
+        { 0.25f, AddFruitingBodies },
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },
 

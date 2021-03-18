@@ -18,7 +18,7 @@ public static class EncounterGroupMidGame {
         { 0.75f, AddViolets },
         { 0.75f, AddTunnelroot },
 
-        { 0.5f, Twice(AddHangingVines) },
+        { 0.5f, AddHangingVines2x },
         { 0.5f, AddDeathbloom },
         { 0.5f, AddBrambles },
         { 0.5f, AddPoisonmoss },
@@ -28,11 +28,11 @@ public static class EncounterGroupMidGame {
 
         { 0.3f, AddEveningBells },
 
-        { 0.2f, Twice(AddWebs) },
-        { 0.2f, Twice(AddGuardleaf) },
+        { 0.2f, AddWebs2x },
+        { 0.2f, AddGuardleaf2x },
 
-        { 0.1f, Twice(Twice(AddSoftGrass)) },
-        { 0.1f, Twice(Twice(AddBladegrass)) },
+        { 0.1f, AddSoftGrass4x },
+        { 0.1f, AddBladegrass4x },
 
         // { 0.0f, AddAgave },
       },
@@ -44,11 +44,10 @@ public static class EncounterGroupMidGame {
 
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
-        { 0.25f, AddTunnelroot },
         { 0.25f, AddViolets },
         { 0.25f, AddBrambles },
-        { 0.25f, Twice(AddTunnelroot) },
-        { 0.25f, Twice(Twice(ScatteredBoombugs)) },
+        { 0.25f, AddTunnelroot4x },
+        { 0.25f, ScatteredBoombugs4x },
 
         { 0.2f, AddWater },
 
@@ -58,15 +57,15 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddWildekins },
         { 0.2f, AddCrabs },
         //// adding extra parasites is just fucking annoying tbh
-        // { 0.05f, AddParasite },
+        { 0.05f, AddParasite8x },
 
         { 0.1f, AddHydra },
         { 0.1f, AddGrasper },
         { 0.1f, AddDeathbloom },
         { 0.1f, AddSpore },
 
-        { 0.1f, Twice(Twice(Twice(JackalPile))) },
-        { 0.1f, Twice(Twice(Twice(AFewSnails))) },
+        // { 0.1f, Twice(Twice(Twice(JackalPile))) },
+        // { 0.1f, Twice(Twice(Twice(AFewSnails))) },
       },
     };
   }

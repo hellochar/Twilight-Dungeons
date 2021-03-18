@@ -11,6 +11,7 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   private class Entry {
     public float weight;
     public T item;
+    public override string ToString() => $"{item}: {weight}";
   }
 
   private List<Entry> entries = new List<Entry>();
@@ -47,7 +48,7 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   private float GetAccumulatedWeight() => entries.Select(e => e.weight).Sum();
 
   /// Get an item and then mutate this bag such that the item has v% less weight
-  internal T GetRandomAndDiscount(float reduceChanceBy = 0.25f) {
+  internal T GetRandomAndDiscount(float reduceChanceBy = 0.3f) {
     var item = GetRandom();
 
     var currentWeight = GetWeight(item);
@@ -66,6 +67,10 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     var restWeight = accumulatedWeight - currentWeight;
     var newWeight = newChance * restWeight / (1f - newChance);
 
+    // this can happen if there's only 1 item
+    if (newWeight == 0) {
+      newWeight = currentWeight;
+    }
     SetWeight(item, newWeight);
     return item;
   }
@@ -97,4 +102,6 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   IEnumerator IEnumerable.GetEnumerator() {
     return this.GetEnumerator();
   }
+
+  public override string ToString() => $"[WeightedRandomBag {string.Join(", ", entries)}]";
 }

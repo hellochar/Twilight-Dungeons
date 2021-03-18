@@ -19,6 +19,7 @@ public static class Serializer {
     var bf = GetBinaryFormatter();
     using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
       var model = (GameModel) bf.Deserialize(file);
+      Debug.Log(model.generator.EncounterGroup.Mobs);
       file.Close();
       return model;
     }
@@ -32,6 +33,7 @@ public static class Serializer {
 
   public static bool SaveMainToFile() {
     var model = GameModel.main;
+    Debug.Log(model.generator.EncounterGroup.Mobs);
     if (model.home is TutorialFloor) {
       // don't save tutorial
       return true;
@@ -46,6 +48,21 @@ public static class Serializer {
       Debug.Log($"Saved {path}");
       file.Close();
       return true;
+    }
+  }
+
+  public static T SerializeTest<T>(T item) {
+    var bf = GetBinaryFormatter();
+    var path = UnityEngine.Windows.Directory.temporaryFolder + "/test.dat";
+    using(FileStream file = File.Create(path)) {
+      bf.Serialize(file, item);
+      Debug.Log($"Saved {path}");
+    }
+
+    using (FileStream file = File.Open(path, FileMode.Open)) {
+      var model = (T) bf.Deserialize(file);
+      file.Close();
+      return model;
     }
   }
 

@@ -16,7 +16,7 @@ public class GameModel {
   public int depth = 0;
   public float time = 0;
   public List<int> floorSeeds;
-  private FloorGenerator generator;
+  public FloorGenerator generator;
 
   [NonSerialized] /// lazy instantiation will take care of this
   private TurnManager _turnManager;
@@ -56,7 +56,7 @@ public class GameModel {
   public GameModel() {
     this.seed = new System.Random().Next();
     #if UNITY_EDITOR
-    // this.seed = 0x3f7e08b;
+    this.seed = 0x3f7e08b;
     #endif
   }
 

@@ -7,7 +7,6 @@ public static class MyRandom {
   public static float value => (float) generator.NextDouble();
   private static Random generator = new Random();
   public static void SetSeed(int seed) {
-    Debug.Log("set seed to " + seed.ToString("X"));
     generator = new Random(seed);
   }
 

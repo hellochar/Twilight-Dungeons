@@ -45,13 +45,13 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 11951410
+    totalSpriteSurfaceArea: 11691570
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 40e68100d86f0c34ea0d7aea9966ff25, type: 3}
+  - {fileID: 5443154289164646723, guid: 40e68100d86f0c34ea0d7aea9966ff25, type: 3}
   - {fileID: 21300000, guid: 3c3cf210ca4c9344fac5f56eb3c57f5e, type: 3}
   - {fileID: 21300000, guid: 9a0cbb104258f8b43827164363e96190, type: 3}
   - {fileID: 21300000, guid: 98a7e8608a1c1424881ada22e392c9a5, type: 3}
@@ -69,6 +69,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 45ad99319893c174b9528e9d30062aa6, type: 3}
   - {fileID: 21300000, guid: 455492419490f7740b106f64e769bcf4, type: 3}
   - {fileID: 21300000, guid: 63aa1441b050666429e8b695d76f0f20, type: 3}
+  - {fileID: 21300000, guid: 14b12a415571cba47a4a28386e6f6899, type: 3}
   - {fileID: 21300000, guid: bab8bb41f981cd649a1e50040d3b29da, type: 3}
   - {fileID: 21300000, guid: 94ec90513cc275148a5d11caf062a4da, type: 3}
   - {fileID: 21300000, guid: 17da3c51170850f41b3d3ddeaeb45236, type: 3}
@@ -1825,7 +1826,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ccd511f3395cc5742bd0c45b9afb2c7c, type: 3}
   - {fileID: 21300000, guid: 423675349ef54b54ea991dfa899a486a, type: 3}
   - {fileID: 21300000, guid: 436f9534bacc2f5458e5415e478a9771, type: 3}
-  - {fileID: 21300000, guid: f1de2e44133ace9459b37fc194a10e16, type: 3}
   - {fileID: 6733317360203888005, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -125294812525453898, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -3032536096966241093, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -8047,7 +8047,7 @@ SpriteAtlas:
   - {fileID: 4047403940040452729, guid: 4fb45dcf9d6978e498a1bfcb6930cfab, type: 3}
   - {fileID: 21300000, guid: f93893df1edf6bb42ab322c678a28447, type: 3}
   m_PackedSpriteNamesToIndex:
-  - 1bit 16px patterns and tiles
+  - border-vines-vectorpixelstar
   - slimed
   - background-pattern-leaves
   - grasper
@@ -8065,6 +8065,7 @@ SpriteAtlas:
   - frizzlefen
   - stiffarm
   - flower-buds
+  - icon
   - poisoned-status
   - 1-bit 16px icons part-1 outlines
   - TornadoStatic_96x96
@@ -9821,7 +9822,6 @@ SpriteAtlas:
   - kingshroom
   - sign
   - sleeping-bag
-  - 1bit 16px patterns and tiles - outlines
   - tumorous-growth
   - monochrome-thick-path
   - monochrome-blob

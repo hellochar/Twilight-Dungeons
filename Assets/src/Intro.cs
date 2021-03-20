@@ -39,7 +39,12 @@ public class Intro : MonoBehaviour {
         GoToGameScene();
       } catch(Exception e) {
         /// TODO report to error server
-        var popup = Popups.Create("Error Creating Game", e.Message, "", null);
+        var popup = Popups.Create(
+          title: "Error Creating Game",
+          category: null,
+          info: "Sorry! Please screenshot this and send it to hellocharlien@hotmail.com.",
+          flavor: null,
+          errorText: e.Message);
         var controller = popup.GetComponent<PopupController>();
         controller.OnClose += () => SceneManager.LoadSceneAsync("Scenes/Intro");
       }
@@ -55,7 +60,12 @@ public class Intro : MonoBehaviour {
       });
       GoToGameScene();
     } catch (Exception e) {
-      var popup = Popups.Create("Could Not Load", e.Message, "", null);
+        var popup = Popups.Create(
+          title: "Could Not Load",
+          category: null,
+          info: "Sorry! Please screenshot this and send it to hellocharlien@hotmail.com.",
+          flavor: null,
+          errorText: e.Message);
       var controller = popup.GetComponent<PopupController>();
       controller.OnClose += () => SceneManager.LoadSceneAsync("Scenes/Intro");
     }

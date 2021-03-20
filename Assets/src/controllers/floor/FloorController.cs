@@ -18,23 +18,27 @@ public class FloorController : MonoBehaviour {
   public static GameObject GetEntityPrefab(Entity e) {
     var type = e.GetType();
     if (!EntityPrefabs.ContainsKey(type)) {
-      string category = "";
-      switch (e) {
-        case Tile t:
-          category = "Tiles/";
-          break;
-        case Grass g:
-          category = "Grasses/";
-          break;
-        case Plant p:
-          category = "Plants/";
-          break;
-        case Body b:
-          category = "Actors/";
-          break;
+      if (e is Player) {
+        EntityPrefabs.Add(type, Resources.Load<GameObject>("Player"));
+      } else {
+        string category = "";
+        switch (e) {
+          case Tile t:
+            category = "Tiles/";
+            break;
+          case Grass g:
+            category = "Grasses/";
+            break;
+          case Plant p:
+            category = "Plants/";
+            break;
+          case Body b:
+            category = "Actors/";
+            break;
+        }
+        string resourcePath = $"Entities/{category}{type.Name}";
+        EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));
       }
-      string resourcePath = $"Entities/{category}{type.Name}";
-      EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));
     }
     return EntityPrefabs[type];
   }

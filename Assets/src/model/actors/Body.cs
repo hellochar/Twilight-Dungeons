@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface IBodyMoveHandler {
@@ -54,6 +56,7 @@ public class Body : Entity {
   public int hp { get; protected set; }
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
+  public override IEnumerable<object> MyModifiers => base.MyModifiers.Append(this.grass?.BodyModifier);
 
   public Body(Vector2Int pos) : base() {
     this.pos = pos;

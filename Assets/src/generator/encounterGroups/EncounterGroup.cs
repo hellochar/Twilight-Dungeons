@@ -30,6 +30,7 @@ public class EncounterGroup {
   }
 }
 
+[System.Serializable]
 public class EncounterGroupShared : EncounterGroup {
   public EncounterGroupShared() {
     Walls = new WeightedRandomBag<Encounter> {

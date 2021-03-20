@@ -196,14 +196,18 @@ public class Floor {
     return GetAdjacentTiles(pos).Select(x => x.actor).Where(x => x != null);
   }
 
-  internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
-    var actors = new List<Actor>();
+  internal List<Body> BodiesInCircle(Vector2Int center, int radius) {
+    var bodies = new List<Body>();
     foreach (var pos in EnumerateCircle(center, radius)) {
-      if (tiles[pos] != null && tiles[pos].actor != null) {
-        actors.Add(tiles[pos].actor);
+      if (tiles[pos] != null && tiles[pos].body != null) {
+        bodies.Add(tiles[pos].body);
       }
     }
-    return actors;
+    return bodies;
+  }
+
+  internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
+    return BodiesInCircle(center, radius).Where(b => b is Actor).Cast<Actor>().ToList();
   }
 
   /// returns a list of adjacent positions that form the path, or an empty list if no path is found

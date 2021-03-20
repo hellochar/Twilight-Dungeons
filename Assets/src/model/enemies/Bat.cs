@@ -33,7 +33,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
     base.TaskChanged();
   }
 
-  /// bats hide in corners and occasionally attack the closest target
+  /// bats chase and attack their closest target
   protected override ActorTask GetNextTask() {
     var target = SelectTarget();
     if (target == null) {

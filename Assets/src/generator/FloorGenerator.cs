@@ -109,7 +109,7 @@ public class FloorGenerator {
     if (Tips.tipMap.ContainsKey(floor.depth)) {
       /// put it near the upstairs
       var signpostSearchStartPos = floor.upstairs?.landing ?? new Vector2Int(3, floor.height / 2);
-      var signpostPos = floor.BreadthFirstSearch(signpostSearchStartPos, (tile) => true).Skip(9).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
+      var signpostPos = floor.BreadthFirstSearch(signpostSearchStartPos, (tile) => true).Skip(5).Where(t => t is Ground && t.CanBeOccupied() && t.grass == null).FirstOrDefault();
       if (signpostPos != null) {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
       }
@@ -119,6 +119,7 @@ public class FloorGenerator {
     }
 
     #if UNITY_EDITOR
+    Encounters.AddNecroroot(floor, floor.root);
     #endif
     return floor;
   }
@@ -279,6 +280,7 @@ public class FloorGenerator {
     }
 
     FloorUtils.TidyUpAroundStairs(floor);
+    floor.root = room0;
 
     return floor;
   }

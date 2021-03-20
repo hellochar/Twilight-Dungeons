@@ -2,9 +2,9 @@ using System;
 
 [System.Serializable]
 internal class ChaseDynamicTargetTask : ChaseTargetTask {
-  private Func<Actor> targetDecider;
+  private Func<Body> targetDecider;
 
-  public ChaseDynamicTargetTask(Actor actor, Func<Actor> targetDecider) : base(actor, targetDecider()) {
+  public ChaseDynamicTargetTask(Actor actor, Func<Body> targetDecider) : base(actor, targetDecider()) {
     this.targetDecider = targetDecider;
   }
 

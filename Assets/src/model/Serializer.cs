@@ -19,7 +19,6 @@ public static class Serializer {
     var bf = GetBinaryFormatter();
     using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
       var model = (GameModel) bf.Deserialize(file);
-      Debug.Log(model.generator.EncounterGroup.Mobs);
       file.Close();
       return model;
     }
@@ -33,7 +32,6 @@ public static class Serializer {
 
   public static bool SaveMainToFile() {
     var model = GameModel.main;
-    Debug.Log(model.generator.EncounterGroup.Mobs);
     if (model.home is TutorialFloor) {
       // don't save tutorial
       return true;

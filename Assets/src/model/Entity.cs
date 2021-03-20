@@ -91,25 +91,13 @@ public abstract class Entity : IModifierProvider {
     }
   }
 
-  // public void UnregisterTimedEvents() {
-  //   foreach (var timedEvent in timedEvents) {
-  //     GameModel.main.turnManager.UnregisterTimedEvent(timedEvent);
-  //   }
-  // }
-
-  // public void RegisterTimedEvents() {
-  //   foreach (var timedEvent in timedEvents) {
-  //     GameModel.main.turnManager.RegisterTimedEvent(timedEvent);
-  //   }
-  // }
-
   /// Take great care - timed events are serialized by the method name as a string; anonymous delegates
   /// names may change without warning. Code renames can also cause save corruption.
   public TimedEvent AddTimedEvent(float time, Action action) {
     GameModel model = GameModel.main;
     var evt = new TimedEvent(this, model.time + time, action);
     timedEvents.Add(evt);
-    model.turnManager.RegisterTimedEvent(evt);
+    model.timedEvents.Register(evt);
     return evt;
   }
 

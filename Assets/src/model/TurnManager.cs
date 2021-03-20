@@ -5,30 +5,24 @@ using System.Linq;
 using Priority_Queue;
 using UnityEngine;
 
+[Serializable]
 public class TurnManager {
   // private SimplePriorityQueue<Actor, float> queue = new SimplePriorityQueue<Actor, float>();
   private GameModel model { get; }
+  [field:NonSerialized] /// controller only
   public event Action OnPlayersChoice;
+  [field:NonSerialized] /// controller only
   public event Action<ISteppable> OnStep;
+  [field:NonSerialized] /// controller only
   public event Action OnTimePassed;
+  [field:NonSerialized] /// controller only
   public Action<CannotPerformActionException> OnPlayerCannotPerform = delegate {};
   public ISteppable activeEntity;
   public bool forceStaggerThisTurn = false;
-  private SimplePriorityQueue<TimedEvent, float> timedEvents = new SimplePriorityQueue<TimedEvent, float>();
   [NonSerialized]
   public Exception latestException;
   public TurnManager(GameModel model) {
     this.model = model;
-  }
-
-  /// technically this is just a cache of all entities' timedEvents
-  public void RegisterTimedEvent(TimedEvent evt) {
-    timedEvents.Enqueue(evt, evt.time);
-  }
-
-  public void UnregisterTimedEvent(TimedEvent evt) {
-    evt.UnregisterFromOwner();
-    timedEvents.TryRemove(evt);
   }
 
   /// The actor whose turn it is
@@ -108,19 +102,15 @@ public class TurnManager {
         OnTimePassed?.Invoke();
 
         // trigger any events that need to happen
-        while (timedEvents.Count > 0) {
-          var first = timedEvents.First;
+        for(var evt = model.timedEvents.Next(); evt != null && evt.time <= model.time; evt = model.timedEvents.Next()) {
           /// if the timed event is registered for an inactive floor
           /// (aka a depth 3 entity, when we're on depth 4) - just remove it
-          if (first.owner.floor != model.currentFloor) {
-            UnregisterTimedEvent(first);
+          if (evt.owner.floor != model.currentFloor) {
+            model.timedEvents.Unregister(evt);
             continue;
           }
-          if (first.time > model.time) {
-            break;
-          }
-          first.action();
-          UnregisterTimedEvent(first);
+          evt.action();
+          model.timedEvents.Unregister(evt);
           model.DrainEventQueue();
         }
       }

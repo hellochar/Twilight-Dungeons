@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Priority_Queue;
 using UnityEngine.Events;
 using System.Collections;
 using System.Runtime.Serialization;
@@ -18,7 +17,6 @@ public class GameModel {
   public List<int> floorSeeds;
   public FloorGenerator generator;
 
-  [NonSerialized] /// lazy instantiation will take care of this
   private TurnManager _turnManager;
   public TurnManager turnManager {
     get {
@@ -37,6 +35,7 @@ public class GameModel {
   [NonSerialized] /// This should be empty on save
   private List<Action> eventQueue = new List<Action>();
 
+  public TimedEventManager timedEvents = new TimedEventManager();
   public static GameModel main;
 
   /// Also sets GameModel.main.

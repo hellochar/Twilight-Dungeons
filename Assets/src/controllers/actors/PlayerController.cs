@@ -20,7 +20,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   private void HandleChangeWater(int delta) {
     /// ignore passive water lost
-    if (Math.Abs(delta) == 1) {
+    if (Math.Abs(delta) <= 1) {
       return;
     }
     AudioClipStore.main.playerChangeWater.PlayAtPoint(transform.position);

@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(spriteName: "fruitingbody", description: "Infects you with random equipment on your body.", flavorText: "Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.")]
+[ObjectInfo(spriteName: "fruitingbody", description: "Infects you with random equipment on your body.\nIf you have all 5 infections, heal 1 HP.", flavorText: "Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.")]
 public class FruitingBody : AIActor, INoTurnDelay {
   [field:NonSerialized] /// controller only
   public event Action OnSprayed;
@@ -25,7 +26,13 @@ public class FruitingBody : AIActor, INoTurnDelay {
     }
   }
 
-  static Type[] infectionTypes = new Type[] { typeof(ItemTanglefoot), typeof(ItemStiffarm), typeof(ItemBulbousSkin), typeof(ItemThirdEye) };
+  static Dictionary<EquipmentSlot, Type> InfectionTypes = new Dictionary<EquipmentSlot, Type>() {
+    [EquipmentSlot.Footwear] = typeof(ItemTanglefoot),
+    [EquipmentSlot.Weapon] = typeof(ItemStiffarm),
+    [EquipmentSlot.Armor] = typeof(ItemBulbousSkin),
+    [EquipmentSlot.Headwear] = typeof(ItemThirdEye),
+    [EquipmentSlot.Offhand] = typeof(ItemScalySkin)
+  };
 
   private void Spray() {
     cooldown = 10;
@@ -33,20 +40,29 @@ public class FruitingBody : AIActor, INoTurnDelay {
     /// apply a random infection to all nearby creatures
     var player = GameModel.main.player;
     if (player.IsNextTo(this)) {
-      var infectionType = Util.RandomPick(infectionTypes);
-      var constructor = infectionType.GetConstructor(new Type[0]);
-      EquippableItem infection = (EquippableItem) constructor.Invoke(new object[0]);
-
-      var existingEquipment = player.equipment[infection.slot];
-      if (existingEquipment != null && !(existingEquipment is ItemHands)) {
-        player.equipment.RemoveItem(existingEquipment);
-        if (!(existingEquipment is ISticky)) {
-          /// drop it onto the ground
-          floor.Put(new ItemOnGround(player.pos, existingEquipment));
-        }
+      var uninfectedSlots = InfectionTypes.Keys.Where((slot) => player.equipment[slot]?.GetType() != InfectionTypes[slot]);
+      if (uninfectedSlots.Count() == 0) {
+        player.Heal(1);
+      } else {
+        Infect(uninfectedSlots, player);
       }
-      player.equipment.AddItem(infection);
     }
+  }
+
+  private void Infect(IEnumerable<EquipmentSlot> uninfectedSlots, Player player) {
+    var infectionType = InfectionTypes[Util.RandomPick(uninfectedSlots)];
+    var constructor = infectionType.GetConstructor(new Type[0]);
+    EquippableItem infection = (EquippableItem) constructor.Invoke(new object[0]);
+
+    var existingEquipment = player.equipment[infection.slot];
+    if (existingEquipment != null && !(existingEquipment is ItemHands)) {
+      player.equipment.RemoveItem(existingEquipment);
+      if (!(existingEquipment is ISticky)) {
+        /// drop it onto the ground
+        floor.Put(new ItemOnGround(player.pos, existingEquipment));
+      }
+    }
+    player.equipment.AddItem(infection);
   }
 }
 
@@ -134,7 +150,7 @@ class ItemBulbousSkin : EquippableItem, IDurable, ISticky {
 [Serializable]
 [ObjectInfo("third-eye")]
 class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler {
-  internal override string GetStats() => "Lose half your vision range.\nYou can see creatures' exact HP.";
+  internal override string GetStats() => "You're infected with a Third Eye!\nLose half your vision range.\nYou can see creatures' exact HP.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
   public int maxDurability => 200;
@@ -156,6 +172,29 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler 
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     this.ReduceDurability();
+  }
+}
+
+[Serializable]
+[ObjectInfo("scaly-skin")]
+class ItemScalySkin : EquippableItem, ISticky, IDurable, IAttackDamageTakenModifier, IActionPerformedHandler {
+  internal override string GetStats() => "You're infected with Scaly Skin!\nBlock 1 damage.\nLose 1 water per turn.";
+
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
+  public int durability { get; set; }
+  public int maxDurability => 20;
+
+  public ItemScalySkin() {
+    durability = maxDurability;
+  }
+
+  public int Modify(int input) {
+    this.ReduceDurability();
+    return input - 1;
+  }
+
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    player.water = Math.Max(player.water - 1, 0);
   }
 }
 

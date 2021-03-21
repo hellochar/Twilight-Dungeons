@@ -70,13 +70,14 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
 [Serializable]
 [ObjectInfo("bat-tooth", "Sharp with a little hole on the end to extract blood.")]
 internal class ItemBatTooth : EquippableItem, IWeapon, IDealAttackDamageHandler {
+  internal override string GetStats() => "Heals HP equal to damage dealt.\nConsumed on use.";
   public ItemBatTooth() {
     durability = maxDurability;
   }
 
   public void HandleDealAttackDamage(int dmg, Body target) {
     if (target is Actor && dmg > 0) {
-      GameModel.main.player.Heal(1);
+      GameModel.main.player.Heal(dmg);
     }
     Destroy();
   }
@@ -87,6 +88,4 @@ internal class ItemBatTooth : EquippableItem, IWeapon, IDealAttackDamageHandler 
 
   public int maxDurability => 1;
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-
-  internal override string GetStats() => "Heal 1 HP when this deals damage.\nConsumed on use.";
 }

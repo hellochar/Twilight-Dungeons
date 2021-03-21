@@ -153,7 +153,7 @@ public class ItemController : MonoBehaviour {
         floor
           .EnumerateCircle(player.pos, player.visibilityRange)
           .Select(p => floor.tiles[p])
-          .Where((p) => p.CanBeOccupied() && p.isVisible)
+          .Where((p) => p.CanBeOccupied() && p.visibility == TileVisiblity.Visible)
       );
       player.SetTasks(
         new GenericPlayerTask(player, () => {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,9 +6,12 @@ using UnityEngine;
 [ObjectInfo(description: "Only moves horizontally.\nAttacks anything in its path.", flavorText: "")]
 public class Crab : AIActor {
   public override float turnPriority => 40;
-  private Vector2Int direction = new Vector2Int(MyRandom.value < 0.5 ? -1 : 1, 0);
+  public int dx { get; private set; }
+  [field:NonSerialized] /// controller only
+  public event Action OnDirectionChanged;
 
   public Crab(Vector2Int pos) : base(pos) {
+    dx = MyRandom.value < 0.5 ? -1 : 1;
     faction = Faction.Enemy;
     hp = baseMaxHp = 7;
   }
@@ -17,11 +21,12 @@ public class Crab : AIActor {
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
 
-    var nextPos = pos + direction;
+    var nextPos = pos + new Vector2Int(dx, 0);
     var nextTile = floor.tiles[nextPos];
     if (nextTile.BasePathfindingWeight() == 0 || nextTile.actor is Crab) {
       // can't walk there; change directions
-      direction.x = -1 * direction.x;
+      dx *= -1;
+      OnDirectionChanged?.Invoke();
       return new WaitTask(this, 1);
     } else {
       if (nextTile.body == null) {

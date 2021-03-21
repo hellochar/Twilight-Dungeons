@@ -41,7 +41,7 @@ public static class Transitions {
     sr.sprite = sprites[sprites.Length - 1];
   }
 
-  public static IEnumerator AnimateLinear(float duration, Action<float> callback) {
+  public static IEnumerator AnimateLinear(float duration, Action<float> callback, Action post = null) {
     var start = Time.time;
     var t = 0f;
     do {
@@ -50,5 +50,6 @@ public static class Transitions {
       yield return new WaitForEndOfFrame();
     } while (t < 1);
     callback(1);
+    post?.Invoke();
   }
 }

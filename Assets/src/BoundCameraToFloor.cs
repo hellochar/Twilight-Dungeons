@@ -47,6 +47,9 @@ public class BoundCameraToFloor : MonoBehaviour {
       newY = bounds.center.y;
     }
     this.transform.position = new Vector3(newX, newY, this.transform.position.z);
+    /// TODO do a lerp once we do a force/velocity based approach
+    // var newPosition = new Vector3(newX, newY, this.transform.position.z);
+    // this.transform.position = Vector3.Lerp(transform.position, newPosition, 10f * Time.deltaTime);
   }
 
   public static Bounds OrthographicBounds(Camera camera) {
@@ -57,5 +60,4 @@ public class BoundCameraToFloor : MonoBehaviour {
         new Vector3(cameraHeight * screenAspect, cameraHeight, 0));
     return bounds;
   }
-
 }

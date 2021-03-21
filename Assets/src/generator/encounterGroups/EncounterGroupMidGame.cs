@@ -22,8 +22,8 @@ public static class EncounterGroupMidGame {
         { 0.5f, AddDeathbloom },
         { 0.5f, AddBrambles },
         { 0.5f, AddPoisonmoss },
+        { 0.5f, AddSpore },
 
-        { 0.4f, AddSpore },
         { 0.4f, ScatteredBoombugs },
 
         { 0.3f, AddEveningBells },

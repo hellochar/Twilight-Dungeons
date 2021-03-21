@@ -178,23 +178,30 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler 
 [Serializable]
 [ObjectInfo("scaly-skin")]
 class ItemScalySkin : EquippableItem, ISticky, IDurable, IAttackDamageTakenModifier, IActionPerformedHandler {
-  internal override string GetStats() => "You're infected with Scaly Skin!\nBlock 1 damage.\nLose 1 water per turn.";
+  internal override string GetStats() => "You're infected with Scaly Skin!\nBlock 1 damage.\nLose 10 water every 25 turns.";
 
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
   public int durability { get; set; }
   public int maxDurability => 20;
+  private float timeLostWater;
 
   public ItemScalySkin() {
     durability = maxDurability;
+    timeLostWater = GameModel.main.time;
   }
 
   public int Modify(int input) {
-    this.ReduceDurability();
+    if (input > 0) {
+      this.ReduceDurability();
+    }
     return input - 1;
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    player.water = Math.Max(player.water - 1, 0);
+    if (GameModel.main.time - timeLostWater >= 25) {
+      timeLostWater = GameModel.main.time;
+      player.water = Math.Max(player.water - 10, 0);
+    }
   }
 }
 

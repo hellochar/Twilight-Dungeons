@@ -35,8 +35,8 @@ public class FloorGenerator {
       () => generateFloor0(0),
       () => generateSingleRoomFloor(1, 11, 11),
       () => generateSingleRoomFloor(2, 10, 10, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(3, 9, 9, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(4, 11, 11, 1, 1, true),
+      () => generateSingleRoomFloor(3, 9, 9),
+      () => generateSingleRoomFloor(4, 11, 11, 1, 1, true, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(5, 15, 11, 2),
       () => generateSingleRoomFloor(6, 13, 11, 2, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(7, 11, 11, 2),
@@ -57,7 +57,7 @@ public class FloorGenerator {
       () => generateMultiRoomFloor(21, 30, 12, 10),
       () => generateMultiRoomFloor(22, 30, 20, 15),
       () => generateMultiRoomFloor(23, 40, 20, 20),
-      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(0.9f), Encounters.AddWater, Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
+      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(0.9f), Encounters.AddWater, Encounters.AddWater, Encounters.FourAstoriasInCorner),
       // () => generateSporeColonyBossFloor(24),
       () => generateSingleRoomFloor(25, 11, 11, 1, 2, true),
       () => generateMultiRoomFloor(26, 20, 13, 5, true),
@@ -226,7 +226,7 @@ public class FloorGenerator {
     AddMaturePlant(Util.RandomPick(types));
 
     Encounters.AddWater(floor, room0);
-    Encounters.ThreeAstoriasInCorner(floor, room0);
+    Encounters.FourAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
     floor.depth = 20;

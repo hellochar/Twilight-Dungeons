@@ -22,8 +22,8 @@ public static class EncounterGroupEarlyGame {
         { 0.5f, AddDeathbloom },
 
         { 0.4f, AddWebs },
+        { 0.4f, AddSpore },
 
-        { 0.35f, AddSpore },
         { 0.35f, AddAgave },
         { 0.35f, AddHangingVines },
 

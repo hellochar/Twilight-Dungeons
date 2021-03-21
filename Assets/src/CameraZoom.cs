@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraZoom : MonoBehaviour {
   public static float lastZoomTime;
   public static bool IsZoomGuardActive => Time.time - lastZoomTime < 0.5f;
+  public float wantedZoom = 5;
   public float minZoom = 3;
   public float maxZoom = 15;
   // Start is called before the first frame update
@@ -44,7 +45,16 @@ public class CameraZoom : MonoBehaviour {
     lastZoomTime = Time.time;
     var camera = Camera.main;
     var scalar = Mathf.Pow(1.1f, -scroll);
-    var newSize = camera.orthographicSize * scalar;
-    camera.orthographicSize = Mathf.Clamp(newSize, minZoom, maxZoom);
+    wantedZoom = Mathf.Clamp(camera.orthographicSize * scalar, minZoom, maxZoom);
+    if (zoomAnimation == null) {
+      camera.orthographicSize = wantedZoom;
+    }
+  }
+
+  Coroutine zoomAnimation = null;
+  internal void PlayFloorZoomAnimation() {
+    zoomAnimation = StartCoroutine(Transitions.AnimateLinear(1f, (t) => {
+      Camera.main.orthographicSize = EasingFunctions.EaseOutSine(wantedZoom * 0.85f, wantedZoom, t);
+    }, () => zoomAnimation = null));
   }
 }

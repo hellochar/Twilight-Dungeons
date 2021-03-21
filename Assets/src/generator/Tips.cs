@@ -12,9 +12,10 @@ public static class Tips {
     [7] = "Equipping and unequipping items is instant.",
     [8] = "You found a new Mature plant! Harvest some seeds and re-plant them in the home floor.",
     [9] = "Make full use of Grasses in order to preserve your items!",
-    [10] = "Deduce an enemy's exact HP by keeping track of total damage dealt to it.",
+    [10] = "Deduce an enemy's exact HP by keeping track of the total damage dealt to it.",
     [11] = "Some enemies are best dealt with using hit-and-dodge tactics, while others must be faced head on!",
-    [12] = "Atacking Destructibles (Rubble or Stumps) will not reduce item durability.",
-    [16] = "Great job! From here on out the levels get more exciting. Good luck!"
+    [12] = "Attacking Destructibles (Rubble or Stumps) will not reduce item durability.",
+    [13] = "Items that provide Block do not lose durability when blocking 0 damage.",
+    [16] = "Great job! From here on out the levels get even more exciting. Good luck!"
   };
 }

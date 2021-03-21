@@ -20,7 +20,14 @@ public class CameraFollowEntity : MonoBehaviour {
       this.transform.position = Util.withZ(Util.getXY(this.target.transform.position), this.transform.position.z);
     } else {
       // lerp towards target
-      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), Util.getXY(this.target.transform.position), this.followSpeed * Time.deltaTime), this.transform.position.z);
+      this.transform.position = Util.withZ(
+        Vector2.Lerp(
+          Util.getXY(this.transform.position),
+          Util.getXY(this.target.transform.position),
+          // followSpeed / 60f
+          this.followSpeed * Time.deltaTime
+        ),
+      this.transform.position.z);
     }
   }
 }

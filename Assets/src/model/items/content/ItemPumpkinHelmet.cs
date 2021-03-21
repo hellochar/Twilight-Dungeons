@@ -10,7 +10,9 @@ internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenM
   }
 
   public int Modify(int damage) {
-    this.ReduceDurability();
+    if (damage > 0) {
+      this.ReduceDurability();
+    }
     return damage - 1;
   }
 

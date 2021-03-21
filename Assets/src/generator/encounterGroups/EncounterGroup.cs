@@ -44,6 +44,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1f, AddMushroom },
       { 1f, AddPumpkin },
       { 1f, OneAstoria },
+      { 1f, AddThickBranch },
       { 1f, AddJackalHide },
       { 1f, AddGloopShoes },
       { 1f, OneButterfly },

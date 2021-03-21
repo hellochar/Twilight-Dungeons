@@ -500,9 +500,9 @@ public class Encounters {
     }
   }
 
-  public static void ThreeAstoriasInCorner(Floor floor, Room room) {
+  public static void FourAstoriasInCorner(Floor floor, Room room) {
     var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
-    foreach (var tile in positions.Take(3)) {
+    foreach (var tile in positions.Take(4)) {
       floor.Put(new Astoria(tile.pos));
     }
   }
@@ -591,6 +591,14 @@ public class Encounters {
       floor.Put(new ItemOnGround(tile.pos, new ItemPumpkin()));
     }
   }
+
+  public static void AddThickBranch(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new ItemOnGround(tile.pos, new ItemThickBranch()));
+    }
+  }
+
 
   public static void WallPillars(Floor floor, Room room) {
     var positions = floor.EnumerateRoom(room).ToList();

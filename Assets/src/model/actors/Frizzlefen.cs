@@ -42,7 +42,7 @@ public class Frizzlefen : Plant {
 
 [Serializable]
 [ObjectInfo("thick-stick")]
-class ItemThickBranch : EquippableItem, IWeapon, IDurable, IActionCostModifier {
+class ItemThickBranch : EquippableItem, IWeapon, IDurable {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
   public (int, int) AttackSpread => (3, 5);
@@ -54,13 +54,6 @@ class ItemThickBranch : EquippableItem, IWeapon, IDurable, IActionCostModifier {
   public ItemThickBranch() {
     durability = maxDurability;
   }
-
-  public ActionCosts Modify(ActionCosts input) {
-    input[ActionType.ATTACK] *= 1.5f;
-    return input;
-  }
-
-  internal override string GetStats() => "Attacks 50% slower.";
 }
 
 [Serializable]
@@ -93,10 +86,11 @@ class ItemPlatedArmor : EquippableItem, IDurable, IAttackDamageTakenModifier {
 class ItemBarkmeal : Item, IEdible {
   public void Eat(Actor a) {
     a.statuses.Add(new BarkmealStatus());
+    a.Heal(2);
     Destroy();
   }
 
-  internal override string GetStats() => "Eat to permanently gain +4 max HP.";
+  internal override string GetStats() => "Heal 2 HP and permanently gain +4 max HP.";
 }
 
 [Serializable]

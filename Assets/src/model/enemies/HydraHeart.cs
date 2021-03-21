@@ -12,6 +12,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   public HydraHeart(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 13;
+    inventory.AddItem(new ItemHydraPearl());
   }
 
   private bool needsWait = true;
@@ -68,6 +69,17 @@ public class HydraHeart : AIActor, IBaseActionModifier {
     }
     return input;
   }
+}
+
+[Serializable]
+[ObjectInfo("hydra-pearl")]
+public class ItemHydraPearl : Item, IEdible {
+  public void Eat(Actor a) {
+    a.Heal(2);
+    a.statuses.Add(new ConfusedStatus(5));
+  }
+
+  internal override string GetStats() => "Eat to heal 2 HP and become confused for 5 turns.";
 }
 
 [System.Serializable]

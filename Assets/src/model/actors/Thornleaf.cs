@@ -50,7 +50,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
   public void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     var player = GameModel.main.player;
     if (source != player) {
-      source.TakeDamage(1, player);
+      source.TakeDamage(2, player);
       this.ReduceDurability();
     }
   }
@@ -59,7 +59,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
     return input + 4;
   }
 
-  internal override string GetStats() => "Max HP +4.\nDeal 1 damage when an enemy hits you.";
+  internal override string GetStats() => "Max HP +4.\nDeal 2 damage when an enemy hits you.";
 }
 
 [Serializable]
@@ -100,7 +100,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
   public int durability { get; set; }
 
-  public int maxDurability => 12;
+  public int maxDurability => 16;
 
   public ItemThornShield() {
     durability = maxDurability;

@@ -386,27 +386,21 @@ public class Floor {
     }
   }
 
-  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true, bool depthFirst = false) {
-    LinkedList<Tile> frontier = new LinkedList<Tile>();
-    HashSet<Tile> seen = new HashSet<Tile>();
-    frontier.AddFirst(tiles[startPos]);
+  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true) {
+    Queue<Tile> frontier = new Queue<Tile>(); // []
+    HashSet<Tile> seen = new HashSet<Tile>(); // []
+    frontier.Enqueue(tiles[startPos]); // frontier: [(3, 7)], seen: []
+    seen.Add(tiles[startPos]);
     while (frontier.Any()) {
-      Tile tile;
-      if (depthFirst) {
-        tile = frontier.Last.Value;
-        frontier.RemoveLast();
-      } else {
-        tile = frontier.First.Value;
-        frontier.RemoveFirst();
-      }
+      Tile tile = frontier.Dequeue();
       yield return tile;
-      seen.Add(tile);
       var adjacent = GetCardinalNeighbors(tile.pos).Except(seen).Where(predicate).ToList();
       if (randomizeNeighborOrder) {
         adjacent.Shuffle();
       }
       foreach (var next in adjacent) {
-        frontier.AddLast(next);
+        frontier.Enqueue(next);
+        seen.Add(next);
       }
     }
   }

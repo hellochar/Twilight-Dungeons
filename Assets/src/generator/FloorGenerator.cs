@@ -110,6 +110,7 @@ public class FloorGenerator {
 
     #if UNITY_EDITOR
     // Encounters.AddNecroroot(floor, floor.root);
+    // Encounters.AddPoisonmoss(floor, floor.root);
     #endif
 
     /// add a signpost onto the floor

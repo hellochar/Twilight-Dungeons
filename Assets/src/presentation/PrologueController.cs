@@ -17,15 +17,14 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
   }
 
   void Start() {
-    if (HasPlayed()) {
+    if (HasFinishedTutorial()) {
       gameObject.SetActive(false);
     } else {
-      Play();
+      StartPrologueAndTutorial();
     }
   }
 
-  public void Play() {
-    PlayerPrefs.SetInt("hasSeenPrologue", 1);
+  public void StartPrologueAndTutorial() {
     gameObject.SetActive(true);
     GetComponentInChildren<TMPro.TMP_Text>().color = Color.white;
     StartCoroutine(PlayPrologueAsync());
@@ -109,7 +108,7 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
     } while (t < 1);
   }
 
-  bool HasPlayed() {
+  public bool HasFinishedTutorial() {
     return PlayerPrefs.HasKey("hasSeenPrologue");
   }
 

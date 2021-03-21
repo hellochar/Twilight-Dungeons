@@ -94,6 +94,7 @@ class TutorialFloor : Floor {
   }
 
   internal override void PlayerGoDownstairs() {
+    PlayerPrefs.SetInt("hasSeenPrologue", 1);
     GameModel.main.turnManager.OnPlayersChoice += () => OnTutorialEnded?.Invoke();
   }
 }

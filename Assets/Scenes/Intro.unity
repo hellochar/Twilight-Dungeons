@@ -301,6 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMove: {fileID: 8300000, guid: 9cef2e9eb303ce848a7eca34bd7b3db3, type: 3}
+  prologue: {fileID: 1403399869}
 --- !u!1 &206602029
 GameObject:
   m_ObjectHideFlags: 0

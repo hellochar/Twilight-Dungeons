@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class Intro : MonoBehaviour {
   GameObject blackOverlay;
   public AudioClip playerMove;
+  public PrologueController prologue;
 
   void Awake() {
     // unset current game.
@@ -24,6 +25,10 @@ public class Intro : MonoBehaviour {
   }
 
   public void NewGame() {
+    if (!prologue.HasFinishedTutorial()) {
+      prologue.StartPrologueAndTutorial();
+      return;
+    }
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
     #if UNITY_EDITOR

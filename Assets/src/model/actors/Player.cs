@@ -18,6 +18,19 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
       OnChangeWater?.Invoke(diff);
     }
   }
+  private int m_visibilityRange = 7;
+  public int visibilityRange {
+    get => m_visibilityRange;
+    set {
+      if (floor != null) {
+        floor.RemoveVisibility(this);
+      }
+      m_visibilityRange = value;
+      if (floor != null) {
+        floor.AddVisibility(this);
+      }
+    }
+  }
   internal readonly ItemHands Hands;
   [NonSerialized] /// lazily instantiated
   private HashSet<Actor> lastVisibleEnemies;
@@ -121,7 +134,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     }
   }
 
-  public IEnumerable<Actor> ActorsInSight(Faction faction) => floor.ActorsInCircle(pos, visibilityRange).Where((a) => a.isVisible && a.faction == faction);
+  public IEnumerable<Actor> ActorsInSight(Faction faction) => floor.ActorsInCircle(pos, visibilityRange).Where((a) => a.isVisible && faction.HasFlag(a.faction));
 
   /// <summary>Return true if there are any enemies in vision range.</summary>
   public bool IsInCombat() {

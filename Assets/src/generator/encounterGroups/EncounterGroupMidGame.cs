@@ -46,6 +46,7 @@ public static class EncounterGroupMidGame {
         { 0.25f, AddBrambles },
         { 0.25f, AddTunnelroot4x },
         { 0.25f, ScatteredBoombugs4x },
+        { 0.25f, AddFruitingBodies },
 
         { 0.2f, AddWater },
 
@@ -54,7 +55,6 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddScorpions },
         { 0.2f, AddWildekins },
         { 0.2f, AddCrabs },
-        { 0.2f, AddFruitingBodies },
         { 0.05f, AddParasite8x },
 
         { 0.1f, AddHydra },

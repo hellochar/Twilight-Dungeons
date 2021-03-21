@@ -59,8 +59,6 @@ public class Actor : Body, ISteppable {
 
   [field:NonSerialized] /// Controller only
   public event Action<ActorTask> OnSetTask;
-
-  public int visibilityRange = 7;
   public Faction faction = Faction.Neutral;
   /// gets called on any ground targeted attack
   [field:NonSerialized] /// Controller only
@@ -222,7 +220,7 @@ public class Actor : Body, ISteppable {
   }
 }
 
-public enum Faction { Ally, Neutral, Enemy }
+public enum Faction { Ally = 1, Neutral = 2, Enemy = 4 }
 
 public class ActionCosts : Dictionary<ActionType, float> {
   public ActionCosts(IDictionary<ActionType, float> dictionary) : base(dictionary) {}

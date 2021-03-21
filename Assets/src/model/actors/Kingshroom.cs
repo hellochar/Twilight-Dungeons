@@ -43,7 +43,7 @@ internal class ItemLivingArmor : EquippableItem, ISticky, IDurable, IActionPerfo
 
   public int durability { get; set; }
 
-  public int maxDurability => 300;
+  public int maxDurability => 240;
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
@@ -129,7 +129,7 @@ internal class ItemGerm : Item, IDurable, IUsable {
 
   public int durability { get; set; }
 
-  public int maxDurability => 7;
+  public int maxDurability => 4;
 
   public void Use(Actor a) {
     // create a ring of mushrooms around you.

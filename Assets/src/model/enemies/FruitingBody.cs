@@ -4,12 +4,13 @@ using System.Reflection;
 using UnityEngine;
 
 [Serializable]
-public class FruitingBody : AIActor, IIgnoreStagger {
+[ObjectInfo(spriteName: "fruitingbody", description: "Infects you with random equipment on your body.", flavorText: "Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.")]
+public class FruitingBody : AIActor, INoTurnDelay {
   [field:NonSerialized] /// controller only
   public event Action OnSprayed;
   float cooldown;
   public FruitingBody(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 5;
+    hp = baseMaxHp = 1;
     faction = Faction.Neutral;
     cooldown = MyRandom.Range(0, 10);
     ClearTasks();
@@ -24,20 +25,18 @@ public class FruitingBody : AIActor, IIgnoreStagger {
     }
   }
 
+  static Type[] infectionTypes = new Type[] { typeof(ItemTanglefoot), typeof(ItemStiffarm), typeof(ItemBulbousSkin), typeof(ItemThirdEye) };
+
   private void Spray() {
     cooldown = 10;
     OnSprayed?.Invoke();
     /// apply a random infection to all nearby creatures
     var player = GameModel.main.player;
     if (player.IsNextTo(this)) {
-      EquippableItem infection;
-      if (MyRandom.value < 0.33f){
-        infection = new ItemTanglefoot();
-      } else if (MyRandom.value < 0.5f) {
-        infection = new ItemStiffarm();
-      } else {
-        infection = new ItemBulbousSkin();
-      }
+      var infectionType = Util.RandomPick(infectionTypes);
+      var constructor = infectionType.GetConstructor(new Type[0]);
+      EquippableItem infection = (EquippableItem) constructor.Invoke(new object[0]);
+
       var existingEquipment = player.equipment[infection.slot];
       if (existingEquipment != null && !(existingEquipment is ItemHands)) {
         player.equipment.RemoveItem(existingEquipment);
@@ -130,4 +129,39 @@ class ItemBulbousSkin : EquippableItem, IDurable, ISticky {
     methods.Add(GetType().GetMethod("Germinate"));
     return methods;
   }
+}
+
+[Serializable]
+[ObjectInfo("third-eye")]
+class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler {
+  internal override string GetStats() => "Lose half your vision range.\nYou can see creatures' exact HP.";
+  public override EquipmentSlot slot => EquipmentSlot.Headwear;
+  public int durability { get; set; }
+  public int maxDurability => 200;
+  private int reduction;
+  public ItemThirdEye() {
+    durability = maxDurability;
+  }
+
+  public override void OnEquipped() {
+    reduction = Mathf.CeilToInt(player.visibilityRange / 2);
+    player.visibilityRange -= reduction;
+    player.statuses.Add(new ThirdEyeStatus());
+  }
+
+  public override void OnUnequipped() {
+    player.visibilityRange += reduction;
+    player.statuses.RemoveOfType<ThirdEyeStatus>();
+  }
+
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    this.ReduceDurability();
+  }
+}
+
+[Serializable]
+[ObjectInfo("third-eye")]
+class ThirdEyeStatus : Status {
+  public override bool Consume(Status other) => true;
+  public override string Info() => "You can see creatures' exact HP!";
 }

@@ -86,7 +86,7 @@ public class Grasper : AIActor, IBaseActionModifier {
 
 [Serializable]
 [ObjectInfo(description: "If you are surrounded on all sides by Tendrils, take 2 damage a turn.\nKilling one will also kill all descendant Tendrils.")]
-public class Tendril : Actor, IDeathHandler, IBaseActionModifier, IIgnoreStagger {
+public class Tendril : Actor, IDeathHandler, IBaseActionModifier, INoTurnDelay {
   [field:NonSerialized] /// controller only
   public Action OnPulse = delegate {};
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
@@ -122,4 +122,4 @@ public class Tendril : Actor, IDeathHandler, IBaseActionModifier, IIgnoreStagger
 }
 
 /// <summary>Don't stagger the turn manager for this steppable.
-interface IIgnoreStagger : ISteppable {}
+interface INoTurnDelay : ISteppable {}

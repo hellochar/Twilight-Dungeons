@@ -34,13 +34,13 @@ public class FloorGenerator {
     floorGenerators = new List<Func<Floor>>() {
       () => generateFloor0(0),
       () => generateSingleRoomFloor(1, 11, 11),
-      () => generateSingleRoomFloor(2, 10, 10),
-      () => generateSingleRoomFloor(3, 9, 9),
+      () => generateSingleRoomFloor(2, 10, 10, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(3, 9, 9, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(4, 11, 11, 1, 1, true),
       () => generateSingleRoomFloor(5, 15, 11, 2),
-      () => generateSingleRoomFloor(6, 13, 11, 2),
+      () => generateSingleRoomFloor(6, 13, 11, 2, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(7, 11, 11, 2),
-      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(0.9f)),
+      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(0.9f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),
       () => generateSingleRoomFloor(10, 14, 7, 2, 2),
       () => generateSingleRoomFloor(11, 20, 9, 3, 2),
@@ -49,7 +49,7 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(13, 12, 12, 4, 3),
       () => generateSingleRoomFloor(14, 15, 11, 4, 3),
       () => generateSingleRoomFloor(15, 20, 9, 5, 3),
-      () => generateRewardFloor(16, shared.Plants.GetRandomAndDiscount(0.9f)),
+      () => generateRewardFloor(16, shared.Plants.GetRandomAndDiscount(0.9f), Encounters.OneAstoria),
       () => generateMultiRoomFloor(17, 15, 15, 6),
       () => generateMultiRoomFloor(18, 30, 20, 7),
       () => generateMultiRoomFloor(19, 20, 20, 8, true),
@@ -57,7 +57,7 @@ public class FloorGenerator {
       () => generateMultiRoomFloor(21, 30, 12, 10),
       () => generateMultiRoomFloor(22, 30, 20, 15),
       () => generateMultiRoomFloor(23, 40, 20, 20),
-      () => generateRewardFloor(24, Encounters.AddWater, Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
+      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(0.9f), Encounters.AddWater, Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
       // () => generateSporeColonyBossFloor(24),
       () => generateSingleRoomFloor(25, 11, 11, 1, 2, true),
       () => generateMultiRoomFloor(26, 20, 13, 5, true),
@@ -290,7 +290,7 @@ public class FloorGenerator {
   /// Generates one single room with one wall variation, X mob encounters, Y grass encounters, an optional reward.
   /// Good for a contained experience.
   /// </summary>
-  public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false) {
+  public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, params Encounter[] extraEncounters) {
     Floor floor;
     do {
       floor = tryGenerateSingleRoomFloor(depth, width, height);
@@ -304,6 +304,10 @@ public class FloorGenerator {
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
       EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+    }
+
+    foreach (var encounter in extraEncounters) {
+      encounter(floor, room0);
     }
 
     // a reward (optional)

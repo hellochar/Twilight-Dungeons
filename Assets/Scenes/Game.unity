@@ -3858,8 +3858,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 338125421}
   m_HandleRect: {fileID: 338125420}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -14708,6 +14708,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5353235491765304645, guid: 7449bf084373aa34e85f7dc739ded4e6,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 5353235491765304645, guid: 7449bf084373aa34e85f7dc739ded4e6,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5353235491765304645, guid: 7449bf084373aa34e85f7dc739ded4e6,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5353235491765304645, guid: 7449bf084373aa34e85f7dc739ded4e6,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7992859230606806843, guid: 7449bf084373aa34e85f7dc739ded4e6,
         type: 3}

@@ -44,7 +44,10 @@ public class FloorController : MonoBehaviour {
   }
 
   public GameObject GameObjectFor(Entity entity) {
-    return gameObjectMap[entity];
+    if (gameObjectMap.TryGetValue(entity, out var go)) {
+      return go;
+    }
+    return null;
   }
 
   // Start is called before the first frame update

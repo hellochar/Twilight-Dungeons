@@ -148,7 +148,7 @@ public class TurnManager {
 
       bool shouldStagger =
         !isFirstIteration &&
-        !(entity is IIgnoreStagger) && 
+        !(entity is INoTurnDelay) && 
         entity is Entity e &&
         e.isVisible &&
         (e is Actor || forceStaggerThisTurn);

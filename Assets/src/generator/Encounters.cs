@@ -516,8 +516,7 @@ public class Encounters {
   }
 
   public static void OneAstoria(Floor floor, Room room) {
-    var positions = FloorUtils.EmptyTilesInRoom(floor, room);
-    positions.Shuffle();
+    var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
     foreach (var tile in positions.Take(1)) {
       floor.Put(new Astoria(tile.pos));
     }

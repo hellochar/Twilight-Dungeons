@@ -13,15 +13,19 @@ public class NecrorootController : GrassController {
 
   void Update() {
     if (!necroroot.IsDead) {
-      var isParticleSystemActive = necroroot.actor != null || necroroot.corpse != null;
+      var isParticleSystemActive = necroroot.corpse != null;
       ps.gameObject.SetActive(isParticleSystemActive);
     }
     if (corpse.sprite == null && necroroot.corpse != null) {
       var corpsePrefab = FloorController.GetEntityPrefab(necroroot.corpse);
       // set corpse sprite
       corpse.sprite = corpsePrefab.GetComponentInChildren<SpriteRenderer>().sprite;
+    }
+    if (necroroot.corpse != null) {
       var particleSystemMainModule = ps.main;
-      particleSystemMainModule.simulationSpeed = 1f;
+      var timeElapsed = necroroot.age - necroroot.ageCorpseCaptured;
+      var simulationSpeed = timeElapsed > 3.01 ? 0 : 0.25f * Mathf.Pow(4, timeElapsed);
+      particleSystemMainModule.simulationSpeed = Mathf.Lerp(particleSystemMainModule.simulationSpeed, simulationSpeed, 0.2f);
     }
   }
 }

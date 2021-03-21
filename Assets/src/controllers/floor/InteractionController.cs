@@ -94,7 +94,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   void ShowPopupFor(Entity entity, GameObject entityGameObject) {
     string description = entity.description + "\n\n";
     if (entity is Body b) {
-      if (b is Actor a) {
+      if (b is Actor a && a.BaseAttackDamage() != (0, 0)) {
         description += "Deals " + Util.DescribeDamageSpread(a.BaseAttackDamage());
       }
       description += $"Max HP: {b.maxHp}\n";

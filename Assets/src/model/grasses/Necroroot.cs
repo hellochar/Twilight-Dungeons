@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "When a creature dies on the Necroroot, spawn a Zombie of that creature after 3 turns.\nZombies attack anything nearby and lose 1 HP per turn. When it dies, it leaves a new Necroroot.")]
+[ObjectInfo(description: "Spawn a Zombie of any creature that dies on the Necroroot (this consumes the Necroroot).\nZombies attack anything nearby and lose 1 HP while not standing on Necroroot.")]
 public class Necroroot : Grass {
   public Actor corpse;
 
@@ -25,11 +25,13 @@ public class Necroroot : Grass {
     BodyModifier = new NecrorootBodyModifier(this);
   }
 
+  public float ageCorpseCaptured { get; private set; }
   private void HandleBodyDied() {
     var actor = this.actor;
-    if (corpse == null && actor != null) {
+    if (corpse == null && actor != null && !(actor is Zombie)) {
+      ageCorpseCaptured = age;
       corpse = actor;
-      AddTimedEvent(3, CreateZombie);
+      AddTimedEvent(3.01f, CreateZombie);
     }
   }
 
@@ -40,7 +42,7 @@ public class Necroroot : Grass {
 }
 
 [Serializable]
-[ObjectInfo("Has the same HP and damage of the base creature.\nAttacks anything nearby and loses 1 HP per turn.\nLeaves a Necroroot when it dies.")]
+[ObjectInfo(description: "Attacks anything nearby and loses 1 HP per turn not standing on Necroroot.")]
 public class Zombie : AIActor, IActionPerformedHandler {
   public override string displayName => $"Zombie {baseActor.displayName}";
   public readonly Actor baseActor;
@@ -51,17 +53,16 @@ public class Zombie : AIActor, IActionPerformedHandler {
     ClearTasks();
   }
 
-  public override void HandleDeath(Entity source) {
-    base.HandleDeath(source);
-    floor.Put(new Necroroot(pos));
-  }
+  public override string description => base.description;
 
   internal override (int, int) BaseAttackDamage() {
     return baseActor.BaseAttackDamage();
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    this.TakeDamage(1, this);
+    if (!(grass is Necroroot)) {
+      this.TakeDamage(1, this);
+    }
   }
 
   protected override ActorTask GetNextTask() {

@@ -309,6 +309,9 @@ public class Encounters {
 
   public static void AddTunnelroot(Floor floor, Room room) {
     var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
+    if (start == null) {
+      return;
+    }
     /// special - put partner far away on this floor
     var partner = Util.RandomPick(
       floor.EnumerateRoomTiles(floor.root)
@@ -316,13 +319,15 @@ public class Encounters {
         .OrderByDescending(start.DistanceTo)
         .Take(40)
     );
-    if (start != null && partner != null) {
-      var root1 = new Tunnelroot(start.pos);
-      var root2 = new Tunnelroot(partner.pos);
-      floor.Put(root1);
-      floor.Put(root2);
-      root1.PartnerWith(root2);
+    if (partner == null) {
+      return;
     }
+
+    var root1 = new Tunnelroot(start.pos);
+    var root2 = new Tunnelroot(partner.pos);
+    floor.Put(root1);
+    floor.Put(root2);
+    root1.PartnerWith(root2);
   }
   public static void AddTunnelroot4x(Floor floor, Room room) => Twice(Twice(AddTunnelroot))(floor, room);
 
@@ -384,6 +389,13 @@ public class Encounters {
       var start = Util.RandomPick(occupiableTiles);
       var grass = new Spores(start.pos);
       floor.Put(grass);
+    }
+  }
+
+  public static void AddNecroroot(Floor floor, Room room) {
+    var tiles = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null).OrderBy(t => Vector2.Distance(t.pos, room.centerFloat));
+    foreach (var tile in tiles.Take(tiles.Count() / 2)) {
+      floor.Put(new Necroroot(tile.pos));
     }
   }
 

@@ -65,6 +65,7 @@ public static class EncounterGroupEverything {
         { 0.05f, AddViolets },
         { 0.05f, AddBrambles },
 
+        { 0.02f, AddNecroroot },
         { 0.02f, AddScorpions },
         { 0.02f, AddParasite },
         { 0.02f, AddGolems },

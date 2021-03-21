@@ -104,6 +104,13 @@ public class FloorGenerator {
     if (floor == null) {
       throw GameModel.main.turnManager.latestException;
     }
+    if (floor.depth != depth) {
+      throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
+    }
+
+    #if UNITY_EDITOR
+    // Encounters.AddNecroroot(floor, floor.root);
+    #endif
 
     /// add a signpost onto the floor
     if (Tips.tipMap.ContainsKey(floor.depth)) {
@@ -114,13 +121,6 @@ public class FloorGenerator {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
       }
     }
-    if (floor.depth != depth) {
-      throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
-    }
-
-    #if UNITY_EDITOR
-    Encounters.AddNecroroot(floor, floor.root);
-    #endif
     return floor;
   }
 

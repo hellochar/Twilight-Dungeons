@@ -62,6 +62,8 @@ public static class EncounterGroupMidGame {
         { 0.1f, AddDeathbloom },
         { 0.1f, AddSpore },
 
+        { 0.02f, AddNecroroot },
+
         // { 0.1f, Twice(Twice(Twice(JackalPile))) },
         // { 0.1f, Twice(Twice(Twice(AFewSnails))) },
       },

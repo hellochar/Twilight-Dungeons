@@ -12,6 +12,9 @@ public static class MyRandom {
 
   /// min inclusive, max exclusive
   internal static int Range(int min, int max) {
+    if (min > max) {
+      min = max;
+    }
     return generator.Next(min, max);
   }
 

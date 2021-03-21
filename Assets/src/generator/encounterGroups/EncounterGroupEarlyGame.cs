@@ -53,6 +53,8 @@ public static class EncounterGroupEarlyGame {
 
         { 0.05f, AddEveningBells },
         { 0.05f, AddPoisonmoss },
+
+        { 0.01f, AddNecroroot },
       },
     };
   }

@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showDamageMarks: 1
-  bloodColor: {r: 0.18039216, g: 0.86666673, b: 0.25882354, a: 0.5}
+  bloodColor: {r: 0.18039216, g: 0.8666667, b: 0.25882354, a: 0.5}
   hideWaitTask: 0
 --- !u!1001 &8272058672946713391
 PrefabInstance:
@@ -257,7 +257,7 @@ PrefabInstance:
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_FlipY
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
@@ -268,17 +268,17 @@ PrefabInstance:
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.38823533
+      value: 0.25882354
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.67058825
+      value: 0.86666673
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.18039216
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}

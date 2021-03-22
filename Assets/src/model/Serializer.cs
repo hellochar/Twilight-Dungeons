@@ -49,21 +49,6 @@ public static class Serializer {
     }
   }
 
-  public static T SerializeTest<T>(T item) {
-    var bf = GetBinaryFormatter();
-    var path = UnityEngine.Windows.Directory.temporaryFolder + "/test.dat";
-    using(FileStream file = File.Create(path)) {
-      bf.Serialize(file, item);
-      Debug.Log($"Saved {path}");
-    }
-
-    using (FileStream file = File.Open(path, FileMode.Open)) {
-      var model = (T) bf.Deserialize(file);
-      file.Close();
-      return model;
-    }
-  }
-
   private static BinaryFormatter GetBinaryFormatter() {
     BinaryFormatter bf = new BinaryFormatter();
     SurrogateSelector surrogateSelector = new SurrogateSelector();

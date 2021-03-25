@@ -3,7 +3,7 @@ using static Encounters;
 public static class EncounterGroupEverything {
   public static EncounterGroup Everything() {
     return new EncounterGroup() {
-      Mobs = new WeightedRandomBag<Encounter> {
+      Mobs = new EncounterBag {
         { 1, AFewBlobs },
         { 1, JackalPile },
         { 1, AFewSnails },
@@ -17,7 +17,7 @@ public static class EncounterGroupEverything {
         { 0.1f, AddGrasper },
       },
 
-      Grasses = new WeightedRandomBag<Encounter> {
+      Grasses = new EncounterBag {
         { 1f, AddBladegrass },
 
         { 0.75f, AddSoftGrass },
@@ -39,7 +39,7 @@ public static class EncounterGroupEverything {
         { 0.2f, AddDeathbloom },
       },
 
-      Spice = new WeightedRandomBag<Encounter> {
+      Spice = new EncounterBag {
         { 5f, Empty },
 
         { 0.5f, AFewBlobs },

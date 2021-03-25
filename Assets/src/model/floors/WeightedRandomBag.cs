@@ -8,13 +8,13 @@ using System.Linq;
 public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, ICloneable {
 
   [Serializable]
-  private class Entry {
+  protected class Entry {
     public float weight;
     public T item;
     public override string ToString() => $"{item}: {weight}";
   }
 
-  private List<Entry> entries = new List<Entry>();
+  protected List<Entry> entries = new List<Entry>();
 
   public void Add(float weight, T item) {
     entries.Add(new Entry { item = item, weight = weight });

@@ -3,7 +3,7 @@ using static Encounters;
 public static class EncounterGroupMidGame {
   public static EncounterGroup MidGame() {
     return new EncounterGroup() {
-      Mobs = new WeightedRandomBag<Encounter> {
+      Mobs = new EncounterBag {
         { 1f, AddScorpions },
         { 1f, AddWildekins },
         { 1f, AddCrabs },
@@ -14,7 +14,7 @@ public static class EncounterGroupMidGame {
         { 0.4f, AddParasite },
       },
 
-      Grasses = new WeightedRandomBag<Encounter> {
+      Grasses = new EncounterBag {
         { 0.75f, AddViolets },
         { 0.75f, AddTunnelroot },
 
@@ -37,7 +37,7 @@ public static class EncounterGroupMidGame {
         // { 0.0f, AddAgave },
       },
 
-      Spice = new WeightedRandomBag<Encounter> {
+      Spice = new EncounterBag {
         { 3f, Empty },
 
         { 0.25f, AddEveningBells },

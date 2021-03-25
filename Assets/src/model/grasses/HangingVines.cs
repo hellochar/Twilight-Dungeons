@@ -110,8 +110,7 @@ public class ConstrictedStatus : StackingStatus, IBaseActionModifier, IBodyMoveH
 
   public override bool isDebuff => true;
   public override StackingMode stackingMode => StackingMode.Max;
-  public ConstrictedStatus(HangingVines owner) {
-    stacks = 3;
+  public ConstrictedStatus(HangingVines owner, int stacks = 3) : base(stacks) {
     this.owner = owner;
   }
 

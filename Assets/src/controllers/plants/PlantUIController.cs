@@ -30,6 +30,12 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
           Destroy(harvests.GetChild(i).gameObject);
         }
       }
+      if (options.Count == 3) {
+        var gridLayoutGroup = harvests.GetComponent<GridLayoutGroup>();
+        var cellSize = gridLayoutGroup.cellSize;
+        var newCellSize = new Vector2(cellSize.x, 80);
+        gridLayoutGroup.cellSize = newCellSize;
+      }
     } else {
       Destroy(harvests.gameObject);
     }

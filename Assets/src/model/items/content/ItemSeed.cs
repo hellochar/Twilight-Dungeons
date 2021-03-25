@@ -25,7 +25,7 @@ public class ItemSeed : Item {
     );
   }
 
-  public void Plant(Soil soil) {
+  private void Plant(Soil soil) {
     var player = GameModel.main.player;
     if (player.water >= 100) {
       player.water -= 100;

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Every four turns, spawns a Hydra Head in range 4 (max 8).\nOn death, all Hydra Heads die as well.\nDoes not attack or move.", flavorText: "Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.")]
+[ObjectInfo(description: "Every four turns, spawns a Hydra Head (max 12) within range 4.\nOn death, all Hydra Heads die as well.\nDoes not attack or move.", flavorText: "Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.")]
 public class HydraHeart : AIActor, IBaseActionModifier {
   public static int spawnRange = 4;
   public static bool IsTarget(Body b) => !(b is HydraHead) && !(b is HydraHeart);
@@ -21,7 +21,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
       needsWait = false;
       return new WaitTask(this, 2);
     } else {
-      if (heads.Count() < 8) {
+      if (heads.Count() < 12) {
         needsWait = true;
         return new TelegraphedTask(this, 1, new GenericBaseAction(this, SpawnHydraHead));
       } else {

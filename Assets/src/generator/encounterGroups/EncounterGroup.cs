@@ -46,7 +46,6 @@ public class EncounterGroupShared : EncounterGroup {
     Rewards = new EncounterBag {
       { 1f, AddMushroom },
       { 1f, AddPumpkin },
-      { 1f, OneAstoria },
       { 1f, AddThickBranch },
       { 1f, AddJackalHide },
       { 1f, AddGloopShoes },

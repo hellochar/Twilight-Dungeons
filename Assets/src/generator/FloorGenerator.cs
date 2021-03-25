@@ -38,7 +38,7 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(3, 9, 9),
       () => generateSingleRoomFloor(4, 11, 11, 1, 1, true, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(5, 15, 11, 2),
-      () => generateSingleRoomFloor(6, 13, 11, 2, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(6, 13, 11, 2),
       () => generateSingleRoomFloor(7, 11, 11, 2),
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(0.9f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),

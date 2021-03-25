@@ -107,7 +107,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     image.sprite = sprite;
     image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
     List<(string, Action)> buttons = null;
-    if (entity is Soil soil) {
+    if (entity is Soil soil && soil.body == null) {
       buttons = new List<(string, Action)>();
       var player = GameModel.main.player;
       var seeds = player.inventory.Where((i) => i is ItemSeed).Cast<ItemSeed>();

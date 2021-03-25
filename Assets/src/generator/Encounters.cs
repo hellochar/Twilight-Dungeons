@@ -500,9 +500,9 @@ public class Encounters {
     }
   }
 
-  public static void FourAstoriasInCorner(Floor floor, Room room) {
+  public static void ThreeAstoriasInCorner(Floor floor, Room room) {
     var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
-    foreach (var tile in positions.Take(4)) {
+    foreach (var tile in positions.Take(3)) {
       floor.Put(new Astoria(tile.pos));
     }
   }

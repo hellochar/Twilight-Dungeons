@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 11696594
+    totalSpriteSurfaceArea: 11697805
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -1827,6 +1827,7 @@ SpriteAtlas:
   - {fileID: -1820778394629667666, guid: 0f2a7da3a9a366d44b42cd1b7710e71a, type: 3}
   - {fileID: 21300000, guid: a2a493b3652ea624d8b4a95595992591, type: 3}
   - {fileID: 21300000, guid: ccd511f3395cc5742bd0c45b9afb2c7c, type: 3}
+  - {fileID: 21300000, guid: 87a694344c48cfd4f973630f10c1e866, type: 3}
   - {fileID: 21300000, guid: 423675349ef54b54ea991dfa899a486a, type: 3}
   - {fileID: 21300000, guid: 436f9534bacc2f5458e5415e478a9771, type: 3}
   - {fileID: 6733317360203888005, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -2274,6 +2275,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
   - {fileID: 21300000, guid: 037f0f27476de09428adf0a534bd5dd1, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
+  - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
   - {fileID: -8003984343227876427, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
   - {fileID: 1396870407149786483, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
   - {fileID: 8130288210367746631, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
@@ -4478,6 +4480,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 731cafc83de6dad429b1a91d92f7d88a, type: 3}
   - {fileID: 21300000, guid: 54eca3d84122d7840a50c82d66e7c75a, type: 3}
   - {fileID: 21300000, guid: 7940bcd8c09c7974e81132867820f257, type: 3}
+  - {fileID: 21300000, guid: eee844e8a5afe5b44b094bfcd43029c2, type: 3}
   - {fileID: -5750959877437155064, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: 1123546238895616638, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
   - {fileID: -9128439656174682321, guid: 816929e844f39b84b919e8cf2f18ac8b, type: 3}
@@ -7521,6 +7524,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d10473ddcf13dbe46a911763432a4655, type: 3}
   - {fileID: 21300000, guid: 62d7722e2d7563b468471d867555b6cb, type: 3}
   - {fileID: 21300000, guid: 1de6642e6fddcb94cb26e664a3e88250, type: 3}
+  - {fileID: 21300000, guid: 2bbc792eb00b6d64e9a8a96453f4afb0, type: 3}
   - {fileID: 21300000, guid: 0d72523ecfaf46f47856da981213e3f8, type: 3}
   - {fileID: 21300000, guid: c2f7f23e6e084f240a0a5f87fc5c3b51, type: 3}
   - {fileID: 21300000, guid: 9295d66e7959a084fa6a62a35e3675cd, type: 3}
@@ -9835,6 +9839,7 @@ SpriteAtlas:
   - shield-placeholder
   - boombug
   - kingshroom
+  - stout-shield
   - sign
   - sleeping-bag
   - tumorous-growth
@@ -10282,6 +10287,7 @@ SpriteAtlas:
   - fruitingbody
   - inset-box-shadow
   - Astoria
+  - hearty-veggie
   - UI_Elements02_19
   - UI_Elements02_18
   - UI_Elements02_78
@@ -12486,6 +12492,7 @@ SpriteAtlas:
   - FireBall_3_64x64
   - agave
   - peace
+  - stout-shrub
   - pixeland_167
   - pixeland_164
   - pixeland_165
@@ -15529,6 +15536,7 @@ SpriteAtlas:
   - background
   - colored_original
   - HolyExplosion_96x96
+  - thicket
   - leaf
   - guardroot
   - coralmoss

@@ -17,6 +17,7 @@ public class Astoria : Grass, IActorEnterHandler {
   }
 }
 
+[System.Serializable]
 [ObjectInfo("Astoria")]
 class ItemAstoria : Item, IUsable {
   public void Use(Actor a) {

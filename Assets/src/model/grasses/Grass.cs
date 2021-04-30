@@ -27,6 +27,7 @@ public class Grass : Entity {
   }
 
   public void BecomeItemInInventory(Item item, Player player) {
+    var floor = this.floor;
     Kill(actor);
     if (!player.inventory.AddItem(item, this)) {
       floor.Put(new ItemOnGround(pos, item, pos));

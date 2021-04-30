@@ -10,6 +10,13 @@ public class ThirdEyeStatusController : StatusController {
     LateUpdate();
   }
 
+  void OnDestroy() {
+    // remove mapping
+    foreach (var worldText in mapping.Values) {
+      Destroy(worldText);
+    }
+  }
+
   void LateUpdate() {
     var player = GameModel.main.player;
     if (player.IsDead) {

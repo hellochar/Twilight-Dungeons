@@ -1,28 +1,32 @@
 using System;
 
 /// Expects a constructor with one int parameter for # of stacks
-interface IStackable {
+public interface IStackable {
   int stacks { get; set; }
   int stacksMax { get; }
 }
 
+public interface IConditionallyStackable : IStackable {
+  bool CanStackWith(IConditionallyStackable other);
+}
+
 static class IStackableExtensions {
 
-  /// remove newStacks from this stack and return a new
-  /// stackable with that many stacks
-  public static T Split<T>(this T s, int newStacks) where T : IStackable {
-    if (newStacks >= s.stacks) {
-      throw new ArgumentException($"Cannot split a stack of {s.stacks} into one of {newStacks}!");
-    }
+  // /// remove newStacks from this stack and return a new
+  // /// stackable with that many stacks
+  // public static T Split<T>(this T s, int newStacks) where T : IStackable {
+  //   if (newStacks >= s.stacks) {
+  //     throw new ArgumentException($"Cannot split a stack of {s.stacks} into one of {newStacks}!");
+  //   }
 
-    var type = typeof(T);
-    var constructor = type.GetConstructor(new Type[] { typeof(int) });
-    var newInstance = (T) constructor.Invoke(new object[] { newStacks });
+  //   var type = typeof(T);
+  //   var constructor = type.GetConstructor(new Type[] { typeof(int) });
+  //   var newInstance = (T) constructor.Invoke(new object[] { newStacks });
 
-    s.stacks -= newStacks;
+  //   s.stacks -= newStacks;
 
-    return newInstance;
-  }
+  //   return newInstance;
+  // }
 
   /// Merge as many stacks as possible from other into this one.
   /// Return true if the other stack is now empty.

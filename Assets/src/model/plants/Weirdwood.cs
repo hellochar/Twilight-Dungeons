@@ -11,8 +11,7 @@ public class Weirdwood : Plant {
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(
-        new ItemSeed(typeof(Weirdwood)),
-        new ItemSeed(typeof(Weirdwood)),
+        new ItemSeed(typeof(Weirdwood), 2),
         new ItemStick()
       ));
       harvestOptions.Add(new Inventory(

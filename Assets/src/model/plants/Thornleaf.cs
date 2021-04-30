@@ -14,8 +14,7 @@ public class Thornleaf : Plant {
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(
-        new ItemSeed(typeof(Thornleaf)),
-        new ItemSeed(typeof(Thornleaf)),
+        new ItemSeed(typeof(Thornleaf), 2),
         new ItemStick()
       ));
       harvestOptions.Add(new Inventory(

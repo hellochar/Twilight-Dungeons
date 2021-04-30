@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemPopupController : MonoBehaviour {
+  [NonSerialized]
   public Item item;
   TMPro.TMP_Text stats;
 

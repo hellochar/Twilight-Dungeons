@@ -2,12 +2,34 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class ItemSeed : Item {
+public class ItemSeed : Item, IConditionallyStackable {
   public Type plantType;
 
-  public ItemSeed(Type plantType) {
-    this.plantType = plantType;
+  public bool CanStackWith(IConditionallyStackable other) {
+    return ((ItemSeed) other).plantType == plantType;
   }
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+  public int stacksMax => 20;
+
+  public ItemSeed(Type plantType, int stacks) {
+    this.plantType = plantType;
+    this.stacks = stacks;
+  }
+
+  public ItemSeed(Type plantType) : this(plantType, 1) { }
 
   public void MoveAndPlant(Soil soil) {
     var model = GameModel.main;
@@ -32,9 +54,7 @@ public class ItemSeed : Item {
       var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
       var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
       soil.floor.Put(plant);
-      Destroy();
-    } else {
-      throw new CannotPerformActionException("Need 100 water!");
+      stacks--;
     }
   }
 

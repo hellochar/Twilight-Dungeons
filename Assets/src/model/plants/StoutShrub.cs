@@ -13,9 +13,7 @@ public class StoutShrub : Plant {
 
     public override void BindTo(Plant plant) {
       harvestOptions.Add(new Inventory(
-        new ItemSeed(typeof(StoutShrub)),
-        new ItemSeed(typeof(StoutShrub)),
-        new ItemSeed(typeof(StoutShrub))
+        new ItemSeed(typeof(StoutShrub), 3)
       ));
       harvestOptions.Add(new Inventory(new ItemThicket()));
       harvestOptions.Add(new Inventory(new ItemStoutShield()));

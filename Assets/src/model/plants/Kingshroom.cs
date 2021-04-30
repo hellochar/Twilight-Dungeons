@@ -13,8 +13,7 @@ public class Kingshroom : Plant {
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(
-        new ItemSeed(typeof(Kingshroom)),
-        new ItemSeed(typeof(Kingshroom)),
+        new ItemSeed(typeof(Kingshroom), 2),
         new ItemGerm()
       ));
       harvestOptions.Add(new Inventory(

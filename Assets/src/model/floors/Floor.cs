@@ -320,7 +320,7 @@ public class Floor {
 
   public IEnumerable<Vector2Int> EnumerateCircle(Vector2Int center, float radius) {
     Vector2Int extent = new Vector2Int(Mathf.CeilToInt(radius), Mathf.CeilToInt(radius));
-    foreach (var pos in EnumerateRectangle(center - extent, center + extent)) {
+    foreach (var pos in EnumerateRectangle(center - extent, center + extent + new Vector2Int(1, 1))) {
       if (Vector2Int.Distance(pos, center) <= radius) {
         yield return pos;
       }

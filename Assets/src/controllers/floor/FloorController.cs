@@ -60,7 +60,7 @@ public class FloorController : MonoBehaviour {
     #endif
   }
 
-  void OnDestroyed() {
+  void OnDestroy() {
     floor.OnEntityAdded -= HandleEntityAdded;
     floor.OnEntityRemoved -= HandleEntityRemoved;
   }

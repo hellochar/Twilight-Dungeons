@@ -45,6 +45,10 @@ public class PlantController : BodyController, ITapHandler {
     base.Start();
   }
 
+  void OnDestroy() {
+    plant.OnHarvested -= HandleHarvested;
+  }
+
   private void HandleHarvested() {
     var particles = PrefabCache.Effects.Instantiate("Harvest Particles", transform.parent);
     particles.transform.localPosition = transform.localPosition;

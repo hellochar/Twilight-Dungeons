@@ -54,9 +54,9 @@ class ItemFlowerBuds : Item, IDurable, IEdible {
 }
 
 [Serializable]
-[ObjectInfo("catkin", "Thousands of tiny flowers packaged in a single stem. Legend says wearing a willow catkin will gift you the Moon Goddess' protection.")]
+[ObjectInfo("catkin", "Tiny flowers packaged up in a single stem - legend says wearing one will grant you the Moon Goddess's protection.")]
 internal class ItemCatkin : EquippableItem, IDurable, ITakeAnyDamageHandler {
-  internal override string GetStats() => "When you take damage from any source, get the Recovering Status, which heals an equivalent amount after 50 turns.";
+  internal override string GetStats() => "When you take damage, heal an equivalent amount after 50 turns.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
   public int durability { get; set; }
@@ -109,7 +109,7 @@ internal class ItemHardenedSap : EquippableItem, IDurable, IHealHandler, IMaxHPM
     durability = maxDurability;
   }
 
-  internal override string GetStats() => "+4 Max HP.\nWhen you heal, also gain that many stacks of the Armored Status.";
+  internal override string GetStats() => "+4 Max HP.\nWhen you heal, gain that many stacks of the Armored Status.";
 
   public void HandleHeal(int amount) {
     if (amount > 0) {
@@ -124,9 +124,9 @@ internal class ItemHardenedSap : EquippableItem, IDurable, IHealHandler, IMaxHPM
 }
 
 [Serializable]
-[ObjectInfo("crescent-vengeance", "Chang-Er's disciples spent many years crafting an item worthy of their Goddess's attention. They succeeded.")]
+[ObjectInfo("crescent-vengeance", "Chang-Er's disciples spent many years crafting an item worthy of their Goddess's attention.")]
 internal class ItemCrescentVengeance : EquippableItem, IWeapon, IDurable {
-  internal override string GetStats() => "When possible, Crescent Vengeance removes a stack of the Armored Status rather than lose durability.";
+  internal override string GetStats() => "If possible, Crescent Vengeance removes a stack of the Armored Status rather than lose durability.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   private int m_durability;
   public int durability {

@@ -24,7 +24,7 @@ public class NecrorootController : GrassController {
     if (necroroot.corpse != null) {
       var particleSystemMainModule = ps.main;
       var timeElapsed = necroroot.age - necroroot.ageCorpseCaptured;
-      var simulationSpeed = timeElapsed > 3.01 ? 0 : 0.25f * Mathf.Pow(4, timeElapsed);
+      var simulationSpeed = timeElapsed > 3.01 ? 0 : 0.33f * Mathf.Pow(3, timeElapsed);
       particleSystemMainModule.simulationSpeed = Mathf.Lerp(particleSystemMainModule.simulationSpeed, simulationSpeed, 0.2f);
     }
   }

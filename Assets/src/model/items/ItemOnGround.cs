@@ -6,6 +6,7 @@ using UnityEngine;
 public class ItemOnGround : Entity, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
 
+  [NonSerialized]
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;

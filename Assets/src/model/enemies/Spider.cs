@@ -32,7 +32,7 @@ public class Spider : AIActor, IDealAttackDamageHandler {
       return new AttackTask(this, target);
     }
 
-    var nonWebbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && !(tile.grass is Web));
+    var nonWebbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && !(tile.grass is Web) && !(tile is Downstairs));
     var webbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && (tile.grass is Web));
 
     if (nonWebbedAdjacentTiles.Any()) {

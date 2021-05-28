@@ -30,8 +30,8 @@ public abstract class EquippableItem : Item {
     }
     if (this is ISticky) {
       methods.Remove(GetType().GetMethod("Unequip"));
-      methods.Remove(GetType().GetMethod("Drop"));
       if (actor.equipment.HasItem(this)) {
+        methods.Remove(GetType().GetMethod("Drop"));
         methods.Remove(GetType().GetMethod("Destroy"));
       }
     }

@@ -9,6 +9,9 @@ public class BladegrassController : GrassController {
   public override void Start() {
     base.Start();
     bladegrass.OnSharpened += HandleSharpened;
+    if (bladegrass.isSharp) {
+      HandleSharpened();
+    }
   }
 
   private void HandleSharpened() {

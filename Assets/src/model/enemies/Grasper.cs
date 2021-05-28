@@ -9,7 +9,7 @@ public class Grasper : AIActor, IBaseActionModifier {
   public readonly List<Tendril> tendrils = new List<Tendril>();
 
   public Grasper(Vector2Int pos) : base(pos) {
-    faction = Faction.Neutral;
+    faction = Faction.Enemy;
     hp = baseMaxHp = 10;
   }
 

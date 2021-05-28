@@ -10,7 +10,7 @@ public class CameraZoom : MonoBehaviour {
   public float maxZoom = 15;
   // Start is called before the first frame update
   void Start() {
-
+    wantedZoom = PlayerPrefs.GetFloat("zoom", this.wantedZoom);
   }
 
   // Update is called once per frame
@@ -46,6 +46,7 @@ public class CameraZoom : MonoBehaviour {
     var camera = Camera.main;
     var scalar = Mathf.Pow(1.1f, -scroll);
     wantedZoom = Mathf.Clamp(camera.orthographicSize * scalar, minZoom, maxZoom);
+    PlayerPrefs.SetFloat("zoom", wantedZoom);
     if (zoomAnimation == null) {
       camera.orthographicSize = wantedZoom;
     }

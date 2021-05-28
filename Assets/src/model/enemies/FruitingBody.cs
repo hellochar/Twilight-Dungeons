@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(spriteName: "fruitingbody", description: "Infects you with random equipment on your body.\nIf you have all 5 infections, heal 1 HP.", flavorText: "Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.")]
+[ObjectInfo(spriteName: "fruitingbody", description: "Infects one of your equipment slots if you're hit by its spray.\nIf you have all 5 infections, instead heal 1 HP.", flavorText: "Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.")]
 public class FruitingBody : AIActor, INoTurnDelay {
   [field:NonSerialized] /// controller only
   public event Action OnSprayed;

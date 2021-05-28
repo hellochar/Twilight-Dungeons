@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Applies Poison to the creature standing over it every turn.\nGradually turns adjacent Grass into Poisonmoss.\nDies if surrounded by other Poisonmoss.")]
+[ObjectInfo(description: "Applies Poison to the creature standing over it every turn.\nGradually turns adjacent Grass into Poisonmoss.\nDies if surrounded by Walls or other Poisonmoss.")]
 class Poisonmoss : Grass, ISteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground;
 
@@ -16,7 +16,7 @@ class Poisonmoss : Grass, ISteppable {
       actor.statuses.Add(new PoisonedStatus(1));
     }
     /// entirety is filled with poisonmoss
-    if (floor.GetAdjacentTiles(pos).Where(t => t.grass is Poisonmoss).Count() == 9) {
+    if (floor.GetAdjacentTiles(pos).Where(t => t.grass is Poisonmoss || t.BasePathfindingWeight() == 0).Count() == 9) {
       // do this immediately; otherwise many poisonmoss will die at once
       KillSelf();
     } else if (age % 6 == 5) {

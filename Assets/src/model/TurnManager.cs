@@ -82,7 +82,10 @@ public class TurnManager {
       activeEntity = entity;
 
       if (model.time > entity.timeNextAction) {
-        throw new Exception("time is " + model.time + " but " + entity + " had a turn at " + entity.timeNextAction);
+        Debug.LogError("time is " + model.time + " but " + entity + " had a turn at " + entity.timeNextAction);
+        // force it to be now. hacky but prevents game deadlocks
+        entity.timeNextAction = model.time;
+        // throw new Exception();
       }
 
       if (model.time != entity.timeNextAction) {

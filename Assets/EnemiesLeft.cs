@@ -16,20 +16,35 @@ public class EnemiesLeft : MonoBehaviour {
   // Update is called once per frame
   void Update() {
     var floor = GameModel.main.currentFloor;
-    image.enabled = floor.depth != 0;
+    if (floor.bosses.Any()) {
+      Shown("");
+    } else if (floor.depth == 0) {
+      Hidden();
+    } else {
     switch (floor.EnemiesLeft()) {
-      case var x when floor.depth == 0:
-        text.text = "";
-        break;
       case 0:
-        text.text = "Cleared!";
+        Hidden();
         break;
       case var x when x > 3:
-        text.text = "Defeat all enemies.";
+        Shown("Defeat all enemies");
+        break;
+      case var x when x == 1:
+        Shown("1 enemy left.");
         break;
       case var x:
-        text.text = $"{x} enemies left.";
+        Shown($"{x} enemies left.");
         break;
+      }
     }
+  }
+
+  void Hidden() {
+    image.enabled = false;
+    text.text = "";
+  }
+
+  void Shown(string t) {
+    image.enabled = true;
+    text.text = t;
   }
 }

@@ -3,26 +3,32 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-// a boss!
-[ObjectInfo(description: "Spawns a Blob upon taking any damage.\nDestroys any grass it steps over.")]
-public class BlobBoss : AIActor, ITakeAnyDamageHandler, IBodyMoveHandler {
+public abstract class Boss : AIActor {
+  protected Boss(Vector2Int pos) : base(pos) { }
+}
+
+[Serializable]
+[ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.")]
+public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
-  public BlobBoss(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 32;
+  public Blobmother(Vector2Int pos) : base(pos) {
+    hp = baseMaxHp = 24;
     faction = Faction.Enemy;
   }
 
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);
+    // kill all blobs on the map
+    var blobs = floor.bodies.Where(b => b is Blob).Cast<Blob>().ToList();
+    foreach (var b in blobs) {
+      b.Kill(this);
+    }
   }
 
   public void HandleTakeAnyDamage(int damage) {
     if (damage > 0) {
-      var tile = floor.BreadthFirstSearch(pos, tile => tile.CanBeOccupied()).Skip(1).FirstOrDefault();
-      if (tile != null) {
-        var blob = new Blob(tile.pos);
-        floor.Put(blob);
-      }
+      var blob = new Blob(pos);
+      floor.Put(blob);
     }
   }
 
@@ -44,8 +50,24 @@ public class BlobBoss : AIActor, ITakeAnyDamageHandler, IBodyMoveHandler {
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    floor.grasses[newPos]?.Kill(this);
-    floor.grasses[oldPos]?.Kill(this);
+    floor.Put(new BlobSlime(oldPos));
+  }
+}
+
+[Serializable]
+[ObjectInfo("slime", description: "Deals 1 damage to any non-Blob that walks into it.\nLasts 12 turns.")]
+public class BlobSlime : Grass, IActorEnterHandler {
+  public BlobSlime(Vector2Int pos) : base(pos) {}
+
+  protected override void HandleEnterFloor() {
+    AddTimedEvent(12, KillSelf);
+  }
+
+  public void HandleActorEnter(Actor who) {
+    if (!(who is Blob || who is Blobmother)) {
+      who.TakeDamage(1, this);
+      Kill(who);
+    }
   }
 }
 

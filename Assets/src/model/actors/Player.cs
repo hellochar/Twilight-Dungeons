@@ -18,8 +18,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
       OnChangeWater?.Invoke(diff);
     }
   }
-  private int m_visibilityRange = 7;
-  public int visibilityRange {
+  private float m_visibilityRange = 6.99f;
+  public float visibilityRange {
     get => m_visibilityRange;
     set {
       if (floor != null) {
@@ -141,7 +141,3 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     return ActorsInSight(Faction.Enemy).Any();
   }
 }
-
-// public static class PlayerUtils {
-//   public void AddItem()
-// }

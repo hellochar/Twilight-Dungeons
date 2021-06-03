@@ -579,7 +579,6 @@ public class Encounters {
     }
   }
 
-
   public static void AddJackalHide(Floor floor, Room room) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
@@ -608,6 +607,17 @@ public class Encounters {
     }
   }
 
+  public static void CenterDownstairs(Floor floor, Room room) {
+    var center = new Vector2Int(room.max.x - 2, room.center.y);
+    // clear radius two
+    foreach (var pos in floor.EnumerateRectangle(center - new Vector2Int(2, 2), center + new Vector2Int(3, 3))) {
+      floor.Put(new HardGround(pos));
+      if (floor.grasses[pos] != null) {
+        floor.Remove(floor.grasses[pos]);
+      }
+    }
+    floor.PlaceDownstairs(center);
+  }
 
   public static void WallPillars(Floor floor, Room room) {
     var positions = floor.EnumerateRoom(room).ToList();
@@ -669,6 +679,4 @@ public class Encounters {
       floor.Put(new Wall(pos));
     }
   }
-
-
 }

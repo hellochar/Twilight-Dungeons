@@ -21,6 +21,7 @@ public class Floor {
   public StaticEntityGrid<Trigger> triggers;
   public MovingEntityList<Body> bodies;
   public HashSet<Entity> entities;
+  public List<Boss> bosses;
   public List<ISteppable> steppableEntities;
 
   [field:NonSerialized] /// controller only (for now)
@@ -76,6 +77,7 @@ public class Floor {
     this.triggers = new StaticEntityGrid<Trigger>(this);
     this.bodies = new MovingEntityList<Body>(this, BodyPlacementBehavior);
     this.entities = new HashSet<Entity>();
+    this.bosses = new List<Boss>();
     this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
   }
@@ -119,6 +121,9 @@ public class Floor {
     if (entity is ISteppable s) {
       steppableEntities.Add(s);
     }
+    if (entity is Boss b) {
+      bosses.Add(b);
+    }
 
     if (entity is Tile tile) {
       tiles.Put(tile);
@@ -149,6 +154,9 @@ public class Floor {
 
     if (entity is ISteppable s) {
       steppableEntities.Remove(s);
+    }
+    if (entity is Boss boss) {
+      bosses.Remove(boss);
     }
 
     if (entity is Tile tile) {
@@ -196,7 +204,7 @@ public class Floor {
     return GetAdjacentTiles(pos).Select(x => x.actor).Where(x => x != null);
   }
 
-  internal List<Body> BodiesInCircle(Vector2Int center, int radius) {
+  internal List<Body> BodiesInCircle(Vector2Int center, float radius) {
     var bodies = new List<Body>();
     foreach (var pos in EnumerateCircle(center, radius)) {
       if (tiles[pos] != null && tiles[pos].body != null) {
@@ -206,7 +214,7 @@ public class Floor {
     return bodies;
   }
 
-  internal List<Actor> ActorsInCircle(Vector2Int center, int radius) {
+  internal List<Actor> ActorsInCircle(Vector2Int center, float radius) {
     return BodiesInCircle(center, radius).Where(b => b is Actor).Cast<Actor>().ToList();
   }
 

@@ -72,7 +72,7 @@ public class ItemController : MonoBehaviour {
 
       if (item is ITargetedAction<Entity> selectorUI) {
         var name = selectorUI.TargettedActionName;
-        Action action = () => ShowTargetingUIThenPerform(selectorUI, player, popup);
+        Action action = () => ShowTargetingUIThenPerform(selectorUI, player);
         buttons.Insert(0, (name, action));
       }
     }
@@ -100,7 +100,7 @@ public class ItemController : MonoBehaviour {
     }
   }
 
-  public static async void ShowTargetingUIThenPerform<T>(ITargetedAction<T> item, Player player, GameObject popup) where T : Entity {
+  public static async void ShowTargetingUIThenPerform<T>(ITargetedAction<T> item, Player player) where T : Entity {
     var floor = player.floor;
     try {
       var target = await MapSelector.SelectUI(item.Targets(player));

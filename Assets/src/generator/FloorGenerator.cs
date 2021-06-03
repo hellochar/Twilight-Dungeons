@@ -43,9 +43,9 @@ public class FloorGenerator {
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),
       () => generateSingleRoomFloor(10, 14, 7, 2, 2),
-      () => generateSingleRoomFloor(11, 20, 9, 3, 2),
-      () => generateSingleRoomFloor(12, 20, 9, 4, 3, true),
-      // () => generateBlobBossFloor(12),
+      () => generateSingleRoomFloor(11, 20, 9, 3, 2, true, Encounters.CenterDownstairs),
+      // () => generateSingleRoomFloor(12, 20, 9, 4, 3, true),
+      () => generateBlobBossFloor(12),
       () => generateSingleRoomFloor(13, 12, 12, 4, 3),
       () => generateSingleRoomFloor(14, 15, 11, 4, 3),
       () => generateSingleRoomFloor(15, 20, 9, 5, 3),
@@ -232,8 +232,8 @@ public class FloorGenerator {
       typeof(ChangErsWillow),
       typeof(StoutShrub)
     };
-    // AddMaturePlant(typeof(StoutShrub));
-    AddMaturePlant(Util.RandomPick(types));
+    AddMaturePlant(typeof(StoutShrub));
+    // AddMaturePlant(Util.RandomPick(types));
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);
@@ -303,7 +303,8 @@ public class FloorGenerator {
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, params Encounter[] extraEncounters) {
     Floor floor;
     do {
-      floor = tryGenerateSingleRoomFloor(depth, width, height);
+      floor = tryGenerateSingleRoomFloor(depth, width, height, depth != 11);
+      if (depth == 11) break;
     } while (!AreStairsConnected(floor));
     var room0 = floor.root;
     // X mobs
@@ -327,16 +328,11 @@ public class FloorGenerator {
     }
 
     EncounterGroup.Spice.GetRandom()(floor, room0);
-    #if UNITY_EDITOR
-    // Encounters.AddParasite(floor, room0);
-    #endif
-
     FloorUtils.TidyUpAroundStairs(floor);
-
     return floor;
   }
 
-  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height) {
+  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool placeDownstairs = true) {
     Floor floor = new Floor(depth, width, height);
 
     // fill with wall
@@ -352,7 +348,9 @@ public class FloorGenerator {
 
     FloorUtils.NaturalizeEdges(floor);
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
-    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
+    if (placeDownstairs) {
+      floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
+    }
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -386,7 +384,7 @@ public class FloorGenerator {
     floor.downstairsRoom = room0;
 
     // add boss
-    floor.Put(new BlobBoss(room0.center));
+    floor.Put(new Blobmother(room0.center));
 
     // fill remaining squares with soft grass
     foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {
@@ -435,7 +433,7 @@ public class FloorGenerator {
     floor.downstairsRoom = room0;
 
     // add boss
-    floor.Put(new BlobBoss(room0.center));
+    floor.Put(new Blobmother(room0.center));
 
     // fill remaining squares with soft grass
     foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {

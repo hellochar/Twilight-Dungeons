@@ -8,23 +8,33 @@ public class StoutShrub : Plant {
   [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 999999;
+    public readonly bool growChild;
+
+    public Mature(bool growChild = true) {
+      this.growChild = growChild;
+    }
 
     public override void Step() {}
 
     public override void BindTo(Plant plant) {
-      harvestOptions.Add(new Inventory(
-        new ItemSeed(typeof(StoutShrub), 3)
-      ));
+      base.BindTo(plant);
+      if (growChild) {
+        plant.floor?.Put(new StoutShrub(plant.pos, new Mature(false)));
+        harvestOptions.Add(new Inventory(
+          new ItemSeed(typeof(StoutShrub), 3)
+        ));
+      }
       harvestOptions.Add(new Inventory(new ItemThicket()));
       harvestOptions.Add(new Inventory(new ItemStoutShield()));
       harvestOptions.Add(new Inventory(new ItemHeartyVeggie()));
-      base.BindTo(plant);
     }
   }
 
   public StoutShrub(Vector2Int pos) : base(pos, new Seed()) {
     stage.NextStage = new Mature();
   }
+
+  private StoutShrub(Vector2Int pos, PlantStage stage) : base(pos, stage) {}
 }
 
 [Serializable]

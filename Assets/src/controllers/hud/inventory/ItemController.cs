@@ -84,7 +84,7 @@ public class ItemController : MonoBehaviour {
       flavor: ObjectInfo.GetFlavorTextFor(item),
       sprite: image,
       buttons: buttons
-    );
+    ).gameObject;
     var popupMatchItem = popup.AddComponent<ItemPopupController>();
     popupMatchItem.item = item;
   }

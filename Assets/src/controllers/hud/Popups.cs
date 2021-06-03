@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public static class Popups {
   private static GameObject PopupPrefab;
 
-  public static GameObject Create(
+  public static PopupController Create(
     string title,
     string category,
     string info,
@@ -63,7 +63,7 @@ public static class Popups {
       frameButton.onClick.AddListener(controller.Close);
     }
 
-    return popup;
+    return controller;
   }
 
   private static GameObject InstantiatePopup(Transform parent) {

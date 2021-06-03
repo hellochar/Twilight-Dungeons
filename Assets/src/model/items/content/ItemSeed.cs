@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class ItemSeed : Item, IConditionallyStackable {
+public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
   public Type plantType;
 
   public bool CanStackWith(IConditionallyStackable other) {
@@ -61,4 +63,8 @@ public class ItemSeed : Item, IConditionallyStackable {
   internal override string GetStats() => $"Plant on a Soil (requires 100 water).\nMatures in 320 turns.";
 
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
+
+  public string TargettedActionName => "Plant";
+  public IEnumerable<Soil> Targets(Player player) => player.floor.tiles.Where(tile => tile is Soil && tile.isVisible && tile.CanBeOccupied()).Cast<Soil>();
+  public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Soil) target);
 }

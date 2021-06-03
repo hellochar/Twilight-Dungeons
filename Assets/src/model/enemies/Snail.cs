@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -42,7 +43,7 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
 
 [Serializable]
 [ObjectInfo(spriteName: "snail-shell", flavorText: "A dinky little thing.")]
-public class ItemSnailShell : Item, IStackable {
+public class ItemSnailShell : Item, IStackable, ITargetedAction<Actor> {
   public ItemSnailShell(int stacks) {
     this.stacks = stacks;
   }
@@ -68,6 +69,14 @@ public class ItemSnailShell : Item, IStackable {
   }
 
   internal override string GetStats() => "Deals 3 damage when thrown.";
+
+  public string TargettedActionName => "Throw";
+
+  public IEnumerable<Actor> Targets(Player player) => player.ActorsInSight(Faction.Enemy).Concat(player.ActorsInSight(Faction.Neutral));
+
+  public void PerformTargettedAction(Player player, Entity target) {
+    player.SetTasks(new GenericPlayerTask(player, () => Throw(player, (Actor) target)));
+  }
 }
 
 [System.Serializable]
@@ -92,7 +101,7 @@ internal class InShellStatus : StackingStatus, IAttackDamageTakenModifier, IBase
 [System.Serializable]
 internal class SlimedStatus : Status, IActionCostModifier, IBaseActionModifier {
   public override bool isDebuff => true;
-  public SlimedStatus() : base() {}
+  public SlimedStatus() : base() { }
 
   public ActionCosts Modify(ActionCosts input) {
     input[ActionType.MOVE] *= 2f;

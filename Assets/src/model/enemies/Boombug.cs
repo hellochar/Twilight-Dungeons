@@ -18,11 +18,11 @@ public class Boombug : AIActor {
 
   protected override ActorTask GetNextTask() {
     if (MyRandom.value < 0.5f) {
-      return new WaitTask(actor, MyRandom.Range(1, 5));
+      return new WaitTask(this, MyRandom.Range(1, 5));
     } else {
-      var range5Tiles = actor.floor.EnumerateCircle(actor.pos, 5).Where((pos) => actor.floor.tiles[pos].CanBeOccupied());
+      var range5Tiles = floor.EnumerateCircle(pos, 5).Where((pos) => floor.tiles[pos].CanBeOccupied());
       var target = Util.RandomPick(range5Tiles);
-      return new MoveToTargetTask(actor, target);
+      return new MoveToTargetTask(this, target);
     }
   }
 
@@ -37,7 +37,7 @@ public class Boombug : AIActor {
 
 [Serializable]
 [ObjectInfo(spriteName: "boombug", flavorText: "This boombug corpse has been defused, but can be easily triggered again...")]
-public class ItemBoombugCorpse : Item, IStackable {
+public class ItemBoombugCorpse : Item, IStackable, ITargetedAction<Tile> {
   public ItemBoombugCorpse(int stacks) {
     this.stacks = stacks;
   }
@@ -63,6 +63,17 @@ public class ItemBoombugCorpse : Item, IStackable {
     player.floor.Put(new BoombugCorpse(position));
     stacks--;
   }
+
+  public string TargettedActionName => "Throw";
+  public IEnumerable<Tile> Targets(Player player) =>
+    player.floor
+      .EnumerateCircle(player.pos, player.visibilityRange)
+      .Select(p => player.floor.tiles[p])
+      .Where((p) => p.CanBeOccupied() && p.isVisible);
+
+  public void PerformTargettedAction(Player player, Entity target) {
+    player.task = new GenericPlayerTask(player, () => Throw(player, target.pos));
+  }
 }
 
 [Serializable]
@@ -70,7 +81,7 @@ public class ItemBoombugCorpse : Item, IStackable {
 public class BoombugCorpse : Actor, IDeathHandler {
   public override float turnPriority => 20;
   private bool exploded = false;
-  [field:NonSerialized] /// controller only
+  [field: NonSerialized] /// controller only
   public event Action OnExploded;
   public BoombugCorpse(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;

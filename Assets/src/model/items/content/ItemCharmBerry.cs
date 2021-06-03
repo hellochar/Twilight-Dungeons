@@ -4,8 +4,8 @@ using System.Linq;
 
 [Serializable]
 [ObjectInfo(spriteName: "charmberry", flavorText: "It's sweet, sour, and tart! Loved by creatures of all sorts.")]
-public class ItemCharmBerry : Item, IStackable {
-  public int stacksMax => 5;
+public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
+  public int stacksMax => 12;
 
   private int _stacks;
   public int stacks {
@@ -27,12 +27,30 @@ public class ItemCharmBerry : Item, IStackable {
 
   internal override string GetStats() => "Makes a target loyal to you; they will follow you and attack nearby enemies, but cannot traverse floors. Enemies will not re-direct their focus to attack them.";
 
-  public void Charm(AIActor actor) {
+  private void Charm(AIActor actor) {
     actor.SetAI(new CharmAI(actor));
     actor.statuses.Add(new CharmedStatus());
     actor.faction = Faction.Ally;
     stacks--;
   }
+
+  public string TargettedActionName => "Charm";
+
+  public IEnumerable<AIActor> Targets(Player player) => player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor).Cast<AIActor>();
+
+  public void PerformTargettedAction(Player player, Entity e) {
+    var actor = (AIActor) e;
+    player.SetTasks(
+      new ChaseTargetTask(player, actor),
+      new GenericPlayerTask(player, () => Charm(actor))
+    );
+  }
+}
+
+public interface ITargetedAction<out T> where T : Entity {
+  string TargettedActionName { get; }
+  IEnumerable<T> Targets(Player player);
+  void PerformTargettedAction(Player player, Entity target);
 }
 
 [Serializable]

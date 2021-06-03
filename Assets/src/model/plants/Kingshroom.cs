@@ -81,7 +81,7 @@ internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
 
 [Serializable]
 [ObjectInfo("colored_transparent_packed_657", "")]
-public class ItemKingshroomPowder : Item, IDurable {
+public class ItemKingshroomPowder : Item, IDurable, ITargetedAction<Actor> {
   public ItemKingshroomPowder() {
     durability = maxDurability;
   }
@@ -95,6 +95,18 @@ public class ItemKingshroomPowder : Item, IDurable {
       target.statuses.Add(new InfectedStatus());
       this.ReduceDurability();
     }
+  }
+
+  public string TargettedActionName => "Infect";
+
+  public IEnumerable<Actor> Targets(Player player) => player.floor.AdjacentActors(player.pos).Where((a) => a != player);
+
+  public void PerformTargettedAction(Player player, Entity e) {
+    var target = (Actor) e;
+    player.SetTasks(
+      new ChaseTargetTask(player, target),
+      new GenericPlayerTask(player, () => Infect(player, target))
+    );
   }
 
   internal override string GetStats() => "Infect an adjacent creature. Each turn, it takes 1 damage and spawns a Thick Mushroom adjacent to it.";

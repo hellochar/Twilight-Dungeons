@@ -72,7 +72,7 @@ public abstract class Tile : Entity {
   }
 
   public bool ObstructsVision() {
-    return BasePathfindingWeight() == 0 || body is IBlocksVision;
+    return BasePathfindingWeight() == 0 || (body is IBlocksVision || grass is IBlocksVision);
   }
 
   internal virtual bool CanBeOccupied() {

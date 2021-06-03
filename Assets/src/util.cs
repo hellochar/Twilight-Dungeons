@@ -143,8 +143,10 @@ public static class Util {
   }
 
   // diagonals only count as distance 1
-  public static int DiamondDistanceToPlayer(Actor a) => Math.Max(
-    Math.Abs(a.pos.x - GameModel.main.player.pos.x),
-    Math.Abs(a.pos.y - GameModel.main.player.pos.y)
+  public static int DiamondDistanceToPlayer(Actor a) => DiamondMagnitude(a.pos - GameModel.main.player.pos);
+
+  public static int DiamondMagnitude(Vector2Int v) => Math.Max(
+    Math.Abs(v.x),
+    Math.Abs(v.y)
   );
 }

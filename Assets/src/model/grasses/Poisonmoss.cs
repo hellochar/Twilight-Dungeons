@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Applies Poison to the creature standing over it every turn.\nGradually turns adjacent Grass into Poisonmoss.\nDies if surrounded by Walls or other Poisonmoss.")]
+[ObjectInfo(description: "Applies Poison to the creature standing over it every turn.\nGradually turns adjacent Grass into Poisonmoss.\nDies if surrounded by Walls and/or other Poisonmoss.")]
 class Poisonmoss : Grass, ISteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground;
 

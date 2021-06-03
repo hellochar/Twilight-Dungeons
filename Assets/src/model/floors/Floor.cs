@@ -259,6 +259,10 @@ public class Floor {
 
   /// returns true if the points have line of sight to each other
   public bool TestVisibility(Vector2Int source, Vector2Int end) {
+    // tiles can always see themselves and adjacent neighbors; this is important if the player is standing on a fern
+    if (Util.DiamondMagnitude(source - end) <= 1) {
+      return true;
+    }
     bool isVisible = true;
     if (tiles[end.x, end.y].ObstructsVision()) {
       var possibleEnds = GetAdjacentTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {

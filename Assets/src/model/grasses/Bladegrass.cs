@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Walk over to sharpen.\nOnce sharpened, the first creature walking into this Bladegrass takes 2 damage.\nSharpened Bladegrass dies on its own after 10 turns.")]
+[ObjectInfo(description: "Walk over to sharpen.\nOnce sharpened, the first creature walking into this Bladegrass takes 2 damage and removes the Bladegrass.\nSharpened Bladegrass dies on its own after 10 turns.")]
 public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public bool isSharp = false;

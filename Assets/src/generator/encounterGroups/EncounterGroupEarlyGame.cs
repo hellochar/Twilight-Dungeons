@@ -29,6 +29,7 @@ public static class EncounterGroupEarlyGame {
 
         { 0.2f, AddPoisonmoss },
         { 0.2f, AddViolets },
+        { 0.2f, FillWithFerns }
       },
 
       Spice = new EncounterBag {
@@ -53,6 +54,7 @@ public static class EncounterGroupEarlyGame {
 
         { 0.05f, AddEveningBells },
         { 0.05f, AddPoisonmoss },
+        { 0.05f, FillWithFerns },
 
         { 0.01f, AddNecroroot },
       },

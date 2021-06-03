@@ -261,6 +261,14 @@ public class Encounters {
     }
   }
 
+  public static void FillWithFerns(Floor floor, Room room) {
+    var occupiableTiles = floor.EnumerateRoomTiles(room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null);
+    foreach (var tile in occupiableTiles) {
+      var grass = new Fern(tile.pos);
+      floor.Put(grass);
+    }
+  }
+
   public static void AddBladegrass(Floor floor, Room room) => AddBladegrassImpl(floor, room, 1);
   public static void AddBladegrass4x(Floor floor, Room room) => AddBladegrassImpl(floor, room, 4);
   public static void AddBladegrassImpl(Floor floor, Room room, int mult) {

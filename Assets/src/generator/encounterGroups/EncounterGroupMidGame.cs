@@ -61,6 +61,7 @@ public static class EncounterGroupMidGame {
         { 0.1f, AddGrasper },
         { 0.1f, AddDeathbloom },
         { 0.1f, AddSpore },
+        { 0.1f, FillWithFerns },
 
         { 0.02f, AddNecroroot },
 

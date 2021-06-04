@@ -607,6 +607,21 @@ public class Encounters {
     }
   }
 
+  public static void AddFakeWall(Floor floor, Room room) {
+    var tiles = new List<Tile>();
+    // only spawn along the top edge
+    for (int x = 0; x < floor.width - 1; x++) {
+      var tile = floor.tiles[x, floor.height - 1];
+      if (tile is Wall && tile.grass == null && floor.tiles[x, floor.height - 2].CanBeOccupied()) {
+        tiles.Add(tile);
+      }
+    }
+    var t = Util.RandomPick(tiles);
+    if (t != null) {
+      floor.Put(new FakeWall(t.pos));
+    }
+  }
+
   public static void CenterDownstairs(Floor floor, Room room) {
     var center = new Vector2Int(room.max.x - 2, room.center.y);
     // clear radius two

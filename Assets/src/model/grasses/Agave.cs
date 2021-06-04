@@ -49,7 +49,7 @@ class ItemAgave : Item, IStackable {
       throw new CannotPerformActionException("Gather 4 stacks of Agave first.");
     }
     if (player.water < 25) {
-      throw new CannotPerformActionException("Need 25 water.");
+      throw new CannotPerformActionException("Need <color=lightblue>25</color> water.");
     }
     player.water -= 25;
     player.floor.Put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
@@ -62,7 +62,7 @@ class ItemAgave : Item, IStackable {
     return methods;
   }
 
-  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey (costs 25 water).";
+  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey - costs <color=lightblue>25</color> water.";
 }
 
 [Serializable]

@@ -5,6 +5,7 @@ using UnityEngine;
 
 [Serializable]
 public class StoutShrub : Plant {
+  public static int waterCost => 70;
   [Serializable]
   class Mature : PlantStage {
     public override float StepTime => 999999;

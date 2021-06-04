@@ -25,10 +25,12 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
     }
   }
   public int stacksMax => 20;
+  public int waterCost;
 
   public ItemSeed(Type plantType, int stacks) {
     this.plantType = plantType;
     this.stacks = stacks;
+    this.waterCost = (int?) plantType.GetProperty("waterCost")?.GetValue(null) ?? 100;
   }
 
   public ItemSeed(Type plantType) : this(plantType, 1) { }
@@ -51,16 +53,18 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
 
   private void Plant(Soil soil) {
     var player = GameModel.main.player;
-    if (player.water >= 100) {
-      player.water -= 100;
+    if (player.water >= waterCost) {
+      player.water -= waterCost;
       var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
       var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
       soil.floor.Put(plant);
       stacks--;
+    } else {
+      throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
     }
   }
 
-  internal override string GetStats() => $"Plant on a Soil (requires 100 water).\nMatures in 320 turns.";
+  internal override string GetStats() => $"Plant on a Soil - costs <color=lightblue>{waterCost}</color> water.\nMatures in 320 turns.";
 
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 

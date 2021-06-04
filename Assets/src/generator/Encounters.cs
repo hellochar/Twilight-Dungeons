@@ -533,6 +533,13 @@ public class Encounters {
   }
 
 
+  public static void AddOldDude(Floor floor, Room room){
+    Vector2Int stairPos= floor.upstairs.pos;
+    var livableTiles = floor.EnumerateCircle(stairPos, 4).Select(position => floor.tiles[position]).Where((Tile t) => t is Ground ? true : false);
+    floor.Put(new OldDude(Util.RandomPick(livableTiles).pos));
+  }
+
+
   public static void ScatteredBoombugs(Floor floor, Room room) => ScatteredBoombugsImpl(floor, room, 1);
   public static void ScatteredBoombugs4x(Floor floor, Room room) => ScatteredBoombugsImpl(floor, room, 4);
   public static void ScatteredBoombugsImpl(Floor floor, Room room, int mult) {

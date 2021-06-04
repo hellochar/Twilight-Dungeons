@@ -59,7 +59,8 @@ public class EncounterGroupShared : EncounterGroup {
       { 1f, MatureKingshroom },
       { 1f, MatureFrizzlefen },
       { 1f, MatureChangErsWillow },
-      { 1f, MatureStoutShrub }
+      { 1f, MatureStoutShrub },
+      { 1f, MatureBroodpuff },
     };
   }
 }

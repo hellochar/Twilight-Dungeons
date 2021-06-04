@@ -220,6 +220,7 @@ public class Encounters {
   public static void MatureFrizzlefen(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(Frizzlefen));
   public static void MatureChangErsWillow(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(ChangErsWillow));
   public static void MatureStoutShrub(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(StoutShrub));
+  public static void MatureBroodpuff(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(Broodpuff));
 
   private static void AddPlantInCenter(Floor floor, Room room, System.Type type) {
     Tile tile = FloorUtils.TilesFromCenter(floor, room).FirstOrDefault();

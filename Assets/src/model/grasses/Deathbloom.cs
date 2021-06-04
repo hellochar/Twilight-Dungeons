@@ -49,7 +49,7 @@ internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
   public ItemDeathbloomFlower(int stacks) {
     this.stacks = stacks;
   }
-  public int stacksMax => 5;
+  public int stacksMax => 10;
 
   private int _stacks;
   public int stacks {
@@ -70,10 +70,11 @@ internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
     stacks--;
   }
 
-  internal override string GetStats() => "Eat to get the Frenzied Status for 10 turns, providing +2 attack damage.";
+  internal override string GetStats() => "Eat to get the Frenzied Status, providing +2 attack damage for 10 turns, but gaining the Weakness Status afterwards.";
 }
 
 [System.Serializable]
+[ObjectInfo(spriteName: "3Red", flavorText: "You're engulfed in a rage!")]
 internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
   public FrenziedStatus(int turnsLeft) {
     this.stacks = turnsLeft;
@@ -83,9 +84,27 @@ internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
     stacks--;
   }
 
-  public override string Info() => $"You deal +2 damage.\n{this.stacks} turns remaining.";
+  public override string Info() => $"You deal +2 damage.\n{this.stacks} turns remaining.\nWhen Frenzied ends, gain Weakness.";
 
   public int Modify(int input) {
     return input + 2;
+  }
+}
+
+[System.Serializable]
+[ObjectInfo(spriteName: "weakness", flavorText: "Your muscles are failing you!")]
+internal class WeaknessStatus : StackingStatus, IAttackDamageModifier {
+  public WeaknessStatus(int turnsLeft) {
+    this.stacks = turnsLeft;
+  }
+
+  public override void Step() {
+    stacks--;
+  }
+
+  public override string Info() => $"You deal -1 damage.\n{this.stacks} turns remaining.";
+
+  public int Modify(int input) {
+    return input - 1;
   }
 }

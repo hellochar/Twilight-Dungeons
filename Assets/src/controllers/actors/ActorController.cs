@@ -85,7 +85,7 @@ public class ActorController : BodyController,
     if (animator != null) {
       animator.SetBool(status.GetType().Name, true);
     }
-    var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, transform);
+    var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, sprite.transform);
     if (obj != null) {
       obj.GetComponent<StatusController>().status = status;
     }

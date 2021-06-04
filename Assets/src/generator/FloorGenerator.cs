@@ -112,6 +112,7 @@ public class FloorGenerator {
     // Encounters.AddNecroroot(floor, floor.root);
     // Encounters.AddPoisonmoss(floor, floor.root);
     // Encounters.FillWithFerns(floor, floor.root);
+    // Encounters.AddFakeWall(floor, floor.root);
     #endif
 
     /// add a signpost onto the floor
@@ -230,10 +231,13 @@ public class FloorGenerator {
       typeof(Kingshroom),
       typeof(Frizzlefen),
       typeof(ChangErsWillow),
-      typeof(StoutShrub)
+      typeof(StoutShrub),
+      typeof(Broodpuff)
     };
-    AddMaturePlant(typeof(StoutShrub));
-    // AddMaturePlant(Util.RandomPick(types));
+    // AddMaturePlant(typeof(StoutShrub));
+    // AddMaturePlant(typeof(Broodpuff));
+    AddMaturePlant(Util.RandomPick(types));
+    AddMaturePlant(typeof(Broodpuff));
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);

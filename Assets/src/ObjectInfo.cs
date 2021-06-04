@@ -47,10 +47,6 @@ public class ObjectInfo {
       spriteName = "slimed",
       flavorText = "Sticky, gooey, and warm. Eeeew."
     },
-    [typeof(FrenziedStatus)] = new ObjectInfo {
-      spriteName = "3Red",
-      flavorText = "You're engulfed in a rage!"
-    },
     [typeof(StatusWild)] = new ObjectInfo {
       spriteName = "wildwood-leaf",
       flavorText = "This place feels tight and clausterphobic!"

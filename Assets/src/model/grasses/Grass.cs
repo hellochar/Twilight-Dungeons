@@ -13,7 +13,7 @@ public class Grass : Entity {
     /// do not allow moving grass
     set { }
   }
-  public object BodyModifier { get; protected set; }
+  public virtual object BodyModifier { get; protected set; }
 
   [NonSerialized] /// controller only
   public OnNoteworthyAction OnNoteworthyAction = delegate {};

@@ -23,7 +23,7 @@ public class EnemiesLeft : MonoBehaviour {
     } else {
     switch (floor.EnemiesLeft()) {
       case 0:
-        Hidden();
+        Shown("Cleared!");
         break;
       case var x when x > 3:
         Shown("Defeat all enemies");

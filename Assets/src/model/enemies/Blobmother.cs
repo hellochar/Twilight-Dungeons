@@ -4,23 +4,35 @@ using UnityEngine;
 
 [Serializable]
 public abstract class Boss : AIActor {
+  public bool isSeen = false;
+
+  internal bool EnsureSeen() {
+    if (!isSeen) {
+      isSeen = true;
+      AudioClipStore.main.bossStart.Play();
+      return true;
+    }
+    return false;
+  }
+
   protected Boss(Vector2Int pos) : base(pos) { }
 }
 
 [Serializable]
-[ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.")]
+[ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.\nRemoves Blobs and Blob Slime on death.")]
 public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
   public Blobmother(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 24;
+    hp = baseMaxHp = 36;
     faction = Faction.Enemy;
   }
 
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);
     // kill all blobs on the map
-    var blobs = floor.bodies.Where(b => b is Blob).Cast<Blob>().ToList();
-    foreach (var b in blobs) {
+    var blobs = floor.bodies.Where(b => b is Blob).Cast<Entity>();
+    var slime = floor.grasses.Where(b => b is BlobSlime);
+    foreach (var b in blobs.Concat(slime).ToArray()) {
       b.Kill(this);
     }
   }
@@ -39,7 +51,6 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   protected override ActorTask GetNextTask() {
     if (isVisible) {
       if (IsNextTo(GameModel.main.player)) {
-        // TODO make blob attack a 3x3 area, telegraphs for 2 turns
         return new AttackGroundTask(this, GameModel.main.player.pos, 1);
       } else {
         return new ChaseTargetTask(this, GameModel.main.player);
@@ -55,13 +66,9 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
 }
 
 [Serializable]
-[ObjectInfo("slime", description: "Deals 1 damage to any non-Blob that walks into it.\nLasts 12 turns.")]
+[ObjectInfo("slime", description: "Deals 1 damage to any non-Blob that walks into it.\nRemoved when you walk into it, or the Blobmother dies.")]
 public class BlobSlime : Grass, IActorEnterHandler {
   public BlobSlime(Vector2Int pos) : base(pos) {}
-
-  protected override void HandleEnterFloor() {
-    AddTimedEvent(12, KillSelf);
-  }
 
   public void HandleActorEnter(Actor who) {
     if (!(who is Blob || who is Blobmother)) {

@@ -365,19 +365,18 @@ public class FloorGenerator {
   }
 
   public Floor generateBlobBossFloor(int depth) {
-    Floor floor = new Floor(depth, 14, 14);
+    Floor floor = new BossFloor(depth, 15, 15);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
     }
 
     Room room0 = new Room(floor);
-    FloorUtils.PutGround(floor, floor.EnumerateCircle(room0.center, 7));
-    FloorUtils.SurroundWithWalls(floor);
-    FloorUtils.NaturalizeEdges(floor);
-
-    Encounters.WallPillars(floor, room0);
-    Encounters.WallPillars(floor, room0);
+    FloorUtils.PutGround(floor, floor.EnumerateCircle(room0.center, 6.99f));
+    floor.Put(new Wall(room0.center + new Vector2Int(3, 3)));
+    floor.Put(new Wall(room0.center + new Vector2Int(3, -3)));
+    floor.Put(new Wall(room0.center + new Vector2Int(-3, -3)));
+    floor.Put(new Wall(room0.center + new Vector2Int(-3, 3)));
 
     floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
@@ -388,12 +387,7 @@ public class FloorGenerator {
     floor.downstairsRoom = room0;
 
     // add boss
-    floor.Put(new Blobmother(room0.center));
-
-    // fill remaining squares with soft grass
-    foreach (var tile in floor.tiles.Where(tile => tile.grass == null && tile is Ground)) {
-      floor.Put(new SoftGrass(tile.pos));
-    }
+    floor.Put(new Blobmother(room0.center + Vector2Int.right * 3));
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

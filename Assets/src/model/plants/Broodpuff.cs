@@ -82,11 +82,12 @@ public class Leecher : AIActor, IAttackHandler {
   public void Pickup() {
     var player = GameModel.main.player;
     player.inventory.AddItem(new ItemLeecher(durability));
-    Kill(player);
+    KillSelf();
   }
 
   public override void HandleDeath(Entity source) {
-    if (!(source is Player)) {
+    base.HandleDeath(source);
+    if (!(source == this)) {
       floor.Put(new ItemOnGround(pos, new ItemLeecher(durability)));
     }
   }
@@ -100,9 +101,6 @@ public class Leecher : AIActor, IAttackHandler {
     } else {
       return new WaitTask(this, 1);
     }
-  }
-
-  void AttackAoe() {
   }
 
   public void OnAttack(int damage, Body target) {
@@ -123,47 +121,29 @@ public class ItemBacillomyte : Item, IUsable, IDurable {
 
   public int durability { get; set; }
   public int maxDurability => 4;
-  internal override string GetStats() => "Use to grow Bacillomytes around you. Enemies standing over Bacillomyte take 1 extra attack damage.\nBacillomyte automatically spreads on Grass-less Tiles.";
+  internal override string GetStats() => "Use to grow Bacillomytes around you. Enemies standing over Bacillomyte take 1 extra attack damage.";
 
   public void Use(Actor a) {
-    if (a.tile is Ground) {
-      a.floor.Put(new Bacillomyte(a.pos));
-    }
-    foreach (var tile in a.floor.GetCardinalNeighbors(a.pos)) {
-      if (tile is Ground) {
-        a.floor.Put(new Bacillomyte(tile.pos));
-      }
+    foreach (var tile in a.floor.GetAdjacentTiles(a.pos).Where(Bacillomyte.CanOccupy)) {
+      a.floor.Put(new Bacillomyte(tile.pos));
     }
     durability--;
   }
 }
 
 [Serializable]
-[ObjectInfo("bacillomyte", description: "Enemies standing over Bacillomyte take 1 extra attack damage.\nAutomatically spreads on Grass-less Tiles.")]
-public class Bacillomyte : Grass, ISteppable {
-  public static bool CanOccupy(Tile tile) => tile is Ground && tile.grass == null;
+[ObjectInfo("bacillomyte", description: "Enemies standing over Bacillomyte take 1 extra attack damage.")]
+public class Bacillomyte : Grass {
+  public static bool CanOccupy(Tile tile) => tile is Ground;
   private class BacillomyteBodyModifier : IAttackDamageTakenModifier {
     public static BacillomyteBodyModifier instance = new BacillomyteBodyModifier();
     public int Modify(int input) {
       return input + 1;
     }
   }
-  public Bacillomyte(Vector2Int pos) : base(pos) {
-    timeNextAction = timeCreated + MyRandom.Range(1, 4);
-  }
+  public Bacillomyte(Vector2Int pos) : base(pos) { }
 
   public override object BodyModifier => body is Actor a && a.faction != Faction.Ally ? BacillomyteBodyModifier.instance : null;
-
-  public float timeNextAction { get; set; }
-  public float turnPriority => 50;
-  public float Step() {
-    var tile = Util.RandomPick(floor
-      .GetAdjacentTiles(pos)
-      /// Spread into unoccupied tiles
-      .Where(CanOccupy)
-    );
-    return 3;
-  }
 }
 
 [Serializable]

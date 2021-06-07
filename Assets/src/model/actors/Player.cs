@@ -41,6 +41,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
   public override float turnPriority => 10;
   [field:NonSerialized] /// controller only, int delta
   public event Action<int> OnChangeWater;
+  [field:NonSerialized]
+  public event Action OnBossNewlySeen;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
@@ -64,6 +66,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     }
     GameModel.main.EnqueueEvent(() => {
       var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
+      foreach(var e in visibleEnemies) {
+        if (e is Boss b) {
+          if (b.EnsureSeen()) {
+            OnBossNewlySeen?.Invoke();
+          }
+        }
+      }
       // if there's a newly visible enemy from last turn, cancel the current move task
       var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => lastVisibleEnemies != null && !lastVisibleEnemies.Contains(enemy));
       if (isNewlyVisibleEnemy && task is FollowPathTask) {

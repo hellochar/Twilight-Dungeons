@@ -8,6 +8,12 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamageHandler {
   Player player => (Player) actor;
+  public static PlayerController current;
+  private AudioSource sfxAudio;
+
+  void Awake() {
+    PlayerController.current = this;
+  }
 
   public override void Start() {
     base.Start();
@@ -16,6 +22,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemRemoved += HandleEquipmentItemRemoved;
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
+    this.sfxAudio = GetComponent<AudioSource>();
   }
 
   private void HandleChangeWater(int delta) {
@@ -87,7 +94,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   }
 
   public void HandleMove(Vector2Int arg1, Vector2Int arg2) {
-    AudioClipStore.main.move.PlayAtPoint(transform.position, 0.5f);
+    AudioClipStore.main.move.PlayAtPoint(transform.position, 0.25f);
   }
 
   public override void HandleHeal(int heal) {
@@ -128,6 +135,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   private void PlayEquipSound() {
     AudioClipStore.main.playerEquip.PlayAtPoint(transform.position);
+  }
+
+  public void PlaySFX(AudioClip clip, float volume = 1) {
+    sfxAudio.PlayOneShot(clip, volume);
   }
 
   public override void Update() {

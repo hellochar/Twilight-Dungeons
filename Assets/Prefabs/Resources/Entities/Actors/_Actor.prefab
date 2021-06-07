@@ -232,7 +232,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9ab40aeeae06544bb2c5e830af1f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDamageMarks: 1
   bloodColor: {r: 0.75, g: 0, b: 0, a: 0.5}
+  hideWaitTask: 0
 --- !u!114 &3483431341202102275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,13 +261,13 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 90e1d83d695c53d43ac4bc5e27d533fb, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.25
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 93
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500

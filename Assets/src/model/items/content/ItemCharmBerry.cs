@@ -36,7 +36,7 @@ public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
 
   public string TargettedActionName => "Charm";
 
-  public IEnumerable<AIActor> Targets(Player player) => player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor).Cast<AIActor>();
+  public IEnumerable<AIActor> Targets(Player player) => player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor && !(a is Boss)).Cast<AIActor>();
 
   public void PerformTargettedAction(Player player, Entity e) {
     var actor = (AIActor) e;

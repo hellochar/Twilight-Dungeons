@@ -22,6 +22,7 @@ public class Floor {
   public MovingEntityList<Body> bodies;
   public HashSet<Entity> entities;
   public List<Boss> bosses;
+  public IEnumerable<Boss> seenBosses => bosses.Where(b => b.isSeen);
   public List<ISteppable> steppableEntities;
 
   [field:NonSerialized] /// controller only (for now)
@@ -115,7 +116,7 @@ public class Floor {
     return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Count();
   }
 
-  public void Put(Entity entity) {
+  public virtual void Put(Entity entity) {
     this.entities.Add(entity);
 
     if (entity is ISteppable s) {
@@ -232,7 +233,7 @@ public class Floor {
     }
   }
 
-  internal void RemoveVisibility(Player player, Vector2Int? position = null) {
+  internal virtual void RemoveVisibility(Player player, Vector2Int? position = null) {
     foreach (var pos in EnumerateCircle(position ?? player.pos, player.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       if (t.visibility == TileVisiblity.Visible) {
@@ -248,7 +249,7 @@ public class Floor {
     }
   }
 
-  internal void AddVisibility(Player player, Vector2Int? position = null) {
+  internal virtual void AddVisibility(Player player, Vector2Int? position = null) {
     foreach (var pos in EnumerateCircle(player.pos, player.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(player.pos, pos);
@@ -434,6 +435,12 @@ public class Floor {
       Put(new HardGround(ground.pos));
     }
   }
+}
+
+// just a special marker
+[Serializable]
+public class BossFloor : Floor {
+  public BossFloor(int depth, int width, int height) : base(depth, width, height) {}
 }
 
 [Serializable]

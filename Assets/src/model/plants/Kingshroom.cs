@@ -147,6 +147,7 @@ internal class ItemGerm : Item, IDurable, IUsable {
     foreach (var tile in a.floor.GetAdjacentTiles(a.pos).Where((t) => t.CanBeOccupied())) {
       a.floor.Put(new ThickMushroom(tile.pos));
     }
+    AudioClipStore.main.summon.Play();
     this.ReduceDurability();
   }
 

@@ -50,6 +50,7 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 
   public void Summon(Player player, Vector2Int position) {
     player.floor.Put(new Leecher(position, durability));
+    AudioClipStore.main.summon.Play();
     Destroy();
   }
 

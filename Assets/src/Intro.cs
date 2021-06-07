@@ -82,7 +82,7 @@ public class Intro : MonoBehaviour {
     while (Vector3.Distance(player.transform.position, target) > Mathf.Epsilon) {
       Vector3 currentTarget = player.transform.position;
       currentTarget.x += 1;
-      playerMove.PlayAtPoint(player.transform.position, 0.5f);
+      playerMove.Play(0.5f);
       while (Vector3.Distance(player.transform.position, currentTarget) > .005f) {
         player.transform.position = Vector3.Lerp(player.transform.position, currentTarget, 20 * Time.deltaTime);
         yield return new WaitForEndOfFrame();

@@ -54,7 +54,10 @@ public class ActorController : BodyController,
   }
 
   public virtual void HandleDeath(Entity source) {
-    if (source == GameModel.main.player) {
+    var isNextToPlayer = source.IsNextTo(GameModel.main.player);
+    var wasKilledByPlayerOrAlly = source is Actor a && a.faction == Faction.Ally;
+    var wasKilledBySelf = source == actor;
+    if ((wasKilledByPlayerOrAlly || isNextToPlayer) && !wasKilledBySelf) {
       var audioSource = GetComponent<AudioSource>();
       if (audioSource != null) {
         audioSource.pitch = Random.Range(0.75f, 1.25f);

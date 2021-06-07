@@ -30,7 +30,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (Math.Abs(delta) <= 1) {
       return;
     }
-    AudioClipStore.main.playerChangeWater.PlayAtPoint(transform.position);
+    AudioClipStore.main.playerChangeWater.Play();
     var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
     if (delta > 0) {
       worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("+0");
@@ -90,23 +90,23 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   }
 
   private void HandleInventoryItemAdded(Item arg1, Entity arg2) {
-    AudioClipStore.main.playerPickupItem.PlayAtPoint(transform.position);
+    AudioClipStore.main.playerPickupItem.Play();
   }
 
   public void HandleMove(Vector2Int arg1, Vector2Int arg2) {
-    AudioClipStore.main.move.PlayAtPoint(transform.position, 0.25f);
+    AudioClipStore.main.move.Play(0.25f);
   }
 
   public override void HandleHeal(int heal) {
     base.HandleHeal(heal);
-    AudioClipStore.main.playerHeal.PlayAtPoint(transform.position);
+    AudioClipStore.main.playerHeal.Play();
   }
 
   public override void HandleTakeAnyDamage(int dmg) {
     if (dmg > 0) {
       var store = AudioClipStore.main;
       var clip = Util.RandomPickParams(store.playerHurt1, store.playerHurt2, store.playerHurt3);
-      clip.PlayAtPoint(transform.position, 3f);
+      clip.Play(3f);
     }
     base.HandleTakeAnyDamage(dmg);
     /// treat tutorial specially
@@ -128,13 +128,13 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   private void HandleEquipmentDestroyed(Item obj) {
     IEnumerator DelayedPlay() {
       yield return new WaitForSeconds(0.25f);
-      AudioClipStore.main.playerEquipmentBreak.PlayAtPoint(transform.position);
+      AudioClipStore.main.playerEquipmentBreak.Play();
     }
     StartCoroutine(DelayedPlay());
   }
 
   private void PlayEquipSound() {
-    AudioClipStore.main.playerEquip.PlayAtPoint(transform.position);
+    AudioClipStore.main.playerEquip.Play();
   }
 
   public void PlaySFX(AudioClip clip, float volume = 1) {
@@ -171,11 +171,11 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (action is WaitBaseAction) {
       var waitPrefab = Resources.Load<GameObject>("Effects/Wait");
       var wait = Instantiate(waitPrefab, new Vector3(actor.pos.x, actor.pos.y + 0.9f, 0), Quaternion.identity);
-      AudioClipStore.main.playerWait.PlayAtPoint(transform.position);
+      AudioClipStore.main.playerWait.Play();
     } else if (action is GenericBaseAction) {
-      AudioClipStore.main.playerGeneric.PlayAtPoint(transform.position);
+      AudioClipStore.main.playerGeneric.Play();
     } else if (action.Type == ActionType.ATTACK) {
-      AudioClipStore.main.attack.PlayAtPoint(transform.position);
+      AudioClipStore.main.attack.Play();
     }
     base.HandleActionPerformed(action, initial);
   }

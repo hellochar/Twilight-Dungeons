@@ -22,6 +22,7 @@ public class AudioClipStore : MonoBehaviour {
   public AudioClip playerWait;
   public AudioClip popupOpen;
   public AudioClip popupClose;
+  public AudioClip summon;
   public AudioClip uiError;
 
   void Awake() {
@@ -30,14 +31,7 @@ public class AudioClipStore : MonoBehaviour {
 }
 
 public static class AudioClipExtensions {
-  public static void PlayAtPoint(this AudioClip clip, Vector3 position, float volume = 1) {
-    // if (Settings.main.sfx) {
-    //   AudioSource.PlayClipAtPoint(clip, position, volume);
-    // }
-    PlayerController.current.PlaySFX(clip, volume);
-  }
-
   public static void Play(this AudioClip clip, float volume = 1) {
-    clip.PlayAtPoint(Camera.main.transform.position, volume);
+    PlayerController.current.PlaySFX(clip, volume);
   }
 }

@@ -234,14 +234,16 @@ public class FloorGenerator {
       typeof(StoutShrub),
       typeof(Broodpuff)
     };
-    // AddMaturePlant(typeof(Broodpuff));
     AddMaturePlant(Util.RandomPick(types));
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
+    AddMaturePlant(typeof(Broodpuff));
     floor.depth = 20;
+    AddMaturePlant(typeof(Kingshroom));
+    // Encounters.AddDeathbloom(floor, room0);
     // Encounters.AddMushroom(floor, room0);
     // Encounters.AddGrasper(floor, room0);
     // Encounters.AddHydra(floor, room0);

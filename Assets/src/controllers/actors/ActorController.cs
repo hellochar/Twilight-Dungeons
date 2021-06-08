@@ -8,6 +8,7 @@ public class ActorController : BodyController,
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
   public bool hideWaitTask = false;
+  protected GameObject statuses;
 
   // Start is called before the first frame update
   public override void Start() {
@@ -18,6 +19,7 @@ public class ActorController : BodyController,
     base.Start();
 
     animator = sprite?.GetComponent<Animator>();
+    statuses = transform.Find("Statuses")?.gameObject;
 
     actor.OnAttackGround += HandleAttackGround;
 
@@ -88,7 +90,7 @@ public class ActorController : BodyController,
     if (animator != null) {
       animator.SetBool(status.GetType().Name, true);
     }
-    var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, sprite.transform);
+    var obj = PrefabCache.Statuses.MaybeInstantiateFor(status, statuses.transform);
     if (obj != null) {
       obj.GetComponent<StatusController>().status = status;
     }

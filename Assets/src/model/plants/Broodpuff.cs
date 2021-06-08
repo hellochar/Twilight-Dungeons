@@ -60,7 +60,7 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
     player.floor
       .EnumerateCircle(player.pos, player.visibilityRange)
       .Select(p => player.floor.tiles[p])
-      .Where((p) => p.CanBeOccupied() && p.isVisible);
+      .Where((p) => p.CanBeOccupied() && p.visibility == TileVisiblity.Visible);
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.task = new GenericPlayerTask(player, () => Summon(player, target.pos));
@@ -82,8 +82,10 @@ public class Leecher : AIActor, IAttackHandler {
 
   public void Pickup() {
     var player = GameModel.main.player;
-    player.inventory.AddItem(new ItemLeecher(durability));
-    KillSelf();
+    player.inventory.AddItem(new ItemLeecher(durability), this);
+    // do NOT "kill" to prevent infinite triggers
+    floor.Remove(this);
+    // KillSelf();
   }
 
   public override void HandleDeath(Entity source) {

@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5211391864610955038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8819874528912342488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adabce2a56d672744b87120a53fab0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showDamageMarks: 1
+  bloodColor: {r: 0.75, g: 0, b: 0, a: 0.5}
+  hideWaitTask: 0
 --- !u!1001 &2680131611324345458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -78,5 +93,13 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
+    - {fileID: 276458969080366603, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
+--- !u!1 &8819874528912342488 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6870171582872785322, guid: 67481c8900921ad45b4da8aed5f1cb43,
+    type: 3}
+  m_PrefabInstance: {fileID: 2680131611324345458}
+  m_PrefabAsset: {fileID: 0}

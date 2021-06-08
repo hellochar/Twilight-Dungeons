@@ -82,6 +82,10 @@ public class Body : Entity {
     return amount;
   }
 
+  public void AddMaxHP(int amount) {
+    baseMaxHp += amount;
+  }
+
   public void Attacked(int damage, Actor source) {
     TakeAttackDamage(damage, source);
   }

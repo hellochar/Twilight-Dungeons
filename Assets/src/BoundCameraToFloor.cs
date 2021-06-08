@@ -16,7 +16,7 @@ public class BoundCameraToFloor : MonoBehaviour {
   }
 
   // Update is called once per frame
-  void Update() {
+  void LateUpdate() {
     /// bug - if the current floor is less than 1 bounds, the camera shakes
 
     bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-paddingLeft, -paddingBottom, 0);

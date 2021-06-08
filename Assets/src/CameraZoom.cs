@@ -15,6 +15,12 @@ public class CameraZoom : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
+    var camera = Camera.main;
+    if (zoomAnimation == null && Mathf.Abs(camera.orthographicSize - wantedZoom) < 0.01) {
+      camera.orthographicSize = wantedZoom;
+    } else {
+      camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, wantedZoom, 0.05f);
+    }
     if (Input.touchSupported) {
       // Pinch to zoom
       if (Input.touchCount == 2) {
@@ -47,14 +53,11 @@ public class CameraZoom : MonoBehaviour {
     var scalar = Mathf.Pow(1.1f, -scroll);
     wantedZoom = Mathf.Clamp(camera.orthographicSize * scalar, minZoom, maxZoom);
     PlayerPrefs.SetFloat("zoom", wantedZoom);
-    if (zoomAnimation == null) {
-      camera.orthographicSize = wantedZoom;
-    }
   }
 
   Coroutine zoomAnimation = null;
   internal void PlayFloorZoomAnimation() {
-    zoomAnimation = StartCoroutine(Transitions.AnimateLinear(1f, (t) => {
+    zoomAnimation = StartCoroutine(Transitions.Animate(1f, (t) => {
       Camera.main.orthographicSize = EasingFunctions.EaseOutSine(wantedZoom * 0.85f, wantedZoom, t);
     }, () => zoomAnimation = null));
   }

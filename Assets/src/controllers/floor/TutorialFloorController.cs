@@ -170,7 +170,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     }
     var rt = gameObject.GetComponent<RectTransform>();
     var target = rt.anchoredPosition;
-    StartCoroutine(Transitions.AnimateLinear(duration, (t) => {
+    StartCoroutine(Transitions.Animate(duration, (t) => {
       rt.anchoredPosition = Vector2.Lerp(new Vector2(startX, target.y), target, EasingFunctions.EaseOutCubic(0, 1, t));
       if (t == 1 && dpad != null) {
         dpad.enabled = true;

@@ -9,19 +9,40 @@ public abstract class Boss : AIActor {
   internal bool EnsureSeen() {
     if (!isSeen) {
       isSeen = true;
-      AudioClipStore.main.bossStart.Play();
       return true;
     }
     return false;
+  }
+
+  public override void HandleDeath(Entity source) {
+    base.HandleDeath(source);
+    floor.Put(new HeartTrigger(pos));
   }
 
   protected Boss(Vector2Int pos) : base(pos) { }
 }
 
 [Serializable]
+class HeartTrigger : Trigger {
+  public HeartTrigger(Vector2Int pos) : base(pos, null) {
+  }
+
+  public override void HandleActorEnter(Actor who) {
+    if (who is Player player) {
+      player.AddMaxHP(4);
+      player.Replenish();
+      SpriteFlyAnimation.Create(MasterSpriteAtlas.atlas.GetSprite("heart_animated_2_0"), Util.withZ(pos), GameObject.Find("Hearts"));
+      KillSelf();
+    }
+  }
+}
+
+[Serializable]
 [ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.\nRemoves Blobs and Blob Slime on death.")]
 public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
-  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
+  // moves slightly faster than other blobs so you can get the blobmother to get hit by many
+  // blobs at once
+  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority - 1;
   public Blobmother(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 36;
     faction = Faction.Enemy;

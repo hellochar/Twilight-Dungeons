@@ -22,7 +22,7 @@ public class EzraController : ActorController {
   IEnumerator WinGame() {
     InteractionController.isInputAllowed = false;
     StartCoroutine(Transitions.FadeAudio(Camera.main.GetComponent<AudioSource>(), 1, 0));
-    yield return StartCoroutine(ZoomInCamera());
+    yield return StartCoroutine(Transitions.ZoomAndPanCamera(4));
 
     /// lasts 3 seconds
     var playerController = GameModelController.main.CurrentFloorController.GameObjectFor(GameModel.main.player).GetComponent<PlayerController>();
@@ -48,16 +48,4 @@ public class EzraController : ActorController {
     yield return StartCoroutine(Transitions.FadeTo(blackOverlay.GetComponent<Image>(), 5));
   }
 
-  IEnumerator ZoomInCamera() {
-    var duration = 1;
-    var start = Time.time;
-    var t = 0f;
-    var camera = Camera.main.GetComponent<Camera>();
-    var startSize = camera.orthographicSize;
-    do {
-      t = (Time.time - start) / duration;
-      camera.orthographicSize = EasingFunctions.EaseInQuad(startSize, 4, t);
-      yield return new WaitForEndOfFrame();
-    } while (t < 1);
-  }
 }

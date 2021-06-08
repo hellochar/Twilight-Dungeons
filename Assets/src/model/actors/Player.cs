@@ -18,6 +18,16 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
       OnChangeWater?.Invoke(diff);
     }
   }
+
+  // heal to full and remove all debuffs
+  internal void Replenish() {
+    Heal(maxHp - hp);
+    var debuffs = statuses.list.Where(s => s.isDebuff).ToArray();
+    foreach (var debuff in debuffs) {
+      statuses.Remove(debuff);
+    }
+  }
+
   private float m_visibilityRange = 6.99f;
   public float visibilityRange {
     get => m_visibilityRange;

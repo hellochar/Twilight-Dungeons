@@ -9,11 +9,28 @@ public class BossHPController : MonoBehaviour {
   public Image barFilled;
   public TMPro.TMP_Text hpText;
   public TMPro.TMP_Text bossName;
+  Animator animator;
 
   void Start() {
     GameModel.main.OnPlayerChangeFloor += HandleChangeFloor;
-    GameModel.main.player.OnBossNewlySeen += UpdateActive;
+    GameModel.main.player.OnBossNewlySeen += HandleBossNewlySeen;
+    animator = GetComponent<Animator>();
     UpdateActive();
+  }
+
+  void OnDestroy() {
+    GameModel.main.OnPlayerChangeFloor -= HandleChangeFloor;
+    GameModel.main.player.OnBossNewlySeen -= HandleBossNewlySeen;
+  }
+
+  void HandleBossNewlySeen() {
+    UpdateActive();
+    animator.enabled = true;
+    animator.Play("Animate In");
+  }
+
+  public void AnimationDone() {
+    animator.enabled = false;
   }
 
   void UpdateActive() {
@@ -23,11 +40,6 @@ public class BossHPController : MonoBehaviour {
 
   private void HandleChangeFloor(Floor newFloor, Floor oldFloor) {
     UpdateActive();
-  }
-
-  void OnDestroy() {
-    GameModel.main.OnPlayerChangeFloor -= HandleChangeFloor;
-    GameModel.main.player.OnBossNewlySeen -= UpdateActive;
   }
 
   void Update() {

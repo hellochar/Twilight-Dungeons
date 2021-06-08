@@ -9,6 +9,7 @@ public class AudioClipStore : MonoBehaviour {
   public AudioClip attack;
   public AudioClip attackMiss;
   public AudioClip bossStart;
+  public AudioClip bossDeath;
   public AudioClip death;
   public AudioClip plantHarvest;
   public AudioClip playerChangeWater;

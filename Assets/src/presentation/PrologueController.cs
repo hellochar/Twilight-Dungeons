@@ -51,7 +51,7 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
 
   IEnumerator FadeText() {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
-    return Transitions.AnimateLinear(2, (t) => {
+    return Transitions.Animate(2, (t) => {
       textComponent.color = Color.Lerp(new Color(1, 1, 1, 1), new Color(1, 1, 1, 0), t);
     });
   }

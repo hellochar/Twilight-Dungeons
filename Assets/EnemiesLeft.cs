@@ -26,7 +26,7 @@ public class EnemiesLeft : MonoBehaviour {
         Shown("Cleared!");
         break;
       case var x when x > 3:
-        Shown("Defeat all enemies");
+        Shown("Defeat all enemies.");
         break;
       case var x when x == 1:
         Shown("1 enemy left.");

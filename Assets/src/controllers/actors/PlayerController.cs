@@ -22,7 +22,23 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemRemoved += HandleEquipmentItemRemoved;
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
+    player.OnBossNewlySeen += HandleBossNewlySeen;
     this.sfxAudio = GetComponent<AudioSource>();
+  }
+
+  private void HandleBossNewlySeen() {
+    var boss = player.floor.bosses[0];
+    if (boss != null) {
+      StartCoroutine(AnimateBossSeen(boss));
+    }
+  }
+
+  IEnumerator AnimateBossSeen(Boss b) {
+    InteractionController.isInputAllowed = false;
+    yield return Transitions.ZoomAndPanCamera(4, b.pos, 0.5f);
+    yield return Transitions.ZoomAndPanCamera(4, b.pos, 3);
+    yield return Transitions.ZoomAndPanCamera(4, player.pos, 0.5f);
+    InteractionController.isInputAllowed = true;
   }
 
   private void HandleChangeWater(int delta) {
@@ -59,7 +75,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   private Queue<string> overheadTextQueue = new Queue<string>();
   private Coroutine overheadTextQueueCoroutine;
-  private void EnqueueOverheadText(string s) {
+  public void EnqueueOverheadText(string s) {
     overheadTextQueue.Enqueue(s);
     /// ensure coroutine is started
     if (overheadTextQueueCoroutine == null) {

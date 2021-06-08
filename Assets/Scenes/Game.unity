@@ -3858,7 +3858,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 338125420}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999976
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11099,7 +11099,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Blob Boss
+  m_text: Blobmother
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 5657bf528b7789841a9fafa05b0bf67e, type: 2}
@@ -11142,7 +11142,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -11514,6 +11514,7 @@ MonoBehaviour:
   attack: {fileID: 8300000, guid: d10f3f4e65ce2a04a9bdfdc95321cb03, type: 3}
   attackMiss: {fileID: 8300000, guid: a51b4121dd87b6c478c5edd795bb0954, type: 3}
   bossStart: {fileID: 8300000, guid: adbddf12316a3cc4196a372ff27873c5, type: 3}
+  bossDeath: {fileID: 8300000, guid: ce8ed4cc949bbb8449e9ee99beb5cea7, type: 3}
   death: {fileID: 8300000, guid: 90e1d83d695c53d43ac4bc5e27d533fb, type: 3}
   plantHarvest: {fileID: 8300000, guid: 33305f8266d805148b775092fcba0370, type: 3}
   playerChangeWater: {fileID: 8300000, guid: e4ff01c02b42d344eae01c4e29abd18c, type: 3}
@@ -11838,7 +11839,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -12607,7 +12608,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 16/24
+  m_text: 36/36
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
   m_sharedMaterial: {fileID: 2218378521326946172, guid: da3d4f5b7f892d7498f8d6aa917cac50,
@@ -12744,10 +12745,10 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: -5790619268941518410, guid: 59a4a8eada9da7c4299d17c07cb14daf,
     type: 3}
-  m_Type: 1
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -14103,6 +14104,7 @@ GameObject:
   - component: {fileID: 1917306626}
   - component: {fileID: 1917306625}
   - component: {fileID: 1917306627}
+  - component: {fileID: 1917306628}
   m_Layer: 5
   m_Name: Boss HP
   m_TagString: Untagged
@@ -14185,6 +14187,25 @@ MonoBehaviour:
   barFilled: {fileID: 1770248821}
   hpText: {fileID: 1550269457}
   bossName: {fileID: 1226905197}
+--- !u!95 &1917306628
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917306623}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f25e4246f8e100b4c98ad6d1b343a146, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1921992348
 GameObject:
   m_ObjectHideFlags: 0

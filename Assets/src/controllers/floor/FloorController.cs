@@ -77,7 +77,11 @@ public class FloorController : MonoBehaviour {
       return;
     }
     if (gameObjectMap.TryGetValue(e, out var currentObject)) {
-      currentObject.AddComponent<FadeThenDestroy>();
+      if (currentObject.TryGetComponent<IEntityControllerRemoveOverride>(out var removeOverride)) {
+        removeOverride.OverrideRemoved();
+      } else {
+        currentObject.AddComponent<FadeThenDestroy>();
+      }
       gameObjectMap.Remove(e);
     } else {
       Debug.LogWarning("" + e + " was removed from floor " + floor + " but didn't have a GameObject.");

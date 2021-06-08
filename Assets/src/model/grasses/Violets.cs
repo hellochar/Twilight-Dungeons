@@ -5,7 +5,7 @@ using UnityEngine;
 public class Violets : Grass, ISteppable, IActorEnterHandler {
   public const int turnsToChange = 12;
   public float timeNextAction { get; set; }
-  public float turnPriority => 11;
+  public float turnPriority => 20;
   public bool isOpen = false;
   public int countUp = 0;
 

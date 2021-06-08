@@ -234,10 +234,8 @@ public class FloorGenerator {
       typeof(StoutShrub),
       typeof(Broodpuff)
     };
-    // AddMaturePlant(typeof(StoutShrub));
     // AddMaturePlant(typeof(Broodpuff));
     AddMaturePlant(Util.RandomPick(types));
-    AddMaturePlant(typeof(Broodpuff));
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);

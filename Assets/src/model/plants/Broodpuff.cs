@@ -42,9 +42,9 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 
   public int durability { get; set; }
 
-  public int maxDurability => 12;
+  public int maxDurability => 10;
 
-  public ItemLeecher(int durability = 12) {
+  public ItemLeecher(int durability = 10) {
     this.durability = durability;
   }
 
@@ -68,15 +68,15 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 }
 
 [Serializable]
-[ObjectInfo(spriteName: "leecher", description: "Attacking uses Durability.\nPickup this Leecher by tapping it.\nWhen out of Durability, drop a Broodpuff Seed.")]
+[ObjectInfo(spriteName: "leecher", description: "Attacking uses Durability.\nPickup this Leecher by tapping it.\nWhen out of Durability, turns into a Broodpuff Seed.")]
 public class Leecher : AIActor, IAttackHandler {
+  public override float turnPriority => 15;
   public override string description => base.description + $"\nDurability: {durability}/12";
   public int durability;
   public Leecher(Vector2Int pos, int durability) : base(pos) {
     this.durability = durability;
     hp = baseMaxHp = 5;
     faction = Faction.Ally;
-    this.durability = durability;
     ClearTasks();
   }
 
@@ -148,13 +148,13 @@ public class Bacillomyte : Grass {
 }
 
 [Serializable]
-[ObjectInfo("broodleaf", description: "Dangerous toxins line the spiky tips of this otherwise unassuming leaf.")]
+[ObjectInfo("broodleaf", flavorText: "Dangerous toxins line the spiky tips of this otherwise unassuming leaf.")]
 public class ItemBroodleaf : EquippableItem, IWeapon, IDurable, IAttackHandler, IActionCostModifier {
   internal override string GetStats() => "Applies the Vulnerable Status to attacked Creatures, making them take 1 more attack damage for 20 turns.\nAttacks twice as fast.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   public (int, int) AttackSpread => (1, 1);
   public int durability { get; set; }
-  public int maxDurability => 60;
+  public int maxDurability => 50;
   public ItemBroodleaf() {
     durability = maxDurability;
   }

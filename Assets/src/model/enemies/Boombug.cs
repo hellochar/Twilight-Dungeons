@@ -79,7 +79,7 @@ public class ItemBoombugCorpse : Item, IStackable, ITargetedAction<Tile> {
 [Serializable]
 [ObjectInfo("Explodes after one turn, dealing 3 damage and destroying unprotected Grasses in adjacent squares.\nAttacking it will defuse the corpse.")]
 public class BoombugCorpse : Actor, IDeathHandler {
-  public override float turnPriority => 20;
+  public override float turnPriority => 30;
   private bool exploded = false;
   [field: NonSerialized] /// controller only
   public event Action OnExploded;

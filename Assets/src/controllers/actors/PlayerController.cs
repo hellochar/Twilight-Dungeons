@@ -23,6 +23,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
     player.OnBossNewlySeen += HandleBossNewlySeen;
+    player.OnMaxHPAdded += HandleMaxHPAdded;
     this.sfxAudio = GetComponent<AudioSource>();
   }
 
@@ -66,6 +67,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (!hasFocus) {
       player.ClearTasks();
     }
+  }
+
+  private void HandleMaxHPAdded() {
+    EnqueueOverheadText("+ Max HP");
   }
 
   public override void HandleStatusAdded(Status status) {

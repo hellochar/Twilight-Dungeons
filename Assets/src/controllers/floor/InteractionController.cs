@@ -69,6 +69,9 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {
+    if (!isInputAllowed) {
+      return;
+    }
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
     if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out _)) {
       handler.HandleInteracted(eventData);

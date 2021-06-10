@@ -57,6 +57,8 @@ public class Body : Entity {
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Append(this.grass?.BodyModifier);
+  [field:NonSerialized]
+  public event Action OnMaxHPAdded;
 
   public Body(Vector2Int pos) : base() {
     this.pos = pos;
@@ -84,6 +86,7 @@ public class Body : Entity {
 
   public void AddMaxHP(int amount) {
     baseMaxHp += amount;
+    OnMaxHPAdded?.Invoke();
   }
 
   public void Attacked(int damage, Actor source) {

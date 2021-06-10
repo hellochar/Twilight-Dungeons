@@ -71,7 +71,7 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 [ObjectInfo(spriteName: "leecher", description: "Attacking uses Durability.\nPickup this Leecher by tapping it.\nWhen out of Durability, turns into a Broodpuff Seed.")]
 public class Leecher : AIActor, IAttackHandler {
   public override float turnPriority => 15;
-  public override string description => base.description + $"\nDurability: {durability}/12";
+  public override string description => base.description + $"\nDurability: {durability}/10";
   public int durability;
   public Leecher(Vector2Int pos, int durability) : base(pos) {
     this.durability = durability;
@@ -98,7 +98,7 @@ public class Leecher : AIActor, IAttackHandler {
   internal override (int, int) BaseAttackDamage() => (1, 1);
 
   protected override ActorTask GetNextTask() {
-    var target = Util.RandomPick(floor.AdjacentActors(pos).Where(a => a.faction != Faction.Ally));
+    var target = Util.RandomPick(floor.AdjacentActors(pos).Where(a => a.faction == Faction.Enemy));
     if (target != null) {
       return new AttackTask(this, target);
     } else {

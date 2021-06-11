@@ -47,7 +47,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (Math.Abs(delta) <= 1) {
       return;
     }
-    AudioClipStore.main.playerChangeWater.Play();
+    AudioClipStore.main.playerChangeWater.Play(0.2f);
     var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
     if (delta > 0) {
       worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("+0");

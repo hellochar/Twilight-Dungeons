@@ -7,41 +7,40 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlantUIController : MonoBehaviour, IPointerClickHandler {
-  private TMP_Text uiName;
-  private TMP_Text uiInfo;
+  public TMP_Text uiName;
+  public TMP_Text uiInfo;
+  public GameObject harvests;
+  public Image image;
   /// Set by the PlantController creating this one
+  [System.NonSerialized]
   public PlantController plantController;
   private Plant plant => plantController.plant;
   public GameObject tutorialExtras;
 
   void Start() {
     AudioClipStore.main.popupOpen.Play(0.2f);
-    uiName = transform.Find("Frame/Name").GetComponent<TMP_Text>();
-    uiInfo = transform.Find("Frame/Info").GetComponent<TMP_Text>();
 
     var options = plant.stage.harvestOptions;
-    var harvests = transform.Find("Frame/Harvests");
+    var harvestTransform = harvests.transform;
     if (options.Count > 0) {
+      harvests.SetActive(true);
       for (var i = 0; i < options.Count; i++) {
-        SetupHarvestOption(harvests.GetChild(i), options[i], i);
+        SetupHarvestOption(harvestTransform.GetChild(i), options[i], i);
       }
-      if (options.Count < harvests.childCount) {
-        for (var i = options.Count; i < harvests.childCount; i++) {
-          Destroy(harvests.GetChild(i).gameObject);
+      if (options.Count < harvestTransform.childCount) {
+        for (var i = options.Count; i < harvestTransform.childCount; i++) {
+          Destroy(harvestTransform.GetChild(i).gameObject);
         }
       }
       if (options.Count == 3) {
-        var gridLayoutGroup = harvests.GetComponent<GridLayoutGroup>();
+        var gridLayoutGroup = harvestTransform.GetComponent<GridLayoutGroup>();
         var cellSize = gridLayoutGroup.cellSize;
         var newCellSize = new Vector2(cellSize.x, 80);
         gridLayoutGroup.cellSize = newCellSize;
       }
-    } else {
-      Destroy(harvests.gameObject);
     }
 
     var mature = plantController.activePlantStageObject.GetComponent<SpriteRenderer>();
-    var image = transform.Find("Frame/Image").GetComponent<Image>();
     image.sprite = mature.sprite;
     image.color = mature.color;
     if (plant.percentGrown < 1) {

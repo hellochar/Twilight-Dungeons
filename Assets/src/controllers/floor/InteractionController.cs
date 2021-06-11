@@ -26,6 +26,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
 
   void Start() {
     floorController = GetComponent<FloorController>();
+    isInputAllowed = true;
   }
 
   /// Register the hold.

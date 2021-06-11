@@ -40,9 +40,8 @@ class HeartTrigger : Trigger {
 [Serializable]
 [ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.\nRemoves Blobs and Blob Slime on death.")]
 public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
-  // moves slightly faster than other blobs so you can get the blobmother to get hit by many
-  // blobs at once
-  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority - 1;
+  // moves slightly slower than other blobs so the small blobs get hit first
+  public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority + 1;
   public Blobmother(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 36;
     faction = Faction.Enemy;

@@ -81,14 +81,14 @@ internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
   }
 
   public override void End() {
-    actor.statuses.Add(new WeaknessStatus(3));
+    actor.statuses.Add(new WeaknessStatus(4));
   }
 
   public override void Step() {
     stacks--;
   }
 
-  public override string Info() => $"You deal +2 damage.\n{this.stacks} turns remaining.\nWhen Frenzied ends, get the Weakness Status, dealing -1 damage, for 3 turns.";
+  public override string Info() => $"You deal +2 damage.\n{this.stacks} turns remaining.\nWhen Frenzied ends, get the Weakness Status, dealing -1 damage, for 4 turns.";
 
   public int Modify(int input) {
     return input + 2;

@@ -51,7 +51,7 @@ public class CameraZoom : MonoBehaviour {
     lastZoomTime = Time.time;
     var camera = Camera.main;
     var scalar = Mathf.Pow(1.1f, -scroll);
-    wantedZoom = Mathf.Clamp(camera.orthographicSize * scalar, minZoom, maxZoom);
+    wantedZoom = Mathf.Clamp(wantedZoom * scalar, minZoom, maxZoom);
     PlayerPrefs.SetFloat("zoom", wantedZoom);
   }
 

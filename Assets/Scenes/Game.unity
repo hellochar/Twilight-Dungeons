@@ -10500,6 +10500,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ANIMATION_TIME: 0.25
+  delay: 0
 --- !u!1 &1082314157
 GameObject:
   m_ObjectHideFlags: 0
@@ -11527,7 +11528,7 @@ MonoBehaviour:
   playerHurt1: {fileID: 8300000, guid: a141e53569aee3c4e9f58a4f27e0ee8e, type: 3}
   playerHurt2: {fileID: 8300000, guid: 7f59efdd524f272428c04a29fba0fbe8, type: 3}
   playerHurt3: {fileID: 8300000, guid: 7dec716d17d168f4197b61212482fcaf, type: 3}
-  playerTakeStairs: {fileID: 8300000, guid: 15a70094f6269f24a9b5f3d20058fbd8, type: 3}
+  playerTakeStairs: {fileID: 8300000, guid: dd8d3a64693d48a48919233856d61d39, type: 3}
   playerWait: {fileID: 8300000, guid: 8f1809281b62f6b418f3ff60108474de, type: 3}
   popupOpen: {fileID: 8300000, guid: 23b53b4318151e9498c7bf9d99c86916, type: 3}
   popupClose: {fileID: 8300000, guid: 07a1b42c5e1b47f468e74b468eb13bbd, type: 3}

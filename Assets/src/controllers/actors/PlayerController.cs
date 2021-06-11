@@ -23,6 +23,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
     player.OnBossNewlySeen += HandleBossNewlySeen;
+    player.OnMaxHPAdded += HandleMaxHPAdded;
     this.sfxAudio = GetComponent<AudioSource>();
   }
 
@@ -46,7 +47,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (Math.Abs(delta) <= 1) {
       return;
     }
-    AudioClipStore.main.playerChangeWater.Play();
+    AudioClipStore.main.playerChangeWater.Play(0.2f);
     var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
     if (delta > 0) {
       worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("+0");
@@ -66,6 +67,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (!hasFocus) {
       player.ClearTasks();
     }
+  }
+
+  private void HandleMaxHPAdded() {
+    EnqueueOverheadText("+ Max HP");
   }
 
   public override void HandleStatusAdded(Status status) {

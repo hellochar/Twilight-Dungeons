@@ -60,7 +60,7 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
     player.floor
       .EnumerateCircle(player.pos, player.visibilityRange)
       .Select(p => player.floor.tiles[p])
-      .Where((p) => p.CanBeOccupied() && p.isVisible);
+      .Where((p) => p.CanBeOccupied() && p.visibility == TileVisiblity.Visible);
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.task = new GenericPlayerTask(player, () => Summon(player, target.pos));
@@ -71,7 +71,7 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 [ObjectInfo(spriteName: "leecher", description: "Attacking uses Durability.\nPickup this Leecher by tapping it.\nWhen out of Durability, turns into a Broodpuff Seed.")]
 public class Leecher : AIActor, IAttackHandler {
   public override float turnPriority => 15;
-  public override string description => base.description + $"\nDurability: {durability}/12";
+  public override string description => base.description + $"\nDurability: {durability}/10";
   public int durability;
   public Leecher(Vector2Int pos, int durability) : base(pos) {
     this.durability = durability;
@@ -82,8 +82,10 @@ public class Leecher : AIActor, IAttackHandler {
 
   public void Pickup() {
     var player = GameModel.main.player;
-    player.inventory.AddItem(new ItemLeecher(durability));
-    KillSelf();
+    player.inventory.AddItem(new ItemLeecher(durability), this);
+    // do NOT "kill" to prevent infinite triggers
+    floor.Remove(this);
+    // KillSelf();
   }
 
   public override void HandleDeath(Entity source) {
@@ -96,7 +98,7 @@ public class Leecher : AIActor, IAttackHandler {
   internal override (int, int) BaseAttackDamage() => (1, 1);
 
   protected override ActorTask GetNextTask() {
-    var target = Util.RandomPick(floor.AdjacentActors(pos).Where(a => a.faction != Faction.Ally));
+    var target = Util.RandomPick(floor.AdjacentActors(pos).Where(a => a.faction == Faction.Enemy));
     if (target != null) {
       return new AttackTask(this, target);
     } else {

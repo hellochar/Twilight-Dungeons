@@ -138,10 +138,14 @@ public class FloorController : MonoBehaviour {
     var body = tile.body;
     var itemOnGround = tile.item;
     var grass = tile.grass;
+  
+    var visibleEntities = new List<Entity>();
+    if (body?.isVisible ?? false) visibleEntities.Add(body);
+    if (itemOnGround?.isVisible ?? false) visibleEntities.Add(itemOnGround);
+    if (grass?.isVisible ?? false) visibleEntities.Add(grass);
+    if (tile?.isExplored ?? false) visibleEntities.Add(tile);
 
-    return new Entity[] { body, itemOnGround, grass, tile }
-      .Where(e => e != null && e.isVisible)
-      .ToArray();
+    return visibleEntities.ToArray();
   }
 
   public bool TryGetFirstControllerComponent<T>(Entity[] entities, out T component, out Entity e) {

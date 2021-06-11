@@ -26,6 +26,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
 
   void Start() {
     floorController = GetComponent<FloorController>();
+    isInputAllowed = true;
   }
 
   /// Register the hold.
@@ -69,6 +70,9 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {
+    if (!isInputAllowed) {
+      return;
+    }
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
     if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out _)) {
       handler.HandleInteracted(eventData);

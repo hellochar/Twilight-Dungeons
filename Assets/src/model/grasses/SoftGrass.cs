@@ -55,7 +55,7 @@ public class FreeMoveStatus : StackingStatus, IActionCostModifier, IBaseActionMo
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE) {
-      Remove();
+      stacks--;
     }
     return input;
   }

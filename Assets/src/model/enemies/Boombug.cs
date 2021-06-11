@@ -69,7 +69,7 @@ public class ItemBoombugCorpse : Item, IStackable, ITargetedAction<Tile> {
     player.floor
       .EnumerateCircle(player.pos, player.visibilityRange)
       .Select(p => player.floor.tiles[p])
-      .Where((p) => p.CanBeOccupied() && p.isVisible);
+      .Where((p) => p.CanBeOccupied() && p.visibility == TileVisiblity.Visible);
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.task = new GenericPlayerTask(player, () => Throw(player, target.pos));

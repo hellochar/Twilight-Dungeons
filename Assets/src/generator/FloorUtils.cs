@@ -10,10 +10,10 @@ public static class FloorUtils {
   /// Prevent these negative gameplay experiences.
   public static void TidyUpAroundStairs(Floor floor) {
     /// sometimes the Wall generators may put Walls right in the landing spot. Prevent that.
-    if (floor.upstairs != null && floor.tiles[floor.upstairs.landing] is Wall) {
+    if (floor.upstairs != null && !floor.tiles[floor.upstairs.landing].CanBeOccupied()) {
       floor.Put(new HardGround(floor.upstairs.landing));
     }
-    if (floor.downstairs != null && floor.tiles[floor.downstairs.landing] is Wall) {
+    if (floor.downstairs != null && !floor.tiles[floor.downstairs.landing].CanBeOccupied()) {
       floor.Put(new HardGround(floor.downstairs.landing));
     }
 

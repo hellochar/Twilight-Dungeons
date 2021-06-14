@@ -306,22 +306,22 @@ public class Floor {
   }
 
   public IEnumerable<Tile> GetCardinalNeighbors(Vector2Int pos) {
-    var up = pos + new Vector2Int(0, +1);
+    var up = pos + Vector2Int.up;
     if (InBounds(up)) {
       yield return tiles[up];
     }
 
-    var right = pos + new Vector2Int(+1, 0);
+    var right = pos + Vector2Int.right;
     if (InBounds(right)) {
       yield return tiles[right];
     }
 
-    var down = pos + new Vector2Int(0, -1);
+    var down = pos + Vector2Int.down;;
     if (InBounds(down)) {
       yield return tiles[down];
     }
 
-    var left = pos + new Vector2Int(-1, 0);
+    var left = pos + Vector2Int.left;
     if (InBounds(left)) {
       yield return tiles[left];
     }
@@ -399,11 +399,17 @@ public class Floor {
     }
   }
 
-  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate, bool randomizeNeighborOrder = true) {
+  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true) {
+    return BreadthFirstSearch(new Vector2Int[] { startPos }, predicate, randomizeNeighborOrder);
+  }
+  public IEnumerable<Tile> BreadthFirstSearch(IEnumerable<Vector2Int> startPositions, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true) {
+    predicate = predicate ?? ((Tile t) => true);
     Queue<Tile> frontier = new Queue<Tile>(); // []
     HashSet<Tile> seen = new HashSet<Tile>(); // []
-    frontier.Enqueue(tiles[startPos]); // frontier: [(3, 7)], seen: []
-    seen.Add(tiles[startPos]);
+    foreach (var p in startPositions) {
+      frontier.Enqueue(tiles[p]); // frontier: [(3, 7)], seen: []
+      seen.Add(tiles[p]);
+    }
     while (frontier.Any()) {
       Tile tile = frontier.Dequeue();
       yield return tile;

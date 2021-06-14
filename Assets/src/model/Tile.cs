@@ -70,7 +70,7 @@ public abstract class Tile : Entity {
     return 1;
   }
 
-  public bool ObstructsVision() {
+  public virtual bool ObstructsVision() {
     return BasePathfindingWeight() == 0 || (body is IBlocksVision || grass is IBlocksVision);
   }
 
@@ -146,6 +146,37 @@ public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
   public override float BasePathfindingWeight() {
     return 0;
+  }
+}
+
+[Serializable]
+[ObjectInfo(description: "Blocks movement.", flavorText: "You look down and cannot see the bottom. Be careful not to fall!")]
+public class Chasm : Tile {
+  public Chasm(Vector2Int pos) : base(pos) {
+  }
+
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+    // remove bodies and grasses on it. don't "kill" it though, since technically they're not dead
+    if (grass != null) {
+      floor.Remove(grass);
+    }
+    if (body != null && !(body is Actor)) {
+      floor.Remove(body);
+    }
+    if (item != null) {
+      floor.Remove(item);
+      // this will trigger the item placement behavior and it will find an acceptable spot
+      floor.Put(item);
+    }
+  }
+
+  public override float BasePathfindingWeight() {
+    return 0;
+  }
+
+  public override bool ObstructsVision() {
+    return body is IBlocksVision || grass is IBlocksVision;
   }
 }
 

@@ -152,11 +152,15 @@ public class Room {
     this.split = new RoomSplit(a, b, SplitDirection.Vertical, splitPoint);
   }
 
-  public void Traverse(System.Action<Room> action) {
-    action(this);
-    if (!this.isTerminal) {
-      this.split.Value.a.Traverse(action);
-      this.split.Value.b.Traverse(action);
+  public IEnumerable<Room> Traverse() {
+    yield return this;
+    if (!isTerminal) {
+      foreach (var r in split.Value.a.Traverse()) {
+        yield return r;
+      }
+      foreach (var r in split.Value.b.Traverse()) {
+        yield return r;
+      }
     }
   }
 

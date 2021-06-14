@@ -643,7 +643,7 @@ public class Encounters {
   }
 
   public static void WallPillars(Floor floor, Room room) {
-    var positions = floor.EnumerateRoom(room).ToList();
+    var positions = floor.EnumerateRoom(room).Where(p => floor.tiles[p] is Ground).ToList();
     positions.Shuffle();
     var num = Random.Range(3, (positions.Count + 1) / 2);
     var isWall = Random.value < 0.8f;
@@ -660,7 +660,7 @@ public class Encounters {
 
   public static void ChunkInMiddle(Floor floor, Room room) {
     var chunkSize = Random.Range(1, 6);
-    var positions = floor.BreadthFirstSearch(room.center, (tile) => true).Take(chunkSize).Select(t => t.pos);
+    var positions = floor.BreadthFirstSearch(room.center).Where(t => t is Ground).Take(chunkSize).Select(t => t.pos);
     var isWall = Random.value < 0.8f;
     foreach (var pos in positions) {
       if (isWall) {
@@ -701,5 +701,99 @@ public class Encounters {
     foreach (var pos in inset.Skip(3)) {
       floor.Put(new Wall(pos));
     }
+  }
+
+  public static void ChasmsAwayFromWalls2(Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 2);
+  public static void ChasmsAwayFromWalls1(Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 1, 2);
+
+  private static void ChasmsAwayFromWallsImpl(Floor floor, Room room, int cliffEdgeSize, int extrude = 1) {
+    var roomTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room, extrude));
+    var walls = roomTiles.Where(t => t is Wall);
+    var floorsOnCliffEdge = new List<Tile>();
+
+    Queue<Tile> frontier = new Queue<Tile>(walls);
+    HashSet<Tile> seen = new HashSet<Tile>(walls);
+    var distanceToWall = new Dictionary<Tile, int>();
+    foreach (var w in walls) {
+      distanceToWall[w] = 0;
+    }
+
+    while (frontier.Any()) {
+      Tile tile = frontier.Dequeue();
+      var distance = distanceToWall[tile];
+
+      // act on the tile
+      if (tile is Ground) {
+        floorsOnCliffEdge.Add(tile);
+      }
+
+      var adjacent = floor.GetAdjacentTiles(tile.pos).Except(seen).ToList();
+      foreach (var next in adjacent) {
+        var existingDistance = distanceToWall.ContainsKey(next) ? distanceToWall[next] : 9999;
+        var nextDistance = Mathf.Min(existingDistance, distance + 1);
+        distanceToWall[next] = nextDistance;
+        if (nextDistance <= cliffEdgeSize) {
+          frontier.Enqueue(next);
+          seen.Add(next);
+        }
+      }
+    }
+
+    var grounds = roomTiles.Where(t => t is Ground);
+    var groundsTooFarAway = grounds.Except(floorsOnCliffEdge).Select(t => t.pos).ToList();
+    foreach (var pos in groundsTooFarAway) {
+      floor.Put(new Chasm(pos));
+    }
+  }
+
+  public static void ChasmBridge(Floor floor, Room room) {
+    switch(MyRandom.Range(0, 3)) {
+      case 0:
+        // left side
+        ChasmBridgeImpl(floor, room, 1, 1);
+        break;
+      case 1:
+        // right side
+        ChasmBridgeImpl(floor, room, 1, -1);
+        break;
+      case 2:
+      default:
+        // both sides are cut off
+        ChasmBridgeImpl(floor, room, 3, 0);
+        break;
+    }
+  }
+  private static void ChasmBridgeImpl(Floor floor, Room room, int thickness, int crossScalar) {
+    // ignore room. Connect the stairs
+    var origin = floor.upstairs?.pos ?? new Vector2Int(1, floor.boundsMax.y - 1);
+    var end = floor.downstairs?.pos ?? new Vector2Int(floor.boundsMax.x - 1, 1);
+    var offset = new Vector2(end.x - origin.x, end.y - origin.y);
+    var direction = offset.normalized;
+
+    foreach (var tile in floor.EnumerateFloor().Select(p => floor.tiles[p]).ToList()) {
+      var tileOffset = tile.pos - origin;
+      var dot = Vector2.Dot(tileOffset, direction);
+      var cross = (tileOffset.x * direction.y - direction.x * tileOffset.y) * crossScalar;
+      var dotNorm = dot / offset.magnitude;
+      var projPos = origin + direction * dot;
+      var dist = Vector2.Distance(projPos, tile.pos);
+      if (dist > thickness && cross <= 0) {
+        floor.Put(new Chasm(tile.pos));
+      }
+    }
+  }
+
+  /// experimental; unused
+  public static void ChasmGrowths(Floor floor, Room room) {
+    // var numGrowths = 3;
+    // for(var i = 0; i < numGrowths; i++) {
+      // var pos = MyRandom.Range(floor.boundsMin, floor.boundsMax);
+      // var pos = floor.boundsMax - Vector2Int.one;
+      var pos = floor.boundsMin + Vector2Int.one;
+      var numTiles = (float) floor.width * floor.height;
+      // var num = MyRandom.Range(Mathf.RoundToInt(numTiles / 8), Mathf.RoundToInt(numTiles / 4));
+      var num = (int)(numTiles / 3);
+      floor.PutAll(floor.BreadthFirstSearch(pos).Take(num).Select(t => new Chasm(t.pos)).ToList());
+    // }
   }
 }

@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 11829285
+    totalSpriteSurfaceArea: 11829877
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -4510,6 +4510,11 @@ SpriteAtlas:
   - {fileID: 21300000, guid: bdb7b0388bba62341be9e1ef5ae15e05, type: 3}
   - {fileID: 21300000, guid: 9c0d0b48d5e38e747827d0fae553a32b, type: 3}
   - {fileID: 21300000, guid: 389d7d582bb7a0b4eb9be60692d33571, type: 3}
+  - {fileID: 3361277931571337585, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
+  - {fileID: -7862449231217127050, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
+  - {fileID: -8322401864617249395, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
+  - {fileID: -2132956935838155565, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
+  - {fileID: 21300000, guid: f02c01a8dd6cfc140afa469f6270dce4, type: 3}
   - {fileID: 21300000, guid: 45f265a897d4c604092c4d7a58ab63eb, type: 3}
   - {fileID: 21300000, guid: ad1f56b88b93aaa40b5f5148d152605a, type: 3}
   - {fileID: 21300000, guid: d5882fb81cfb51b46a9682ba146ad9af, type: 3}
@@ -4831,6 +4836,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 16dd36d93f58b4a4398fdc64fba252b9, type: 3}
   - {fileID: 21300000, guid: 8fb47ce9dd1c0d147a01dca18230a3ed, type: 3}
   - {fileID: 21300000, guid: d2a5890a46b81564d8e70c22b2c2abfb, type: 3}
+  - {fileID: 21300000, guid: 1591a33ad40665a41be665647a382016, type: 3}
   - {fileID: 21300000, guid: 3c6be93a6810a6a4ebe618346d0555e9, type: 3}
   - {fileID: 21300000, guid: 03738d4a2bd8ac9469f2f95b02bed832, type: 3}
   - {fileID: 21300000, guid: 459ab27a8873f2d44b003ae28a9678a3, type: 3}
@@ -12607,6 +12613,11 @@ SpriteAtlas:
   - heart_animated_2
   - gear
   - spores
+  - border-top
+  - border-right
+  - border-bottom
+  - border-left
+  - chasm
   - constricted-particle
   - Explosion_96x96
   - weirdwood
@@ -12928,6 +12939,7 @@ SpriteAtlas:
   - boombug2
   - heart-of-thorns
   - spider
+  - gradient-top
   - TornadoLoop_96x96
   - selection-circle
   - CircleFilled16

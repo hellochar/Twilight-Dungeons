@@ -7,19 +7,16 @@ using UnityEngine.UI;
 public static class Transitions {
   public static IEnumerator GoToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad) {
     SceneManager.LoadSceneAsync(sceneToLoad);
-    yield return b.StartCoroutine(Transitions.FadeTo(overlay));
+    yield return b.StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black));
   }
 
-  public static IEnumerator FadeTo(Image overlay, float duration = 0.5f, Color? color = null) {
-    if (color == null) {
-      color = new Color(0, 0, 0, 1);
-    }
-    var start = Time.time;
+  // by default, go from its current color to the target color
+  public static IEnumerator FadeImage(Image overlay, Color start, Color end, float duration = 0.5f) {
+    var t0 = Time.time;
     var t = 0f;
-    var initColor = overlay.color;
     do {
-      t = (Time.time - start) / duration;
-      overlay.color = Color.Lerp(initColor, color.Value, t);
+      t = (Time.time - t0) / duration;
+      overlay.color = Color.Lerp(start, end, t);
       yield return new WaitForEndOfFrame();
     } while (t < 1);
   }

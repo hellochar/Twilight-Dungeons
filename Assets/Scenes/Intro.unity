@@ -300,6 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd3fa48d43c023a4ca6ed2af55520d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blackOverlay: {fileID: 1010018216}
   playerMove: {fileID: 8300000, guid: 9cef2e9eb303ce848a7eca34bd7b3db3, type: 3}
   prologue: {fileID: 1403399869}
 --- !u!1 &206602029
@@ -5994,6 +5995,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 231b05586036c2d46aa5ecd580c731f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1010018216 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8069630845370019291, guid: 0d9b3bf4aba49dc4b873644ac09e93f5,
+    type: 3}
+  m_PrefabInstance: {fileID: 1174702314}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1021473145
 GameObject:
   m_ObjectHideFlags: 0
@@ -6220,6 +6233,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BlackOverlay
+      objectReference: {fileID: 0}
+    - target: {fileID: 8069630845370019285, guid: 0d9b3bf4aba49dc4b873644ac09e93f5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8069630845370019289, guid: 0d9b3bf4aba49dc4b873644ac09e93f5,
         type: 3}

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Intro : MonoBehaviour {
-  GameObject blackOverlay;
+  public Image blackOverlay;
   public AudioClip playerMove;
   public PrologueController prologue;
 
@@ -18,7 +18,6 @@ public class Intro : MonoBehaviour {
   }
 
   void Start() {
-    blackOverlay = transform.Find("BlackOverlay").gameObject;
     if (!Serializer.HasSave()) {
       transform.Find("Continue").gameObject.SetActive(false);
     }
@@ -101,6 +100,6 @@ public class Intro : MonoBehaviour {
   }
 
   public void GoToGameScene() {
-    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
   }
 }

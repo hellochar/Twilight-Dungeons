@@ -4,10 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class DeathScreen : MonoBehaviour, IDeathHandler {
-  GameObject blackOverlay;
+  public Image blackOverlay;
 
   void Start() {
-    blackOverlay = transform.parent.Find("BlackOverlay").gameObject;
     GameModel.main.player.nonserializedModifiers.Add(this);
     gameObject.SetActive(false);
   }
@@ -18,10 +17,10 @@ public class DeathScreen : MonoBehaviour, IDeathHandler {
 
   public void NewGame() {
     GameModel.GenerateNewGameAndSetMain();
-    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
   }
 
   public void MainMenu() {
-    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Intro"));
   }
 }

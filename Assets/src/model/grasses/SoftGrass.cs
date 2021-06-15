@@ -46,7 +46,7 @@ public class FreeMoveStatus : StackingStatus, IActionCostModifier, IBaseActionMo
   public FreeMoveStatus(int stacks) : base(stacks) {}
   public FreeMoveStatus() : this(1) {}
 
-  public override string Info() => "Your next move is free!";
+  public override string Info() => "Get another turn immediately after you move!";
 
   public ActionCosts Modify(ActionCosts costs) {
     costs[ActionType.MOVE] = 0f;

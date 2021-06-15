@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GameModelController : MonoBehaviour {
+  public Image overlay;
   public static GameModelController main;
   [NonSerialized]
   GameModel model;
@@ -128,18 +129,14 @@ public class GameModelController : MonoBehaviour {
     currentFloorController.gameObject.SetActive(false);
 
     // add black overlay
-    var overlay = PrefabCache.UI.Instantiate("BlackOverlay", GameObject.Find("Canvas").transform);
-    var img = overlay.GetComponent<Image>();
-    img.color = new Color(0, 0, 0, 0);
     var player = GameObject.Find("Player");
     player.SetActive(false);
-    yield return StartCoroutine(Transitions.FadeTo(img, 0.5f));
+    yield return StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black, 0.5f));
     yield return new WaitForSeconds(0.5f);
     ActivateNewFloor(model.currentFloor);
     player.SetActive(true);
     isTransitioningBetweenHome = false;
-    var ftd = overlay.AddComponent<FadeThenDestroy>();
-    ftd.shrink = 0;
-    ftd.fadeTime = 0.5f;
+    // don't block
+    StartCoroutine(Transitions.FadeImage(overlay, Color.black, Color.clear, 0.5f));
   }
 }

@@ -19,6 +19,7 @@ public class EncounterGroup {
 
   ///<summary>Walls, blockades, tile modifications.</summary>
   public EncounterBag Walls;
+  public EncounterBag Chasms;
 
   ///<summary>Reward encounters - these should be clear help to player.</summary>
   public EncounterBag Rewards;
@@ -27,6 +28,7 @@ public class EncounterGroup {
 
   public EncounterGroup AssignShared(EncounterGroupShared source) {
     Walls = source.Walls;
+    Chasms = source.Chasms;
     Rewards = source.Rewards;
     Plants = source.Plants;
     return this;
@@ -37,30 +39,35 @@ public class EncounterGroup {
 public class EncounterGroupShared : EncounterGroup {
   public EncounterGroupShared() {
     Walls = new EncounterBag {
-      { 3f, Empty },
-      { 0.5f, WallPillars },
-      { 0.5f, ChunkInMiddle },
-      { 0.5f, LineWithOpening },
-      { 0.5f, InsetLayerWithOpening },
+      { 7.5f, Empty },
+      { 1, WallPillars },
+      { 1, ChunkInMiddle },
+      { 1, LineWithOpening },
+      { 1, InsetLayerWithOpening },
+      { 0.5f, ChasmsAwayFromWalls2 }
+    };
+    Chasms = new EncounterBag {
+      { 19, Empty },
+      { 1, ChasmBridge },
     };
     Rewards = new EncounterBag {
-      { 1f, AddMushroom },
-      { 1f, AddPumpkin },
-      { 1f, AddThickBranch },
-      { 1f, AddJackalHide },
-      { 1f, AddGloopShoes },
-      { 1f, OneButterfly },
+      { 1, AddMushroom },
+      { 1, AddPumpkin },
+      { 1, AddThickBranch },
+      { 1, AddJackalHide },
+      { 1, AddGloopShoes },
+      { 1, OneButterfly },
     };
     Plants = new EncounterBag {
-      { 1f, MatureBerryBush },
-      { 1f, MatureThornleaf },
-      { 1f, MatureWildWood },
-      { 1f, MatureWeirdwood },
-      { 1f, MatureKingshroom },
-      { 1f, MatureFrizzlefen },
-      { 1f, MatureChangErsWillow },
-      { 1f, MatureStoutShrub },
-      { 1f, MatureBroodpuff },
+      { 1, MatureBerryBush },
+      { 1, MatureThornleaf },
+      { 1, MatureWildWood },
+      { 1, MatureWeirdwood },
+      { 1, MatureKingshroom },
+      { 1, MatureFrizzlefen },
+      { 1, MatureChangErsWillow },
+      { 1, MatureStoutShrub },
+      { 1, MatureBroodpuff },
     };
   }
 }

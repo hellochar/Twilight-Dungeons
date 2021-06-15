@@ -18,6 +18,10 @@ public static class MyRandom {
     return generator.Next(min, max);
   }
 
+  internal static Vector2Int Range(Vector2Int min, Vector2Int max) {
+    return new Vector2Int(Range(min.x, max.x), Range(min.y, max.y));
+  }
+
   internal static int Next() {
     return generator.Next();
   }

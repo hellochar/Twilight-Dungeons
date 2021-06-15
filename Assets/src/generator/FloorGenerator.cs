@@ -94,12 +94,16 @@ public class FloorGenerator {
 
     int guard = 0;
     while (floor == null && guard++ < 20) {
+      #if !UNITY_EDITOR
       try {
         floor = generator();
       } catch (Exception e) {
         Debug.LogError(e);
         GameModel.main.turnManager.latestException = e;
       }
+      #else
+      floor = generator();
+      #endif
     }
     if (floor == null) {
       throw GameModel.main.turnManager.latestException;
@@ -306,10 +310,14 @@ public class FloorGenerator {
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, params Encounter[] extraEncounters) {
     Floor floor;
+    int guard = 0;
     do {
       floor = tryGenerateSingleRoomFloor(depth, width, height, depth != 11);
       if (depth == 11) break;
-    } while (!AreStairsConnected(floor));
+    } while (!AreStairsConnected(floor) && guard++ < 20);
+    if (guard >= 20) {
+      throw new Exception("Couldn't generate a walkable floor in 20 tries!");
+    }
     var room0 = floor.root;
     // X mobs
     for (var i = 0; i < numMobs; i++) {
@@ -349,8 +357,11 @@ public class FloorGenerator {
 
     // one wall variation
     EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
-
     FloorUtils.NaturalizeEdges(floor);
+    
+    // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
+    EncounterGroup.Chasms.GetRandomAndDiscount(0.08f)(floor, room0);
+
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
     if (placeDownstairs) {
       floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
@@ -448,9 +459,13 @@ public class FloorGenerator {
   /// </summary>
   public Floor generateMultiRoomFloor(int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false) {
     Floor floor;
+    int guard = 0;
     do {
       floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
-    } while (!AreStairsConnected(floor));
+    } while (!AreStairsConnected(floor) && guard++ < 20);
+    if (guard >= 20) {
+      throw new Exception("Couldn't generate a walkable floor in 20 tries!");
+    }
 
     var intermediateRooms = floor.rooms
       .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom);
@@ -469,12 +484,11 @@ public class FloorGenerator {
     }
 
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
-    var deadEndEncounters = EncounterGroup.Spice.Clone();
     foreach (var room in deadEndRooms) {
       if (MyRandom.value < 0.05f) {
         Encounters.SurroundWithRubble(floor, room);
       }
-      var encounter = deadEndEncounters.GetRandomAndDiscount();
+      var encounter = EncounterGroup.Spice.GetRandomAndDiscount();
       encounter(floor, room);
     }
 
@@ -486,13 +500,11 @@ public class FloorGenerator {
       }
     }
 
-    floor.root.Traverse((room) => {
-      // this includes abstract rooms!
-      if (room.depth >= 2) {
-        var encounter = EncounterGroup.Grasses.GetRandomAndDiscount();
-        encounter(floor, room);
-      }
-    });
+    // this includes abstract rooms!
+    foreach(var room in floor.root.Traverse().Where((room) => room.depth >= 2)) {
+      var encounter = EncounterGroup.Grasses.GetRandomAndDiscount();
+      encounter(floor, room);
+    }
 
     FloorUtils.TidyUpAroundStairs(floor);
 
@@ -519,12 +531,7 @@ public class FloorGenerator {
     }
 
     // collect all rooms
-    List<Room> rooms = new List<Room>();
-    root.Traverse(node => {
-      if (node.isTerminal) {
-        rooms.Add(node);
-      }
-    });
+    List<Room> rooms = root.Traverse().Where(n => n.isTerminal).ToList();
 
     // shrink it into a subset of the space available; adds more 'emptiness' to allow
     // for less rectangular shapes
@@ -540,6 +547,18 @@ public class FloorGenerator {
     });
 
     FloorUtils.NaturalizeEdges(floor);
+
+    // occasionally create a chasm in the multi room. Feels really tight though and makes the level harder.
+    if (MyRandom.value < 0.1) {
+      var depth2Room = Util.RandomPick(root.Traverse().Where(r => r.depth == 2));
+      Encounters.ChasmsAwayFromWalls1(floor, depth2Room);
+    }
+
+    // experimental - creates tight maps that often aren't connected.
+    // var eg = new EncounterGroupShared();
+    // rooms.ForEach(room => {
+    //   eg.Walls.GetRandomAndDiscount()(floor, room);
+    // });
 
     // sort rooms by distance to top-left, where the upstairs will be.
     Vector2Int topLeft = new Vector2Int(0, floor.height);
@@ -570,18 +589,16 @@ public class FloorGenerator {
   /// this tends to draw long lines that cut right through single thickness walls
   private static List<(Vector2Int, Vector2Int)> BSPSiblingRoomConnections(List<Room> rooms, Room root) {
     List<(Vector2Int, Vector2Int)> paths = new List<(Vector2Int, Vector2Int)>();
-    root.Traverse(node => {
-      if (!node.isTerminal) {
-        Vector2Int nodeCenter = node.getCenter();
-        RoomSplit split = node.split.Value;
-        split.a.connections.Add(split.b);
-        split.b.connections.Add(split.a);
-        Vector2Int aCenter = split.a.getCenter();
-        Vector2Int bCenter = split.b.getCenter();
-        paths.Add((nodeCenter, aCenter));
-        paths.Add((nodeCenter, bCenter));
-      }
-    });
+    foreach (var node in root.Traverse().Where(n => !n.isTerminal)) {
+      Vector2Int nodeCenter = node.getCenter();
+      RoomSplit split = node.split.Value;
+      split.a.connections.Add(split.b);
+      split.b.connections.Add(split.a);
+      Vector2Int aCenter = split.a.getCenter();
+      Vector2Int bCenter = split.b.getCenter();
+      paths.Add((nodeCenter, aCenter));
+      paths.Add((nodeCenter, bCenter));
+    }
     return paths;
   }
 

@@ -6,6 +6,11 @@ public delegate void SettingsModifier(ref Settings s);
 
 [Serializable]
 public struct Settings {
+  public bool showSidePanel;
+  public bool music;
+  public bool sfx;
+  public bool rightHanded;
+
   public static event Action OnChanged;
 
   private static Settings m_main = LoadOrGetDefaultSettings();
@@ -47,8 +52,4 @@ public struct Settings {
     }
     OnChanged?.Invoke();
   }
-
-  public bool showSidePanel;
-  public bool music;
-  public bool sfx;
 }

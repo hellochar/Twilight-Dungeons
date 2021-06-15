@@ -6,11 +6,13 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SettingsController : MonoBehaviour {
+  public Toggle righthandedToggle;
   public Toggle sidePanelToggle;
   public Toggle musicToggle;
   public Toggle soundEffectsToggle;
 
   void Start() {
+    righthandedToggle.SetIsOnWithoutNotify(Settings.main.rightHanded);
     sidePanelToggle.SetIsOnWithoutNotify(Settings.main.showSidePanel);
     musicToggle.SetIsOnWithoutNotify(Settings.main.music);
     soundEffectsToggle.SetIsOnWithoutNotify(Settings.main.sfx);
@@ -25,9 +27,8 @@ public class SettingsController : MonoBehaviour {
     gameObject.SetActive(false);
   }
 
+  public void SetRighthanded(bool on) => Settings.Update((ref Settings s) => s.rightHanded = on);
   public void SetSidePanel(bool on) => Settings.Update((ref Settings s) => s.showSidePanel = on);
-
   public void SetMusic(bool on) => Settings.Update((ref Settings s) => s.music = on);
-
   public void SetSoundEffects(bool on) => Settings.Update((ref Settings s) => s.sfx = on);
 }

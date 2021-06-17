@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Plant : Body, ISteppable {
+public abstract class Plant : Body, ISteppable, IHideInSidebar {
   public float timeNextAction { get; set; }
   /// put earlier than the player so they can act early
   public float turnPriority => 0;

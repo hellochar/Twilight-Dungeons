@@ -18,6 +18,7 @@ public class SidePanelController : MonoBehaviour {
     GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
     Settings.OnChanged += MatchSettings;
     buttonPrefab.SetActive(false);
+    MatchSettings();
     UpdateItems();
   }
 
@@ -82,10 +83,10 @@ public class SidePanelController : MonoBehaviour {
     foreach (var pos in floor.EnumerateCircle(player.pos, player.visibilityRange)) {
       var body = floor.tiles[pos].body;
       var grass = floor.grasses[pos];
-      if (body != null && body != player && body.isVisible) {
+      if (body != null && body.isVisible && !(body is IHideInSidebar)) {
         yield return body;
       }
-      if (grass != null && grass.isVisible) {
+      if (grass != null && grass.isVisible && !(grass is IHideInSidebar)) {
         yield return grass;
       }
     }

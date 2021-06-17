@@ -8,16 +8,12 @@ using UnityEngine.UI;
 
 public class TutorialFloorController : FloorController, IStatusAddedHandler {
   private TutorialFloor tutFloor => (TutorialFloor) floor;
-  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, gear, statuses, depth, sidePanel, enemiesLeft;
+  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, depth, enemiesLeft;
   List<GameObject> allUI;
 
   // Start is called before the first frame update
   public override void Start() {
     base.Start();
-
-    /// force default settings because touch to move might be turned off and user could get stuck
-    /// must do this *before* hiding UI since d-pad hiding is implemented using SetActive as well
-    Settings.Set(Settings.Default(), false);
 
     // hide all the UI by default
     hpBar = GameObject.Find("Hearts");
@@ -26,10 +22,8 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     inventoryToggle = GameObject.Find("Inventory Toggle");
     inventoryContainer = GameObject.Find("Inventory Container");
     depth = GameObject.Find("Depth");
-    gear = GameObject.Find("Gear");
-    sidePanel = GameObject.Find("Side Panel");
     enemiesLeft = GameObject.Find("Enemies Left");
-    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, gear, sidePanel, enemiesLeft };
+    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, enemiesLeft };
 
     foreach (var ui in allUI) {
       ui.SetActive(false);
@@ -149,7 +143,6 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   }
 
   private void HandleTutorialEnded() {
-    Settings.Set(Settings.LoadOrGetDefaultSettings());
     var blackOverlay = GameObject.Find("BlackOverlay");
     if (Serializer.HasSave()) {
       /// quit the tutorial.

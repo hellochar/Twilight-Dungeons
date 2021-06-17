@@ -50,8 +50,10 @@ public class ItemThicket : EquippableItem, IDurable, IBodyTakeAttackDamageHandle
   }
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
-    source.statuses.Add(new ConstrictedStatus(null, 6));
-    this.ReduceDurability();
+    if (source.faction != Faction.Ally) {
+      source.statuses.Add(new ConstrictedStatus(null, 6));
+      this.ReduceDurability();
+    }
   }
 }
 

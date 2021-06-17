@@ -2,7 +2,7 @@ using UnityEngine;
 
 [System.Serializable]
 [ObjectInfo(description: "Destructible. Blocks vision.")]
-public class Rubble : Body, IBlocksVision, IAnyDamageTakenModifier {
+public class Rubble : Body, IBlocksVision, IAnyDamageTakenModifier, IHideInSidebar {
   public Rubble(Vector2Int pos, int hp = 1) : base(pos) {
     this.hp = this.baseMaxHp = hp;
   }
@@ -14,7 +14,7 @@ public class Rubble : Body, IBlocksVision, IAnyDamageTakenModifier {
 
 [System.Serializable]
 [ObjectInfo(description: "Destructible.")]
-public class Stump : Body, IAnyDamageTakenModifier {
+public class Stump : Body, IAnyDamageTakenModifier, IHideInSidebar {
   public Stump(Vector2Int pos) : base(pos) {
     this.hp = this.baseMaxHp = 3;
   }
@@ -26,3 +26,4 @@ public class Stump : Body, IAnyDamageTakenModifier {
 
 /// Note - not implemented on moving entities yet
 public interface IBlocksVision { }
+public interface IHideInSidebar { }

@@ -5,8 +5,7 @@ using UnityEngine;
 public class AttackGroundTaskController : ActorTaskController {
   private new AttackGroundTask task => (AttackGroundTask) ((ActorTaskController)this).task;
 
-  public override void Start() {
-    base.Start();
+  public void Start() {
     var straight = transform.Find("Connector Straight").gameObject;
     var diagonal = transform.Find("Connector Diagonal").gameObject;
 

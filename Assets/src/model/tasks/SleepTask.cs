@@ -8,7 +8,7 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
   public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private bool done = false;
   private int? maxTurns;
-  private readonly bool isDeepSleep;
+  public readonly bool isDeepSleep;
 
   public bool wakeUpNextTurn { get; set; }
   public SleepTask(Actor actor, int? maxTurns = null, bool isDeepSleep = false) : base(actor) {

@@ -11,11 +11,6 @@ public class ActorTaskController : MonoBehaviour {
   [NonSerialized]
   public ActorTask task;
 
-  public virtual void Start() {
-  //   Debug.LogError(this + " expecting actor's task to be of type " + typeof(T) + " but got " + actor.task.GetType() + " instead!");
-  //   Destroy(this.gameObject);
-  }
-
   public virtual void Update() {
     if (actor.task != task) {
       var anim = gameObject.AddComponent<FadeThenDestroy>();

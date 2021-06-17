@@ -47,6 +47,11 @@ class TutorialFloor : Floor {
     FloorUtils.PutGround(this, EnumerateRoom(endRoom));
     FloorUtils.NaturalizeEdges(this);
 
+    // naturalize edges may sometimes create walls in this location
+    // which can confuse players because they think it's a dead end. make sure
+    // this never happens.
+    Put(new Ground(new Vector2Int(blobRoom.max.x, cY)));
+
     // add rubble in first room
     Put(new Rubble(new Vector2Int(7, cY)));
     Put(new Rubble(new Vector2Int(8, cY)));

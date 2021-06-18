@@ -33,7 +33,8 @@ public struct Settings {
     return new Settings {
       showSidePanel = true,
       music = true,
-      sfx = true
+      sfx = true,
+      rightHanded = true
     };
   }
 

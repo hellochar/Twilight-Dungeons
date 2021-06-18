@@ -75,6 +75,7 @@ internal class ItemCatkin : EquippableItem, IDurable, ITakeAnyDamageHandler {
   }
 }
 
+[Serializable]
 [ObjectInfo("recovering")]
 public class RecoveringStatus : StackingStatus {
   public override StackingMode stackingMode => StackingMode.Independent;

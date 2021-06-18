@@ -192,20 +192,21 @@ public class Upstairs : Tile {
     grass?.Kill(this);
   }
 
-  public void GoHome() {
+  public void TryGoHome() {
     if (floor.EnemiesLeft() == 0) {
       GameModel.main.PutPlayerAt(0);
     } else {
       var enemiesLeft = GameObject.Find("Enemies Left");
       var pulse = enemiesLeft.AddComponent<PulseAnimation>();
       pulse.pulseScale = 1.25f;
+      throw new CannotPerformActionException();
     }
   }
 }
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class Downstairs : Tile, IActorEnterHandler {
+public class Downstairs : Tile {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + new Vector2Int(-1, 0);
   public Downstairs(Vector2Int pos) : base(pos) {}
@@ -215,15 +216,14 @@ public class Downstairs : Tile, IActorEnterHandler {
     grass?.Kill(this);
   }
 
-  public void HandleActorEnter(Actor actor) {
-    if (actor == GameModel.main.player) {
-      if (floor.EnemiesLeft() == 0) {
-        floor.PlayerGoDownstairs();
-      } else {
-        var enemiesLeft = GameObject.Find("Enemies Left");
-        var pulse = enemiesLeft.AddComponent<PulseAnimation>();
-        pulse.pulseScale = 1.25f;
-      }
+  public void TryGoDownstairs() {
+    if (floor.EnemiesLeft() == 0) {
+      floor.PlayerGoDownstairs();
+    } else {
+      var enemiesLeft = GameObject.Find("Enemies Left");
+      var pulse = enemiesLeft.AddComponent<PulseAnimation>();
+      pulse.pulseScale = 1.25f;
+      throw new CannotPerformActionException();
     }
   }
 }

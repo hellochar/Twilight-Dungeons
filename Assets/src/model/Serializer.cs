@@ -7,39 +7,61 @@ using UnityEngine;
 
 public static class Serializer {
   public static string SAVE_PATH;
-  public static string GARDEN_PATH;
+  public static string CHECKPOINT_PATH;
   static Serializer() {
     SAVE_PATH = Application.persistentDataPath + "/save0.dat";
-    GARDEN_PATH = Application.persistentDataPath + "/garden.dat";
+    CHECKPOINT_PATH = Application.persistentDataPath + "/checkpoint.dat";
   }
 
   /// <summary>Does *not* set main.</summary>
-  public static GameModel LoadSave0() {
-    Debug.Log("Loading save from " + SAVE_PATH);
+  public static GameModel LoadSave0(bool useBackup = true) {
+    try {
+      return Load(SAVE_PATH);
+    } catch (Exception e) {
+      if (useBackup) {
+        return Load(CHECKPOINT_PATH);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  private static GameModel Load(string path) {
+    Debug.Log("Loading save from " + path);
     var bf = GetBinaryFormatter();
-    using (FileStream file = File.Open(SAVE_PATH, FileMode.Open)) {
+    using (FileStream file = File.Open(path, FileMode.Open)) {
       var model = (GameModel) bf.Deserialize(file);
       file.Close();
       return model;
     }
   }
 
-  public static bool HasSave() => File.Exists(SAVE_PATH);
+  public static bool HasSave() => File.Exists(SAVE_PATH) || File.Exists(CHECKPOINT_PATH);
 
   public static void DeleteSave0() {
     File.Delete(SAVE_PATH);
   }
 
-  public static bool SaveMainToFile() {
-    var model = GameModel.main;
-    if (model.home is TutorialFloor) {
-      // don't save tutorial
-      return true;
+  public static void DeleteCheckpoint() {
+    File.Delete(CHECKPOINT_PATH);
+  }
+
+  public static bool SaveMainToFile() => Save(GameModel.main, SAVE_PATH);
+
+  public static bool SaveMainToCheckpoint() {
+    var checkpoint = Save(GameModel.main, CHECKPOINT_PATH);
+    if (checkpoint) {
+      // propagate the checkpoint to save0
+      File.Copy(CHECKPOINT_PATH, SAVE_PATH, true);
     }
-    return Save(model, SAVE_PATH);
+    return checkpoint;
   }
 
   private static bool Save(GameModel model, string path) {
+    if (model.home is TutorialFloor) {
+      // don't save the tutorial
+      return true;
+    }
     var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(path)) {
       bf.Serialize(file, model);

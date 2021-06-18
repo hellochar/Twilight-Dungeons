@@ -14,4 +14,12 @@ public class DownstairsController : TileController {
       PrefabCache.Effects.Instantiate("Stair Decoration", transform);
     }
   }
+
+  public override void HandleInteracted(PointerEventData pointerEventData) {
+    Player player = GameModel.main.player;
+    player.SetTasks(
+      new MoveNextToTargetTask(player, tile.pos),
+      new GenericPlayerTask(player, downstairs.TryGoDownstairs)
+    );
+  }
 }

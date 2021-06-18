@@ -167,6 +167,8 @@ public class GameModel {
     Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
     Floor oldFloor = player.floor;
 
+    Serializer.SaveMainToCheckpoint();
+
     this.depth = depth;
     Vector2Int newPlayerPosition;
     // this could take a while

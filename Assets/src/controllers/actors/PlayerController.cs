@@ -105,8 +105,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
     });
 
+    // permadeath
     #if !UNITY_EDITOR
     Serializer.DeleteSave0();
+    Serializer.DeleteCheckpoint();
     #endif
   }
 
@@ -173,7 +175,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       Serializer.SaveMainToFile();
     }
     if (Input.GetKeyDown(KeyCode.L)) {
-      GameModel.main = Serializer.LoadSave0();
+      GameModel.main = Serializer.LoadSave0(false);
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
     if (Input.GetKeyDown(KeyCode.N)) {

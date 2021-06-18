@@ -2,7 +2,7 @@ using System;
 
 public class CannotPerformActionException : Exception {
   public bool showInUI { get; set; }
-  public CannotPerformActionException(string message) : base(message) {
+  public CannotPerformActionException(string message = "") : base(message) {
   }
 }
 

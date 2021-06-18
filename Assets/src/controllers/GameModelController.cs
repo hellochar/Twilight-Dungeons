@@ -77,9 +77,11 @@ public class GameModelController : MonoBehaviour {
   }
 
   private void HandlePlayerCannotPerform(CannotPerformActionException e) {
-    Debug.LogWarning(e.Message);
-    Messages.Create(e.Message);
-    AudioClipStore.main.uiError.Play();
+    if (e.Message != "") {
+      Debug.LogWarning(e.Message);
+      Messages.Create(e.Message);
+      AudioClipStore.main.uiError.Play();
+    }
   }
 
   private FloorController GetOrCreateFloorController(Floor floor) {

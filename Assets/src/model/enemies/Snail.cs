@@ -6,10 +6,11 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Goes into its shell for 3 turns when it takes damage.\nWhile in its shell, it takes 2 less damage.\nPauses after each action.")]
 public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
+  private static PseudoRandomDistribution prd = new PseudoRandomDistribution((float) PseudoRandomDistribution.CfromP(0.2m));
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 4;
     faction = Faction.Enemy;
-    if (MyRandom.value < 0.1f) {
+    if (prd.Test()) {
       inventory.AddItem(new ItemSnailShell(1));
     }
   }

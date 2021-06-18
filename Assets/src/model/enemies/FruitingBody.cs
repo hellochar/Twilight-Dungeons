@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo(spriteName: "fruitingbody", description: "Infects one of your equipment slots if you're hit by its spray.\nIf you have all 5 infections, instead heal 1 HP.", flavorText: "Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.")]
 public class FruitingBody : AIActor, INoTurnDelay {
-  [field:NonSerialized] /// controller only
+  [field: NonSerialized] /// controller only
   public event Action OnSprayed;
   float cooldown;
   public FruitingBody(Vector2Int pos) : base(pos) {
@@ -53,7 +53,7 @@ public class FruitingBody : AIActor, INoTurnDelay {
   private void Infect(IEnumerable<EquipmentSlot> uninfectedSlots, Player player) {
     var infectionType = InfectionTypes[Util.RandomPick(uninfectedSlots)];
     var constructor = infectionType.GetConstructor(new Type[0]);
-    EquippableItem infection = (EquippableItem) constructor.Invoke(new object[0]);
+    EquippableItem infection = (EquippableItem)constructor.Invoke(new object[0]);
 
     var existingEquipment = player.equipment[infection.slot];
     if (existingEquipment != null && !(existingEquipment is ItemHands)) {
@@ -70,24 +70,31 @@ public class FruitingBody : AIActor, INoTurnDelay {
 [Serializable]
 [ObjectInfo("tanglefoot")]
 class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
+  // 3.5% chance per turn
+  private static float prdC = (float) PseudoRandomDistribution.CfromP(0.04m);
   internal override string GetStats() => "You're infected with Tanglefoot!\nMoving over a Tile without grass will occasionally Constrict you and grow a Guardleaf at your location.\nDoes not trigger at home.";
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
   public int durability { get; set; }
 
-  public int maxDurability => 10;
+  public int maxDurability => 8;
+
+  private PseudoRandomDistribution prd;
 
   public ItemTanglefoot() {
     durability = maxDurability;
+    
+    prd = new PseudoRandomDistribution(prdC);
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    if (player.floor.depth == 0) {
+    var canTrigger = newPos != oldPos && player.grass == null && player.floor.depth != 0;
+    if (!canTrigger) {
       return;
     }
-    var canTrigger = newPos != oldPos && player.grass == null;
-    var shouldTrigger = MyRandom.value < 0.02f;
-    if (canTrigger && shouldTrigger) {
+
+    var shouldTrigger = prd.Test();
+    if (shouldTrigger) {
       player.statuses.Add(new ConstrictedStatus(null));
       player.floor.Put(new Guardleaf(player.pos));
       this.ReduceDurability();
@@ -155,13 +162,13 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler 
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
   public int maxDurability => 200;
-  private int reduction;
+  private float reduction;
   public ItemThirdEye() {
     durability = maxDurability;
   }
 
   public override void OnEquipped() {
-    reduction = Mathf.CeilToInt(player.visibilityRange / 2);
+    reduction = player.visibilityRange / 2;
     player.visibilityRange -= reduction;
     player.statuses.Add(new ThirdEyeStatus());
   }

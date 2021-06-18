@@ -80,7 +80,7 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
 internal class VileGrowth : Grass, ISteppable, INoTurnDelay {
   int turns = 12;
   public VileGrowth(Vector2Int pos) : base(pos) {
-    timeNextAction = timeCreated + 1;
+    timeNextAction = timeCreated;
   }
 
   public float Step() {
@@ -93,7 +93,7 @@ internal class VileGrowth : Grass, ISteppable, INoTurnDelay {
   }
 
   public float timeNextAction { get; set; }
-  public float turnPriority => 50;
+  public float turnPriority => 14;
 }
 
 [Serializable]

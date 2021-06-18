@@ -61,19 +61,24 @@ public class ItemThicket : EquippableItem, IDurable, IBodyTakeAttackDamageHandle
 [Serializable]
 [ObjectInfo("stout-shield", "")]
 public class ItemStoutShield : EquippableItem, IDurable, IAttackDamageTakenModifier {
+  // 50% chance per turn
+  private static float prdC50 = (float) PseudoRandomDistribution.CfromP(0.5m);
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
   internal override string GetStats() => "50% chance to block all damage from an attack.";
 
   public int durability { get; set; }
   public int maxDurability { get; protected set; }
+  private PseudoRandomDistribution prd;
 
   public ItemStoutShield() {
     this.maxDurability = 20;
     this.durability = maxDurability;
+    prd = new PseudoRandomDistribution(prdC50);
   }
 
   public int Modify(int damage) {
-    if (damage > 0 && MyRandom.value < 0.5f) {
+    // invert the test so the very first turn is actually 70%, but successive blocks are unlikely
+    if (damage > 0 && !(prd.Test())) {
       this.ReduceDurability();
       return 0;
     } else {

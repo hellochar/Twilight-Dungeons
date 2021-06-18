@@ -113,6 +113,7 @@ public class FloorGenerator {
     }
 
     #if UNITY_EDITOR
+    // Encounters.AddFruitingBodies(floor, floor.root);
     // Encounters.AddNecroroot(floor, floor.root);
     // Encounters.AddPoisonmoss(floor, floor.root);
     // Encounters.FillWithFerns(floor, floor.root);

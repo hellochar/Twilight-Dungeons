@@ -23,8 +23,12 @@ public abstract class Tile : Entity {
 
   protected override void HandleEnterFloor() {
     /// set correct visibility when the tile is dynamically added
-    if (GameModel.main?.player != null) {
-      if (floor == GameModel.main.player.floor && floor.TestVisibility(GameModel.main.player.pos, pos)) {
+    var player = GameModel.main?.player;
+    if (player != null) {
+      var isSameFloor = floor == player.floor;
+      var isInVisibilityRange = DistanceTo(player) <= player.visibilityRange;
+      var isVisible = floor.TestVisibility(player.pos, pos);
+      if (isSameFloor && isInVisibilityRange && isVisible) {
         visibility = TileVisiblity.Visible;
       }
     }

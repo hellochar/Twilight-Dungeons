@@ -3,41 +3,6 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Boss : AIActor {
-  public bool isSeen = false;
-
-  internal bool EnsureSeen() {
-    if (!isSeen) {
-      isSeen = true;
-      return true;
-    }
-    return false;
-  }
-
-  public override void HandleDeath(Entity source) {
-    base.HandleDeath(source);
-    floor.Put(new HeartTrigger(pos));
-  }
-
-  protected Boss(Vector2Int pos) : base(pos) { }
-}
-
-[Serializable]
-class HeartTrigger : Trigger {
-  public HeartTrigger(Vector2Int pos) : base(pos, null) {
-  }
-
-  public override void HandleActorEnter(Actor who) {
-    if (who is Player player) {
-      player.AddMaxHP(4);
-      player.Replenish();
-      SpriteFlyAnimation.Create(MasterSpriteAtlas.atlas.GetSprite("heart_animated_2_0"), Util.withZ(pos), GameObject.Find("Hearts"));
-      KillSelf();
-    }
-  }
-}
-
-[Serializable]
 [ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.\nRemoves Blobs and Blob Slime on death.")]
 public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   // moves slightly slower than other blobs so the small blobs get hit first
@@ -97,14 +62,3 @@ public class BlobSlime : Grass, IActorEnterHandler {
     }
   }
 }
-
-// public class SporeColonyBoss : AIActor {
-//   public SporeColonyBoss(Vector2Int pos) : base(pos) {
-//     hp = baseMaxHp = 
-//     faction = Faction.Enemy;
-//   }
-
-//   protected override ActorTask GetNextTask() {
-//     throw new NotImplementedException();
-//   }
-// }

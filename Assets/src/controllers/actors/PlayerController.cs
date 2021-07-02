@@ -176,6 +176,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   }
 
   public override void Update() {
+    #if UNITY_EDITOR
     if (Input.GetKeyDown(KeyCode.V)) {
       player.SetTasks(new SleepTask(player, 100, true));
     }
@@ -198,6 +199,15 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       while(e.MoveNext()) { }
       GameModel.main.PutPlayerAt(GameModel.main.depth + 1);
     }
+    if (Input.GetKeyDown(KeyCode.W)) {
+      player.water += 1000;
+    }
+    if (Input.GetKeyDown(KeyCode.G)) {
+      foreach(var plant in player.floor.bodies.Where(b => b is Plant).Cast<Plant>()) {
+        plant.GoNextStage();
+      }
+    }
+    #endif
     base.Update();
   }
 

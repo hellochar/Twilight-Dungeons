@@ -25,12 +25,14 @@ public class EncounterGroup {
   public EncounterBag Rewards;
   ///<summary>Plant rewards - the big guns.</summmary>
   public EncounterBag Plants;
+  public EncounterBag Rests;
 
   public EncounterGroup AssignShared(EncounterGroupShared source) {
     Walls = source.Walls;
     Chasms = source.Chasms;
     Rewards = source.Rewards;
     Plants = source.Plants;
+    Rests = source.Rests;
     return this;
   }
 }
@@ -68,6 +70,10 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, MatureChangErsWillow },
       { 1, MatureStoutShrub },
       { 1, MatureBroodpuff },
+    };
+    Rests = new EncounterBag {
+      // { 1, Campfire },
+      // { 1, }
     };
   }
 }

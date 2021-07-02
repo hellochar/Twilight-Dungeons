@@ -126,6 +126,7 @@ public class BoombugCorpse : Actor, IDeathHandler {
 /// this doesn't contain gameplay logic; it's just to signal creating an ExplodeTask visual marker
 [System.Serializable]
 public class ExplodeTask : DoOnceTask {
+  public override TaskStage WhenToCheckIsDone => TaskStage.Before;
   public ExplodeTask(Actor actor) : base(actor) {
   }
 

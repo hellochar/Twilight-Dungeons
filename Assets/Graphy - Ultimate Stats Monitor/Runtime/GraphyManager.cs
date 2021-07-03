@@ -100,7 +100,7 @@ namespace Tayx.Graphy
 
         [SerializeField] private    Mode                    m_graphyMode                        = Mode.FULL;
 
-        [SerializeField] private    bool                    m_enableOnStartup                   = true;
+        [SerializeField] public     bool                    m_enableOnStartup                   = true;
 
         [SerializeField] private    bool                    m_keepAlive                         = true;
         

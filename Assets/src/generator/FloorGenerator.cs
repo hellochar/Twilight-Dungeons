@@ -245,9 +245,10 @@ public class FloorGenerator {
     Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
-    AddMaturePlant(typeof(Broodpuff));
+    AddMaturePlant(typeof(StoutShrub));
+    // AddMaturePlant(typeof(Broodpuff));
     floor.depth = 20;
-    AddMaturePlant(typeof(Kingshroom));
+    // AddMaturePlant(typeof(Kingshroom));
     // Encounters.AddDeathbloom(floor, room0);
     // Encounters.AddMushroom(floor, room0);
     // Encounters.AddGrasper(floor, room0);

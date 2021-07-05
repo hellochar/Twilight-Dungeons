@@ -135,8 +135,12 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
 
   public void OnAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
-    if (item is IDurable durable && target is Actor) {
-      GameModel.main.EnqueueEvent(durable.ReduceDurability);
+    if (target is Actor) {
+      if (item is IDurable durable) {
+        GameModel.main.EnqueueEvent(durable.ReduceDurability);
+      } else if (item is IStackable s) {
+        GameModel.main.EnqueueEvent(() => s.stacks--);
+      }
     }
     if (task is FollowPathTask) {
       task = null;

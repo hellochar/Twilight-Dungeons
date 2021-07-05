@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// themes - power in numbers, "fight back", grows back, persistent, fast growers
+// not elegant but it gets it done
+// getting many stacks of an item
 [Serializable]
 public class StoutShrub : Plant {
   public static int waterCost => 70;
@@ -22,11 +25,11 @@ public class StoutShrub : Plant {
       if (growChild) {
         plant.floor?.Put(new StoutShrub(plant.pos, new Mature(false)));
         harvestOptions.Add(new Inventory(
-          new ItemSeed(typeof(StoutShrub), 3)
+          new ItemSeed(typeof(StoutShrub), 2)
         ));
       }
-      harvestOptions.Add(new Inventory(new ItemThicket()));
-      harvestOptions.Add(new Inventory(new ItemStoutShield()));
+      harvestOptions.Add(new Inventory(new ItemThicket(MyRandom.Range(9, 13))));
+      harvestOptions.Add(new Inventory(new ItemPrickler(MyRandom.Range(5, 8))));
       harvestOptions.Add(new Inventory(new ItemHeartyVeggie()));
     }
   }
@@ -36,27 +39,96 @@ public class StoutShrub : Plant {
   }
 
   private StoutShrub(Vector2Int pos, PlantStage stage) : base(pos, stage) {}
+
+  protected override void HandleEnterFloor() {
+    if (stage is Mature m && m.growChild) {
+      floor.Put(new StoutShrub(pos, new Mature(false)));
+    }
+  }
 }
 
 [Serializable]
 [ObjectInfo("thicket")]
-public class ItemThicket : EquippableItem, IDurable, IBodyTakeAttackDamageHandler {
+public class ItemThicket : EquippableItem, IStackable, IBodyTakeAttackDamageHandler {
   internal override string GetStats() => "Constrict enemies who attack you for 6 turns.";
   public override EquipmentSlot slot => EquipmentSlot.Armor;
-  public int durability { get; set; }
-  public int maxDurability => 15;
-  public ItemThicket() {
-    this.durability = maxDurability;
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+  public int stacksMax => 100;
+  public ItemThicket(int stacks) {
+    this.stacks = stacks;
   }
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
     if (source.faction != Faction.Ally) {
       source.statuses.Add(new ConstrictedStatus(null, 6));
-      this.ReduceDurability();
+      this.stacks--;
     }
   }
 }
 
+[Serializable]
+[ObjectInfo("prickler")]
+public class ItemPrickler : EquippableItem, IWeapon, IStackable, IAttackHandler {
+  internal override string GetStats() => "Leaves a Prickly Growth on the attacked Creature's tile, which deals 3 attack damage to the Creature standing over it in three turns.";
+  private int _stacks;
+
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+
+  public int stacksMax => 100;
+  public (int, int) AttackSpread => (1, 2);
+  public override EquipmentSlot slot => EquipmentSlot.Weapon;
+
+  public ItemPrickler(int stacks) {
+    this.stacks = stacks;
+  }
+
+  public ItemPrickler() : this(1) { }
+
+  public void OnAttack(int damage, Body target) {
+    if (target is Actor) {
+      target.floor.Put(new PricklyGrowth(target.pos));
+    }
+  }
+}
+
+[Serializable]
+[ObjectInfo("prickly-growth", description: "After three turns, Prickly Growth deals 3 attack damage to the Creature standing over it and dies.")]
+class PricklyGrowth : Grass, ISteppable {
+  public PricklyGrowth(Vector2Int pos) : base(pos) {
+    timeNextAction = GameModel.main.time + 3;
+  }
+  public float timeNextAction { get; set; }
+  public float turnPriority => 11;
+  public float Step() {
+    OnNoteworthyAction();
+    body?.TakeAttackDamage(3, GameModel.main.player);
+    KillSelf();
+    return 3;
+  }
+}
 
 [Serializable]
 [ObjectInfo("stout-shield", "")]
@@ -90,7 +162,7 @@ public class ItemStoutShield : EquippableItem, IDurable, IAttackDamageTakenModif
 [Serializable]
 [ObjectInfo("hearty-veggie", "Your mum always said to eat a lot of these!")]
 public class ItemHeartyVeggie : Item, IEdible {
-  internal override string GetStats() => "Heal 6 HP over 300 turns.\nWill not tick down if you're at full HP.";
+  internal override string GetStats() => "Heal 6 HP over 150 turns.\nWill not tick down if you're at full HP.";
   public ItemHeartyVeggie() {}
 
   public void Eat(Actor a) {
@@ -102,7 +174,7 @@ public class ItemHeartyVeggie : Item, IEdible {
 [Serializable]
 [ObjectInfo("hearty-veggie")]
 class HeartyVeggieStatus : StackingStatus, IActionPerformedHandler {
-  int turnsLeft = 50;
+  int turnsLeft = 25;
 
   public HeartyVeggieStatus(int stacks) : base(stacks) { }
 
@@ -110,12 +182,12 @@ class HeartyVeggieStatus : StackingStatus, IActionPerformedHandler {
     if (actor.hp < actor.maxHp) {
       turnsLeft--;
       if (turnsLeft == 0) {
-        turnsLeft = 50;
+        turnsLeft = 25;
         actor.Heal(1);
         stacks--;
       }
     }
   }
 
-  public override string Info() => $"Heal {stacks} more HP over {stacks*50} turns. Next tick in {turnsLeft} turns (paused while at full HP).";
+  public override string Info() => $"Heal {stacks} more HP over {stacks*25} turns. Next tick in {turnsLeft} turns (paused while at full HP).";
 }

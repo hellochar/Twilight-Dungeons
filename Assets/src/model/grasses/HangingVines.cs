@@ -95,7 +95,7 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
   }
 
   public void OnAttack(int damage, Body target) {
-    if (!(target is Rubble)) {
+    if (target is Actor) {
       Destroy();
     }
   }

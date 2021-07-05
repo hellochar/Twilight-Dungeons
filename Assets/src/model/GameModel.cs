@@ -31,6 +31,9 @@ public class GameModel {
   [field:NonSerialized] /// Controller only
   public event Action<Floor, Floor> OnPlayerChangeFloor;
 
+  [NonSerialized] /// Controller only
+  public Action<Boss> OnBossSeen = delegate {};
+
   /// Events to process in response to state changes
   [NonSerialized] /// This should be empty on save
   private List<Action> eventQueue = new List<Action>();

@@ -1,123 +1,108 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo("fungal-colony", description: "Spawns Growing Fungus around it. Once you kill it, you must kill all Growing Fungi within 30 turns or the Colony will grow back with 50% HP.")]
-public class FungalColony : Boss {
+[ObjectInfo("fungal-colony", description: "Blocks 4 attack damage.\nSummons a Fungal Breeder every 12 turns.\nDoes not move or attack.")]
+public class FungalColony : Boss, IAttackDamageTakenModifier {
   public FungalColony(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 60;
+    hp = baseMaxHp = 72;
     faction = Faction.Enemy;
-  }
-
-  protected override void OnSeen() {
-    foreach(var spawner in floor.bodies.Where(b => b is FungalBreeder).Cast<FungalBreeder>()) {
-      spawner.ClearTasks();
-      spawner.SetTasks(new WaitTask(spawner, MyRandom.Range(1, 5)));
-    }
-    base.OnSeen();
   }
 
   bool needsWait = false;
   protected override ActorTask GetNextTask() {
     if (needsWait) {
       needsWait = false;
-      return new WaitTask(this, 3);
+      return new WaitTask(this, 11);
     } else {
-      needsWait = true;
-      return new TelegraphedTask(this, 1, new GenericBaseAction(this, PlantSentinelEggs));
+      // return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonFungalWalls));
+      return new GenericTask(this, SummonFungalBreeder);
     }
   }
 
-  void PlantSentinelEggs() {
-    var positions = floor
-      .BreadthFirstSearch(pos)
-      .Where(t => SentinelEgg.CanOccupy(t));
-
-    foreach (var tile in positions.Take(5)) {
-      floor.Put(new SentinelEgg(tile.pos));
+  private bool shouldSummonClose = true;
+  void SummonFungalBreeder() {
+    Vector2Int? newPos;
+    if (shouldSummonClose) {
+      newPos = Util.RandomPick(floor.GetAdjacentTiles(GameModel.main.player.pos).Where(t => t.CanBeOccupied()))?.pos;
+      shouldSummonClose = false;
+    } else {
+      newPos = Util.RandomPick(floor.EnumerateCircle(pos, 5f).Where(p => floor.tiles[p].CanBeOccupied() && DistanceTo(p) >= 4f));
+      shouldSummonClose = true;
     }
+
+    if (newPos.HasValue) {
+      needsWait = true;
+      floor.Put(new FungalBreeder(newPos.Value));
+    }
+  }
+
+  public int Modify(int input) {
+    return input - 4;
   }
 }
 
-[System.Serializable]
+[Serializable]
+[ObjectInfo("fungal-breeder", description: "Summons a Fungal Sentinel every 7 turns.\nDoes not move or attack.")]
 public class FungalBreeder : AIActor {
   public FungalBreeder(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 2;
+    hp = baseMaxHp = 10;
     faction = Faction.Enemy;
+    ClearTasks();
     // SetTasks(new WaitTask(this, MyRandom.Range(1, 4)));
   }
 
   bool needsWait = false;
   protected override ActorTask GetNextTask() {
-    // if (needsWait) {
-    //   needsWait = false;
-    //   return new WaitTask(this, 1);
-    // } else {
-    //   needsWait = true;
-    return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonFungalBloat));
-    // }
+    if (needsWait) {
+      needsWait = false;
+      return new WaitTask(this, 6);
+    } else {
+      needsWait = true;
+      return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonFungalBloat));
+    }
   }
 
   void SummonFungalBloat() {
-    floor.Put(new FungalSentinel(pos));
-  }
-
-  void PlantSentinelEggs() {
-    var positions = floor
-      .BreadthFirstSearch(pos)
-      .Where(t => SentinelEgg.CanOccupy(t));
-
-    foreach (var tile in positions.Take(1)) {
-      floor.Put(new SentinelEgg(tile.pos));
+    var tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => t.CanBeOccupied()));
+    if (tile != null) {
+      floor.Put(new FungalSentinel(tile.pos));
     }
   }
 }
 
 [System.Serializable]
-public class SentinelEgg : Grass, IActorEnterHandler, ISteppable, INoTurnDelay {
-  public static bool CanOccupy(Tile tile) {
-    var floor = tile.floor;
-    var isGround = tile is Ground;
-    var isNotOccupied = tile.CanBeOccupied() && !(tile.grass is SentinelEgg);
-    
-    return isGround && isNotOccupied;
-  }
-
-  public SentinelEgg(Vector2Int pos) : base(pos) {
-    timeNextAction = GameModel.main.time + 25;
-  }
+[ObjectInfo("fungal-wall", description: "Blocks vision and movement.\nWalk into to remove.")]
+public class FungalWall : Wall {
   public float timeNextAction { get; set; }
 
-  public float turnPriority => 51;
+  public float turnPriority => 90;
+
+  public FungalWall(Vector2Int pos) : base(pos) {
+    // timeNextAction = GameModel.main.time + MyRandom.Range(35, 60);
+    timeNextAction = GameModel.main.time + 10;
+  }
 
   public float Step() {
-    floor.Put(new FungalSentinel(pos));
-    KillSelf();
+    var floor = this.floor;
+    GameModel.main.EnqueueEvent(() => floor.Put(new FungalSentinel(pos)));
+    floor.Put(new Ground(pos));
     return 50;
   }
-
-  public void HandleActorEnter(Actor who) {
-    if (who is Player) {
-    //   floor.Put(new FungalSentinel(pos));
-      Kill(who);
-    }
-  }
-}
-
-[System.Serializable]
-public class FungalWall : Wall {
-  public FungalWall(Vector2Int pos) : base(pos) { }
 
   internal void Clear() {
     // SummonGrowingFungi(); 
     floor.Put(new Ground(pos));
   }
 
-  // protected override void HandleEnterFloor() {
-  //   base.HandleEnterFloor();
-  //   var floor = this.floor;
-  //   GameModel.main.EnqueueEvent(() => floor.RecomputeVisiblity(GameModel.main.player));
-  // }
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+    var floor = this.floor;
+    if (GameModel.main.player.floor == floor) {
+      GameModel.main.EnqueueEvent(() => floor.RecomputeVisiblity(GameModel.main.player));
+    }
+  }
 
   protected override void HandleLeaveFloor() {
     base.HandleLeaveFloor();
@@ -127,21 +112,37 @@ public class FungalWall : Wall {
 }
 
 [System.Serializable]
+[ObjectInfo("fungal-sentinel", description: "Chases you, then explodes, dealing 2 damage to adjacent Creatures and leaving a Fungal Wall. This can trigger other Sentinels.\nKilling the Sentinel will prevent its explosion.")]
 public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INoTurnDelay {
-  public override float turnPriority => task is TelegraphedTask ? 49 : 50;
+  public override float turnPriority => task is ExplodeTask ? 49 : 50;
+  [field:NonSerialized]
+  public event Action OnExploded;
   public FungalSentinel(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 2;
+    hp = baseMaxHp = 3;
     faction = Faction.Enemy;
     ClearTasks();
     timeNextAction += 1;
     statuses.Add(new SurprisedStatus());
   }
 
+  public void Explode() {
+    foreach (var actor in floor.AdjacentActors(pos).Where(actor => actor != this)) {
+      actor.TakeDamage(2, this);
+      // var numCoughStatus = actor.statuses.FindOfType<WheezingStatus>()?.stacks ?? 0;
+      // Attack(actor, GetFinalAttackDamage() + numCoughStatus);
+      actor.statuses.Add(new WheezingStatus());
+    }
+    floor.Put(new FungalWall(pos));
+    // floor.Put(new SentinelEgg(pos));
+    OnExploded?.Invoke();
+    KillSelf();
+  }
+
   private bool shouldExplode = false;
 
   protected override ActorTask GetNextTask() {
     if (shouldExplode) {
-      return new GenericTask(this, KillSelf);
+      return new GenericTask(this, Explode);
     }
     if (IsNextTo(GameModel.main.player)) {
       shouldExplode = true;
@@ -155,10 +156,12 @@ public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INo
 
       var tile = floor 
         .GetAdjacentTiles(pos)
-        .Where(t => t.CanBeOccupied())
+        .Where(t => t.CanBeOccupied() || t == this.tile)
         .OrderBy((t) => t.DistanceTo(GameModel.main.player)).FirstOrDefault();
 
-      if (tile != null) {
+      if (tile == this.tile) {
+        return new WaitTask(this, 1);
+      } else if (tile != null) {
         return new MoveToTargetTask(this, tile.pos);
       } else {
         return new MoveRandomlyTask(this);
@@ -168,18 +171,27 @@ public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INo
     }
   }
 
-  public override void HandleDeath(Entity source) {
-    foreach (var actor in floor.AdjacentActors(pos).Where(actor => !(actor is FungalColony))) {
-      actor.TakeAttackDamage(1, this);
-    }
-    // floor.Put(new SentinelEgg(pos));
-    base.HandleDeath(source);
-  }
-
   public void HandleTakeAnyDamage(int damage) {
     if (!shouldExplode) {
       shouldExplode = true;
       SetTasks(new ExplodeTask(this));
     }
   }
+}
+
+[ObjectInfo("fungal-sentinel")]
+[Serializable]
+internal class WheezingStatus : StackingStatus {
+  public WheezingStatus() : base(1) { }
+
+  int turnCounter = 10;
+  public override void Step() {
+    turnCounter--;
+    if (turnCounter <= 0) {
+      turnCounter = 10;
+      stacks--;
+    }
+  }
+
+  public override string Info() => $"Take {stacks} more damage from Fungal Sentinels. Lose a stack every 10 turns.";
 }

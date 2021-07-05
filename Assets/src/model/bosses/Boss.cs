@@ -2,16 +2,19 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public abstract class Boss : AIActor {
+public abstract class Boss : AIActor, IActionPerformedHandler {
   public bool isSeen = false;
 
-  internal virtual bool EnsureSeen() {
-    if (!isSeen) {
+  protected Boss(Vector2Int pos) : base(pos) { }
+
+  protected virtual void OnSeen() {}
+
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    if (isVisible && !isSeen) {
       OnSeen();
       isSeen = true;
-      return true;
+      GameModel.main.OnBossSeen(this);
     }
-    return false;
   }
 
   public override void HandleDeath(Entity source) {
@@ -19,7 +22,4 @@ public abstract class Boss : AIActor {
     floor.Put(new HeartTrigger(pos));
   }
 
-  protected Boss(Vector2Int pos) : base(pos) { }
-
-  protected virtual void OnSeen() {}
 }

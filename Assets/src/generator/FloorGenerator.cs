@@ -404,7 +404,7 @@ public class FloorGenerator {
   }
 
   public Floor generateFungalColonyBossFloor(int depth) {
-    Floor floor = new Floor(depth, 27, 21);
+    Floor floor = new Floor(depth, 27, 13);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
@@ -416,38 +416,38 @@ public class FloorGenerator {
       FloorUtils.PutGround(floor, floor.EnumerateCircle(center, radius));
       // connect it back to center
       FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, center, room0.center));
-      if (addBoss) {
-        floor.Put(new FungalBreeder(center));
-      }
+      // if (addBoss) {
+      //   floor.Put(new FungalBreeder(center));
+      // }
     }
-    var sideRoomInsetX = 6;
-    var sideRoomInsetY = 2;
-    var sideRoomRadius = 3f;
-    CutOutCircle(new Vector2Int(sideRoomInsetX, sideRoomInsetY), sideRoomRadius, true);
-    CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInsetX, sideRoomInsetY), sideRoomRadius, true);
-    CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInsetX, floor.height - 1 - sideRoomInsetY), sideRoomRadius, true);
-    CutOutCircle(new Vector2Int(sideRoomInsetX, floor.height - 1 - sideRoomInsetY), sideRoomRadius, true);
+    // var sideRoomInsetX = 6;
+    // var sideRoomInsetY = 2;
+    // var sideRoomRadius = 3f;
+    // CutOutCircle(new Vector2Int(sideRoomInsetX, sideRoomInsetY), sideRoomRadius, true);
+    // CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInsetX, sideRoomInsetY), sideRoomRadius, true);
+    // CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInsetX, floor.height - 1 - sideRoomInsetY), sideRoomRadius, true);
+    // CutOutCircle(new Vector2Int(sideRoomInsetX, floor.height - 1 - sideRoomInsetY), sideRoomRadius, true);
 
     // start and end paths
-    CutOutCircle(new Vector2Int(4, floor.height / 2), 3);
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
-
-    CutOutCircle(new Vector2Int(floor.width - 4, floor.height / 2), 3);
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
-
-    CutOutCircle(room0.center, 4);
+    CutOutCircle(new Vector2Int(4, floor.height / 2), 2f);
+    CutOutCircle(new Vector2Int(floor.width - 4, floor.height / 2), 2f);
+    CutOutCircle(room0.center, 5);
     floor.Put(new FungalColony(room0.center));
 
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
-    foreach (var pos in floor.tiles.Where(t => t is Wall && floor.GetAdjacentTiles(t.pos).Any(t2 => t2.CanBeOccupied())).Select(t => t.pos)) {
-      if (MyRandom.value < 0.5) {
+    // foreach (var pos in floor.tiles.Where(t => t is Ground && floor.GetCardinalNeighbors(t.pos).Any(t2 => t2 is Wall)).Select(t => t.pos).ToList()) {
+    foreach (var pos in floor.tiles.Where(t => t is Wall && floor.GetAdjacentTiles(t.pos).Any(t2 => t2.CanBeOccupied())).Select(t => t.pos).ToList()) {
+      if (MyRandom.value < 0.25) {
         floor.Put(new FungalWall(pos));
         // floor.Put(new Ground(pos));
         // floor.Put(new SentinelEgg(pos));
       }
     }
+    floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
+    floor.PlaceUpstairs(new Vector2Int(2, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 3, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();

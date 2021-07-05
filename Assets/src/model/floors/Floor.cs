@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -84,7 +83,7 @@ public class Floor {
   }
 
   private void BodyPlacementBehavior(Body body) {
-    var newPosition = BreadthFirstSearch(body.pos, (_) => true)
+    var newPosition = this.BreadthFirstSearch(body.pos, (_) => true)
       .Where(tile => tile.CanBeOccupied())
       .First()
       .pos;
@@ -92,12 +91,14 @@ public class Floor {
   }
 
   private void ItemPlacementBehavior(ItemOnGround item) {
-    var newPosition = BreadthFirstSearch(item.pos, (_) => true)
+    var newPosition = this.BreadthFirstSearch(item.pos, (_) => true)
       .Where(ItemOnGround.CanOccupy)
       .First()
       .pos;
     item.pos = newPosition;
   }
+
+  public void InvalidateBodyGrid() => bodies.ScheduleRecompute();
 
   /// what should happen when the player goes downstairs
   internal virtual void PlayerGoDownstairs() {
@@ -187,6 +188,12 @@ public class Floor {
     }
   }
 
+  internal void PutAll(params Entity[] entities) {
+    foreach (var entity in entities) {
+      Put(entity);
+    }
+  }
+
   internal void RemoveAll(IEnumerable<Entity> entities) {
     foreach (var entity in entities) {
       Remove(entity);
@@ -207,7 +214,7 @@ public class Floor {
 
   internal List<Body> BodiesInCircle(Vector2Int center, float radius) {
     var bodies = new List<Body>();
-    foreach (var pos in EnumerateCircle(center, radius)) {
+    foreach (var pos in this.EnumerateCircle(center, radius)) {
       if (tiles[pos] != null && tiles[pos].body != null) {
         bodies.Add(tiles[pos].body);
       }
@@ -234,7 +241,7 @@ public class Floor {
   }
 
   internal virtual void RemoveVisibility(Player player, Vector2Int? position = null) {
-    foreach (var pos in EnumerateCircle(position ?? player.pos, player.visibilityRange)) {
+    foreach (var pos in this.EnumerateCircle(position ?? player.pos, player.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       if (t.visibility == TileVisiblity.Visible) {
         t.visibility = TileVisiblity.Explored;
@@ -250,7 +257,7 @@ public class Floor {
   }
 
   internal virtual void AddVisibility(Player player, Vector2Int? position = null) {
-    foreach (var pos in EnumerateCircle(player.pos, player.visibilityRange)) {
+    foreach (var pos in this.EnumerateCircle(player.pos, player.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(player.pos, pos);
       if (isVisible) {
@@ -280,7 +287,7 @@ public class Floor {
       /// find the closest neighbor that doesn't obstruct vision and go off that
       end = possibleEnds.FirstOrDefault()?.pos ?? end;
     }
-    foreach (var pos in EnumerateLine(source, end)) {
+    foreach (var pos in this.EnumerateLine(source, end)) {
       if (pos == source || pos == end) {
         continue;
       }
@@ -331,99 +338,6 @@ public class Floor {
     return pos.x >= 0 && pos.y >= 0 && pos.x < width && pos.y < height;
   }
 
-  public IEnumerable<Vector2Int> EnumerateCircle(Vector2Int center, float radius) {
-    Vector2Int extent = new Vector2Int(Mathf.CeilToInt(radius), Mathf.CeilToInt(radius));
-    foreach (var pos in EnumerateRectangle(center - extent, center + extent + new Vector2Int(1, 1))) {
-      if (Vector2Int.Distance(pos, center) <= radius) {
-        yield return pos;
-      }
-    }
-  }
-
-  /// max is exclusive
-  public IEnumerable<Vector2Int> EnumerateRectangle(Vector2Int min, Vector2Int max) {
-    min = Vector2Int.Max(min, boundsMin);
-    max = Vector2Int.Min(max, boundsMax);
-    for (int x = min.x; x < max.x; x++) {
-      for (int y = min.y; y < max.y; y++) {
-        yield return new Vector2Int(x, y);
-      }
-    }
-  }
-
-  public IEnumerable<Vector2Int> EnumeratePerimeter(int inset = 0) {
-    // top edge, including top-left, excluding top-right
-    for (int x = inset; x < width - inset - 1; x++) {
-      yield return new Vector2Int(x, inset);
-    }
-    // right edge
-    for (int y = inset; y < height - inset - 1; y++) {
-      yield return new Vector2Int(width - 1 - inset, y);
-    }
-    // bottom edge, now going right-to-left, now excluding bottom-left
-    for (int x = width - inset - 1; x > inset; x--) {
-      yield return new Vector2Int(x, height - 1 - inset);
-    }
-    // left edge
-    for (int y = height - inset - 1; y > inset; y--) {
-      yield return new Vector2Int(inset, y);
-    }
-  }
-
-  public IEnumerable<Tile> EnumerateRoomTiles(Room room, int extrude = 0) {
-    return EnumerateRoom(room, extrude).Select(x => tiles[x]);
-  }
-
-  public IEnumerable<Vector2Int> EnumerateRoom(Room room, int extrude = 0) {
-    Vector2Int extrudeVector = new Vector2Int(extrude, extrude);
-    return EnumerateRectangle(room.min - extrudeVector, room.max + new Vector2Int(1, 1) + extrudeVector);
-  }
-
-
-  public IEnumerable<Vector2Int> EnumerateFloor() {
-    return this.EnumerateRectangle(boundsMin, boundsMax);
-  }
-
-  /// always starts right on the startPoint, and always ends right on the endPoint
-  public IEnumerable<Vector2Int> EnumerateLine(Vector2Int startPoint, Vector2Int endPoint) {
-    Vector2 offset = endPoint - startPoint;
-    for (float t = 0; t <= offset.magnitude; t += 0.5f) {
-      Vector2 point = startPoint + offset.normalized * t;
-      Vector2Int p = new Vector2Int(Mathf.RoundToInt(point.x), Mathf.RoundToInt(point.y));
-      if (InBounds(p)) {
-        yield return p;
-      }
-    }
-    if (InBounds(endPoint)) {
-      yield return endPoint;
-    }
-  }
-
-  public IEnumerable<Tile> BreadthFirstSearch(Vector2Int startPos, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true) {
-    return BreadthFirstSearch(new Vector2Int[] { startPos }, predicate, randomizeNeighborOrder);
-  }
-  public IEnumerable<Tile> BreadthFirstSearch(IEnumerable<Vector2Int> startPositions, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true) {
-    predicate = predicate ?? ((Tile t) => true);
-    Queue<Tile> frontier = new Queue<Tile>(); // []
-    HashSet<Tile> seen = new HashSet<Tile>(); // []
-    foreach (var p in startPositions) {
-      frontier.Enqueue(tiles[p]); // frontier: [(3, 7)], seen: []
-      seen.Add(tiles[p]);
-    }
-    while (frontier.Any()) {
-      Tile tile = frontier.Dequeue();
-      yield return tile;
-      var adjacent = GetCardinalNeighbors(tile.pos).Except(seen).Where(predicate).ToList();
-      if (randomizeNeighborOrder) {
-        adjacent.Shuffle();
-      }
-      foreach (var next in adjacent) {
-        frontier.Enqueue(next);
-        seen.Add(next);
-      }
-    }
-  }
-
   public void PlaceUpstairs(Vector2Int pos) {
     Put(new Upstairs(pos));
     // surround with Hard Ground
@@ -447,94 +361,4 @@ public class Floor {
 [Serializable]
 public class BossFloor : Floor {
   public BossFloor(int depth, int width, int height) : base(depth, width, height) {}
-}
-
-[Serializable]
-class PathfindingManager {
-  /// if null, we need a recompute
-  [NonSerialized] /// lazily instantiated
-  private PathFind.Grid grid;
-  private Floor floor;
-  public PathfindingManager(Floor floor) {
-    this.floor = floor;
-    floor.OnEntityAdded += HandleEntityAdded;
-    floor.OnEntityRemoved += HandleEntityRemoved;
-  }
-
-  [OnDeserialized]
-  private void OnDeserialized() {
-    floor.OnEntityAdded += HandleEntityAdded;
-    floor.OnEntityRemoved += HandleEntityRemoved;
-  }
-
-  void HandleEntityAdded(Entity entity) {
-    if (entity is Tile t) {
-      grid = null;
-    }
-  }
-
-  void HandleEntityRemoved(Entity entity) {
-    if (entity is Tile tile) {
-      grid = null;
-    }
-  }
-
-  public List<Vector2Int> FindPathDynamic(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty) {
-    float[,] tilesmap = new float[floor.width, floor.height];
-    for (int x = 0; x < floor.width; x++) {
-      for (int y = 0; y < floor.height; y++) {
-        Tile tile = floor.tiles[x, y];
-        float weight = tile.GetPathfindingWeight();
-        tilesmap[x, y] = weight;
-      }
-    }
-    if (pretendTargetEmpty) {
-      tilesmap[target.x, target.y] = 1f;
-    }
-    // every float in the array represent the cost of passing the tile at that position.
-    // use 0.0f for blocking tiles.
-
-    // create a grid
-    PathFind.Grid grid = new PathFind.Grid(floor.width, floor.height, tilesmap);
-
-    // create source and target points
-    PathFind.Point _from = new PathFind.Point(pos.x, pos.y);
-    PathFind.Point _to = new PathFind.Point(target.x, target.y);
-
-    // get path
-    // path will either be a list of Points (x, y), or an empty list if no path is found.
-    List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
-    return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
-  }
-
-  /// find path around tiles; don't take actor bodies into account
-  public List<Vector2Int> FindPathStatic(Vector2Int pos, Vector2Int target) {
-    if (grid == null) {
-      RecomputePathFindGrid();
-    }
-    // create source and target points
-    PathFind.Point _from = new PathFind.Point(pos.x, pos.y);
-    PathFind.Point _to = new PathFind.Point(target.x, target.y);
-
-    // get path
-    // path will either be a list of Points (x, y), or an empty list if no path is found.
-    List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
-    return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
-  }
-
-  private void RecomputePathFindGrid() {
-    float[,] tilesmap = new float[floor.width, floor.height];
-    for (int x = 0; x < floor.width; x++) {
-      for (int y = 0; y < floor.height; y++) {
-        Tile tile = floor.tiles[x, y];
-        float weight = tile.BasePathfindingWeight();
-        tilesmap[x, y] = weight;
-      }
-    }
-    // every float in the array represent the cost of passing the tile at that position.
-    // use 0.0f for blocking tiles.
-
-    // create a grid
-    grid = new PathFind.Grid(floor.width, floor.height, tilesmap);
-  }
 }

@@ -22,32 +22,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemRemoved += HandleEquipmentItemRemoved;
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
-    player.OnBossNewlySeen += HandleBossNewlySeen;
     player.OnMaxHPAdded += HandleMaxHPAdded;
     this.sfxAudio = GetComponent<AudioSource>();
-  }
-
-  private void HandleBossNewlySeen() {
-    var boss = player.floor.bosses[0];
-    if (boss != null) {
-      StartCoroutine(AnimateBossSeen(boss));
-    }
-  }
-
-  IEnumerator AnimateBossSeen(Boss b) {
-    InteractionController.isInputAllowed = false;
-    var tiles = b.floor.EnumerateCircle(b.pos, 3.99f);
-    foreach (var t in tiles) {
-      b.floor.tiles[t].visibility = TileVisiblity.Visible;
-    }
-    yield return Transitions.ZoomAndPanCamera(4, b.pos, 0.5f);
-    yield return Transitions.ZoomAndPanCamera(4, b.pos, 3);
-    foreach (var t in tiles) {
-      b.floor.tiles[t].visibility = TileVisiblity.Explored;
-    }
-    b.floor.RecomputeVisiblity(player);
-    yield return Transitions.ZoomAndPanCamera(4, player.pos, 0.5f);
-    InteractionController.isInputAllowed = true;
   }
 
   private void HandleChangeWater(int delta) {
@@ -203,7 +179,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       player.water += 1000;
     }
     if (Input.GetKeyDown(KeyCode.G)) {
-      foreach(var plant in player.floor.bodies.Where(b => b is Plant).Cast<Plant>()) {
+      foreach(var plant in player.floor.bodies.Where(b => b is Plant).Cast<Plant>().ToList()) {
         plant.GoNextStage();
       }
     }

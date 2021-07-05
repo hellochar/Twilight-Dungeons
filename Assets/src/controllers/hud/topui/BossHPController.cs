@@ -13,17 +13,17 @@ public class BossHPController : MonoBehaviour {
 
   void Start() {
     GameModel.main.OnPlayerChangeFloor += HandleChangeFloor;
-    GameModel.main.player.OnBossNewlySeen += HandleBossNewlySeen;
+    GameModel.main.OnBossSeen += HandleBossSeen;
     animator = GetComponent<Animator>();
     UpdateActive();
   }
 
   void OnDestroy() {
     GameModel.main.OnPlayerChangeFloor -= HandleChangeFloor;
-    GameModel.main.player.OnBossNewlySeen -= HandleBossNewlySeen;
+    GameModel.main.OnBossSeen -= HandleBossSeen;
   }
 
-  void HandleBossNewlySeen() {
+  void HandleBossSeen(Boss b) {
     UpdateActive();
     animator.enabled = true;
     animator.Play("Animate In");

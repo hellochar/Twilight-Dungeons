@@ -95,13 +95,40 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
 [Serializable]
 public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   private List<T> list = new List<T>();
+
+  private bool needsRecompute;
+  // cache of entity positions -> entity.
+  private T[,] grid;
   private readonly Action<T> PlacementBehavior;
 
   public MovingEntityList(Floor floor, Action<T> placementBehavior = null) : base(floor) {
     this.PlacementBehavior = placementBehavior;
+    grid = new T[floor.width, floor.height];
+    needsRecompute = true;
   }
 
-  protected override T Get(int x, int y) => list.FirstOrDefault(a => a.pos.x == x && a.pos.y == y);
+  public void ScheduleRecompute() {
+    needsRecompute = true;
+  }
+
+  protected override T Get(int x, int y) {
+    if (needsRecompute) {
+      recomputeGrid();
+    }
+    return grid[x, y];
+    // list.FirstOrDefault(a => a.pos.x == x && a.pos.y == y);
+  }
+
+  void recomputeGrid() {
+    Array.Clear(grid, 0, grid.Length);
+    foreach (var t in list) {
+      if (grid[t.pos.x, t.pos.y] != null) {
+        Debug.LogError("Bodies overlapping: " + grid[t.pos.x, t.pos.y] + " and " + t);
+      }
+      grid[t.pos.x, t.pos.y] = t;
+    }
+    needsRecompute = false;
+  }
 
   /// <summary>Unlike the static grid, we do *not* Kill collided actors! Currently
   /// we allow multiple occupancy.</summary>
@@ -120,10 +147,12 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
       entity.floor.Remove(entity);
     }
     list.Add(entity);
+    needsRecompute = true;
   }
 
   public override void Remove(T entity) {
     list.Remove(entity);
+    needsRecompute = true;
   }
 
   public override IEnumerator<T> GetEnumerator() {

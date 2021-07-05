@@ -36,8 +36,16 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   IEnumerator AnimateBossSeen(Boss b) {
     InteractionController.isInputAllowed = false;
+    var tiles = b.floor.EnumerateCircle(b.pos, 3.99f);
+    foreach (var t in tiles) {
+      b.floor.tiles[t].visibility = TileVisiblity.Visible;
+    }
     yield return Transitions.ZoomAndPanCamera(4, b.pos, 0.5f);
     yield return Transitions.ZoomAndPanCamera(4, b.pos, 3);
+    foreach (var t in tiles) {
+      b.floor.tiles[t].visibility = TileVisiblity.Explored;
+    }
+    b.floor.RecomputeVisiblity(player);
     yield return Transitions.ZoomAndPanCamera(4, player.pos, 0.5f);
     InteractionController.isInputAllowed = true;
   }

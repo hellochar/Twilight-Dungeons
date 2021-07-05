@@ -70,11 +70,11 @@ public class Encounters {
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 4,
       (1, 1),
-      (1, 2),
-      (1, 4),
+      (1, 1),
+      (2, 2),
       (2, 3),
-      (2, 4),
-      (3, 4)
+      (2, 3),
+      (2, 4)
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Bat(tile.pos));
@@ -200,30 +200,22 @@ public class Encounters {
   }
 
 
-  public static void MatureBerryBush(Floor floor, Room room) {
-    AddPlantInCenter(floor, room, typeof(BerryBush));
-  }
+  public static void MatureBerryBush(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(BerryBush));
+  public static void MatureWildWood(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Wildwood));
+  public static void MatureThornleaf(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Thornleaf));
+  public static void MatureWeirdwood(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Weirdwood));
+  public static void MatureKingshroom(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Kingshroom));
+  public static void MatureFrizzlefen(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Frizzlefen));
+  public static void MatureChangErsWillow(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(ChangErsWillow));
+  public static void MatureStoutShrub(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(StoutShrub));
+  public static void MatureBroodpuff(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Broodpuff));
 
-  public static void MatureWildWood(Floor floor, Room room) {
-    AddPlantInCenter(floor, room, typeof(Wildwood));
-  }
-
-  public static void MatureThornleaf(Floor floor, Room room) {
-    AddPlantInCenter(floor, room, typeof(Thornleaf));
-  }
-
-  public static void MatureWeirdwood(Floor floor, Room room) {
-    AddPlantInCenter(floor, room, typeof(Weirdwood));
-  }
-
-  public static void MatureKingshroom(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(Kingshroom));
-  public static void MatureFrizzlefen(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(Frizzlefen));
-  public static void MatureChangErsWillow(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(ChangErsWillow));
-  public static void MatureStoutShrub(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(StoutShrub));
-  public static void MatureBroodpuff(Floor floor, Room room) => AddPlantInCenter(floor, room, typeof(Broodpuff));
-
-  private static void AddPlantInCenter(Floor floor, Room room, System.Type type) {
-    Tile tile = FloorUtils.TilesFromCenter(floor, room).FirstOrDefault();
+  private static void AddPlantToRoom(Floor floor, Room room, System.Type type) {
+    // Add to random soil, or center of room
+    Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t is Soil && t.CanBeOccupied()));
+    if (tile == null) {
+      tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
+    }
     if (tile != null) {
       var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
       var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });

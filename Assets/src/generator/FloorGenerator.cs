@@ -218,34 +218,14 @@ public class FloorGenerator {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    void AddMaturePlant(System.Type t) {
-      var loc = Util.RandomPick(soils);
-      soils.Remove(loc);
-      var constructor = t.GetConstructor(new System.Type[1] { typeof(Vector2Int) });
-      var plant = (Plant) constructor.Invoke(new object[1] { loc.pos });
-      plant.GoNextStage();
-      plant.GoNextStage();
-      floor.Put(plant);
-    }
-
-    var types = new List<System.Type> {
-      typeof(BerryBush),
-      typeof(Wildwood),
-      typeof(Thornleaf),
-      typeof(Weirdwood),
-      typeof(Kingshroom),
-      typeof(Frizzlefen),
-      typeof(ChangErsWillow),
-      typeof(StoutShrub),
-      typeof(Broodpuff)
-    };
-    AddMaturePlant(Util.RandomPick(types));
+    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
 
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
-    AddMaturePlant(typeof(StoutShrub));
+    Encounters.MatureStoutShrub(floor, room0);
+    // AddMaturePlant(typeof(StoutShrub));
     // AddMaturePlant(typeof(Broodpuff));
     floor.depth = 20;
     // AddMaturePlant(typeof(Kingshroom));

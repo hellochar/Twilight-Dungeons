@@ -242,7 +242,7 @@ public class Floor {
     }
   }
 
-  void RecomputeVisiblity(Player player) {
+  public void RecomputeVisiblity(Player player) {
     if (player != null && player.floor == this) {
       RemoveVisibility(player);
       AddVisibility(player);

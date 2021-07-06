@@ -10929,6 +10929,7 @@ MonoBehaviour:
     type: 3}
   playerHeal: {fileID: 8300000, guid: 9c388620a48e53e4db46d291663fb80f, type: 3}
   playerGeneric: {fileID: 8300000, guid: ca0afa29983afb041ac7a7333067ef30, type: 3}
+  playerGetDebuff: {fileID: 8300000, guid: 94d8204549745af47b4ebafc2486d633, type: 3}
   playerPickupItem: {fileID: 8300000, guid: 8282c21177df90543b0dc6b90bf2d504, type: 3}
   playerHurt1: {fileID: 8300000, guid: a141e53569aee3c4e9f58a4f27e0ee8e, type: 3}
   playerHurt2: {fileID: 8300000, guid: 7f59efdd524f272428c04a29fba0fbe8, type: 3}
@@ -11245,7 +11246,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

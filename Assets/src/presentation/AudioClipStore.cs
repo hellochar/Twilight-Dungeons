@@ -17,6 +17,7 @@ public class AudioClipStore : MonoBehaviour {
   public AudioClip playerEquipmentBreak;
   public AudioClip playerHeal;
   public AudioClip playerGeneric;
+  public AudioClip playerGetDebuff;
   public AudioClip playerPickupItem;
   public AudioClip playerHurt1, playerHurt2, playerHurt3;
   public AudioClip playerTakeStairs;

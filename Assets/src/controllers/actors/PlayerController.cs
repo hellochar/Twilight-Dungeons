@@ -83,6 +83,9 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   public override void HandleStatusAdded(Status status) {
     base.HandleStatusAdded(status);
+    if (status.isDebuff) {
+      AudioClipStore.main.playerGetDebuff.Play();
+    }
     EnqueueOverheadText(status.displayName);
   }
 

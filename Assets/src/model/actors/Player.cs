@@ -48,6 +48,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
   public Equipment equipment { get; }
 
   public override IEnumerable<object> MyModifiers => base.MyModifiers.Concat(equipment);
+
   public override float turnPriority => 10;
   [field:NonSerialized] /// controller only, int delta
   public event Action<int> OnChangeWater;
@@ -147,6 +148,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
       return (1, 1);
     }
   }
+
+  public IEnumerable<Tile> GetVisibleTiles() => floor.EnumerateCircle(pos, visibilityRange).Select(p => floor.tiles[p]).Where(t => t.isVisible);
 
   public IEnumerable<Actor> ActorsInSight(Faction faction) => floor.ActorsInCircle(pos, visibilityRange).Where((a) => a.isVisible && faction.HasFlag(a.faction));
 

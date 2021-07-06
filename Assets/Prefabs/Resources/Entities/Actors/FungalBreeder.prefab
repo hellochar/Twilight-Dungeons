@@ -25,17 +25,17 @@ PrefabInstance:
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: bloodColor.b
-      value: 0.7294118
+      value: 0.28235295
       objectReference: {fileID: 0}
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: bloodColor.g
-      value: 0.5137255
+      value: 0.29411766
       objectReference: {fileID: 0}
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: bloodColor.r
-      value: 0.39607847
+      value: 0.9725491
       objectReference: {fileID: 0}
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}

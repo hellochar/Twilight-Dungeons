@@ -27,7 +27,7 @@ class ItemWildwoodLeaf : Item, IStackable, IEdible {
     stacks--;
   }
 
-  internal override string GetStats() => "Apply the Wild status for 25 turns.";
+  internal override string GetStats() => "Apply the Wild status for 25 turns, doubling your movespeed.";
 }
 
 [System.Serializable]

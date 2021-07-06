@@ -56,7 +56,7 @@ public class ActorController : BodyController,
   }
 
   public virtual void HandleDeath(Entity source) {
-    var isNextToPlayer = source.IsNextTo(GameModel.main.player);
+    var isNextToPlayer = actor.IsNextTo(GameModel.main.player);
     var wasKilledByPlayerOrAlly = source is Actor a && a.faction == Faction.Ally;
     var wasKilledBySelf = source == actor;
     if ((wasKilledByPlayerOrAlly || isNextToPlayer) && !wasKilledBySelf) {

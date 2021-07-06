@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamageHandler {
+public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamageHandler, IDealAttackDamageHandler {
   Player player => (Player) actor;
   public static PlayerController current;
   private AudioSource sfxAudio;
@@ -194,8 +194,6 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       AudioClipStore.main.playerWait.Play();
     } else if (action is GenericBaseAction) {
       AudioClipStore.main.playerGeneric.Play();
-    } else if (action.Type == ActionType.ATTACK) {
-      AudioClipStore.main.attack.Play();
     }
     base.HandleActionPerformed(action, initial);
   }
@@ -206,6 +204,14 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     } else {
       // on clicking self, wait for 1 turn
       player.task = new WaitTask(player, 1);
+    }
+  }
+
+  public void HandleDealAttackDamage(int damage, Body target) {
+    if (damage > 0) {
+      AudioClipStore.main.attack.Play();
+    } else {
+      AudioClipStore.main.attackNoDamage.Play();
     }
   }
 }

@@ -10931,6 +10931,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move: {fileID: 8300000, guid: 9cef2e9eb303ce848a7eca34bd7b3db3, type: 3}
   attack: {fileID: 8300000, guid: d10f3f4e65ce2a04a9bdfdc95321cb03, type: 3}
+  attackNoDamage: {fileID: 8300000, guid: 82e3d5802e0e4954c8e3cc6e2b75baf1, type: 3}
   attackMiss: {fileID: 8300000, guid: a51b4121dd87b6c478c5edd795bb0954, type: 3}
   bossStart: {fileID: 8300000, guid: adbddf12316a3cc4196a372ff27873c5, type: 3}
   bossDeath: {fileID: 8300000, guid: ce8ed4cc949bbb8449e9ee99beb5cea7, type: 3}

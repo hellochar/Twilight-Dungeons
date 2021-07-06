@@ -5,13 +5,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-// Called when the attached actor attacks a target
+// Called when the attached actor attacks a target, before damage is dealt.
+// damage is after Actor modifiers, but before target modifiers.
 public interface IAttackHandler {
-  /// damage is after Actor modifiers, but before target modifiers
   void OnAttack(int damage, Body target);
 }
 
-/// Called when Actor deals attack damage (including 0). This includes 
+/// Called when Actor deals attack damage (including 0). This includes non-attack sources.
 public interface IDealAttackDamageHandler {
   /// damage is after both Actor modifiers and target modifiers
   void HandleDealAttackDamage(int damage, Body target);

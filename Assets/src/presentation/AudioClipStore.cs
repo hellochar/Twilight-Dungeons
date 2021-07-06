@@ -7,6 +7,7 @@ public class AudioClipStore : MonoBehaviour {
 
   public AudioClip move;
   public AudioClip attack;
+  public AudioClip attackNoDamage;
   public AudioClip attackMiss;
   public AudioClip bossStart;
   public AudioClip bossDeath;

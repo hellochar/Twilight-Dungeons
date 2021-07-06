@@ -622,7 +622,7 @@ public class Encounters {
     }
   }
 
-  public static void CenterDownstairs(Floor floor, Room room) {
+  public static void AddDownstairsInRoomCenter(Floor floor, Room room) {
     var center = new Vector2Int(room.max.x - 2, room.center.y);
     // clear radius two
     foreach (var pos in floor.EnumerateRectangle(center - new Vector2Int(2, 2), center + new Vector2Int(3, 3))) {
@@ -632,6 +632,28 @@ public class Encounters {
       }
     }
     floor.PlaceDownstairs(center);
+  }
+
+  public static void FungalColonyAnticipation(Floor floor, Room room) {
+    var downstairs = floor.downstairs;
+    // remove all enemies
+    foreach (var body in floor.EnumerateRoom(room, 1).Select(p => floor.bodies[p]).Where(b => b != null)) {
+      floor.Remove(body);
+    }
+
+
+    // surround with fungal walls
+    var distance2Walls = floor
+      .EnumerateRectangle(downstairs.pos - new Vector2Int(2, 2), downstairs.pos + new Vector2Int(3, 3))
+      .Where(p => Util.DiamondMagnitude(p - downstairs.pos) > 1).ToList();
+    floor.PutAll(distance2Walls.Select(p => new FungalWall(p)));
+
+    // put a fungal breeder
+    var breederTile = Util.RandomPick(floor.GetAdjacentTiles(downstairs.pos).Where(t => t.CanBeOccupied() && t != downstairs));
+    if (breederTile != null) {
+      floor.Put(new FungalBreeder(breederTile.pos));
+    }
+
   }
 
   public static void WallPillars(Floor floor, Room room) {

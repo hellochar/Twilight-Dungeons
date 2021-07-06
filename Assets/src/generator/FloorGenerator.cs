@@ -43,7 +43,7 @@ public class FloorGenerator {
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),
       () => generateSingleRoomFloor(10, 14, 7, 2, 2),
-      () => generateSingleRoomFloor(11, 20, 9, 3, 2, true, Encounters.CenterDownstairs),
+      () => generateSingleRoomFloor(11, 20, 9, 3, 2, true, Encounters.AddDownstairsInRoomCenter),
       // () => generateSingleRoomFloor(12, 20, 9, 4, 3, true),
       () => generateBlobBossFloor(12),
       () => generateSingleRoomFloor(13, 12, 12, 4, 3),
@@ -55,7 +55,7 @@ public class FloorGenerator {
       () => generateMultiRoomFloor(19, 24, 16, 9),
       () => generateMultiRoomFloor(20, 30, 12, 10),
       () => generateMultiRoomFloor(21, 30, 20, 15),
-      () => generateMultiRoomFloor(22, 40, 20, 20),
+      () => generateMultiRoomFloor(22, 40, 20, 20, true, Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
       () => generateFungalColonyBossFloor(23),
       () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
       () => generateSingleRoomFloor(25, 11, 11, 1, 2, true),
@@ -405,7 +405,6 @@ public class FloorGenerator {
 
   public Floor generateFungalColonyBossFloor(int depth) {
     Floor floor = new BossFloor(depth, 27, 13);
-    // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
     }
@@ -416,17 +415,7 @@ public class FloorGenerator {
       FloorUtils.PutGround(floor, floor.EnumerateCircle(center, radius));
       // connect it back to center
       FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, center, room0.center));
-      // if (addBoss) {
-      //   floor.Put(new FungalBreeder(center));
-      // }
     }
-    // var sideRoomInsetX = 6;
-    // var sideRoomInsetY = 2;
-    // var sideRoomRadius = 3f;
-    // CutOutCircle(new Vector2Int(sideRoomInsetX, sideRoomInsetY), sideRoomRadius, true);
-    // CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInsetX, sideRoomInsetY), sideRoomRadius, true);
-    // CutOutCircle(new Vector2Int(floor.width - 1 - sideRoomInsetX, floor.height - 1 - sideRoomInsetY), sideRoomRadius, true);
-    // CutOutCircle(new Vector2Int(sideRoomInsetX, floor.height - 1 - sideRoomInsetY), sideRoomRadius, true);
 
     // start and end paths
     CutOutCircle(new Vector2Int(4, floor.height / 2), 2f);
@@ -437,14 +426,13 @@ public class FloorGenerator {
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
-    // foreach (var pos in floor.tiles.Where(t => t is Ground && floor.GetCardinalNeighbors(t.pos).Any(t2 => t2 is Wall)).Select(t => t.pos).ToList()) {
+    // turn some of the walls into fungal walls
     foreach (var pos in floor.tiles.Where(t => t is Wall && floor.GetAdjacentTiles(t.pos).Any(t2 => t2.CanBeOccupied())).Select(t => t.pos).ToList()) {
       if (MyRandom.value < 0.25) {
         floor.Put(new FungalWall(pos));
-        // floor.Put(new Ground(pos));
-        // floor.Put(new SentinelEgg(pos));
       }
     }
+    // block entrance
     floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
     floor.PlaceUpstairs(new Vector2Int(2, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 3, floor.height / 2));
@@ -462,11 +450,12 @@ public class FloorGenerator {
   /// Generate a floor broken up into X smaller rooms, based on a number of "splits". Each room contains:
   /// one mob, one grass, one random encounter.
   /// </summary>
-  public Floor generateMultiRoomFloor(int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false) {
+  public Floor generateMultiRoomFloor(int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false, params Encounter[] specialDownstairsEncounters) {
     Floor floor;
     int guard = 0;
     do {
-      floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
+      floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits, depth != 22);
+      if (depth == 22) break;
     } while (!AreStairsConnected(floor) && guard++ < 20);
     if (guard >= 20) {
       throw new Exception("Couldn't generate a walkable floor in 20 tries!");
@@ -511,13 +500,17 @@ public class FloorGenerator {
       encounter(floor, room);
     }
 
+    foreach (var encounter in specialDownstairsEncounters) {
+      encounter(floor, floor.downstairsRoom);
+    }
+
     FloorUtils.TidyUpAroundStairs(floor);
 
     return floor;
   }
 
   /// connectivity is not guaranteed
-  private static Floor tryGenerateMultiRoomFloor(int depth, int width, int height, int numSplits) {
+  private static Floor tryGenerateMultiRoomFloor(int depth, int width, int height, int numSplits, bool placeDownstairs = true) {
     Floor floor = new Floor(depth, width, height);
 
     // fill with wall
@@ -575,9 +568,11 @@ public class FloorGenerator {
     floor.PlaceUpstairs(upstairsPos);
 
     Room downstairsRoom = rooms.Last();
-    // 1-px padding from the bottom-right of the room
-    Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
-    floor.PlaceDownstairs(downstairsPos);
+    if (placeDownstairs) {
+      // 1-px padding from the bottom-right of the room
+      Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
+      floor.PlaceDownstairs(downstairsPos);
+    }
     floor.root = root;
     floor.rooms = rooms;
     floor.upstairsRoom = upstairsRoom;

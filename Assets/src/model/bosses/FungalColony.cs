@@ -53,7 +53,6 @@ public class FungalBreeder : AIActor {
   public FungalBreeder(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 10;
     faction = Faction.Enemy;
-    ClearTasks();
   }
 
   bool needsWait = false;

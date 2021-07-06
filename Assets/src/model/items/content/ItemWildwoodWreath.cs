@@ -20,7 +20,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IBodyMoveHandler {
     }
   }
 
-  internal override string GetStats() => "Moving applies the Confused Status to one nearby creature.\nConfused enemies move randomly and do not attack.";
+  internal override string GetStats() => "Moving applies the Confused Status to a random adjacent creature for 5 turns.\nConfused enemies move randomly and do not attack.";
 }
 
 [System.Serializable]

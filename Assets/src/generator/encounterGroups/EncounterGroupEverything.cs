@@ -37,7 +37,8 @@ public static class EncounterGroupEverything {
         { 0.2f, AddBrambles },
         { 0.2f, AddAgave },
         { 0.2f, AddDeathbloom },
-        { 0.2f, FillWithFerns }
+
+        { 0.05f, FillWithFerns }
       },
 
       Spice = new EncounterBag {
@@ -65,7 +66,6 @@ public static class EncounterGroupEverything {
         { 0.05f, AddTunnelroot },
         { 0.05f, AddViolets },
         { 0.05f, AddBrambles },
-        { 0.05f, FillWithFerns },
 
         { 0.02f, AddNecroroot },
         { 0.02f, AddScorpions },

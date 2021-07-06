@@ -357,7 +357,7 @@ public class Floor {
   }
 }
 
-// just a special marker
+// just a special marker - turn music off
 [Serializable]
 public class BossFloor : Floor {
   public BossFloor(int depth, int width, int height) : base(depth, width, height) {}

@@ -404,7 +404,7 @@ public class FloorGenerator {
   }
 
   public Floor generateFungalColonyBossFloor(int depth) {
-    Floor floor = new Floor(depth, 27, 13);
+    Floor floor = new BossFloor(depth, 27, 13);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));

@@ -108,7 +108,7 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
     } while (t < 1);
   }
 
-  public bool HasFinishedTutorial() {
+  public static bool HasFinishedTutorial() {
     return PlayerPrefs.HasKey("hasSeenPrologue");
   }
 

@@ -24,7 +24,7 @@ public class Intro : MonoBehaviour {
   }
 
   public void NewGame() {
-    if (!prologue.HasFinishedTutorial()) {
+    if (!PrologueController.HasFinishedTutorial()) {
       prologue.StartPrologueAndTutorial();
       return;
     }

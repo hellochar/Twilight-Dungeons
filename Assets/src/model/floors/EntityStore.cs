@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
@@ -107,8 +108,16 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
     needsRecompute = true;
   }
 
+  [OnDeserialized]
+  void HandleDeserialized() {
+    ScheduleRecompute();
+  }
+
   public void ScheduleRecompute() {
     needsRecompute = true;
+    if (grid == null) {
+      grid = new T[floor.width, floor.height];
+    }
   }
 
   protected override T Get(int x, int y) {

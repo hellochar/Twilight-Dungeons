@@ -97,31 +97,30 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
 public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   private List<T> list = new List<T>();
 
+  // should always be true
+  [NonSerialized]
   private bool needsRecompute;
-  // cache of entity positions -> entity.
+  /// should regenerate on load
+  [NonSerialized]
   private T[,] grid;
   private readonly Action<T> PlacementBehavior;
 
   public MovingEntityList(Floor floor, Action<T> placementBehavior = null) : base(floor) {
     this.PlacementBehavior = placementBehavior;
-    grid = new T[floor.width, floor.height];
     needsRecompute = true;
   }
 
   [OnDeserialized]
   void HandleDeserialized() {
-    ScheduleRecompute();
+    needsRecompute = true;
   }
 
   public void ScheduleRecompute() {
     needsRecompute = true;
-    if (grid == null) {
-      grid = new T[floor.width, floor.height];
-    }
   }
 
   protected override T Get(int x, int y) {
-    if (needsRecompute) {
+    if (needsRecompute || grid == null) {
       recomputeGrid();
     }
     return grid[x, y];
@@ -129,7 +128,11 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   }
 
   void recomputeGrid() {
-    Array.Clear(grid, 0, grid.Length);
+    if (grid == null) {
+      grid = new T[floor.width, floor.height];
+    } else {
+      Array.Clear(grid, 0, grid.Length);
+    }
     foreach (var t in list) {
       if (grid[t.pos.x, t.pos.y] != null) {
         Debug.LogError("Bodies overlapping: " + grid[t.pos.x, t.pos.y] + " and " + t);

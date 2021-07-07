@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 11829877
+    totalSpriteSurfaceArea: 11834997
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -55,6 +55,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3c3cf210ca4c9344fac5f56eb3c57f5e, type: 3}
   - {fileID: 21300000, guid: 9a0cbb104258f8b43827164363e96190, type: 3}
   - {fileID: 21300000, guid: db2b3f2009e5b3844a3976adf920db19, type: 3}
+  - {fileID: 21300000, guid: b50fff40b9569c44e8dff2fa971ba30d, type: 3}
   - {fileID: 21300000, guid: 98a7e8608a1c1424881ada22e392c9a5, type: 3}
   - {fileID: 21300000, guid: 979f00c0bb3c75f42b60c47b58af59a0, type: 3}
   - {fileID: 21300000, guid: 6c1f5dc0c34f91c4684c813c41bb843e, type: 3}
@@ -91,6 +92,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3598ed026fc7a614d8abeba070164b88, type: 3}
   - {fileID: -5467473727215590353, guid: 76f0a81236c9b4743ad14695c5ac6bf8, type: 3}
   - {fileID: 2435872064695483014, guid: 76f0a81236c9b4743ad14695c5ac6bf8, type: 3}
+  - {fileID: 21300000, guid: 8165502263c62314fb0a233e0153ef41, type: 3}
   - {fileID: 21300000, guid: b99f5e220b2441643aaadb318beaf1d6, type: 3}
   - {fileID: 21300000, guid: 515f0432abf1ea14fbc257dd5dde4d16, type: 3}
   - {fileID: 21300000, guid: ad657932aad06774b955a024848ae11c, type: 3}
@@ -1888,6 +1890,7 @@ SpriteAtlas:
   - {fileID: -5095893429281275314, guid: 75cfab94aec410f4aae908383b242c6f, type: 3}
   - {fileID: -24785127853075211, guid: 75cfab94aec410f4aae908383b242c6f, type: 3}
   - {fileID: 2717748618279137258, guid: 75cfab94aec410f4aae908383b242c6f, type: 3}
+  - {fileID: 21300000, guid: 22ffbca4cb774274cb72bcce63c5c489, type: 3}
   - {fileID: -4533687649513996969, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: -398975762361691103, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 6074143898205005808, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
@@ -2263,6 +2266,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5e990165f1807384b9194f829a93a33e, type: 3}
   - {fileID: 21300000, guid: 30f06575358dcb4418c133f784bdc114, type: 3}
   - {fileID: 21300000, guid: e3c661e5b50caf94aa42478e83f69d79, type: 3}
+  - {fileID: 21300000, guid: 93dc6fe5694e5884382430d26882ac75, type: 3}
   - {fileID: 21300000, guid: 951a06f59ed5010448995405c3a03ea6, type: 3}
   - {fileID: 21300000, guid: c4584ff5e3792e84b97d21b5968f28a8, type: 3}
   - {fileID: 6115217362735768368, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
@@ -2307,10 +2311,12 @@ SpriteAtlas:
   - {fileID: -4281177171412130103, guid: 9b0796a629340dc4b9e9eca2b9bf61e2, type: 3}
   - {fileID: 21300000, guid: 396f1eb6e89dcc74e9f7be972dcbb64b, type: 3}
   - {fileID: 21300000, guid: 8f31b8d6e13b2d545a95481918d68abe, type: 3}
+  - {fileID: 21300000, guid: 9ff2e8e64ae8c1d4c854e1a58d49835c, type: 3}
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
   - {fileID: 21300000, guid: 31adac07e6827b7419ed4a49b528e0fe, type: 3}
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
   - {fileID: 21300000, guid: 037f0f27476de09428adf0a534bd5dd1, type: 3}
+  - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
   - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
   - {fileID: -8003984343227876427, guid: 33708167dae3e45469e53a6cb2ee6195, type: 3}
@@ -4840,6 +4846,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3c6be93a6810a6a4ebe618346d0555e9, type: 3}
   - {fileID: 21300000, guid: 03738d4a2bd8ac9469f2f95b02bed832, type: 3}
   - {fileID: 21300000, guid: 459ab27a8873f2d44b003ae28a9678a3, type: 3}
+  - {fileID: 21300000, guid: 7130e38a649552f489ec7834e7ee24a7, type: 3}
   - {fileID: 21300000, guid: e09430aa2517b5942a8030eadd56a33c, type: 3}
   - {fileID: 21300000, guid: 200082aa28057f847883a607c8f82be6, type: 3}
   - {fileID: 8010789481875774549, guid: 7fbaf3bab485b0149a4b6c6b05c7028a, type: 3}
@@ -6473,6 +6480,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: bee8f60c7fb13ce4d92888b0cde0746f, type: 3}
   - {fileID: 21300000, guid: eb83db0cb481f074c92478cb20b58183, type: 3}
   - {fileID: 21300000, guid: 60be7e1c431b9d54c85f5de87f926665, type: 3}
+  - {fileID: 21300000, guid: 2641043c9d5a829458afbc09045ba821, type: 3}
   - {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50, type: 3}
   - {fileID: 21300000, guid: 683eba5cb2c942e43af1f6be8dc55890, type: 3}
   - {fileID: 21300000, guid: 32d6fb5c079f8d14f80c66248b48637e, type: 3}
@@ -7622,6 +7630,7 @@ SpriteAtlas:
   - {fileID: -2190092712295528255, guid: f47592be4702ebc48a30f1365ea6f96a, type: 3}
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: c87b69eeeb4926d498a1f51a2bd74586, type: 3}
+  - {fileID: 21300000, guid: 0bd9eeee31e21fe489be4f2d82911a11, type: 3}
   - {fileID: 21300000, guid: 0ef9b2fe09d6ead499277654c5526d7a, type: 3}
   - {fileID: 21300000, guid: f7aac50f633140940b092ed05755b914, type: 3}
   - {fileID: 21300000, guid: a3c0dc0f71809ab4f8d5d6b064a6ea27, type: 3}
@@ -8158,6 +8167,7 @@ SpriteAtlas:
   - slimed
   - background-pattern-leaves
   - hydra-pearl
+  - prickly-growth
   - grasper
   - broodleaf
   - heart_animated_1
@@ -8194,6 +8204,7 @@ SpriteAtlas:
   - bat-tooth
   - fake-wall_0
   - fake-wall_1
+  - fungal-breeder
   - FireBall_64x64
   - water-droplet
   - constricted-status
@@ -9991,6 +10002,7 @@ SpriteAtlas:
   - IcePick_64x64_15
   - IcePick_64x64_18
   - IcePick_64x64_19
+  - fungal-sentinel
   - sprite-line-diagonal-dotted
   - pixel-line-diagonal
   - pixel-line-horizontal-dotted
@@ -10366,6 +10378,7 @@ SpriteAtlas:
   - deathbloom-stem
   - IcePick_64x64 - Original
   - kingshroom-seed
+  - selection-48x48
   - cross3x3
   - vulnerable
   - bladegrass_2
@@ -10410,10 +10423,12 @@ SpriteAtlas:
   - LightCast_96_19
   - cute-dungeon
   - colored_packed
+  - fungal-wall
   - Player
   - whitePuff00
   - fruitingbody
   - inset-box-shadow
+  - blue-spore-explosion
   - Astoria
   - hearty-veggie
   - UI_Elements02_19
@@ -12943,6 +12958,7 @@ SpriteAtlas:
   - TornadoLoop_96x96
   - selection-circle
   - CircleFilled16
+  - prickler
   - IceShatter_96x96
   - floating_island_packed
   - Wildekin
@@ -14576,6 +14592,7 @@ SpriteAtlas:
   - ui_split
   - hard-ground
   - fade-top
+  - fungal-colony
   - parasite-egg
   - Explosion_2_64x64
   - health_bar
@@ -15725,6 +15742,7 @@ SpriteAtlas:
   - Explosion_96x96-grayscale_43
   - charmberry
   - heart
+  - growing-fungus
   - tree-of-yendor
   - happyland
   - bulbous-skin

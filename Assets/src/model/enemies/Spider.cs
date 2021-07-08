@@ -7,12 +7,11 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Spins Webs underneath itself.\nAttacks deal no damage but apply Poison.\nAttacks any creature next to it.")]
 public class Spider : AIActor, IDealAttackDamageHandler {
-  private static PseudoRandomDistribution prd = new PseudoRandomDistribution((float) PseudoRandomDistribution.CfromP(0.2m));
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 5;
     ClearTasks();
-    if (prd.Test()) {
+    if (MyRandom.value < 0.1f) {
       inventory.AddItem(new ItemSpiderSandals(15));
     }
     // OnMove += HandleMove;

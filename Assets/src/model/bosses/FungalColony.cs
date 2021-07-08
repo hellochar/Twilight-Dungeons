@@ -87,14 +87,14 @@ public class FungalWall : Wall {
     base.HandleEnterFloor();
     var floor = this.floor;
     if (GameModel.main.player.floor == floor) {
-      GameModel.main.EnqueueEvent(() => floor.RecomputeVisiblity(GameModel.main.player));
+      GameModel.main.EnqueueEvent(() => floor.RecomputeVisibility(GameModel.main.player));
     }
   }
 
   protected override void HandleLeaveFloor() {
     base.HandleLeaveFloor();
     var floor = this.floor;
-    GameModel.main.EnqueueEvent(() => floor.RecomputeVisiblity(GameModel.main.player));
+    GameModel.main.EnqueueEvent(() => floor.RecomputeVisibility(GameModel.main.player));
   }
 }
 

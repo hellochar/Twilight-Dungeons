@@ -69,7 +69,8 @@ public class Grasper : AIActor, IBaseActionModifier {
       Debug.LogError("couldn't find tendril");
     }
     // kill all tendrils past this one
-    foreach (var nextTendril in tendrils.Skip(index)) {
+    var nextTendrils = tendrils.Skip(index).ToList();
+    foreach (var nextTendril in nextTendrils) {
       nextTendril.Kill(this);
     }
     tendrils.RemoveRange(index, tendrils.Count - index);

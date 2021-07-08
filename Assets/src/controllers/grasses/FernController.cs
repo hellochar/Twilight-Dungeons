@@ -11,6 +11,6 @@ public class FernController : GrassController, IOnTopActionHandler {
 
   public void HandleOnTopAction() {
     Player player = GameModel.main.player;
-    player.task = new GenericPlayerTask(player, () => fern.CutDown(player));
+    player.task = new GenericPlayerTask(player, () => fern.CutSelfAndAdjacent(player));
   }
 }

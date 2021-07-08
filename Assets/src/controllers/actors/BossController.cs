@@ -29,7 +29,7 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
       b.floor.tiles[t].visibility = TileVisiblity.Explored;
     }
     var player = GameModel.main.player;
-    b.floor.RecomputeVisiblity(player);
+    b.floor.RecomputeVisibility(player);
     yield return Transitions.ZoomAndPanCamera(4, player.pos, 0.5f);
     InteractionController.isInputAllowed = true;
   }
@@ -42,8 +42,15 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
   IEnumerator BossDeathAnimation() {
     IEnumerator CameraMotion() {
       InteractionController.isInputAllowed = false;
+      var tiles = boss.floor.EnumerateCircle(boss.pos, 3.99f);
+      foreach (var t in tiles) {
+        boss.floor.tiles[t].visibility = TileVisiblity.Visible;
+      }
       yield return Transitions.ZoomAndPanCamera(4, actor.pos, 0.5f);
       yield return Transitions.ZoomAndPanCamera(4, actor.pos, 3);
+      foreach (var t in tiles) {
+        boss.floor.tiles[t].visibility = TileVisiblity.Explored;
+      }
       yield return Transitions.ZoomAndPanCamera(4, GameModel.main.player.pos, 0.5f);
       InteractionController.isInputAllowed = true;
     }

@@ -9,9 +9,10 @@ public class Fern : Grass, IBlocksVision {
 
   public Fern(Vector2Int pos) : base(pos) {}
 
-  public void CutDown(Player player) {
-    Kill(player);
-    // BecomeItemInInventory(new ItemFern(1), player);
+  public void CutSelfAndAdjacent(Player player) {
+    foreach (var fern in floor.GetAdjacentTiles(pos).Select(t => t.grass).Where(g => g is Fern).ToList()) {
+      fern.Kill(player);
+    }
   }
 }
 

@@ -22,16 +22,18 @@ public static class EncounterGroupEverything {
 
         { 0.75f, AddSoftGrass },
 
-        { 0.5f, AddHangingVines },
-        { 0.5f, AddPoisonmoss },
-        { 0.5f, ScatteredBoombugs },
-        { 0.5f, AddSpore },
+        { 0.6f, AddSpore },
 
-        { 0.4f, AddGuardleaf },
+        { 0.5f, ScatteredBoombugs },
+
+        { 0.4f, AddPoisonmoss },
         { 0.4f, AddWebs },
         { 0.4f, AddViolets },
+        { 0.4f, AddHangingVines },
 
         { 0.35f, AddEveningBells },
+
+        { 0.3f, AddGuardleaf },
 
         { 0.2f, AddTunnelroot },
         { 0.2f, AddBrambles },

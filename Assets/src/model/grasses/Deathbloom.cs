@@ -98,6 +98,7 @@ internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
 [System.Serializable]
 [ObjectInfo(spriteName: "weakness", flavorText: "Your muscles are failing you!")]
 internal class WeaknessStatus : StackingStatus, IAttackDamageModifier {
+  public override bool isDebuff => true;
   public WeaknessStatus(int turnsLeft) {
     this.stacks = turnsLeft;
   }

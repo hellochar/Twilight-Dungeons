@@ -141,7 +141,7 @@ public class Floor {
 
     /// HACK
     if (entity is IBlocksVision) {
-      RecomputeVisiblity(GameModel.main.player);
+      RecomputeVisibility(GameModel.main.player);
     }
 
     entity.SetFloor(this);
@@ -175,7 +175,7 @@ public class Floor {
 
     /// HACK
     if (entity is IBlocksVision) {
-      RecomputeVisiblity(GameModel.main.player);
+      RecomputeVisibility(GameModel.main.player);
     }
 
     entity.SetFloor(null);
@@ -249,7 +249,7 @@ public class Floor {
     }
   }
 
-  public void RecomputeVisiblity(Player player) {
+  public void RecomputeVisibility(Player player) {
     if (player != null && player.floor == this) {
       RemoveVisibility(player);
       AddVisibility(player);

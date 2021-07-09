@@ -31,25 +31,26 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   }
 
   void SpawnHydraHead() {
-    Vector2Int? spawnPos = null;
+    Tile spawnTile = null;
 
     var nearestEnemy = floor.ActorsInCircle(pos, spawnRange).Where(IsTarget).OrderBy((a) => a.DistanceTo(pos)).FirstOrDefault();
     if (nearestEnemy != null) {
-      spawnPos = Util.RandomPick(floor.GetAdjacentTiles(nearestEnemy.pos).Select(t => t.pos).Where(CanSpawnHydraHeadAt));
+      spawnTile = Util.RandomPick(floor.GetAdjacentTiles(nearestEnemy.pos).Where(CanSpawnHydraHeadAt));
     }
 
-    if (spawnPos == null) {
-      spawnPos = Util.RandomPick(floor.EnumerateCircle(base.pos, spawnRange).Where(CanSpawnHydraHeadAt));
+    if (spawnTile == null) {
+      spawnTile = Util.RandomPick(floor.EnumerateCircle(base.pos, spawnRange).Select(p => floor.tiles[p]).Where(CanSpawnHydraHeadAt));
     }
 
-    if (spawnPos != null) {
-      var head = new HydraHead(spawnPos.Value);
+    if (spawnTile != null) {
+      var head = new HydraHead(spawnTile.pos);
       floor.Put(head);
       heads.Add(head);
     }
   }
 
-  private bool CanSpawnHydraHeadAt(Vector2Int p) => floor.tiles[p].CanBeOccupied() && floor.TestVisibility(pos, p);
+  // make sure the hydra heart can see the tile
+  private bool CanSpawnHydraHeadAt(Tile t) => t.CanBeOccupied() && floor.TestVisibility(pos, t.pos);
 
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);

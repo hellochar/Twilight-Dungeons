@@ -48,7 +48,8 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
 
   public void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     var player = GameModel.main.player;
-    if (source != player) {
+    // rarely, the thing that attacks you may already be dead (AKA parasite)
+    if (source != player && !source.IsDead) {
       source.TakeDamage(2, player);
       this.ReduceDurability();
     }

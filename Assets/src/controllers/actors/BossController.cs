@@ -1,12 +1,17 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class BossController : ActorController, IEntityControllerRemoveOverride {
   public Boss boss => (Boss) actor;
+  [System.NonSerialized]
+  Floor floor;
 
   public override void Start() {
     base.Start();
     GameModel.main.OnBossSeen += HandleBossSeen;
+    // cache it for the death animation since at that point the boss has already left the floor
+    floor = boss.floor;
   }
 
   void OnDestroy() {
@@ -42,14 +47,15 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
   IEnumerator BossDeathAnimation() {
     IEnumerator CameraMotion() {
       InteractionController.isInputAllowed = false;
-      var tiles = boss.floor.EnumerateCircle(boss.pos, 3.99f);
+      var tiles = floor.EnumerateCircle(boss.pos, 3.99f).Select(p => floor.tiles[p]);
       foreach (var t in tiles) {
-        boss.floor.tiles[t].visibility = TileVisiblity.Visible;
+        t.visibility = TileVisiblity.Visible;
       }
       yield return Transitions.ZoomAndPanCamera(4, actor.pos, 0.5f);
       yield return Transitions.ZoomAndPanCamera(4, actor.pos, 3);
       foreach (var t in tiles) {
-        boss.floor.tiles[t].visibility = TileVisiblity.Explored;
+        bool isVisible = floor.TestVisibility(GameModel.main.player.pos, t.pos);
+        t.visibility = isVisible ? TileVisiblity.Visible : TileVisiblity.Explored;
       }
       yield return Transitions.ZoomAndPanCamera(4, GameModel.main.player.pos, 0.5f);
       InteractionController.isInputAllowed = true;

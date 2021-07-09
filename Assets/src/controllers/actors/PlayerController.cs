@@ -148,7 +148,9 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   }
 
   public void PlaySFX(AudioClip clip, float volume = 1) {
-    sfxAudio.PlayOneShot(clip, volume);
+    if (sfxAudio != null) {
+      sfxAudio.PlayOneShot(clip, volume);
+    }
   }
 
   public override void Update() {

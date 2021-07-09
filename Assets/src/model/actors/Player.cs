@@ -28,7 +28,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     }
   }
 
-  private float m_visibilityRange = 6.99f;
+  private float m_visibilityRange = 7f;
   public float visibilityRange {
     get => m_visibilityRange;
     set {

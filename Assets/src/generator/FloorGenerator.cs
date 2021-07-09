@@ -382,7 +382,7 @@ public class FloorGenerator {
     }
 
     Room room0 = new Room(floor);
-    FloorUtils.PutGround(floor, floor.EnumerateCircle(room0.center, 6.99f));
+    FloorUtils.PutGround(floor, floor.EnumerateCircle(room0.center, 7f));
     floor.Put(new Wall(room0.center + new Vector2Int(3, 3)));
     floor.Put(new Wall(room0.center + new Vector2Int(3, -3)));
     floor.Put(new Wall(room0.center + new Vector2Int(-3, -3)));
@@ -418,13 +418,10 @@ public class FloorGenerator {
     }
 
     // start and end paths
-    CutOutCircle(new Vector2Int(4, floor.height / 2), 2f);
-    CutOutCircle(new Vector2Int(floor.width - 4, floor.height / 2), 2f);
-    CutOutCircle(room0.center, 5);
+    CutOutCircle(new Vector2Int(4, floor.height / 2), 2.5f);
+    CutOutCircle(new Vector2Int(floor.width - 4, floor.height / 2), 2.5f);
+    CutOutCircle(room0.center, 5.5f);
     floor.Put(new FungalColony(room0.center));
-
-    FloorUtils.SurroundWithWalls(floor);
-    FloorUtils.NaturalizeEdges(floor);
 
     // turn some of the walls into fungal walls
     foreach (var pos in floor.tiles.Where(t => t is Wall && floor.GetAdjacentTiles(t.pos).Any(t2 => t2.CanBeOccupied())).Select(t => t.pos).ToList()) {
@@ -435,7 +432,7 @@ public class FloorGenerator {
     // block entrance
     floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
     floor.PlaceUpstairs(new Vector2Int(2, floor.height / 2));
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 3, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();

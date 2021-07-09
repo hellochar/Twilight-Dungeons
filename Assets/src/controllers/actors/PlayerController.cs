@@ -191,6 +191,9 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
         plant.GoNextStage();
       }
     }
+    if (Input.GetKeyDown(KeyCode.R)) {
+      MyRandom.SetSeed(new System.Random().Next());
+    }
     #endif
     base.Update();
   }

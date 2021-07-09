@@ -24,7 +24,7 @@ public static class Util {
     Vector3 worldTarget = Camera.main.ScreenToWorldPoint(screenPoint);
     Vector2Int target = new Vector2Int(Mathf.RoundToInt(worldTarget.x), Mathf.RoundToInt(worldTarget.y));
     Floor currentFloor = GameModel.main.currentFloor;
-    target.Clamp(currentFloor.boundsMin, currentFloor.boundsMax - new Vector2Int(1, 1));
+    target.Clamp(currentFloor.boundsMin, currentFloor.boundsMax - Vector2Int.one);
     Tile tile = currentFloor.tiles[target.x, target.y];
     if (tile != null && tile.visibility != TileVisiblity.Unexplored) {
       return tile;

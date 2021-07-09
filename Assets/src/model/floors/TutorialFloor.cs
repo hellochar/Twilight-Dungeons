@@ -15,7 +15,7 @@ class TutorialFloor : Floor {
   public event Action OnTutorialEnded;
 
   public TutorialFloor() : base(-1, 73, 9) {
-    this.portRoom = new Room(new Vector2Int(0, 0), new Vector2Int(5, 8));
+    this.portRoom = new Room(Vector2Int.zero, new Vector2Int(5, 8));
     this.blobRoom = new Room(new Vector2Int(portRoom.max.x + 5, 1), new Vector2Int(portRoom.max.x + 5 + 11, 7));
     this.dogsRoom = new Room(new Vector2Int(blobRoom.max.x + 4, 1), new Vector2Int(blobRoom.max.x + 4 + 14, 7));
     this.bushRoom = new Room(new Vector2Int(dogsRoom.max.x + 4, 1), new Vector2Int(dogsRoom.max.x + 4 + 7, 7));

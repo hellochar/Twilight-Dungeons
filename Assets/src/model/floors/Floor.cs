@@ -30,7 +30,7 @@ public class Floor {
   public event Action<Entity> OnEntityRemoved;
 
   /// min inclusive, max exclusive in terms of map width/height
-  public Vector2Int boundsMin => new Vector2Int(0, 0);
+  public Vector2Int boundsMin => Vector2Int.zero;
   public Vector2Int boundsMax => new Vector2Int(width, height);
   public Vector2 center => new Vector2(width / 2.0f, height / 2.0f);
 

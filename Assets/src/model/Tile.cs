@@ -189,7 +189,7 @@ public class Chasm : Tile {
 [ObjectInfo(description: "Go back home.")]
 public class Upstairs : Tile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
-  public Vector2Int landing => pos + new Vector2Int(1, 0);
+  public Vector2Int landing => pos + Vector2Int.right;
   public Upstairs(Vector2Int pos) : base(pos) {}
 
   protected override void HandleEnterFloor() {
@@ -213,7 +213,7 @@ public class Upstairs : Tile {
 [ObjectInfo(description: "Go deeper into the dungeon.")]
 public class Downstairs : Tile {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
-  public Vector2Int landing => pos + new Vector2Int(-1, 0);
+  public Vector2Int landing => pos + Vector2Int.left;
   public Downstairs(Vector2Int pos) : base(pos) {}
 
   protected override void HandleEnterFloor() {

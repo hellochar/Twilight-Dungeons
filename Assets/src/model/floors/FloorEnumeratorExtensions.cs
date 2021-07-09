@@ -52,8 +52,8 @@ public static class FloorEnumeratorExtensions {
 
   public static IEnumerable<Vector2Int> EnumerateCircle(this Floor floor, Vector2Int center, float radius) {
     Vector2Int extent = new Vector2Int(Mathf.CeilToInt(radius), Mathf.CeilToInt(radius));
-    foreach (var pos in floor.EnumerateRectangle(center - extent, center + extent + new Vector2Int(1, 1))) {
-      if (Vector2Int.Distance(pos, center) <= radius) {
+    foreach (var pos in floor.EnumerateRectangle(center - extent, center + extent + Vector2Int.one)) {
+      if (Vector2Int.Distance(pos, center) < radius) {
         yield return pos;
       }
     }
@@ -95,7 +95,7 @@ public static class FloorEnumeratorExtensions {
 
   public static IEnumerable<Vector2Int> EnumerateRoom(this Floor floor, Room room, int extrude = 0) {
     Vector2Int extrudeVector = new Vector2Int(extrude, extrude);
-    return floor.EnumerateRectangle(room.min - extrudeVector, room.max + new Vector2Int(1, 1) + extrudeVector);
+    return floor.EnumerateRectangle(room.min - extrudeVector, room.max + Vector2Int.one + extrudeVector);
   }
 
 

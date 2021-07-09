@@ -443,11 +443,11 @@ public class Encounters {
         tile.pos.x > 0 &&
         tile.pos.x < floor.width - 1 &&
 
-        floor.tiles[tile.pos + new Vector2Int(0, -1)] is Ground &&
+        floor.tiles[tile.pos + Vector2Int.down] is Ground &&
 
         tile.grass == null &&
-        floor.grasses[tile.pos + new Vector2Int(-1, 0)] == null &&
-        floor.grasses[tile.pos + new Vector2Int(1, 0)] == null
+        floor.grasses[tile.pos + Vector2Int.left] == null &&
+        floor.grasses[tile.pos + Vector2Int.right] == null
       )
       .Select((tile) => tile.pos));
     var num = Random.Range(3, 8);
@@ -455,9 +455,9 @@ public class Encounters {
       var pos = Util.RandomPick(wallsWithGroundBelow);
       floor.Put(new HangingVines(pos));
       // disallow two consecutive vines
-      wallsWithGroundBelow.Remove(pos + new Vector2Int(-1, 0));
+      wallsWithGroundBelow.Remove(pos + Vector2Int.left);
       wallsWithGroundBelow.Remove(pos);
-      wallsWithGroundBelow.Remove(pos + new Vector2Int(1, 0));
+      wallsWithGroundBelow.Remove(pos + Vector2Int.right);
     }
   }
 

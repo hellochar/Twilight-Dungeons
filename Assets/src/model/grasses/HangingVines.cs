@@ -6,7 +6,7 @@ using UnityEngine;
 [ObjectInfo(description: "Constricts any creature that walks into its hook.\nYou may destroy the Hanging Vines by tapping the Wall it's attached to.")]
 public class HangingVines : Grass, IDeathHandler {
   private Inventory inventory = new Inventory(new ItemVineWhip(1));
-  public Tile tileBelow => floor.tiles[pos + new Vector2Int(0, -1)];
+  public Tile tileBelow => floor.tiles[pos + Vector2Int.down];
   private Trigger triggerBelow;
 
   public HangingVines(Vector2Int pos) : base(pos) {

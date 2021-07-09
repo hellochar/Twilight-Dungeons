@@ -24,14 +24,14 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
 
   IEnumerator AnimateBossSeen(Boss b) {
     InteractionController.isInputAllowed = false;
-    var tiles = b.floor.EnumerateCircle(b.pos, 3.99f);
+    var tiles = floor.EnumerateCircle(boss.pos, 4).Select(p => floor.tiles[p]);
     foreach (var t in tiles) {
-      b.floor.tiles[t].visibility = TileVisiblity.Visible;
+      t.visibility = TileVisiblity.Visible;
     }
     yield return Transitions.ZoomAndPanCamera(4, b.pos, 0.5f);
     yield return Transitions.ZoomAndPanCamera(4, b.pos, 3);
     foreach (var t in tiles) {
-      b.floor.tiles[t].visibility = TileVisiblity.Explored;
+      t.visibility = TileVisiblity.Explored;
     }
     var player = GameModel.main.player;
     b.floor.RecomputeVisibility(player);
@@ -47,7 +47,7 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
   IEnumerator BossDeathAnimation() {
     IEnumerator CameraMotion() {
       InteractionController.isInputAllowed = false;
-      var tiles = floor.EnumerateCircle(boss.pos, 3.99f).Select(p => floor.tiles[p]);
+      var tiles = floor.EnumerateCircle(boss.pos, 4).Select(p => floor.tiles[p]);
       foreach (var t in tiles) {
         t.visibility = TileVisiblity.Visible;
       }

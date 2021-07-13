@@ -722,6 +722,7 @@ PlayerSettings:
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Game Performance: 1
     UNet: 1
   luminIcon:
     m_Name: 
@@ -736,11 +737,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: 
+  cloudProjectId: 84b1a444-3c05-45f2-91e9-206ce98c0454
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Twilight Dungeons
+  organizationId: honey-18a77a5a-3391-44d4-9727-ed47e6f1f306
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   virtualTexturingSupportEnabled: 0

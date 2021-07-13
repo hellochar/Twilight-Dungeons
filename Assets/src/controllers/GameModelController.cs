@@ -19,6 +19,7 @@ public class GameModelController : MonoBehaviour {
   public FloorController CurrentFloorController => currentFloorController;
 
   void Awake() {
+    UnityEngine.CrashReportHandler.CrashReportHandler.enableCaptureExceptions = !Application.isEditor;
     #if UNITY_EDITOR
     // GameModel.GenerateTutorialAndSetMain();
     if (GameModel.main == null) {

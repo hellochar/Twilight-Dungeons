@@ -15,6 +15,7 @@ public class Intro : MonoBehaviour {
   void Awake() {
     // unset current game.
     GameModel.main = null;
+    UnityEngine.CrashReportHandler.CrashReportHandler.enableCaptureExceptions = !Application.isEditor;
   }
 
   void Start() {
@@ -30,48 +31,34 @@ public class Intro : MonoBehaviour {
     }
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
-    #if UNITY_EDITOR
-    // don't catch errors in dev so you get better stack trace
+    try {
       GameModel.GenerateNewGameAndSetMain();
       GoToGameScene();
-    #else
-      try {
-        //// TODO async this; need to stop using UnityEngine code.
-        // await Task.Run(() => {
-        GameModel.GenerateNewGameAndSetMain();
-        // });
-        GoToGameScene();
-      } catch(Exception e) {
-        /// TODO report to error server
-        var popup = Popups.Create(
-          title: "Error Creating Game",
-          category: null,
-          info: "Sorry! Please screenshot this and send it to hellocharlien@hotmail.com.",
-          flavor: null,
-          errorText: e.Message);
-        var controller = popup.GetComponent<PopupController>();
-        controller.OnClose += () => SceneManager.LoadSceneAsync("Scenes/Intro");
-      }
-    #endif
+    } catch (Exception e) {
+      ShowExceptionPopup(e);
+    }
+  }
+  
+  public void ShowExceptionPopup(Exception e) {
+    var popup = Popups.Create(
+      title: "Error",
+      category: null,
+      info: "Sorry, something went wrong! Please screenshot this and send it to hellocharlien@hotmail.com.",
+      flavor: null,
+      errorText: e.Message == "" ? e.GetType().Name : e.Message);
+    var controller = popup.GetComponent<PopupController>();
+    controller.OnClose += () => SceneManager.LoadSceneAsync("Scenes/Intro");
+    Debug.LogException(e);
   }
 
   public async void Continue() {
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
     try {
-      await Task.Run(() => {
-        GameModel.main = Serializer.LoadSave0();
-      });
+      await Task.Run(() => GameModel.main = Serializer.LoadSave0());
       GoToGameScene();
     } catch (Exception e) {
-        var popup = Popups.Create(
-          title: "Could Not Load",
-          category: null,
-          info: "Sorry! Please screenshot this and send it to hellocharlien@hotmail.com.",
-          flavor: null,
-          errorText: e.Message);
-      var controller = popup.GetComponent<PopupController>();
-      controller.OnClose += () => SceneManager.LoadSceneAsync("Scenes/Intro");
+      ShowExceptionPopup(e);
     }
   }
 

@@ -41,28 +41,53 @@ public class DurabilityBarController : MonoBehaviour {
     if (shouldBeActive) {
       lastDurability = GetItemDurability();
       Update();
-      var sizeDelta = rectTransform.sizeDelta;
-      sizeDelta.x = item is IDurable ? 80 : 40;
-      rectTransform.sizeDelta = sizeDelta;
     }
   }
 
   public void Update() {
+    UpdatePulse();
+    UpdateTextAndBarFillAmount();
+    UpdateWidth();
+    UpdateFillOrigin();
+  }
+
+  void UpdatePulse() {
+    // do a pulse
     var durability = GetItemDurability();
     if (lastDurability != durability) {
       var pulse = gameObject.AddComponent<PulseAnimation>();
       pulse.pulseScale = 1.1f;
       lastDurability = durability;
     }
+  }
+
+  void UpdateTextAndBarFillAmount() {
     if (item is IDurable durable) {
+      // durable case
       text.text = $"{durable.durability}/{durable.maxDurability}";
       bar.fillAmount = (float) durable.durability / durable.maxDurability;
       bar.color = Color.Lerp(colorUsed, colorGood, bar.fillAmount);
     } else if (item is IStackable stackable) {
+      // stackable case
       text.text = $"{stackable.stacks}";
       bar.fillAmount = 1;
       bar.color = Color.clear;
     }
+  }
+
+  void UpdateWidth() {
+    var wantedWidth = item is IDurable ? 80 : 40;
+    if (rectTransform.sizeDelta.x != wantedWidth) {
+      var sizeDelta = rectTransform.sizeDelta;
+      sizeDelta.x = wantedWidth;
+      rectTransform.sizeDelta = sizeDelta;
+    }
+  }
+
+  void UpdateFillOrigin() {
+    // right-hand mode
+    var wantedFillMode = Settings.main.rightHanded ? (int) Image.OriginHorizontal.Left : (int) Image.OriginHorizontal.Right;
+    bar.fillOrigin = wantedFillMode;
   }
 
   private int GetItemDurability() {

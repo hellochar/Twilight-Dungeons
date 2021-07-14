@@ -13,7 +13,7 @@ public class InventorySlotController : ItemSlotController {
   public override Item item => inventory[slotIndex];
 
   public virtual void Start() {
-    itemPrefab = Resources.Load<GameObject>("UI/Item");
+    itemPrefab = PrefabCache.UI.GetPrefabFor("Item");
     shadow = GetComponent<Shadow>();
     image = GetComponent<Image>();
     slotIndex = transform.GetSiblingIndex();

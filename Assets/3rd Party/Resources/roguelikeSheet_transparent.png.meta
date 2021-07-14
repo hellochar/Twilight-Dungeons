@@ -1705,7 +1705,7 @@ TextureImporter:
     second: roguelikeSheet_transparent_566
   - first:
       213: 6909616205063585395
-    second: roguelikeSheet_transparent_567
+    second: panel-grey-inset-no-whitespace
   - first:
       213: -950951994630214519
     second: roguelikeSheet_transparent_568
@@ -38810,6 +38810,27 @@ TextureImporter:
       bones: []
       spriteID: f889d829c5a1784b0800000000000000
       internalID: -5438349040128518001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: panel-grey-inset-no-whitespace
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 3
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 2, z: 2, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37ef81d6453e3ef50800000000000000
+      internalID: 6909616205063585395
       vertices: []
       indices: 
       edges: []

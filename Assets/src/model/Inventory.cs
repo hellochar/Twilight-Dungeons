@@ -125,9 +125,9 @@ public class Inventory : IEnumerable<Item> {
     if (slot < 0) {
       return false;
     }
-    HandleItemRemoved(item);
     items[slot] = null;
     item.inventory = null;
+    HandleItemRemoved(item);
     return true;
   }
 

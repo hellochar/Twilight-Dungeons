@@ -112,6 +112,9 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
       }
       _stacks = value;
       if (_stacks == 0) {
+        if (player.grass is Web web) {
+          web.Kill(player);
+        }
         Destroy();
       }
     }

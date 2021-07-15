@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0a2e355186ff62143a8e64348170b25c, type: 3}
     - {fileID: 102900000, guid: 7371d33879c3eff41ab59ac9b1a5d862, type: 3}
-    totalSpriteSurfaceArea: 11834997
+    totalSpriteSurfaceArea: 11836761
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -5205,6 +5205,7 @@ SpriteAtlas:
   - {fileID: 7387429861993466784, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 2050675941762335830, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -4318623287163874416, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
+  - {fileID: 6909616205063585395, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 2761135266673076306, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 4115784960782116255, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 7583747511342099666, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -13317,6 +13318,7 @@ SpriteAtlas:
   - roguelikeSheet_transparent_552
   - roguelikeSheet_transparent_520
   - roguelikeSheet_transparent_292
+  - panel-grey-inset-no-whitespace
   - roguelikeSheet_transparent_545
   - roguelikeSheet_transparent_551
   - roguelikeSheet_transparent_519

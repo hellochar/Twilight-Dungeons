@@ -116,7 +116,9 @@ public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INo
     foreach (var actor in floor.AdjacentActors(pos).Where(actor => actor != this)) {
       actor.TakeDamage(2, this);
     }
-    floor.Put(new FungalWall(pos));
+    if (tile is Ground) {
+      floor.Put(new FungalWall(pos));
+    }
     OnExploded?.Invoke();
     KillSelf();
   }

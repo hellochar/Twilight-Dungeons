@@ -1,5 +1,7 @@
 /[Aa]ssets/Tilemaps/experiment/
 /[Aa]ssets/iOS Project Builder/
+*.certSigningRequest
+build-ios/
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #

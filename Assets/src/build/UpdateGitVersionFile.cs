@@ -9,6 +9,7 @@ using System.Text;
 using Debug = UnityEngine.Debug;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using System.Text.RegularExpressions;
 
 ///https://blog.redbluegames.com/version-numbering-for-games-in-unity-and-git-1d05fca83022
 
@@ -17,7 +18,18 @@ public class UpdateGitVersionFile : IPreprocessBuildWithReport {
   public void OnPreprocessBuild(BuildReport report) {
     var gitDescribe = RunGit(@"describe --tags --long --match ""v[0-9]*""");
     Debug.Log("git describe " + gitDescribe);
-    PlayerSettings.bundleVersion = gitDescribe;
+    var bundleVersion = gitDescribe;
+    #if UNITY_IOS
+    // iOS cannot have the leading "v" or the full git info. We morph it into "1.8.0.0"
+    var regex = @"v(\d+).(\d+).(\d+)-(\d+)";
+    Match match = Regex.Match(gitDescribe, regex);
+    var major = match.Groups[1].Value; // [0] is the full string, everything after that is the individual group
+    var minor = match.Groups[2].Value;
+    var patch = match.Groups[3].Value;
+    var abbrev = match.Groups[4].Value;
+    bundleVersion = $"{major}.{minor}.{patch}{ ((abbrev == "0") ? "" : ("." + abbrev)) }";
+    #endif
+    PlayerSettings.bundleVersion = bundleVersion;
   }
 
   /// <summary>

@@ -144,7 +144,7 @@ public class ActorController : BodyController,
   }
 
   private void HandleAttackGround(Vector2Int pos) {
-    GameObject attackSpritePrefab = Resources.Load<GameObject>("Effects/Attack Sprite");
+    GameObject attackSpritePrefab = PrefabCache.Effects.GetPrefabFor("Attack Sprite");
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 

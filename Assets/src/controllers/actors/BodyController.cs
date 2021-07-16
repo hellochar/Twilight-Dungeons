@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITakeAnyDamageHandler, IHealHandler {
-  private static GameObject hpChangeTextPrefab;
   [NonSerialized]
   public Body body;
   protected GameObject sprite;
@@ -11,10 +10,6 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
   public bool showDamageMarks = true;
 
   public virtual void Start() {
-    if (hpChangeTextPrefab == null) {
-      hpChangeTextPrefab = Resources.Load<GameObject>("Effects/HP Change Text");
-    }
-
     body.nonserializedModifiers.Add(this);
 
     sprite = transform.Find("Sprite")?.gameObject;
@@ -27,11 +22,11 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     }
 
     if (showDamageMarks) {
-      GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
+      GameObject hpChangeText = Instantiate(PrefabCache.Effects.GetPrefabFor("HP Change Text"), Util.withZ(body.pos), Quaternion.identity);
       hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
 
       if(damage > 0) {
-        GameObject damagedSpritePrefab = Resources.Load<GameObject>("Effects/Damaged Sprite");
+        GameObject damagedSpritePrefab = PrefabCache.Effects.GetPrefabFor("Damaged Sprite");
         Instantiate(damagedSpritePrefab, Util.withZ(body.pos), Quaternion.identity);
       }
     }
@@ -42,10 +37,10 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     if (!body.isVisible) {
       return;
     }
-    GameObject hpChangeText = Instantiate(hpChangeTextPrefab, Util.withZ(body.pos), Quaternion.identity);
+    GameObject hpChangeText = Instantiate(PrefabCache.Effects.GetPrefabFor("HP Change Text"), Util.withZ(body.pos), Quaternion.identity);
     hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, false);
 
-    GameObject healEffectPrefab = Resources.Load<GameObject>("Effects/Heal Effect");
+    GameObject healEffectPrefab = PrefabCache.Effects.GetPrefabFor("Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(body.pos), Quaternion.identity, transform);
     healEffect.transform.localPosition = new Vector3(0, 0, 0);
     // UpdateDamageTicks();

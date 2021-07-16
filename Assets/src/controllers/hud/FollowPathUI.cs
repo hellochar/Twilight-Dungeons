@@ -13,8 +13,8 @@ public class FollowPathUI : MonoBehaviour {
 
   // Start is called before the first frame update
   void Start() {
-    pathDotPrefab = Resources.Load<GameObject>("UI/PathDot");
-    reticle = Instantiate(Resources.Load<GameObject>("UI/Reticle"), new Vector3(), Quaternion.identity, transform);
+    pathDotPrefab = PrefabCache.UI.GetPrefabFor("PathDot");
+    reticle = Instantiate(PrefabCache.UI.GetPrefabFor("Reticle"), new Vector3(), Quaternion.identity, transform);
     reticle.SetActive(false);
     player = GameModel.main.player;
     player.OnSetTask += HandleSetPlayerTask;

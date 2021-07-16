@@ -10,7 +10,7 @@ public class EquipmentOnPlayerController : ItemSlotController {
   public override Item item => GameModel.main.player.equipment[slot];
 
   void Start() {
-    itemPrefab = Resources.Load<GameObject>("UI/Equipment On Player");
+    itemPrefab = PrefabCache.UI.GetPrefabFor("Equipment On Player");
     itemChild = transform.Find("ItemOnPlayer")?.gameObject;
   }
 

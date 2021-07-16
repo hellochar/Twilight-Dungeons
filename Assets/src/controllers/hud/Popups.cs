@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public static class Popups {
-  private static GameObject PopupPrefab;
-
   public static PopupController Create(
     string title,
     string category,
@@ -67,21 +65,14 @@ public static class Popups {
   }
 
   private static GameObject InstantiatePopup(Transform parent) {
-    if (PopupPrefab == null) {
-      PopupPrefab = Resources.Load<GameObject>("UI/Popup");
-    }
     if (parent == null) {
       parent = GameObject.Find("Canvas").transform;
     }
-    return UnityEngine.Object.Instantiate(PopupPrefab, new Vector3(), Quaternion.identity, parent);
+    return UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Popup"), new Vector3(), Quaternion.identity, parent);
   }
 
-  private static GameObject ActionButtonPrefab;
   private static GameObject MakeButton(string name, Action onClicked, Transform parent, GameObject popup) {
-    if (ActionButtonPrefab == null) {
-      ActionButtonPrefab = Resources.Load<GameObject>("UI/Action Button");
-    }
-    var button = UnityEngine.Object.Instantiate(ActionButtonPrefab, new Vector3(), Quaternion.identity, parent);
+    var button = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Action Button"), new Vector3(), Quaternion.identity, parent);
     button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));

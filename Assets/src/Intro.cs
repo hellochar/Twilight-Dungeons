@@ -16,6 +16,7 @@ public class Intro : MonoBehaviour {
     // unset current game.
     GameModel.main = null;
     UnityEngine.CrashReportHandler.CrashReportHandler.enableCaptureExceptions = !Application.isEditor;
+    Application.targetFrameRate = Screen.currentResolution.refreshRate;
   }
 
   void Start() {

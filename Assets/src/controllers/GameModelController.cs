@@ -20,6 +20,7 @@ public class GameModelController : MonoBehaviour {
 
   void Awake() {
     UnityEngine.CrashReportHandler.CrashReportHandler.enableCaptureExceptions = !Application.isEditor;
+    Application.targetFrameRate = Screen.currentResolution.refreshRate;
     #if UNITY_EDITOR
     // GameModel.GenerateTutorialAndSetMain();
     if (GameModel.main == null) {

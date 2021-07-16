@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 141824
+    totalSpriteSurfaceArea: 99840
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -166,7 +166,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
   - {fileID: 21300000, guid: 31adac07e6827b7419ed4a49b528e0fe, type: 3}
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
-  - {fileID: 21300000, guid: 037f0f27476de09428adf0a534bd5dd1, type: 3}
   - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
   - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
@@ -339,7 +338,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d323feae203eaa14f9c8cb43e26ca88b, type: 3}
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: 0bd9eeee31e21fe489be4f2d82911a11, type: 3}
-  - {fileID: 21300000, guid: 0ef9b2fe09d6ead499277654c5526d7a, type: 3}
   - {fileID: 21300000, guid: a3c0dc0f71809ab4f8d5d6b064a6ea27, type: 3}
   - {fileID: 21300000, guid: baa91f6f3c3ba6a45bdb64450293936d, type: 3}
   - {fileID: 21300000, guid: 24e1cc9fda07a6f4fb2960d8e24f024e, type: 3}
@@ -460,7 +458,6 @@ SpriteAtlas:
   - Player
   - whitePuff00
   - fruitingbody
-  - inset-box-shadow
   - blue-spore-explosion
   - Astoria
   - hearty-veggie
@@ -633,7 +630,6 @@ SpriteAtlas:
   - vile-potion
   - charmberry
   - growing-fungus
-  - tree-of-yendor
   - bulbous-skin
   - stompinboots
   - living-armor

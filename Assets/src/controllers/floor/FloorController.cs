@@ -55,20 +55,11 @@ public class FloorController : MonoBehaviour {
     this.InstantiateGameObjectsToMatchFloor();
     floor.OnEntityAdded += HandleEntityAdded;
     floor.OnEntityRemoved += HandleEntityRemoved;
-    #if UNITY_EDITOR
-    // LogEnemyHP();
-    #endif
   }
 
   void OnDestroy() {
     floor.OnEntityAdded -= HandleEntityAdded;
     floor.OnEntityRemoved -= HandleEntityRemoved;
-  }
-
-  void LogEnemyHP() {
-    var enemies = floor.bodies.Where((b) => b is Actor x && x.faction == Faction.Enemy);
-    var allHP = enemies.Select((a) => a.maxHp).Sum();
-    Debug.Log("Depth " + floor.depth +", HP " + allHP, this);
   }
 
   void HandleEntityRemoved(Entity e) {
@@ -83,7 +74,8 @@ public class FloorController : MonoBehaviour {
         currentObject.AddComponent<FadeThenDestroy>();
       }
       gameObjectMap.Remove(e);
-    } else {
+      // ignore triggers for warnings
+    } else if (!(e is Trigger)) {
       Debug.LogWarning("" + e + " was removed from floor " + floor + " but didn't have a GameObject.");
     }
   }
@@ -123,7 +115,7 @@ public class FloorController : MonoBehaviour {
         gameObject.GetComponent<ItemOnGroundController>().itemOnGround = itemOnGround;
       }
       gameObjectMap[entity] = gameObject;
-    } else {
+    } else if (!(entity is Trigger)) {
       Debug.LogWarning($"Couldn't find prefab for {entity.GetType()}");
     }
   }

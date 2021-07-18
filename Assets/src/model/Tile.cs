@@ -37,19 +37,7 @@ public abstract class Tile : Entity {
 
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
-  public float GetPathfindingWeight() {
-    var weight = 0f;
-    if (body != null) {
-      weight = 0;
-    } else {
-      weight = BasePathfindingWeight();
-    }
-    if (grass is IPathfindingCostModifier mod) {
-      return mod.Modify(weight);
-    } else {
-      return weight;
-    }
-  }
+  public float GetPathfindingWeight() => body != null ? 0 : BasePathfindingWeight();
 
   internal void BodyLeft(Body body) {
     if (body is Actor actor) {
@@ -79,7 +67,7 @@ public abstract class Tile : Entity {
     return BasePathfindingWeight() == 0 || (body is IBlocksVision || grass is IBlocksVision);
   }
 
-  internal virtual bool CanBeOccupied() {
+  internal bool CanBeOccupied() {
     return GetPathfindingWeight() != 0;
   }
 }

@@ -6,90 +6,115 @@ using UnityEngine;
 
 [Serializable]
 class PathfindingManager {
-  /// if null, we need a recompute
-  [NonSerialized] /// lazily instantiated
-  private PathFind.Grid grid;
+  [NonSerialized] /// re-created on deserialization
+  List<Tile> openSet = new List<Tile>();
+  [NonSerialized] /// re-created on deserialization
+  HashSet<Tile> closedSet = new HashSet<Tile>();
+  [NonSerialized] /// re-created on deserialization
+  Dictionary<Tile, int> gCosts = new Dictionary<Tile, int>();
+  [NonSerialized] /// re-created on deserialization
+  Dictionary<Tile, int> hCosts = new Dictionary<Tile, int>();
+  [NonSerialized] /// re-created on deserialization
+  Dictionary<Tile, Tile> parents = new Dictionary<Tile, Tile>();
   private Floor floor;
   public PathfindingManager(Floor floor) {
     this.floor = floor;
-    floor.OnEntityAdded += HandleEntityAdded;
-    floor.OnEntityRemoved += HandleEntityRemoved;
   }
 
   [OnDeserialized]
   private void OnDeserialized() {
-    floor.OnEntityAdded += HandleEntityAdded;
-    floor.OnEntityRemoved += HandleEntityRemoved;
-  }
-
-  void HandleEntityAdded(Entity entity) {
-    if (entity is Tile t) {
-      grid = null;
-    }
-  }
-
-  void HandleEntityRemoved(Entity entity) {
-    if (entity is Tile tile) {
-      grid = null;
-    }
+    openSet = new List<Tile>();
+    closedSet = new HashSet<Tile>();
+    gCosts = new Dictionary<Tile, int>();
+    hCosts = new Dictionary<Tile, int>();
+    parents = new Dictionary<Tile, Tile>();
   }
 
   public List<Vector2Int> FindPathDynamic(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty) {
-    float[,] tilesmap = new float[floor.width, floor.height];
-    for (int x = 0; x < floor.width; x++) {
-      for (int y = 0; y < floor.height; y++) {
-        Tile tile = floor.tiles[x, y];
-        float weight = tile.GetPathfindingWeight();
-        tilesmap[x, y] = weight;
-      }
+    var path = FindPathImpl(pos, target, pretendTargetEmpty);
+    if (path != null) {
+      return path.Select(x => x.pos).ToList();
     }
-    if (pretendTargetEmpty) {
-      tilesmap[target.x, target.y] = 1f;
-    }
-    // every float in the array represent the cost of passing the tile at that position.
-    // use 0.0f for blocking tiles.
-
-    // create a grid
-    PathFind.Grid grid = new PathFind.Grid(floor.width, floor.height, tilesmap);
-
-    // create source and target points
-    PathFind.Point _from = new PathFind.Point(pos.x, pos.y);
-    PathFind.Point _to = new PathFind.Point(target.x, target.y);
-
-    // get path
-    // path will either be a list of Points (x, y), or an empty list if no path is found.
-    List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
-    return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
+    return new List<Vector2Int>();
   }
 
-  /// find path around tiles; don't take actor bodies into account
-  public List<Vector2Int> FindPathStatic(Vector2Int pos, Vector2Int target) {
-    if (grid == null) {
-      RecomputePathFindGrid();
-    }
-    // create source and target points
-    PathFind.Point _from = new PathFind.Point(pos.x, pos.y);
-    PathFind.Point _to = new PathFind.Point(target.x, target.y);
+  private int gCost(Tile t) => gCosts.GetValueOrDefault(t);
+  private int hCost(Tile t) => hCosts.GetValueOrDefault(t);
+  private Tile parent(Tile t) => parents.GetValueOrDefault(t);
+  private int fCost(Tile t) => +gCost(t) + hCost(t);
 
-    // get path
-    // path will either be a list of Points (x, y), or an empty list if no path is found.
-    List<PathFind.Point> path = PathFind.Pathfinding.FindPath(grid, _from, _to);
-    return path.Select(p => new Vector2Int(p.x, p.y)).ToList();
-  }
+  // adapted from https://github.com/RonenNess/Unity-2d-pathfinding
+  /// pretendTargetEmpty - if true, the targetPos will be treated as walkable, even if it's not
+  private List<Tile> FindPathImpl(Vector2Int startPos, Vector2Int targetPos, bool pretendTargetEmpty) {
+    Tile startNode = floor.tiles[startPos];
+    Tile targetNode = floor.tiles[targetPos];
 
-  private void RecomputePathFindGrid() {
-    float[,] tilesmap = new float[floor.width, floor.height];
-    for (int x = 0; x < floor.width; x++) {
-      for (int y = 0; y < floor.height; y++) {
-        Tile tile = floor.tiles[x, y];
-        float weight = tile.BasePathfindingWeight();
-        tilesmap[x, y] = weight;
+    openSet.Clear();
+    closedSet.Clear();
+    gCosts.Clear();
+    hCosts.Clear();
+    parents.Clear();
+
+    openSet.Add(startNode);
+
+    bool isAtEmptyTarget(Tile t) => pretendTargetEmpty && t.pos == targetPos ? true : false;
+
+    while (openSet.Count > 0) {
+      Tile currentNode = openSet[0];
+      for (int i = 1; i < openSet.Count; i++) {
+        if (fCost(openSet[i]) < fCost(currentNode) || fCost(openSet[i]) == fCost(currentNode) && hCost(openSet[i]) < hCost(currentNode)) {
+          currentNode = openSet[i];
+        }
+      }
+
+      openSet.Remove(currentNode);
+      closedSet.Add(currentNode);
+
+      if (currentNode == targetNode) {
+        return RetracePath(startNode, targetNode);
+      }
+
+      foreach (Tile neighbour in floor.GetAdjacentTiles(currentNode.pos)) {
+        if (!(isAtEmptyTarget(neighbour) ? true : neighbour.CanBeOccupied()) || closedSet.Contains(neighbour)) {
+          continue;
+        }
+
+        var neighbourWeight = (int)(10.0f * (isAtEmptyTarget(neighbour) ? 1 : neighbour.GetPathfindingWeight()));
+        int newMovementCostToNeighbour = gCost(currentNode) + GetDistance(currentNode, neighbour) * neighbourWeight;
+        if (newMovementCostToNeighbour < gCost(neighbour) || !openSet.Contains(neighbour)) {
+          gCosts[neighbour] = newMovementCostToNeighbour;
+          hCosts[neighbour] = GetDistance(neighbour, targetNode);
+          parents[neighbour] = currentNode;
+
+          if (!openSet.Contains(neighbour)) {
+            openSet.Add(neighbour);
+          }
+        }
       }
     }
-    // every float in the array represent the cost of passing the tile at that position.
-    // use 0.0f for blocking tiles.
 
-    // create a grid
-    grid = new PathFind.Grid(floor.width, floor.height, tilesmap);
+    return null;
+  }
+
+  private List<Tile> RetracePath(Tile startNode, Tile endNode) {
+    List<Tile> path = new List<Tile>();
+    Tile currentNode = endNode;
+
+    while (currentNode != startNode) {
+      path.Add(currentNode);
+      currentNode = parent(currentNode);
+    }
+    path.Reverse();
+    return path;
+  }
+
+  // speed optimized (ints only)
+  private static int GetDistance(Tile nodeA, Tile nodeB) {
+    int dstX = Mathf.Abs(nodeA.pos.x - nodeB.pos.x);
+    int dstY = Mathf.Abs(nodeA.pos.y - nodeB.pos.y);
+
+    if (dstX > dstY)
+      return 14 * dstY + 10 * (dstX - dstY);
+    return 14 * dstX + 10 * (dstY - dstX);
   }
 }

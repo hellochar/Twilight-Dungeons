@@ -97,7 +97,6 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
 public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   private List<T> list = new List<T>();
 
-  // should always be true
   [NonSerialized]
   private bool needsRecompute;
   /// should regenerate on load

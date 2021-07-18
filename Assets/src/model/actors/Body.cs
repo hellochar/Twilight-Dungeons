@@ -29,7 +29,7 @@ public class Body : Entity {
           var oldTile = floor.tiles[_pos];
           oldTile.BodyLeft(this);
           _pos = value;
-          floor.InvalidateBodyGrid();
+          floor.BodyMoved();
           OnMove(value, oldTile.pos);
           Tile newTile = floor.tiles[_pos];
           newTile.BodyEntered(this);
@@ -48,7 +48,7 @@ public class Body : Entity {
     newTile.BodyLeft(other);
     _pos = newTile.pos;
     other._pos = oldTile.pos;
-    floor.InvalidateBodyGrid();
+    floor.BodyMoved();
     OnMove(_pos, oldTile.pos);
     other.OnMove(oldTile.pos, _pos);
     newTile.BodyEntered(this);

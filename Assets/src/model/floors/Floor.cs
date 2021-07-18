@@ -98,7 +98,7 @@ public class Floor {
     item.pos = newPosition;
   }
 
-  public void InvalidateBodyGrid() => bodies.ScheduleRecompute();
+  public void BodyMoved() => bodies.ScheduleRecompute();
 
   /// what should happen when the player goes downstairs
   internal virtual void PlayerGoDownstairs() {

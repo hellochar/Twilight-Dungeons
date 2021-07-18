@@ -35,7 +35,7 @@ SpriteAtlas:
       m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
-      padding: 4
+      padding: 2
       blockOffset: 1
       allowAlphaSplitting: 0
       enableRotation: 0
@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 99840
+    totalSpriteSurfaceArea: 91952
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -93,7 +93,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8ca78e42886bbbe418485065675bdb8d, type: 3}
   - {fileID: 21300000, guid: ae759e521ee37ca46ac7401b9dc0f160, type: 3}
   - {fileID: 21300000, guid: 8ac81162cd80a4c42beef986178ce7b8, type: 3}
-  - {fileID: 21300000, guid: f4daf282ca573d0499bbf123e1ab87bb, type: 3}
   - {fileID: 21300000, guid: 3c2060a2c70778f428cf0f512b064479, type: 3}
   - {fileID: -2126246720042785711, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
   - {fileID: -174042169833062346, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
@@ -102,18 +101,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8bd456237d101f44680f91bd37f10a74, type: 3}
   - {fileID: 21300000, guid: 5a2701337c157f44286d94428619f62d, type: 3}
   - {fileID: 21300000, guid: ddbd78635f7b7384c98615feb994332e, type: 3}
-  - {fileID: -3016119795410061073, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: -3620038628413351628, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: -7035306889517432051, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: -6485548197393842378, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: 3998576434689025941, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: -3572514568362998439, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: 725616898468683016, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: -1536831425717056515, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: -8195905872809609615, guid: f07df973453f4704da229e3a3438c24b, type: 3}
-  - {fileID: 7275361513450547697, guid: f07df973453f4704da229e3a3438c24b, type: 3}
   - {fileID: 21300000, guid: a2a493b3652ea624d8b4a95595992591, type: 3}
-  - {fileID: 21300000, guid: 87a694344c48cfd4f973630f10c1e866, type: 3}
   - {fileID: 21300000, guid: 423675349ef54b54ea991dfa899a486a, type: 3}
   - {fileID: 21300000, guid: 436f9534bacc2f5458e5415e478a9771, type: 3}
   - {fileID: 6733317360203888005, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -144,7 +132,6 @@ SpriteAtlas:
   - {fileID: 2398009223125789384, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 21300000, guid: 684dd2d49b97ae3419bbaee4cf6b1856, type: 3}
   - {fileID: 21300000, guid: e6359b2549856624ea03a41ab6288a49, type: 3}
-  - {fileID: 21300000, guid: 963a0635b26c332489a96f110bcac970, type: 3}
   - {fileID: 21300000, guid: 07dbe7358f70634448016e3aa340b653, type: 3}
   - {fileID: 21300000, guid: d31efa354e2c2df4b94665da71fc57b3, type: 3}
   - {fileID: 21300000, guid: a118dc35cc1687849a5ff3b1ecf8261a, type: 3}
@@ -164,12 +151,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c10a43a61c3bd5b4b81894b716acf188, type: 3}
   - {fileID: 21300000, guid: 9ff2e8e64ae8c1d4c854e1a58d49835c, type: 3}
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
-  - {fileID: 21300000, guid: 31adac07e6827b7419ed4a49b528e0fe, type: 3}
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
   - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
   - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
-  - {fileID: 21300000, guid: 7e8c9a67dd648b9459e1bc6d929a4d69, type: 3}
   - {fileID: 21300000, guid: b6c6bb7768fd8a9469338ddbfb3c7fe0, type: 3}
   - {fileID: 21300000, guid: 15090c87344335c428cc783a3ed766f8, type: 3}
   - {fileID: -6514523729103863605, guid: af4df3188a01af048a678513709d8278, type: 3}
@@ -252,7 +237,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d3348d1bcedd79a4da36ad1b2a767be5, type: 3}
   - {fileID: 21300000, guid: 20da3b7b701352c498e8d7da707f6ada, type: 3}
   - {fileID: 21300000, guid: 28bc988b23e0d8a44b6e60a07db77ac7, type: 3}
-  - {fileID: 21300000, guid: 99422c8b147686a44a6234118382d285, type: 3}
   - {fileID: 21300000, guid: b8a8be8b9a434574396282e110f0a107, type: 3}
   - {fileID: 21300000, guid: 8b767c9b3454c1343b789c3b90cb4049, type: 3}
   - {fileID: 21300000, guid: d49c25cbd651a534ca365cb069ea2b43, type: 3}
@@ -321,7 +305,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5e5b6eec62efc8345acfedf7eb3ab9f2, type: 3}
   - {fileID: 21300000, guid: d173e6fcf8a7f154e99acaba49b2acc9, type: 3}
   - {fileID: 21300000, guid: 6d903bfc9270a244baf01f5bdca7d318, type: 3}
-  - {fileID: 21300000, guid: af1e7b0d8ae6887498a650ac58efdcd5, type: 3}
   - {fileID: 21300000, guid: 8a77c04d6ab46854eaa6241498e9ac46, type: 3}
   - {fileID: -553817365315116960, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: -4611009959399730175, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
@@ -385,7 +368,6 @@ SpriteAtlas:
   - plated-armor
   - thornbush-sapling
   - necroroot
-  - coral
   - bacillomyte
   - blood_0
   - blood_1
@@ -394,18 +376,7 @@ SpriteAtlas:
   - Sleep
   - slime
   - third-eye
-  - damage-states_8
-  - damage-states_9
-  - damage-states_2
-  - damage-states_3
-  - damage-states_0
-  - damage-states_1
-  - damage-states_6
-  - damage-states_7
-  - damage-states_4
-  - damage-states_5
   - boombug
-  - stout-shield
   - sign
   - sleeping-bag
   - tumorous-growth
@@ -436,7 +407,6 @@ SpriteAtlas:
   - pixel-line-horizontal
   - Hands
   - hydra-heart
-  - fog01
   - hardened-sap
   - goop
   - charmed
@@ -456,12 +426,10 @@ SpriteAtlas:
   - catkin
   - fungal-wall
   - Player
-  - whitePuff00
   - fruitingbody
   - blue-spore-explosion
   - Astoria
   - hearty-veggie
-  - mooncakes
   - snail-shell
   - Transparent1x1
   - colored_transparent_packed_974
@@ -544,7 +512,6 @@ SpriteAtlas:
   - fern
   - tanglefoot
   - confused
-  - timeline
   - Clock
   - spored-status
   - uncle
@@ -613,7 +580,6 @@ SpriteAtlas:
   - jackal-fur
   - germ
   - blob-boss
-  - damage-tick
   - thornmail
   - hanging-vines-1x2
   - hanging-vines-bottom

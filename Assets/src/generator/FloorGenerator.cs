@@ -84,7 +84,7 @@ public class FloorGenerator {
     }
 
     /// set the seed
-    Debug.Log("Depth " + depth + " seed " + floorSeeds[depth]);
+    Debug.Log("Depth " + depth + " seed " + floorSeeds[depth].ToString("x"));
     MyRandom.SetSeed(floorSeeds[depth]);
 
     // pick the generator
@@ -311,8 +311,7 @@ public class FloorGenerator {
     Floor floor;
     int guard = 0;
     do {
-      floor = tryGenerateSingleRoomFloor(depth, width, height, depth != 11);
-      if (depth == 11) break;
+      floor = tryGenerateSingleRoomFloor(depth, width, height);
     } while (!AreStairsConnected(floor) && guard++ < 20);
     if (guard >= 20) {
       throw new Exception("Couldn't generate a walkable floor in 20 tries!");
@@ -343,7 +342,7 @@ public class FloorGenerator {
     return floor;
   }
 
-  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool placeDownstairs = true) {
+  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height) {
     Floor floor = new Floor(depth, width, height);
 
     // fill with wall
@@ -359,12 +358,10 @@ public class FloorGenerator {
     FloorUtils.NaturalizeEdges(floor);
     
     // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
-    EncounterGroup.Chasms.GetRandomAndDiscount(0.08f)(floor, room0);
+    EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
 
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
-    if (placeDownstairs) {
-      floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
-    }
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -451,8 +448,7 @@ public class FloorGenerator {
     Floor floor;
     int guard = 0;
     do {
-      floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits, depth != 22);
-      if (depth == 22) break;
+      floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
     } while (!AreStairsConnected(floor) && guard++ < 20);
     if (guard >= 20) {
       throw new Exception("Couldn't generate a walkable floor in 20 tries!");
@@ -507,7 +503,7 @@ public class FloorGenerator {
   }
 
   /// connectivity is not guaranteed
-  private static Floor tryGenerateMultiRoomFloor(int depth, int width, int height, int numSplits, bool placeDownstairs = true) {
+  private static Floor tryGenerateMultiRoomFloor(int depth, int width, int height, int numSplits) {
     Floor floor = new Floor(depth, width, height);
 
     // fill with wall
@@ -565,11 +561,10 @@ public class FloorGenerator {
     floor.PlaceUpstairs(upstairsPos);
 
     Room downstairsRoom = rooms.Last();
-    if (placeDownstairs) {
-      // 1-px padding from the bottom-right of the room
-      Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
-      floor.PlaceDownstairs(downstairsPos);
-    }
+    // 1-px padding from the bottom-right of the room
+    Vector2Int downstairsPos = new Vector2Int(downstairsRoom.max.x - 1, downstairsRoom.min.y + 1);
+    floor.PlaceDownstairs(downstairsPos);
+
     floor.root = root;
     floor.rooms = rooms;
     floor.upstairsRoom = upstairsRoom;

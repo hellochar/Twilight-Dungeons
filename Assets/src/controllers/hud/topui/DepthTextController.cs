@@ -18,7 +18,7 @@ public class DepthTextController : MonoBehaviour {
 
   public void ShowPopup() {
     var playTime = TimeSpan.FromSeconds(Time.timeSinceLevelLoad).ToString(@"hh\:mm\:ss");
-    var info = $"Playtime {playTime}\nSeed " + GameModel.main.seed.ToString("X");
+    var info = $"Playtime {playTime}\nSeed " + GameModel.main.seed.ToString("x");
     Popups.Create(
       title: null,
       category: "",

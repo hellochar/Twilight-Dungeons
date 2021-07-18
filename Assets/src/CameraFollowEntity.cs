@@ -8,11 +8,6 @@ public class CameraFollowEntity : MonoBehaviour {
   public float followSpeed = 1f;
   public float jumpThreshold = 10f;
 
-  // Start is called before the first frame update
-  void Start() {
-
-  }
-
   // Update is called once per frame
   void Update() {
     // jump immediately if too far away

@@ -58,7 +58,7 @@ public class GameModel {
   public GameModel() {
     this.seed = new System.Random().Next();
     #if UNITY_EDITOR
-    // this.seed = 0x6b1b3282;
+    // this.seed = 0x5ac34952;
     #endif
   }
 
@@ -78,7 +78,7 @@ public class GameModel {
   }
 
   private void generate() {
-    Debug.Log("generating from seed " + seed.ToString("X"));
+    Debug.Log("generating from seed " + seed.ToString("x"));
     MyRandom.SetSeed(seed);
     floorSeeds = new List<int>();
     /// generate floor seeds first

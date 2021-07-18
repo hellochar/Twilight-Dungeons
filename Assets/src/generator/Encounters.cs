@@ -623,6 +623,9 @@ public class Encounters {
   }
 
   public static void AddDownstairsInRoomCenter(Floor floor, Room room) {
+    // remove current downstairs
+    floor.Put(new Ground(floor.downstairs.pos));
+
     var center = new Vector2Int(room.max.x - 2, room.center.y);
     // clear radius two
     foreach (var pos in floor.EnumerateRectangle(center - new Vector2Int(2, 2), center + new Vector2Int(3, 3))) {

@@ -23,7 +23,7 @@ public class Deathbloom : Grass, IActorEnterHandler {
   }
 
   private void HandleEntityRemoved(Entity entity) {
-    if (entity is Actor a && a.IsDead && a.IsNextTo(this)) {
+    if (entity is Actor a && a.IsDead && a.IsNextTo(this) && !(a is BoombugCorpse)) {
       isBloomed = true;
       OnBloomed?.Invoke();
     }

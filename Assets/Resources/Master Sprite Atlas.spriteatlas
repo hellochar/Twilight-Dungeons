@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 91952
+    totalSpriteSurfaceArea: 92132
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -131,6 +131,8 @@ SpriteAtlas:
   - {fileID: 6074143898205005808, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 2398009223125789384, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: 21300000, guid: 684dd2d49b97ae3419bbaee4cf6b1856, type: 3}
+  - {fileID: -3527876879021525145, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
+  - {fileID: -1927889906097043966, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
   - {fileID: 21300000, guid: e6359b2549856624ea03a41ab6288a49, type: 3}
   - {fileID: 21300000, guid: 07dbe7358f70634448016e3aa340b653, type: 3}
   - {fileID: 21300000, guid: d31efa354e2c2df4b94665da71fc57b3, type: 3}
@@ -406,6 +408,8 @@ SpriteAtlas:
   - pixel-line-horizontal-dotted
   - pixel-line-horizontal
   - Hands
+  - mushroom
+  - mushroom-small
   - hydra-heart
   - hardened-sap
   - goop

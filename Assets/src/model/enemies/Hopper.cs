@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Jumps next to you.\nWhen hurt, it will eat a Grass to heal itself to full HP.")]
+[ObjectInfo(description: "Jumps next to you.\nWhen hurt, it will eat a nearby Grass to heal itself to full HP.")]
 public class Hopper : AIActor {
   public Hopper(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
@@ -22,10 +22,9 @@ public class Hopper : AIActor {
         var nearbyGrassTile = floor
           .BreadthFirstSearch(pos, t => t.CanBeOccupied() && DistanceTo(t) < 5)
           .Where(t => t.grass != null)
-          .OrderBy(t => -t.DistanceTo(GameModel.main.player))
           .FirstOrDefault();
         if (nearbyGrassTile != null) {
-          return new JumpToTargetTask(this, nearbyGrassTile.pos);
+          return new MoveToTargetTask(this, nearbyGrassTile.pos);
         } else {
           return new MoveRandomlyTask(this);
         }

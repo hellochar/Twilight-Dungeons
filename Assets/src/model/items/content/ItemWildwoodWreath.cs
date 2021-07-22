@@ -27,7 +27,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IBodyMoveHandler {
 [ObjectInfo("confused")]
 public class ConfusedStatus : StackingStatus, IBaseActionModifier {
   public override StackingMode stackingMode => StackingMode.Max;
-  public override string Info() => "Your next turn must be spent moving in a random direction.";
+  public override string Info() => $"Your next {stacks} turns must be spent moving in a random direction.";
 
   public ConfusedStatus(int stacks) : base(stacks) {}
 

@@ -184,6 +184,21 @@ public class Encounters {
     }
   }
 
+  public static void AddHoppers(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room);
+    var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
+      (2, 2),
+      (2, 3),
+      (2, 4),
+      (3, 3),
+      (3, 4),
+      (4, 4)
+    );
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Hopper(tile.pos));
+    }
+  }
+
   public static void AddThistlebog(Floor floor, Room room) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
@@ -429,6 +444,20 @@ public class Encounters {
           })
         );
         locations.ExceptWith(floor.GetAdjacentTiles(tile.pos));
+      }
+    }
+  }
+
+  public static void AddIrridine(Floor floor, Room room) {
+    var livableTiles = floor.EnumerateRoomTiles(room).Where(Irridine.CanOccupy);
+    if (!livableTiles.Any()) {
+      Debug.LogError("Couldn't find a location for mushrooms!");
+    }
+    foreach (var tile in livableTiles) {
+      var adjacent = floor.GetCardinalNeighbors(tile.pos).Where(neighbor => neighbor is Wall).FirstOrDefault();
+      if (adjacent != null) {
+        var angle = Vector2.SignedAngle(new Vector2(0, -1), tile.pos - adjacent.pos);
+        floor.Put(new Irridine(tile.pos, angle));
       }
     }
   }

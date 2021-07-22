@@ -9,6 +9,9 @@ public class ActorController : BodyController,
   protected Animator animator;
   public bool hideWaitTask = false;
   protected GameObject statuses;
+  // if this is not null, there's a code animation controlling this actor
+  // and we shouldn't clobber it
+  protected Coroutine currentAnimation;
 
   // Start is called before the first frame update
   public override void Start() {
@@ -72,11 +75,13 @@ public class ActorController : BodyController,
   // Update is called once per frame
   public virtual void Update() {
     float lerpSpeed = 16f / actor.GetActionCost(ActionType.MOVE);
-    // sync positions
-    if (Vector2.Distance(Util.getXY(this.transform.position), this.actor.pos) > 3) {
-      this.transform.position = Util.withZ(this.actor.pos, this.transform.position.z);
-    } else {
-      this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, lerpSpeed * Time.deltaTime), this.transform.position.z);
+    if (currentAnimation == null) {
+      // sync positions
+      if (Vector2.Distance(Util.getXY(this.transform.position), this.actor.pos) > 3) {
+        this.transform.position = Util.withZ(this.actor.pos, this.transform.position.z);
+      } else {
+        this.transform.position = Util.withZ(Vector2.Lerp(Util.getXY(this.transform.position), actor.pos, lerpSpeed * Time.deltaTime), this.transform.position.z);
+      }
     }
 
     if (animator != null) {
@@ -132,6 +137,12 @@ public class ActorController : BodyController,
       PlayAttackAnimation(attackGround.targetPosition);
     } else if (action is GenericBaseAction g) {
       gameObject.AddComponent<PulseAnimation>();
+    } else if (action is JumpBaseAction j) {
+      // cancel
+      if (currentAnimation != null) {
+        StopCoroutine(currentAnimation);
+      }
+      currentAnimation = StartCoroutine(PlayJumpAnimation(j.pos));
     }
   }
 
@@ -141,6 +152,36 @@ public class ActorController : BodyController,
       var z = sprite.transform.position.z - 1;
       sprite.AddComponent<BumpAndReturn>().target = Util.withZ(pos, z);
     }
+  }
+
+  private IEnumerator PlayJumpAnimation(Vector2 endPosition) {
+    var startPosition = Util.getXY(transform.position);
+    var D = Vector2.Distance(startPosition, endPosition);
+    // parabolic arc for height H at midpoint
+    // a = -4H/D^2
+    // b = 4H/D
+
+    // we get to choose what looks nice
+    var H = D * 0.5f;
+    var a = -4 * H / (D * D);
+    var b = 4 * H / D;
+    animator.enabled = false;
+    yield return StartCoroutine(Transitions.Animate(0.5f, (tNorm) => {
+        // do a parabolic arc where "z" is upwards
+        var t = tNorm * D;
+        var z = a * t * t + b * t;
+
+        Vector2 worldPos = Vector2.Lerp(startPosition, endPosition, tNorm);
+        // map "z" to moving upwards on the screen
+        worldPos.y += z;
+
+        transform.position = Util.withZ(worldPos, transform.position.z);
+      },
+      () => {
+        currentAnimation = null;
+        animator.enabled = true;
+      }
+    ));
   }
 
   private void HandleAttackGround(Vector2Int pos) {

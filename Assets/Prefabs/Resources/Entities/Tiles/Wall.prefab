@@ -14,6 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderers:
   - {fileID: 2259350471716954244}
+--- !u!114 &8038120282777138991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5187856897160406518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42751750ea8c67847b5154c96563e1c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite12: {fileID: -3203700651048447089, guid: 7585a0ea9a1c98a43aa683c4e478d83e,
+    type: 3}
+  sprite24: {fileID: 7211112119216217755, guid: 316a90b7aaca01a4392eb34b1eb0f876,
+    type: 3}
 --- !u!1 &4900755777054662708
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +429,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 471958565c52b4f428341d2c54949380,
+      objectReference: {fileID: -3283364832169978480, guid: 0a722bf87f2c9f84eac8d204286c24f5,
         type: 3}
     - target: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}

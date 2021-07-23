@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1508415535089284333, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: sprite12
+      value: 
+      objectReference: {fileID: 3430268509422621355, guid: 7585a0ea9a1c98a43aa683c4e478d83e,
+        type: 3}
+    - target: {fileID: -1508415535089284333, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: sprite24
+      value: 
+      objectReference: {fileID: -4053755205593523716, guid: 316a90b7aaca01a4392eb34b1eb0f876,
+        type: 3}
     - target: {fileID: 2120311342416436357, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
       propertyPath: m_Name
@@ -21,7 +33,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: eb83db0cb481f074c92478cb20b58183,
+      objectReference: {fileID: -7606177257534976177, guid: 0a722bf87f2c9f84eac8d204286c24f5,
         type: 3}
     - target: {fileID: 6137131915602275861, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}

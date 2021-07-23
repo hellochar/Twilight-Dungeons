@@ -311,6 +311,7 @@ public class Encounters {
 
   public static void AddGuardleaf(Floor floor, Room room) => AddGuardleafImpl(floor, room, 1);
   public static void AddGuardleaf2x(Floor floor, Room room) => AddGuardleafImpl(floor, room, 2);
+  public static void AddGuardleaf4x(Floor floor, Room room) => AddGuardleafImpl(floor, room, 4);
   public static void AddGuardleafImpl(Floor floor, Room room, int mult) {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => Guardleaf.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;

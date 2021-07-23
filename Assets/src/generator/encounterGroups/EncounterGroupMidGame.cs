@@ -4,9 +4,9 @@ public static class EncounterGroupMidGame {
   public static EncounterGroup MidGame() {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
+        { 1f, AddHoppers },
         { 1f, AddScorpions },
         { 1f, AddWildekins },
-        { 1f, AddCrabs },
         { 1f, AddThistlebog },
         { 0.5f, AddGrasper },
         { 0.5f, AddGolems },
@@ -24,28 +24,26 @@ public static class EncounterGroupMidGame {
         { 0.5f, AddPoisonmoss },
         { 0.5f, AddSpore },
 
-        { 0.4f, ScatteredBoombugs },
 
         { 0.3f, AddEveningBells },
 
-        { 0.2f, AddWebs2x },
-        { 0.2f, AddGuardleaf2x },
-
-        { 0.1f, AddSoftGrass4x },
-        { 0.1f, AddBladegrass4x },
+        // { 0.2f, AddWebs2x },
+        { 0.2f, ScatteredBoombugs4x },
+        { 0.2f, AddGuardleaf4x },
 
         // { 0.0f, AddAgave },
       },
 
       Spice = new EncounterBag {
         { 3f, Empty },
+        
+        { 1f, AddCrabs },
 
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
         { 0.25f, AddViolets },
         { 0.25f, AddBrambles },
         { 0.25f, AddTunnelroot4x },
-        { 0.25f, ScatteredBoombugs4x },
         { 0.25f, AddFruitingBodies },
 
         { 0.2f, AddWater },
@@ -64,9 +62,6 @@ public static class EncounterGroupMidGame {
         { 0.1f, FillWithFerns },
 
         { 0.02f, AddNecroroot },
-
-        // { 0.1f, Twice(Twice(Twice(JackalPile))) },
-        // { 0.1f, Twice(Twice(Twice(AFewSnails))) },
       },
     };
   }

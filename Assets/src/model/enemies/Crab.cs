@@ -12,7 +12,7 @@ public class Crab : AIActor {
 
   public Crab(Vector2Int pos) : base(pos) {
     dx = MyRandom.value < 0.5 ? -1 : 1;
-    faction = Faction.Enemy;
+    faction = Faction.Neutral;
     hp = baseMaxHp = 7;
   }
 

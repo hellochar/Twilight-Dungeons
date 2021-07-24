@@ -14,6 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderers:
   - {fileID: 2041375652281131246}
+--- !u!114 &9099400978443664171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4967548742386034076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42751750ea8c67847b5154c96563e1c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite12: {fileID: -8073104873308132409, guid: 7585a0ea9a1c98a43aa683c4e478d83e,
+    type: 3}
+  sprite24: {fileID: 4397024048997671812, guid: 316a90b7aaca01a4392eb34b1eb0f876,
+    type: 3}
 --- !u!1001 &2899907266663670379
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80,7 +96,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 7406130750607033256, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+      objectReference: {fileID: 1844489048470511918, guid: 0a722bf87f2c9f84eac8d204286c24f5,
         type: 3}
     - target: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}

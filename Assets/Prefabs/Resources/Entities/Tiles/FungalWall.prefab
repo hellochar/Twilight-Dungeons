@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: -186776217
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3714409817710726143, guid: b7e3e3bcf7f91db4bbd556fd274376b3,
+  m_Sprite: {fileID: 3395855674396057741, guid: 7585a0ea9a1c98a43aa683c4e478d83e,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -205,8 +205,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8038120282777138991, guid: 5eaed359f9e0f2e429b6f35bf907f7a2,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7890746510342025504, guid: 5eaed359f9e0f2e429b6f35bf907f7a2, type: 3}
+    - {fileID: 8038120282777138991, guid: 5eaed359f9e0f2e429b6f35bf907f7a2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5eaed359f9e0f2e429b6f35bf907f7a2, type: 3}
 --- !u!1 &2044628518573828867 stripped
 GameObject:

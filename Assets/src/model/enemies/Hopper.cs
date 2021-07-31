@@ -30,7 +30,7 @@ public class Hopper : AIActor {
         }
       }
     } else {
-      if (isVisible) {
+      if (CanTargetPlayer()) {
         if (IsNextTo(player)) {
           return new AttackTask(this, player);
         } else {

@@ -449,17 +449,21 @@ public class Encounters {
     }
   }
 
-  public static void AddIrridine(Floor floor, Room room) {
-    var livableTiles = floor.EnumerateRoomTiles(room).Where(Irridine.CanOccupy);
-    if (!livableTiles.Any()) {
-      Debug.LogError("Couldn't find a location for mushrooms!");
-    }
-    foreach (var tile in livableTiles) {
-      var adjacent = floor.GetCardinalNeighbors(tile.pos).Where(neighbor => neighbor is Wall).FirstOrDefault();
-      if (adjacent != null) {
-        var angle = Vector2.SignedAngle(new Vector2(0, -1), tile.pos - adjacent.pos);
-        floor.Put(new Irridine(tile.pos, angle));
+  public static void AddVibrantIvy(Floor floor, Room room) {
+    var startTile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(VibrantIvy.CanOccupy));
+    if (startTile == null) {
+      Debug.LogError("Couldn't find a location for Vibrant Ivy!");
+    } else {
+      var num = MyRandom.Range(6, 13);
+      if (MyRandom.value < 0.2f) {
+        num += 14;
       }
+      floor.PutAll(
+        floor
+          .BreadthFirstSearch(startTile.pos, VibrantIvy.CanOccupy, mooreNeighborhood: true)
+          .Take(num)
+          .Select(t => new VibrantIvy(t.pos))
+      );
     }
   }
 

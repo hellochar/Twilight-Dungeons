@@ -34,7 +34,7 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   }
 
   protected override ActorTask GetNextTask() {
-    if (isVisible) {
+    if (CanTargetPlayer()) {
       if (IsNextTo(GameModel.main.player)) {
         return new AttackGroundTask(this, GameModel.main.player.pos, 1);
       } else {

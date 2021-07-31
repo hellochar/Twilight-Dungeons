@@ -15,7 +15,7 @@ public class ChaseTargetTask : MoveNextToTargetTask {
   }
 
   public override void PreStep() {
-    if (targetBody == null) {
+    if (targetBody == null || targetBody is Player p && p.isCamouflaged) {
       this.path.Clear();
     } else {
       this.path = FindBestAdjacentPath(actor.pos, targetBody.pos);

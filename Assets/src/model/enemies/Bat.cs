@@ -47,9 +47,10 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   }
 
   Actor SelectTarget() {
-    var potentialTargets = floor
+    var potentialTargets = new HashSet<Actor>(floor
       .ActorsInCircle(pos, 7)
-      .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Bat));
+      .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Bat)));
+
     if (potentialTargets.Any()) {
       return potentialTargets.Aggregate((t1, t2) => DistanceTo(t1) < DistanceTo(t2) ? t1 : t2);
     }

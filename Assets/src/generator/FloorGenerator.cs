@@ -248,12 +248,12 @@ public class FloorGenerator {
     #if UNITY_EDITOR
     // Encounters.MatureStoutShrub(floor, room0);
     floor.depth = 20;
-    Encounters.AddHoppers(floor, room0);
+    // Encounters.AddHoppers(floor, room0);
     // Encounters.AddDeathbloom(floor, room0);
     // Encounters.AddMushroom(floor, room0);
     // Encounters.AddGrasper(floor, room0);
     // Encounters.AddHydra(floor, room0);
-    Encounters.AddViolets(floor, room0);
+    // Encounters.AddViolets(floor, room0);
     // Encounters.AddTunnelroot(floor, room0);
     // Encounters.AddWildekins(floor, room0);
     // Encounters.AddCrabs(floor, room0);

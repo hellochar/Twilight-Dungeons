@@ -35,7 +35,7 @@ public class Thistlebog : AIActor, ITakeAnyDamageHandler {
   }
 
   protected override ActorTask GetNextTask() {
-    if (isVisible && cooldown <= 0) {
+    if (CanTargetPlayer() && cooldown <= 0) {
       if (Util.DiamondDistanceToPlayer(this) <= 2) {
         return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
       } else {
@@ -47,7 +47,7 @@ public class Thistlebog : AIActor, ITakeAnyDamageHandler {
   }
 
   private void SummonBramblesAroundPlayer() {
-    if (isVisible && cooldown <= 0) {
+    if (CanTargetPlayer() && cooldown <= 0) {
       cooldown = 10;
       var center = GameModel.main.player.pos;
       foreach (var tile in floor.GetAdjacentTiles(center)) {

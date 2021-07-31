@@ -103,11 +103,11 @@ public static class FloorEnumeratorExtensions {
     return floor.EnumerateRectangle(floor.boundsMin, floor.boundsMax);
   }
 
-  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, Vector2Int startPos, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true) {
-    return floor.BreadthFirstSearch(new Vector2Int[] { startPos }, predicate, randomizeNeighborOrder);
+  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, Vector2Int startPos, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true, bool mooreNeighborhood = false) {
+    return floor.BreadthFirstSearch(new Vector2Int[] { startPos }, predicate, randomizeNeighborOrder, mooreNeighborhood);
   }
 
-  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, IEnumerable<Vector2Int> startPositions, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true) {
+  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, IEnumerable<Vector2Int> startPositions, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true, bool mooreNeighborhood = false) {
     predicate = predicate ?? ((Tile t) => true);
     Queue<Tile> frontier = new Queue<Tile>(); // []
     HashSet<Tile> seen = new HashSet<Tile>(); // []
@@ -118,7 +118,8 @@ public static class FloorEnumeratorExtensions {
     while (frontier.Any()) {
       Tile tile = frontier.Dequeue();
       yield return tile;
-      var adjacent = floor.GetCardinalNeighbors(tile.pos).Except(seen).Where(predicate).ToList();
+      var neighborhood = mooreNeighborhood ? floor.GetAdjacentTiles(tile.pos) : floor.GetCardinalNeighbors(tile.pos);
+      var adjacent = neighborhood.Except(seen).Where(predicate).ToList();
       if (randomizeNeighborOrder) {
         adjacent.Shuffle();
       }

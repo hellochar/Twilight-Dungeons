@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
-using UnityEngine.Events;
 
 [Serializable]
 [ObjectInfo(description: "Only you can use and equip items.\nOnly you can take stairs.", flavorText: "Though your illness makes you physically weak, your knowledge of flora and fauna helps you navigate these strange caves.")]
@@ -18,6 +17,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
       OnChangeWater?.Invoke(diff);
     }
   }
+
+  public bool isCamouflaged => Modifiers.Of<IPlayerCamouflage>(this).Any();
 
   // heal to full and remove all debuffs
   internal void Replenish() {

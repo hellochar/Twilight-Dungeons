@@ -25,7 +25,7 @@ public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    if (isVisible) {
+    if (CanTargetPlayer()) {
       if (IsNextTo(player)) {
         return new AttackTask(this, player);
       } else {

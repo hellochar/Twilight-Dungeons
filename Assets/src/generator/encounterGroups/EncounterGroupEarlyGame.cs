@@ -22,13 +22,13 @@ public static class EncounterGroupEarlyGame {
         { 0.5f, AddDeathbloom },
 
         { 0.4f, AddWebs },
-        { 0.4f, AddSpore },
+        // { 0.4f, AddSpore },
 
         { 0.35f, AddAgave },
         { 0.35f, AddHangingVines },
 
-        { 0.2f, AddPoisonmoss },
-        { 0.2f, AddViolets },
+        // { 0.2f, AddPoisonmoss },
+        // { 0.2f, AddViolets },
         { 0.2f, FillWithFerns }
       },
 

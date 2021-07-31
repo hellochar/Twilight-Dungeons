@@ -18,6 +18,7 @@ public static class EncounterGroupMidGame {
         { 0.75f, AddViolets },
         { 0.75f, AddTunnelroot },
 
+        { 0.5f, AddVibrantIvy },
         { 0.5f, AddHangingVines2x },
         { 0.5f, AddDeathbloom },
         { 0.5f, AddBrambles },

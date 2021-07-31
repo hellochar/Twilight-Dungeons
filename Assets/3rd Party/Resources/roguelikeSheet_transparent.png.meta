@@ -4,7 +4,7 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 2531549922278074774
-    second: roguelikeSheet_transparent_0
+    second: roguelikeSheet_transparent_657
   - first:
       213: 3919348074914791648
     second: roguelikeSheet_transparent_1
@@ -5567,6 +5567,27 @@ TextureImporter:
       bones: []
       spriteID: 37ef81d6453e3ef50800000000000000
       internalID: 6909616205063585395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: roguelikeSheet_transparent_657
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 304
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6996d88dd3fd12320800000000000000
+      internalID: 2531549922278074774
       vertices: []
       indices: 
       edges: []

@@ -530,6 +530,24 @@ public class Encounters {
     }
   }
 
+  public static void AddRedcaps(Floor floor, Room room) {
+    var start = Util.RandomPick(
+      FloorUtils
+        .TilesSortedByCorners(floor, room)
+        .Where(t => t is Ground)
+        .Take(9)
+    );
+    var num = MyRandom.Range(2, 6);
+    if (start == null) {
+      Debug.Log("No place to spawn Redcaps");
+      return;
+    }
+    foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
+      floor.Put(new Redcap(tile.pos));
+    }
+  }
+
+
   public static void AddMushroom(Floor floor, Room room) {
     var livableTiles = floor.EnumerateRoomTiles(room).Where(Mushroom.CanOccupy);
     if (!livableTiles.Any()) {
@@ -577,7 +595,6 @@ public class Encounters {
       floor.Put(new Astoria(tile.pos));
     }
   }
-
 
   public static void AddOldDude(Floor floor, Room room){
     Vector2Int stairPos= floor.upstairs.pos;

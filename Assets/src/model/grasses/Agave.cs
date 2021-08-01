@@ -19,7 +19,7 @@ public class Agave : Grass, IActorEnterHandler {
 }
 
 [Serializable]
-[ObjectInfo("agave", "")]
+[ObjectInfo("agave", flavorText: "An unassuming and earthy succulent with thick, nutrient bearing leaves.")]
 class ItemAgave : Item, IStackable {
   public ItemAgave(int stacks) {
     this.stacks = stacks;

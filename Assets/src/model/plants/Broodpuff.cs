@@ -176,6 +176,7 @@ public class ItemBroodleaf : EquippableItem, IWeapon, IDurable, IAttackHandler, 
 [Serializable]
 [ObjectInfo("vulnerable")]
 public class VulnerableStatus : StackingStatus, IAttackDamageTakenModifier {
+  public override bool isDebuff => true;
   public VulnerableStatus(int stacks) : base(stacks) { }
 
   public override string Info() => $"Take 1 more attack damage.\n{this.stacks} turns remaining.";

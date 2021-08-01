@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Shoots out a long, snaking Tendril that chases and surrounds you.\nIf you are surrounded on all sides by Tendrils, Grasper deals 2 attack damage per turn.")]
+[ObjectInfo(description: "Shoots out a long, snaking Tendril that chases and surrounds you.\nIf you are next to 4 or more Tendrils, Grasper deals 3 attack damage per turn.")]
 public class Grasper : AIActor, IBaseActionModifier {
   public readonly List<Tendril> tendrils = new List<Tendril>();
 
@@ -15,10 +15,10 @@ public class Grasper : AIActor, IBaseActionModifier {
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where((a) => a is Tendril || a is Grasper);
-    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 8;
+    var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where((a) => a is Tendril).Cast<Tendril>();
+    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 4;
     if (isPlayerSurrounded) {
-      foreach (var t in tendrilsSurroundingPlayer.Where(t => t is Tendril).Cast<Tendril>()) {
+      foreach (var t in tendrilsSurroundingPlayer) {
         t.OnPulse();
       }
       return new GenericTask(this, DamagePlayer);
@@ -28,7 +28,7 @@ public class Grasper : AIActor, IBaseActionModifier {
 
   private void DamagePlayer() {
     var player = GameModel.main.player;
-    player.TakeAttackDamage(2, this);
+    player.TakeAttackDamage(3, this);
   }
 
   private void SpawnTendril() {

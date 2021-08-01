@@ -34,8 +34,16 @@ public class Hopper : AIActor {
         if (IsNextTo(player)) {
           return new AttackTask(this, player);
         } else {
-          var jumpTile = floor.GetAdjacentTiles(player.pos).Where(t => t.CanBeOccupied()).OrderBy(t => t.DistanceTo(pos)).FirstOrDefault();
-          return new JumpToTargetTask(this, jumpTile.pos);
+          var jumpTile = floor
+            .GetAdjacentTiles(player.pos)
+            .Where(t => t.CanBeOccupied())
+            .OrderBy(t => t.DistanceTo(pos))
+            .FirstOrDefault();
+          if (jumpTile != null) {
+            return new JumpToTargetTask(this, jumpTile.pos);
+          } else {
+            return new WaitTask(this, 1);
+          }
         }
       } else {
         return new MoveRandomlyTask(this);

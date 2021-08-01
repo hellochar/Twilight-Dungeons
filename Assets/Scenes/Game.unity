@@ -1700,7 +1700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c64259204439c646821c0b5ee004f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackOverlay: {fileID: 0}
+  blackOverlay: {fileID: 356309593}
 --- !u!1 &210090905
 GameObject:
   m_ObjectHideFlags: 0
@@ -12942,8 +12942,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0.99999905
-  m_Size: 0.6716149
+  m_Value: 0.99999934
+  m_Size: 0.8812837
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

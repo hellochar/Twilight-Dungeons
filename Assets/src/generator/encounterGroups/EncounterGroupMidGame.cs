@@ -7,38 +7,38 @@ public static class EncounterGroupMidGame {
         { 1f, AddHoppers },
         { 1f, AddScorpions },
         { 1f, AddWildekins },
-        { 1f, AddThistlebog },
+        { 0.5f, AddThistlebog },
         { 0.5f, AddGrasper },
-        { 0.5f, AddGolems },
-        { 0.5f, AddHydra },
-        { 0.4f, AddParasite },
+        { 0.6f, AddGolems },
+        { 0.6f, AddHydra },
+        { 0.3f, AddParasite },
       },
 
       Grasses = new EncounterBag {
+        { 0.75f, AddCrabs },
         { 0.75f, AddViolets },
         { 0.75f, AddTunnelroot },
+        { 0.75f, AddGoldGrass },
+        { 0.75f, AddRedcaps },
 
         { 0.5f, AddVibrantIvy },
         { 0.5f, AddHangingVines2x },
         { 0.5f, AddDeathbloom },
-        { 0.5f, AddBrambles },
         { 0.5f, AddPoisonmoss },
         { 0.5f, AddSpore },
 
-
         { 0.3f, AddEveningBells },
 
-        // { 0.2f, AddWebs2x },
         { 0.2f, ScatteredBoombugs4x },
         { 0.2f, AddGuardleaf4x },
+        { 0.2f, AddBrambles },
 
-        // { 0.0f, AddAgave },
+        { 0.05f, AddNecroroot },
+        { 0.05f, FillWithFerns }
       },
 
       Spice = new EncounterBag {
         { 3f, Empty },
-        
-        { 1f, AddCrabs },
 
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
@@ -50,10 +50,10 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddWater },
 
         { 0.2f, AddSpiders },
-        { 0.2f, AddGolems },
-        { 0.2f, AddScorpions },
-        { 0.2f, AddWildekins },
-        { 0.2f, AddCrabs },
+        // { 0.2f, AddGolems },
+        // { 0.2f, AddScorpions },
+        // { 0.2f, AddWildekins },
+        // { 0.2f, AddCrabs },
         { 0.05f, AddParasite8x },
 
         { 0.1f, AddHydra },

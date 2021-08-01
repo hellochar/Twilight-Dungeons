@@ -57,7 +57,7 @@ public class FloorGenerator {
       () => generateMultiRoomFloor(21, 30, 20, 15),
       () => generateMultiRoomFloor(22, 40, 20, 20, true, Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
       () => generateFungalColonyBossFloor(23),
-      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
+      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.AddWater),
       () => generateSingleRoomFloor(25, 11, 11, 1, 2, true),
       () => generateMultiRoomFloor(26, 20, 13, 5, true),
       () => generateMultiRoomFloor(27, 30, 13, 7, true),

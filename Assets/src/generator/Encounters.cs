@@ -240,11 +240,6 @@ public class Encounters {
     }
   }
 
-  public static void FreeSoil(Floor floor, Room room) {
-    Tile tile = FloorUtils.TilesFromCenter(floor, room).First();
-    floor.Put(new Soil(tile.pos));
-  }
-
   public static void AddSoftGrass(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);
   public static void AddSoftGrass4x(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);
   public static void AddSoftGrassImpl(Floor floor, Room room, int mult) {
@@ -258,6 +253,31 @@ public class Encounters {
         var grass = new SoftGrass(tile.pos);
         floor.Put(grass);
       }
+    }
+  }
+
+  public static void AddGoldGrass(Floor floor, Room room) {
+    var roomTiles = floor.EnumerateRoomTiles(room);
+
+    var perimeter = roomTiles
+      .Except(floor.EnumerateRoomTiles(room, -1))
+      .Where(tile => tile.CanBeOccupied() && tile is Ground && tile.grass == null);
+    
+    var start = Util.RandomPick(perimeter);
+    if (start == null) {
+      return;
+    }
+    var end = roomTiles
+      .Where(tile => tile.CanBeOccupied() && tile is Ground && tile.grass == null)
+      .OrderByDescending(t => t.DistanceTo(start))
+      .FirstOrDefault();
+    if (end == null) {
+      return;
+    }
+
+    var path = floor.FindPath(start.pos, end.pos, true);
+    foreach (var pos in path) {
+      floor.Put(new GoldGrass(pos));
     }
   }
 

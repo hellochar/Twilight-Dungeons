@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [System.Serializable]
@@ -11,6 +12,38 @@ public class SoftGrass : Grass, IActorEnterHandler{
       player.statuses.Add(new SoftGrassStatus(1));
       OnNoteworthyAction();
     }
+  }
+}
+
+[System.Serializable]
+[ObjectInfo(description: "All Player movement is a Free Move over Gold Grass.", flavorText: "Feels extremely nice on your feet.")]
+public class GoldGrass : Grass, IActorEnterHandler {
+  public GoldGrass(Vector2Int pos) : base(pos) { }
+
+  public void HandleActorEnter(Actor who) {
+    if (who is Player player) {
+      player.statuses.Add(new GoldGrassStatus());
+      OnNoteworthyAction();
+    }
+  }
+}
+
+[Serializable]
+[ObjectInfo("goldgrass", "Feels extremely nice on your feet.")]
+public class GoldGrassStatus : Status, IActionCostModifier {
+  public override bool Consume(Status other) => true;
+
+  public override string Info() => "Movement over Gold Grass is free.";
+
+  public override void Step() {
+    if (!(actor.grass is GoldGrass)) {
+      Remove();
+    }
+  }
+
+  public ActionCosts Modify(ActionCosts input) {
+    input[ActionType.MOVE] = 0f;
+    return input;
   }
 }
 

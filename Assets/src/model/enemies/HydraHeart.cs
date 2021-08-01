@@ -21,6 +21,8 @@ public class HydraHeart : AIActor, IBaseActionModifier {
       needsWait = false;
       return new WaitTask(this, 2);
     } else {
+      // update head count
+      heads.RemoveAll(h => h.IsDead);
       if (heads.Count() < 12) {
         needsWait = true;
         return new TelegraphedTask(this, 1, new GenericBaseAction(this, SpawnHydraHead));

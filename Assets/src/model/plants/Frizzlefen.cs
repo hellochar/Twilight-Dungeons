@@ -111,22 +111,14 @@ class BarkmealStatus : StackingStatus, IMaxHPModifier {
 class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 45;
-
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    if (player.grass != null) {
+    if (player.grass != null && player.statuses.FindOfType<ArmoredStatus>() == null) {
       player.grass.Kill(player);
       player.statuses.Add(new ArmoredStatus());
     }
   }
 
-  public override void OnUnequipped() {
-    player.statuses.RemoveOfType<ArmoredStatus>();
-  }
-
-  internal override string GetStats() => "Everlasting.\nWhen you walk on to any Grass, kill it and gain 1 stack of Armored.\nRemove all Armored status when you unequip.";
+  internal override string GetStats() => "Everlasting.\nWhen you walk on to a Grass, Kill it and gain Armored. This only happens if you are not Armored.";
 }
 
 [Serializable]

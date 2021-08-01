@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo("fungal-colony", description: "Blocks 4 attack damage.\nSummons a Fungal Breeder every 13 turns.\nDoes not move or attack.")]
+[ObjectInfo("fungal-colony", description: "Blocks all attack damage.\nCan be damaged by Fungal Sentinel explosions.\nSummons a Fungal Breeder every 13 turns.\nDoes not move or attack.")]
 public class FungalColony : Boss, IAttackDamageTakenModifier {
   public FungalColony(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 66;
@@ -43,7 +43,7 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
   }
 
   public int Modify(int input) {
-    return input - 4;
+    return 0;
   }
 }
 

@@ -175,7 +175,7 @@ public class Chasm : Tile {
 
 [Serializable]
 [ObjectInfo(description: "Go back home.")]
-public class Upstairs : Tile {
+public class Upstairs : Tile, IActorEnterHandler {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.right;
   public Upstairs(Vector2Int pos) : base(pos) {}
@@ -192,14 +192,19 @@ public class Upstairs : Tile {
       var enemiesLeft = GameObject.Find("Enemies Left");
       var pulse = enemiesLeft.AddComponent<PulseAnimation>();
       pulse.pulseScale = 1.25f;
-      throw new CannotPerformActionException();
+    }
+  }
+
+  public void HandleActorEnter(Actor who) {
+    if (who is Player) {
+      GameModel.main.EnqueueEvent(TryGoHome);
     }
   }
 }
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class Downstairs : Tile {
+public class Downstairs : Tile, IActorEnterHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.left;
   public Downstairs(Vector2Int pos) : base(pos) {}
@@ -216,7 +221,12 @@ public class Downstairs : Tile {
       var enemiesLeft = GameObject.Find("Enemies Left");
       var pulse = enemiesLeft.AddComponent<PulseAnimation>();
       pulse.pulseScale = 1.25f;
-      throw new CannotPerformActionException();
+    }
+  }
+
+  public void HandleActorEnter(Actor who) {
+    if (who is Player) {
+      GameModel.main.EnqueueEvent(TryGoDownstairs);
     }
   }
 }

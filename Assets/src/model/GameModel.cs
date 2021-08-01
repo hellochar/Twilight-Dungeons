@@ -183,11 +183,9 @@ public class GameModel {
     } else {
       newPlayerPosition = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height / 2);
     }
-    oldFloor.Remove(player);
     oldFloor.RecordLastStepTime(this.time);
-    player.pos = newPlayerPosition;
     newFloor.CatchUpStep(this.time);
-    newFloor.Put(player);
+    player.ChangeFloors(newFloor, newPlayerPosition);
     if (newFloor.depth == cave.depth + 1) {
       cave = newFloor;
     }

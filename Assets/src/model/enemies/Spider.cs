@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 [System.Serializable]
@@ -18,11 +19,13 @@ public class Spider : AIActor, IDealAttackDamageHandler {
   }
 
   private void DoNotRename_PutWeb() {
-    floor.Put(new Web(pos));
+    if (Web.CanOccupy(tile)) {
+      floor.Put(new Web(pos));
+    }
   }
 
   protected override ActorTask GetNextTask() {
-    if (grass == null || !(grass is Web)) {
+    if (Web.CanOccupy(tile)) {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, DoNotRename_PutWeb));
     }
 
@@ -32,13 +35,15 @@ public class Spider : AIActor, IDealAttackDamageHandler {
       return new AttackTask(this, target);
     }
 
-    var nonWebbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && !(tile.grass is Web) && !(tile is Downstairs));
-    var webbedAdjacentTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile.CanBeOccupied() && (tile.grass is Web));
+    var moves = new HashSet<Tile>(floor.GetAdjacentTiles(pos).Where(t => t.CanBeOccupied()));
 
-    if (nonWebbedAdjacentTiles.Any()) {
-      return new MoveToTargetTask(this, Util.RandomPick(nonWebbedAdjacentTiles).pos);
-    } else if (webbedAdjacentTiles.Any()) {
-      return new MoveToTargetTask(this, Util.RandomPick(webbedAdjacentTiles).pos);
+    var nonWebbedMoves = moves.Where(Web.CanOccupy);
+    var webbedMoves = moves.Except(nonWebbedMoves);
+
+    if (nonWebbedMoves.Any()) {
+      return new MoveToTargetTask(this, Util.RandomPick(nonWebbedMoves).pos);
+    } else if (webbedMoves.Any()) {
+      return new MoveToTargetTask(this, Util.RandomPick(webbedMoves).pos);
     } else {
       return new WaitTask(this, 1);
     }
@@ -55,46 +60,56 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 
 [System.Serializable]
 [ObjectInfo(description: "Prevents movement; creatures must spend one turn breaking the Web.")]
-internal class Web : Grass, IActorEnterHandler, IActorLeaveHandler {
-  public Web(Vector2Int pos) : base(pos) { }
+internal class Web : Grass, IActorEnterHandler {
+  public static bool CanOccupy(Tile tile) => tile is Ground && !(tile.grass is Web);
+
+  [Serializable]
+  private class WebBodyModifier : IBaseActionModifier {
+    private Web web;
+
+    public WebBodyModifier(Web web) {
+      this.web = web;
+    }
+
+    public BaseAction Modify(BaseAction input) {
+      if (IsActorNice(web.actor)) {
+        return input;
+      }
+      if (input.Type == ActionType.MOVE) {
+        web.Kill(input.actor);
+        return new StruggleBaseAction(input.actor);
+      }
+      return input;
+    }
+  }
+
+  public Web(Vector2Int pos) : base(pos) {
+    BodyModifier = new WebBodyModifier(this);
+  }
+
+  [OnDeserialized]
+  void HandleDeserialized() {
+    if (BodyModifier == null) {
+      // back-compat
+      BodyModifier = new WebBodyModifier(this);
+    }
+  }
 
   protected override void HandleEnterFloor() {
-    if (actor != null) {
-      HandleActorEnter(actor);
-    }
+    actor?.statuses.Add(new WebbedStatus());
   }
 
   protected override void HandleLeaveFloor() {
-    base.HandleLeaveFloor();
-    if (status != null && status.actor != null) {
-      status.Remove();
-    }
+    actor?.statuses.RemoveOfType<WebbedStatus>();
   }
 
-  private WebbedStatus status;
   public void HandleActorEnter(Actor actor) {
-    status = new WebbedStatus(this);
-    actor.statuses.Add(status);
+    actor.statuses.Add(new WebbedStatus());
     OnNoteworthyAction();
-  }
-
-  public void HandleActorLeave(Actor actor) {
-    if (!IsActorNice(actor)) {
-      Kill(actor);
-    }
   }
 
   public static bool IsActorNice(Actor actor) {
     return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Footwear] is ItemSpiderSandals);
-  }
-
-  internal void WebRemoved(Actor actor) {
-    if (IsDead || actor.floor != floor) {
-      return;
-    }
-    if (!IsActorNice(actor)) {
-      Kill(actor);
-    }
   }
 }
 
@@ -112,10 +127,12 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
       }
       _stacks = value;
       if (_stacks == 0) {
-        if (player.grass is Web web) {
-          web.Kill(player);
-        }
-        Destroy();
+        GameModel.main.EnqueueEvent(() => {
+          if (player.grass is Web web) {
+            web.Kill(player);
+          }
+          Destroy();
+        });
       }
     }
   }
@@ -126,11 +143,12 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
     var player = GameModel.main.player;
-    if (!(player.floor.grasses[oldPos] is Web)) {
+    var oldTile = player.floor.tiles[oldPos];
+    if (Web.CanOccupy(oldTile)) {
       player.floor.Put(new Web(oldPos));
       stacks--;
     }
-    if (!(player.grass is Web) && stacks > 0) {
+    if (stacks > 0 && Web.CanOccupy(player.tile)) {
       player.floor.Put(new Web(player.pos));
       stacks--;
     }
@@ -140,20 +158,19 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
 }
 
 [System.Serializable]
-internal class WebbedStatus : Status, IBaseActionModifier {
+internal class WebbedStatus : Status {
   public override bool isDebuff => !Web.IsActorNice(actor);
-  Web owner;
+  private Web web => actor?.grass as Web;
 
-  public WebbedStatus(Web owner) {
-    this.owner = owner;
+  public WebbedStatus() {
   }
 
   public override void End() {
-    owner?.WebRemoved(actor);
+    web?.Kill(actor);
   }
 
   public override void Step() {
-    if (!(actor.grass is Web)) {
+    if (web == null) {
       Remove();
     }
   }
@@ -161,17 +178,6 @@ internal class WebbedStatus : Status, IBaseActionModifier {
   public override bool Consume(Status other) => true;
 
   public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Prevents your next movement.";
-
-  public BaseAction Modify(BaseAction input) {
-    if (Web.IsActorNice(actor)) {
-      return input;
-    }
-    if (input.Type == ActionType.MOVE) {
-      Remove();
-      return new StruggleBaseAction(input.actor);
-    }
-    return input;
-  }
 }
 
 /// stacks = turns

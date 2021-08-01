@@ -18,7 +18,7 @@ public class Guardleaf : Grass, IActorEnterHandler {
   }
 
   public void HandleActorEnter(Actor who) {
-    actor.statuses.Add(new GuardedStatus());
+    who.statuses.Add(new GuardedStatus());
     OnNoteworthyAction();
   }
 

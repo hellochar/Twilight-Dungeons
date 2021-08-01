@@ -55,6 +55,26 @@ public class Body : Entity {
     oldTile.BodyEntered(other);
   }
 
+  public void ChangeFloors(Floor newFloor, Vector2Int newPos) {
+    var oldFloor = floor;
+    var oldTile = oldFloor.tiles[_pos];
+
+    oldTile.BodyLeft(this);
+    oldFloor.Remove(this);
+
+    _pos = newPos;
+
+    // Recompute flag already set by floor.Remove()
+    // floor.BodyMoved();
+
+    // this triggers a recompute of player's visible enemies
+    OnMove(newPos, oldTile.pos);
+
+    var newTile = newFloor.tiles[newPos];
+    newFloor.Put(this);
+    newTile.BodyEntered(this);
+  }
+
   public int hp { get; protected set; }
   public int baseMaxHp { get; protected set; }
   public virtual int maxHp => baseMaxHp;

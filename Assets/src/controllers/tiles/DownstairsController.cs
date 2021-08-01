@@ -16,12 +16,4 @@ public class DownstairsController : TileController {
       PrefabCache.Effects.Instantiate("Stairs Before Fungal Colony", transform);
     }
   }
-
-  public override void HandleInteracted(PointerEventData pointerEventData) {
-    Player player = GameModel.main.player;
-    player.SetTasks(
-      new MoveToTargetTask(player, tile.pos),
-      new GenericPlayerTask(player, downstairs.TryGoDownstairs)
-    );
-  }
 }

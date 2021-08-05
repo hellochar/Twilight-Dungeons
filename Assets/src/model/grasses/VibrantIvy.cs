@@ -15,9 +15,9 @@ public class VibrantIvy : Grass, IActorEnterHandler {
     var cardinalNeighbors = floor.GetCardinalNeighbors(tile.pos);
     var isHuggingWall = cardinalNeighbors.Any((pos) => pos is Wall);
     var isGround = tile is Ground || tile is Water;
-    var isNotOccupied = tile.grass == null;
+    var isNotIvy = !(tile.grass is VibrantIvy);
     
-    return isHuggingWall && isGround && isNotOccupied;
+    return isHuggingWall && isGround && isNotIvy;
   }
 
   public VibrantIvy(Vector2Int pos) : base(pos) {}

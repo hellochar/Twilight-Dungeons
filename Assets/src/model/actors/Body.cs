@@ -64,11 +64,11 @@ public class Body : Entity {
 
     _pos = newPos;
 
-    // Recompute flag already set by floor.Remove()
+    // Recompute flag is already set by floor.Remove()
     // floor.BodyMoved();
 
-    // this triggers a recompute of player's visible enemies
-    OnMove(newPos, oldTile.pos);
+    // this is NOT a move, so don't trigger OnMove
+    // OnMove(newPos, oldTile.pos);
 
     var newTile = newFloor.tiles[newPos];
     newFloor.Put(this);
@@ -118,6 +118,9 @@ public class Body : Entity {
   /// Attack damage doesn't always come from an *attack* specifically. For instance,
   /// Snail shells count as attack damage, although they are not an attack action.
   public void TakeAttackDamage(int damage, Actor source) {
+    if (IsDead) {
+      return;
+    }
     damage = Modifiers.Process(this.AttackDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
     source.OnDealAttackDamage(damage, this);
@@ -127,6 +130,9 @@ public class Body : Entity {
 
   /// Take damage from any source.
   public void TakeDamage(int damage, Entity source) {
+    if (IsDead) {
+      return;
+    }
     damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
     damage = Math.Max(damage, 0);
     OnTakeAnyDamage(damage);

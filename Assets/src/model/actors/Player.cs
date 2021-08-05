@@ -74,6 +74,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
       floor.RemoveVisibility(this, oldPos);
       floor.AddVisibility(this, newPos);
     }
+    UpdateVisibleEnemies();
+  }
+
+  private void UpdateVisibleEnemies() {
     GameModel.main.EnqueueEvent(() => {
       var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
       // if there's a newly visible enemy from last turn, cancel the current move task
@@ -124,6 +128,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
 
   protected override void HandleEnterFloor() {
     floor.AddVisibility(this);
+    UpdateVisibleEnemies();
   }
 
   public void OnAttack(int damage, Body target) {

@@ -178,13 +178,10 @@ public class Encounters {
 
   public static void AddWildekins(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
-      (1, 1),
-      (1, 2),
-      (1, 3),
-      (2, 3),
-      (2, 4),
-      (3, 4)
+    var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
+      (2, 3), // 24-27
+      (2, 4), // 28-31
+      (3, 4) // 32-35
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Wildekin(tile.pos));
@@ -192,17 +189,16 @@ public class Encounters {
   }
 
   public static void AddHoppers(Floor floor, Room room) {
-    var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
-      (2, 2),
-      (2, 3),
-      (2, 4),
-      (3, 3),
-      (3, 4),
-      (4, 4)
-    );
-    foreach (var tile in tiles.Take(num)) {
-      floor.Put(new Hopper(tile.pos));
+    var startTile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (startTile != null) {
+      var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
+        (2, 2), // 24-27
+        (2, 3), // 28-31
+        (3, 3)  // 32-35
+      );
+      foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => t.CanBeOccupied()).Take(num)) {
+        floor.Put(new Hopper(tile.pos));
+      }
     }
   }
 
@@ -283,7 +279,7 @@ public class Encounters {
     }
 
     var path = floor.FindPath(start.pos, end.pos, true);
-    foreach (var pos in path) {
+    foreach (var pos in path.Where(p => floor.tiles[p] is Ground)) {
       floor.Put(new GoldGrass(pos));
     }
   }
@@ -312,7 +308,7 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var num = Random.Range(numTiles / 4, numTiles / 2) * mult;
+      var num = Random.Range(Mathf.CeilToInt(numTiles * 0.25f), Mathf.FloorToInt(numTiles * 0.44f)) * mult;
       foreach (var tile in bfs.Take(num)) {
         var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
@@ -479,7 +475,7 @@ public class Encounters {
   public static void AddVibrantIvy(Floor floor, Room room) {
     var startTile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(VibrantIvy.CanOccupy));
     if (startTile == null) {
-      Debug.LogError("Couldn't find a location for Vibrant Ivy!");
+      Debug.LogWarning("Couldn't find a location for Vibrant Ivy!");
     } else {
       var num = MyRandom.Range(6, 13);
       if (MyRandom.value < 0.2f) {

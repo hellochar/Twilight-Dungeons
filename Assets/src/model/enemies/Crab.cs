@@ -16,7 +16,7 @@ public class Crab : AIActor {
     hp = baseMaxHp = 7;
   }
 
-  internal override (int, int) BaseAttackDamage() => (2, 3);
+  internal override (int, int) BaseAttackDamage() => (2, 2);
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;

@@ -88,7 +88,7 @@ class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    var canTrigger = newPos != oldPos && player.grass == null && player.floor.depth != 0;
+    var canTrigger = newPos != oldPos && player.grass == null && player.floor.depth != 0 && Guardleaf.CanOccupy(player.tile);
     if (!canTrigger) {
       return;
     }

@@ -7,11 +7,12 @@ public static class EncounterGroupMidGame {
         { 1f, AddHoppers },
         { 1f, AddScorpions },
         { 1f, AddWildekins },
-        { 0.5f, AddThistlebog },
-        { 0.5f, AddGrasper },
+        { 0.6f, AddIronJelly },
         { 0.6f, AddGolems },
         { 0.6f, AddHydra },
-        { 0.3f, AddParasite },
+        { 0.5f, AddThistlebog },
+        { 0.5f, AddGrasper },
+        { 0.25f, AddParasite },
       },
 
       Grasses = new EncounterBag {

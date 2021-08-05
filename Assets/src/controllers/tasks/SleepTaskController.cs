@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SleepTaskController : ActorTaskController {
   private new SleepTask task => (SleepTask) ((ActorTaskController)this).task;
+  protected override bool removeImmediately => true;
 
   void Start() {
     if (task.isDeepSleep) {

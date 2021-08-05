@@ -161,6 +161,13 @@ public class Encounters {
     }
   }
 
+  public static void AddIronJelly(Floor floor, Room room) {
+    var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).FirstOrDefault();
+    if (tile != null) {
+      floor.Put(new IronJelly(tile.pos));
+    }
+  }
+
   public static void AddGrasper(Floor floor, Room room) {
     // put it on a wall that's next to a Ground
     var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null && floor.GetCardinalNeighbors(t.pos).Any(t2 => t2 is Ground)));

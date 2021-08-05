@@ -5,11 +5,13 @@ using UnityEngine;
 public class AttackGroundTaskController : ActorTaskController {
   private new AttackGroundTask task => (AttackGroundTask) ((ActorTaskController)this).task;
 
+  public virtual Vector2Int TargetPosition => task.TargetPosition;
+  public Vector2Int offset => TargetPosition - actor.pos;
+
   public void Start() {
     var straight = transform.Find("Connector Straight").gameObject;
     var diagonal = transform.Find("Connector Diagonal").gameObject;
 
-    var offset = task.TargetPosition - actor.pos;
     var isDiagonal = !(offset.x == 0 || offset.y == 0);
     if (isDiagonal) {
       Destroy(straight);
@@ -26,6 +28,6 @@ public class AttackGroundTaskController : ActorTaskController {
   public override void Update() {
     base.Update();
     Transform reticle = transform.Find("Reticle");
-    reticle.position = Util.withZ(task.TargetPosition, reticle.position.z);
+    reticle.position = Util.withZ(TargetPosition, reticle.position.z);
   }
 }

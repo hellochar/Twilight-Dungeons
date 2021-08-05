@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Chases you.\nStays one Tile away from Walls or non-Wildekins, but will attack you if possible.\nRuns away for three turns after it attacks.", flavorText: "")]
 public class Wildekin : AIActor, IAttackHandler {
+  public override float turnPriority => 60;
   public Wildekin(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 8;

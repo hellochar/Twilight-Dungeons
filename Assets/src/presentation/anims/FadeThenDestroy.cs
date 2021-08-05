@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// Fade all renderers in this hierarchy over 1 second and then Destroy() the gameObject it's attached to
+[DisallowMultipleComponent]
 public class FadeThenDestroy : MonoBehaviour {
   public float fadeTime = 0.5f;
   public float shrink = 0.5f;

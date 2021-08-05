@@ -157,7 +157,7 @@ public class FloorGenerator {
       }
     }
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), false);
 
     for (var i = 0; i < 12; i++) {
       Encounters.AddWater(floor, room0);

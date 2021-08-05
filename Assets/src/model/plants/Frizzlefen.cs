@@ -114,11 +114,11 @@ class ItemStompinBoots : EquippableItem, IBodyMoveHandler {
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (player.grass != null && player.statuses.FindOfType<ArmoredStatus>() == null) {
       player.grass.Kill(player);
-      player.statuses.Add(new ArmoredStatus());
+      player.statuses.Add(new ArmoredStatus(3));
     }
   }
 
-  internal override string GetStats() => "Everlasting.\nWhen you walk on to a Grass, Kill it and gain Armored. This only happens if you are not Armored.";
+  internal override string GetStats() => "Everlasting.\nWhen you walk on to a Grass, Kill it and gain three Armored stacks. This only happens if you are not Armored.";
 }
 
 [Serializable]

@@ -35,6 +35,16 @@ public class EncounterGroup {
     Rests = source.Rests;
     return this;
   }
+
+  public override string ToString() => $@"
+Mobs: {Mobs}
+Spice: {Spice}
+Grasses: {Grasses}
+Walls: {Walls}
+Chasms: {Chasms}
+Rewards: {Rewards}
+Plants: {Plants}
+Rests: {Rests}".TrimStart();
 }
 
 [System.Serializable]

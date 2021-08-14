@@ -6,7 +6,7 @@ public static class EncounterGroupEverything {
       Mobs = new EncounterBag {
         { 1, AFewBlobs },
         { 1, JackalPile },
-        { 1, AFewSnails },
+        { 0.8f, AFewSnails },
         { 0.4f, AddBats },
         { 0.35f, AddSpiders },
         { 0.2f, AddScorpions },
@@ -55,7 +55,6 @@ public static class EncounterGroupEverything {
         { 0.25f, AddBladegrass },
         { 0.25f, AddFruitingBodies },
 
-        { 0.2f, AddWater },
         { 0.2f, ScatteredBoombugs },
 
         // { 0.1f, AddCoralmoss },
@@ -63,6 +62,7 @@ public static class EncounterGroupEverything {
         { 0.1f, AddSpiders },
         { 0.1f, AddGuardleaf },
         { 0.1f, AddSpore },
+        { 0.1f, AddWater },
 
         { 0.05f, AddEveningBells },
         { 0.05f, AddPoisonmoss },

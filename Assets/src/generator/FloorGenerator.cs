@@ -22,20 +22,19 @@ public class FloorGenerator {
 
   public FloorGenerator(List<int> floorSeeds) {
     this.floorSeeds = floorSeeds;
-
-    InitFloorGenerators();
-  }
-
-  private void InitFloorGenerators() {
     shared = new EncounterGroupShared();
     earlyGame = EncounterGroup.EarlyGame().AssignShared(shared);
     everything = EncounterGroup.EarlyMidMixed().AssignShared(shared);
     midGame = EncounterGroup.MidGame().AssignShared(shared);
+    InitFloorGenerators();
+  }
+
+  private void InitFloorGenerators() {
     floorGenerators = new List<Func<Floor>>() {
       () => generateFloor0(0),
       () => generateSingleRoomFloor(1, 11, 11),
       () => generateSingleRoomFloor(2, 10, 10, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(3, 9, 9),
+      () => generateSingleRoomFloor(3, 10, 10),
       () => generateSingleRoomFloor(4, 11, 11, 1, 1, true, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(5, 15, 11, 2),
       () => generateSingleRoomFloor(6, 13, 11, 2),
@@ -43,29 +42,32 @@ public class FloorGenerator {
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 13, 9, 2, 2),
       () => generateSingleRoomFloor(10, 14, 7, 2, 2),
-      () => generateSingleRoomFloor(11, 20, 9, 3, 2, true, Encounters.AddDownstairsInRoomCenter),
-      // () => generateSingleRoomFloor(12, 20, 9, 4, 3, true),
+      () => generateSingleRoomFloor(11, 20, 9, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter),
       () => generateBlobBossFloor(12),
       () => generateSingleRoomFloor(13, 12, 12, 4, 3),
       () => generateSingleRoomFloor(14, 15, 11, 4, 3),
       () => generateSingleRoomFloor(15, 20, 9, 5, 3),
       () => generateRewardFloor(16, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
       () => generateMultiRoomFloor(17, 30, 20, 7),
-      () => generateMultiRoomFloor(18, 20, 20, 8, true),
-      () => generateMultiRoomFloor(19, 24, 16, 9),
+      () => generateMultiRoomFloor(18, 20, 20, 8),
+      () => generateMultiRoomFloor(19, 24, 16, 9, true),
       () => generateMultiRoomFloor(20, 30, 12, 10),
       () => generateMultiRoomFloor(21, 30, 20, 15),
       () => generateMultiRoomFloor(22, 40, 20, 20, true, Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
       () => generateFungalColonyBossFloor(23),
-      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.AddWater),
-      () => generateSingleRoomFloor(25, 11, 11, 3, 1, true),
-      () => generateSingleRoomFloor(26, 13, 13, 4, 1, true),
-      () => generateMultiRoomFloor(27, 20, 15, 8, true),
-      () => generateMultiRoomFloor(28, 24, 16, 10, true),
-      () => generateMultiRoomFloor(29, 26, 16, 12, true),
-      () => generateMultiRoomFloor(30, 28, 18, 16, true),
-      () => generateMultiRoomFloor(31, 45, 25, 24, true),
-      () => generateEndFloor(32),
+      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater),
+      () => generateSingleRoomFloor(25, 11, 11, 2, 2),
+      () => generateSingleRoomFloor(26, 15, 15, 3, 3),
+      () => generateSingleRoomFloor(27, 19, 14, 4, 3, false, null, Encounters.AddWater),
+      () => generateSingleRoomFloor(28, 23, 17, 8, 6, false, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls2 }),
+      () => generateMultiRoomFloor(29, 24, 20, 10),
+      () => generateMultiRoomFloor(30, 24, 24, 12, true),
+      () => generateMultiRoomFloor(31, 24, 16, 12),
+      () => generateRewardFloor(32, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
+      () => generateMultiRoomFloor(33, 26, 17, 15, true),
+      () => generateMultiRoomFloor(34, 28, 19, 20),
+      () => generateMultiRoomFloor(35, 45, 25, 30),
+      () => generateEndFloor(36),
     };
   }
 
@@ -309,16 +311,21 @@ public class FloorGenerator {
   /// Generates one single room with one wall variation, X mob encounters, Y grass encounters, an optional reward.
   /// Good for a contained experience.
   /// </summary>
-  public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, params Encounter[] extraEncounters) {
+  public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor;
     int guard = 0;
     do {
-      floor = tryGenerateSingleRoomFloor(depth, width, height);
+      floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
     } while (!AreStairsConnected(floor) && guard++ < 20);
     if (guard >= 20) {
       throw new Exception("Couldn't generate a walkable floor in 20 tries!");
     }
     var room0 = floor.root;
+    if (preMobEncounters != null) {
+      foreach (var encounter in preMobEncounters) {
+        encounter(floor, room0);
+      }
+    }
     // X mobs
     for (var i = 0; i < numMobs; i++) {
       EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
@@ -344,7 +351,7 @@ public class FloorGenerator {
     return floor;
   }
 
-  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height) {
+  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool defaultEncounters = true) {
     Floor floor = new Floor(depth, width, height);
 
     // fill with wall
@@ -355,12 +362,14 @@ public class FloorGenerator {
     Room room0 = new Room(floor);
     FloorUtils.PutGround(floor, floor.EnumerateRoom(room0));
 
-    // one wall variation
-    EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
-    FloorUtils.NaturalizeEdges(floor);
-    
-    // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
-    EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
+    if (defaultEncounters) {
+      // one wall variation
+      EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
+      FloorUtils.NaturalizeEdges(floor);
+      
+      // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
+      EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
+    }
 
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));

@@ -153,11 +153,6 @@ public class Encounters {
     var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).FirstOrDefault();
     if (tile != null) {
       floor.Put(new HydraHeart(tile.pos));
-      var adjacentGround = Util.RandomPick(floor.GetAdjacentTiles(tile.pos).Where(t => t is Ground && t.pos != tile.pos));
-      /// add 1 water next to each hydra to incentivize attacking it
-      if (adjacentGround != null) {
-        floor.Put(new Water(adjacentGround.pos));
-      }
     }
   }
 
@@ -638,7 +633,7 @@ public class Encounters {
   }
 
   public static void AddWater(Floor floor, Room room) {
-    var numWaters = Random.Range(3, 7);
+    var numWaters = Random.Range(3, 6);
     var startPos = room.center;
     foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
       floor.Put(new Water(tile.pos));

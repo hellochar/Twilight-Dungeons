@@ -48,20 +48,22 @@ public static class EncounterGroupMidGame {
         { 0.25f, AddTunnelroot4x },
         { 0.25f, AddFruitingBodies },
 
-        { 0.2f, AddWater },
-
+        { 0.2f, AddHoppers },
+        { 0.2f, AddIronJelly },
         { 0.2f, AddSpiders },
-        // { 0.2f, AddGolems },
+        { 0.2f, AddGolems },
         // { 0.2f, AddScorpions },
         // { 0.2f, AddWildekins },
         // { 0.2f, AddCrabs },
-        { 0.05f, AddParasite8x },
 
+        { 0.1f, AddWater },
         { 0.1f, AddHydra },
         { 0.1f, AddGrasper },
         { 0.1f, AddDeathbloom },
         { 0.1f, AddSpore },
         { 0.1f, FillWithFerns },
+
+        { 0.05f, AddParasite8x },
 
         { 0.02f, AddNecroroot },
       },

@@ -11,7 +11,10 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   protected class Entry {
     public float weight;
     public T item;
-    public override string ToString() => $"{item}: {weight}";
+    public override string ToString() {
+      var i = item is Delegate d ? d.Method.Name : item.ToString();
+      return $"{i}: {weight}";
+    }
   }
 
   protected List<Entry> entries = new List<Entry>();

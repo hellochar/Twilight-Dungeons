@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public static class Util {
@@ -79,7 +80,7 @@ public static class Util {
   }
 
   public static string WithSpaces(string capitalCaseString) {
-    return string.Concat(capitalCaseString.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+    return Regex.Replace(capitalCaseString, "([A-Z])", " $1").TrimStart();
   }
 
   /// <summary>Create a new 3x3 chunk that's the old one rotated 90 degrees counterclockwise (because we're in a right-handed coordinate system)</summary>

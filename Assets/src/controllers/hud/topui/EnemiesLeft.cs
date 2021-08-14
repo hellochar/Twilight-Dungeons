@@ -18,7 +18,7 @@ public class EnemiesLeft : MonoBehaviour {
     var floor = GameModel.main.currentFloor;
     if (floor.bosses.Any()) {
       Shown("");
-    } else if (floor.depth == 0) {
+    } else if (floor.depth == 0 || floor.depth == 36) {
       Hidden();
     } else {
     switch (floor.EnemiesLeft()) {

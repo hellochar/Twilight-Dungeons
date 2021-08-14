@@ -43,7 +43,7 @@ public class Tunnelroot : Grass, IActorEnterHandler {
     if (!partner.IsDead && partner.body == null && isOpen) {
       // Close();
       // partner.Close();
-      var newTile = floor.BreadthFirstSearch(partner.pos, (tile) => true).Skip(1).Where(t => t.CanBeOccupied()).FirstOrDefault();
+      var newTile = floor.BreadthFirstSearch(partner.pos).Skip(1).Where(t => t.CanBeOccupied() && !(t.grass is Tunnelroot)).FirstOrDefault();
       if (newTile != null) {
         OnNoteworthyAction();
         partner.OnNoteworthyAction();

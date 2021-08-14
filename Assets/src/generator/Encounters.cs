@@ -477,9 +477,9 @@ public class Encounters {
     if (startTile == null) {
       Debug.LogWarning("Couldn't find a location for Vibrant Ivy!");
     } else {
-      var num = MyRandom.Range(6, 13);
+      var num = MyRandom.Range(5, 10);
       if (MyRandom.value < 0.2f) {
-        num += 14;
+        num += 10;
       }
       floor.PutAll(
         floor

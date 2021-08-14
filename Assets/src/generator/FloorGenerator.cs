@@ -18,6 +18,10 @@ public class FloorGenerator {
   [OnDeserialized]
   void HandleDeserialized() {
     InitFloorGenerators();
+    // 1.10.0 32 -> 36 levels
+    while (floorSeeds.Count() < floorGenerators.Count()) {
+      floorSeeds.Add(MyRandom.Next());
+    }
   }
 
   public FloorGenerator(List<int> floorSeeds) {

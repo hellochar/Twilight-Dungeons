@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49cabc66cfa49fe438393642284ab3a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDamageMarks: 1
   bloodColor: {r: 0.75, g: 0, b: 0, a: 0.5}
+  hideWaitTask: 0
+  statuses: {fileID: 0}
 --- !u!1001 &7295544788120013855
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20,6 +23,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3483431341202102275, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_RootOrder
@@ -93,6 +101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
+    - {fileID: 3483431341202102275, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 67481c8900921ad45b4da8aed5f1cb43, type: 3}
 --- !u!1 &4208961243593383349 stripped
 GameObject:

@@ -90,13 +90,7 @@ public class Floor {
     body.pos = newPosition;
   }
 
-  private void ItemPlacementBehavior(ItemOnGround item) {
-    var newPosition = this.BreadthFirstSearch(item.pos, (_) => true)
-      .Where(ItemOnGround.CanOccupy)
-      .First()
-      .pos;
-    item.pos = newPosition;
-  }
+  private void ItemPlacementBehavior(ItemOnGround item) => ItemOnGround.PlacementBehavior(this, item);
 
   public void BodyMoved() => bodies.ScheduleRecompute();
 

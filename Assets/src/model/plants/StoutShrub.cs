@@ -81,7 +81,7 @@ public class ItemThicket : EquippableItem, IStackable, IBodyTakeAttackDamageHand
 [Serializable]
 [ObjectInfo("prickler")]
 public class ItemPrickler : EquippableItem, IWeapon, IStackable, IAttackHandler {
-  internal override string GetStats() => "Leaves a Prickly Growth on the attacked Creature's tile, which deals 3 attack damage to the Creature standing over it in three turns.";
+  internal override string GetStats() => "Leaves a Prickly Growth on the attacked Creature's tile, which deals 3 attack damage to the Creature standing over it next turn.";
   private int _stacks;
 
   public int stacks {
@@ -115,10 +115,10 @@ public class ItemPrickler : EquippableItem, IWeapon, IStackable, IAttackHandler 
 }
 
 [Serializable]
-[ObjectInfo("prickly-growth", description: "After three turns, Prickly Growth deals 3 attack damage to the Creature standing over it and dies.")]
+[ObjectInfo("prickly-growth", description: "Next turn, deal 3 attack damage to the Creature standing over the Prickly Growth.")]
 class PricklyGrowth : Grass, ISteppable {
   public PricklyGrowth(Vector2Int pos) : base(pos) {
-    timeNextAction = GameModel.main.time + 3;
+    timeNextAction = GameModel.main.time + 1;
   }
   public float timeNextAction { get; set; }
   public float turnPriority => 11;

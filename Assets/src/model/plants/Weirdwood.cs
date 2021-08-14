@@ -102,8 +102,10 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
   internal override string GetStats() => "After you make an attack, get 3 Free Moves.";
 
   public void OnAttack(int damage, Body target) {
-    player.statuses.Add(new FreeMoveStatus(3));
-    this.ReduceDurability();
+    if (player.statuses.FindOfType<FreeMoveStatus>() == null) {
+      player.statuses.Add(new FreeMoveStatus(3));
+      this.ReduceDurability();
+    }
   }
 
   public ItemBackstepShoes() {

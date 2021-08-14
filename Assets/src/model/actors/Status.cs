@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 /// Trying to reapply an existing status will call "Stack"
 [Serializable]
@@ -22,6 +23,8 @@ public abstract class Status : IStepModifier {
       }
     }
   }
+  [OptionalField]
+  private bool removeScheduled = false;
 
   public virtual bool isDebuff => false;
   public Actor actor => list?.actor;
@@ -49,10 +52,13 @@ public abstract class Status : IStepModifier {
 
   /// <summary>Schedule this status for removal.</summary>
   public void Remove() {
-    /// Must be scheduled because Remove() may be called within
-    /// a Modifiers.Of() handler; modifying the list would
-    /// cause a concurrent modification
-    GameModel.main.EnqueueEvent(() => list?.Remove(this));
+    if (!removeScheduled) {
+      removeScheduled = true;
+      /// Must be scheduled because Remove() may be called within
+      /// a Modifiers.Of() handler; modifying the list would
+      /// cause a concurrent modification
+      GameModel.main.EnqueueEvent(() => list?.Remove(this));
+    }
   }
 }
 

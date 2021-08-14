@@ -6,7 +6,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Blooms when an adjacent creature dies.\nOnce bloomed, walk over it to obtain a Deathbloom Flower and spawn a new Deathbloom.")]
-public class Deathbloom : Grass, IActorEnterHandler {
+public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
   public bool isBloomed = false;
   [field:NonSerialized] /// controller only
   public event Action OnBloomed;
@@ -38,7 +38,20 @@ public class Deathbloom : Grass, IActorEnterHandler {
           var newDeathbloom = new Deathbloom(tile.pos);
           floor.Put(newDeathbloom);
         }
-        BecomeItemInInventory(new ItemDeathbloomFlower(1), p);
+        Kill(p);
+      }
+    }
+  }
+
+  public void HandleDeath(Entity source) {
+    if (isBloomed) {
+      var player = GameModel.main.player;
+      if (player.pos == pos) {
+        // player is over the deathbloom; try putting it into player inventory
+        var item = new ItemDeathbloomFlower(1);
+        if (!player.inventory.AddItem(item, this)) {
+          floor.Put(new ItemOnGround(pos, item, pos));
+        }
       }
     }
   }
@@ -66,29 +79,31 @@ internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
   }
 
   public void Eat(Actor a) {
-    a.statuses.Add(new FrenziedStatus(10));
+    a.statuses.RemoveOfType<WeaknessStatus>();
+    a.statuses.Add(new FrenziedStatus(3));
     stacks--;
   }
 
-  internal override string GetStats() => "Eat to get the Frenzied Status, providing +2 attack damage for 10 turns, but gaining the Weakness Status afterwards.";
+  internal override string GetStats() => "Eat to become Frenzied, providing +2 attack damage for 3 turns. Afterwards, gain 3 stacks of Weakness.\nEating removes Weakness.";
 }
 
 [System.Serializable]
 [ObjectInfo(spriteName: "3Red", flavorText: "You're engulfed in a rage!")]
 internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
+  public override StackingMode stackingMode => StackingMode.Add;
   public FrenziedStatus(int turnsLeft) {
     this.stacks = turnsLeft;
   }
 
   public override void End() {
-    actor.statuses.Add(new WeaknessStatus(4));
+    actor.statuses.Add(new WeaknessStatus(3));
   }
 
   public override void Step() {
     stacks--;
   }
 
-  public override string Info() => $"You deal +2 damage.\n{this.stacks} turns remaining.\nWhen Frenzied ends, get the Weakness Status, dealing -1 damage, for 4 turns.";
+  public override string Info() => $"Deal +2 attack damage for {this.stacks} more turns.\nWhen Frenzied ends, gain Weakness, dealing -1 damage on your next three attacks.";
 
   public int Modify(int input) {
     return input + 2;
@@ -99,17 +114,12 @@ internal class FrenziedStatus : StackingStatus, IAttackDamageModifier {
 [ObjectInfo(spriteName: "weakness", flavorText: "Your muscles are failing you!")]
 internal class WeaknessStatus : StackingStatus, IAttackDamageModifier {
   public override bool isDebuff => true;
-  public WeaknessStatus(int turnsLeft) {
-    this.stacks = turnsLeft;
-  }
+  public WeaknessStatus(int stacks) : base(stacks) {}
 
-  public override void Step() {
-    stacks--;
-  }
-
-  public override string Info() => $"You deal -1 damage.\n{this.stacks} turns remaining.";
+  public override string Info() => $"Your next {stacks} attacks deal -1 damage!";
 
   public int Modify(int input) {
+    stacks--;
     return input - 1;
   }
 }

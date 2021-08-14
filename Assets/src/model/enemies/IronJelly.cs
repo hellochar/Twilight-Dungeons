@@ -12,10 +12,6 @@ public class IronJelly : AIActor, IBodyTakeAttackDamageHandler {
   }
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
-    if (task is AttackOrMoveDirectionTask) {
-      ClearTasks();
-      statuses.Add(new SurprisedStatus());
-    }
     var isAdjacent = IsNextTo(source);
     var offset = source.pos - pos;
     if (isAdjacent && offset != Vector2Int.zero) {
@@ -25,6 +21,10 @@ public class IronJelly : AIActor, IBodyTakeAttackDamageHandler {
       } else {
         Perform(new AttackBaseAction(this, pushedTile.body));
       }
+    }
+    if (task is AttackOrMoveDirectionTask) {
+      SetTasks(new WaitTask(this, 1));
+      statuses.Add(new SurprisedStatus());
     }
   }
 
@@ -40,6 +40,7 @@ public class IronJelly : AIActor, IBodyTakeAttackDamageHandler {
   }
 }
 
+[Serializable]
 class AttackOrMoveDirectionTask : TelegraphedTask {
   public AttackOrMoveDirectionTask(Actor actor, Vector2Int offset, int turns) :
     base(actor, 1, new AttackOrMoveDirectionBaseAction(actor, offset), ActionType.WAIT) {
@@ -49,6 +50,7 @@ class AttackOrMoveDirectionTask : TelegraphedTask {
   public Vector2Int Offset { get; }
 }
 
+[Serializable]
 class AttackOrMoveDirectionBaseAction : BaseAction {
   public override ActionType Type => target == null ? ActionType.MOVE : ActionType.ATTACK;
   public Body target => actor.floor.bodies[actor.pos + offset];

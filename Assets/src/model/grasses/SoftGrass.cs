@@ -92,6 +92,4 @@ public class FreeMoveStatus : StackingStatus, IActionCostModifier, IBaseActionMo
     }
     return input;
   }
-
-  public override bool Consume(Status other) => true;
 }

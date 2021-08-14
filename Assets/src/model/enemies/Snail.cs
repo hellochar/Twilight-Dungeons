@@ -68,7 +68,7 @@ public class ItemSnailShell : Item, IStackable, ITargetedAction<Actor> {
     stacks--;
   }
 
-  internal override string GetStats() => "Deals 3 damage when thrown.";
+  internal override string GetStats() => "Deals 3 attack damage when thrown.";
 
   public string TargettedActionName => "Throw";
 

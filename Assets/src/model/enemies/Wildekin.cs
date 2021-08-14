@@ -33,7 +33,15 @@ public class Wildekin : AIActor, IAttackHandler {
         }
       }
     } else {
-      return new WaitTask(this, 1);
+      var tiles = AdjacentTilesInPreferenceOrder();
+      if (tiles.Any()) {
+        // tile preference version of moving randomly
+        var bestScore = TilePreference(tiles.First());
+        var tile = Util.RandomPick(tiles.Where(t => TilePreference(t) == bestScore));
+        return new MoveToTargetTask(this, tile.pos);
+      } else {
+        return new WaitTask(this, 1);
+      }
     }
   }
 

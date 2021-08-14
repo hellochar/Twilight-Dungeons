@@ -614,6 +614,18 @@ public class Encounters {
     }
   }
 
+  // public static void AddDandypuffs(Floor floor, Room room) {
+  //   var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(Dandypuff.CanOccupy));
+  //   var num = MyRandom.Range(1, 2);
+  //   if (start == null) {
+  //     Debug.Log("No place to spawn Dandypuffs");
+  //     return;
+  //   }
+  //   foreach (var tile in floor.BreadthFirstSearch(start.pos, Dandypuff.CanOccupy).Take(num)) {
+  //     floor.Put(new Dandypuff(tile.pos));
+  //   }
+  // }
+
   public static void AddDeathbloom(Floor floor, Room room) {
     // Tile tile = FloorUtils.EmptyTileNearestCenter(floor, room);
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room).Where((t) => t is Ground && t.grass == null).ToList();

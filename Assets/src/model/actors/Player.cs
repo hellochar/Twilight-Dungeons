@@ -143,7 +143,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   protected override void HandleLeaveFloor() {
-    floor.RemoveVisibility(this);
+    if (!IsDead) {
+      floor.RemoveVisibility(this);
+    }
   }
 
   protected override void HandleEnterFloor() {

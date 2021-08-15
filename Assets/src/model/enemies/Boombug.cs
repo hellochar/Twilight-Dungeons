@@ -105,10 +105,16 @@ public class BoombugCorpse : Actor, IDeathHandler {
   }
 
   void Explode() {
+    if (exploded) {
+      return;
+    }
     exploded = true;
     OnExploded?.Invoke();
+    var adjacentBoombugs = new List<BoombugCorpse>();
     foreach (var tile in floor.GetAdjacentTiles(pos)) {
-      if (tile.body != null && tile.body != this) {
+      if (tile.body is BoombugCorpse c && c != this) {
+        adjacentBoombugs.Add(c);
+      } else if (tile.body != null && tile.body != this) {
         this.Attack(tile.body);
       }
       if ((tile.body == null || tile == this.tile) && tile.grass != null) {
@@ -116,6 +122,11 @@ public class BoombugCorpse : Actor, IDeathHandler {
       }
     }
     Kill(this);
+    GameModel.main.EnqueueEvent(() => {
+      foreach (var b in adjacentBoombugs) {
+        b.Explode();
+      }
+    });
   }
 
   internal override (int, int) BaseAttackDamage() {

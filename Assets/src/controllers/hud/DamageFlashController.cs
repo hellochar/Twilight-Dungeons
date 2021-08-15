@@ -17,7 +17,7 @@ public class DamageFlashController : MonoBehaviour, ITakeAnyDamageHandler {
 
   // Update is called once per frame
   void Update() {
-    var isLowHP = GameModel.main.player.hp <= 3;
+    var isLowHP = GameModel.main.player.hp <= 3 && !GameModel.main.player.IsDead;
     animator.SetBool("isLowHP", isLowHP);
   }
 }

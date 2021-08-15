@@ -368,7 +368,12 @@ public class Encounters {
   public static void AddTunnelroot4x(Floor floor, Room room) => Twice(Twice(AddTunnelroot))(floor, room);
 
   public static void AddPoisonmoss(Floor floor, Room room) {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(t => Poisonmoss.CanOccupy(t) && t.grass == null));
+    var occupiableTiles = new HashSet<Tile>(
+      floor
+        .EnumerateRoomTiles(room)
+        // don't spawn under creatures since it will cause room collapse
+        .Where(t => Poisonmoss.CanOccupy(t) && t.grass == null && t.CanBeOccupied())
+      );
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
@@ -601,15 +606,23 @@ public class Encounters {
   }
 
 
-  public static void ScatteredBoombugs(Floor floor, Room room) => ScatteredBoombugsImpl(floor, room, 1);
-  public static void ScatteredBoombugs4x(Floor floor, Room room) => ScatteredBoombugsImpl(floor, room, 4);
-  public static void ScatteredBoombugsImpl(Floor floor, Room room, int mult) {
+  public static void ScatteredBoombugs(Floor floor, Room room) {
     var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     emptyTilesInRoom.Shuffle();
     var num = Random.Range(1, 3);
     foreach (var tile in emptyTilesInRoom.Take(num)) {
-      foreach (var nearbyTile in floor.BreadthFirstSearch(tile.pos, emptyTilesInRoom.Contains).Take(mult)) {
-        floor.Put(new Boombug(nearbyTile.pos));
+      var boombug = new Boombug(tile.pos);
+      floor.Put(boombug);
+    }
+  }
+  public static void ScatteredBoombugs4x(Floor floor, Room room) {
+    var startTile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (startTile != null) {
+      var num = MyRandom.Range(4, 11);
+      foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => t.CanBeOccupied()).Take(num)) {
+        var boombug = new Boombug(tile.pos);
+        boombug.statuses.Add(new ConstrictedStatus(null, 999));
+        floor.Put(boombug);
       }
     }
   }

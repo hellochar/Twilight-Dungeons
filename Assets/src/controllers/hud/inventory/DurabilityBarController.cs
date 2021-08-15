@@ -55,10 +55,7 @@ public class DurabilityBarController : MonoBehaviour {
     // do a pulse
     var durability = GetItemDurability();
     if (lastDurability != durability) {
-      var pulse = gameObject.AddComponent<PulseAnimation>();
-      if (pulse != null) {
-        pulse.pulseScale = 1.1f;
-      }
+      gameObject.AddComponent<PulseAnimation>()?.Scale(1.1f);
       lastDurability = durability;
     }
   }

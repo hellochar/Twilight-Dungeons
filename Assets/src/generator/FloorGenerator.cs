@@ -123,6 +123,8 @@ public class FloorGenerator {
     // Encounters.AddPoisonmoss(floor, floor.root);
     // Encounters.FillWithFerns(floor, floor.root);
     // Encounters.AddFakeWall(floor, floor.root);
+    Encounters.AddGrasper(floor, floor.root);
+    Encounters.AddGrasper(floor, floor.root);
     #endif
 
     /// add a signpost onto the floor

@@ -190,9 +190,7 @@ public class Upstairs : Tile, IActorEnterHandler {
       Serializer.SaveMainToCheckpoint();
       GameModel.main.PutPlayerAt(0);
     } else {
-      var enemiesLeft = GameObject.Find("Enemies Left");
-      var pulse = enemiesLeft.AddComponent<PulseAnimation>();
-      pulse.pulseScale = 1.25f;
+      GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
     }
   }
 
@@ -219,9 +217,7 @@ public class Downstairs : Tile, IActorEnterHandler {
     if (floor.EnemiesLeft() == 0) {
       floor.PlayerGoDownstairs();
     } else {
-      var enemiesLeft = GameObject.Find("Enemies Left");
-      var pulse = enemiesLeft.AddComponent<PulseAnimation>();
-      pulse.pulseScale = 1.25f;
+      GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
     }
   }
 

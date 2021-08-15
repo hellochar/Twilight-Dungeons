@@ -14,6 +14,14 @@ public class PulseAnimation : MonoBehaviour {
     startTime = Time.time;
   }
 
+  public void Larger() {
+    pulseScale = 1.25f;
+  }
+
+  public void Scale(float v) {
+    pulseScale = v;
+  }
+
   void Update() {
     var t = (Time.time - startTime) / FADE_TIME;
     if (t >= 1) {

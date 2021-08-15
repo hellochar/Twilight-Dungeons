@@ -15,7 +15,7 @@ public class Grasper : AIActor, IBaseActionModifier {
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where((a) => a is Tendril).Cast<Tendril>();
+    var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where(tendrils.Contains).Cast<Tendril>();
     var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 4;
     if (isPlayerSurrounded) {
       foreach (var t in tendrilsSurroundingPlayer) {
@@ -86,15 +86,10 @@ public class Grasper : AIActor, IBaseActionModifier {
 }
 
 [Serializable]
-[ObjectInfo(description: "If you are surrounded on all sides by Tendrils, take 2 damage a turn.\nKilling one will also kill all descendant Tendrils.")]
+[ObjectInfo(description: "If you next to 4 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.")]
 public class Tendril : Actor, IDeathHandler, IBaseActionModifier, INoTurnDelay {
   [field:NonSerialized] /// controller only
   public Action OnPulse = delegate {};
-  public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
-    [ActionType.GENERIC] = 4,
-  };
-  protected override ActionCosts actionCosts => StaticActionCosts;
-
   private Actor target;
   public readonly Grasper owner;
 

@@ -31,8 +31,7 @@ public class TendrilController : ActorController {
   }
 
   private void HandlePulse() {
-    var pulse = gameObject.AddComponent<PulseAnimation>();
-    pulse.pulseScale = 1.25f;
+    gameObject.AddComponent<PulseAnimation>()?.Larger();
   }
 
   void UpdateSprite() {

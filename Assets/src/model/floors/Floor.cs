@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 [Serializable]
 public class Floor {
@@ -146,8 +144,10 @@ public class Floor {
   public void Remove(Entity entity) {
     if (!entities.Contains(entity)) {
       Debug.LogError("Removing " + entity + " from a floor it doesn't live in!");
+      return;
+    } else {
+      this.entities.Remove(entity);
     }
-    this.entities.Remove(entity);
 
     if (entity is ISteppable s) {
       steppableEntities.Remove(s);

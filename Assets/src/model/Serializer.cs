@@ -32,6 +32,7 @@ public static class Serializer {
     using (FileStream file = File.Open(path, FileMode.Open)) {
       var model = (GameModel) bf.Deserialize(file);
       file.Close();
+      SaveUpgrader.Upgrade(model);
       return model;
     }
   }

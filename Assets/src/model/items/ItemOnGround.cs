@@ -31,17 +31,6 @@ public class ItemOnGround : Entity, IActorEnterHandler {
     Debug.AssertFormat(item.inventory == null, "Item's inventory should be null");
   }
 
-  [OnDeserialized]
-  void HandleDeserialized() {
-    // BUGFIX - prior to 1.10.0 the _pos was erroneously marked nonserialized, meaning
-    // players would lose all items on the ground when they saved and loaded.
-    // Thankfully, the "start" position kind of keeps track of it, so we graft it onto
-    // the pos as a stopgap
-    if (pos == Vector2Int.zero && start.HasValue) {
-      this._pos = start.Value;
-    }
-  }
-
   internal void PickUp() {
     var player = GameModel.main.player;
     if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
@@ -53,5 +42,13 @@ public class ItemOnGround : Entity, IActorEnterHandler {
     if (who == GameModel.main.player) {
       PickUp();
     }
+  }
+
+  // BUGFIX - prior to 1.10.0 the _pos was erroneously marked nonserialized, meaning
+  // players would lose all items on the ground when they saved and loaded.
+  // Thankfully, the "start" position kind of keeps track of it, so we graft it onto
+  // the pos and then re-register the entity
+  public void FixPosZeroBug(int x, int y) {
+    this._pos.Set(x, y);
   }
 }

@@ -1,12 +1,34 @@
+using System;
+using UnityEngine;
+
 public static class SaveUpgrader {
   public static void Upgrade(GameModel model) {
-    FixPosZeroBug(model);
+    EnsureVersionStringExists(model);
+    // if you're below 1.10.0, run FixPosZeroBug on the model
+    MaybeRunUpgrader("1.10.0", FixPosZeroBug, model);
+  }
+
+  private static void MaybeRunUpgrader(string firstGoodVersionString, Action<GameModel> Upgrade, GameModel model) {
+    var modelVersion = new Version(model.version);
+    var firstGoodVersion = new Version(firstGoodVersionString);
+    if (modelVersion < firstGoodVersion) {
+      Upgrade(model);
+      Debug.Log($"Upgraded {model.version} to {firstGoodVersionString}");
+      model.version = firstGoodVersionString;
+    }
+  }
+
+  private static void EnsureVersionStringExists(GameModel model) {
+    // We've been compatible since version 1.8.0 so take the worst case scenario.
+    if (model.version == null) {
+      model.version = "1.8.0";
+    }
   }
 
   // BUGFIX - prior to 1.10.0 the _pos was erroneously marked nonserialized, meaning
   // players would lose all items on the ground when they saved and loaded.
-  // Thankfully, the "start" position kind of keeps track of it, so we graft it onto
-  // the pos and then 
+  // Thankfully, the position was cached in the floor's StaticEntityGrid, so we can
+  // restore the pos from that
   private static void FixPosZeroBug(GameModel model) {
     void Fix(StaticEntityGrid<ItemOnGround> grid) {
       for (int x = 0; x < grid.width; x++) {

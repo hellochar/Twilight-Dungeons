@@ -8,6 +8,9 @@ using System.Runtime.Serialization;
 
 [Serializable]
 public class GameModel {
+  public static string VERSION = "1.10.0";
+  [OptionalField] /// added 1.10.0
+  public string version = VERSION;
   public int seed;
   public Player player;
   public Floor home;

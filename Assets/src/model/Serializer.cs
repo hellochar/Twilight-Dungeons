@@ -18,6 +18,7 @@ public static class Serializer {
     try {
       return Load(SAVE_PATH);
     } catch (Exception e) {
+      Debug.LogError(e);
       if (useBackup) {
         return Load(CHECKPOINT_PATH);
       } else {
@@ -59,8 +60,8 @@ public static class Serializer {
   }
 
   private static bool Save(GameModel model, string path) {
-    if (model.home is TutorialFloor) {
-      // don't save the tutorial
+    if (model.home is TutorialFloor || model.player.IsDead) {
+      // don't save the tutorial, don't save if player is dead
       return true;
     }
     var bf = GetBinaryFormatter();

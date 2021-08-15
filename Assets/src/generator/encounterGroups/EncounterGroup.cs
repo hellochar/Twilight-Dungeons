@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UnityEngine;
 using static Encounters;
 
 [System.Serializable]
@@ -98,8 +99,12 @@ public class EncounterBag : WeightedRandomBag<Encounter>, ISerializable {
       var weight = info.GetSingle($"item-{i}-weight");
       var methodName = info.GetString($"item-{i}-name");
       var methodInfo = typeof(Encounters).GetMethod(methodName);
-      var encounter = (Encounter) Delegate.CreateDelegate(typeof(Encounter), methodInfo);
-      Add(weight, encounter);
+      if (methodInfo != null) {
+        var encounter = (Encounter) Delegate.CreateDelegate(typeof(Encounter), methodInfo);
+        Add(weight, encounter);
+      } else {
+        Debug.LogWarning($"Couldn't find Encounter {methodName}.");
+      }
     }
   }
 

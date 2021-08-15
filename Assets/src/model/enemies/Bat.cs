@@ -62,7 +62,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   }
 
   public void HandleDealAttackDamage(int dmg, Body target) {
-    if (target is Actor && dmg > 0) {
+    if (target is Actor && dmg > 0 && target != this) {
       Heal(1);
     }
   }

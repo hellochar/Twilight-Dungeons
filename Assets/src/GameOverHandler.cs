@@ -16,17 +16,14 @@ public class GameOverHandler : MonoBehaviour {
   }
 
   private void HandleGameOver(PlayStats stats) {
-    PlayLog.Update(log => {
-      log.stats.Add(stats);
-    });
-
-    Serializer.DeleteSave0();
-    Serializer.DeleteCheckpoint();
-
     if (stats.won) {
       var ezra = GameModel.main.currentFloor.bodies.First(b => b is Ezra) as Ezra;
       StartCoroutine(WinGameAnimation(ezra));
     } else {
+      #if !UNITY_EDITOR
+      Serializer.DeleteSave0();
+      Serializer.DeleteCheckpoint();
+      #endif
       // player died
       InteractionController.isInputAllowed = false;
       dPad.SetActive(false);
@@ -80,6 +77,10 @@ public class GameOverHandler : MonoBehaviour {
     dPad.SetActive(false);
     yield return new WaitForSeconds(1);
 
+    #if !UNITY_EDITOR
+    Serializer.DeleteSave0();
+    Serializer.DeleteCheckpoint();
+    #endif
     SceneManager.LoadSceneAsync("Scenes/GameOver", LoadSceneMode.Additive);
   }
 }

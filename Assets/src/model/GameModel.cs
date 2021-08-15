@@ -120,21 +120,7 @@ public class GameModel {
 
   public void GameOver(bool won, Entity deathSource = null) {
     FinalizeStats(won, deathSource?.displayName);
-    if (won) {
-      // no-op
-    } else {
-      // player died
-      var model = GameModel.main;
-      model.EnqueueEvent(() => {
-        model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
-      });
-
-      // permadeath
-      #if !UNITY_EDITOR
-      Serializer.DeleteSave0();
-      Serializer.DeleteCheckpoint();
-      #endif
-    }
+    PlayLog.Update(log => log.stats.Add(stats));
     OnGameOver?.Invoke(stats);
   }
 

@@ -11,9 +11,9 @@ public class Agave : Grass, IActorEnterHandler {
   public Agave(Vector2Int pos) : base(pos) {}
 
   public void HandleActorEnter(Actor actor) {
-    if (actor == GameModel.main.player) {
-      GameModel.main.player.inventory.AddItem(new ItemAgave(1), this);
-      Kill(actor);
+    var player = GameModel.main.player;
+    if (actor == player) {
+      BecomeItemInInventory(new ItemAgave(1), player);
     }
   }
 }
@@ -80,5 +80,5 @@ class ItemAgaveHoney : Item, IEdible {
     Destroy();
   }
 
-  internal override string GetStats() => "Heals 1 HP. Removes all debuffs (red outlined Statuses).";
+  internal override string GetStats() => "Heals 1 HP. Removes all Debuffs (red outlined Statuses).";
 }

@@ -579,10 +579,10 @@ public class Encounters {
     }
   }
 
-  public static void FiftyRandomAstoria(Floor floor, Room room) {
+  public static void TwelveRandomAstoria(Floor floor, Room room) {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();
-    foreach (var tile in positions.Take(50)) {
+    foreach (var tile in positions.Take(12)) {
       floor.Put(new Astoria(tile.pos));
     }
   }

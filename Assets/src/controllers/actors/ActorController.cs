@@ -8,7 +8,7 @@ public class ActorController : BodyController,
   public Color bloodColor = new Color(0.75f, 0, 0, 0.5f);
   protected Animator animator;
   public bool hideWaitTask = false;
-  protected GameObject statuses;
+  public GameObject statuses;
   // if this is not null, there's a code animation controlling this actor
   // and we shouldn't clobber it
   protected Coroutine currentAnimation;

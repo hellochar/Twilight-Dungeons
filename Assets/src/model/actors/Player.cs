@@ -6,7 +6,9 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Only you can use and equip items.\nOnly you can take stairs.", flavorText: "Though your illness makes you physically weak, your knowledge of flora and fauna helps you navigate these strange caves.")]
-public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDamageHandler, IActionPerformedHandler, IStatusAddedHandler, IHideInSidebar {
+public class Player : Actor, IBodyMoveHandler, IAttackHandler,
+  ITakeAnyDamageHandler, IDealAttackDamageHandler, IActionPerformedHandler,
+  IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler {
   private float timeLastLostWater = 0;
   private int m_water;
   public int water {
@@ -14,6 +16,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     set {
       var diff = value - m_water;
       m_water = value;
+      if (diff > 0) {
+        GameModel.main.stats.waterCollected += diff;
+      }
       OnChangeWater?.Invoke(diff);
     }
   }
@@ -69,6 +74,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     ClearTasks();
   }
 
+  public void HandleDeath(Entity source) {
+    GameModel.main.GameOver(false, source);
+  }
+
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (floor != null) {
       floor.RemoveVisibility(this, oldPos);
@@ -89,9 +98,20 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler, IBodyTakeAttackDa
     });
   }
 
-  public void HandleTakeAttackDamage(int arg1, int arg2, Actor arg3) {
+  public void HandleTakeAnyDamage(int damage) {
+    GameModel.main.stats.damageTaken += damage;
     if (task is FollowPathTask) {
       ClearTasks();
+    }
+  }
+
+  public void HandleDealAttackDamage(int damage, Body target) {
+    GameModel.main.stats.damageDealt += damage;
+  }
+
+  public void OnKill(Entity entity) {
+    if (entity is Actor a && a.faction == Faction.Enemy) {
+      GameModel.main.stats.enemiesDefeated += 1;
     }
   }
 

@@ -40,6 +40,9 @@ public class TurnManager {
     var enumerator = StepUntilPlayersChoiceImpl();
     try {
       while (true) {
+        if (GameModel.main.player.IsDead) {
+          break;
+        }
         var hasNext = false;
         #if UNITY_EDITOR
         hasNext = enumerator.MoveNext();

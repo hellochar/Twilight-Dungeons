@@ -49,6 +49,8 @@ MonoBehaviour:
   showDamageMarks: 1
   bloodColor: {r: 0.75, g: 0, b: 0, a: 1}
   hideWaitTask: 1
+  statuses: {fileID: 0}
+  deadSprite: {fileID: 21300000, guid: cae03ec69fc80534f9ddb93d5d508ac3, type: 3}
 --- !u!96 &1793344527109329488
 TrailRenderer:
   serializedVersion: 2

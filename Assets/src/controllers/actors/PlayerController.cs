@@ -10,6 +10,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   Player player => (Player) actor;
   public static PlayerController current;
   private AudioSource sfxAudio;
+  public Sprite deadSprite;
 
   void Awake() {
     PlayerController.current = this;
@@ -43,13 +44,13 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   void OnApplicationPause(bool isPaused) {
     if (isPaused) {
-      player.ClearTasks();
+      player?.ClearTasks();
     }
   }
 
   void OnApplicationFocus(bool hasFocus) {
     if (!hasFocus) {
-      player.ClearTasks();
+      player?.ClearTasks();
     }
   }
 
@@ -87,16 +88,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);
-    var model = GameModel.main;
-    model.EnqueueEvent(() => {
-      model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
-    });
-
-    // permadeath
-    #if !UNITY_EDITOR
-    Serializer.DeleteSave0();
-    Serializer.DeleteCheckpoint();
-    #endif
+    animator.enabled = false;
+    sprite.GetComponent<SpriteRenderer>().sprite = deadSprite;
   }
 
   private void HandleInventoryItemAdded(Item arg1, Entity arg2) {

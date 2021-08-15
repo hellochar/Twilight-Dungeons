@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 97629
+    totalSpriteSurfaceArea: 98205
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -56,6 +56,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3c3cf210ca4c9344fac5f56eb3c57f5e, type: 3}
   - {fileID: 21300000, guid: 9a0cbb104258f8b43827164363e96190, type: 3}
   - {fileID: 21300000, guid: db2b3f2009e5b3844a3976adf920db19, type: 3}
+  - {fileID: 21300000, guid: ce1a28304c87a244cb3a9fbb69664c76, type: 3}
   - {fileID: 21300000, guid: b50fff40b9569c44e8dff2fa971ba30d, type: 3}
   - {fileID: 21300000, guid: 98a7e8608a1c1424881ada22e392c9a5, type: 3}
   - {fileID: 21300000, guid: 979f00c0bb3c75f42b60c47b58af59a0, type: 3}
@@ -226,6 +227,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 16dd36d93f58b4a4398fdc64fba252b9, type: 3}
   - {fileID: 21300000, guid: 8fb47ce9dd1c0d147a01dca18230a3ed, type: 3}
   - {fileID: 21300000, guid: d2a5890a46b81564d8e70c22b2c2abfb, type: 3}
+  - {fileID: 21300000, guid: 4526ed2ac691db14b8fc090cce0f86a3, type: 3}
   - {fileID: 21300000, guid: 1591a33ad40665a41be665647a382016, type: 3}
   - {fileID: 21300000, guid: 03738d4a2bd8ac9469f2f95b02bed832, type: 3}
   - {fileID: 21300000, guid: 459ab27a8873f2d44b003ae28a9678a3, type: 3}
@@ -269,6 +271,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 60be7e1c431b9d54c85f5de87f926665, type: 3}
   - {fileID: 21300000, guid: 2641043c9d5a829458afbc09045ba821, type: 3}
   - {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50, type: 3}
+  - {fileID: 21300000, guid: 11be7c5c44b483742a0d140b11df3506, type: 3}
   - {fileID: -6675388002913187193, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
   - {fileID: -8793395224846324876, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
   - {fileID: 4910237036403418163, guid: 4fd135ac8956129448fa07f9054eb8c7, type: 3}
@@ -355,6 +358,7 @@ SpriteAtlas:
   - slimed
   - background-pattern-leaves
   - hydra-pearl
+  - dandyslug
   - prickly-growth
   - grasper
   - broodleaf
@@ -525,6 +529,7 @@ SpriteAtlas:
   - boombug2
   - heart-of-thorns
   - spider
+  - gradient-left64
   - gradient-top
   - selection-circle
   - CircleFilled16
@@ -568,6 +573,7 @@ SpriteAtlas:
   - fade-top
   - fungal-colony
   - parasite-egg
+  - dandypuff
   - necroroot-body_0
   - necroroot-body_1
   - speech_0

@@ -32,7 +32,7 @@ public class Floor {
   /// min inclusive, max exclusive in terms of map width/height
   public Vector2Int boundsMin => Vector2Int.zero;
   public Vector2Int boundsMax => new Vector2Int(width, height);
-  public Vector2 center => new Vector2(width / 2.0f, height / 2.0f);
+  public Vector2Int center => new Vector2Int(width / 2, height / 2);
 
   /// abstract bsp root
   [NonSerialized] /// not used beyond generator
@@ -104,6 +104,7 @@ public class Floor {
     } else {
       nextDepth = depth + 1;
     }
+    Serializer.SaveMainToCheckpoint();
     GameModel.main.PutPlayerAt(nextDepth);
   }
 

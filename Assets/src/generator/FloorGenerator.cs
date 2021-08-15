@@ -138,49 +138,49 @@ public class FloorGenerator {
   }
 
   public Floor generateEndFloor(int depth) {
-    Floor floor = new Floor(depth, 36, 36);
+    // use bossfloor to get rid of the sound
+    Floor floor = new BossFloor(depth, 14, 42);
 
-    // fill with floor tiles by default
-    FloorUtils.PutGround(floor);
     FloorUtils.SurroundWithWalls(floor);
-    FloorUtils.NaturalizeEdges(floor);
 
     var room0 = new Room(floor);
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    // create concentric rings of walls
-    foreach (var pos in floor.EnumerateFloor()) {
-      var distance = Vector2.Distance(pos, room0.center);
-      // distance 3.5 - 4 = -0.5
-      // distance 4.5 - 4 = 
-      var closestRing = Mathf.Round(distance / 6) * 6;
-      var angle = Mathf.Atan2(pos.y - room0.center.y, pos.x - room0.center.x) * Mathf.Rad2Deg;
-      var holeAngle = 360 * Util.Rand(closestRing);
-      var angleDelta = Mathf.DeltaAngle(angle, holeAngle);
-      if (Mathf.Abs(distance - closestRing) < 0.5f /*&& angleDelta < 30*/ && distance > 4) {
-        floor.Put(new Wall(pos));
+    var treePos = room0.center + Vector2Int.up * 10;
+
+    // carve out chasms/ground
+    for (int y = 0; y < floor.height; y++) {
+      var angle = Util.MapLinear(y, 0, floor.height / 2, 0, Mathf.PI / 2 * 1.7f);
+      var width = Mathf.Max(0, Mathf.Cos(angle)) * (floor.width - 2f) + 1;
+      var xMin = (floor.width / 2f - width / 2) - 1;
+      var xMax = (xMin + width);
+      for (int x = 0; x < floor.width; x++) {
+        var pos = new Vector2Int(x, y);
+        if (x < xMin || x > xMax || y > treePos.y) {
+          floor.Put(new Chasm(pos));
+        } else if (floor.tiles[pos] == null) {
+          floor.Put(new Ground(pos));
+        }
       }
     }
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2), false);
+    floor.PlaceUpstairs(new Vector2Int(floor.width / 2 - 1, 1), false);
 
-    for (var i = 0; i < 12; i++) {
-      Encounters.AddWater(floor, room0);
+    Room roomBot = new Room(Vector2Int.one, new Vector2Int(floor.width - 2, 11));
+    for (var i = 0; i < 1; i++) {
+      Encounters.AddWater(floor, roomBot);
     }
-    Encounters.FiftyRandomAstoria(floor, room0);
+    Encounters.TwelveRandomAstoria(floor, roomBot);
     for (var i = 0; i < 12; i++) {
-      Encounters.AddGuardleaf(floor, room0);
-      Encounters.AddGuardleaf(floor, room0);
-      Encounters.AddGuardleaf(floor, room0);
-      Encounters.AddGuardleaf(floor, room0);
+      Encounters.AddGuardleaf(floor, roomBot);
     }
 
-    foreach (var t in floor.EnumerateFloor().Where(p => floor.tiles[p] is Ground && floor.grasses[p] == null)) {
+    foreach (var t in floor.EnumerateRoom(roomBot).Where(p => floor.tiles[p] is Ground && floor.grasses[p] == null)) {
       floor.Put(new SoftGrass(t));
     }
 
-    foreach (var pos in floor.EnumerateCircle(room0.center, 2.5f)) {
+    foreach (var pos in floor.EnumerateCircle(treePos + Vector2Int.down, 2.5f).Where(p => p.y <= treePos.y)) {
       var grass = floor.grasses[pos];
       if (grass != null) {
         floor.Remove(grass);
@@ -188,8 +188,9 @@ public class FloorGenerator {
       floor.Put(new FancyGround(pos));
     }
 
-    /// add Ezra right in the middle
-    floor.Put(new Ezra(room0.center));
+    /// add Tree of Life right in the middle
+    floor.Put(new TreeOfLife(treePos));
+    floor.Put(new Ezra(treePos + Vector2Int.down * 2));
 
     return floor;
   }

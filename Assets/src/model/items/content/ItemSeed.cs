@@ -58,6 +58,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
       var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
       var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
       soil.floor.Put(plant);
+      GameModel.main.stats.plantsPlanted++;
       stacks--;
     } else {
       throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");

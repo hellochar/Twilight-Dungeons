@@ -16,6 +16,7 @@ public class GameModel {
   public float time = 0;
   public List<int> floorSeeds;
   public FloorGenerator generator;
+  public PlayStats stats;
 
   private TurnManager _turnManager;
   public TurnManager turnManager {
@@ -37,6 +38,9 @@ public class GameModel {
   /// Events to process in response to state changes
   [NonSerialized] /// This should be empty on save
   private List<Action> eventQueue = new List<Action>();
+  /// controller only. Triggered when either the player dies, or when the player speaks to Ezra.
+  [field:NonSerialized]
+  public Action<PlayStats> OnGameOver;
 
   public TimedEventManager timedEvents = new TimedEventManager();
   public static GameModel main;
@@ -56,7 +60,8 @@ public class GameModel {
   }
 
   public GameModel() {
-    this.seed = new System.Random().Next();
+    seed = new System.Random().Next();
+    stats = new PlayStats();
     #if UNITY_EDITOR
     // this.seed = 0x5ac34952;
     #endif
@@ -75,6 +80,10 @@ public class GameModel {
   [OnDeserialized]
   void HandleDeserialized() {
     eventQueue = new List<Action>();
+    // 1.10.0 added PlayStats
+    if (stats == null) {
+      stats = new PlayStats();
+    }
   }
 
   private void generate() {
@@ -82,7 +91,7 @@ public class GameModel {
     MyRandom.SetSeed(seed);
     floorSeeds = new List<int>();
     /// generate floor seeds first
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 37; i++) {
       floorSeeds.Add(MyRandom.Next());
     }
     generator = new FloorGenerator(floorSeeds);
@@ -98,7 +107,7 @@ public class GameModel {
     MyRandom.SetSeed(seed);
     floorSeeds = new List<int>();
     /// generate floor seeds first
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 37; i++) {
       floorSeeds.Add(MyRandom.Next());
     }
     generator = new FloorGenerator(floorSeeds);
@@ -106,31 +115,32 @@ public class GameModel {
     home.Put(player);
   }
 
-  // private static void Analyze() {
-  //   var dict = new Dictionary<Type, int[]>();
-  //   for (int i = 0; i < 10; i++) {
-  //     main = new GameModel(new System.Random().Next());
-  //     main.generate();
-  //     // Analyze(model, i, floor => floor.actors.Where((a) => a.faction == Faction.Enemy));
-  //     Analyze(main, i, floor => floor.grasses);
-  //   }
-  //   var l = dict.ToList().OrderByDescending((pair) => pair.Value[0]);
-  //   var s = String.Join("\n", l.Select((pair) => $"{pair.Key}, {String.Join(", ", pair.Value)}"));
-  //   Debug.Log(s);
+  public void GameOver(bool won, Entity deathSource = null) {
+    FinalizeStats(won, deathSource?.displayName);
+    if (won) {
+      // no-op
+    } else {
+      // player died
+      var model = GameModel.main;
+      model.EnqueueEvent(() => {
+        model.currentFloor.ForceAddVisibility(model.currentFloor.EnumerateFloor());
+      });
 
-  //   void Analyze<T>(GameModel model, int index, Func<Floor, IEnumerable<T>> selector) {
-  //     foreach (var floor in model.floors) {
-  //       foreach (var actor in selector(floor)) {
-  //         var t = actor.GetType();
-  //         if (!dict.ContainsKey(t)) {
-  //           dict.Add(t, new int[10]);
-  //         }
-  //         dict[t][index]++;
-  //       }
-  //     }
-  //   }
-  // }
+      // permadeath
+      #if !UNITY_EDITOR
+      Serializer.DeleteSave0();
+      Serializer.DeleteCheckpoint();
+      #endif
+    }
+    OnGameOver?.Invoke(stats);
+  }
 
+  private void FinalizeStats(bool won, string killedBy = null) {
+    stats.won = won;
+    stats.killedBy = killedBy;
+    stats.timeTaken = GameModel.main.time;
+    stats.floorsCleared = GameModel.main.cave.depth;
+  }
 
   public void EnqueueEvent(Action cb) {
     eventQueue.Add(cb);
@@ -166,26 +176,25 @@ public class GameModel {
   }
 
   /// depth should be either 0, cave.depth, or cave.depth + 1
-  internal void PutPlayerAt(int depth) {
+  internal void PutPlayerAt(int depth, Vector2Int? pos = null) {
     Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
     Floor oldFloor = player.floor;
 
-    Serializer.SaveMainToCheckpoint();
-
     this.depth = depth;
-    Vector2Int newPlayerPosition;
     // this could take a while
     var newFloor = depth == 0 ? home : depth == cave.depth ? cave : generator.generateCaveFloor(depth);
 
     // going home
-    if (depth == 0) {
-      newPlayerPosition = newFloor.downstairs.landing;
-    } else {
-      newPlayerPosition = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height / 2);
+    if (pos == null) {
+      if (depth == 0) {
+        pos = newFloor.downstairs.landing;
+      } else {
+        pos = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height / 2);
+      }
     }
     oldFloor.RecordLastStepTime(this.time);
     newFloor.CatchUpStep(this.time);
-    player.ChangeFloors(newFloor, newPlayerPosition);
+    player.ChangeFloors(newFloor, pos.Value);
     if (newFloor.depth == cave.depth + 1) {
       cave = newFloor;
     }

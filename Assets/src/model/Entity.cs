@@ -106,6 +106,9 @@ public abstract class Entity : IModifierProvider {
     foreach (var handler in this.Of<IDeathHandler>()) {
       handler.HandleDeath(source);
     }
+    foreach (var handler in source.Of<IKillEntityHandler>()) {
+      handler.OnKill(this);
+    }
   }
 }
 

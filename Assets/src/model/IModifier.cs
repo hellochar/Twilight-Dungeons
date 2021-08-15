@@ -16,6 +16,10 @@ static class Modifiers {
   public static IEnumerable<T> Of<T>(this IModifierProvider provider) {
     // create defensive copy to prevent concurrent modification
     // var enumerable = provider.MyModifiers.ToList();
+    if (provider == null) {
+      yield break;
+    }
+
     var enumerable = provider.MyModifiers;
     foreach (var s in enumerable) {
       if (s is T t) {
@@ -79,4 +83,8 @@ interface IMaxHPModifier : IModifier<int> {}
 /// <summary>Called when the Actor is Killed.</summary>
 public interface IActorKilledHandler {
   void OnKilled(Actor a);
+}
+
+public interface IKillEntityHandler {
+  void OnKill(Entity entity);
 }

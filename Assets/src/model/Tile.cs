@@ -187,6 +187,7 @@ public class Upstairs : Tile, IActorEnterHandler {
 
   public void TryGoHome() {
     if (floor.EnemiesLeft() == 0) {
+      Serializer.SaveMainToCheckpoint();
       GameModel.main.PutPlayerAt(0);
     } else {
       var enemiesLeft = GameObject.Find("Enemies Left");

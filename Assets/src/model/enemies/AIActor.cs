@@ -24,11 +24,6 @@ public abstract class AIActor : Actor, IDeathHandler {
     ClearTasks();
   }
 
-  public bool CanTargetPlayer() {
-    var isCamouflaged = GameModel.main.player.isCamouflaged;
-    return isVisible && (!isCamouflaged || IsNextTo(GameModel.main.player));
-  }
-
   protected abstract ActorTask GetNextTask();
 
   public override float Step() {

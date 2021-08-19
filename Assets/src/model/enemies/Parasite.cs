@@ -51,15 +51,14 @@ public class ParasiteEgg : Body {
   }
 
   void Hatch() {
-    var tiles = floor.GetCardinalNeighbors(pos).Where((t) => t.CanBeOccupied()).ToList();
-    tiles.Shuffle();
-    foreach (var tile in tiles.Take(2)) {
-      var p = new Parasite(tile.pos);
-      p.timeNextAction += 1;
+    var floor = this.floor;
+    KillSelf();
+    for(var i = 0; i < 2; i++) {
+      var p = new Parasite(pos);
       p.ClearTasks();
+      p.statuses.Add(new SurprisedStatus());
       floor.Put(p);
     }
-    KillSelf();
   }
 }
 

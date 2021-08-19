@@ -84,7 +84,7 @@ internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
     stacks--;
   }
 
-  internal override string GetStats() => "Eat to become Frenzied, providing +2 attack damage for 3 turns. Afterwards, gain 3 stacks of Weakness.\nEating removes Weakness.";
+  internal override string GetStats() => "Eat to become Frenzied, providing +2 attack damage for 3 turns. Afterwards, gain 3 stacks of Weakness.\nEating Deathbloom also removes Weakness.";
 }
 
 [System.Serializable]
@@ -116,7 +116,7 @@ internal class WeaknessStatus : StackingStatus, IAttackDamageModifier {
   public override bool isDebuff => true;
   public WeaknessStatus(int stacks) : base(stacks) {}
 
-  public override string Info() => $"Your next {stacks} attacks deal -1 damage!";
+  public override string Info() => $"Your next {stacks} attacks deal -1 damage!\nCan be Removed by eating a Deathbloom Flower.";
 
   public int Modify(int input) {
     stacks--;

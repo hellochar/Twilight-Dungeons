@@ -4,7 +4,7 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 2531549922278074774
-    second: roguelikeSheet_transparent_657
+    second: agave-honey
   - first:
       213: 3919348074914791648
     second: roguelikeSheet_transparent_1
@@ -1975,7 +1975,7 @@ TextureImporter:
     second: roguelikeSheet_transparent_656
   - first:
       213: 580366712308440713
-    second: roguelikeSheet_transparent_657
+    second: agave-honey
   - first:
       213: 7918204025947177894
     second: roguelikeSheet_transparent_658
@@ -5572,7 +5572,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: roguelikeSheet_transparent_657
+      name: agave-honey
       rect:
         serializedVersion: 2
         x: 656
@@ -5580,7 +5580,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

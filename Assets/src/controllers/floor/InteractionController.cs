@@ -147,6 +147,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         return "Creature";
       case Grass g:
         return "Grass";
+      case Destructible d:
+        return "Destructible";
       default:
         return "Other";
     }

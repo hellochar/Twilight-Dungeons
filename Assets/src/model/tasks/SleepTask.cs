@@ -43,7 +43,7 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
       return false;
     }
 
-    return actor.isVisible;
+    return actor.isVisible && actor.CanTargetPlayer();
   }
 
   protected override BaseAction GetNextActionImpl() {

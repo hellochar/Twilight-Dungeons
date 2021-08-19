@@ -7,7 +7,7 @@ using UnityEngine;
 [ObjectInfo("vibrant-ivy")]
 public class VibrantIvy : Grass, IActorEnterHandler {
   public override string description =>
-    $"Camouflages the player.\nCreatures that would chase you will move randomly instead, unless they are adjacent to you.";
+    $"Camouflages the player.\nCreatures that would chase you will move randomly instead, unless they are adjacent to you.\nYou will not wake sleeping Creatures.";
 
   public static bool CanOccupy(Tile tile) {
     var floor = tile.floor;
@@ -51,7 +51,7 @@ internal class CamouflagedStatus : Status, IPlayerCamouflage {
   public override bool Consume(Status other) => true;
 
   public override string Info() =>
-    "Creatures that would chase you will move randomly instead, unless they are adjacent to you.";
+    "Creatures that would chase you will move randomly instead, unless they are adjacent to you.\nYou will not wake sleeping Creatures.";
 
   public override void Step() {
     if (!(actor?.grass is VibrantIvy)) {

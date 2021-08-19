@@ -56,6 +56,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   private void HandleMaxHPAdded() {
     EnqueueOverheadText("+ Max HP");
+    EnqueueOverheadText("Healed to Full");
   }
 
   public override void HandleStatusAdded(Status status) {
@@ -90,6 +91,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     base.HandleDeath(source);
     animator.enabled = false;
     sprite.GetComponent<SpriteRenderer>().sprite = deadSprite;
+    sprite.transform.Find("Equipment").gameObject.SetActive(false);
+    statuses.SetActive(false);
   }
 
   private void HandleInventoryItemAdded(Item arg1, Entity arg2) {

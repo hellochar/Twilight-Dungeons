@@ -61,6 +61,7 @@ public class ItemController : MonoBehaviour {
         Action action = () => {
           try {
             method.Invoke(item, new object[] { player });
+            GameModel.main.DrainEventQueue();
           } catch (TargetInvocationException outer) {
             if (outer.InnerException is CannotPerformActionException e) {
               GameModel.main.turnManager.OnPlayerCannotPerform(e);
@@ -105,6 +106,7 @@ public class ItemController : MonoBehaviour {
     try {
       var target = await MapSelector.SelectUI(item.Targets(player));
       item.PerformTargettedAction(player, target);
+      GameModel.main.DrainEventQueue();
     } catch (PlayerSelectCanceledException) {}
   }
 

@@ -218,6 +218,11 @@ public class Actor : Body, ISteppable {
   public override string ToString() {
     return base.ToString() + $"HP {hp}/{maxHp} Statuses: {string.Join(", ", statuses)}";
   }
+
+  public bool CanTargetPlayer() {
+    var isCamouflaged = GameModel.main.player.isCamouflaged;
+    return isVisible && (!isCamouflaged || IsNextTo(GameModel.main.player));
+  }
 }
 
 public enum Faction { Ally = 1, Neutral = 2, Enemy = 4 }

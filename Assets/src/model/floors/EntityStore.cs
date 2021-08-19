@@ -15,7 +15,7 @@ public abstract class EntityStore<T> : IEnumerable<T> where T : Entity {
   }
 
   public T this[Vector2Int vector] {
-    get => Get(vector.x, vector.y);
+    get => floor.InBounds(vector) ? Get(vector.x, vector.y) : default(T);
   }
 
   public EntityStore(Floor floor) {
@@ -38,8 +38,6 @@ public abstract class EntityStore<T> : IEnumerable<T> where T : Entity {
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 }
-
-public enum OverlapBehavior { KillOld, RepositionNew }
 
 /// Storing a dense grid of Entity's that don't move.
 [Serializable]

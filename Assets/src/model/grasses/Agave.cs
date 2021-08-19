@@ -66,7 +66,7 @@ class ItemAgave : Item, IStackable {
 }
 
 [Serializable]
-[ObjectInfo("roguelikeSheet_transparent_647", flavorText: "A restorative and tasty treat!")]
+[ObjectInfo("agave-honey", flavorText: "A restorative and tasty treat!")]
 class ItemAgaveHoney : Item, IEdible {
   public void Eat(Actor a) {
     a.Heal(1);

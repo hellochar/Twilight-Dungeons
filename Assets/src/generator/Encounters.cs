@@ -413,7 +413,11 @@ public class Encounters {
   }
 
   public static void AddBrambles(Floor floor, Room room) {
-    var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => Brambles.CanOccupy(tile) && tile.grass == null).ToList();
+    var tiles = FloorUtils
+      .TilesSortedByCorners(floor, room)
+      // don't spawn under creatures since it will cause room collapse
+      .Where(t => Brambles.CanOccupy(t) && t.grass == null && t.CanBeOccupied())
+      .ToList();
     var num = Random.Range(tiles.Count / 6, tiles.Count / 2);
     while (num >= 2) {
       var tile = tiles[tiles.Count - 1];
@@ -817,6 +821,7 @@ public class Encounters {
   public static void ChasmsAwayFromWalls2(Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 2);
   public static void ChasmsAwayFromWalls1(Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 1, 2);
 
+  /// only replaces Grounds (not HardGround or stairs)
   private static void ChasmsAwayFromWallsImpl(Floor floor, Room room, int cliffEdgeSize, int extrude = 1) {
     var roomTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room, extrude));
     var walls = roomTiles.Where(t => t is Wall);

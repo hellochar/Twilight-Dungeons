@@ -105,6 +105,7 @@ public class FloorGenerator {
       } catch (Exception e) {
         Debug.LogError(e);
         GameModel.main.turnManager.latestException = e;
+        MyRandom.Next();
       }
       #else
       floor = generator();
@@ -203,7 +204,7 @@ public class FloorGenerator {
   // 
   public Floor generateRestFloor(int depth) {
     Floor floor = new Floor(depth, 16, 12);
-    FloorUtils.PutGround(floor);
+    FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
@@ -290,7 +291,7 @@ public class FloorGenerator {
 
   public Floor generateRewardFloor(int depth, params Encounter[] extraEncounters) {
     Floor floor = new Floor(depth, 16, 10);
-    FloorUtils.PutGround(floor);
+    FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
 
@@ -319,14 +320,8 @@ public class FloorGenerator {
   /// Good for a contained experience.
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
-    Floor floor;
-    int guard = 0;
-    do {
-      floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
-    } while (!AreStairsConnected(floor) && guard++ < 20);
-    if (guard >= 20) {
-      throw new Exception("Couldn't generate a walkable floor in 20 tries!");
-    }
+    Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
+    ensureConnectedness(floor);
     var room0 = floor.root;
     if (preMobEncounters != null) {
       foreach (var encounter in preMobEncounters) {
@@ -367,7 +362,7 @@ public class FloorGenerator {
     }
 
     Room room0 = new Room(floor);
-    FloorUtils.PutGround(floor, floor.EnumerateRoom(room0));
+    FloorUtils.CarveGround(floor, floor.EnumerateRoom(room0));
 
     if (defaultEncounters) {
       // one wall variation
@@ -397,7 +392,7 @@ public class FloorGenerator {
     }
 
     Room room0 = new Room(floor);
-    FloorUtils.PutGround(floor, floor.EnumerateCircle(room0.center, 7f));
+    FloorUtils.CarveGround(floor, floor.EnumerateCircle(room0.center, 7f));
     floor.Put(new Wall(room0.center + new Vector2Int(3, 3)));
     floor.Put(new Wall(room0.center + new Vector2Int(3, -3)));
     floor.Put(new Wall(room0.center + new Vector2Int(-3, -3)));
@@ -427,9 +422,9 @@ public class FloorGenerator {
     Room room0 = new Room(floor);
 
     void CutOutCircle(Vector2Int center, float radius, bool addBoss = false) {
-      FloorUtils.PutGround(floor, floor.EnumerateCircle(center, radius));
+      FloorUtils.CarveGround(floor, floor.EnumerateCircle(center, radius));
       // connect it back to center
-      FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, center, room0.center));
+      FloorUtils.CarveGround(floor, FloorUtils.Line3x3(floor, center, room0.center));
     }
 
     // start and end paths
@@ -463,14 +458,8 @@ public class FloorGenerator {
   /// one mob, one grass, one random encounter.
   /// </summary>
   public Floor generateMultiRoomFloor(int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false, params Encounter[] specialDownstairsEncounters) {
-    Floor floor;
-    int guard = 0;
-    do {
-      floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
-    } while (!AreStairsConnected(floor) && guard++ < 20);
-    if (guard >= 20) {
-      throw new Exception("Couldn't generate a walkable floor in 20 tries!");
-    }
+    Floor floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
+    ensureConnectedness(floor);
 
     var intermediateRooms = floor.rooms
       .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom);
@@ -520,6 +509,54 @@ public class FloorGenerator {
     return floor;
   }
 
+  private static void ensureConnectedness(Floor floor) {
+    // here's how we ensure connectedness:
+    // 1. find all walkable tiles on a floor
+    // 2. group them by connectedness using bfs, starting from the upstairs as the "mainland"
+    // 3. *connect* every group past mainland, updating mainland as you go
+    var walkableTiles = new HashSet<Tile>(floor
+      .EnumerateFloor()
+      .Select(p => floor.tiles[p])
+      .Where(t => t.BasePathfindingWeight() != 0)
+    );
+    
+    var mainland = makeGroup(floor.upstairs, ref walkableTiles);
+    int guard = 0;
+    while (walkableTiles.Any() && (guard++ < 99)) {
+      var island = makeGroup(walkableTiles.First(), ref walkableTiles);
+      // connect island to mainland
+      var entitiesToAdd = connectGroups(mainland, island);
+      floor.PutAll(entitiesToAdd);
+      mainland.UnionWith(entitiesToAdd);
+      mainland.UnionWith(island);
+    }
+
+    // mutates walkableTiles
+    HashSet<Tile> makeGroup(Tile start, ref HashSet<Tile> allTiles) {
+      var set = new HashSet<Tile>(floor.BreadthFirstSearch(start.pos, allTiles.Contains));
+      allTiles.ExceptWith(set);
+      return set;
+    }
+
+    // How to "connect" two groups? Two groups will be separated by at least one unwalkable
+    // tile. There's many ways to connect two groups. We want to choose the least invasive.
+    // 
+    // Bfs with distance outwards from group2 until you hit a group1 tile. Backtrace the bfs - 
+    // this will give you a line of at least 3 tiles: [group2 tile, <intermediate unwalkable tiles>, group1 tile]
+    // Now we transform these. Easiest is to just turn unwalkables into ground.
+    // We can also get fancy by changing wall -> ground+rock and chasm -> bridge
+    // We can put an "activatable" on either side that spawns a bridge.
+    // another option: just *randomly* select two nodes and draw a line between them
+    List<Ground> connectGroups(HashSet<Tile> mainland, HashSet<Tile> island) {
+      var mainlandNode = Util.RandomPick(mainland);
+      var islandNode = Util.RandomPick(island);
+      return floor.EnumerateLine(mainlandNode.pos, islandNode.pos)
+        .Where(p => floor.tiles[p].BasePathfindingWeight() == 0)
+        .Select(p => new Ground(p))
+        .ToList();
+    }
+  }
+
   /// connectivity is not guaranteed
   private static Floor tryGenerateMultiRoomFloor(int depth, int width, int height, int numSplits) {
     Floor floor = new Floor(depth, width, height);
@@ -546,29 +583,6 @@ public class FloorGenerator {
     // for less rectangular shapes
     rooms.ForEach(room => room.randomlyShrink());
 
-    foreach (var (a, b) in ComputeRoomConnections(rooms, root)) {
-      FloorUtils.PutGround(floor, FloorUtils.Line3x3(floor, a, b));
-    }
-
-    rooms.ForEach(room => {
-      // fill each room with floor
-      FloorUtils.PutGround(floor, floor.EnumerateRoom(room));
-    });
-
-    FloorUtils.NaturalizeEdges(floor);
-
-    // occasionally create a chasm in the multi room. Feels really tight though and makes the level harder.
-    if (MyRandom.value < 0.1) {
-      var depth2Room = Util.RandomPick(root.Traverse().Where(r => r.depth == 2));
-      Encounters.ChasmsAwayFromWalls1(floor, depth2Room);
-    }
-
-    // experimental - creates tight maps that often aren't connected.
-    // var eg = new EncounterGroupShared();
-    // rooms.ForEach(room => {
-    //   eg.Walls.GetRandomAndDiscount()(floor, room);
-    // });
-
     // sort rooms by distance to top-left, where the upstairs will be.
     Vector2Int topLeft = new Vector2Int(0, floor.height);
     rooms.OrderBy(room => Util.manhattanDistance(room.getTopLeft() - topLeft));
@@ -587,6 +601,31 @@ public class FloorGenerator {
     floor.rooms = rooms;
     floor.upstairsRoom = upstairsRoom;
     floor.downstairsRoom = downstairsRoom;
+
+    // fill each room with floor
+    rooms.ForEach(room => {
+      FloorUtils.CarveGround(floor, floor.EnumerateRoom(room));
+    });
+
+    // in rare cases, connect rooms using the connectedness algorithm. creates really dense and tight rooms.
+    var useConnectednessAlgorithm = MyRandom.value < 0.2f;
+    if (useConnectednessAlgorithm) {
+      ensureConnectedness(floor);
+    } else {
+      // add connections between bsp siblings
+      foreach (var (a, b) in ComputeRoomConnections(rooms, root)) {
+        FloorUtils.CarveGround(floor, FloorUtils.Line3x3(floor, a, b));
+      }
+    }
+
+    FloorUtils.NaturalizeEdges(floor);
+
+    // occasionally create a chasm in the multi room. Feels tight and cool, and makes the level harder.
+    if (MyRandom.value < 0.1) {
+      var depth2Room = Util.RandomPick(root.Traverse().Where(r => r.depth == 2));
+      Encounters.ChasmsAwayFromWalls1(floor, depth2Room);
+    }
+
     return floor;
   }
 

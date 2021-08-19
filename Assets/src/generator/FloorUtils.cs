@@ -77,12 +77,16 @@ public static class FloorUtils {
     }
   }
 
-  public static void PutGround(Floor floor, IEnumerable<Vector2Int> points = null) {
+  // Replaces unwalkable tiles (walls and chasms) with Ground
+  public static void CarveGround(Floor floor, IEnumerable<Vector2Int> points = null) {
     if (points == null) {
       points = floor.EnumerateFloor();
     }
     foreach (var pos in points) {
-      floor.Put(new Ground(pos));
+      var isUnwalkable = (floor.tiles[pos]?.BasePathfindingWeight() ?? 0) == 0;
+      if (isUnwalkable) {
+        floor.Put(new Ground(pos));
+      }
     }
   }
 

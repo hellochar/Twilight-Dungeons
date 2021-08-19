@@ -51,7 +51,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
       .ActorsInCircle(pos, 7)
       .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Bat)));
 
-    if (potentialTargets.Contains(GameModel.main.player) && GameModel.main.player.isCamouflaged) {
+    if (potentialTargets.Contains(GameModel.main.player) && !CanTargetPlayer()) {
       potentialTargets.Remove(GameModel.main.player);
     }
 

@@ -29,22 +29,22 @@ class TutorialFloor : Floor {
     var cY = portRoom.center.y;
 
     // first room:
-    FloorUtils.PutGround(this, this.EnumerateRoom(portRoom));
-    FloorUtils.PutGround(this, this.EnumerateLine(portRoom.center, blobRoom.center));
+    FloorUtils.CarveGround(this, this.EnumerateRoom(portRoom));
+    FloorUtils.CarveGround(this, this.EnumerateLine(portRoom.center, blobRoom.center));
 
-    FloorUtils.PutGround(this, this.EnumerateRoom(blobRoom));
-    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, blobRoom.center, dogsRoom.center));
+    FloorUtils.CarveGround(this, this.EnumerateRoom(blobRoom));
+    FloorUtils.CarveGround(this, FloorUtils.Line3x3(this, blobRoom.center, dogsRoom.center));
     Put(new Wall(new Vector2Int(blobRoom.max.x + 1, cY - 1)));
     Put(new Rubble(new Vector2Int(blobRoom.max.x + 1, cY)));
     Put(new Wall(new Vector2Int(blobRoom.max.x + 1, cY + 1)));
 
-    FloorUtils.PutGround(this, this.EnumerateRoom(dogsRoom));
-    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, dogsRoom.center, bushRoom.center));
+    FloorUtils.CarveGround(this, this.EnumerateRoom(dogsRoom));
+    FloorUtils.CarveGround(this, FloorUtils.Line3x3(this, dogsRoom.center, bushRoom.center));
 
-    FloorUtils.PutGround(this, this.EnumerateRoom(bushRoom));
-    FloorUtils.PutGround(this, FloorUtils.Line3x3(this, bushRoom.center, endRoom.center));
+    FloorUtils.CarveGround(this, this.EnumerateRoom(bushRoom));
+    FloorUtils.CarveGround(this, FloorUtils.Line3x3(this, bushRoom.center, endRoom.center));
 
-    FloorUtils.PutGround(this, this.EnumerateRoom(endRoom));
+    FloorUtils.CarveGround(this, this.EnumerateRoom(endRoom));
     FloorUtils.NaturalizeEdges(this);
 
     // naturalize edges may sometimes create walls in this location

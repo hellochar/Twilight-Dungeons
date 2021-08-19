@@ -25,9 +25,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   public bool isCamouflaged => Modifiers.Of<IPlayerCamouflage>(this).Any();
 
-  // heal to full and remove all debuffs
+  // go to full HP and remove all debuffs
   internal void Replenish() {
-    Heal(maxHp - hp);
+    // doesn't count as a heal
+    hp = maxHp;
     var debuffs = statuses.list.Where(s => s.isDebuff).ToArray();
     foreach (var debuff in debuffs) {
       statuses.Remove(debuff);
@@ -155,7 +156,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   public void OnAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
-    if (target is Actor) {
+    if (!(target is Destructible)) {
       if (item is IDurable durable) {
         GameModel.main.EnqueueEvent(durable.ReduceDurability);
       } else if (item is IStackable s) {

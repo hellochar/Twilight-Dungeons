@@ -18,7 +18,7 @@ public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
   }
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
-    floor.Put(new Rubble(oldPos, 1));
+    floor.Put(new Rubble(oldPos));
   }
 
   internal override (int, int) BaseAttackDamage() => (4, 5);

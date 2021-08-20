@@ -15,6 +15,6 @@ public class BladegrassController : GrassController {
   }
 
   private void HandleSharpened() {
-    GetComponent<Animator>().SetTrigger("Sharpened");
+    GetComponent<Animator>()?.SetTrigger("Sharpened");
   }
 }

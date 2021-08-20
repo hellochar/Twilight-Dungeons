@@ -185,11 +185,28 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       }
     }
     if (Input.GetKeyDown(KeyCode.R)) {
-      MyRandom.SetSeed(new System.Random().Next());
+      GameModel.main = Serializer.LoadSave0(false);
+      GameModel.main.floorSeeds[GameModel.main.cave.depth + 1] = new System.Random().Next();
+      var e = GameModel.main.StepUntilPlayerChoice();
+      while(e.MoveNext()) { }
+      GameModel.main.currentFloor.PlayerGoDownstairs();
+      GameModel.main.DrainEventQueue();
+      player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
+      SceneManager.LoadSceneAsync("Scenes/Game");
+    }
+    if (Input.GetKeyDown(KeyCode.T)) {
+      ScreenCapture.CaptureScreenshot("screenshot.png", 2);
+    }
+    if (Input.GetKeyDown(KeyCode.H)) {
+      if (canvas == null) {
+        canvas = GameObject.Find("Canvas");
+      }
+      canvas.SetActive(!canvas.activeSelf);
     }
     #endif
     base.Update();
   }
+  private GameObject canvas;
 
   public override void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is WaitBaseAction) {

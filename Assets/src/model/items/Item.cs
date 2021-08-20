@@ -15,7 +15,8 @@ public class Item {
   [field:NonSerialized] /// controller only
   public event Action OnDestroyed;
 
-  public void Destroy() {
+  // must take a parameter so ItemController can invoke this without erroring
+  public void Destroy(object unused = null) {
     if (inventory != null) {
       OnDestroyed?.Invoke();
       inventory.OnItemDestroyed?.Invoke(this);

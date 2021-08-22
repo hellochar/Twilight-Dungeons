@@ -26,8 +26,7 @@ public class UpdateGitVersionFile : IPreprocessBuildWithReport {
     var major = match.Groups[1].Value; // [0] is the full string, everything after that is the individual group
     var minor = match.Groups[2].Value;
     var patch = match.Groups[3].Value;
-    var abbrev = match.Groups[4].Value;
-    bundleVersion = $"{major}.{minor}.{patch}{ ((abbrev == "0") ? "" : ("." + abbrev)) }";
+    bundleVersion = $"{major}.{minor}.{patch}";
     #endif
     PlayerSettings.bundleVersion = bundleVersion;
   }

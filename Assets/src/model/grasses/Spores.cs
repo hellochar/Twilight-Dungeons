@@ -34,7 +34,7 @@ internal class SporeBloat : AIActor {
     SetTasks(
       new WaitTask(this, 1),
       new MoveRandomlyTask(this).OnlyCheckBefore(),
-      new WaitTask(this, 1),
+      new WaitTask(this, 1).OnlyCheckBefore(),
       new TelegraphedTask(this, 1, new GenericBaseAction(this, KillSelf))
     );
   }

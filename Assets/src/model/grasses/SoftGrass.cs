@@ -74,7 +74,7 @@ public class SoftGrassStatus : StackingStatus, IBodyMoveHandler {
 }
 
 [System.Serializable]
-[ObjectInfo("colored_transparent_packed_850", "")]
+[ObjectInfo("free-move", "")]
 public class FreeMoveStatus : StackingStatus, IActionCostModifier, IBaseActionModifier {
   public FreeMoveStatus(int stacks) : base(stacks) {}
   public FreeMoveStatus() : this(1) {}

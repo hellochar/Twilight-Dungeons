@@ -35,9 +35,12 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
   }
 
   Actor SelectTarget() {
-    var potentialTargets = floor
+    var potentialTargets = new HashSet<Actor>(floor
       .AdjacentActors(pos)
-      .Where((t) => !(t is Parasite));
+      .Where((t) => !(t is Parasite)));
+    if (!CanTargetPlayer()) {
+      potentialTargets.Remove(GameModel.main.player);
+    }
     return Util.RandomPick(potentialTargets);
   }
 }

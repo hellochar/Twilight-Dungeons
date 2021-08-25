@@ -28,7 +28,10 @@ public class Spider : AIActor, IDealAttackDamageHandler {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, DoNotRename_PutWeb));
     }
 
-    var intruders = floor.AdjacentActors(pos).Where((actor) => !(actor is Spider));
+    var intruders = new HashSet<Actor>(floor.AdjacentActors(pos).Where((actor) => !(actor is Spider)));
+    if (!CanTargetPlayer()) {
+      intruders.Remove(GameModel.main.player);
+    }
     if (intruders.Any()) {
       var target = Util.RandomPick(intruders);
       return new AttackTask(this, target);

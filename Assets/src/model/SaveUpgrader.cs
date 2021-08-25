@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public static class SaveUpgrader {
@@ -6,6 +7,7 @@ public static class SaveUpgrader {
     EnsureVersionStringExists(model);
     // if you're below 1.10.0, run FixPosZeroBug on the model
     MaybeRunUpgrader("1.10.0", FixPosZeroBug, model);
+    MaybeRunUpgrader("1.11.0", AddFieldVibrantIvyStacks, model);
   }
 
   private static void MaybeRunUpgrader(string firstGoodVersionString, Action<GameModel> Upgrade, GameModel model) {
@@ -45,4 +47,13 @@ public static class SaveUpgrader {
     Fix(model.cave.items);
   }
 
+  private static void AddFieldVibrantIvyStacks(GameModel model) {
+    void Fix(Floor floor) {
+      foreach (var ivy in floor.grasses.Where(g => g is VibrantIvy).Cast<VibrantIvy>()) {
+        ivy.ComputeStacks();
+      }
+    }
+    Fix(model.home);
+    Fix(model.cave);
+  }
 }

@@ -221,7 +221,7 @@ public class Actor : Body, ISteppable {
 
   public bool CanTargetPlayer() {
     var isCamouflaged = GameModel.main.player.isCamouflaged;
-    return isVisible && (!isCamouflaged || IsNextTo(GameModel.main.player));
+    return isVisible && !isCamouflaged;
   }
 }
 

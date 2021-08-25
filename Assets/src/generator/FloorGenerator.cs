@@ -124,8 +124,6 @@ public class FloorGenerator {
     // Encounters.AddPoisonmoss(floor, floor.root);
     // Encounters.FillWithFerns(floor, floor.root);
     // Encounters.AddFakeWall(floor, floor.root);
-    Encounters.AddGrasper(floor, floor.root);
-    Encounters.AddGrasper(floor, floor.root);
     #endif
 
     /// add a signpost onto the floor
@@ -225,7 +223,7 @@ public class FloorGenerator {
     Floor floor = new Floor(depth, 18, 14);
 
     // fill with floor tiles by default
-    FloorUtils.PutGround(floor);
+    FloorUtils.CarveGround(floor);
 
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);

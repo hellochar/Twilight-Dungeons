@@ -7,7 +7,12 @@ using UnityEngine;
 [ObjectInfo(description: "Every four turns, spawns a Hydra Head (max 12) within range 4.\nOn death, all Hydra Heads die as well.\nDoes not move or attack.", flavorText: "Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.")]
 public class HydraHeart : AIActor, IBaseActionModifier {
   public static int spawnRange = 4;
-  public static bool IsTarget(Body b) => !(b is HydraHead) && !(b is HydraHeart);
+  public static bool IsTarget(Body b) {
+    if (b is Player p && p.isCamouflaged) {
+      return false;
+    }
+    return !(b is HydraHead) && !(b is HydraHeart);
+  }
   private List<HydraHead> heads = new List<HydraHead>();
   public HydraHeart(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;

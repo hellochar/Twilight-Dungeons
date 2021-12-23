@@ -31,8 +31,4 @@ public class ParasiteStatusController : StatusController {
       yield return new WaitForEndOfFrame();
     } while (dt < 1);
   }
-
-  private void HandleRemoved() {
-    Destroy(this.gameObject);
-  }
 }

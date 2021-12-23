@@ -75,7 +75,7 @@ public class SoftGrassStatus : StackingStatus, IBodyMoveHandler {
 
 [System.Serializable]
 [ObjectInfo("free-move", "")]
-public class FreeMoveStatus : StackingStatus, IActionCostModifier, IBaseActionModifier {
+public class FreeMoveStatus : StackingStatus, IActionCostModifier, IActionPerformedHandler {
   public FreeMoveStatus(int stacks) : base(stacks) {}
   public FreeMoveStatus() : this(1) {}
 
@@ -86,10 +86,9 @@ public class FreeMoveStatus : StackingStatus, IActionCostModifier, IBaseActionMo
     return costs;
   }
 
-  public BaseAction Modify(BaseAction input) {
-    if (input.Type == ActionType.MOVE) {
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    if (initial.Type == ActionType.MOVE) {
       stacks--;
     }
-    return input;
   }
 }

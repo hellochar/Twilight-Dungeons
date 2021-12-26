@@ -6,6 +6,7 @@ using UnityEngine;
 public class FreeMoveStatusController : StatusController {
   public GameObject particles;
 
+  public bool hasReachedStart = false;
   public Vector2Int startPosition;
   public float motionTime = 0.116f;
 
@@ -18,15 +19,19 @@ public class FreeMoveStatusController : StatusController {
   }
 
   void Update() {
-    if (!particles.activeSelf) {
+    if (!hasReachedStart) {
       // wait until we're at the target location to start
       var distanceToStart = Vector2.Distance(
         Util.getXY(gameObject.transform.position),
         startPosition
       );
       if (distanceToStart < 0.1f) {
-        particles.SetActive(true);
+        hasReachedStart = true;
       }
+    }
+    if (status.actor != null) {
+      bool isSleeping = status.actor.task is SleepTask;
+      particles.SetActive(hasReachedStart && !isSleeping);
     }
   }
 

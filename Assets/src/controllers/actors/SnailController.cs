@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SnailController : ActorController {
+public class SnailController : ActorController, IActionPerformedHandler {
   public Sprite normal, inShell33, inShell66, inShell;
   public override void Start() {
     base.Start();
@@ -24,5 +24,14 @@ public class SnailController : ActorController {
       StartCoroutine(Transitions.SpriteSwap(sr, 0.4f, inShell, inShell66, inShell33, normal));
     }
     base.HandleStatusRemoved(status);
+  }
+
+  public override void HandleActionPerformed(BaseAction action, BaseAction initial) {
+    base.HandleActionPerformed(action, initial);
+
+    // // do a little wiggle
+    // if (action is WaitBaseAction && actor.statuses.Has<InShellStatus>()) {
+    //   animator?.SetTrigger("Wiggle");
+    // }
   }
 }

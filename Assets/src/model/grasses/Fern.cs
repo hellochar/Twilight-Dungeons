@@ -16,6 +16,22 @@ public class Fern : Grass, IBlocksVision {
   }
 }
 
+[Serializable]
+public class GoldenFern : Fern, IDeathHandler {
+  public GoldenFern(Vector2Int pos) : base(pos) {
+  }
+
+  public void HandleDeath(Entity source) {
+    floor.Put(new ItemOnGround(pos, new ItemGoldenFern()));
+    // drop a golden fern on the ground
+  }
+}
+
+[Serializable]
+class ItemGoldenFern : Item {
+
+}
+
 // [System.Serializable]
 // [ObjectInfo("fern")]
 // public class ItemFern : Item, IStackable {

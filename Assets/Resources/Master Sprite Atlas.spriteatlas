@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 98461
+    totalSpriteSurfaceArea: 98899
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -144,6 +144,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d31efa354e2c2df4b94665da71fc57b3, type: 3}
   - {fileID: 21300000, guid: a118dc35cc1687849a5ff3b1ecf8261a, type: 3}
   - {fileID: 21300000, guid: 5e990165f1807384b9194f829a93a33e, type: 3}
+  - {fileID: 21300000, guid: 2523ef95b11cfe342946aeaaed0d8723, type: 3}
   - {fileID: 21300000, guid: e3c661e5b50caf94aa42478e83f69d79, type: 3}
   - {fileID: 21300000, guid: 93dc6fe5694e5884382430d26882ac75, type: 3}
   - {fileID: 21300000, guid: 951a06f59ed5010448995405c3a03ea6, type: 3}
@@ -275,6 +276,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 11be7c5c44b483742a0d140b11df3506, type: 3}
   - {fileID: -6675388002913187193, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
   - {fileID: -8793395224846324876, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
+  - {fileID: 21300000, guid: 8926176ceab301e44b030ac8737a19ab, type: 3}
   - {fileID: 4910237036403418163, guid: 4fd135ac8956129448fa07f9054eb8c7, type: 3}
   - {fileID: -1064348352501586448, guid: 4fd135ac8956129448fa07f9054eb8c7, type: 3}
   - {fileID: 4416377207708810438, guid: 4fd135ac8956129448fa07f9054eb8c7, type: 3}
@@ -447,6 +449,7 @@ SpriteAtlas:
   - goop
   - charmed
   - deathbloom-stem
+  - free-move
   - kingshroom-seed
   - selection-48x48
   - cross3x3
@@ -578,6 +581,7 @@ SpriteAtlas:
   - dandypuff
   - necroroot-body_0
   - necroroot-body_1
+  - reticle-hit-target
   - speech_0
   - speech_1
   - speech_2

@@ -17,6 +17,7 @@ public class Fern : Grass, IBlocksVision {
 }
 
 [Serializable]
+[ObjectInfo("golden-fern")]
 public class GoldenFern : Fern, IDeathHandler {
   public GoldenFern(Vector2Int pos) : base(pos) {
   }
@@ -28,8 +29,15 @@ public class GoldenFern : Fern, IDeathHandler {
 }
 
 [Serializable]
-class ItemGoldenFern : Item {
+[ObjectInfo("golden-fern")]
+class ItemGoldenFern : EquippableItem, IPlayerCamouflage, IBodyMoveHandler {
+  public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
+  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    if (IsEquipped && !(player.grass is Fern)) {
+      Destroy();
+    }
+  }
 }
 
 // [System.Serializable]

@@ -289,10 +289,14 @@ public class Encounters {
 
   public static void FillWithFerns(Floor floor, Room room) {
     var occupiableTiles = floor.EnumerateRoomTiles(room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null);
-    foreach (var tile in occupiableTiles) {
-      var grass = new Fern(tile.pos);
-      floor.Put(grass);
+    var ferns = occupiableTiles.Select(tile => new Fern(tile.pos)).ToArray();
+    var hasGoldenFern = Random.Range(0, 100) < ferns.Length;
+    if (hasGoldenFern) {
+      // replace a fern with a GoldenFern
+      var indexToReplace = Random.Range(0, ferns.Length);
+      ferns[indexToReplace] = new GoldenFern(ferns[indexToReplace].pos);
     }
+    floor.PutAll(ferns);
   }
 
   public static void AddBladegrass(Floor floor, Room room) => AddBladegrassImpl(floor, room, 1);
@@ -769,6 +773,17 @@ public class Encounters {
         } else {
           floor.Put(new Rubble(pos));
         }
+      }
+    }
+  }
+
+  public static void PerlinCutoffs(Floor floor, Room room) {
+    var offsetX = Random.value;
+    var offsetY = Random.value;
+    foreach (var pos in floor.EnumerateRoom(room, 1)) {
+      var noise = Mathf.PerlinNoise(pos.x / 2.3f + offsetX, pos.y / 2.4f + offsetY);
+      if (noise < 0.5f) {
+        floor.Put(new Chasm(pos));
       }
     }
   }

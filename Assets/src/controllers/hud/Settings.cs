@@ -10,10 +10,12 @@ public struct Settings {
   public bool music;
   public bool sfx;
   public bool rightHanded;
+  public bool useDPad;
 
   public static event Action OnChanged;
 
   private static Settings m_main = LoadOrGetDefaultSettings();
+
   public static Settings main => m_main;
 
   public static Settings LoadOrGetDefaultSettings() {
@@ -34,7 +36,8 @@ public struct Settings {
       showSidePanel = true,
       music = true,
       sfx = true,
-      rightHanded = true
+      rightHanded = true,
+      useDPad = true
     };
   }
 

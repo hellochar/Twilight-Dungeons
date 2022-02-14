@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JoystickController : MonoBehaviour {
+public class SwipeJoystickController : MonoBehaviour {
   public GameObject stick;
   public float threshold = 40;
   void Update() {

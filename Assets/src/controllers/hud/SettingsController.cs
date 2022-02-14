@@ -10,12 +10,14 @@ public class SettingsController : MonoBehaviour {
   public Toggle sidePanelToggle;
   public Toggle musicToggle;
   public Toggle soundEffectsToggle;
+  public Toggle dPadToggle;
 
   void Start() {
     righthandedToggle.SetIsOnWithoutNotify(Settings.main.rightHanded);
     sidePanelToggle.SetIsOnWithoutNotify(Settings.main.showSidePanel);
     musicToggle.SetIsOnWithoutNotify(Settings.main.music);
     soundEffectsToggle.SetIsOnWithoutNotify(Settings.main.sfx);
+    dPadToggle.SetIsOnWithoutNotify(Settings.main.useDPad);
   }
 
   public void BackToTitle() {
@@ -31,4 +33,6 @@ public class SettingsController : MonoBehaviour {
   public void SetSidePanel(bool on) => Settings.Update((ref Settings s) => s.showSidePanel = on);
   public void SetMusic(bool on) => Settings.Update((ref Settings s) => s.music = on);
   public void SetSoundEffects(bool on) => Settings.Update((ref Settings s) => s.sfx = on);
+
+  public void SetUseDPad(bool on) => Settings.Update((ref Settings s) => s.useDPad = on);
 }

@@ -21,6 +21,10 @@ public static class Util {
     return Mathf.Abs(vector.x) + Mathf.Abs(vector.y);
   }
 
+  public static float manhattanDistance(Vector2 vector) {
+    return Mathf.Abs(vector.x) + Mathf.Abs(vector.y);
+  }
+
   public static Tile GetVisibleTileAt(Vector3 screenPoint) {
     Vector3 worldTarget = Camera.main.ScreenToWorldPoint(screenPoint);
     Vector2Int target = new Vector2Int(Mathf.RoundToInt(worldTarget.x), Mathf.RoundToInt(worldTarget.y));
@@ -147,6 +151,11 @@ public static class Util {
   public static int DiamondDistanceToPlayer(Actor a) => DiamondMagnitude(a.pos - GameModel.main.player.pos);
 
   public static int DiamondMagnitude(Vector2Int v) => Math.Max(
+    Math.Abs(v.x),
+    Math.Abs(v.y)
+  );
+  
+  public static float DiamondMagnitude(Vector2 v) => Math.Max(
     Math.Abs(v.x),
     Math.Abs(v.y)
   );

@@ -20,6 +20,17 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
   void Start() {
     GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
+    Settings.OnChanged += MatchSettings;
+    MatchSettings();
+  }
+
+  void OnDestroyed() {
+    GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
+    Settings.OnChanged -= MatchSettings;
+  }
+
+  private void MatchSettings() {
+    gameObject?.SetActive(Settings.main.useDPad);
   }
 
   void HandlePlayersChoice() {
@@ -28,10 +39,6 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     if (isPressed) {
       queueButtonPress = true;
     }
-  }
-
-  void OnDestroyed() {
-    GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
   }
 
   public void MovePlayer(int dx, int dy) {

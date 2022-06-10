@@ -33,6 +33,5 @@ public class SettingsController : MonoBehaviour {
   public void SetSidePanel(bool on) => Settings.Update((ref Settings s) => s.showSidePanel = on);
   public void SetMusic(bool on) => Settings.Update((ref Settings s) => s.music = on);
   public void SetSoundEffects(bool on) => Settings.Update((ref Settings s) => s.sfx = on);
-
   public void SetUseDPad(bool on) => Settings.Update((ref Settings s) => s.useDPad = on);
 }

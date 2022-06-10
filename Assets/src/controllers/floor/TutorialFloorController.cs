@@ -29,7 +29,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
       ui.SetActive(false);
     }
 
-    AddHighlights();
+    // AddHighlights();
 
     Player player = GameModel.main.player;
 
@@ -46,14 +46,14 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
 
-  void AddHighlights() {
-    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.blob).transform);
-    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.guardleaf).transform);
-    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.jackals[0]).transform);
-    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.berryBush).transform);
-    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.astoria).transform);
-    PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
-  }
+  // void AddHighlights() {
+  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.blob).transform);
+  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.guardleaf).transform);
+  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.jackals[0]).transform);
+  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.berryBush).transform);
+  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.astoria).transform);
+  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
+  // }
 
   void StartTutorial() {
     StartCoroutine(DelayedMessage());

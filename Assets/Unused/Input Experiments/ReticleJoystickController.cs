@@ -86,7 +86,7 @@ public class ReticleJoystickController : MonoBehaviour {
     // show reticle if we're successfully in one
     if (TracerButtons[0].rect.Contains(offset)) {
       UpdateReticle(GameModel.main.player.pos + TracerButtons[0].move);
-      LetGo();
+      // LetGo();
     } else {
       EnsureReticleDestroyed();
     }

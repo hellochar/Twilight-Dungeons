@@ -70,7 +70,7 @@ public class SidePanelController : MonoBehaviour {
         button.onClick.AddListener(() => {
           var firstEntityOfType = entities[name];
           // Create popup for entity
-          GameModelController.main.CurrentFloorController.GetComponent<InteractionController>().Tap(firstEntityOfType);
+          GameModelController.main.CurrentFloorController.GetComponent<InteractionController>().ShowPopupFor(firstEntityOfType);
         });
         buttonObject.GetComponentInChildren<TMPro.TMP_Text>().text = name;
       }

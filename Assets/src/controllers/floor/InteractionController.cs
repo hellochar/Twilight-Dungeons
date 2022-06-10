@@ -42,10 +42,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     var isShortTap = hold == null || !hold.triggered;
     if (isInputAllowed && !CameraZoom.IsZoomGuardActive && isShortTap) {
       var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
-      var tappedEntity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
-      if (tappedEntity != null) {
-        Tap(tappedEntity);
-      }
+      Tap(pos);
     }
     hold = null;
     HoldProgressBar.main.HoldEnd();
@@ -63,10 +60,21 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         if (hold.ShouldTrigger(time)) {
           hold.triggered = true;
           var pos = RaycastToTilePos(hold.pointerEventData.pointerCurrentRaycast);
-          Interact(pos, hold.pointerEventData);
+          LongTap(pos);
         }
       }
     }
+  }
+
+  public void LongTap(Vector2Int pos) {
+    var tappedEntity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
+    if (tappedEntity != null) {
+      ShowPopupFor(tappedEntity);
+    }
+  }
+
+  public void Tap(Vector2Int pos) {
+    Interact(pos, hold.pointerEventData);
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {
@@ -76,26 +84,18 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
     if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out _)) {
       handler.HandleInteracted(eventData);
+
+      // var entityGameObject = floorController.GameObjectFor(handler);
+      // /// HACK destroy highlight once it's been interacted with
+      // var highlight = entityGameObject.transform.Find("Highlight(Clone)");
+      // if (highlight != null) {
+      //   highlight.gameObject.AddComponent<FadeThenDestroy>();
+      // }
     }
   }
 
-  public void Tap(Entity entity) {
-    var entityGameObject = floorController.GameObjectFor(entity);
-    /// HACK destroy highlight once it's tapped
-    var highlight = entityGameObject.transform.Find("Highlight(Clone)");
-    if (highlight != null) {
-      highlight.gameObject.AddComponent<FadeThenDestroy>();
-    }
-
-    if (entityGameObject.TryGetComponent<ITapHandler>(out var handler)) {
-      handler.Tapped();
-      return;
-    }
-
-    ShowPopupFor(entity, entityGameObject);
-  }
-
-  void ShowPopupFor(Entity entity, GameObject entityGameObject) {
+  public void ShowPopupFor(Entity entity) {
+    GameObject entityGameObject = floorController.GameObjectFor(entity);
     string description = entity.description + "\n\n";
     if (entity is Body b) {
       if (b is Actor a && a.BaseAttackDamage() != (0, 0)) {

@@ -9,7 +9,7 @@ public class SignpostController : TileController, IOnTopActionHandler, ITapHandl
   public override void Start() {
     base.Start();
     if (!signpost.hasRead) {
-      PrefabCache.Effects.Instantiate("Highlight", transform);
+      // PrefabCache.Effects.Instantiate("Highlight", transform);
     }
   }
 

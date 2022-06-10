@@ -20,14 +20,18 @@ public class GameOverHandler : MonoBehaviour {
       var ezra = GameModel.main.currentFloor.bodies.First(b => b is Ezra) as Ezra;
       StartCoroutine(WinGameAnimation(ezra));
     } else {
-      #if !UNITY_EDITOR
-      Serializer.DeleteSave0();
-      Serializer.DeleteCheckpoint();
-      #endif
-      // player died
-      InteractionController.isInputAllowed = false;
-      dPad.SetActive(false);
-      SceneManager.LoadSceneAsync("Scenes/GameOver", LoadSceneMode.Additive);
+      if (GameModel.main.permadeath) {
+        #if !UNITY_EDITOR
+        Serializer.DeleteSave0();
+        Serializer.DeleteCheckpoint();
+        #endif
+        // player died
+        InteractionController.isInputAllowed = false;
+        dPad.SetActive(false);
+        SceneManager.LoadSceneAsync("Scenes/GameOver", LoadSceneMode.Additive);
+      } else {
+        StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
+      }
     }
   }
 

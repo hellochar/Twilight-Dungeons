@@ -283,6 +283,8 @@ public class FloorGenerator {
     floor.depth = 0;
     #endif
 
+    floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
+
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }

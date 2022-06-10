@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
-public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITapHandler {
+public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ILongTapHandler {
   [NonSerialized]
   public ItemOnGround itemOnGround;
   private SpriteRenderer spriteRenderer;
@@ -46,7 +46,7 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerI
     }
   }
 
-  public void Tapped() {
+  public void HandleLongTap() {
     var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
     var spriteGameObject = Instantiate(spritePrefab);
     var image = spriteGameObject.GetComponentInChildren<Image>();

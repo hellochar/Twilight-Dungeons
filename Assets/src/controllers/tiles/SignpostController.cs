@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SignpostController : TileController, IOnTopActionHandler, ITapHandler {
+public class SignpostController : TileController, IOnTopActionHandler, ILongTapHandler {
   public Signpost signpost => (Signpost) tile;
   public string OnTopActionName => "Read";
 
@@ -22,7 +22,7 @@ public class SignpostController : TileController, IOnTopActionHandler, ITapHandl
     }
   }
 
-  public void Tapped() {
+  public void HandleLongTap() {
     signpost.ShowSignpost();
   }
 }

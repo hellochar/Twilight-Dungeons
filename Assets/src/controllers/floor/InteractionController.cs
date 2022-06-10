@@ -67,9 +67,15 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void LongTap(Vector2Int pos) {
-    var tappedEntity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
-    if (tappedEntity != null) {
-      ShowPopupFor(tappedEntity);
+    var entity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
+    if (entity != null) {
+      GameObject entityGameObject = floorController.GameObjectFor(entity);
+      var longTapHandler = entityGameObject.GetComponent<ILongTapHandler>();
+      if (longTapHandler != null) {
+        longTapHandler.HandleLongTap();
+      } else {
+        ShowPopupFor(entity);
+      }
     }
   }
 

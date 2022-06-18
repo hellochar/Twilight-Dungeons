@@ -24,7 +24,7 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     MatchSettings();
   }
 
-  void OnDestroyed() {
+  void OnDestroy() {
     GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
     Settings.OnChanged -= MatchSettings;
   }

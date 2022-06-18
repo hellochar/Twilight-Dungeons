@@ -9,7 +9,7 @@ public class WaitButtonController : MonoBehaviour {
     MatchSettings();
   }
 
-  void OnDestroyed() {
+  void OnDestroy() {
     Settings.OnChanged -= MatchSettings;
   }
 

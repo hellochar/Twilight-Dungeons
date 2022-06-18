@@ -9,7 +9,7 @@ public class FruitingBodyController : ActorController {
     fb.OnSprayed += HandleSprayed;
   }
 
-  void OnDestroyed() {
+  void OnDestroy() {
     fb.OnSprayed -= HandleSprayed;
   }
 

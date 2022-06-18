@@ -28,7 +28,7 @@ public class MapSelectorController : MonoBehaviour {
     canvas.SetActive(false);
   }
 
-  void OnDestroyed() {
+  void OnDestroy() {
     canvas.SetActive(true);
   }
 

@@ -59,7 +59,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(1f);
-      Messages.Create("Use D-Pad to move.", 5);
+      Messages.Create("Tap to move.", 5);
     }
   }
 

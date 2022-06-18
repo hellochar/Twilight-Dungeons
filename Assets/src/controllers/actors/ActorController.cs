@@ -208,7 +208,7 @@ public class ActorController : BodyController,
       case Faction.Neutral:
       case Faction.Enemy:
         player.SetTasks(
-          new MoveNextToTargetTask(player, actor.pos),
+          new ChaseTargetTask(player, actor),
           new AttackTask(player, actor)
         );
         break;

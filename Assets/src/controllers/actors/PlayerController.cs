@@ -168,6 +168,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       GameModel.GenerateNewGameAndSetMain();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
+    if (Input.GetKeyDown(KeyCode.M)) {
+      GameModel.GenerateTutorialAndSetMain();
+      SceneManager.LoadSceneAsync("Scenes/Game");
+    }
     if (Input.GetKeyDown(KeyCode.Minus)) {
       var e = GameModel.main.StepUntilPlayerChoice();
       while(e.MoveNext()) { }

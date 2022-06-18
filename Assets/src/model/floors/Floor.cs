@@ -252,6 +252,7 @@ public class Floor {
   }
 
   internal virtual void AddVisibility(Player player, Vector2Int? position = null) {
+    // player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
     foreach (var pos in this.EnumerateCircle(player.pos, player.visibilityRange)) {
       Tile t = tiles[pos.x, pos.y];
       bool isVisible = TestVisibility(player.pos, pos);

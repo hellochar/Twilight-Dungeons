@@ -118,6 +118,42 @@ public class FloorGenerator {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
 
+    var amountScalar = 0.67f;
+
+    // shrinking hack; reduce number of bodies and grasses
+    var enemies = floor.bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).ToList();
+    var originalEnemyNum = enemies.Count();
+    var newEnemyNum = Mathf.Max(1, Mathf.RoundToInt(enemies.Count() * amountScalar));
+    while(enemies.Count > newEnemyNum) {
+      var choice = Util.RandomPick(enemies);
+      enemies.Remove(choice);
+      floor.Remove(choice);
+    }
+
+    var nonEnemyBodies = floor.bodies.Except(enemies).ToList();
+    var originalNonEnemyBodyNum = nonEnemyBodies.Count();
+    var newNonEnemyBodyNum = Mathf.Max(1, Mathf.RoundToInt(nonEnemyBodies.Count() * amountScalar));
+    while (nonEnemyBodies.Count > newNonEnemyBodyNum) {
+      var choice = Util.RandomPick(nonEnemyBodies);
+      nonEnemyBodies.Remove(choice);
+      floor.Remove(choice);
+    }
+
+    var grasses = floor.grasses.ToList();
+    var originalGrassesNum = grasses.Count();
+    var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * amountScalar));
+    while(grasses.Count > newGrassNum) {
+      var choice = Util.RandomPick(grasses);
+      grasses.Remove(choice);
+      floor.Remove(choice);
+    }
+
+    Debug.LogFormat("Enemies {0} -> {1}, non-enemy bodies {2} -> {3}, grasses {4} -> {5}",
+    originalEnemyNum, newEnemyNum,
+    originalNonEnemyBodyNum, newNonEnemyBodyNum,
+    originalGrassesNum, newGrassNum
+    );
+
     #if UNITY_EDITOR
     // Encounters.AddFruitingBodies(floor, floor.root);
     // Encounters.AddNecroroot(floor, floor.root);
@@ -201,7 +237,7 @@ public class FloorGenerator {
   // maybe healing
   // 
   public Floor generateRestFloor(int depth) {
-    Floor floor = new Floor(depth, 16, 12);
+    Floor floor = new Floor(depth, 8 + 2, 6 + 2);
     FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
@@ -220,7 +256,7 @@ public class FloorGenerator {
   }
 
   public Floor generateFloor0(int depth) {
-    Floor floor = new Floor(depth, 18, 14);
+    Floor floor = new Floor(depth, 12 + 2, 7 + 2);
 
     // fill with floor tiles by default
     FloorUtils.CarveGround(floor);
@@ -232,12 +268,12 @@ public class FloorGenerator {
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     var soils = new List<Soil>();
-    for (int x = 3; x < floor.width - 3; x += 3) {
-      int y = floor.height / 2 - 2;
+    for (int x = 3; x < floor.width - 2; x += 2) {
+      int y = floor.height / 2 - 1;
       if (floor.tiles[x, y] is Ground) {
         soils.Add(new Soil(new Vector2Int(x, y)));
       }
-      y = floor.height / 2 + 2;
+      y = floor.height / 2 + 1;
       if (floor.tiles[x, y] is Ground) {
         soils.Add(new Soil(new Vector2Int(x, y)));
       }
@@ -320,6 +356,16 @@ public class FloorGenerator {
   /// Good for a contained experience.
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
+    // var nonBoundaryWidth = width;
+    var scaledHeight = height * 0.6f + 1;
+    var nonBoundaryWidth = scaledHeight * 16 / 9f;
+    var nonBoundaryHeight = scaledHeight;
+    // reduce area to 67% of normal, which puts each dimension at ~81.2% of what it used to be
+    var shrunkNonBoundaryWidth = Mathf.RoundToInt(nonBoundaryWidth);
+    var shrunkNonBoundaryHeight = Mathf.RoundToInt(nonBoundaryHeight);
+    Debug.LogFormat("floor from {0}x{1} to {2}x{3}", width, height, shrunkNonBoundaryWidth, shrunkNonBoundaryHeight);
+    width = shrunkNonBoundaryWidth;
+    height = shrunkNonBoundaryHeight;
     Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
     ensureConnectedness(floor);
     var room0 = floor.root;
@@ -373,8 +419,8 @@ public class FloorGenerator {
       EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
     }
 
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
-    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y / 2));
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.max.y / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();

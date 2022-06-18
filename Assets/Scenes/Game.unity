@@ -3079,6 +3079,7 @@ GameObject:
   - component: {fileID: 519420035}
   - component: {fileID: 519420034}
   - component: {fileID: 519420036}
+  - component: {fileID: 519420037}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3101,13 +3102,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ebee435206256949a29fafae1b11487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2052630406}
-  followSpeed: 4
+  followSpeed: 8
   jumpThreshold: 5
 --- !u!20 &519420031
 Camera:
@@ -3180,7 +3181,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd461da8031dd36429051359b23adf00, type: 3}
   m_Name: 
@@ -3196,14 +3197,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d0aee9757f772a4b9f82aa4ceba2b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wantedZoom: 5
-  minZoom: 3
-  maxZoom: 12
+  wantedZoom: 4
+  minZoom: 2
+  maxZoom: 6
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3234,6 +3235,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normal: {fileID: 1612004401}
   boss: {fileID: 1018460891}
+--- !u!114 &519420037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab6ee90ead2e994ab52926e15aebd94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paddingTop: 2
+  paddingRight: 0
+  paddingBottom: 2
+  paddingLeft: 1
 --- !u!1 &539203642
 GameObject:
   m_ObjectHideFlags: 0
@@ -4733,7 +4750,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &888473354
 RectTransform:
   m_ObjectHideFlags: 0

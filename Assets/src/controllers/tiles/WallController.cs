@@ -12,7 +12,8 @@ public class WallController : TileController {
   private void MaybeShowFade(string name, Vector2Int offset) {
     var fade = transform.Find(name).gameObject;
     var newPos = tile.pos + offset;
-    var shouldDestroyFade = !tile.floor.InBounds(newPos) || tile.floor.tiles[newPos] is Wall;
+    var floor = tile.floor ?? GameModel.main.currentFloor;
+    var shouldDestroyFade = !floor.InBounds(newPos) || floor.tiles[newPos] is Wall;
     if (shouldDestroyFade) {
       Destroy(fade);
     }

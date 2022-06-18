@@ -35,7 +35,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
-  private float m_visibilityRange = 7f;
+  private float m_visibilityRange = 3.5f;
   public float visibilityRange {
     get => m_visibilityRange;
     set {
@@ -62,7 +62,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
-    inventory = new Inventory(15);
+    inventory = new Inventory(10);
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

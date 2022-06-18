@@ -88,6 +88,15 @@ public class FloorController : MonoBehaviour {
     foreach (var e in floor.entities) {
       InstantiateGameObjectForEntity(e);
     }
+    // var tempWalls = floor.EnumeratePerimeter(-1).Select(p => {
+    //   var w = new Wall(p);
+    //   w.visibility = TileVisiblity.Visible;
+    //   return w;
+    // });
+    // foreach (var e in tempWalls) {
+    //   InstantiateGameObjectForEntity(e);
+    // }
+    // add one more perimeter with temp entities
   }
 
   private void InstantiateGameObjectForEntity(Entity entity) {

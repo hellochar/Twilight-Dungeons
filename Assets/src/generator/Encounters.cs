@@ -37,6 +37,46 @@ public class Encounters {
     }
   }
 
+  public static void AddSkulls(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room);
+    var num = RandomRangeBasedOnIndex(floor.depth,
+      (1, 2),
+      (2, 2),
+      (2, 3),
+      (2, 4)
+    );
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Skull(tile.pos));
+    }
+  }
+
+  public static void AddOctopus(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room);
+    var num = RandomRangeBasedOnIndex(floor.depth,
+      (1, 1),
+      (1, 1),
+      (1, 2),
+      (2, 2)
+    );
+    tiles.Shuffle();
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Octopus(tile.pos));
+    }
+  }
+
+  public static void AddMice(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room);
+    var num = RandomRangeBasedOnIndex(floor.depth,
+      (1, 1),
+      (1, 1),
+      (1, 1),
+      (1, 1)
+    );
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Mouse(tile.pos));
+    }
+  }
+
   public static void AFewBlobs(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();

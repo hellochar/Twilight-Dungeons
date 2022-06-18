@@ -4,13 +4,13 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: -7933666623468162846
-    second: colored_transparent_packed_0
+    second: skull
   - first:
       213: -2362392033055028080
-    second: colored_transparent_packed_1
+    second: octopus
   - first:
       213: -8459985283990868690
-    second: colored_transparent_packed_2
+    second: mouse
   - first:
       213: 3807160773484928076
     second: colored_transparent_packed_3
@@ -3169,13 +3169,13 @@ TextureImporter:
     second: colored_transparent_packed_1054
   - first:
       213: 8973424750095629105
-    second: colored_transparent_packed_0
+    second: skull
   - first:
       213: 4530940285694405697
-    second: colored_transparent_packed_1
+    second: octopus
   - first:
       213: -848462766323141761
-    second: colored_transparent_packed_2
+    second: mouse
   - first:
       213: -2720247703636422937
     second: colored_transparent_packed_3
@@ -6911,6 +6911,69 @@ TextureImporter:
       bones: []
       spriteID: cc36a949fd202fde0800000000000000
       internalID: -1300974183062543412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skull
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 160
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e0bec58d34f5e190800000000000000
+      internalID: -7933666623468162846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: octopus
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 208
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09cca8166f8173fd0800000000000000
+      internalID: -2362392033055028080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mouse
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 224
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2d21b60538189a80800000000000000
+      internalID: -8459985283990868690
       vertices: []
       indices: 
       edges: []

@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 99485
+    totalSpriteSurfaceArea: 100253
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -173,11 +173,13 @@ SpriteAtlas:
   - {fileID: 900136251804514652, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: -6514523729103863605, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 7946346345253772639, guid: af4df3188a01af048a678513709d8278, type: 3}
+  - {fileID: -7933666623468162846, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -6043004507731418390, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -4170507317521819815, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 4378210890812441524, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -3950408397821896629, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -2419293483790245602, guid: af4df3188a01af048a678513709d8278, type: 3}
+  - {fileID: -2362392033055028080, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -1300974183062543412, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -6005119224221696302, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -8033849067700499357, guid: af4df3188a01af048a678513709d8278, type: 3}
@@ -193,6 +195,7 @@ SpriteAtlas:
   - {fileID: 3931176682442837003, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -161697261141184651, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 713072234296389581, guid: af4df3188a01af048a678513709d8278, type: 3}
+  - {fileID: -8459985283990868690, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -6627539744543059532, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 21300000, guid: 2820d9285aa99f74dba9ddf2ecb7f380, type: 3}
   - {fileID: 21300000, guid: 9c0d0b48d5e38e747827d0fae553a32b, type: 3}
@@ -480,11 +483,13 @@ SpriteAtlas:
   - downstairs24
   - colored_transparent_packed_974
   - colored_transparent_packed_134
+  - skull
   - colored_transparent_packed_659
   - colored_transparent_packed_658
   - colored_transparent_packed_657
   - colored_transparent_packed_100
   - colored_transparent_packed_39
+  - octopus
   - colored_transparent_packed_1046
   - colored_transparent_packed_553
   - colored_transparent_packed_414
@@ -500,6 +505,7 @@ SpriteAtlas:
   - colored_transparent_packed_305
   - colored_transparent_packed_228
   - colored_transparent_packed_238
+  - mouse
   - colored_transparent_packed_263
   - water-pail
   - gear

@@ -3247,9 +3247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab6ee90ead2e994ab52926e15aebd94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddingTop: 2
+  paddingTop: 4
   paddingRight: 0
-  paddingBottom: 2
+  paddingBottom: 4
   paddingLeft: 1
 --- !u!1 &539203642
 GameObject:
@@ -17615,7 +17615,7 @@ PrefabInstance:
     - target: {fileID: 3820462485337859172, guid: d642e7ddd59c68e4c85f8d11313cb662,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3820462485337859179, guid: d642e7ddd59c68e4c85f8d11313cb662,
         type: 3}

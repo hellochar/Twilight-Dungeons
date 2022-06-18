@@ -11,6 +11,7 @@ public struct Settings {
   public bool sfx;
   public bool rightHanded;
   public bool useDPad;
+  public bool swipeToMove;
 
   public static event Action OnChanged;
 
@@ -37,7 +38,8 @@ public struct Settings {
       music = true,
       sfx = true,
       rightHanded = true,
-      useDPad = true
+      useDPad = true,
+      swipeToMove = false
     };
   }
 

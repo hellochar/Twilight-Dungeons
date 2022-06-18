@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 98899
+    totalSpriteSurfaceArea: 99485
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -212,6 +212,7 @@ SpriteAtlas:
   - {fileID: -3283364832169978480, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: 7666448229789118058, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: -7606177257534976177, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
+  - {fileID: 21300000, guid: 8471abf8d0b850e4a81d6948893069f6, type: 3}
   - {fileID: 21300000, guid: 6a00f109fd67eda458a649a4685af2df, type: 3}
   - {fileID: 21300000, guid: c4ccea09c2c32fb4ebd2b98cd3e42318, type: 3}
   - {fileID: 21300000, guid: 1bdf20198708cb84ab286af0db572cff, type: 3}
@@ -263,6 +264,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7116b40bb6fd2e84f8da3456cd6462a8, type: 3}
   - {fileID: 21300000, guid: d3348d1bcedd79a4da36ad1b2a767be5, type: 3}
   - {fileID: 21300000, guid: 6ac50a3b39f67084fbe18f065f6a54c7, type: 3}
+  - {fileID: 21300000, guid: e745c97b0c70bad4dbcf450819afd45a, type: 3}
   - {fileID: 21300000, guid: 20da3b7b701352c498e8d7da707f6ada, type: 3}
   - {fileID: 21300000, guid: 28bc988b23e0d8a44b6e60a07db77ac7, type: 3}
   - {fileID: 21300000, guid: b8a8be8b9a434574396282e110f0a107, type: 3}
@@ -517,6 +519,7 @@ SpriteAtlas:
   - wall
   - downstairs
   - fancy-ground
+  - altar
   - vile-growth
   - Circle5
   - leecher
@@ -568,6 +571,7 @@ SpriteAtlas:
   - golem-head
   - fern
   - vibrant-ivy
+  - golden-fern
   - tanglefoot
   - confused
   - Clock

@@ -9,7 +9,7 @@ public class ItemGloopShoes : EquippableItem, ISticky, IDurable, IBaseActionModi
   }
 
   public int durability { get; set; }
-  public int maxDurability => 4;
+  public int maxDurability => 3;
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE) {

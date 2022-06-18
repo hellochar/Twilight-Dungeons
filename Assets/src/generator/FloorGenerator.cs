@@ -141,7 +141,7 @@ public class FloorGenerator {
 
     var grasses = floor.grasses.ToList();
     var originalGrassesNum = grasses.Count();
-    var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * amountScalar));
+    var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * 0.4f));
     while(grasses.Count > newGrassNum) {
       var choice = Util.RandomPick(grasses);
       grasses.Remove(choice);

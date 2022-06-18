@@ -28,8 +28,8 @@ public class StoutShrub : Plant {
           new ItemSeed(typeof(StoutShrub), 2)
         ));
       }
-      harvestOptions.Add(new Inventory(new ItemThicket(MyRandom.Range(9, 13))));
-      harvestOptions.Add(new Inventory(new ItemPrickler(MyRandom.Range(5, 8))));
+      harvestOptions.Add(new Inventory(new ItemThicket(MyRandom.Range(6, 10))));
+      harvestOptions.Add(new Inventory(new ItemPrickler(MyRandom.Range(4, 7))));
       harvestOptions.Add(new Inventory(new ItemHeartyVeggie()));
     }
   }
@@ -162,11 +162,11 @@ public class ItemStoutShield : EquippableItem, IDurable, IAttackDamageTakenModif
 [Serializable]
 [ObjectInfo("hearty-veggie", "Your mum always said to eat a lot of these!")]
 public class ItemHeartyVeggie : Item, IEdible {
-  internal override string GetStats() => "Heal 6 HP over 150 turns.\nWill not tick down if you're at full HP.";
+  internal override string GetStats() => "Heal 4 HP over 100 turns.\nWill not tick down if you're at full HP.";
   public ItemHeartyVeggie() {}
 
   public void Eat(Actor a) {
-    a.statuses.Add(new HeartyVeggieStatus(6));
+    a.statuses.Add(new HeartyVeggieStatus(4));
     Destroy();
   }
 }

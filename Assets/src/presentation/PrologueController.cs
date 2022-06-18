@@ -109,7 +109,9 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
   }
 
   public static bool HasFinishedTutorial() {
-    return PlayerPrefs.HasKey("hasSeenPrologue");
+    // HACK HACK
+    return true;
+    // return PlayerPrefs.HasKey("hasSeenPrologue");
   }
 
   private bool hasClicked = false;

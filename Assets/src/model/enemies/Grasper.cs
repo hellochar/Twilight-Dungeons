@@ -10,7 +10,7 @@ public class Grasper : AIActor, IBaseActionModifier {
 
   public Grasper(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 10;
+    hp = baseMaxHp = 7;
   }
 
   protected override ActorTask GetNextTask() {

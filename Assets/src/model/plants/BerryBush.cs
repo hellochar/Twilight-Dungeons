@@ -15,12 +15,12 @@ public class BerryBush : Plant {
     public override void BindTo(Plant plant) {
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(BerryBush), 2),
-        new ItemRedberry(3),
+        new ItemRedberry(2),
         new ItemStick()
       ));
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(BerryBush)),
-        new ItemRedberry(3),
+        new ItemRedberry(2),
         new ItemBarkShield(),
         new ItemStick()
       ));

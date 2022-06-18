@@ -9,10 +9,10 @@ public class Wildekin : AIActor, IAttackHandler {
   public override float turnPriority => 60;
   public Wildekin(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 8;
+    hp = baseMaxHp = 5;
   }
 
-  internal override (int, int) BaseAttackDamage() => (1, 2);
+  internal override (int, int) BaseAttackDamage() => (2, 2);
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;

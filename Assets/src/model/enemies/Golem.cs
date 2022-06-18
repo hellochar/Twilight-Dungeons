@@ -14,14 +14,14 @@ public class Golem : AIActor, IBodyMoveHandler, IAttackDamageTakenModifier {
   protected override ActionCosts actionCosts => StaticActionCosts;
   public Golem(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 10;
+    hp = baseMaxHp = 6;
   }
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {
     floor.Put(new Rubble(oldPos));
   }
 
-  internal override (int, int) BaseAttackDamage() => (4, 5);
+  internal override (int, int) BaseAttackDamage() => (3, 4);
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;

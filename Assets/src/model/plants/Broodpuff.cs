@@ -20,7 +20,7 @@ public class Broodpuff : Plant {
         new ItemLeecher()
       ));
       harvestOptions.Add(new Inventory(
-        new ItemLeecher(7),
+        new ItemLeecher(4),
         new ItemBacillomyte()
       ));
       harvestOptions.Add(new Inventory(
@@ -42,9 +42,9 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 
   public int durability { get; set; }
 
-  public int maxDurability => 10;
+  public int maxDurability => 7;
 
-  public ItemLeecher(int durability = 10) {
+  public ItemLeecher(int durability = 7) {
     this.durability = durability;
   }
 
@@ -156,7 +156,7 @@ public class ItemBroodleaf : EquippableItem, IWeapon, IDurable, IAttackHandler, 
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   public (int, int) AttackSpread => (1, 1);
   public int durability { get; set; }
-  public int maxDurability => 50;
+  public int maxDurability => 25;
   public ItemBroodleaf() {
     durability = maxDurability;
   }

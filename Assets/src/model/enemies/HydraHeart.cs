@@ -16,7 +16,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   private List<HydraHead> heads = new List<HydraHead>();
   public HydraHeart(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 13;
+    hp = baseMaxHp = 9;
     // inventory.AddItem(new ItemHydraPearl());
   }
 
@@ -104,7 +104,7 @@ public class HydraHead : AIActor, IBaseActionModifier, INoTurnDelay {
     hp = baseMaxHp = 3;
   }
 
-  internal override (int, int) BaseAttackDamage() => (1, 2);
+  internal override (int, int) BaseAttackDamage() => (1, 1);
 
   protected override ActorTask GetNextTask() {
     var potentialTargets = floor

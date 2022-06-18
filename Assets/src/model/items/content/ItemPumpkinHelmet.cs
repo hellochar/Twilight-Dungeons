@@ -3,7 +3,7 @@
 internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
-  public int maxDurability => 9;
+  public int maxDurability => 5;
 
   public ItemPumpkinHelmet() {
     durability = maxDurability;

@@ -7,7 +7,7 @@ using UnityEngine;
 public class Hopper : AIActor {
   public Hopper(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 6;
+    hp = baseMaxHp = 5;
   }
 
   internal override (int, int) BaseAttackDamage() => (2, 2);

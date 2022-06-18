@@ -4,12 +4,12 @@ public class ItemPumpkin : Item, IEdible {
   public ItemPumpkin() {}
 
   public void Eat(Actor a) {
-    a.statuses.Add(new StrengthStatus(12));
+    a.statuses.Add(new StrengthStatus(6));
     a.floor.Put(new ItemOnGround(a.pos, new ItemPumpkinHelmet(), a.pos));
     Destroy();
   }
 
-  internal override string GetStats() => "Gives 12 stacks of Strength.\nMakes a nice helmet after you eat it.";
+  internal override string GetStats() => "Gives 6 stacks of Strength.\nMakes a nice helmet after you eat it.";
 }
 
 [System.Serializable]

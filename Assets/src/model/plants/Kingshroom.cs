@@ -42,7 +42,7 @@ internal class ItemLivingArmor : EquippableItem, ISticky, IDurable, IActionPerfo
 
   public int durability { get; set; }
 
-  public int maxDurability => 240;
+  public int maxDurability => 60;
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
@@ -74,7 +74,7 @@ internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
 
   public int durability { get; set; }
 
-  public int maxDurability => 5;
+  public int maxDurability => 3;
 
   internal override string GetStats() => "If you'd get the Spored Status, prevent it and heal 1 HP instead.";
 }

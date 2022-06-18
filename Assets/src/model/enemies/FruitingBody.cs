@@ -77,7 +77,7 @@ class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
 
   public int durability { get; set; }
 
-  public int maxDurability => 8;
+  public int maxDurability => 5;
 
   private PseudoRandomDistribution prd;
 
@@ -108,7 +108,7 @@ class ItemStiffarm : EquippableItem, IDurable, IWeapon, IAttackDamageTakenModifi
   internal override string GetStats() => "You're infected with Stiffarm!\nYou take +1 damage from attacks.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   public int durability { get; set; }
-  public int maxDurability => 30;
+  public int maxDurability => 15;
   public (int, int) AttackSpread => (2, 3);
 
   public ItemStiffarm() {
@@ -127,7 +127,7 @@ class ItemBulbousSkin : EquippableItem, IDurable, ISticky {
 
   public int durability { get; set; }
 
-  public int maxDurability => 4;
+  public int maxDurability => 1;
 
   internal override string GetStats() => "You're infected with Bulbous Skin!\nPress Germinate to take 1 damage and create 4 Mushrooms around you.";
   public ItemBulbousSkin() {
@@ -161,7 +161,7 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler 
   internal override string GetStats() => "You're infected with a Third Eye!\nLose half your vision range.\nYou can see creatures' exact HP.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
-  public int maxDurability => 200;
+  public int maxDurability => 40;
   private float reduction;
   public ItemThirdEye() {
     durability = maxDurability;
@@ -190,7 +190,7 @@ class ItemScalySkin : EquippableItem, ISticky, IDurable, IAttackDamageTakenModif
 
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
   public int durability { get; set; }
-  public int maxDurability => 15;
+  public int maxDurability => 8;
   private float timeLostWater;
 
   public ItemScalySkin() {

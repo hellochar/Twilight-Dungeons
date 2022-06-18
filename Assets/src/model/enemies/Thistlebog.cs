@@ -13,7 +13,7 @@ public class Thistlebog : AIActor, ITakeAnyDamageHandler {
   private float cooldown = 0;
   public Thistlebog(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 15;
+    hp = baseMaxHp = 10;
   }
 
   internal override (int, int) BaseAttackDamage() => (0, 0);

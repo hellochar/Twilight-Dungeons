@@ -7,7 +7,7 @@ using UnityEngine;
 [ObjectInfo(description: "Goes into its shell for 3 turns when it takes damage.\nWhile in its shell, it takes 2 less damage.\nPauses after each action.")]
 public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 4;
+    hp = baseMaxHp = 3;
     faction = Faction.Enemy;
     if (MyRandom.value < 0.1f) {
       inventory.AddItem(new ItemSnailShell(1));

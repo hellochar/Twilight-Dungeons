@@ -7,7 +7,7 @@ public class IronJelly : AIActor, IBodyTakeAttackDamageHandler {
   public override float turnPriority => task is AttackOrMoveDirectionTask ? 90 : base.turnPriority;
   public IronJelly(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 22;
+    hp = baseMaxHp = 16;
     ClearTasks();
   }
 

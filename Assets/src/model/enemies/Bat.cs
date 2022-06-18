@@ -7,7 +7,7 @@ using UnityEngine;
 [ObjectInfo(description: "Targets the nearest creature.\nHeals when it deals damage.\nGoes into Deep Sleep after 7 turns awake.", flavorText: "\"Eat, sleep, fly, repeat!\nAs far as I'm concerned, you're meat!\"\n\t - Northland nursery rhyme")]
 public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   public Bat(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 7;
+    hp = baseMaxHp = 4;
     // ClearTasks();
     faction = Faction.Enemy;
     if (MyRandom.value < 0.2f) {
@@ -15,7 +15,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
     }
   }
 
-  int turnsUntilSleep = 7;
+  int turnsUntilSleep = 5;
   public void HandleActionPerformed(BaseAction arg1, BaseAction arg2) {
     if (!(task is SleepTask)) {
       turnsUntilSleep--;
@@ -28,7 +28,7 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
 
   protected override void TaskChanged() {
     if (task is SleepTask) {
-      turnsUntilSleep = 7;
+      turnsUntilSleep = 5;
     }
     base.TaskChanged();
   }

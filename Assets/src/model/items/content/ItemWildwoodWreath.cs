@@ -10,7 +10,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IBodyMoveHandler {
 
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
-  public int maxDurability => 15;
+  public int maxDurability => 10;
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     var target = Util.RandomPick(player.floor.AdjacentActors(player.pos).Where(a => a.faction != Faction.Ally && !a.statuses.Has<ConfusedStatus>()));

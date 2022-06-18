@@ -12,7 +12,7 @@ public class Scorpion : AIActor {
   protected override ActionCosts actionCosts => StaticActionCosts;
   public Scorpion(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 5;
+    hp = baseMaxHp = 4;
   }
 
   protected override ActorTask GetNextTask() {

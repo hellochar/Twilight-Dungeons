@@ -40,7 +40,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
 
   public int durability { get; set; }
 
-  public int maxDurability => 20;
+  public int maxDurability => 14;
 
   public ItemThornmail() {
     durability = maxDurability;
@@ -100,7 +100,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
   public int durability { get; set; }
 
-  public int maxDurability => 16;
+  public int maxDurability => 11;
 
   public ItemThornShield() {
     durability = maxDurability;
@@ -117,7 +117,7 @@ internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModi
 
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
-  public int maxDurability => 36;
+  public int maxDurability => 29;
 
   public ItemHeartOfThorns() {
     durability = maxDurability;

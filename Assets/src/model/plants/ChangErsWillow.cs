@@ -46,22 +46,22 @@ class ItemFlowerBuds : Item, IDurable, IEdible {
 
   public void Eat(Actor a) {
     a.Heal(1);
-    a.statuses.Add(new StrengthStatus(3));
+    a.statuses.Add(new StrengthStatus(2));
     this.ReduceDurability();
   }
 
-  internal override string GetStats() => "Eat to heal 1 HP and get 3 stacks of Strength.";
+  internal override string GetStats() => "Eat to heal 1 HP and get 2 stacks of Strength.";
 }
 
 [Serializable]
 [ObjectInfo("catkin", "Tiny flowers packaged up in a single stem - legend says wearing one will grant you the Moon Goddess's protection.")]
 internal class ItemCatkin : EquippableItem, IDurable, ITakeAnyDamageHandler {
-  internal override string GetStats() => "When you take damage, heal an equivalent amount after 50 turns.";
+  internal override string GetStats() => "When you take damage, heal an equivalent amount after 25 turns.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
   public int durability { get; set; }
 
-  public int maxDurability => 5;
+  public int maxDurability => 3;
 
   public ItemCatkin() {
     durability = maxDurability;
@@ -79,7 +79,7 @@ internal class ItemCatkin : EquippableItem, IDurable, ITakeAnyDamageHandler {
 [ObjectInfo("recovering")]
 public class RecoveringStatus : StackingStatus {
   public override StackingMode stackingMode => StackingMode.Independent;
-  int turnsLeft = 50;
+  int turnsLeft = 25;
   public RecoveringStatus(int stacks) : base(stacks) {
   }
 
@@ -104,7 +104,7 @@ internal class ItemHardenedSap : EquippableItem, IDurable, IHealHandler, IMaxHPM
 
   public int durability { get; set; }
 
-  public int maxDurability => 8;
+  public int maxDurability => 5;
 
   public ItemHardenedSap() {
     durability = maxDurability;
@@ -152,7 +152,7 @@ internal class ItemCrescentVengeance : EquippableItem, IWeapon, IDurable {
     }
   }
 
-  public int maxDurability => 15;
+  public int maxDurability => 10;
 
   public (int, int) AttackSpread => (3, 5);
 

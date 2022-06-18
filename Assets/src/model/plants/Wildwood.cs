@@ -43,7 +43,7 @@ internal class ItemWildwoodRod : EquippableItem, IWeapon, IDurable, IActionPerfo
 
   public int durability { get; set; }
 
-  public int maxDurability => 30;
+  public int maxDurability => 20;
 
   internal override string GetStats() => "Automatically attack an adjacent enemy when you move.";
 

@@ -25,7 +25,7 @@ class ItemAgave : Item, IStackable {
     this.stacks = stacks;
   }
 
-  public int stacksMax => 4;
+  public int stacksMax => 10;
   private int _stacks;
   public int stacks {
     get => _stacks;
@@ -45,9 +45,9 @@ class ItemAgave : Item, IStackable {
   }
 
   private void RefineImpl(Player player) {
-    if (stacks < stacksMax) {
-      throw new CannotPerformActionException("Gather 4 stacks of Agave first.");
-    }
+    // if (stacks < stacksMax) {
+    //   throw new CannotPerformActionException("Gather 4 stacks of Agave first.");
+    // }
     if (player.water < 25) {
       throw new CannotPerformActionException("Need <color=lightblue>25</color> water.");
     }
@@ -62,7 +62,7 @@ class ItemAgave : Item, IStackable {
     return methods;
   }
 
-  internal override string GetStats() => $"Gather {stacksMax} to Refine into Honey - costs <color=lightblue>25</color> water.";
+  internal override string GetStats() => $"Refine into Honey - costs <color=lightblue>25</color> water.";
 }
 
 [Serializable]

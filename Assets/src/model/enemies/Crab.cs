@@ -13,7 +13,7 @@ public class Crab : AIActor {
   public Crab(Vector2Int pos) : base(pos) {
     dx = MyRandom.value < 0.5 ? -1 : 1;
     faction = Faction.Neutral;
-    hp = baseMaxHp = 7;
+    hp = baseMaxHp = 5;
   }
 
   internal override (int, int) BaseAttackDamage() => (2, 2);

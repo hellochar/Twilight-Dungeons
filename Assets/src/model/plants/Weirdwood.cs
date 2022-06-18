@@ -35,10 +35,10 @@ public class Weirdwood : Plant {
 [Serializable]
 [ObjectInfo("vile-potion", "Weirdwood roots are notoriously used in demonic rituals... You wonder why?")]
 internal class ItemVilePotion : Item, IStackable, IUsable {
-  public ItemVilePotion(int stacks = 4) {
+  public ItemVilePotion(int stacks = 3) {
     this.stacks = stacks;
   }
-  public int stacksMax => 4;
+  public int stacksMax => 3;
 
   private int _stacks;
   public int stacks {
@@ -116,7 +116,7 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
 
   public int durability { get; set; }
 
-  public int maxDurability => 10;
+  public int maxDurability => 7;
 }
 
 [Serializable]
@@ -124,21 +124,21 @@ internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
 internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandler {
   public override string displayName => "Witch's Shiv";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-  internal override string GetStats() => "Attacking a target fears them for 3 turns.";
+  internal override string GetStats() => "Attacking a target fears them for 10 turns.";
 
   public ItemWitchsShiv() {
     durability = maxDurability;
   }
 
-  public (int, int) AttackSpread => (1, 3);
+  public (int, int) AttackSpread => (2, 2);
 
   public int durability { get; set; }
 
-  public int maxDurability => 5;
+  public int maxDurability => 3;
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor actor) {
-      actor.SetTasks(new RunAwayTask(actor, player.pos, 3));
+      actor.SetTasks(new RunAwayTask(actor, player.pos, 10));
     }
   }
 }

@@ -4,24 +4,36 @@ using UnityEngine;
 
 public class AttackGroundTaskController : ActorTaskController {
   private new AttackGroundTask task => (AttackGroundTask) ((ActorTaskController)this).task;
+  public LineRenderer lr;
 
   public virtual Vector2Int TargetPosition => task.TargetPosition;
   public Vector2Int offset => TargetPosition - actor.pos;
 
   public void Start() {
-    var straight = transform.Find("Connector Straight").gameObject;
-    var diagonal = transform.Find("Connector Diagonal").gameObject;
+    // var straight = transform.Find("Connector Straight").gameObject;
+    // var diagonal = transform.Find("Connector Diagonal").gameObject;
 
-    var isDiagonal = !(offset.x == 0 || offset.y == 0);
-    if (isDiagonal) {
-      Destroy(straight);
-      var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-      diagonal.transform.rotation = Quaternion.Euler(0, 0, rotZ + 45);
-    } else {
-      Destroy(diagonal);
-      var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-      straight.transform.rotation = Quaternion.Euler(0, 0, rotZ);
-    }
+    // var isDiagonal = !(offset.x == 0 || offset.y == 0);
+    // if (isDiagonal) {
+    //   Destroy(straight);
+    //   var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+    //   diagonal.transform.rotation = Quaternion.Euler(0, 0, rotZ + 45);
+    // } else {
+    //   Destroy(diagonal);
+    //   var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+    //   straight.transform.rotation = Quaternion.Euler(0, 0, rotZ);
+    // }
+    var start = Util.withZ(task.actor.pos);
+    var target = Util.withZ(task.TargetPosition);
+
+    lr.SetPosition(0, start);
+
+    Bounds targetBounds = new Bounds(target, new Vector3(1, 1, 1));
+    Ray offset = new Ray(start, target - start);
+    targetBounds.IntersectRay(offset, out float T);
+    var boundedPosition = offset.GetPoint(T);
+    var finalPosition = Vector3.Lerp(boundedPosition, target, 0.2f);
+    lr.SetPosition(1, finalPosition);
     Update();
   }
 

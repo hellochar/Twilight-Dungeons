@@ -10,19 +10,6 @@ public class AttackGroundTaskController : ActorTaskController {
   public Vector2Int offset => TargetPosition - actor.pos;
 
   public void Start() {
-    // var straight = transform.Find("Connector Straight").gameObject;
-    // var diagonal = transform.Find("Connector Diagonal").gameObject;
-
-    // var isDiagonal = !(offset.x == 0 || offset.y == 0);
-    // if (isDiagonal) {
-    //   Destroy(straight);
-    //   var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-    //   diagonal.transform.rotation = Quaternion.Euler(0, 0, rotZ + 45);
-    // } else {
-    //   Destroy(diagonal);
-    //   var rotZ = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
-    //   straight.transform.rotation = Quaternion.Euler(0, 0, rotZ);
-    // }
     var start = Util.withZ(task.actor.pos);
     var target = Util.withZ(task.TargetPosition);
 

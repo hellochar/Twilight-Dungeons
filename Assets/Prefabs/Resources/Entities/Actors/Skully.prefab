@@ -15,17 +15,17 @@ PrefabInstance:
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: bloodColor.b
-      value: 0.21101445
+      value: 0.3803922
       objectReference: {fileID: 0}
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: bloodColor.g
-      value: 0.4371014
+      value: 0.7411765
       objectReference: {fileID: 0}
     - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: bloodColor.r
-      value: 0.78
+      value: 0.2901961
       objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
@@ -85,13 +85,13 @@ PrefabInstance:
     - target: {fileID: 6870171582872785322, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Name
-      value: Skull
+      value: Skully
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -7933666623468162846, guid: af4df3188a01af048a678513709d8278,
+      objectReference: {fileID: -3083117422368779406, guid: f0ee99406d79c4e47844d789a3a9d9c3,
         type: 3}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}

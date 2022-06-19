@@ -6,7 +6,7 @@ public static class EncounterGroupEarlyGame {
       Mobs = new EncounterBag {
         { 1.05f, AFewBlobs },
         { 1.05f, JackalPile },
-        { 1.05f, AddSkulls },
+        { 1.05f, AddSkullys },
         { 1.05f, AddOctopus },
         { 1.05f, AddMice },
         { 0.9f, AFewSnails },

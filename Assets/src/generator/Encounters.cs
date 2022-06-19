@@ -37,22 +37,22 @@ public class Encounters {
     }
   }
 
-  public static void AddSkulls(Floor floor, Room room) {
+  public static void AddSkullys(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth,
+    var num = RandomRangeBasedOnIndex(floor.depth / 2,
       (1, 2),
       (2, 2),
       (2, 3),
       (2, 4)
     );
     foreach (var tile in tiles.Take(num)) {
-      floor.Put(new Skull(tile.pos));
+      floor.Put(new Skully(tile.pos));
     }
   }
 
   public static void AddOctopus(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth,
+    var num = RandomRangeBasedOnIndex(floor.depth / 2,
       (1, 1),
       (1, 1),
       (1, 2),
@@ -64,16 +64,16 @@ public class Encounters {
     }
   }
 
-  public static void AddMice(Floor floor, Room room) {
+  public static void AddPuffers(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth,
+    var num = RandomRangeBasedOnIndex(floor.depth / 4,
       (1, 1),
-      (1, 1),
-      (1, 1),
-      (1, 1)
+      (1, 2),
+      (1, 3),
+      (2, 2)
     );
     foreach (var tile in tiles.Take(num)) {
-      floor.Put(new Mouse(tile.pos));
+      floor.Put(new Puffer(tile.pos));
     }
   }
 

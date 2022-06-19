@@ -19,6 +19,6 @@ public class CenterCameraOnFloor : MonoBehaviour {
     bounds.max = Util.withZ(GameModel.main.currentFloor.boundsMax) + new Vector3(paddingRight, paddingTop, 0);
 
     this.transform.position = new Vector3(bounds.center.x, bounds.center.y - 0.5f, this.transform.position.z);
-    camera.orthographicSize = bounds.extents.y / 2 + 0.5f;
+    camera.orthographicSize = bounds.extents.y;
   }
 }

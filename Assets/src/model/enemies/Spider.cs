@@ -61,39 +61,17 @@ public class Spider : AIActor, IDealAttackDamageHandler {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Prevents movement; creatures must spend one turn breaking the Web.")]
+[ObjectInfo(description: "Take +1 damage from the next attack. You must spend one turn to break the Web.")]
 internal class Web : Grass, IActorEnterHandler {
   public static bool CanOccupy(Tile tile) => tile is Ground && !(tile.grass is Web);
 
-  [Serializable]
-  private class WebBodyModifier : IBaseActionModifier {
-    private Web web;
-
-    public WebBodyModifier(Web web) {
-      this.web = web;
-    }
-
-    public BaseAction Modify(BaseAction input) {
-      if (IsActorNice(web.actor)) {
-        return input;
-      }
-      if (input.Type == ActionType.MOVE) {
-        web.Kill(input.actor);
-        return new StruggleBaseAction(input.actor);
-      }
-      return input;
-    }
-  }
-
-  public Web(Vector2Int pos) : base(pos) {
-    BodyModifier = new WebBodyModifier(this);
-  }
+  public Web(Vector2Int pos) : base(pos) {}
 
   [OnDeserialized]
   void HandleDeserialized() {
-    if (BodyModifier == null) {
+    if (BodyModifier != null) {
       // back-compat
-      BodyModifier = new WebBodyModifier(this);
+      BodyModifier = null;
     }
   }
 
@@ -160,7 +138,7 @@ internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler 
 }
 
 [System.Serializable]
-internal class WebbedStatus : Status {
+internal class WebbedStatus : Status, IAttackDamageTakenModifier, IBaseActionModifier, IDeathHandler {
   public override bool isDebuff => !Web.IsActorNice(actor);
   private Web web => actor?.grass as Web;
 
@@ -180,6 +158,43 @@ internal class WebbedStatus : Status {
   public override bool Consume(Status other) => true;
 
   public override string Info() => Web.IsActorNice(actor) ? "You're wearing Spider Sandals! No web penalty." : "Prevents your next movement.";
+
+  public int Modify(int input) {
+    if (web == null) {
+      return input;
+    }
+    if (Web.IsActorNice(web.actor)) {
+      return input;
+    }
+    Remove();
+    return input + 1;
+  }
+
+  public void HandleDeath(Entity source) {
+    if (!Web.IsActorNice(actor)) {
+      var web = this.web;
+      if (web != null) {
+        GameModel.main.EnqueueEvent(() => {
+          web.Kill(actor);
+        });
+      }
+    }
+  }
+
+  public BaseAction Modify(BaseAction input) {
+    if (web == null) {
+      Remove();
+      return input;
+    }
+    if (Web.IsActorNice(web.actor)) {
+      return input;
+    }
+    if (input.Type == ActionType.MOVE) {
+      Remove();
+      return new StruggleBaseAction(input.actor);
+    }
+    return input;
+  }
 }
 
 /// stacks = turns

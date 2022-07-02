@@ -11,7 +11,7 @@ public class AttackGroundTaskController : ActorTaskController {
 
   public void Start() {
     var start = Util.withZ(task.actor.pos);
-    var target = Util.withZ(task.TargetPosition);
+    var target = Util.withZ(TargetPosition);
 
     lr.SetPosition(0, start);
 

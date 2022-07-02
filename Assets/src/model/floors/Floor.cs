@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
@@ -83,9 +84,12 @@ public class Floor {
   private void BodyPlacementBehavior(Body body) {
     var newPosition = this.BreadthFirstSearch(body.pos, (_) => true)
       .Where(tile => tile.CanBeOccupied())
-      .First()
-      .pos;
-    body.pos = newPosition;
+      .FirstOrDefault();
+    if (newPosition == null) {
+      throw new NoSpaceException();
+    } else {
+      body.pos = newPosition.pos;
+    }
   }
 
   private void ItemPlacementBehavior(ItemOnGround item) => ItemOnGround.PlacementBehavior(this, item);
@@ -107,38 +111,46 @@ public class Floor {
   }
 
   public int EnemiesLeft() {
-    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Count();
+    return Enemies().Count();
+  }
+
+  public IEnumerable<AIActor> Enemies() {
+    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Cast<AIActor>();
   }
 
   public virtual void Put(Entity entity) {
-    this.entities.Add(entity);
+    try {
+      this.entities.Add(entity);
 
-    if (entity is ISteppable s) {
-      steppableEntities.Add(s);
-    }
-    if (entity is Boss b) {
-      bosses.Add(b);
-    }
+      if (entity is ISteppable s) {
+        steppableEntities.Add(s);
+      }
+      if (entity is Boss b) {
+        bosses.Add(b);
+      }
 
-    if (entity is Tile tile) {
-      tiles.Put(tile);
-    } else if (entity is Body body) {
-      bodies.Put(body);
-    } else if (entity is Grass grass) {
-      grasses.Put(grass);
-    } else if (entity is ItemOnGround item) {
-      items.Put(item);
-    } else if (entity is Trigger t) {
-      triggers.Put(t);
-    }
+      if (entity is Tile tile) {
+        tiles.Put(tile);
+      } else if (entity is Body body) {
+        bodies.Put(body);
+      } else if (entity is Grass grass) {
+        grasses.Put(grass);
+      } else if (entity is ItemOnGround item) {
+        items.Put(item);
+      } else if (entity is Trigger t) {
+        triggers.Put(t);
+      }
 
-    /// HACK
-    if (entity is IBlocksVision) {
-      RecomputeVisibility(GameModel.main.player);
-    }
+      /// HACK
+      if (entity is IBlocksVision) {
+        RecomputeVisibility(GameModel.main.player);
+      }
 
-    entity.SetFloor(this);
-    this.OnEntityAdded?.Invoke(entity);
+      entity.SetFloor(this);
+      this.OnEntityAdded?.Invoke(entity);
+    } catch (NoSpaceException) {
+      Remove(entity);
+    }
   }
 
   public void Remove(Entity entity) {
@@ -359,4 +371,19 @@ public class Floor {
 [Serializable]
 public class BossFloor : Floor {
   public BossFloor(int depth, int width, int height) : base(depth, width, height) {}
+}
+
+[Serializable]
+public class NoSpaceException : Exception {
+  public NoSpaceException() {
+  }
+
+  public NoSpaceException(string message) : base(message) {
+  }
+
+  public NoSpaceException(string message, Exception innerException) : base(message, innerException) {
+  }
+
+  protected NoSpaceException(SerializationInfo info, StreamingContext context) : base(info, context) {
+  }
 }

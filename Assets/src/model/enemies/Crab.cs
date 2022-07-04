@@ -23,7 +23,7 @@ public class Crab : AIActor {
 
     var nextPos = pos + new Vector2Int(dx, 0);
     var nextTile = floor.tiles[nextPos];
-    if (nextTile.BasePathfindingWeight() == 0 || nextTile.actor is Crab) {
+    if (nextTile == null || nextTile.BasePathfindingWeight() == 0 || nextTile.actor is Crab) {
       // can't walk there; change directions
       dx *= -1;
       OnDirectionChanged?.Invoke();

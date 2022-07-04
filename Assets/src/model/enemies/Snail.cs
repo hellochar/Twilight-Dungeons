@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Goes into its shell for 3 turns when it takes damage.\nWhile in its shell, it takes 2 less damage.\nPauses after each action.")]
+[ObjectInfo(description: "Goes into its shell for 3 turns when it takes damage.\nWhile in its shell, it takes 1 less attack damage.\nPauses after each action.")]
 public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 3;
@@ -89,7 +89,7 @@ internal class InShellStatus : StackingStatus, IAttackDamageTakenModifier, IBase
   public override string Info() => "You cannot move or attack but you take 3 less damage!";
 
   public int Modify(int damage) {
-    return damage - 2;
+    return damage - 1;
   }
 
   public BaseAction Modify(BaseAction input) {

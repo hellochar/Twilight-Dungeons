@@ -7,7 +7,7 @@ class ItemStick : EquippableItem, IDurable, IWeapon {
 
   public int maxDurability => 3;
 
-  public (int, int) AttackSpread => (2, 4);
+  public (int, int) AttackSpread => (2, 2);
 
   public ItemStick() {
     this.durability = maxDurability;

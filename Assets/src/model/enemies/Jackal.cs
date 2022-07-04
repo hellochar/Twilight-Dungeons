@@ -40,5 +40,5 @@ public class Jackal : AIActor {
     });
   }
 
-  internal override (int, int) BaseAttackDamage() => (1, 1);
+  internal override (int, int) BaseAttackDamage() => (1, 2);
 }

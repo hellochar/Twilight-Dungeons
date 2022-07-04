@@ -20,11 +20,15 @@ public static class Serializer {
     } catch (Exception e) {
       Debug.LogError(e);
       if (useBackup) {
-        return Load(CHECKPOINT_PATH);
+        return LoadCheckpoint();
       } else {
         throw e;
       }
     }
+  }
+
+  public static GameModel LoadCheckpoint() {
+    return Load(CHECKPOINT_PATH);
   }
 
   private static GameModel Load(string path) {

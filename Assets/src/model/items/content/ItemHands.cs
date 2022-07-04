@@ -16,7 +16,7 @@ public class ItemHands : EquippableItem, IWeapon {
     set {}
   }
 
-  public (int, int) AttackSpread => (1, 2);
+  public (int, int) AttackSpread => (1, 1);
 
   public override List<MethodInfo> GetAvailableMethods(Player player) {
     return new List<MethodInfo>();

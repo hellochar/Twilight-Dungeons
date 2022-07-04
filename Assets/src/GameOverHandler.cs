@@ -30,6 +30,7 @@ public class GameOverHandler : MonoBehaviour {
         dPad.SetActive(false);
         SceneManager.LoadSceneAsync("Scenes/GameOver", LoadSceneMode.Additive);
       } else {
+        GameModel.main = Serializer.LoadCheckpoint();
         StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
       }
     }

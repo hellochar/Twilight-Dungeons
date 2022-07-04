@@ -7,7 +7,7 @@ using UnityEngine;
 [ObjectInfo(description: "Targets the nearest creature.\nHeals when it deals damage.\nGoes into Deep Sleep after 7 turns awake.", flavorText: "\"Eat, sleep, fly, repeat!\nAs far as I'm concerned, you're meat!\"\n\t - Northland nursery rhyme")]
 public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   public Bat(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 4;
+    hp = baseMaxHp = 5;
     // ClearTasks();
     faction = Faction.Enemy;
     if (MyRandom.value < 0.2f) {
@@ -47,9 +47,11 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
   }
 
   Actor SelectTarget() {
-    var potentialTargets = new HashSet<Actor>(floor
-      .ActorsInCircle(pos, 7)
-      .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Bat)));
+    // var potentialTargets = new HashSet<Actor>(floor
+    //   .ActorsInCircle(pos, 7)
+    //   .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Bat)));
+    var potentialTargets = new HashSet<Actor>();
+    potentialTargets.Add(GameModel.main.player);
 
     if (!CanTargetPlayer()) {
       potentialTargets.Remove(GameModel.main.player);

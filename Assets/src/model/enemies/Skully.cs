@@ -15,7 +15,10 @@ public class Skully : AIActor, IActorKilledHandler {
   public void OnKilled(Actor a) {
     var floor = this.floor;
     GameModel.main.EnqueueEvent(() => {
-      floor.Put(new Muck(pos));
+      var muckSpot = floor.BreadthFirstSearch(pos, tile => tile is Ground).Where(t => !(t.grass is Muck)).FirstOrDefault();
+      if (muckSpot != null) {
+        floor.Put(new Muck(muckSpot.pos));
+      }
     });
   }
 
@@ -32,7 +35,7 @@ public class Skully : AIActor, IActorKilledHandler {
     }
   }
 
-  internal override (int, int) BaseAttackDamage() => (2, 2);
+  internal override (int, int) BaseAttackDamage() => (1, 1);
 }
 
 [System.Serializable]
@@ -55,7 +58,10 @@ public class Muck : Grass, ISteppable, IActorEnterHandler {
   public float Step() {
     OnNoteworthyAction();
     if (timeNextAction - timeCreated >= 3) {
-      floor.Put(new Skully(pos));
+      var s = new Skully(pos);
+      s.ClearTasks();
+      s.timeNextAction += 1;
+      floor.Put(s);
       KillSelf();
     }
     return 1;

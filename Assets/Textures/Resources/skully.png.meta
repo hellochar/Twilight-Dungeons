@@ -4,10 +4,10 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: -3083117422368779406
-    second: skully
+    second: skully2
   - first:
       213: -2937719900985434881
-    second: muck
+    second: muck2
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -121,7 +121,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: skully
+      name: skully2
       rect:
         serializedVersion: 2
         x: 0
@@ -142,7 +142,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: muck
+      name: muck2
       rect:
         serializedVersion: 2
         x: 16

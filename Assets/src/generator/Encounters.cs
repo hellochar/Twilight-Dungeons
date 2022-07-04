@@ -39,12 +39,13 @@ public class Encounters {
 
   public static void AddSkullys(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth / 2,
-      (1, 2),
-      (2, 2),
-      (2, 3),
-      (2, 4)
-    );
+    // var num = RandomRangeBasedOnIndex(floor.depth / 2,
+    //   (1, 2),
+    //   (2, 2),
+    //   (2, 3),
+    //   (2, 4)
+    // );
+    var num = 1;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Skully(tile.pos));
     }

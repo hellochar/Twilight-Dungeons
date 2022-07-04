@@ -69,9 +69,7 @@ public sealed class AttackGroundBaseAction : BaseAction {
   }
 
   public override void Perform() {
-    if (actor.IsNextTo(targetPosition)) {
-      actor.AttackGround(targetPosition);
-    }
+    actor.AttackGround(targetPosition);
   }
 }
 

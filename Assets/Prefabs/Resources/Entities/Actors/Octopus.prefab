@@ -27,6 +27,12 @@ PrefabInstance:
       propertyPath: bloodColor.r
       value: 0.78
       objectReference: {fileID: 0}
+    - target: {fileID: 6718828019105851581, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: 66e5a8335a7ddc6479b688461fe7102f,
+        type: 2}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_RootOrder
@@ -96,17 +102,17 @@ PrefabInstance:
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.9433962
+      value: 0.81849116
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.81424326
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.13705942
+      value: 0.35400003
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}

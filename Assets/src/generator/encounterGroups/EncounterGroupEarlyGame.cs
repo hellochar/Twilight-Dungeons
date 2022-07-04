@@ -4,10 +4,10 @@ public static class EncounterGroupEarlyGame {
   public static EncounterGroup EarlyGame() {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
-        { 1.05f, AFewBlobs },
-        { 1.05f, JackalPile },
-        { 1.05f, AddSkullys },
-        { 1.05f, AddOctopus },
+        { 1.0f, AFewBlobs },
+        { 1.0f, JackalPile },
+        { 1.0f, AddSkullys },
+        { 1.0f, AddOctopus },
 
         { 0.9f, AFewSnails },
         { 0.4f, AddBats },
@@ -17,6 +17,7 @@ public static class EncounterGroupEarlyGame {
       Grasses = new EncounterBag {
         { 1f, AddSoftGrass },
 
+        { 0.6f, AddLlaora },
         { 0.6f, AddGuardleaf },
         { 0.6f, AddBladegrass },
 
@@ -36,6 +37,7 @@ public static class EncounterGroupEarlyGame {
       Spice = new EncounterBag {
         { 5f, Empty },
 
+        { 0.5f, AddStalk },
         { 0.5f, AFewBlobs },
         { 0.5f, AFewSnails },
         { 0.5f, AddFruitingBodies },

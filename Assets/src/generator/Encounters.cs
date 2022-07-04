@@ -53,7 +53,7 @@ public class Encounters {
 
   public static void AddOctopus(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth / 2,
+    var num = RandomRangeBasedOnIndex(floor.depth / 3,
       (1, 1),
       (1, 1),
       (1, 2),

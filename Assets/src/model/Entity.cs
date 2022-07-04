@@ -9,6 +9,10 @@ public interface IDeathHandler {
   void HandleDeath(Entity source);
 }
 
+public interface IFloorChangeHandler {
+  void HandleFloorChanged(Floor newFloor, Floor oldFloor);
+}
+
 [Serializable]
 public abstract class Entity : IModifierProvider {
   public readonly Guid guid = System.Guid.NewGuid();
@@ -45,6 +49,8 @@ public abstract class Entity : IModifierProvider {
 
   /// <summary>Only call this from Floor to internally update this Entity's floor pointer.</summary>
   public void SetFloor(Floor floor) {
+    var oldFloor = this.floor;
+
     if (this.floor != null) {
       HandleLeaveFloor();
     }
@@ -52,10 +58,17 @@ public abstract class Entity : IModifierProvider {
     if (this.floor != null) {
       HandleEnterFloor();
     }
+
+    OnFloorChanged(floor, oldFloor);
   }
 
   protected virtual void HandleEnterFloor() {}
   protected virtual void HandleLeaveFloor() {}
+  protected virtual void OnFloorChanged(Floor newFloor, Floor oldFloor) {
+    foreach (var handler in this.Of<IFloorChangeHandler>()) {
+      handler.HandleFloorChanged(newFloor, oldFloor);
+    }
+  }
 
   public float DistanceTo(Vector2Int other) {
     return Vector2Int.Distance(pos, other);

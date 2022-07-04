@@ -155,7 +155,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       player.SetTasks(new SleepTask(player, 100, true));
     }
     if (Input.GetKeyDown(KeyCode.Space)) {
-      player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
+      player.floor.ForceAddVisibility();
     }
     if (Input.GetKeyDown(KeyCode.S)) {
       Serializer.SaveMainToFile();
@@ -198,7 +198,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       while(e.MoveNext()) { }
       GameModel.main.currentFloor.PlayerGoDownstairs();
       GameModel.main.DrainEventQueue();
-      player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
+      player.floor.ForceAddVisibility();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
     if (Input.GetKeyDown(KeyCode.T)) {

@@ -274,7 +274,10 @@ public class Floor {
     }
   }
 
-  internal void ForceAddVisibility(IEnumerable<Vector2Int> positions) {
+  internal void ForceAddVisibility(IEnumerable<Vector2Int> positions = null) {
+    if (positions == null) {
+      positions = this.EnumerateFloor();
+    }
     foreach (var pos in positions) {
       Tile t = tiles[pos];
       t.visibility = TileVisiblity.Visible;

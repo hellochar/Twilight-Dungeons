@@ -46,7 +46,7 @@ public class ThirdEyeStatusController : StatusController {
 
       var actorController = GameModelController.main.CurrentFloorController.GameObjectFor(actor);
       if (actorController != null) {
-        worldText.transform.position = actorController.transform.position;
+        worldText.transform.position = actorController.transform.position + new Vector3(0, -0.30f, 0);
       }
     }
   }

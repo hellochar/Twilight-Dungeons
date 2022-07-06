@@ -241,7 +241,7 @@ public class Water : Tile, IActorEnterHandler {
   }
 
   public void Collect() {
-    GameModel.main.player.water += MyRandom.Range(105, 111);
+    GameModel.main.player.water += MyRandom.Range(55, 65);
     floor.Put(new Ground(pos));
   }
 

@@ -33,6 +33,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderers:
   - {fileID: 3703747605915889643}
+  maskVisible: {fileID: 8376754295178930708}
+  maskExplored: {fileID: 1258814220538047567}
 --- !u!1001 &507988456908467566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -123,6 +125,18 @@ GameObject:
 --- !u!212 &3703747605915889643 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 3777084247053353605, guid: 16637295e55e2db4dbd4caafff2523df,
+    type: 3}
+  m_PrefabInstance: {fileID: 507988456908467566}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &8376754295178930708 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 8308166497240942458, guid: 16637295e55e2db4dbd4caafff2523df,
+    type: 3}
+  m_PrefabInstance: {fileID: 507988456908467566}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &1258814220538047567 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 1618067778389295393, guid: 16637295e55e2db4dbd4caafff2523df,
     type: 3}
   m_PrefabInstance: {fileID: 507988456908467566}
   m_PrefabAsset: {fileID: 0}

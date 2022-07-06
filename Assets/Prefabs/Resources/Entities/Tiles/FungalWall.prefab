@@ -97,6 +97,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderers:
   - {fileID: 4970797348473761393}
+  maskVisible: {fileID: 278588412350737294}
+  maskExplored: {fileID: 7414543279578672597}
 --- !u!1001 &6602561357205704437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -104,6 +106,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1087204933163285133, guid: 5eaed359f9e0f2e429b6f35bf907f7a2,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2259350471716954244, guid: 5eaed359f9e0f2e429b6f35bf907f7a2,
         type: 3}
       propertyPath: m_Sprite
@@ -229,6 +236,18 @@ Transform:
 --- !u!212 &4970797348473761393 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2259350471716954244, guid: 5eaed359f9e0f2e429b6f35bf907f7a2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6602561357205704437}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &278588412350737294 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 6376178146173199739, guid: 5eaed359f9e0f2e429b6f35bf907f7a2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6602561357205704437}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &7414543279578672597 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 4414861645776184096, guid: 5eaed359f9e0f2e429b6f35bf907f7a2,
     type: 3}
   m_PrefabInstance: {fileID: 6602561357205704437}
   m_PrefabAsset: {fileID: 0}

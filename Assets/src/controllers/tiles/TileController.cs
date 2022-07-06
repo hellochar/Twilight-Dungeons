@@ -8,58 +8,55 @@ public class TileController : MonoBehaviour, IEntityController, IPlayerInteractH
   [NonSerialized]
   public Tile tile;
   public SpriteRenderer[] renderers;
-  private SpriteMask mask;
-  private int sortingLayerStatuses; 
-  private int sortingLayerDefault;
+  public SpriteMask maskVisible;
+  public SpriteMask maskExplored;
+
+  TileVisiblity lastTileVisibility;
 
   // Start is called before the first frame update
   public virtual void Start() {
-    sortingLayerStatuses = SortingLayer.NameToID("Statuses");
-    sortingLayerDefault = SortingLayer.NameToID("Default");
-    this.mask = GetComponent<SpriteMask>();
-    Update();
+    SetVisibilityAndMasks();
   }
 
-  // Update is called once per frame
-  public virtual void Update() {
+  public void SetVisibilityAndMasks() {
     switch (tile.visibility) {
       case TileVisiblity.Unexplored:
         foreach (var renderer in renderers) {
           renderer.enabled = false;
-          unexploredMask.a = renderer.color.a;
-          renderer.color = unexploredMask;
+          // unexploredMask.a = renderer.color.a;
+          // renderer.color = unexploredMask;
         }
-        if (mask != null) {
-          mask.enabled = false;
-        }
+        maskVisible.enabled = false;
+        maskExplored.enabled = false;
         break;
       case TileVisiblity.Visible:
-        if (mask != null) {
-          mask.enabled = true;
-          // show all
-          mask.backSortingLayerID = sortingLayerDefault;
-          mask.backSortingOrder = 0;
-        }
         foreach (var renderer in renderers) {
           renderer.enabled = true;
-          visibleMask.a = renderer.color.a;
-          renderer.color = Color.Lerp(renderer.color, visibleMask, 0.2f);
+          // visibleMask.a = renderer.color.a;
+          // renderer.color = visibleMask;
+          // renderer.color = Color.Lerp(renderer.color, visibleMask, 0.2f);
         }
+        maskVisible.enabled = true;
+        maskExplored.enabled = false;
         break;
       case TileVisiblity.Explored:
-        if (mask != null) {
-          mask.enabled = true;
-          // don't show entities or statuses
-          mask.backSortingLayerID = sortingLayerStatuses;
-          /// max for sprite masks - signed 16 bit max
-          mask.backSortingOrder = 32767;
-        }
         foreach (var renderer in renderers) {
           renderer.enabled = true;
-          exploredMask.a = renderer.color.a;
-          renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
+          // exploredMask.a = renderer.color.a;
+          // renderer.color = exploredMask;
+          // renderer.color = Color.Lerp(renderer.color, exploredMask, 0.2f);
         }
+        maskVisible.enabled = false;
+        maskExplored.enabled = true;
         break;
+    }
+    lastTileVisibility = tile.visibility;
+  }
+
+  // Update is called once per frame
+  public virtual void Update() {
+    if (tile.visibility != lastTileVisibility) {
+      SetVisibilityAndMasks();
     }
   }
 
@@ -70,6 +67,6 @@ public class TileController : MonoBehaviour, IEntityController, IPlayerInteractH
   }
 
   private static Color unexploredMask = new Color(0, 0, 0);
-  private static Color exploredMask = new Color(0.3f, 0.3f, 0.45f);
-  private static Color visibleMask = new Color(1, 1, 1);
+  // private static Color exploredMask = new Color(0.75f, 0.75f, 0.85f);
+  // private static Color visibleMask = new Color(1, 1, 1);
 }

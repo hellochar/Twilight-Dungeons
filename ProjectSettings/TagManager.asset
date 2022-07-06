@@ -60,6 +60,9 @@ TagManager:
   - name: Particles
     uniqueID: 565039641
     locked: 0
+  - name: FogMask
+    uniqueID: 2996473821
+    locked: 0
   - name: WorldUI
     uniqueID: 2966922071
     locked: 0

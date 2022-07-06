@@ -97,6 +97,8 @@ MonoBehaviour:
   renderers:
   - {fileID: 137562043305867505}
   - {fileID: 4852525865654705881}
+  maskVisible: {fileID: 5102253499360312590}
+  maskExplored: {fileID: 2591498316867058517}
 --- !u!1001 &3855734319893215860
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -159,6 +161,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2604965648696465548, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_Name
@@ -182,6 +189,18 @@ Transform:
 --- !u!212 &137562043305867505 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 3777084247053353605, guid: 16637295e55e2db4dbd4caafff2523df,
+    type: 3}
+  m_PrefabInstance: {fileID: 3855734319893215860}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &5102253499360312590 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 8308166497240942458, guid: 16637295e55e2db4dbd4caafff2523df,
+    type: 3}
+  m_PrefabInstance: {fileID: 3855734319893215860}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &2591498316867058517 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 1618067778389295393, guid: 16637295e55e2db4dbd4caafff2523df,
     type: 3}
   m_PrefabInstance: {fileID: 3855734319893215860}
   m_PrefabAsset: {fileID: 0}

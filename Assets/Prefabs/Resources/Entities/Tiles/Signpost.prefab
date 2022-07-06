@@ -15,6 +15,8 @@ MonoBehaviour:
   renderers:
   - {fileID: 9077472321735988449}
   - {fileID: 6252588862675010082}
+  maskVisible: {fileID: 4242328787394253086}
+  maskExplored: {fileID: 6910710910314288965}
 --- !u!1 &4608574762277493584
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +203,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Signpost
       objectReference: {fileID: 0}
+    - target: {fileID: 6162231138363835390, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7093448786113970297, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
         type: 3}
       propertyPath: m_RootOrder
@@ -274,6 +281,18 @@ Transform:
 --- !u!212 &9077472321735988449 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 5028533942722238967, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+    type: 3}
+  m_PrefabInstance: {fileID: 4049114305318587670}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &4242328787394253086 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 211281672392137736, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
+    type: 3}
+  m_PrefabInstance: {fileID: 4049114305318587670}
+  m_PrefabAsset: {fileID: 0}
+--- !u!331 &6910710910314288965 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 7482342604781427283, guid: 00fe13de2c3917e4990ee9dd2e2f3e65,
     type: 3}
   m_PrefabInstance: {fileID: 4049114305318587670}
   m_PrefabAsset: {fileID: 0}

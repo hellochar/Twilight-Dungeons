@@ -51,13 +51,13 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
       maxTurns--;
     }
     if (ShouldWakeUp()) {
-      // end of sleep - wake up adjacent sleeping Actors
-      foreach (var actor in actor.floor.AdjacentActors(actor.pos)) {
-        if (actor.task is SleepTask s && !s.isDeepSleep) {
-          // hack to wake them up
-          s.wakeUpNextTurn = true;
-        }
-      }
+      // // end of sleep - wake up adjacent sleeping Actors
+      // foreach (var actor in actor.floor.AdjacentActors(actor.pos)) {
+      //   if (actor.task is SleepTask s && !s.isDeepSleep) {
+      //     // hack to wake them up
+      //     s.wakeUpNextTurn = true;
+      //   }
+      // }
       done = true;
       actor.statuses.Add(new SurprisedStatus());
     }

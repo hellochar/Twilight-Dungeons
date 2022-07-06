@@ -43,6 +43,13 @@ class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
       return false;
     }
 
+    // // this was an idea in waking one creature up per turn, left to right
+    // // but it had many edge cases (e.g. deep sleep), so we've put it to bed for now
+    // var allSleepingActors = actor.floor.bodies.Where(b => b is Actor a && a.task is SleepTask t && !t.isDeepSleep);
+    // var isNextUp = allSleepingActors.OrderBy(b => b.pos.x * 1000 + b.pos.y).FirstOrDefault() == actor;
+    // var isPlayerNextToMe = actor.IsNextTo(GameModel.main.player);
+    // return isPlayerNextToMe || MyRandom.value < 0.25f;
+
     return actor.isVisible && actor.CanTargetPlayer();
   }
 

@@ -15,6 +15,9 @@ public interface ITakeAnyDamageHandler {
 public interface IHealHandler {
   void HandleHeal(int amount);
 }
+public interface IFloorChangeHandler {
+  void HandleFloorChanged(Floor newFloor, Floor oldFloor);
+}
 
 [Serializable]
 public class Body : Entity {
@@ -72,6 +75,9 @@ public class Body : Entity {
 
     var newTile = newFloor.tiles[newPos];
     newFloor.Put(this);
+
+    OnFloorChanged(floor, oldFloor);
+
     newTile.BodyEntered(this);
   }
 
@@ -92,6 +98,12 @@ public class Body : Entity {
 
   protected override void HandleEnterFloor() {
     tile.BodyEntered(this);
+  }
+
+  protected virtual void OnFloorChanged(Floor newFloor, Floor oldFloor) {
+    foreach (var handler in this.Of<IFloorChangeHandler>()) {
+      handler.HandleFloorChanged(newFloor, oldFloor);
+    }
   }
 
   /// returns how much it actually healed

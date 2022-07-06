@@ -247,29 +247,24 @@ public class Floor {
     }
   }
 
-  internal virtual void RemoveVisibility(Player player, Vector2Int? position = null) {
-    foreach (var pos in this.EnumerateCircle(position ?? player.pos, player.visibilityRange)) {
-      Tile t = tiles[pos.x, pos.y];
-      if (t.visibility == TileVisiblity.Visible) {
-        t.visibility = TileVisiblity.Explored;
-      }
-    }
-  }
-
   public void RecomputeVisibility(Player player) {
-    if (player != null && player.floor == this) {
-      RemoveVisibility(player);
-      AddVisibility(player);
+    if (player == null || player.floor != this) {
+      return;
     }
-  }
 
-  internal virtual void AddVisibility(Player player, Vector2Int? position = null) {
-    // player.floor.ForceAddVisibility(player.floor.EnumerateFloor());
-    foreach (var pos in this.EnumerateCircle(player.pos, player.visibilityRange)) {
+    foreach (var pos in this.EnumerateFloor()) {
       Tile t = tiles[pos.x, pos.y];
+      var isEnclosedByWalls = GetAdjacentTiles(pos).All(t => t is Wall);
+      if (isEnclosedByWalls) {
+        // looks better when we skip fully enclosed Walls
+        continue; // t.visibility = TileVisiblity.Unexplored;
+      }
+
       bool isVisible = TestVisibility(player.pos, pos);
       if (isVisible) {
         t.visibility = TileVisiblity.Visible;
+      } else {
+        t.visibility = TileVisiblity.Explored;
       }
     }
   }
@@ -284,20 +279,20 @@ public class Floor {
     }
   }
 
-  /// returns true if the points have line of sight to each other
-  public bool TestVisibility(Vector2Int source, Vector2Int end) {
+  private bool TestVisibilityOneDir(Vector2Int source, Vector2Int end) {
     // tiles can always see themselves and adjacent neighbors; this is important if the player is standing on a fern
-    if (Util.DiamondMagnitude(source - end) <= 1) {
-      return true;
-    }
+    // if (Util.DiamondMagnitude(source - end) <= 1) {
+    //   return true;
+    // }
+
     bool isVisible = true;
-    if (tiles[end.x, end.y].ObstructsVision()) {
-      var possibleEnds = GetAdjacentTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {
-        return Vector2Int.Distance(source, tile.pos);
-      });
-      /// find the closest neighbor that doesn't obstruct vision and go off that
-      end = possibleEnds.FirstOrDefault()?.pos ?? end;
-    }
+    // if (tiles[end.x, end.y].ObstructsVision()) {
+    //   var possibleEnds = GetAdjacentTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {
+    //     return Vector2Int.Distance(source, tile.pos);
+    //   });
+    //   /// find the closest neighbor that doesn't obstruct vision and go off that
+    //   end = possibleEnds.FirstOrDefault()?.pos ?? end;
+    // }
     foreach (var pos in this.EnumerateLine(source, end)) {
       if (pos == source || pos == end) {
         continue;
@@ -306,6 +301,12 @@ public class Floor {
       isVisible = isVisible && !t.ObstructsVision();
     }
     return isVisible;
+  }
+
+  /// returns true if the points have line of sight to each other
+  public bool TestVisibility(Vector2Int source, Vector2Int end) {
+    // EnumerateLine is not commutative so make it
+    return TestVisibilityOneDir(source, end) || TestVisibilityOneDir(end, source);
   }
 
   /// includes the tile *at* the pos.

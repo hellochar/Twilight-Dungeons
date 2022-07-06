@@ -95,11 +95,11 @@ public class Encounters {
   public static void AFewSnails(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth,
+    var num = RandomRangeBasedOnIndex(floor.depth / 2,
+      (1, 1),
       (1, 2),
-      (1, 3),
-      (2, 4),
-      (2, 4)
+      (2, 3),
+      (2, 3)
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Snail(tile.pos));
@@ -109,14 +109,7 @@ public class Encounters {
   public static void AddBats(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth / 4,
-      (1, 1),
-      (1, 1),
-      (2, 2),
-      (2, 3),
-      (2, 3),
-      (2, 4)
-    );
+    var num = 1;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Bat(tile.pos));
     }
@@ -157,18 +150,7 @@ public class Encounters {
   public static void AddGolems(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
-      (1, 1),
-      (1, 1),
-      (1, 2),
-      (1, 2),
-      (2, 2),
-      (2, 2),
-      (2, 3),
-      (2, 3),
-      (2, 4),
-      (2, 4)
-    );
+    var num = floor.depth < 24 ? 1 : MyRandom.Range(2, 4);
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Golem(tile.pos));
     }
@@ -248,7 +230,7 @@ public class Encounters {
   public static void AddCrabs(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    foreach (var tile in tiles.Take(3)) {
+    foreach (var tile in tiles.Take(1)) {
       floor.Put(new Crab(tile.pos));
     }
   }
@@ -456,6 +438,7 @@ public class Encounters {
   public static void AddWebs2x(Floor floor, Room room) => Twice(AddWebs)(floor, room);
   public static void AddWebs(Floor floor, Room room) {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => tile.grass == null && tile is Ground).ToList();
+    tiles.Reverse();
     var num = Random.Range(tiles.Count / 8, tiles.Count / 2);
     foreach (var tile in tiles.Take(num)) {
       // about 50% chance that out of 5 open squares, one will have a space.
@@ -792,11 +775,10 @@ public class Encounters {
 
   public static void FungalColonyAnticipation(Floor floor, Room room) {
     var downstairs = floor.downstairs;
-    // remove all enemies
-    foreach (var body in floor.EnumerateRoom(room, 1).Select(p => floor.bodies[p]).Where(b => b != null)) {
-      floor.Remove(body);
-    }
-
+    // // remove all enemies
+    // foreach (var body in floor.EnumerateRoom(room, 1).Select(p => floor.bodies[p]).Where(b => b != null)) {
+    //   floor.Remove(body);
+    // }
 
     // surround with fungal walls
     var distance2Walls = floor
@@ -809,7 +791,6 @@ public class Encounters {
     if (breederTile != null) {
       floor.Put(new FungalBreeder(breederTile.pos));
     }
-
   }
 
   public static void WallPillars(Floor floor, Room room) {

@@ -26,6 +26,7 @@ public class Butterfly : AIActor {
   public Butterfly(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     hp = baseMaxHp = 1;
+    ClearTasks();
     statuses.Add(new CharmedStatus());
   }
 

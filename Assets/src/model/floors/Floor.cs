@@ -323,7 +323,11 @@ public class Floor {
     return list;
   }
 
-  public IEnumerable<Tile> GetCardinalNeighbors(Vector2Int pos) {
+  public IEnumerable<Tile> GetCardinalNeighbors(Vector2Int pos, bool includeSelf = false) {
+    if (includeSelf) {
+      yield return tiles[pos];
+    }
+
     var up = pos + Vector2Int.up;
     if (InBounds(up)) {
       yield return tiles[up];

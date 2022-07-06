@@ -5,7 +5,10 @@ using UnityEngine;
 public abstract class Boss : AIActor, IActionPerformedHandler {
   public bool isSeen = false;
 
-  protected Boss(Vector2Int pos) : base(pos) { }
+  protected Boss(Vector2Int pos) : base(pos) {
+    faction = Faction.Enemy;
+    ClearTasks();
+   }
 
   protected virtual void OnSeen() {}
 

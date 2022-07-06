@@ -295,6 +295,16 @@ public class Encounters {
     }
   }
 
+  public static void AddLlaora(Floor floor, Room room) {
+    var tile = Util.RandomPick(
+      FloorUtils.TilesFromCenter(floor, room)
+        .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x <= 5)
+    );
+    if (tile != null) {
+      floor.Put(new Llaora(tile.pos));
+    }
+  }
+
   public static void AddGoldGrass(Floor floor, Room room) {
     var roomTiles = floor.EnumerateRoomTiles(room);
 

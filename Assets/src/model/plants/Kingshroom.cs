@@ -99,7 +99,7 @@ public class ItemKingshroomPowder : Item, IDurable, ITargetedAction<Actor> {
 
   public string TargettedActionName => "Infect";
 
-  public IEnumerable<Actor> Targets(Player player) => player.floor.AdjacentActors(player.pos).Where((a) => a != player);
+  public IEnumerable<Actor> Targets(Player player) => player.floor.AdjacentActors(player.pos).Where((a) => a != player && !(a is Boss));
 
   public void PerformTargettedAction(Player player, Entity e) {
     var target = (Actor) e;

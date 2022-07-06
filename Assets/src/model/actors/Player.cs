@@ -39,13 +39,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public float visibilityRange {
     get => m_visibilityRange;
     set {
-      if (floor != null) {
-        floor.RemoveVisibility(this);
-      }
       m_visibilityRange = value;
-      if (floor != null) {
-        floor.AddVisibility(this);
-      }
     }
   }
   internal readonly ItemHands Hands;
@@ -80,10 +74,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    if (floor != null) {
-      floor.RemoveVisibility(this, oldPos);
-      floor.AddVisibility(this, newPos);
-    }
+    floor.RecomputeVisibility(this);
     UpdateVisibleEnemies();
   }
 
@@ -143,14 +134,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
-  protected override void HandleLeaveFloor() {
-    if (!IsDead) {
-      floor.RemoveVisibility(this);
-    }
-  }
-
   protected override void HandleEnterFloor() {
-    floor.AddVisibility(this);
+    floor.RecomputeVisibility(this);
     UpdateVisibleEnemies();
   }
 

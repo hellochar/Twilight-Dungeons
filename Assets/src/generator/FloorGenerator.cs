@@ -391,16 +391,6 @@ public class FloorGenerator {
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs = 1, int numGrasses = 1, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     numGrasses++;
-    // var nonBoundaryWidth = width;
-    var scaledHeight = height * 0.6f + 1;
-    var nonBoundaryWidth = scaledHeight * 16 / 9f;
-    var nonBoundaryHeight = scaledHeight;
-    // reduce area to 67% of normal, which puts each dimension at ~81.2% of what it used to be
-    var shrunkNonBoundaryWidth = Mathf.RoundToInt(nonBoundaryWidth);
-    var shrunkNonBoundaryHeight = Mathf.RoundToInt(nonBoundaryHeight);
-    Debug.LogFormat("floor from {0}x{1} to {2}x{3}", width, height, shrunkNonBoundaryWidth, shrunkNonBoundaryHeight);
-    width = shrunkNonBoundaryWidth;
-    height = shrunkNonBoundaryHeight;
     Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
     ensureConnectedness(floor);
     var room0 = floor.root;
@@ -466,18 +456,24 @@ public class FloorGenerator {
   }
 
   public Floor generateBlobBossFloor(int depth) {
-    Floor floor = new BossFloor(depth, 15, 15);
+    Floor floor = new BossFloor(depth, 14, 10);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Ground(p));
+    }
+    foreach(var p in floor.EnumeratePerimeter()) {
       floor.Put(new Wall(p));
     }
+    floor.Put(new Wall(new Vector2Int(1, 1)));
+    floor.Put(new Wall(new Vector2Int(floor.width - 1, 1)));
+    floor.Put(new Wall(new Vector2Int(floor.width - 1, floor.height - 1)));
+    floor.Put(new Wall(new Vector2Int(1, floor.height - 1)));
 
     Room room0 = new Room(floor);
-    FloorUtils.CarveGround(floor, floor.EnumerateCircle(room0.center, 7f));
-    floor.Put(new Wall(room0.center + new Vector2Int(3, 3)));
-    floor.Put(new Wall(room0.center + new Vector2Int(3, -3)));
-    floor.Put(new Wall(room0.center + new Vector2Int(-3, -3)));
-    floor.Put(new Wall(room0.center + new Vector2Int(-3, 3)));
+    floor.Put(new Wall(room0.center + new Vector2Int(2, 2)));
+    floor.Put(new Wall(room0.center + new Vector2Int(2, -2)));
+    floor.Put(new Wall(room0.center + new Vector2Int(-2, -2)));
+    floor.Put(new Wall(room0.center + new Vector2Int(-2, 2)));
 
     floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
@@ -488,7 +484,7 @@ public class FloorGenerator {
     floor.downstairsRoom = room0;
 
     // add boss
-    floor.Put(new Blobmother(room0.center + Vector2Int.right * 3));
+    floor.Put(new Blobmother(room0.center));
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

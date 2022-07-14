@@ -8,7 +8,7 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   // moves slightly slower than other blobs so the small blobs get hit first
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority + 1;
   public Blobmother(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 36;
+    hp = baseMaxHp = 24;
     faction = Faction.Enemy;
   }
 

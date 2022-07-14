@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public static class Transitions {
   public static IEnumerator GoToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad) {
     SceneManager.LoadSceneAsync(sceneToLoad);
-    yield return b.StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black));
+    if (overlay != null) {
+      yield return b.StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black));
+    }
   }
 
   // by default, go from its current color to the target color

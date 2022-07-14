@@ -7,9 +7,10 @@ public class DeepLevelColorSwap : MonoBehaviour {
   public Color color12, color24;
   void Start() {
     tileController = GetComponentInParent<TileController>();
-    if (tileController.tile.floor.depth > 24) {
+    var generator = GameModel.main.generator;
+    if (generator.EncounterGroup == generator.midGame) {
       GetComponent<SpriteRenderer>().color = color24;
-    } else if (tileController.tile.floor.depth > 12) {
+    } else if (generator.EncounterGroup == generator.everything) {
       GetComponent<SpriteRenderer>().color = color12;
     }
   }

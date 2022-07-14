@@ -3247,9 +3247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab6ee90ead2e994ab52926e15aebd94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddingTop: 0
+  paddingTop: -0.5
   paddingRight: 0
-  paddingBottom: 0
+  paddingBottom: 1
   paddingLeft: 0
 --- !u!1 &539203642
 GameObject:

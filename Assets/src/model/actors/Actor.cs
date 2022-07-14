@@ -113,7 +113,7 @@ public class Actor : Body, ISteppable {
     if (!IsDead) {
       taskQueue.Clear();
       TaskChanged();
-      foreach (var handler in Modifiers.Of<IActorKilledHandler>(this)) {
+      foreach (var handler in Modifiers.Of<IActorKilledHandler>(this).ToList()) {
         handler.OnKilled(this);
       }
       base.Kill(source);

@@ -157,8 +157,8 @@ class ItemBulbousSkin : EquippableItem, IDurable, ISticky {
 
 [Serializable]
 [ObjectInfo("third-eye")]
-class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler {
-  internal override string GetStats() => "You're infected with a Third Eye!\nLose half your vision range.\nYou can see creatures' exact HP.";
+class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler, IAttackDamageTakenModifier {
+  internal override string GetStats() => "You're infected with a Third Eye!\nYou can see creatures' exact HP.\nTake 1 more attack damage.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public int durability { get; set; }
   public int maxDurability => 40;
@@ -168,18 +168,19 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler 
   }
 
   public override void OnEquipped() {
-    reduction = player.visibilityRange / 2;
-    player.visibilityRange -= reduction;
     player.statuses.Add(new ThirdEyeStatus());
   }
 
   public override void OnUnequipped() {
-    player.visibilityRange += reduction;
     player.statuses.RemoveOfType<ThirdEyeStatus>();
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     this.ReduceDurability();
+  }
+
+  public int Modify(int input) {
+    return input + 1;
   }
 }
 

@@ -36,7 +36,7 @@ public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
 
   public string TargettedActionName => "Charm";
 
-  public IEnumerable<AIActor> Targets(Player player) => player.ActorsInSight(Faction.Enemy).Where((a) => a is AIActor && !(a is Boss)).Cast<AIActor>();
+  public IEnumerable<AIActor> Targets(Player player) => player.GetVisibleActors(Faction.Enemy).Where((a) => a is AIActor && !(a is Boss)).Cast<AIActor>();
 
   public void PerformTargettedAction(Player player, Entity e) {
     var actor = (AIActor) e;
@@ -87,7 +87,7 @@ public class CharmAI : AI {
   }
 
   Actor TargetDecider() {
-    var targets = GameModel.main.player.ActorsInSight(Faction.Enemy).OrderBy(Util.DiamondDistanceToPlayer);
+    var targets = GameModel.main.player.GetVisibleActors(Faction.Enemy).OrderBy(Util.DiamondDistanceToPlayer);
     if (targets.Any()) {
       var closestDistance = Util.DiamondDistanceToPlayer(targets.First());
       /// consider targets tied for closest distance

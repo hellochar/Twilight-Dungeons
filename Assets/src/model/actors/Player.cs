@@ -35,13 +35,6 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
-  private float m_visibilityRange = 3.5f;
-  public float visibilityRange {
-    get => m_visibilityRange;
-    set {
-      m_visibilityRange = value;
-    }
-  }
   internal readonly ItemHands Hands;
   [NonSerialized] /// lazily instantiated
   private HashSet<Actor> lastVisibleEnemies;
@@ -80,7 +73,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   private void UpdateVisibleEnemies() {
     GameModel.main.EnqueueEvent(() => {
-      var visibleEnemies = new HashSet<Actor>(ActorsInSight(Faction.Enemy));
+      var visibleEnemies = new HashSet<Actor>(GetVisibleActors(Faction.Enemy));
       // if there's a newly visible enemy from last turn, cancel the current move task
       var isNewlyVisibleEnemy = visibleEnemies.Any((enemy) => lastVisibleEnemies != null && !lastVisibleEnemies.Contains(enemy));
       if (isNewlyVisibleEnemy && task is FollowPathTask) {
@@ -163,12 +156,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
-  public IEnumerable<Tile> GetVisibleTiles() => floor.EnumerateCircle(pos, visibilityRange).Select(p => floor.tiles[p]).Where(t => t.isVisible);
+  public IEnumerable<Tile> GetVisibleTiles() => floor.tiles.Where(t => t.isVisible);
 
-  public IEnumerable<Actor> ActorsInSight(Faction faction) => floor.ActorsInCircle(pos, visibilityRange).Where((a) => a.isVisible && faction.HasFlag(a.faction));
+  // Actors that are Visible
+  public IEnumerable<Actor> GetVisibleActors(Faction faction) => floor.bodies.Where((b) => b is Actor a && a.isVisible && faction.HasFlag(a.faction)).Cast<Actor>();
 
   /// <summary>Return true if there are any enemies in vision range.</summary>
   public bool IsInCombat() {
-    return ActorsInSight(Faction.Enemy).Any();
+    return GetVisibleActors(Faction.Enemy).Any();
   }
 }

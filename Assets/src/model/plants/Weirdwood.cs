@@ -58,7 +58,7 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
   public void Use(Actor actor) {
     var player = (Player) actor;
     var floor = actor.floor;
-    var enemies = player.ActorsInSight(Faction.Enemy);
+    var enemies = player.GetVisibleActors(Faction.Enemy);
     var start = actor.pos;
     if (enemies.Any()) {
       foreach (var enemy in enemies) {

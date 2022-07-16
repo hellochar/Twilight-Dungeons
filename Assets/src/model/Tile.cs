@@ -25,11 +25,7 @@ public abstract class Tile : Entity {
     /// set correct visibility when the tile is dynamically added
     var player = GameModel.main?.player;
     if (player != null) {
-      if (
-          floor == player.floor &&
-          DistanceTo(player) <= player.visibilityRange &&
-          floor.TestVisibility(player.pos, pos)
-      ) {
+      if (floor == player.floor && floor.TestVisibility(player.pos, pos)) {
         visibility = TileVisiblity.Visible;
       }
     }

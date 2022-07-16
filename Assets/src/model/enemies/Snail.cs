@@ -72,7 +72,7 @@ public class ItemSnailShell : Item, IStackable, ITargetedAction<Actor> {
 
   public string TargettedActionName => "Throw";
 
-  public IEnumerable<Actor> Targets(Player player) => player.ActorsInSight(Faction.Enemy).Concat(player.ActorsInSight(Faction.Neutral));
+  public IEnumerable<Actor> Targets(Player player) => player.GetVisibleActors(Faction.Enemy | Faction.Neutral);
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.SetTasks(new GenericPlayerTask(player, () => Throw(player, (Actor) target)));

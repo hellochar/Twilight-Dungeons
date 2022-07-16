@@ -57,10 +57,9 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
   public string TargettedActionName => "Summon";
 
   public IEnumerable<Tile> Targets(Player player) =>
-    player.floor
-      .EnumerateCircle(player.pos, player.visibilityRange)
-      .Select(p => player.floor.tiles[p])
-      .Where((p) => p.CanBeOccupied() && p.visibility == TileVisiblity.Visible);
+    player
+      .GetVisibleTiles()
+      .Where((p) => p.CanBeOccupied());
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.task = new GenericPlayerTask(player, () => Summon(player, target.pos));

@@ -80,13 +80,13 @@ public class SidePanelController : MonoBehaviour {
   /// interesting things: bodies and grasses
   IEnumerable<Entity> GetInterestingThings() {
     var floor = GameModel.main.currentFloor;
-    foreach (var pos in floor.EnumerateCircle(player.pos, player.visibilityRange)) {
-      var body = floor.tiles[pos].body;
-      var grass = floor.grasses[pos];
-      if (body != null && body.isVisible && !(body is IHideInSidebar)) {
+    foreach (var body in floor.bodies) {
+      if (!(body is IHideInSidebar)) {
         yield return body;
       }
-      if (grass != null && grass.isVisible && !(grass is IHideInSidebar)) {
+    }
+    foreach (var grass in floor.grasses) {
+      if (!(grass is IHideInSidebar)) {
         yield return grass;
       }
     }

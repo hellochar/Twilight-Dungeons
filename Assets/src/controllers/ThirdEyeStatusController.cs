@@ -22,7 +22,7 @@ public class ThirdEyeStatusController : StatusController {
     if (player.IsDead) {
       return;
     }
-    var actorsInSight = new HashSet<Actor>(player.ActorsInSight(Faction.Ally | Faction.Enemy));
+    var actorsInSight = new HashSet<Actor>(player.GetVisibleActors(Faction.Ally | Faction.Enemy));
     actorsInSight.Remove(player);
     // create
     foreach (var actor in actorsInSight) {

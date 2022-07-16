@@ -52,6 +52,7 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddIronJelly },
         { 0.2f, AddSpiders },
         { 0.2f, AddGolems },
+        { 0.2f, AddClumpshroom },
         // { 0.2f, AddScorpions },
         // { 0.2f, AddWildekins },
         // { 0.2f, AddCrabs },

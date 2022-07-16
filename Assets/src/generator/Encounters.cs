@@ -74,7 +74,11 @@ public class Encounters {
       (2, 2)
     );
     foreach (var tile in tiles.Take(num)) {
-      floor.Put(new Puffer(tile.pos));
+  public static void AddClumpshroom(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesAwayFromCenter(floor, room).Where(t => t.pos.x >= room.center.x);
+    var startTile = tiles.Skip(MyRandom.Range(0, 4)).FirstOrDefault();
+    if (startTile != null) {
+      floor.Put(new Clumpshroom(startTile.pos));
     }
   }
 

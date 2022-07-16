@@ -184,7 +184,7 @@ public class FloorGenerator {
     // Encounters.AddLlaora(floor, floor.root);
     // Encounters.AddDrooper(floor, floor.root);
     // Encounters.AddStalk(floor, floor.root);
-    // Encounters.AddZygoma(floor, floor.root);
+    Encounters.AddClumpshroom(floor, floor.root);
     // Encounters.AddNerveRoot(floor, floor.root);
 
     // Encounters.AddFruitingBodies(floor, floor.root);

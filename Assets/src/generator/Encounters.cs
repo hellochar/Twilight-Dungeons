@@ -291,6 +291,16 @@ public class Encounters {
     }
   }
 
+  public static void AddBloodstone(Floor floor, Room room) {
+    var tile = Util.RandomPick(
+      FloorUtils.EmptyTilesInRoom(floor, room)
+        .Where(tile => tile.pos.x < 3)
+    );
+    if (tile != null) {
+      floor.Put(new Bloodstone(tile.pos));
+    }
+  }
+
   public static void AddGoldGrass(Floor floor, Room room) {
     var roomTiles = floor.EnumerateRoomTiles(room);
 

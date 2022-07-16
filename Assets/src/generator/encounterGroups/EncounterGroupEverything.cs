@@ -54,6 +54,7 @@ public static class EncounterGroupEverything {
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },
         { 0.25f, AddFruitingBodies },
+        { 0.25f, AddBloodstone },
 
         { 0.2f, ScatteredBoombugs },
 

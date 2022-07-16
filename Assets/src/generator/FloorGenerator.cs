@@ -10,7 +10,7 @@ public class FloorGenerator {
   public EncounterGroupShared shared;
   public EncounterGroup EncounterGroup;
   public List<int> floorSeeds;
-  private EncounterGroup earlyGame, everything, midGame;
+  public EncounterGroup earlyGame, everything, midGame;
 
   [NonSerialized] /// these are hard-coded and reinstantiated when the program runs
   public List<Func<Floor>> floorGenerators;

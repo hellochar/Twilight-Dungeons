@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 /// Trying to reapply an existing status will call "Stack"
 [Serializable]
-public abstract class Status : IStepModifier {
+public abstract class Status : IStepModifier, IFloorChangeHandler {
   [field:NonSerialized] /// Controller only
   public event Action OnRemoved;
   private StatusList m_list;
@@ -58,6 +58,12 @@ public abstract class Status : IStepModifier {
       /// a Modifiers.Of() handler; modifying the list would
       /// cause a concurrent modification
       GameModel.main.EnqueueEvent(() => list?.Remove(this));
+    }
+  }
+
+  public virtual void HandleFloorChanged(Floor newFloor, Floor oldFloor) {
+    if (isDebuff) {
+      Remove();
     }
   }
 }
@@ -157,6 +163,10 @@ public class StatusList {
     foreach (var handler in actor.Of<IStatusRemovedHandler>()) {
       handler.HandleStatusRemoved(status);
     }
+  }
+
+  public override string ToString() {
+    return "[" + string.Join(", ", list) + "]";
   }
 }
 

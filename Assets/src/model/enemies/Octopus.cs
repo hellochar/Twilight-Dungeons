@@ -16,7 +16,11 @@ public class Octopus : AIActor {
       return new RunAwayTask(this, player.pos, 1, true);
     }
     if (CanTargetPlayer()) {
+      if (Util.DiamondDistanceToPlayer(this) < 3) {
         return new AttackGroundTask(this, GameModel.main.player.pos, 1);
+      } else {
+        return new ChaseTargetTask(this, player, 3);
+      }
     } else {
       return new WaitTask(this, 1);
     }

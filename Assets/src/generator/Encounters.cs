@@ -239,6 +239,14 @@ public class Encounters {
     }
   }
 
+  public static void AddStalk(Floor floor, Room room) {
+    // var x = MyRandom.Range(room.min.x + 1, room.max.x);
+    var x = room.center.x;
+    var line = floor
+      .EnumerateLine(new Vector2Int(x, 0), new Vector2Int(x, floor.height - 1))
+      .Where(pos => floor.tiles[pos].CanBeOccupied());
+    floor.PutAll(line.Select(pos => new Stalk(pos)));
+  }
 
   public static void MatureBerryBush(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(BerryBush));
   public static void MatureWildWood(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Wildwood));

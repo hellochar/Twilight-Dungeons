@@ -57,6 +57,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, ChunkInMiddle },
       { 1, LineWithOpening },
       { 1, InsetLayerWithOpening },
+      { 1, AddStalk },
       { 0.5f, ChasmsAwayFromWalls2 }
     };
     Chasms = new EncounterBag {

@@ -23,29 +23,15 @@ public class Rubble : Destructible, IBlocksVision {
 
 [System.Serializable]
 [ObjectInfo(description: "Destructible.")]
-public class Stump : Destructible {
+public class Stump : Destructible, IBlocksVision {
   public Stump(Vector2Int pos) : base(pos, 3) {}
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Grows upwards.")]
-public class Stalk : Destructible, ISteppable {
+[ObjectInfo(description: "Blocks vision.")]
+public class Stalk : Destructible, IBlocksVision {
 
-  public float timeNextAction { get; set; }
-
-  public float turnPriority => 9;
-
-  public Stalk(Vector2Int pos) : base(pos) {
-    timeNextAction = timeCreated + 5;
-  }
-
-  public float Step() {
-    var up = floor.tiles[new Vector2Int(pos.x, pos.y + 1)];
-    if (up.CanBeOccupied() && !(up.body is Stalk)) {
-      floor.Put(new Stalk(up.pos));
-    }
-    return 5;
-  }
+  public Stalk(Vector2Int pos) : base(pos) {}
 }
 
 /// Note - not implemented on moving entities yet

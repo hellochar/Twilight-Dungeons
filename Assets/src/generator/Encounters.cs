@@ -206,6 +206,27 @@ public class Encounters {
     }
   }
 
+  public static void AddDizapper(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new Dizapper(tile.pos));
+    }
+  }
+
+  public static void AddGoo(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new Goo(tile.pos));
+    }
+  }
+
+  public static void AddHardShell(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new HardShell(tile.pos));
+    }
+  }
+
   public static void AddHoppers(Floor floor, Room room) {
     var startTile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (startTile != null) {

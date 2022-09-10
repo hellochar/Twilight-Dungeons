@@ -9,9 +9,6 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 3;
     faction = Faction.Enemy;
-    if (MyRandom.value < 0.1f) {
-      inventory.AddItem(new ItemSnailShell(1));
-    }
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {

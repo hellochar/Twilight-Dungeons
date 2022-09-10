@@ -10,9 +10,6 @@ public class Bat : AIActor, IActionPerformedHandler, IDealAttackDamageHandler {
     hp = baseMaxHp = 5;
     // ClearTasks();
     faction = Faction.Enemy;
-    if (MyRandom.value < 0.2f) {
-      inventory.AddItem(new ItemBatTooth());
-    }
   }
 
   int turnsUntilSleep = 5;

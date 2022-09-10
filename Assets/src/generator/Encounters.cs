@@ -777,10 +777,15 @@ public class Encounters {
     }
   }
 
-  public static void AddThickBranch(Floor floor, Room room) {
+  public static void AddThickBranch(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemThickBranch());
+  public static void AddBatTooth(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemBatTooth());
+  public static void AddSnailShell(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSnailShell(1));
+  public static void AddSpiderSandals(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSpiderSandals(15));
+
+  private static void RewardItemImpl(Floor floor, Room room, Item item) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
-      floor.Put(new ItemOnGround(tile.pos, new ItemThickBranch()));
+      floor.Put(new ItemOnGround(tile.pos, item));
     }
   }
 

@@ -11,9 +11,6 @@ public class Spider : AIActor, IDealAttackDamageHandler {
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 4;
-    if (MyRandom.value < 0.1f) {
-      inventory.AddItem(new ItemSpiderSandals(15));
-    }
     // OnMove += HandleMove;
   }
 

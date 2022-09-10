@@ -79,6 +79,14 @@ internal class CamouflagedStatus : Status, IPlayerCamouflage {
   public CamouflagedStatus() {
   }
 
+  public override void Start() {
+    actor.floor.RecomputeVisibility();
+  }
+
+  public override void End() {
+    actor.floor.RecomputeVisibility();
+  }
+
   public override bool Consume(Status other) => true;
 
   public override string Info() =>

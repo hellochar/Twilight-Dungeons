@@ -9,10 +9,10 @@ public class Wildekin : AIActor, IAttackHandler {
   public override float turnPriority => 60;
   public Wildekin(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 5;
+    hp = baseMaxHp = 7;
   }
 
-  internal override (int, int) BaseAttackDamage() => (2, 2);
+  internal override (int, int) BaseAttackDamage() => (3, 3);
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
@@ -58,7 +58,9 @@ public class Wildekin : AIActor, IAttackHandler {
       t2 is Wall ||
       // Avoid non Wildekins
       (t2.body != null && !(t2.body is Wildekin))
-    ).Count();
+    ).Count()
+    // never walk directly into the Player
+    + (t.IsNextTo(GameModel.main.player) ? 100 : 0);
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor a) {

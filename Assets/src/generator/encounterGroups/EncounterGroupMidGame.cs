@@ -13,6 +13,8 @@ public static class EncounterGroupMidGame {
         // { 0.5f, AddVulnera },
         { 0.5f, AddMuckola },
         // { 0.5f, AddPistrala },
+        { 0.5f, AddGolems },
+        { 0.5f, AddHydra },
       },
 
       Grasses = new EncounterBag {
@@ -21,6 +23,7 @@ public static class EncounterGroupMidGame {
         { 0.75f, AddTunnelroot },
         { 0.75f, AddGoldGrass },
         { 0.75f, AddRedcaps },
+        { 0.75f, AddIronJelly },
 
         { 0.5f, AddVibrantIvy },
         { 0.5f, AddHangingVines2x },
@@ -41,12 +44,12 @@ public static class EncounterGroupMidGame {
       Spice = new EncounterBag {
         { 3f, Empty },
 
+        { 0.25f, AddIronJelly },
         { 0.25f, AddEveningBells },
         { 0.25f, AddPoisonmoss },
         { 0.25f, AddViolets },
         { 0.25f, AddBrambles },
         { 0.25f, AddTunnelroot4x },
-        { 0.25f, AddFruitingBodies },
         { 0.25f, AddBloodstone },
 
         { 0.2f, AddHoppers },
@@ -55,7 +58,6 @@ public static class EncounterGroupMidGame {
         { 0.2f, AddGolems },
         { 0.2f, AddClumpshroom },
         { 0.1f, AddHealer },
-        // { 0.1f, AddBilibar },
         { 0.1f, AddPoisoner },
         // { 0.1f, AddVulnera },
         { 0.1f, AddMuckola },

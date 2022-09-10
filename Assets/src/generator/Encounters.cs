@@ -177,7 +177,7 @@ public class Encounters {
   }
 
   public static void AddIronJelly(Floor floor, Room room) {
-    var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).FirstOrDefault();
+    var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied() && t.pos.x == 3).FirstOrDefault();
     if (tile != null) {
       floor.Put(new IronJelly(tile.pos));
     }

@@ -2,41 +2,36 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Does not move on its own, but telegraphs an attack when you are next to it.\nIf it misses, it will move into the telegraphed position.\nWhen attacked, Iron Jelly gets pushed one tile away, or attacks the creature standing on that Tile.")]
-public class IronJelly : AIActor, IBodyTakeAttackDamageHandler {
-  public override float turnPriority => task is AttackOrMoveDirectionTask ? 90 : base.turnPriority;
+[ObjectInfo(description: "Cannot take damage.\nWhen attacked, Iron Jelly gets pushed away, or attacks the Creature standing in its way.")]
+public class IronJelly : AIActor, IAnyDamageTakenModifier, IBodyTakeAttackDamageHandler {
   public IronJelly(Vector2Int pos) : base(pos) {
-    faction = Faction.Enemy;
-    hp = baseMaxHp = 16;
+    faction = Faction.Neutral;
+    hp = baseMaxHp = 99;
     ClearTasks();
   }
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
     var isAdjacent = IsNextTo(source);
     var offset = source.pos - pos;
-    if (isAdjacent && offset != Vector2Int.zero) {
-      var pushedTile = floor.tiles[pos - offset];
+    var newPos = pos - offset;
+    if (isAdjacent && offset != Vector2Int.zero && floor.InBounds(newPos)) {
+      var pushedTile = floor.tiles[newPos];
       if (pushedTile.body == null) {
         Perform(new MoveBaseAction(this, pushedTile.pos));
       } else {
         Perform(new AttackBaseAction(this, pushedTile.body));
       }
     }
-    if (task is AttackOrMoveDirectionTask) {
-      SetTasks(new WaitTask(this, 1));
-      statuses.Add(new SurprisedStatus());
-    }
   }
 
-  internal override (int, int) BaseAttackDamage() => (3, 3);
+  internal override (int, int) BaseAttackDamage() => (99, 99);
 
   protected override ActorTask GetNextTask() {
-    var player = GameModel.main.player;
-    if (CanTargetPlayer() && IsNextTo(player)) {
-      var offset = player.pos - pos;
-      return new AttackOrMoveDirectionTask(this, offset, 1);
-    }
     return new WaitTask(this, 1);
+  }
+
+  public int Modify(int input) {
+    return 0;
   }
 }
 

@@ -26,11 +26,10 @@ public class Encounters {
 
   public static void JackalPile(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth,
-      (1, 2),
+    var num = RandomRangeBasedOnIndex(floor.depth / 4,
+      (1, 1),
       (2, 2),
-      (2, 3),
-      (2, 4)
+      (3, 3)
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Jackal(tile.pos));
@@ -53,10 +52,8 @@ public class Encounters {
 
   public static void AddOctopus(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth / 3,
+    var num = RandomRangeBasedOnIndex(floor.depth / 6,
       (1, 1),
-      (1, 1),
-      (1, 2),
       (2, 2)
     );
     tiles.Shuffle();
@@ -85,10 +82,9 @@ public class Encounters {
   public static void AFewBlobs(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var numBlobs = RandomRangeBasedOnIndex(floor.depth,
+    var numBlobs = RandomRangeBasedOnIndex(floor.depth / 4,
       (1, 1),
       (1, 2),
-      (1, 3),
       (2, 3)
     );
     foreach (var tile in tiles.Take(numBlobs)) {
@@ -99,10 +95,9 @@ public class Encounters {
   public static void AFewSnails(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex(floor.depth / 2,
+    var num = RandomRangeBasedOnIndex(floor.depth / 4,
       (1, 1),
-      (1, 2),
-      (2, 3),
+      (2, 2),
       (2, 3)
     );
     foreach (var tile in tiles.Take(num)) {
@@ -123,12 +118,12 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 4,
-      (1, 1), // 0 - 3
-      (1, 1), // 4 - 7
-      (2, 2), // 8 - 11
-      (2, 2), // 12 - 15
-      (3, 3), // 16 - 19
-      (3, 3)  // 20 - 23
+      (2, 2), // 0 - 3
+      (2, 2), // 4 - 7
+      (3, 3), // 8 - 11
+      (3, 3), // 12 - 15
+      (4, 4), // 16 - 19
+      (4, 4)  // 20 - 23
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Spider(tile.pos));
@@ -692,7 +687,7 @@ public class Encounters {
   public static void ScatteredBoombugs(Floor floor, Room room) {
     var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     emptyTilesInRoom.Shuffle();
-    var num = Random.Range(1, 3);
+    var num = 1;
     foreach (var tile in emptyTilesInRoom.Take(num)) {
       var boombug = new Boombug(tile.pos);
       floor.Put(boombug);

@@ -8,10 +8,8 @@ public static class EncounterGroupEarlyGame {
         { 1.0f, JackalPile },
         { 1.0f, AddSkullys },
         { 1.0f, AddOctopus },
-
-        { 0.9f, AFewSnails },
-        { 0.4f, AddBats },
-        { 0.35f, AddSpiders },
+        { 1.0f, AFewSnails },
+        { 0.33f, AddSpiders },
       },
 
       Grasses = new EncounterBag {
@@ -38,16 +36,14 @@ public static class EncounterGroupEarlyGame {
       Spice = new EncounterBag {
         { 5f, Empty },
 
-        { 0.5f, AddStalk },
-        { 0.5f, AFewBlobs },
-        { 0.5f, AFewSnails },
         { 0.5f, AddFruitingBodies },
-
-        { 0.3f, JackalPile },
 
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },
 
+        { 0.2f, AFewBlobs },
+        { 0.2f, AFewSnails },
+        { 0.2f, JackalPile },
         { 0.2f, AddWater },
         { 0.2f, ScatteredBoombugs },
 

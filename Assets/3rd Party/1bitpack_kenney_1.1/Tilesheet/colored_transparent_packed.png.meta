@@ -13,16 +13,16 @@ TextureImporter:
     second: mouse
   - first:
       213: 3807160773484928076
-    second: colored_transparent_packed_3
+    second: moss-man
   - first:
       213: -4393665168476997586
-    second: colored_transparent_packed_4
+    second: mercenary
   - first:
       213: 2649766951672498382
-    second: colored_transparent_packed_5
+    second: gambler
   - first:
       213: -129089525569141178
-    second: colored_transparent_packed_6
+    second: shovel
   - first:
       213: -5040763472861491273
     second: colored_transparent_packed_7
@@ -3178,16 +3178,16 @@ TextureImporter:
     second: mouse
   - first:
       213: -2720247703636422937
-    second: colored_transparent_packed_3
+    second: moss-man
   - first:
       213: 7641523326923152296
-    second: colored_transparent_packed_4
+    second: mercenary
   - first:
       213: -3373856969728932345
-    second: colored_transparent_packed_5
+    second: gambler
   - first:
       213: 1161524997705229312
-    second: colored_transparent_packed_6
+    second: shovel
   - first:
       213: 3410340242098203718
     second: colored_transparent_packed_7
@@ -6924,7 +6924,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -6945,7 +6945,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -6966,7 +6966,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -6974,6 +6974,90 @@ TextureImporter:
       bones: []
       spriteID: e2d21b60538189a80800000000000000
       internalID: -8459985283990868690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: moss-man
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 304
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4cde526d80c5d430800000000000000
+      internalID: 3807160773484928076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mercenary
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 336
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e28fbe2dec09603c0800000000000000
+      internalID: -4393665168476997586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gambler
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 272
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec84204e00dd5c420800000000000000
+      internalID: 2649766951672498382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shovel
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 256
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6464a3ca2c1653ef0800000000000000
+      internalID: -129089525569141178
       vertices: []
       indices: 
       edges: []

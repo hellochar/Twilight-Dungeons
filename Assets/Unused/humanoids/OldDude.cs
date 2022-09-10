@@ -188,3 +188,29 @@ public class Gambler : AIActor {
     }
   }
 }
+
+static class HumanoidEncounters {
+  public static void AddOldDude(Floor floor, Room room){
+    Vector2Int stairPos = floor.upstairs.pos;
+    var livableTiles = floor.EnumerateCircle(stairPos, 3).Select(position => floor.tiles[position]).Where((t) => t.CanBeOccupied());
+    floor.Put(new OldDude(Util.RandomPick(livableTiles).pos));
+  }
+
+  public static void AddMossMan(Floor floor, Room room){
+    Vector2Int stairPos = floor.upstairs.pos;
+    var livableTiles = floor.EnumerateCircle(stairPos, 3).Select(position => floor.tiles[position]).Where((t) => t.CanBeOccupied());
+    floor.Put(new MossMan(Util.RandomPick(livableTiles).pos));
+  }
+
+  public static void AddMercenary(Floor floor, Room room){
+    Vector2Int stairPos = floor.upstairs.pos;
+    var livableTiles = floor.EnumerateCircle(stairPos, 3).Select(position => floor.tiles[position]).Where((t) => t.CanBeOccupied());
+    floor.Put(new Mercenary(Util.RandomPick(livableTiles).pos));
+  }
+
+  public static void AddGambler(Floor floor, Room room){
+    Vector2Int stairPos = floor.upstairs.pos;
+    var livableTiles = floor.EnumerateCircle(stairPos, 3).Select(position => floor.tiles[position]).Where((t) => t.CanBeOccupied());
+    floor.Put(new Gambler(Util.RandomPick(livableTiles).pos));
+  }
+}

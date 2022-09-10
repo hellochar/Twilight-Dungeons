@@ -239,6 +239,31 @@ public class Encounters {
     }
   }
 
+  public static void AddHealer(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Healer(Util.RandomPick(tiles).pos));
+  }
+
+  public static void AddPoisoner(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Poisoner(Util.RandomPick(tiles).pos));
+  }
+
+  public static void AddVulnera(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Vulnera(Util.RandomPick(tiles).pos));
+  }
+
+  public static void AddMuckola(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Muckola(Util.RandomPick(tiles).pos));
+  }
+
+  public static void AddPistrala(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Pistrala(Util.RandomPick(tiles).pos));
+  }
+
   public static void AddStalk(Floor floor, Room room) {
     // var x = MyRandom.Range(room.min.x + 1, room.max.x);
     var x = room.center.x;

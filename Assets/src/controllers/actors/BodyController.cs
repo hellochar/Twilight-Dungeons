@@ -14,13 +14,13 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
   }
 
   public virtual void HandleTakeAnyDamage(int damage) {
-    if (!body.isVisible) {
-      return;
-    }
+    // if (!body.isVisible) {
+    //   return;
+    // }
 
     if (showDamageMarks) {
       GameObject hpChangeText = Instantiate(PrefabCache.Effects.GetPrefabFor("HP Change Text"), Util.withZ(body.pos), Quaternion.identity);
-      hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false);
+      hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(-damage, false, !(body is Player));
 
       if(damage > 0) {
         GameObject damagedSpritePrefab = PrefabCache.Effects.GetPrefabFor("Damaged Sprite");
@@ -34,7 +34,7 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
       return;
     }
     GameObject hpChangeText = Instantiate(PrefabCache.Effects.GetPrefabFor("HP Change Text"), Util.withZ(body.pos), Quaternion.identity);
-    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, false);
+    hpChangeText.GetComponentInChildren<HPChangeTextColor>().SetHPChange(heal, false, !(body is Player));
 
     GameObject healEffectPrefab = PrefabCache.Effects.GetPrefabFor("Heal Effect");
     GameObject healEffect = Instantiate(healEffectPrefab, Util.withZ(body.pos), Quaternion.identity, transform);

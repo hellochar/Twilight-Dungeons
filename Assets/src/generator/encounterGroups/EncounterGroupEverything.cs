@@ -19,10 +19,11 @@ public static class EncounterGroupEverything {
 
       Grasses = new EncounterBag {
         { 1f, AddVibrantIvy },
+        { 1f, AddSpore },
 
         { 0.75f, AddBladegrass },
 
-        { 0.6f, AddSpore },
+        { 0.5f, AddMushroom },
 
         { 0.5f, AddSoftGrass },
         { 0.5f, ScatteredBoombugs },

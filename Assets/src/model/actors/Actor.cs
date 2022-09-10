@@ -216,7 +216,7 @@ public class Actor : Body, ISteppable {
   }
 
   public override string ToString() {
-    return base.ToString() + $"HP {hp}/{maxHp} Statuses: {string.Join(", ", statuses)}";
+    return base.ToString() + $", HP {hp}/{maxHp}, Statuses: {string.Join(", ", statuses)}";
   }
 
   public bool CanTargetPlayer() {

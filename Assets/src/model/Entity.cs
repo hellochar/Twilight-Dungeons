@@ -76,7 +76,7 @@ public abstract class Entity : IModifierProvider {
   }
 
   public override string ToString() {
-    return $"{base.ToString()} ({pos.x}, {pos.y}) {(IsDead ? "Dead" : "")} {(floor == null ? "floor=null" : "")}".Trim();
+    return $"{base.ToString()}@({pos.x}, {pos.y}) {(IsDead ? "Dead" : "")} {(floor == null ? "floor=null" : "")}".Trim();
   }
 
   public void KillSelf() {

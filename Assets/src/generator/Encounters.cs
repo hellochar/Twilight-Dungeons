@@ -421,16 +421,22 @@ public class Encounters {
   }
 
   public static void AddTunnelroot(Floor floor, Room room) {
-    var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null));
+    var start = FloorUtils.TilesAwayFromCenter(floor, room)
+      .Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null)
+      .Skip(MyRandom.Range(0, 4)).FirstOrDefault();
     if (start == null) {
       return;
     }
     /// special - put partner far away on this floor
     var partner = Util.RandomPick(
       floor.EnumerateRoomTiles(floor.root)
-        .Where((tile) => tile != start && Tunnelroot.CanOccupy(tile) && tile.grass == null)
+        .Where((tile) =>
+          tile != start &&
+          Tunnelroot.CanOccupy(tile) &&
+          tile.grass == null &&
+          !floor.GetAdjacentTiles(tile.pos).Any(t2 => t2.grass is Tunnelroot || t2 is Downstairs))
         .OrderByDescending(start.DistanceTo)
-        .Take(40)
+        .Take(20)
     );
     if (partner == null) {
       return;

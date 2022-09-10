@@ -457,7 +457,7 @@ public class FloorGenerator {
   }
 
   public Floor generateBlobBossFloor(int depth) {
-    Floor floor = new BossFloor(depth, 14, 10);
+    Floor floor = new BossFloor(depth, 12, 9);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Ground(p));
@@ -485,7 +485,8 @@ public class FloorGenerator {
     floor.downstairsRoom = room0;
 
     // add boss
-    floor.Put(new Blobmother(room0.center));
+    floor.Put(new Blobmother(floor.downstairs.pos));
+
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

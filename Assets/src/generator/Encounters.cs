@@ -65,15 +65,15 @@ public class Encounters {
     }
   }
 
-  public static void AddPuffers(Floor floor, Room room) {
-    var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth / 4,
-      (1, 1),
-      (1, 2),
-      (1, 3),
-      (2, 2)
-    );
+  public static void AddCheshireWeeds(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room).Where(CheshireWeedSprout.CanOccupy);
+    // tiles.Shuffle();
+    var num = floor.depth <= 12 ? 1 : floor.depth <= 24 ? 2 : 3;
     foreach (var tile in tiles.Take(num)) {
+      floor.Put(new CheshireWeedSprout(tile.pos));
+    }
+  }
+
   public static void AddClumpshroom(Floor floor, Room room) {
     var tiles = FloorUtils.TilesAwayFromCenter(floor, room).Where(t => t.pos.x >= room.center.x);
     var startTile = tiles.Skip(MyRandom.Range(0, 4)).FirstOrDefault();

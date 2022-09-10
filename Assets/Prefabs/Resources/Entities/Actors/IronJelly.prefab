@@ -37,6 +37,11 @@ PrefabInstance:
       propertyPath: hideWaitTask
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1854573788578749389, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: showDamageMarks
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6718828019105851581, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Controller

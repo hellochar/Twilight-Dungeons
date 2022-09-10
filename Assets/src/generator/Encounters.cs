@@ -953,11 +953,11 @@ public class Encounters {
   public static void ChasmBridge(Floor floor, Room room) {
     switch(MyRandom.Range(0, 3)) {
       case 0:
-        // left side
+        // top-right cutoff
         ChasmBridgeImpl(floor, room, 1, 1);
         break;
       case 1:
-        // right side
+        // bottom-left cutoff
         ChasmBridgeImpl(floor, room, 1, -1);
         break;
       case 2:
@@ -969,20 +969,20 @@ public class Encounters {
   }
   private static void ChasmBridgeImpl(Floor floor, Room room, int thickness, int crossScalar) {
     // ignore room. Connect the stairs
-    var origin = floor.upstairs?.pos ?? new Vector2Int(1, floor.boundsMax.y - 1);
-    var end = floor.downstairs?.pos ?? new Vector2Int(floor.boundsMax.x - 1, 1);
+    var origin = /*floor.upstairs?.pos ??*/ new Vector2Int(1, floor.boundsMax.y - 1);
+    var end = /*floor.downstairs?.pos ??*/ new Vector2Int(floor.boundsMax.x - 1, 1);
     var offset = new Vector2(end.x - origin.x, end.y - origin.y);
     var direction = offset.normalized;
 
-    foreach (var tile in floor.EnumerateFloor().Select(p => floor.tiles[p]).ToList()) {
-      var tileOffset = tile.pos - origin;
+    foreach (var pos in floor.EnumerateFloor()) {
+      var tileOffset = pos - origin;
       var dot = Vector2.Dot(tileOffset, direction);
       var cross = (tileOffset.x * direction.y - direction.x * tileOffset.y) * crossScalar;
       var dotNorm = dot / offset.magnitude;
       var projPos = origin + direction * dot;
-      var dist = Vector2.Distance(projPos, tile.pos);
+      var dist = Vector2.Distance(projPos, pos);
       if (dist > thickness && cross <= 0) {
-        floor.Put(new Chasm(tile.pos));
+        floor.Put(new Chasm(pos));
       }
     }
   }

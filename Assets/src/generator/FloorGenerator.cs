@@ -645,7 +645,8 @@ public class FloorGenerator {
     List<Ground> connectGroups(HashSet<Tile> mainland, HashSet<Tile> island) {
       var mainlandNode = Util.RandomPick(mainland);
       var islandNode = Util.RandomPick(island);
-      return floor.EnumerateLine(mainlandNode.pos, islandNode.pos)
+      // return floor.EnumerateLine(mainlandNode.pos, islandNode.pos)
+      return FloorUtils.Line3x3(floor, mainlandNode.pos, islandNode.pos)
         .Where(p => floor.tiles[p].BasePathfindingWeight() == 0)
         .Select(p => new Ground(p))
         .ToList();

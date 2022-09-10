@@ -134,12 +134,10 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
-      (1, 1),
-      (1, 2),
-      (2, 2),
-      (2, 3),
-      (2, 4),
-      (3, 4)
+      (1, 1), // 12 - 15
+      (1, 1), // 16 - 19
+      (1, 1), // 20 - 23
+      (2, 2) // 24+
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Scorpion(tile.pos));
@@ -149,7 +147,7 @@ public class Encounters {
   public static void AddGolems(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = floor.depth < 24 ? 1 : MyRandom.Range(2, 4);
+    var num = floor.depth < 24 ? 1 : MyRandom.Range(2, 2);
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Golem(tile.pos));
     }
@@ -196,9 +194,9 @@ public class Encounters {
   public static void AddWildekins(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
-      (2, 3), // 24-27
-      (2, 4), // 28-31
-      (3, 4) // 32-35
+      (1, 1), // 24-27
+      (1, 1), // 28-31
+      (1, 1) // 32-35
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Wildekin(tile.pos));
@@ -210,8 +208,8 @@ public class Encounters {
     if (startTile != null) {
       var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
         (2, 2), // 24-27
-        (2, 3), // 28-31
-        (3, 3)  // 32-35
+        (2, 2), // 28-31
+        (2, 3)  // 32-35
       );
       foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => t.CanBeOccupied()).Take(num)) {
         floor.Put(new Hopper(tile.pos));

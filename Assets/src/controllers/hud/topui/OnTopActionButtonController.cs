@@ -30,7 +30,10 @@ public class OnTopActionButtonController : MonoBehaviour {
   }
   void ShowButton(Entity e) {
     button.SetActive(true);
-    image.sprite = ObjectInfo.GetSpriteFor(e);
+    var spriteRenderer = FloorController.current.GameObjectFor(e).GetComponentInChildren<SpriteRenderer>();
+    image.sprite = spriteRenderer.sprite;
+    image.color = spriteRenderer.color;
+    // image.sprite = ObjectInfo.GetSpriteFor(e);
     text.text = current.OnTopActionName;
   }
 

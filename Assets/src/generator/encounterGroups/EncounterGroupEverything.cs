@@ -20,6 +20,7 @@ public static class EncounterGroupEverything {
         { 1f, AddSpore },
 
         { 0.75f, AddBladegrass },
+        { 0.75f, AddCheshireWeeds },
 
         { 0.5f, AddMushroom },
 

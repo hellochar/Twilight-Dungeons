@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,13 +8,16 @@ public class HPChangeTextColor : MonoBehaviour {
   public TMP_Text text;
 
   /// set isHealing to true to show green even on a 0
-  public void SetHPChange(int hpChange, bool isHealing) {
+  public void SetHPChange(int hpChange, bool isHealing, bool isEnemy) {
     text = GetComponent<TMP_Text>();
     text.text = "" + hpChange;
     if (isHealing || hpChange > 0) {
       text.color = HealColor;
-    } else if (!isHealing && hpChange == 0) {
+    } else if (!isHealing && (hpChange == 0 || isEnemy)) {
       text.color = NeutralColor;
+    }
+    if (isEnemy) {
+      text.fontSize *= 0.75f;
     }
   }
 

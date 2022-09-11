@@ -6,9 +6,10 @@ public class EveningBells : Grass, IActorEnterHandler {
   public readonly float angle;
 
   public static bool CanOccupy(Tile tile) => tile is Ground;
-  public EveningBells(Vector2Int pos, float angle = 0) : base(pos) {
+  public EveningBells(Vector2Int pos, float angle) : base(pos) {
     this.angle = angle;
   }
+  public EveningBells(Vector2Int pos) : this(pos, 0) {}
 
   public void HandleActorEnter(Actor actor) {
     if (actor != GameModel.main.player) {

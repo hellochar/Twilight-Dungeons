@@ -49,20 +49,9 @@ public class GoldGrassStatus : Status, IActionCostModifier {
 
 [System.Serializable]
 [ObjectInfo(spriteName: "colored_transparent_packed_95", flavorText: "Feels nice on your feet.")]
-public class SoftGrassStatus : StackingStatus, IBodyMoveHandler {
+public class SoftGrassStatus : StackingStatus, IActionCostModifier {
   public override StackingMode stackingMode => StackingMode.Ignore;
   public SoftGrassStatus(int stacks) : base(stacks) {}
-
-  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    if (newPos != oldPos && actor.floor.grasses[newPos] is SoftGrass) {
-      stacks++;
-      if (stacks == 5) {
-        GameModel.main.EnqueueEvent(() => actor.statuses.Add(new FreeMoveStatus()));
-      } else if (stacks > 5) {
-        stacks = 1;
-      }
-    }
-  }
 
   public override void Step() {
     if (!(actor.grass is SoftGrass)) {
@@ -70,7 +59,12 @@ public class SoftGrassStatus : StackingStatus, IBodyMoveHandler {
     }
   }
 
-  public override string Info() => "Moving five times on Soft Grass gives the Player one Free Move.";
+  public override string Info() => "Move twice as fast on Soft Grass.";
+
+  public ActionCosts Modify(ActionCosts input) {
+    input[ActionType.MOVE] *= 0.5f;
+    return input;
+  }
 }
 
 [System.Serializable]

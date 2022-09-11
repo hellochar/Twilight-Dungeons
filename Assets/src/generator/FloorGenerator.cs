@@ -163,14 +163,14 @@ public class FloorGenerator {
     //   floor.Remove(choice);
     // }
 
-    var grasses = floor.grasses.ToList();
-    var originalGrassesNum = grasses.Count();
-    var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * 0.5f));
-    while(grasses.Count > newGrassNum) {
-      var choice = Util.RandomPick(grasses);
-      grasses.Remove(choice);
-      floor.Remove(choice);
-    }
+    // var grasses = floor.grasses.ToList();
+    // var originalGrassesNum = grasses.Count();
+    // var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * 0.5f));
+    // while(grasses.Count > newGrassNum) {
+    //   var choice = Util.RandomPick(grasses);
+    //   grasses.Remove(choice);
+    //   floor.Remove(choice);
+    // }
 
     // Debug.LogFormat("Enemies {0} -> {1}, non-enemy bodies {2} -> {3}, grasses {4} -> {5}",
     // originalEnemyNum, newEnemyNum,
@@ -179,12 +179,12 @@ public class FloorGenerator {
     // );
 
     #if UNITY_EDITOR
+    // Encounters.AddCheshireWeeds(floor, floor.root);
     // Encounters.AddWebs2x(floor, floor.root);
     // Encounters.AddLlaora(floor, floor.root);
-    // Encounters.AddDrooper(floor, floor.root);
+    // Encounters.AddBloodstone(floor, floor.root);
     // Encounters.AddStalk(floor, floor.root);
-    Encounters.AddClumpshroom(floor, floor.root);
-    // Encounters.AddNerveRoot(floor, floor.root);
+    // Encounters.AddClumpshroom(floor, floor.root);
 
     // Encounters.AddFruitingBodies(floor, floor.root);
     // Encounters.AddNecroroot(floor, floor.root);

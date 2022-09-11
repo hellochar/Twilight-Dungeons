@@ -62,28 +62,6 @@ public abstract class SimpleStatusApplicationEnemy : AIActor {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Applies Weakness to the Player every turn if you do not already have it.")]
-public class Bilibar : SimpleStatusApplicationEnemy {
-  public Bilibar(Vector2Int pos) : base(pos) {
-  }
-
-  public override bool filter() {
-    return IsNextTo(GameModel.main.player);
-  }
-
-  public override int cooldown => 0;
-
-  public override bool telegraphs => false;
-
-  public override void DoTask() {
-    var player = GameModel.main.player;
-    if (!player.statuses.Has<WeaknessStatus>()) {
-      player.statuses.Add(new WeaknessStatus(1));
-    }
-  }
-}
-
-[System.Serializable]
 [ObjectInfo(description: "Every other turn, applies Poisoned to the Player if visible.")]
 public class Poisoner : SimpleStatusApplicationEnemy {
   public Poisoner(Vector2Int pos) : base(pos) {
@@ -130,7 +108,7 @@ public class Muckola : SimpleStatusApplicationEnemy {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Every other turn, grow a Puffer next to the Player if visible.")]
+[ObjectInfo(description: "Every other turn, grow a Cheshire Weed Sprout next to the Player if visible.")]
 public class Pistrala : SimpleStatusApplicationEnemy {
   public Pistrala(Vector2Int pos) : base(pos) {
   }

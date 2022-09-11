@@ -67,7 +67,7 @@ public class ItemBoombugCorpse : Item, IStackable, ITargetedAction<Tile> {
   public string TargettedActionName => "Throw";
   public IEnumerable<Tile> Targets(Player player) =>
     player.floor
-      .EnumerateCircle(player.pos, player.visibilityRange)
+      .EnumerateFloor()
       .Select(p => player.floor.tiles[p])
       .Where((p) => p.CanBeOccupied() && p.visibility == TileVisiblity.Visible);
 

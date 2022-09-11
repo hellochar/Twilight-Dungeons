@@ -1,26 +1,21 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 [Serializable]
+[ObjectInfo("shovel")]
 public class ItemShovel : Item {
-  public void DigUp(Player player, Grass grass) {
-    grass.Kill(player);
-    player.inventory.AddItem(new ItemOfGrass(grass.GetType()));
-  }
-}
-
-[Serializable]
-internal class ItemOfGrass : Item {
-  private Type type;
-
-  public ItemOfGrass(Type type) {
-    this.type = type;
+  public void DigUp(Player player) {
+    if (player.grass != null) {
+      player.grass.Uproot();
+    }
   }
 
-  public void Plant(Ground ground) {
-    var constructor = type.GetConstructor(new Type[1] { typeof(Vector2Int) });
-    var newGrass = (Grass) constructor.Invoke(new object[] { ground.pos });
-    ground.floor.Put(newGrass);
-    Destroy();
+  public override List<MethodInfo> GetAvailableMethods(Player player) {
+    var methods = base.GetAvailableMethods(player);
+    methods.Remove(GetType().GetMethod("Destroy"));
+    methods.Add(GetType().GetMethod("DigUp"));
+    return methods;
   }
 }

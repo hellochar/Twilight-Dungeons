@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -31,6 +32,16 @@ public class Grass : Entity {
     Kill(actor);
     if (!player.inventory.AddItem(item, this)) {
       floor.Put(new ItemOnGround(pos, item, pos));
+    }
+  }
+
+  public void Uproot() {
+    if (floor.EnemiesLeft() == 0 && floor.availableToPickGrass) {
+      floor.availableToPickGrass = false;
+      var whichGrasses = floor.BreadthFirstSearch(pos, t => t.grass?.GetType() == GetType()).Select(t => t.grass).ToList();
+      var item = new ItemGrass(GetType(), whichGrasses.Count);
+      GameModel.main.player.inventory.AddItem(item, this);
+      floor.RemoveAll(whichGrasses);
     }
   }
 }

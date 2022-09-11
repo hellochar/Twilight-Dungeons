@@ -25,6 +25,19 @@ public class ItemController : MonoBehaviour {
       itemImage.sprite = wantedSprite;
     }
 
+    if (item is ItemGrass grass) {
+      var grassType = grass.grassType;
+      var prefab = Resources.Load<GameObject>($"Entities/Grasses/{grassType.Name}");
+      var renderer = prefab.GetComponent<SpriteRenderer>();
+      itemImage.sprite = renderer.sprite;
+      itemImage.color = renderer.color;
+      // maturePlantBackground.GetComponent<Image>().sprite = renderer.sprite;
+      // var pos = itemImage.transform.localPosition;
+      // pos.y -= 2;
+      // itemImage.transform.localPosition = pos;
+    } 
+
+
     if (item is ItemSeed seed && GameModel.main.player.inventory.HasItem(item)) {
       var plantType = seed.plantType;
       var plantPrefab = Resources.Load<GameObject>($"Entities/Plants/{plantType.Name}");

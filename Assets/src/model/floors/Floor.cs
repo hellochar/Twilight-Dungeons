@@ -143,7 +143,7 @@ public class Floor {
 
       /// HACK
       if (entity is IBlocksVision) {
-        RecomputeVisibility(GameModel.main.player);
+        RecomputeVisibility();
       }
 
       entity.SetFloor(this);
@@ -182,7 +182,7 @@ public class Floor {
 
     /// HACK
     if (entity is IBlocksVision) {
-      RecomputeVisibility(GameModel.main.player);
+      RecomputeVisibility();
     }
 
     entity.SetFloor(null);
@@ -247,10 +247,13 @@ public class Floor {
     }
   }
 
-  public void RecomputeVisibility(Player player) {
+  public void RecomputeVisibility() {
+    var player = GameModel.main.player;
     if (player == null || player.floor != this) {
       return;
     }
+
+    var isCamouflaged = player.isCamouflaged;
 
     foreach (var pos in this.EnumerateFloor()) {
       Tile t = tiles[pos.x, pos.y];
@@ -260,7 +263,13 @@ public class Floor {
         continue; // t.visibility = TileVisiblity.Unexplored;
       }
 
+      if (isCamouflaged) {
+        t.visibility = pos == player.pos ? TileVisiblity.Visible : TileVisiblity.Explored;
+        continue;
+      }
+
       bool isVisible = TestVisibility(player.pos, pos);
+
       if (isVisible) {
         t.visibility = TileVisiblity.Visible;
       } else {

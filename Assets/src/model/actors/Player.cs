@@ -67,7 +67,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    floor.RecomputeVisibility(this);
+    floor.RecomputeVisibility();
     UpdateVisibleEnemies();
   }
 
@@ -128,7 +128,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   protected override void HandleEnterFloor() {
-    floor.RecomputeVisibility(this);
+    floor.RecomputeVisibility();
     UpdateVisibleEnemies();
   }
 

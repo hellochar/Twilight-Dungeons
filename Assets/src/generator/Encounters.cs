@@ -302,10 +302,10 @@ public class Encounters {
 
   private static void AddPlantToRoom(Floor floor, Room room, System.Type type) {
     // Add to random soil, or center of room
-    Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t is Soil && t.CanBeOccupied()));
-    if (tile == null) {
-      tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
-    }
+    // Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t is Ground && t.CanBeOccupied()));
+    // if (tile == null) {
+      Tile tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
+    // }
     if (tile != null) {
       var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
       var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
@@ -831,9 +831,9 @@ public class Encounters {
     // remove current downstairs
     floor.Put(new Ground(floor.downstairs.pos));
 
-    var center = new Vector2Int(room.max.x - 2, room.center.y);
-    // clear radius two
-    foreach (var pos in floor.EnumerateRectangle(center - new Vector2Int(2, 2), center + new Vector2Int(3, 3))) {
+    var center = new Vector2Int(room.max.x - 1, room.center.y);
+    // clear radius one
+    foreach (var pos in floor.GetAdjacentTiles(center).Select(t => t.pos).ToList()) {
       floor.Put(new HardGround(pos));
       if (floor.grasses[pos] != null) {
         floor.Remove(floor.grasses[pos]);

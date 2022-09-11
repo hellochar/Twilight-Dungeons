@@ -45,7 +45,7 @@ public class Frizzlefen : Plant {
 class ItemThickBranch : EquippableItem, IWeapon, IDurable {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
-  public (int, int) AttackSpread => (3, 5);
+  public (int, int) AttackSpread => (3, 3);
 
   public int durability { get; set; }
 

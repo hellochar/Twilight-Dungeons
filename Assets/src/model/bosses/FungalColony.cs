@@ -3,10 +3,10 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo("fungal-colony", description: "Blocks all attack damage.\nCan be damaged by Fungal Sentinel explosions.\nSummons a Fungal Breeder every 13 turns.\nDoes not move or attack.")]
+[ObjectInfo("fungal-colony", description: "Blocks 1 attack damage.\nSpawns a Fungal Sentinel when attacked.\nCan be damaged by Fungal Sentinel explosions.\nEvery 12 turns, summons a Fungal Breeder and moves itself to a random Fungal Wall.\nDoes not move or attack.")]
 public class FungalColony : Boss, IAttackDamageTakenModifier {
   public FungalColony(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 66;
+    hp = baseMaxHp = 54;
     faction = Faction.Enemy;
   }
 
@@ -19,11 +19,11 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
     }
   }
 
-  bool needsWait = false;
+  bool needsWait = true;
   protected override ActorTask GetNextTask() {
     if (needsWait) {
       needsWait = false;
-      return new WaitTask(this, 13);
+      return new WaitTask(this, 12);
     } else {
       return new GenericTask(this, SummonFungalBreeder);
     }
@@ -35,15 +35,20 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
       needsWait = true;
       return;
     }
-    var t = Util.RandomPick(player.GetVisibleTiles().Where(t => t.CanBeOccupied()));
-    if (t != null) {
+    var nextTile = Util.RandomPick(floor.tiles.Where(t => t is FungalWall));
+    if (nextTile != null) {
       needsWait = true;
-      floor.Put(new FungalBreeder(t.pos));
+      var oldPos = pos;
+      // remove the tile so it's occupiable
+      floor.Put(new Ground(nextTile.pos));
+      pos = nextTile.pos;
+      floor.Put(new FungalBreeder(oldPos));
     }
   }
 
   public int Modify(int input) {
-    return 0;
+    floor.Put(new FungalSentinel(pos));
+    return input - 1;
   }
 }
 
@@ -80,7 +85,9 @@ public class FungalWall : Wall {
   public FungalWall(Vector2Int pos) : base(pos) { }
 
   internal void Clear() {
-    floor.Put(new Ground(pos));
+    if (IsNextTo(GameModel.main.player)) {
+      floor.Put(new Ground(pos));
+    }
   }
 
   protected override void HandleEnterFloor() {

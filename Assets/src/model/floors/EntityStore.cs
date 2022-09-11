@@ -142,8 +142,9 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   /// <summary>Unlike the static grid, we do *not* Kill collided actors! Currently
   /// we allow multiple occupancy.</summary>
   public override void Put(T entity) {
-    if (!floor.tiles[entity.pos.x, entity.pos.y].CanBeOccupied()) {
-      Debug.LogWarning("Adding " + entity + " over a tile that cannot be occupied!");
+    var tile = floor.tiles[entity.pos.x, entity.pos.y];
+    if (!tile.CanBeOccupied()) {
+      Debug.LogWarning("Adding " + entity + " over tile " + tile + " that cannot be occupied!");
     }
     /// we've collided with another entity; do the placement behavior.
     /// note we do NOT do this if you're on a wall, since Graspers

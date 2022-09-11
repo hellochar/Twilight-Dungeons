@@ -437,7 +437,7 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var num = Random.Range(3, 7) * mult;
+      var num = Random.Range(1, 4) * mult;
       foreach (var tile in bfs.Take(num)) {
         floor.Put(new Guardleaf(tile.pos));
       }

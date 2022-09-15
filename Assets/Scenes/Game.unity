@@ -15389,7 +15389,7 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 348863665
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Positions:
   - {x: 1, y: 0, z: 0}
@@ -18614,7 +18614,7 @@ PrefabInstance:
     - target: {fileID: 8069630845370019289, guid: 0d9b3bf4aba49dc4b873644ac09e93f5,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4.2001953
+      value: -4.2002106
       objectReference: {fileID: 0}
     - target: {fileID: 8069630845370019289, guid: 0d9b3bf4aba49dc4b873644ac09e93f5,
         type: 3}

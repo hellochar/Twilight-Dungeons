@@ -65,6 +65,8 @@ public class Floor {
     }
   }
 
+  public bool availableToPickGrass = false;
+
   public Floor(int depth, int width, int height) {
     this.depth = depth;
     this.width = width;
@@ -79,6 +81,7 @@ public class Floor {
     this.bosses = new List<Boss>();
     this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
+    availableToPickGrass = depth > 0;
   }
 
   private void BodyPlacementBehavior(Body body) {

@@ -5,7 +5,3 @@ interface IUsable {
 interface IEdible {
   void Eat(Actor a);
 }
-
-interface IPlantable {
-  void Plant(Actor a, Soil soil);
-}

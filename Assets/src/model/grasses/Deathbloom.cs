@@ -48,7 +48,7 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
       var player = GameModel.main.player;
       if (player.pos == pos) {
         // player is over the deathbloom; try putting it into player inventory
-        var item = new ItemDeathbloomFlower(1);
+        var item = new ItemDeathbloomFlower();
         if (!player.inventory.AddItem(item, this)) {
           floor.Put(new ItemOnGround(pos, item, pos));
         }
@@ -58,30 +58,14 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
 }
 
 [Serializable]
-internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
-  public ItemDeathbloomFlower(int stacks) {
-    this.stacks = stacks;
-  }
-  public int stacksMax => 10;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
+internal class ItemDeathbloomFlower : Item, IEdible {
+  public ItemDeathbloomFlower() {
   }
 
   public void Eat(Actor a) {
     a.statuses.RemoveOfType<WeaknessStatus>();
     a.statuses.Add(new FrenziedStatus(3));
-    stacks--;
+    Destroy();
   }
 
   internal override string GetStats() => "Eat to become Frenzied, providing +2 attack damage for 3 turns. Afterwards, gain 3 stacks of Weakness.\nEating Deathbloom also removes Weakness.";

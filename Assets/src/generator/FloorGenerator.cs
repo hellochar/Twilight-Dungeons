@@ -80,7 +80,8 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(33, 14, 9, 8, 5),
       () => generateSingleRoomFloor(34, 14, 9, 9, 6),
       () => generateSingleRoomFloor(35, 14, 9, 10, 7),
-      () => generateEndFloor(36),
+      () => generateEndBossFloor(36),
+      () => generateEndFloor(37),
     };
   }
 
@@ -569,6 +570,27 @@ public class FloorGenerator {
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }
+
+  public Floor generateEndBossFloor(int depth) {
+    Floor floor = new BossFloor(depth, 15, 11);
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Ground(p));
+    }
+    foreach(var p in floor.EnumeratePerimeter()) {
+      floor.Put(new Wall(p));
+    }
+    FloorUtils.NaturalizeEdges(floor);
+    foreach(var p in floor.EnumerateFloor()) {
+      if (floor.tiles[p] is Wall) {
+        floor.Put(new Chasm(p));
+      }
+    }
+
+    Room room0 = new Room(floor);
+
+    floor.Put(new CorruptedEzra(room0.center));
+    floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();

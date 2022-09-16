@@ -33,8 +33,8 @@ public static class FloorUtils {
       }
     }
 
-    /// HACK I've decided that grass shouldn't *initially spawn* right next to the stairs,
-    /// but that post-generation, grass should still be able. So we'll now only use HardGround
+    /// Grass shouldn't initially spawn right next to the stairs,
+    /// but post-generation, grass should still be able. So we'll now only use HardGround
     /// during generation, and then replace it with normal ground
     foreach (var pos in floor.EnumerateFloor()) {
       if (floor.tiles[pos] is HardGround) {

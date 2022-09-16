@@ -426,14 +426,19 @@ public class FloorGenerator {
   }
 
   private Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool defaultEncounters = true) {
-    Floor floor = new Floor(depth, width, height);
+    // We want to inset the downstairs and upstairs into the left and right walls. To do this,
+    // we add one more column on each side
+    Floor floor = new Floor(depth, width + 2, height);
+    Room room0 = new Room(
+      new Vector2Int(2, 1),
+      new Vector2Int(floor.width - 3, floor.height - 2)
+    );
 
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
     }
 
-    Room room0 = new Room(floor);
     FloorUtils.CarveGround(floor, floor.EnumerateRoom(room0));
 
     if (defaultEncounters) {
@@ -445,8 +450,8 @@ public class FloorGenerator {
       EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
     }
 
-    floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
-    floor.PlaceDownstairs(new Vector2Int(width - 1, floor.height / 2));
+    floor.PlaceUpstairs(new Vector2Int(room0.min.x - 1, floor.height / 2));
+    floor.PlaceDownstairs(new Vector2Int(room0.max.x + 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();

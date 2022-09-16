@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +16,27 @@ public class DepthTextController : MonoBehaviour {
     text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time;
   }
 
+#if experimental_retryondemand
+  void RetryLevel() {
+    GameModel.main = Serializer.LoadLevelStart();
+    StartCoroutine(Transitions.GoToNewScene(this, null, "Scenes/Game"));
+  }
+#endif
+
   public void ShowPopup() {
     var playTime = TimeSpan.FromSeconds(Time.timeSinceLevelLoad).ToString(@"hh\:mm\:ss");
     var info = $"Playtime {playTime}\nSeed " + GameModel.main.seed.ToString("x");
+    List<(string, Action)> buttons = new List<(string, Action)>();
+    #if experimental_retryondemand
+    buttons.Add(("Retry Level", RetryLevel));
+    #endif
     Popups.Create(
       title: null,
       category: "",
       info: info,
       flavor: "",
-      errorText: GameModel.main.turnManager.latestException?.ToString()
+      errorText: GameModel.main.turnManager.latestException?.ToString(),
+      buttons: buttons
     );
   }
 }

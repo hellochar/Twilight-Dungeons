@@ -21,3 +21,11 @@ experimental_grasscovering
   - Water is still the only limiting resource
 
 Verdict: scrap it and do the new gardening idea
+
+experimental_retryondemand
+==========================
+
+- Like: incentivizes optimizing and lets you replay a hard level and try again when you'd die.
+- Dislike: you get "sloppy" and the moment you take a damage or mess up in any way you might as well restart.
+
+Verdict: new idea for only retrying after beating a level

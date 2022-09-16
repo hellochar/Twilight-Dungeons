@@ -8,9 +8,11 @@ using UnityEngine;
 public static class Serializer {
   public static string SAVE_PATH;
   public static string CHECKPOINT_PATH;
+  public static string LEVEL_START_PATH;
   static Serializer() {
     SAVE_PATH = Application.persistentDataPath + "/save0.dat";
     CHECKPOINT_PATH = Application.persistentDataPath + "/checkpoint.dat";
+    LEVEL_START_PATH = Application.persistentDataPath + "/levelstart.dat";
   }
 
   /// <summary>Does *not* set main.</summary>
@@ -29,6 +31,10 @@ public static class Serializer {
 
   public static GameModel LoadCheckpoint() {
     return Load(CHECKPOINT_PATH);
+  }
+
+  public static GameModel LoadLevelStart() {
+    return Load(LEVEL_START_PATH);
   }
 
   private static GameModel Load(string path) {
@@ -62,6 +68,7 @@ public static class Serializer {
     }
     return checkpoint;
   }
+  public static bool SaveMainToLevelStart() => Save(GameModel.main, LEVEL_START_PATH);
 
   private static bool Save(GameModel model, string path) {
     if (model.home is TutorialFloor || model.player.IsDead) {

@@ -111,6 +111,10 @@ public class Floor {
     }
     Serializer.SaveMainToCheckpoint();
     GameModel.main.PutPlayerAt(nextDepth);
+#if experimental_retryondemand
+    GameModel.main.DrainEventQueue();
+    Serializer.SaveMainToLevelStart();
+#endif
   }
 
   public int EnemiesLeft() {

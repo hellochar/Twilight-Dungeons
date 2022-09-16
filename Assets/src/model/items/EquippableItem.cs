@@ -26,7 +26,9 @@ public abstract class EquippableItem : Item {
     if (actor.inventory.HasItem(this)) {
       methods.Add(GetType().GetMethod("Equip"));
     } else if (actor.equipment.HasItem(this)) {
+#if !experimental_equipmentperfloor
       methods.Add(GetType().GetMethod("Unequip"));
+#endif
     }
     if (this is ISticky) {
       methods.Remove(GetType().GetMethod("Unequip"));

@@ -8,9 +8,17 @@ public interface IDurable {
 
 static class IDurableExtensions {
   public static void ReduceDurability(this IDurable durable) {
-    durable.durability--;
-    if (durable.durability <= 0 && durable is Item i) {
-      i.Destroy();
+    bool shouldReduceDurability =
+#if experimental_equipmentperfloor
+      false;
+#else
+      durable is ISticky || !(durable is EquippableItem)
+#endif
+    if (shouldReduceDurability) {
+      durable.durability--;
+      if (durable.durability <= 0 && durable is Item i) {
+        i.Destroy();
+      }
     }
   }
 

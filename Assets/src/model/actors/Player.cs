@@ -135,6 +135,19 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     UpdateVisibleEnemies();
   }
 
+#if experimental_equipmentperfloor
+  protected override void OnFloorChanged(Floor newFloor, Floor oldFloor) {
+    base.OnFloorChanged(newFloor, oldFloor);
+    if (newFloor.depth != 0 || oldFloor.depth != 0) {
+      foreach(var e in equipment) {
+        if (e is IDurable && !(e is ISticky)) {
+          e.Destroy();
+        }
+      }
+    }
+  }
+#endif
+
   public void OnAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
     if (!(target is Destructible)) {

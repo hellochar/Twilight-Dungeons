@@ -45,6 +45,7 @@ public class HangingVines : Grass, IDeathHandler {
   }
 
   internal void ConstrictedCreatureDied() {
+    ConstrictedStatusEnded();
     // simply unset the reference
     appliedStatus = null;
   }

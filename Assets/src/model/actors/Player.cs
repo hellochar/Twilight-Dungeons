@@ -50,6 +50,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(10);
+#if experimental_grasscovering
+    inventory.AddItem(new ItemShovel());
+#endif
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

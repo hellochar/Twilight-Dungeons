@@ -117,12 +117,20 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     image.sprite = sprite;
     image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
     List<(string, Action)> buttons = null;
-    if (entity is Soil soil && soil.body == null) {
+
+    bool canPlant =
+#if experimental_grasscovering
+      (entity is Ground ground && ground.body == null && entity.floor.depth == 0);
+#else
+      (entity is Soil soil && soil.body == null);
+#endif
+
+    if (canPlant) {
       buttons = new List<(string, Action)>();
       var player = GameModel.main.player;
       var seeds = player.inventory.Where((i) => i is ItemSeed).Cast<ItemSeed>();
       foreach (ItemSeed seed in seeds) {
-        Action action = () => seed.MoveAndPlant(soil);
+        Action action = () => seed.MoveAndPlant(entity as Ground);
         buttons.Add(("Plant " + Util.WithSpaces(seed.plantType.Name), action));
       }
     }

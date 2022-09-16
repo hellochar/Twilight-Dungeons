@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
+public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
   public Type plantType;
 
   public bool CanStackWith(IConditionallyStackable other) {
@@ -35,7 +35,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
 
   public ItemSeed(Type plantType) : this(plantType, 1) { }
 
-  public void MoveAndPlant(Soil soil) {
+  public void MoveAndPlant(Ground soil) {
     var model = GameModel.main;
     Player player = model.player;
     if (model.depth != 0) {
@@ -51,13 +51,26 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
     );
   }
 
-  private void Plant(Soil soil) {
+  private void Plant(Ground soil) {
     var player = GameModel.main.player;
     if (player.water >= waterCost) {
       player.water -= waterCost;
       var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
       var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
-      soil.floor.Put(plant);
+      var floor = soil.floor;
+      floor.Put(plant);
+
+#if experimental_grasscovering
+      var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
+      foreach (var tile in adjacentTiles) {
+        if (tile.grass != null) {
+          tile.grass.Kill(plant);
+        } else if (tile is Ground) {
+          // is null!
+          floor.Put(new HardGround(tile.pos));
+        }
+      }
+#endif
       GameModel.main.stats.plantsPlanted++;
       stacks--;
     } else {
@@ -70,6 +83,15 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 
   public string TargettedActionName => "Plant";
-  public IEnumerable<Soil> Targets(Player player) => player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Soil>();
-  public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Soil) target);
+  public IEnumerable<Ground> Targets(Player player) =>
+#if experimental_grasscovering
+      player.floor.tiles.Where(tile =>
+        tile is Ground && tile.isExplored && tile.CanBeOccupied()
+        && tile.floor.GetAdjacentTiles(tile.pos).Where(t => t is Ground).Count() >= 9
+      ).Cast<Ground>();
+#else
+      (player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());
+#endif
+
+  public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Ground) target);
 }

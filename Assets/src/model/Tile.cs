@@ -116,6 +116,17 @@ public class Signpost : Ground {
 public class HardGround : Tile {
   public HardGround(Vector2Int pos) : base(pos) { }
 
+#if experimental_grasscovering
+  public void Soften() {
+    var player = GameModel.main.player;
+    if (player.water < 11) {
+      throw new CannotPerformActionException("Need 11 water!");
+    } else {
+      player.water -= 11;
+      floor.Put(new Ground(pos));
+    }
+  }
+#endif
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
     grass?.Kill(this);

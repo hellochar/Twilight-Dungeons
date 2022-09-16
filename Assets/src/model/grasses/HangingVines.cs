@@ -5,7 +5,6 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo(description: "Constricts any creature that walks into its hook.\nYou may destroy the Hanging Vines by tapping the Wall it's attached to.")]
 public class HangingVines : Grass, IDeathHandler {
-  private Inventory inventory = new Inventory(new ItemVineWhip(1));
   public Tile tileBelow => floor.tiles[pos + Vector2Int.down];
   private Trigger triggerBelow;
 
@@ -22,7 +21,10 @@ public class HangingVines : Grass, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    inventory.TryDropAllItems(floor, tileBelow.pos);
+    if (appliedStatus == null) {
+      Inventory inventory = new Inventory(new ItemVineWhip(1));
+      inventory.TryDropAllItems(floor, tileBelow.pos);
+    }
     if (appliedStatus != null) {
       appliedStatus.Remove();
     }

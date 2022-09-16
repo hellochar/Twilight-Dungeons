@@ -108,12 +108,12 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackabl
 
 [System.Serializable]
 [ObjectInfo("constricted-status", flavorText: "Thick, damp vines tighten around you!")]
-public class ConstrictedStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler, IDeathHandler {
+public class ConstrictedStatus : StackingStatus, IBaseActionModifier, IBodyMoveHandler, IDeathHandler, IBodyTakeAttackDamageHandler {
   private readonly HangingVines owner;
 
   public override bool isDebuff => true;
   public override StackingMode stackingMode => StackingMode.Max;
-  public ConstrictedStatus(HangingVines owner, int stacks = 3) : base(stacks) {
+  public ConstrictedStatus(HangingVines owner, int stacks = 7) : base(stacks) {
     this.owner = owner;
   }
 
@@ -138,13 +138,23 @@ public class ConstrictedStatus : StackingStatus, IBaseActionModifier, IBodyMoveH
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE || input.Type == ActionType.ATTACK) {
-      stacks--;
+      if (actor is Player) {
+        stacks--;
+      }
       if (stacks <= 0) {
         return input;
       } else {
-        return new StruggleBaseAction(input.actor);
+        if (actor is Player) {
+          return new StruggleBaseAction(input.actor);
+        } else {
+          return new WaitBaseAction(input.actor);
+        }
       }
     }
     return input;
+  }
+
+  public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
+    Remove();
   }
 }

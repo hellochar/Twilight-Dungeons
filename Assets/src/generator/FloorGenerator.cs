@@ -519,6 +519,9 @@ public class FloorGenerator {
     // add boss
     floor.Put(new Blobmother(floor.downstairs.pos));
 
+#if experimental_grassesonbossfloor
+    EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+#endif
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
@@ -566,6 +569,10 @@ public class FloorGenerator {
     floor.rooms = new List<Room>();
     floor.upstairsRoom = room0;
     floor.downstairsRoom = room0;
+
+#if experimental_grassesonbossfloor
+    EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+#endif
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 public class HangingVinesController : GrassController, IPlayerInteractHandler {
   public HangingVines vines => (HangingVines) grass;
 
-  public void HandleInteracted(PointerEventData eventData) {
+  public PlayerInteraction GetPlayerInteraction(PointerEventData eventData) {
     Player player = GameModel.main.player;
-    player.SetTasks(
+    return new SetTasksPlayerInteraction(
       new MoveNextToTargetTask(player, vines.pos),
       new AttackGroundTask(player, vines.pos)
     );

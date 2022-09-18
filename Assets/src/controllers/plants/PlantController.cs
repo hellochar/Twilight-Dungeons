@@ -68,29 +68,22 @@ public class PlantController : BodyController, ILongTapHandler {
   }
 
   public void HandleLongTap() {
-    HandleInteracted(null);
+    GetPlayerInteraction(null);
   }
 
-  public override void HandleInteracted(PointerEventData pointerEventData) {
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (!GameModel.main.player.IsNextTo(plant)) {
-      MoveNextToTargetTask task = new MoveNextToTargetTask(GameModel.main.player, plant.pos);
-      GameModel.main.player.task = task;
-      GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
-      return;
+      return new SetTasksPlayerInteraction(
+        new MoveNextToTargetTask(GameModel.main.player, plant.pos),
+        new GenericPlayerTask(GameModel.main.player, TogglePopup)
+      );
     }
     // Clicking inside the popup will trigger this method; account for that by checking if the clicked location is in the tile.
     Tile t = pointerEventData == null ? plant.tile : Util.GetVisibleTileAt(pointerEventData.position);
     if (t != null && t == plant.tile && t.visibility == TileVisiblity.Visible) {
-      TogglePopup();
+      return new ArbitraryPlayerInteraction(TogglePopup);
     }
-  }
-
-  public async void HandlePlayersChoice() {
-      GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
-      if (GameModel.main.player.IsNextTo(plant)) {
-        await Task.Delay(100);
-        TogglePopup();
-      }
+    return null;
   }
 
   public void TogglePopup() {

@@ -39,11 +39,14 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerI
     transform.position = end;
   }
 
-  public void HandleInteracted(PointerEventData pointerEventData) {
+  public PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (itemOnGround.isVisible) {
       Player player = GameModel.main.player;
-      player.SetTasks(new MoveToTargetTask(player, itemOnGround.pos));
+      return new SetTasksPlayerInteraction(
+        new MoveToTargetTask(player, itemOnGround.pos)
+      );
     }
+    return null;
   }
 
   public void HandleLongTap() {

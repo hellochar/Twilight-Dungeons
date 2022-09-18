@@ -9,7 +9,16 @@ public class FollowPathUI : MonoBehaviour {
   private GameObject pathDotPrefab;
   [NonSerialized]
   private Player player;
-  public List<GameObject> pathDots;
+  public List<GameObject> pathDots = new List<GameObject>();
+  public InteractionController interactionController;
+  private FollowPathTask _task;
+  public FollowPathTask task {
+    get { return _task; }
+    set {
+      _task = value;
+      ResetPathDots();
+    }
+  }
 
   // Start is called before the first frame update
   void Start() {
@@ -18,52 +27,60 @@ public class FollowPathUI : MonoBehaviour {
     reticle.SetActive(false);
     player = GameModel.main.player;
     player.OnSetTask += HandleSetPlayerTask;
+    InteractionController.OnProposedTasksChanged += HandleProposedTaskChanged;
+  }
+
+  void OnDestroy() {
+    player.OnSetTask -= HandleSetPlayerTask;
+    InteractionController.OnProposedTasksChanged -= HandleProposedTaskChanged;
+  }
+
+  private void HandleProposedTaskChanged(SetTasksPlayerInteraction interaction) {
+    if (interaction != null) {
+      var firstTask = interaction.tasks.FirstOrDefault();
+      task = firstTask as FollowPathTask;
+    }
   }
 
   void HandleSetPlayerTask(ActorTask action) {
-    if (action is FollowPathTask) {
-      this.ResetPathDots();
-    }
+    task = action as FollowPathTask;
   }
 
   // Update is called once per frame
   void Update() {
-    // MaybeSetTarget();
-    UpdatePathSprites();
-    UpdateReticle();
+    if (task == null && pathDots != null) {
+      ResetPathDots();
+    }
+    if (task != null) {
+      UpdatePathSprites();
+      UpdateReticle();
+    }
   }
 
   void UpdatePathSprites() {
-    if (!(player.task is FollowPathTask)) {
-      if (pathDots != null) {
-        this.ResetPathDots();
-      }
-      return;
-    }
-    FollowPathTask action = (FollowPathTask) player.task;
-    if (pathDots == null) {
-      this.pathDots = action.path.Select(pos => Instantiate(pathDotPrefab, Util.withZ(pos, 0), Quaternion.identity, transform)).ToList();
-    }
     // remove paths as they're tackled
-    while(pathDots.Count > action.path.Count) {
+    while(pathDots.Count > task.path.Count) {
       Destroy(pathDots[0]);
       pathDots.RemoveAt(0);
+    }
+    while (pathDots.Count < task.path.Count) {
+      pathDots.Add(Instantiate(pathDotPrefab, transform));
+    }
+    for(int i = 0; i < task.path.Count; i++) {
+      var pos = task.path[i];
+      var dot = pathDots[i];
+      dot.transform.position = Util.withZ(pos, 0);
     }
   }
 
   private void ResetPathDots() {
-    if (this.pathDots != null) {
-      this.pathDots.ForEach(sprite => Destroy(sprite));
-      this.pathDots = null;
-    }
+    pathDots.ForEach(sprite => Destroy(sprite));
+    pathDots.Clear();
+    reticle.SetActive(false);
   }
 
   void UpdateReticle() {
-    if (player.task is FollowPathTask) {
-      reticle.SetActive(true);
-      reticle.transform.position = Util.withZ(( (FollowPathTask) player.task).target, reticle.transform.position.z);
-    } else {
-      reticle.SetActive(false);
-    }
+    reticle.SetActive(true);
+    reticle.transform.position = Util.withZ(task.target, reticle.transform.position.z);
   }
 }

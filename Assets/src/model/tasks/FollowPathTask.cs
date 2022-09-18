@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class FollowPathTask : ActorTask {
   public override TaskStage WhenToCheckIsDone => TaskStage.After;
-  public Vector2Int target { get; }
+  public virtual Vector2Int target { get; }
   public List<Vector2Int> path;
   public int maxMoves = int.MaxValue;
   public int timesMoved { get; private set; }

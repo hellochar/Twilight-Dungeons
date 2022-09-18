@@ -6,12 +6,12 @@ using UnityEngine.EventSystems;
 
 public class LeecherController : ActorController {
   Leecher leecher => (Leecher) actor;
-  public override void HandleInteracted(PointerEventData pointerEventData) {
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (actor.IsDead) {
-      return; // don't do anything to dead actors
+      return null; // don't do anything to dead actors
     }
     Player player = GameModel.main.player;
-    player.SetTasks(
+    return new SetTasksPlayerInteraction(
       new MoveNextToTargetTask(player, actor.pos),
       new GenericPlayerTask(player, leecher.Pickup)
     );

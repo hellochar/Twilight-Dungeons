@@ -1,18 +1,19 @@
 ﻿using UnityEngine.EventSystems;
 
 public class EzraController : ActorController {
-  public override void HandleInteracted(PointerEventData pointerEventData) {
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (actor.IsDead) {
-      return; // don't do anything to dead actors
+      return null; // don't do anything to dead actors
     }
-    if (player.IsNextTo(actor)) {
-      // wake ezra up, win the game!!!
-      actor.ClearTasks();
-      actor.statuses.Add(new SurprisedStatus());
-      GameModel.main.GameOver(true);
-    } else {
-      player.task = new MoveNextToTargetTask(player, actor.pos);
-    }
+    return new SetTasksPlayerInteraction(
+      new MoveNextToTargetTask(player, actor.pos),
+      new GenericPlayerTask(player, () => {
+        // wake ezra up, win the game!!!
+        actor.ClearTasks();
+        actor.statuses.Add(new SurprisedStatus());
+        GameModel.main.GameOver(true);
+      })
+    );
   }
 }

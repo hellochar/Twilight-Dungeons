@@ -1,9 +1,11 @@
+using UnityEngine;
 /// Open-ended.
 [System.Serializable]
 public class ChaseTargetTask : MoveNextToTargetTask {
   public override TaskStage WhenToCheckIsDone => TaskStage.Before;
   protected Body targetBody;
   private int extraMovesCutoff;
+  public override Vector2Int target => targetBody.pos;
 
   public ChaseTargetTask(Actor actor, Body targetBody, int extraMovesCutoff = 0) : base(actor, targetBody.pos) {
     this.targetBody = targetBody;
@@ -18,7 +20,7 @@ public class ChaseTargetTask : MoveNextToTargetTask {
     if (targetBody == null || targetBody is Player p && p.isCamouflaged) {
       this.path.Clear();
     } else {
-      this.path = FindBestAdjacentPath(actor.pos, targetBody.pos);
+      this.path = FindBestAdjacentPath(actor.pos, target);
       if (extraMovesCutoff > 0 && this.path.Count >= extraMovesCutoff) {
         this.path.RemoveRange(this.path.Count - extraMovesCutoff, extraMovesCutoff);
       }

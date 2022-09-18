@@ -19,23 +19,11 @@ public class AltarController : BodyController, ILongTapHandler {
     particleSystem.gameObject.SetActive(model.permadeath);
   }
 
-  public override void HandleInteracted(PointerEventData pointerEventData) {
-    if (!GameModel.main.player.IsNextTo(body)) {
-      MoveNextToTargetTask task = new MoveNextToTargetTask(GameModel.main.player, body.pos);
-      GameModel.main.player.task = task;
-      GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
-      return;
-    } else {
-      ShowAltarDialog();
-    }
-  }
-
-  private async void HandlePlayersChoice() {
-      GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
-      if (GameModel.main.player.IsNextTo(body)) {
-        await Task.Delay(100);
-        ShowAltarDialog();
-      }
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+    return new SetTasksPlayerInteraction(
+      new MoveNextToTargetTask(GameModel.main.player, body.pos),
+      new GenericPlayerTask(GameModel.main.player, ShowAltarDialog)
+    );
   }
 
   void ShowAltarDialog() {

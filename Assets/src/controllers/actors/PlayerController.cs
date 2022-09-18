@@ -226,12 +226,15 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     base.HandleActionPerformed(action, initial);
   }
 
-  public override void HandleInteracted(PointerEventData pointerEventData) {
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (player.task != null) {
-      player.ClearTasks();
+      return new ArbitraryPlayerInteraction(() => {
+        player.ClearTasks();
+      });
     } else {
-      // on clicking self, wait for 1 turn
-      player.task = new WaitTask(player, 1);
+      return new SetTasksPlayerInteraction(
+        new WaitTask(player, 1)
+      );
     }
   }
 

@@ -7,14 +7,16 @@ using UnityEngine.UI;
 
 public class MercenaryController : ActorController {
   public Mercenary mercenary => (Mercenary) actor;
-  public override void HandleInteracted(PointerEventData pointerEventData) {
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     // oldDude.RevealFloor();
     if (mercenary.isHired) {
-      base.HandleInteracted(pointerEventData);
+      return base.GetPlayerInteraction(pointerEventData);
     } else {
-      var buttons = new List<(string, Action)>();
-      buttons.Add(("Hire (100 water)", mercenary.Hire));
-      Popups.Create("Mercenary", "", "\"You look a little out of your league partner. I'll help you, for a price.\"", "", null, null, buttons);
+      return new ArbitraryPlayerInteraction(() => {
+        var buttons = new List<(string, Action)>();
+        buttons.Add(("Hire (100 water)", mercenary.Hire));
+        Popups.Create("Mercenary", "", "\"You look a little out of your league partner. I'll help you, for a price.\"", "", null, null, buttons);
+      });
     }
   }
 }

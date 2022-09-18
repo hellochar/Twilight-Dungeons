@@ -9,6 +9,9 @@ public class HomeFloor : Floor {
   public HomeFloor(int width, int height) : base(0, width, height) {
   }
 
+  public int actionPoints = 3;
+  public int maxActionPoints = 3;
+
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {
     if (root.Contains(t.pos)) {
       return base.RecomputeVisibilityFor(t);

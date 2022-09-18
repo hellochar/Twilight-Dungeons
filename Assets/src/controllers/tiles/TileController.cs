@@ -60,10 +60,13 @@ public class TileController : MonoBehaviour, IEntityController, IPlayerInteractH
     }
   }
 
-  public virtual void HandleInteracted(PointerEventData pointerEventData) {
+  public virtual PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (tile.visibility != TileVisiblity.Unexplored) {
-      GameModel.main.player.task = new MoveToTargetTask(GameModel.main.player, tile.pos);
+      return new SetTasksPlayerInteraction(
+        new MoveToTargetTask(GameModel.main.player, tile.pos)
+      );
     }
+    return null;
   }
 
   private static Color unexploredMask = new Color(0, 0, 0);

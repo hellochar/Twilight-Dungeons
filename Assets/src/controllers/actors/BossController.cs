@@ -53,8 +53,7 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
       yield return Transitions.ZoomAndPanCamera(4, actor.pos, 0.5f);
       yield return Transitions.ZoomAndPanCamera(4, actor.pos, 3);
       foreach (var t in tiles) {
-        bool isVisible = floor.TestVisibility(GameModel.main.player.pos, t.pos);
-        t.visibility = isVisible ? TileVisiblity.Visible : TileVisiblity.Explored;
+        t.visibility = floor.TestVisibility(GameModel.main.player.pos, t.pos);
       }
       yield return Transitions.ZoomAndPanCamera(4, GameModel.main.player.pos, 0.5f);
       InteractionController.isInputAllowed = true;

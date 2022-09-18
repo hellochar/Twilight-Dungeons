@@ -36,4 +36,5 @@ public class Stalk : Destructible, IBlocksVision {
 
 /// Note - not implemented on moving entities yet
 public interface IBlocksVision { }
+public interface IBlocksExploration : IBlocksVision { }
 public interface IHideInSidebar { }

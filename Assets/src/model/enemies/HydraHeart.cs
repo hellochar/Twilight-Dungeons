@@ -57,7 +57,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   }
 
   // make sure the hydra heart can see the tile
-  private bool CanSpawnHydraHeadAt(Tile t) => t.CanBeOccupied() && floor.TestVisibility(pos, t.pos);
+  private bool CanSpawnHydraHeadAt(Tile t) => t.CanBeOccupied() && floor.TestVisibility(pos, t.pos) == TileVisiblity.Visible;
 
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);

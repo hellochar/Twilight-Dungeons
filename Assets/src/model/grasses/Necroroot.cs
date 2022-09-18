@@ -80,7 +80,7 @@ public class Zombie : AIActor, IActionPerformedHandler {
   Body SelectTarget() {
     var potentialTargets = floor
       .BodiesInCircle(pos, 7)
-      .Where((t) => floor.TestVisibility(pos, t.pos) && !(t is Zombie));
+      .Where((t) => floor.TestVisibility(pos, t.pos) == TileVisiblity.Visible && !(t is Zombie));
     if (potentialTargets.Any()) {
       return potentialTargets.Aggregate((t1, t2) => DistanceTo(t1) < DistanceTo(t2) ? t1 : t2);
     }

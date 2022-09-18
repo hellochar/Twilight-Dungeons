@@ -25,8 +25,8 @@ public abstract class Tile : Entity {
     /// set correct visibility when the tile is dynamically added
     var player = GameModel.main?.player;
     if (player != null) {
-      if (floor == player.floor && floor.TestVisibility(player.pos, pos)) {
-        visibility = TileVisiblity.Visible;
+      if (floor == player.floor) {
+        visibility = floor.TestVisibility(player.pos, pos);
       }
     }
   }
@@ -63,6 +63,10 @@ public abstract class Tile : Entity {
     return BasePathfindingWeight() == 0 || (body is IBlocksVision || grass is IBlocksVision);
   }
 
+  public virtual bool ObstructsExploration() {
+    return body is IBlocksExploration || grass is IBlocksExploration;
+  }
+
   internal bool CanBeOccupied() {
     return GetPathfindingWeight() != 0;
   }
@@ -78,7 +82,7 @@ public interface IActorLeaveHandler {
 
 [Serializable]
 public enum TileVisiblity {
-  Unexplored, Visible, Explored
+  Unexplored = 0, Visible = 2, Explored = 1
 }
 
 [Serializable]

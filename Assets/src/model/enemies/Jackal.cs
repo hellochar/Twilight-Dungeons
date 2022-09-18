@@ -32,7 +32,7 @@ public class Jackal : AIActor {
 
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);
-    var jackalsToAlert = floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal && floor.TestVisibility(pos, actor.pos)).ToList();
+    var jackalsToAlert = floor.ActorsInCircle(pos, 7).Where((actor) => actor is Jackal && floor.TestVisibility(pos, actor.pos) == TileVisiblity.Visible).ToList();
     GameModel.main.EnqueueEvent(() => {
       foreach (var jackal in jackalsToAlert) {
         jackal.SetTasks(new RunAwayTask(jackal, pos, 6));

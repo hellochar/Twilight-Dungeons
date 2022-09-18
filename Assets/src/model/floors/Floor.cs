@@ -262,40 +262,42 @@ public class Floor {
     }
   }
 
-  public void RecomputeVisibility() {
+  public virtual void RecomputeVisibility() {
     var player = GameModel.main.player;
     if (player == null || player.floor != this) {
       return;
     }
 
-    var isCamouflaged = player.isCamouflaged;
-
     foreach (var pos in this.EnumerateFloor()) {
       Tile t = tiles[pos.x, pos.y];
-      var isEnclosedByWalls = GetAdjacentTiles(pos).All(t => t is Wall);
-      if (isEnclosedByWalls) {
-        // looks better when we skip fully enclosed Walls
-        continue; // t.visibility = TileVisiblity.Unexplored;
-      }
-
-      if (isCamouflaged) {
-        t.visibility = pos == player.pos ? TileVisiblity.Visible : TileVisiblity.Explored;
-        continue;
-      }
-
-      bool isVisible = TestVisibility(player.pos, pos);
-
-      if (isVisible) {
-        t.visibility = TileVisiblity.Visible;
-      } else {
-        t.visibility = TileVisiblity.Explored;
-      }
+      t.visibility = RecomputeVisibilityFor(t);
     }
+  }
+
+  protected virtual TileVisiblity RecomputeVisibilityFor(Tile t) {
+    var isEnclosedByWalls = GetAdjacentTiles(t.pos).All(t => t is Wall);
+    if (isEnclosedByWalls) {
+      // looks better when we skip fully enclosed Walls
+      return t.visibility; // t.visibility = TileVisiblity.Unexplored;
+    }
+
+    var player = GameModel.main.player;
+    var isCamouflaged = player.isCamouflaged;
+    if (isCamouflaged) {
+      t.visibility = t.pos == player.pos ? TileVisiblity.Visible : TileVisiblity.Explored;
+      return t.visibility;
+    }
+
+    var newVisibility = TestVisibility(player.pos, t.pos);
+    if (t.isExplored && newVisibility == TileVisiblity.Unexplored) {
+      return t.visibility;
+    }
+    return newVisibility;
   }
 
   internal void ForceAddVisibility(IEnumerable<Vector2Int> positions = null) {
     if (positions == null) {
-      positions = this.EnumerateFloor();
+      positions = this.EnumerateRectangle(Vector2Int.zero, new Vector2Int(width, height));
     }
     foreach (var pos in positions) {
       Tile t = tiles[pos];
@@ -303,34 +305,38 @@ public class Floor {
     }
   }
 
-  private bool TestVisibilityOneDir(Vector2Int source, Vector2Int end) {
+  private TileVisiblity TestVisibilityOneDir(Vector2Int source, Vector2Int end) {
     // tiles can always see themselves and adjacent neighbors; this is important if the player is standing on a fern
     // if (Util.DiamondMagnitude(source - end) <= 1) {
     //   return true;
     // }
 
-    bool isVisible = true;
-    // if (tiles[end.x, end.y].ObstructsVision()) {
-    //   var possibleEnds = GetAdjacentTiles(end).Where(tile => !tile.ObstructsVision()).OrderBy((tile) => {
-    //     return Vector2Int.Distance(source, tile.pos);
-    //   });
-    //   /// find the closest neighbor that doesn't obstruct vision and go off that
-    //   end = possibleEnds.FirstOrDefault()?.pos ?? end;
-    // }
+    if (tiles[end.x, end.y].ObstructsExploration()) {
+      var possibleEnds = GetAdjacentTiles(end).Where(tile => !tile.ObstructsExploration()).OrderBy((tile) => {
+        return Vector2Int.Distance(source, tile.pos);
+      });
+      /// find the closest neighbor that doesn't obstruct vision and go off that
+      end = possibleEnds.FirstOrDefault()?.pos ?? end;
+    }
     foreach (var pos in this.EnumerateLine(source, end)) {
       if (pos == source || pos == end) {
         continue;
       }
       Tile t = tiles[pos.x, pos.y];
-      isVisible = isVisible && !t.ObstructsVision();
+      if (t.ObstructsExploration()) {
+        return TileVisiblity.Unexplored;
+      }
+      if (t.ObstructsVision()) {
+        return TileVisiblity.Explored;
+      }
     }
-    return isVisible;
+    return TileVisiblity.Visible;
   }
 
   /// returns true if the points have line of sight to each other
-  public bool TestVisibility(Vector2Int source, Vector2Int end) {
+  public TileVisiblity TestVisibility(Vector2Int source, Vector2Int end) {
     // EnumerateLine is not commutative so make it
-    return TestVisibilityOneDir(source, end) || TestVisibilityOneDir(end, source);
+    return (TileVisiblity) Math.Max((int)TestVisibilityOneDir(source, end), (int)TestVisibilityOneDir(end, source));
   }
 
   /// includes the tile *at* the pos.

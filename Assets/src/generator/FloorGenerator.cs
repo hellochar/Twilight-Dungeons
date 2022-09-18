@@ -82,6 +82,7 @@ public class FloorGenerator {
   }
 
   internal HomeFloor generateHomeFloor() {
+    EncounterGroup = earlyGame;
 #if experimental_3x3soil
       return generateGardening3x3SoilFloor0();
 #elif experimental_grasscovering

@@ -2519,9 +2519,9 @@ RectTransform:
   m_Father: {fileID: 1987556221}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 2, y: -2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 2, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &431245557
@@ -3188,9 +3188,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd461da8031dd36429051359b23adf00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddingTop: 0.5
+  paddingTop: 1
   paddingRight: 3
-  paddingBottom: 4
+  paddingBottom: 2
   paddingLeft: 5.5
 --- !u!114 &519420034
 MonoBehaviour:
@@ -3767,8 +3767,7 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0.025024414
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 11480938, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
 --- !u!1 &555645467 stripped
 GameObject:
@@ -4186,9 +4185,9 @@ RectTransform:
   m_Father: {fileID: 1987556221}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 2, y: -82}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 2, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &710831682

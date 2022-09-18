@@ -373,12 +373,25 @@ public class FloorGenerator {
   public HomeFloor generateGardening3x3SoilFloor0() {
     HomeFloor floor = new HomeFloor(21, 15);
     FloorUtils.CarveGround(floor);
-    FloorUtils.SurroundWithWalls(floor);
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
+    // FloorUtils.SurroundWithWalls(floor);
+    foreach (var p in floor.EnumeratePerimeter()) {
+      if (p.x == floor.width - 1) {
+        floor.Put(new Wall(p));
+      } else {
+        floor.Put(new Chasm(p));
+      }
+    }
+    FloorUtils.NaturalizeEdges(floor);
 
-    var room0 = new Room(floor);
-    floor.rooms = new List<Room> { room0 };
-    floor.root = room0;
+    var root = new Room(
+      new Vector2Int(floor.width - 7, floor.height / 2 - 3),
+      new Vector2Int(floor.width - 1, floor.height / 2 + 3)
+    );
+    floor.rooms = new List<Room> { root };
+    floor.root = root;
+    floor.AddInitialThickBrush();
+
+    floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
     // Encounters.AddWater(floor, room0);
     // Encounters.ThreeAstoriasInCorner(floor, room0);
     FloorUtils.TidyUpAroundStairs(floor);
@@ -387,7 +400,7 @@ public class FloorGenerator {
     // tiles.Shuffle();
     // floor.PutAll(tiles.Take(10).Select(t => new HardGround(t.pos)).ToList());
 
-    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
+    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, root);
 
     return floor;
   }

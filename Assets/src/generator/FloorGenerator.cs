@@ -83,13 +83,16 @@ public class FloorGenerator {
 
   internal HomeFloor generateHomeFloor() {
     EncounterGroup = earlyGame;
+    HomeFloor floor;
 #if experimental_3x3soil
-      return generateGardening3x3SoilFloor0();
+      floor = generateGardening3x3SoilFloor0();
 #elif experimental_grasscovering
-      return generateGardeningV1Floor0();
+      floor = generateGardeningV1Floor0();
 #else
-      return generateFloor0();
+      floor = generateFloor0();
 #endif
+    PostProcessFloor(floor);
+    return floor;
   }
 
   public Floor generateCaveFloor(int depth) {
@@ -134,7 +137,11 @@ public class FloorGenerator {
     if (floor.depth != depth) {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
+    PostProcessFloor(floor);
+    return floor;
+  }
 
+  public void PostProcessFloor(Floor floor) {
     var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
     foreach(var enemy in enemies) {
       var x = enemy.pos.x;
@@ -191,6 +198,9 @@ public class FloorGenerator {
     // );
 
     #if UNITY_EDITOR
+    var depth = floor.depth;
+    floor.depth = 20;
+    // Encounters.AddOctopus(floor, floor.root);
     // Encounters.AddCheshireWeeds(floor, floor.root);
     // Encounters.AddWebs2x(floor, floor.root);
     // Encounters.AddLlaora(floor, floor.root);
@@ -203,18 +213,18 @@ public class FloorGenerator {
     // Encounters.AddPoisonmoss(floor, floor.root);
     // Encounters.FillWithFerns(floor, floor.root);
     // Encounters.AddFakeWall(floor, floor.root);
+    floor.depth = depth;
     #endif
 
     /// add a signpost onto the floor
     if (Tips.tipMap.ContainsKey(floor.depth)) {
       /// put it near the upstairs
-      var signpostSearchStartPos = floor.upstairs?.landing ?? new Vector2Int(3, floor.height / 2);
+      var signpostSearchStartPos = floor.upstairs?.landing ?? floor.root.center;
       var signpostPos = floor.BreadthFirstSearch(signpostSearchStartPos, (tile) => true).Skip(5).Where(t => t is Ground && t.CanBeOccupied() && t.grass == null).FirstOrDefault();
       if (signpostPos != null) {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
       }
     }
-    return floor;
   }
 
   public Floor generateEndFloor(int depth) {

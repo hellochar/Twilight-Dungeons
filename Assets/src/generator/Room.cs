@@ -1,9 +1,11 @@
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = MyRandom;
 
 /// Represents a room in a floor; internally implements a BSP tree
+[System.Serializable]
 public class Room {
   /// rooms are at least 3x3
   public readonly static int MIN_ROOM_SIZE = 3;
@@ -171,8 +173,19 @@ public class Room {
   internal Vector2Int getTopLeft() {
     return new Vector2Int(this.min.x, this.max.y);
   }
+
+  public bool Contains(Vector2Int pos) {
+    return pos.x >= min.x && pos.x <= max.x &&
+           pos.y >= min.y && pos.y <= max.y;
+  }
+
+  internal void ExtendToEncompass(Room room) {
+    min = Vector2Int.Min(min, room.min);
+    max = Vector2Int.Max(max, room.max);
+  }
 }
 
+[System.Serializable]
 public struct RoomSplit {
 
   public RoomSplit(Room a, Room b, SplitDirection direction, int coordinate) {
@@ -187,5 +200,6 @@ public struct RoomSplit {
   public int coordinate { get; }
 }
 
+[System.Serializable]
 public enum SplitDirection { Vertical, Horizontal }
 

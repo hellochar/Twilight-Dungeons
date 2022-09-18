@@ -33,8 +33,6 @@ public class Floor {
   public Vector2Int boundsMax => new Vector2Int(width, height);
   public Vector2Int center => new Vector2Int(width / 2, height / 2);
 
-  /// abstract bsp root
-  [NonSerialized] /// not used beyond generator
   internal Room root;
   /// all rooms (terminal bsp nodes). Sorted by 
   [NonSerialized] /// not used beyond generator

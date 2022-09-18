@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BiomeCameraBackgroundColorSwap : MonoBehaviour {
-  public Camera camera;
+  private new Camera camera;
   public Color early, mid, late;
   // Start is called before the first frame update
   void Start() {

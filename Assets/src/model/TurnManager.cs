@@ -75,6 +75,8 @@ public class TurnManager {
     model.DrainEventQueue();
     bool isFirstIteration = true;
     int guard = 0;
+    bool playerTookATurn = false;
+    bool nonPlayerTookATurn = false;
     do {
       if (guard++ > 1000 && !model.player.IsDead) {
         Debug.Log("Stopping step because it's been 1000 turns since player had a turn");
@@ -121,8 +123,14 @@ public class TurnManager {
         }
       }
 
-      if (entity == model.player && model.player.task == null) {
-        break;
+      if (entity == model.player) {
+        var noMoreTasks = model.player.task == null;
+        var worldHasChanged = playerTookATurn && nonPlayerTookATurn;
+        if (noMoreTasks || worldHasChanged) {
+          break;
+        }
+      } else {
+        nonPlayerTookATurn = true;
       }
 
       try {
@@ -147,6 +155,10 @@ public class TurnManager {
         }
       } catch (ActorDiedException) {
         // just a catch-all; we don't have to do anything
+      }
+
+      if (!playerTookATurn && entity == model.player) {
+        playerTookATurn = true;
       }
 
       model.DrainEventQueue();

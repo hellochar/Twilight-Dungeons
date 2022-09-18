@@ -104,11 +104,19 @@ public class Floor {
     // if we're home, go back to the cave
     // if we're in the cave, go 1 deeper
     int nextDepth;
+#if experimental_alwaysgohome
+    if (depth == 0) {
+      nextDepth = GameModel.main.cave.depth + 1;
+    } else {
+      nextDepth = 0;
+    }
+#else
     if (depth == 0) {
       nextDepth = GameModel.main.cave.depth;
     } else {
       nextDepth = depth + 1;
     }
+#endif
     Serializer.SaveMainToCheckpoint();
     GameModel.main.PutPlayerAt(nextDepth);
 #if experimental_retryondemand

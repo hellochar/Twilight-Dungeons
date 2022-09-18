@@ -100,7 +100,13 @@ public class GameModel {
     }
     generator = new FloorGenerator(floorSeeds);
     home = generator.generateCaveFloor(0);
+#if experimental_alwaysgohome
+    // HACK have an empty cave floor at depth 0 so when you go down
+    // you get to depth 1
+    cave = new Floor(0, 0, 0);
+#else
     cave = generator.generateCaveFloor(1);
+#endif
     player = new Player(new Vector2Int(2, home.height/2));
     home.Put(player);
   }

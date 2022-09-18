@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-class TutorialFloor : Floor {
+class TutorialFloor : HomeFloor {
   public BerryBush berryBush;
   public Blob blob;
   public Guardleaf guardleaf;
@@ -14,7 +14,8 @@ class TutorialFloor : Floor {
 
   public event Action OnTutorialEnded;
 
-  public TutorialFloor() : base(-1, 73, 9) {
+  public TutorialFloor() : base(73, 9) {
+    this.depth = -1;
     this.portRoom = new Room(Vector2Int.zero, new Vector2Int(5, 8));
     this.blobRoom = new Room(new Vector2Int(portRoom.max.x + 5, 1), new Vector2Int(portRoom.max.x + 5 + 11, 7));
     this.dogsRoom = new Room(new Vector2Int(blobRoom.max.x + 4, 1), new Vector2Int(blobRoom.max.x + 4 + 14, 7));

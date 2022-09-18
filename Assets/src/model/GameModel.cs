@@ -13,7 +13,7 @@ public class GameModel {
   public string version = VERSION;
   public int seed;
   public Player player;
-  public Floor home;
+  public HomeFloor home;
   public Floor cave;
   public int depth = 0;
   public float time = 0;
@@ -99,7 +99,7 @@ public class GameModel {
       floorSeeds.Add(MyRandom.Next());
     }
     generator = new FloorGenerator(floorSeeds);
-    home = generator.generateCaveFloor(0);
+    home = generator.generateHomeFloor();
 #if experimental_alwaysgohome
     // HACK have an empty cave floor at depth 0 so when you go down
     // you get to depth 1

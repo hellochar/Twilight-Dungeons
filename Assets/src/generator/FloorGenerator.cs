@@ -36,11 +36,7 @@ public class FloorGenerator {
   private void InitFloorGenerators() {
     floorGenerators = new List<Func<Floor>>() {
       // early game
-#if experimental_grasscovering
-      () => generateGardeningV1Floor0(0),
-#else
-      () => generateFloor0(0),
-#endif
+      () => generateHomeFloor(),
       () => generateSingleRoomFloor(1, 9, 7, 1, 1),
       () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(3, 9, 7, 1, 1),
@@ -83,6 +79,16 @@ public class FloorGenerator {
       () => generateEndBossFloor(36),
       () => generateEndFloor(37),
     };
+  }
+
+  internal HomeFloor generateHomeFloor() {
+#if experimental_3x3soil
+      return generateGardening3x3SoilFloor0();
+#elif experimental_grasscovering
+      return generateGardeningV1Floor0();
+#else
+      return generateFloor0();
+#endif
   }
 
   public Floor generateCaveFloor(int depth) {
@@ -291,8 +297,8 @@ public class FloorGenerator {
     return floor;
   }
 
-  public Floor generateFloor0(int depth) {
-    Floor floor = new Floor(depth, 15, 11);
+  public HomeFloor generateFloor0() {
+    HomeFloor floor = new HomeFloor(15, 11);
 
     // fill with floor tiles by default
     FloorUtils.CarveGround(floor);
@@ -363,8 +369,30 @@ public class FloorGenerator {
     return floor;
   }
 
-  public Floor generateGardeningV1Floor0(int depth) {
-    Floor floor = new Floor(depth, 13, 8);
+  public HomeFloor generateGardening3x3SoilFloor0() {
+    HomeFloor floor = new HomeFloor(21, 15);
+    FloorUtils.CarveGround(floor);
+    FloorUtils.SurroundWithWalls(floor);
+    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
+
+    var room0 = new Room(floor);
+    floor.rooms = new List<Room> { room0 };
+    floor.root = room0;
+    // Encounters.AddWater(floor, room0);
+    // Encounters.ThreeAstoriasInCorner(floor, room0);
+    FloorUtils.TidyUpAroundStairs(floor);
+
+    // var tiles = FloorUtils.EmptyTilesInRoom(floor, room0).ToList();
+    // tiles.Shuffle();
+    // floor.PutAll(tiles.Take(10).Select(t => new HardGround(t.pos)).ToList());
+
+    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
+
+    return floor;
+  }
+
+  public Floor generateGardeningV1Floor0() {
+    HomeFloor floor = new HomeFloor(13, 8);
     FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));

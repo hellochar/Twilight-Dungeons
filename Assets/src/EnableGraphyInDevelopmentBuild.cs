@@ -10,7 +10,7 @@ public class EnableGraphyInDevelopmentBuild : MonoBehaviour {
       graphy.m_enableOnStartup = false;
     }
     if (Debug.isDebugBuild || Application.isEditor) {
-      graphy.gameObject.SetActive(true);
+      // no-op
     } else {
       Destroy(graphy.gameObject);
     }

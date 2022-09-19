@@ -37,12 +37,21 @@ public class FloorGenerator {
     floorGenerators = new List<Func<Floor>>() {
       // early game
       () => generateHomeFloor(),
+#if experimental_chainfloors
+      () => generateChainFloor(1, 5, 9, 7, 2, 2),
+      () => generateChainFloor(2, 5, 9, 7, 2, 2),
+      () => generateChainFloor(3, 5, 9, 7, 2, 2),
+      () => generateChainFloor(4, 5, 9, 7, 3, 3),
+      () => generateChainFloor(5, 5, 9, 7, 3, 3),
+      () => generateChainFloor(6, 5, 9, 7, 3, 3),
+#else
       () => generateSingleRoomFloor(1, 9, 7, 1, 1),
       () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(3, 9, 7, 1, 1),
       () => generateSingleRoomFloor(4, 9, 7, 2, 1, true, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(5, 9, 7, 2, 1),
       () => generateSingleRoomFloor(6, 9, 7, 2, 1),
+#endif
       () => generateSingleRoomFloor(7, 9, 7, 2, 1),
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 10, 7, 3, 2),
@@ -459,6 +468,64 @@ public class FloorGenerator {
 
     FloorUtils.TidyUpAroundStairs(floor);
     floor.root = room0;
+
+    return floor;
+  }
+
+  public Floor generateChainFloor(int depth, int numRooms, int width, int height, int numMobs, int numGrasses) {
+    Floor floor = new Floor(depth, (width + 1) * numRooms + 2, height);
+
+    // fill with wall
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new Wall(p));
+    }
+
+    floor.rooms = new List<Room>();
+    for(int i = 0; i < numRooms; i++) {
+      var xMin = 2 + i * (width + 1);
+      var xMax = xMin + width - 1;
+      var room = new Room(new Vector2Int(xMin, 1), new Vector2Int(xMax, floor.height - 2));
+
+      floor.rooms.Add(room);
+
+      FloorUtils.CarveGround(floor, floor.EnumerateRoom(room));
+      if (i > 0) {
+        floor.Put(new Ground(new Vector2Int(room.min.x - 1, floor.height / 2)));
+      }
+
+      // // one wall variation
+      // EncounterGroup.Walls.GetRandomAndDiscount()(floor, room);
+      
+      // // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
+      // EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room);
+    }
+    FloorUtils.NaturalizeEdges(floor);
+
+    floor.root = floor.rooms[0];
+    floor.upstairsRoom = floor.rooms[0];
+    floor.downstairsRoom = floor.rooms[numRooms - 1];
+
+    floor.PlaceDownstairs(new Vector2Int(floor.downstairsRoom.max.x - 1, floor.height / 2));
+    floor.PlaceUpstairs(new Vector2Int(floor.upstairsRoom.min.x + 1, floor.height / 2));
+    List<Encounter> encounters = new List<Encounter>();
+
+    // X mobs
+    for (var i = 0; i < numMobs; i++) {
+      encounters.Add(EncounterGroup.Mobs.GetRandomAndDiscount());
+    }
+
+    // Y grasses
+    for (var i = 0; i < numGrasses; i++) {
+      encounters.Add(EncounterGroup.Grasses.GetRandomAndDiscount());
+    }
+
+    encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
+
+    foreach (var room in floor.rooms) {
+      foreach(var encounter in encounters) {
+        encounter(floor, room);
+      }
+    }
 
     return floor;
   }

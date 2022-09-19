@@ -19,8 +19,12 @@ public class BoundCameraToFloor : MonoBehaviour {
   void LateUpdate() {
     /// bug - if the current floor is less than 1 bounds, the camera shakes
 
-    bounds.min = Util.withZ(GameModel.main.home.root.min) + new Vector3(-paddingLeft, -paddingBottom, 0);
-    bounds.max = Util.withZ(GameModel.main.home.root.max) + new Vector3(paddingRight, paddingTop, 0);
+    var floor = GameModel.main.currentFloor;
+
+    Vector2Int min = floor is HomeFloor ? floor.root.min : floor.boundsMin;
+    Vector2Int max = floor is HomeFloor ? floor.root.max : floor.boundsMax;
+    bounds.min = Util.withZ(min) + new Vector3(-paddingLeft, -paddingBottom, 0);
+    bounds.max = Util.withZ(max) + new Vector3(paddingRight, paddingTop, 0);
 
     Bounds cameraBounds = OrthographicBounds(this.camera);
     bool constrainX = bounds.extents.x > cameraBounds.extents.x;

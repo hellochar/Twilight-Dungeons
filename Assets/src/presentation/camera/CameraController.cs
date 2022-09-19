@@ -19,16 +19,19 @@ public class CameraController : MonoBehaviour {
   }
 
   void Update() {
-    if (GameModel.main.currentFloor == GameModel.main.home) {
-      centerCameraOnFloor.enabled = false;
-      boundCameraToFloor.enabled = true;
-      cameraFollowEntity.enabled = true;
-      cameraZoom.enabled = true;
-    } else {
+    var floor = GameModel.main.currentFloor;
+    // after this the sprites look too small and misclicking is too easy
+    var fitsOnOneScreen = floor.width <= 18 && floor.height <= 11;
+    if (fitsOnOneScreen) {
       centerCameraOnFloor.enabled = true;
       boundCameraToFloor.enabled = false;
       cameraFollowEntity.enabled = false;
       cameraZoom.enabled = false;
+    } else {
+      centerCameraOnFloor.enabled = false;
+      boundCameraToFloor.enabled = true;
+      cameraFollowEntity.enabled = true;
+      cameraZoom.enabled = true;
     }
   }
 }

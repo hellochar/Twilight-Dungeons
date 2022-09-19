@@ -381,7 +381,7 @@ public class FloorGenerator {
   }
 
   public HomeFloor generateGardening3x3SoilFloor0() {
-    HomeFloor floor = new HomeFloor(21, 15);
+    HomeFloor floor = new HomeFloor(31, 25);
     FloorUtils.CarveGround(floor);
     // FloorUtils.SurroundWithWalls(floor);
     foreach (var p in floor.EnumeratePerimeter()) {
@@ -402,8 +402,8 @@ public class FloorGenerator {
     floor.AddInitialThickBrush();
 
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
-    // Encounters.AddWater(floor, room0);
-    // Encounters.ThreeAstoriasInCorner(floor, room0);
+    Encounters.AddWater(floor, root);
+    Encounters.OneAstoria(floor, root);
     FloorUtils.TidyUpAroundStairs(floor);
 
     // var tiles = FloorUtils.EmptyTilesInRoom(floor, room0).ToList();

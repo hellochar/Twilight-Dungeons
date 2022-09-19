@@ -146,11 +146,33 @@ public class FancyGround : Ground {
 
 [ObjectInfo(description: "Blocks vision and movement.", flavorText: "Hard earth that has weathered centuries of erosion; it's not going anywhere.")]
 [Serializable]
+#if experimental_3x3soil
+public class Wall : Tile, IBlocksExploration {
+#else
 public class Wall : Tile {
+#endif
   public Wall(Vector2Int pos) : base(pos) { }
   public override float BasePathfindingWeight() {
     return 0;
   }
+
+#if experimental_3x3soil
+  protected override void HandleLeaveFloor() {
+    if (floor is HomeFloor f) {
+      f.root.ExtendToEncompass(new Room(pos - Vector2Int.one, pos + Vector2Int.one));
+    }
+  }
+
+  internal void CarveAway() {
+    var home = GameModel.main.home;
+    if (home.actionPoints > 0) {
+      home.actionPoints--;
+      floor.Put(new Ground(tile.pos));
+    } else {
+      throw new CannotPerformActionException("Need an Action Point!");
+    }
+  }
+#endif
 }
 
 [Serializable]

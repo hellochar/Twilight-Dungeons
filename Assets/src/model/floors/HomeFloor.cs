@@ -23,7 +23,8 @@ public class HomeFloor : Floor {
     var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
     foreach(var pos in this.EnumerateFloor()) {
       if (!rootInset.Contains(pos) && tiles[pos].CanBeOccupied()) {
-        Put(new ThickBrush(pos));
+        // Put(new ThickBrush(pos));
+        Put(new Wall(pos));
       }
     }
   }

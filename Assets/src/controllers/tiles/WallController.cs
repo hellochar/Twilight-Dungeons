@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class WallController : TileController {
   public override void Start() {
@@ -18,4 +19,20 @@ public class WallController : TileController {
       Destroy(fade);
     }
   }
+
+#if experimental_3x3soil
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+    if (tile.floor.depth == 0) {
+      if (tile.visibility != TileVisiblity.Unexplored) {
+        return new SetTasksPlayerInteraction(
+          new MoveNextToTargetTask(GameModel.main.player, tile.pos),
+          new GenericPlayerTask(GameModel.main.player, () => {
+            ((Wall)tile).CarveAway();
+          })
+        );
+      }
+    }
+    return base.GetPlayerInteraction(pointerEventData);
+  }
+#endif
 }

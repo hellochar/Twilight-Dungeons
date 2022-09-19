@@ -107,7 +107,7 @@ public class GameModel {
 #else
     cave = generator.generateCaveFloor(1);
 #endif
-    player = new Player(new Vector2Int(home.root.min.x, home.root.center.y));
+    player = new Player(new Vector2Int(home.root.min.x + 1, home.root.center.y));
     home.Put(player);
   }
 

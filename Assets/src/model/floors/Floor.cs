@@ -195,7 +195,7 @@ public class Floor {
 
     /// HACK
     if (entity is IBlocksVision) {
-      RecomputeVisibility();
+      GameModel.main.EnqueueEvent(RecomputeVisibility);
     }
 
     entity.SetFloor(null);
@@ -268,7 +268,9 @@ public class Floor {
 
     foreach (var pos in this.EnumerateFloor()) {
       Tile t = tiles[pos.x, pos.y];
-      t.visibility = RecomputeVisibilityFor(t);
+      if (t != null) {
+        t.visibility = RecomputeVisibilityFor(t);
+      }
     }
   }
 

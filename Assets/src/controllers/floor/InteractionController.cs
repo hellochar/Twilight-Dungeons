@@ -80,7 +80,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void Tap(Vector2Int pos) {
-    Interact(pos, hold.pointerEventData);
+    Interact(pos, hold?.pointerEventData);
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {
@@ -88,7 +88,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       return;
     }
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
-    if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out _)) {
+    if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out var entity)) {
       var interaction = handler.GetPlayerInteraction(eventData);
       if (interaction == null) {
         return;
@@ -99,7 +99,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
 
       var isLevelSimulating = floor.depth > 0 && floor.steppableEntities.Count > 1;
       if (isLevelSimulating) {
-        InteractSimulatingLevel(handler, interaction);
+        InteractSimulatingLevel(handler, entity, interaction);
       } else {
         // not in combat, perform immediately
         interaction.Perform();
@@ -116,24 +116,27 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   public static IPlayerInteractHandler proposedInteract = null;
   public static SetTasksPlayerInteraction proposedTasks;
   public static event Action<SetTasksPlayerInteraction> OnProposedTasksChanged;
-  private void InteractSimulatingLevel(IPlayerInteractHandler handler, PlayerInteraction interaction) {
-      // if we're setting tasks, first show the interaction "proposed"
-      if (interaction is SetTasksPlayerInteraction s) {
-        if (proposedInteract != handler) {
-          GameModel.main.player.ClearTasks();
-          proposedInteract = handler;
-          proposedTasks = s;
-          OnProposedTasksChanged?.Invoke(proposedTasks);
-        } else {
-          // ok, we've confirmed!
-          // proposedInteract = null;
-          // proposedTasks = null;
-          // OnProposedTasksChanged?.Invoke(proposedTasks);
-          s.Perform();
-        }
+  private void InteractSimulatingLevel(IPlayerInteractHandler handler, Entity entity, PlayerInteraction interaction) {
+    if (entity.IsNextTo(GameModel.main.player)) {
+      interaction.Perform();
+    }
+    // if we're setting tasks, first show the interaction "proposed"
+    if (interaction is SetTasksPlayerInteraction s) {
+      if (proposedInteract != handler) {
+        GameModel.main.player.ClearTasks();
+        proposedInteract = handler;
+        proposedTasks = s;
+        OnProposedTasksChanged?.Invoke(proposedTasks);
       } else {
-        interaction.Perform();
+        // ok, we've confirmed!
+        // proposedInteract = null;
+        // proposedTasks = null;
+        // OnProposedTasksChanged?.Invoke(proposedTasks);
+        s.Perform();
       }
+    } else {
+      interaction.Perform();
+    }
   }
 
   public void ShowPopupFor(Entity entity) {

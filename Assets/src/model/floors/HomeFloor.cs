@@ -27,6 +27,10 @@ public class HomeFloor : Floor {
       }
     }
   }
+
+  internal void PlayerWentHome() {
+    actionPoints = maxActionPoints;
+  }
 }
 
 [Serializable]

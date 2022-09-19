@@ -135,8 +135,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     UpdateVisibleEnemies();
   }
 
-#if experimental_equipmentperfloor
   protected override void OnFloorChanged(Floor newFloor, Floor oldFloor) {
+#if experimental_equipmentperfloor
     base.OnFloorChanged(newFloor, oldFloor);
     if (newFloor.depth != 0 || oldFloor.depth != 0) {
       foreach(var e in equipment) {
@@ -145,8 +145,11 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
         }
       }
     }
-  }
 #endif
+    if (newFloor is HomeFloor home) {
+      home.PlayerWentHome();
+    }
+  }
 
   public void OnAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];

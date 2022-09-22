@@ -10,6 +10,10 @@ public class WaterIndicatorController : MonoBehaviour {
   }
 
   void Update() {
+    if (GameModel.main == null) {
+      enabled = false;
+      return;
+    }
     if (int.TryParse(text.text, out var water)) {
       var nextNumber = Mathf.RoundToInt(Mathf.MoveTowards(water, GameModel.main.player.water, 1));
       text.text = nextNumber.ToString();

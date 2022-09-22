@@ -6,6 +6,8 @@
 /[Aa]ssets/iOS Project Builder/
 *.certSigningRequest
 build-ios/
+Build_BackUpThisFolder_ButDontShipItWithYourGame/
+Build_BurstDebugInformation_DoNotShip/
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #

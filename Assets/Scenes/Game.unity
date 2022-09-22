@@ -3083,6 +3083,7 @@ GameObject:
   - component: {fileID: 519420036}
   - component: {fileID: 519420037}
   - component: {fileID: 519420038}
+  - component: {fileID: 519420040}
   - component: {fileID: 519420039}
   m_Layer: 0
   m_Name: Main Camera
@@ -3285,9 +3286,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerCameraOnFloor: {fileID: 519420037}
+  centerCameraOnActiveRoom: {fileID: 519420040}
   boundCameraToFloor: {fileID: 519420033}
   cameraFollowEntity: {fileID: 519420030}
   cameraZoom: {fileID: 519420034}
+--- !u!114 &519420040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 207118bb6298389458a1251c399540fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paddingTop: 1
+  paddingRight: 3
+  paddingBottom: 2
+  paddingLeft: 5.5
+  minZoom: 4
 --- !u!1 &539203642
 GameObject:
   m_ObjectHideFlags: 0
@@ -11943,7 +11962,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

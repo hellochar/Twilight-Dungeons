@@ -10,6 +10,7 @@ using Random = System.Random;
 // Use CenterCameraOnFloor in cave levels, but move camera with player at home.
 public class CameraController : MonoBehaviour {
 	public CenterCameraOnFloor centerCameraOnFloor;
+  public CenterCameraOnActiveRoom centerCameraOnActiveRoom;
   public BoundCameraToFloor boundCameraToFloor;
   public CameraFollowEntity cameraFollowEntity;
   public CameraZoom cameraZoom;
@@ -29,7 +30,14 @@ public class CameraController : MonoBehaviour {
       cameraZoom.enabled = false;
     } else {
       centerCameraOnFloor.enabled = false;
+#if experimental_chainfloors
+      var isHome = floor == GameModel.main.home;
+      boundCameraToFloor.enabled = isHome;
+      centerCameraOnActiveRoom.enabled = !isHome;
+#else
       boundCameraToFloor.enabled = true;
+      centerCameraOnActiveRoom.enabled = false;
+#endif
       cameraFollowEntity.enabled = true;
       cameraZoom.enabled = true;
     }

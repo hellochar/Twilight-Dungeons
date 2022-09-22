@@ -89,6 +89,10 @@ public static class FloorEnumeratorExtensions {
     }
   }
 
+  public static IEnumerable<Tile> EnumerateRoomPerimeter(this Floor floor, Room room) {
+      return floor.EnumerateRoomTiles(room, 1).Except(floor.EnumerateRoomTiles(room, 0));
+  }
+
   public static IEnumerable<Tile> EnumerateRoomTiles(this Floor floor, Room room, int extrude = 0) {
     return floor.EnumerateRoom(room, extrude).Select(x => floor.tiles[x]);
   }

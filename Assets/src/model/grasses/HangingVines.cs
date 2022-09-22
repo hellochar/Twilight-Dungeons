@@ -57,6 +57,7 @@ public class Trigger : Entity, IActorEnterHandler {
   /// be careful with action serialization
   public Action<Actor> action;
   private Vector2Int _pos;
+
   public override Vector2Int pos {
     get => _pos;
     set { }
@@ -67,8 +68,11 @@ public class Trigger : Entity, IActorEnterHandler {
     this.action = action;
   }
 
+  public Trigger(Vector2Int pos) : this(pos, null) {}
+
+
   public virtual void HandleActorEnter(Actor who) {
-    action(who);
+    action?.Invoke(who);
   }
 }
 

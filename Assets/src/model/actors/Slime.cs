@@ -10,6 +10,19 @@ public class Slime : Destructible, IDeathHandler {
   public void HandleDeath(Entity source) {
     GameModel.main.player.water += 60;
     GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
+    floor.Put(new WallTrigger(pos));
+  }
+}
+
+[Serializable]
+class WallTrigger : Trigger, IActorLeaveHandler {
+  public WallTrigger(Vector2Int pos) : base(pos) {}
+
+  public void HandleActorLeave(Actor who) {
+    if (who is Player) {
+      KillSelf();
+      who.floor.Put(new Wall(pos));
+    }
   }
 }
 

@@ -256,6 +256,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c68aa0babb197fd4b9cdda10f97751c4, type: 3}
   - {fileID: 21300000, guid: e25116ba1f11158458db3344153bfc53, type: 3}
   - {fileID: 21300000, guid: 0b9919ba4e568e140b9a1ead075c75db, type: 3}
+  - {fileID: 21300000, guid: 4dfaf7ca33710ed4aaf8669ce0b5b902, type: 3}
   - {fileID: 21300000, guid: f35660daef9c3cf43b043079a3be9853, type: 3}
   - {fileID: -8073104873308132409, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: 3395855674396057741, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
@@ -362,6 +363,7 @@ SpriteAtlas:
   - {fileID: -4611009959399730175, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: 21300000, guid: 184b4b5d160a3924fa61bae6a93071a6, type: 3}
   - {fileID: 21300000, guid: 4e996e9d3ecb6b34da4031a80baa2a65, type: 3}
+  - {fileID: 21300000, guid: e5cd23cd2f6b5524282a8f66c724cfeb, type: 3}
   - {fileID: 21300000, guid: d58ad4cd3ab97734aac279ebe56231ff, type: 3}
   - {fileID: 21300000, guid: 2dd03ccd0a5dcbb4cab08e9b386ffca3, type: 3}
   - {fileID: 21300000, guid: dcbe020e81d351a4993cb309785c2e33, type: 3}
@@ -589,6 +591,7 @@ SpriteAtlas:
   - poisoner
   - heart_animated_1
   - wildwood-leaf
+  - overgrowth
   - Stick
   - upstairs12
   - ground12
@@ -695,6 +698,7 @@ SpriteAtlas:
   - hanging-vines-bottom
   - thistlebog
   - scrollbar
+  - plant-matter
   - mushroom-cap
   - item shadow
   - muckola

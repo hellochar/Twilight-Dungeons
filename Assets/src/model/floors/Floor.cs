@@ -35,7 +35,9 @@ public class Floor {
 
   internal Room root;
   /// all rooms (terminal bsp nodes). Sorted by 
+#if !experimental_chainfloors
   [NonSerialized] /// not used beyond generator
+#endif
   internal List<Room> rooms;
   [NonSerialized] /// not used beyond generator
   internal Room upstairsRoom;
@@ -156,7 +158,7 @@ public class Floor {
 
       /// HACK
       if (entity is IBlocksVision) {
-        RecomputeVisibility();
+        GameModel.main.EnqueueEvent(RecomputeVisibility);
       }
 
       entity.SetFloor(this);
@@ -282,6 +284,16 @@ public class Floor {
     }
 
     var player = GameModel.main.player;
+
+#if experimental_chainfloors
+    var activeRoom = player.room;
+    var tileRoom = t.room;
+    bool isCrossingRooms = tileRoom != null && activeRoom != tileRoom;
+    if (isCrossingRooms && !player.IsNextTo(t)) {
+      return TileVisiblity.Unexplored;
+    }
+#endif
+
     var isCamouflaged = player.isCamouflaged;
     if (isCamouflaged) {
       t.visibility = t.pos == player.pos ? TileVisiblity.Visible : TileVisiblity.Explored;

@@ -98,6 +98,18 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     return newBag;
   }
 
+  public WeightedRandomBag<T> Merge(WeightedRandomBag<T> other) {
+    foreach (Entry entry in other.entries) {
+      var thisEntry = entries.Find(e => e.item.Equals(entry.item));
+      if (thisEntry != null) {
+        thisEntry.weight += entry.weight;
+      } else {
+        entries.Add(entry);
+      }
+    }
+    return this;
+  }
+
   object ICloneable.Clone() => this.Clone();
 
   public IEnumerator<KeyValuePair<float, T>> GetEnumerator() {

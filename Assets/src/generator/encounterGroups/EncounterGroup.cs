@@ -28,6 +28,13 @@ public class EncounterGroup {
   public EncounterBag Plants;
   public EncounterBag Rests;
 
+  public EncounterGroup Merge(EncounterGroup other) {
+    Mobs.Merge(other.Mobs);
+    Spice.Merge(other.Spice);
+    Grasses.Merge(other.Grasses);
+    return this;
+  }
+
   public EncounterGroup AssignShared(EncounterGroupShared source) {
     Walls = source.Walls;
     Chasms = source.Chasms;

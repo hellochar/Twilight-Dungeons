@@ -13,6 +13,10 @@ public class InventorySlotController : ItemSlotController {
   public override Item item => inventory[slotIndex];
 
   public virtual void Start() {
+    if (GameModel.main == null) {
+      Destroy(gameObject);
+      return;
+    }
     itemPrefab = PrefabCache.UI.GetPrefabFor("Item");
     shadow = GetComponent<Shadow>();
     image = GetComponent<Image>();

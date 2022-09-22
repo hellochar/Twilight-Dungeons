@@ -9,6 +9,9 @@ public class EncounterGroup {
   public static EncounterGroup EarlyGame() => EncounterGroupEarlyGame.EarlyGame();
   public static EncounterGroup EarlyMidMixed() => EncounterGroupEverything.Everything();
   public static EncounterGroup MidGame() => EncounterGroupMidGame.MidGame();
+  public static EncounterGroup ActuallyEverything() => EarlyGame()
+    .Merge(EarlyMidMixed())
+    .Merge(MidGame());
 
   /// <summary>The core enemy spawns. Makes up the majority of the challenge.</summary>
   public EncounterBag Mobs;

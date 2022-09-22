@@ -8,6 +8,9 @@ public class CameraZoom : MonoBehaviour {
   public float wantedZoom = 5;
   public float minZoom = 3;
   public float maxZoom = 15;
+  bool acceptUserInput = false;
+  public float lerpSpeed = 4;
+
   // Start is called before the first frame update
   void Start() {
     wantedZoom = PlayerPrefs.GetFloat("zoom", this.wantedZoom);
@@ -19,9 +22,9 @@ public class CameraZoom : MonoBehaviour {
     if (zoomAnimation == null && Mathf.Abs(camera.orthographicSize - wantedZoom) < 0.01) {
       camera.orthographicSize = wantedZoom;
     } else {
-      camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, wantedZoom, 0.05f);
+      camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, wantedZoom, lerpSpeed * Time.deltaTime);
     }
-    if (Input.touchSupported) {
+    if (Input.touchSupported && acceptUserInput) {
       // Pinch to zoom
       if (Input.touchCount == 2) {
 
@@ -42,7 +45,7 @@ public class CameraZoom : MonoBehaviour {
     }
 
     var scroll = Input.mouseScrollDelta.y;
-    if (scroll != 0) {
+    if (scroll != 0 && acceptUserInput) {
       Zoom(scroll);
     }
   }

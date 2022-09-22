@@ -1,14 +1,16 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// An actor whose actions are controlled by some sort of AI.
 [Serializable]
 public abstract class AIActor : Actor, IDeathHandler {
-  public Inventory inventory = new Inventory(1);
+  public Inventory inventory = new Inventory(2);
   private AI aiOverride;
   public AIActor(Vector2Int pos) : base(pos) {
     SetTasks(new SleepTask(this));
+#if experimental_fertilizer
+    inventory.AddItem(new ItemFertilizer(GetType()));
+#endif
   }
 
   public virtual void HandleDeath(Entity source) {

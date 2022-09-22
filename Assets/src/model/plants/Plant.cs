@@ -21,11 +21,25 @@ public abstract class Plant : Body, ISteppable, IHideInSidebar {
   }
 
   private PlantStage _stage;
+  public ItemFertilizer fertilizer;
+
+  internal bool isMatured => percentGrown >= 1;
+
   public PlantStage stage {
     get => _stage;
     set {
       _stage = value;
       _stage.BindTo(this);
+      /// hack - apply fertilizer here
+      if (fertilizer != null) {
+        foreach (var inventory in _stage.harvestOptions) {
+          foreach (var item in inventory.ItemsNonNull()) {
+            if (item is IWeapon w) {
+              fertilizer.Imbue(w);
+            }
+          }
+        }
+      }
       timeNextAction = GameModel.main.time + _stage.StepTime;
     }
   }

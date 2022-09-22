@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +37,16 @@ public class ItemController : MonoBehaviour {
       // itemImage.transform.localPosition = pos;
     } 
 
+    /// HACK set color for fertilizer
+    if (item is ItemFertilizer fertilizer) {
+      string resourcePath = $"Entities/Actors/{fertilizer.aiActorType.Name}";
+      var prefab = Resources.Load<GameObject>(resourcePath);
+      if (prefab != null) {
+        var color = prefab.GetComponent<ActorController>().bloodColor;
+        color.a = 1;
+        itemImage.color = color;
+      }
+    }
 
     if (item is ItemSeed seed && GameModel.main.player.inventory.HasItem(item)) {
       var plantType = seed.plantType;

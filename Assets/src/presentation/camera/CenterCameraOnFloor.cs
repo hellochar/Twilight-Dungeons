@@ -13,7 +13,6 @@ public class CenterCameraOnFloor : MonoBehaviour {
     this.camera = GetComponent<Camera>();
   }
 
-  // Update is called once per frame
   void LateUpdate() {
     Bounds bounds = new Bounds();
     bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-paddingLeft, -paddingBottom, 0);

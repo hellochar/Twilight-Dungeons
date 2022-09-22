@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 
 [Serializable]
-public class Item {
+public class Item : IModifierProvider {
   public virtual string displayName =>
   /// get rid of the "Item" prefix
     Util.WithSpaces(GetType().Name.Substring(4));
@@ -14,6 +14,8 @@ public class Item {
 
   [field:NonSerialized] /// controller only
   public event Action OnDestroyed;
+  public List<IItemMod> mods = new List<IItemMod>();
+  public virtual IEnumerable<object> MyModifiers => mods;
 
   // must take a parameter so ItemController can invoke this without erroring
   public void Destroy(object unused = null) {
@@ -47,9 +49,16 @@ public class Item {
   }
 }
 
+public interface IItemMod {
+  string displayName { get; }
+}
+
 public static class ItemExtensions {
   public static string GetStatsFull(this Item item) {
     var text = item.GetStats() + "\n";
+    if (item.mods.Any()) {
+      text += $"<#FFFF00>{string.Join("\n", item.mods.Select(m => m.displayName))}</color>\n";
+    }
     if (item is IWeapon w) {
       text += Util.DescribeDamageSpread(w.AttackSpread);
     }

@@ -94,7 +94,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
   private List<object> Modifiers;
 
-  public IEnumerable<object> MyModifiers => Modifiers;
+  public override IEnumerable<object> MyModifiers => Modifiers.Concat(base.MyModifiers);
 
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
 

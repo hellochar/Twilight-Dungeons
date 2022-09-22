@@ -346,11 +346,19 @@ public class Floor {
     int xMax = Mathf.Clamp(pos.x + 1, 0, width - 1);
     int yMin = Mathf.Clamp(pos.y - 1, 0, height - 1);
     int yMax = Mathf.Clamp(pos.y + 1, 0, height - 1);
+#if experimental_nodiagonalmovement
+    list.Add(tiles[xMin, pos.y]);
+    list.Add(tiles[pos.x, yMin]);
+    list.Add(tiles[pos]);
+    list.Add(tiles[pos.x, yMax]);
+    list.Add(tiles[xMax, pos.y]);
+#else
     for (int x = xMin; x <= xMax; x++) {
       for (int y = yMin; y <= yMax; y++) {
         list.Add(tiles[x, y]);
       }
     }
+#endif
     return list;
   }
 

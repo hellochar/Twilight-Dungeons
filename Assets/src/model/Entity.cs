@@ -72,7 +72,13 @@ public abstract class Entity : IModifierProvider {
   }
 
   public bool IsNextTo(Vector2Int other) {
-    return Math.Abs(pos.x - other.x) <= 1 && Math.Abs(pos.y - other.y) <= 1;
+    var xDist = Math.Abs(pos.x - other.x);
+    var yDist = Math.Abs(pos.y - other.y);
+#if experimental_nodiagonalmovement
+    return xDist + yDist <= 1;
+#else
+    return xDist <= 1 && yDist <= 1;
+#endif
   }
 
   public override string ToString() {

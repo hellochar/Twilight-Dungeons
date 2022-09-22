@@ -13,6 +13,10 @@ public abstract class ItemSlotController : MonoBehaviour {
   public Item activeItem;
 
   public virtual void Update() {
+    if (GameModel.main == null) {
+      gameObject.SetActive(false);
+      return;
+    }
     /// TODO this won't update properly if the item is swapped
     if (item == null && itemChild != null) {
       UpdateUnused();

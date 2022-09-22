@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 105661
+    totalSpriteSurfaceArea: 106045
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -161,6 +161,7 @@ SpriteAtlas:
   - {fileID: 7506423824143329095, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
   - {fileID: 1276235689861735731, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
   - {fileID: 175961130100141872, guid: d448e116fde663d45b7e3114fbe44e5d, type: 3}
+  - {fileID: 21300000, guid: bd9c952683bea9f45a3b6bc150e5a8ff, type: 3}
   - {fileID: 21300000, guid: 6f5b0f462c22f2e45b60aa8ee7d8ccdb, type: 3}
   - {fileID: 21300000, guid: c582f276f700821448285f69440db231, type: 3}
   - {fileID: 21300000, guid: 0dbaa1a6308aaec499d6fb8d31e5c06a, type: 3}
@@ -493,6 +494,7 @@ SpriteAtlas:
   - bladegrass_3
   - bladegrass_0
   - bladegrass_1
+  - overgrowth
   - sporebloat
   - wildwood-wreath
   - parasite

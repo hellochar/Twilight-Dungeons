@@ -6,8 +6,7 @@ public static class EncounterGroupEverything {
       Mobs = new EncounterBag {
         { 1, AddClumpshroom },
         { 0.5f, AddGrasper },
-        { 0.4f, AddBats },
-        { 0.35f, AddSpiders },
+        { 0.5f, AddBats },
         { 0.2f, AddScorpions },
         { 0.2f, AddParasite },
         { 0.2f, AddThistlebog },

@@ -86,6 +86,10 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     return pick;
   }
 
+  public void Clear() {
+    entries.Clear();
+  }
+
   public WeightedRandomBag<T> Clone() {
     var newBag = new WeightedRandomBag<T>();
     foreach (Entry e in entries) {

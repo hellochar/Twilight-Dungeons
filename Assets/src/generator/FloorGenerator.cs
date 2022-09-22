@@ -26,7 +26,12 @@ public class FloorGenerator {
 
   public FloorGenerator(List<int> floorSeeds) {
     this.floorSeeds = floorSeeds;
+#if experimental_singleitemplants
+    shared = new SingleItemPlant.CustomEncounterGroupShared();
+#else
     shared = new EncounterGroupShared();
+#endif
+
     earlyGame = EncounterGroup.EarlyGame().AssignShared(shared);
     everything = EncounterGroup.EarlyMidMixed().AssignShared(shared);
     midGame = EncounterGroup.MidGame().AssignShared(shared);

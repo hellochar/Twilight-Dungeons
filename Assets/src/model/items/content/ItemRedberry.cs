@@ -7,6 +7,8 @@ class ItemRedberry : Item, IStackable, IUsable {
     this.stacks = stacks;
   }
 
+  public ItemRedberry() : this(3) { }
+
   public int stacksMax => 10;
 
   private int _stacks;

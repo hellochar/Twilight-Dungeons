@@ -40,6 +40,11 @@ public class PlantController : BodyController, ILongTapHandler {
     activePlantStageObject = plant.stage.name == "Seed" ? seed : mature;
     activePlantStageObject.SetActive(true);
 
+    if (plant is SingleItemPlant.SingleItemPlant sip) {
+      var sr = mature.GetComponent<SpriteRenderer>();
+      sr.sprite = ObjectInfo.GetSpriteFor(sip.ItemType);
+    }
+
     particles.SetActive(plant.stage.name == "Seed");
     plant.OnHarvested += HandleHarvested;
     base.Start();

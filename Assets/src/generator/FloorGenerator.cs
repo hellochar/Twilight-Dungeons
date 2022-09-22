@@ -479,7 +479,7 @@ public class FloorGenerator {
 
   public Floor generateChainFloor(int depth, int numRooms, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateChainRoomFloor(depth, width, height, numRooms, preMobEncounters == null);
-    // ensureConnectedness(floor);
+    ensureConnectedness(floor);
 
     List<Encounter> encounters = new List<Encounter>();
 
@@ -503,9 +503,9 @@ public class FloorGenerator {
       }
 
       // add slimes
-      var entrancesAndExits = floor.EnumerateRoomPerimeter(room).Where(tile => tile.CanBeOccupied());
-      foreach (var tile in entrancesAndExits) {
-        floor.Put(new Slime(tile.pos));
+      var entrancesAndExits = floor.EnumerateRoomPerimeter(room, -1).Where(pos => floor.tiles[pos].CanBeOccupied());
+      foreach (var pos in entrancesAndExits) {
+        floor.Put(new Slime(pos));
       }
     }
 
@@ -551,8 +551,7 @@ public class FloorGenerator {
 
       if (defaultEncounters) {
         // one wall variation
-        // 9/21 - disabled because some Wall encounters operate on entire Floor
-        // EncounterGroup.Walls.GetRandomAndDiscount()(floor, room);
+        EncounterGroup.Walls.GetRandomAndDiscount()(floor, room);
         
         // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
         // EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room);

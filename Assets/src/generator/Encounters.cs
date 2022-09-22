@@ -903,8 +903,12 @@ public class Encounters {
   }
 
   public static void LineWithOpening(Floor floor, Room room) {
-    var start = Util.RandomPick(floor.EnumeratePerimeter());
-    var end = new Vector2Int(floor.width - 1 - start.x, floor.height - 1 - start.y);
+    var start = Util.RandomPick(floor.EnumerateRoomPerimeter(room));
+    var offset = start - room.min;
+
+    // pick the opposite location
+    // var end = new Vector2Int(floor.width - 1 - start.x, floor.height - 1 - start.y);
+    var end = room.max - offset;
     var line = floor
       .EnumerateLine(start, end)
       .Select(p => floor.tiles[p])
@@ -920,7 +924,7 @@ public class Encounters {
 
   public static void InsetLayerWithOpening(Floor floor, Room room) {
     var insetLength = Random.Range(3, 6);
-    var inset = floor.EnumeratePerimeter(insetLength).ToList();
+    var inset = floor.EnumerateRoomPerimeter(room, insetLength).ToList();
     var start = Random.Range(0, inset.Count);
     // rotate inset to the right some random amount
     inset = inset.Skip(start).Concat(inset.Take(start)).ToList();

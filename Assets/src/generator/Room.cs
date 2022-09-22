@@ -141,6 +141,7 @@ public class Room {
     int splitMin = min.x + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
     Room a = new Room(this, this.min, new Vector2Int(splitPoint - 1, this.max.y));
+    // add one tile of space between rooms
     Room b = new Room(this, new Vector2Int(splitPoint + 1, this.min.y), this.max);
     this.split = new RoomSplit(a, b, SplitDirection.Horizontal, splitPoint);
   }

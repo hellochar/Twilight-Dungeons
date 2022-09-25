@@ -136,7 +136,11 @@ public class Floor {
   }
 
   public IEnumerable<AIActor> Enemies() {
-    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Cast<AIActor>();
+    var enemies = bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Cast<AIActor>();
+#if experimental_chainfloors
+    enemies = enemies.Where(a => a.room == GameModel.main.player.room);
+#endif
+    return enemies;
   }
 
   public virtual void Put(Entity entity) {

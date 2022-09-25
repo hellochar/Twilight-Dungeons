@@ -577,6 +577,7 @@ public class FloorGenerator {
         // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
         // EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room);
       }
+      floor.PlaceDownstairs(room.max - Vector2Int.one);
       if (i == 0) {
         floor.upstairsRoom = room;
       } else if (i == numChains - 1) {
@@ -585,9 +586,6 @@ public class FloorGenerator {
     }
 
     FloorUtils.NaturalizeEdges(floor);
-
-    floor.PlaceUpstairs(new Vector2Int(floor.upstairsRoom.min.x, floor.upstairsRoom.center.y));
-    floor.PlaceDownstairs(new Vector2Int(floor.downstairsRoom.max.x, floor.downstairsRoom.center.y));
 
     floor.root = floor.rooms[0];
     return floor;

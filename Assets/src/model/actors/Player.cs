@@ -158,7 +158,11 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 #if experimental_equipmentperfloor
   protected override void OnFloorChanged(Floor newFloor, Floor oldFloor) {
     base.OnFloorChanged(newFloor, oldFloor);
-    if (newFloor.depth != 0 || oldFloor.depth != 0) {
+    bool shouldDestroy = newFloor.depth != 0 || oldFloor.depth != 0;
+#if experimental_alwaysgohome
+    shouldDestroy = newFloor.depth == 0;
+#endif
+    if (shouldDestroy) {
       foreach(var e in equipment) {
         if (e is IDurable && !(e is ISticky)) {
           e.Destroy();

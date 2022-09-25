@@ -7,7 +7,7 @@ TextureImporter:
     second: agave-honey
   - first:
       213: 3919348074914791648
-    second: roguelikeSheet_transparent_1
+    second: young-plant
   - first:
       213: -461904142435350348
     second: roguelikeSheet_transparent_2
@@ -5588,6 +5588,27 @@ TextureImporter:
       bones: []
       spriteID: 6996d88dd3fd12320800000000000000
       internalID: 2531549922278074774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: young-plant
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 304
+        width: 16
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e0486cfe42546630800000000000000
+      internalID: 3919348074914791648
       vertices: []
       indices: 
       edges: []

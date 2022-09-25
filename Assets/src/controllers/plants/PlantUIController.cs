@@ -47,7 +47,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       var p = image.rectTransform.anchoredPosition;
       p.x = 0;
       image.rectTransform.anchoredPosition = p;
-      uiInfo.rectTransform.anchoredPosition = new Vector2();
+      // uiInfo.rectTransform.anchoredPosition -= new Vector2(0, 50);
     }
 
     if (plant.floor is TutorialFloor && plant.stage.NextStage == null) {

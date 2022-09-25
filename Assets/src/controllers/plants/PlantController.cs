@@ -10,6 +10,7 @@ public class PlantController : BodyController, ILongTapHandler {
   public Plant plant => (Plant) body;
   public GameObject particles;
   public GameObject seed;
+  public GameObject young;
   public GameObject mature;
   [NonSerialized]
   public GameObject activePlantStageObject;
@@ -33,11 +34,15 @@ public class PlantController : BodyController, ILongTapHandler {
   // Start is called before the first frame update
   public override void Start() {
     seed.SetActive(false);
+    young.SetActive(false);
     mature.SetActive(false);
     seed.transform.localPosition = new Vector3(0, seed.transform.localPosition.y, seed.transform.localPosition.z);
+    young.transform.localPosition = new Vector3(0, young.transform.localPosition.y, young.transform.localPosition.z);
     mature.transform.localPosition = new Vector3(0, mature.transform.localPosition.y, mature.transform.localPosition.z);
 
-    activePlantStageObject = plant.stage.name == "Seed" ? seed : mature;
+    activePlantStageObject = plant.stage.name == "Seed" ?
+      (plant.percentGrown == 0 ? seed : young) :
+      mature;
     activePlantStageObject.SetActive(true);
 
     if (plant is SingleItemPlant.SingleItemPlant sip) {
@@ -64,10 +69,13 @@ public class PlantController : BodyController, ILongTapHandler {
   }
 
   public void Update() {
-    if (activePlantStageObject.name != plant.stage.name) {
+    var desiredStageObject = plant.stage.name == "Seed" ?
+      (plant.percentGrown == 0 ? seed : young) :
+      mature;
+    if (desiredStageObject != activePlantStageObject) {
       activePlantStageObject.SetActive(false);
-      activePlantStageObject = plant.stage.name == "Seed" ? seed : mature;
-      activePlantStageObject.SetActive(true);
+      desiredStageObject.SetActive(true);
+      activePlantStageObject = desiredStageObject;
       particles.SetActive(plant.stage.name == "Seed");
     }
   }

@@ -208,7 +208,11 @@ public class GameModel {
   /// SteppableEntity's on the current floor, and
   /// Plants on any floor
   internal IEnumerable<ISteppable> GetAllEntitiesInPlay() {
-    var enumerable = home.bodies.Where((a) => a is Plant).Cast<ISteppable>().Concat(currentFloor.steppableEntities);
-    return enumerable;
+#if experimental_chainfloors
+    var activeRoom = player.room;
+    return currentFloor.steppableEntities.Where(s => s is Entity e && e.room == activeRoom);
+#else
+    return currentFloor.steppableEntities;
+#endif
   }
 }

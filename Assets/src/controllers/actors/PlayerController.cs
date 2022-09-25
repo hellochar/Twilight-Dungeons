@@ -187,7 +187,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       player.water += 1000;
     }
     if (Input.GetKeyDown(KeyCode.G)) {
-      foreach(var plant in player.floor.bodies.Where(b => b is Plant).Cast<Plant>().ToList()) {
+      foreach(var plant in GameModel.main.home.plants.ToList()) {
         plant.GoNextStage();
       }
     }

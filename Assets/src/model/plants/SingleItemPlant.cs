@@ -23,8 +23,6 @@ namespace SingleItemPlant {
 
     [Serializable]
     class Mature : PlantStage {
-      public override float StepTime => 99999;
-      public override void Step() { }
       public override void BindTo(Plant plant) {
         SingleItemPlant ip = (SingleItemPlant)plant;
         System.Type itemType = ip.ItemType;
@@ -40,7 +38,7 @@ namespace SingleItemPlant {
     }
 
     public System.Type ItemType;
-    public SingleItemPlant(Vector2Int pos, System.Type ItemType) : base(pos, new Seed(120)) {
+    public SingleItemPlant(Vector2Int pos, System.Type ItemType) : base(pos, new Seed()) {
       this.ItemType = ItemType;
       stage.NextStage = new Mature();
     }

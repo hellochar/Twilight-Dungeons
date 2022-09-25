@@ -8,10 +8,6 @@ using UnityEngine;
 public class BerryBush : Plant {
   [Serializable]
   class Mature : PlantStage {
-    public override float StepTime => 999999;
-
-    public override void Step() {}
-
     public override void BindTo(Plant plant) {
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(BerryBush), 2),

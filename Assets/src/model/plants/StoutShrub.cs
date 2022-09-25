@@ -11,14 +11,11 @@ public class StoutShrub : Plant {
   public static int waterCost => 70;
   [Serializable]
   class Mature : PlantStage {
-    public override float StepTime => 999999;
     public readonly bool growChild;
 
     public Mature(bool growChild = true) {
       this.growChild = growChild;
     }
-
-    public override void Step() {}
 
     public override void BindTo(Plant plant) {
       base.BindTo(plant);

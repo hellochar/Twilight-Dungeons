@@ -11,8 +11,6 @@ using UnityEngine;
 public class Broodpuff : Plant {
   [Serializable]
   class Mature : PlantStage {
-    public override float StepTime => 99999;
-    public override void Step() { }
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(
@@ -29,7 +27,7 @@ public class Broodpuff : Plant {
     }
   }
 
-  public Broodpuff(Vector2Int pos) : base(pos, new Seed(320)) {
+  public Broodpuff(Vector2Int pos) : base(pos, new Seed()) {
     stage.NextStage = new Mature();
   }
 }

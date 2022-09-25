@@ -15,8 +15,6 @@ using UnityEngine;
 public class Frizzlefen : Plant {
   [Serializable]
   class Mature : PlantStage {
-    public override float StepTime => 99999;
-    public override void Step() { }
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(
@@ -35,7 +33,7 @@ public class Frizzlefen : Plant {
     }
   }
 
-  public Frizzlefen(Vector2Int pos) : base(pos, new Seed(400)) {
+  public Frizzlefen(Vector2Int pos) : base(pos, new Seed(3)) {
     stage.NextStage = new Mature();
   }
 }

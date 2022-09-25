@@ -43,12 +43,12 @@ public class FloorGenerator {
       // early game
       () => generateHomeFloor(),
 #if experimental_chainfloors
-      () => generateChainFloor(1, 5, 9, 7, 2, 2),
-      () => generateChainFloor(2, 5, 9, 7, 2, 2),
-      () => generateChainFloor(3, 5, 9, 7, 2, 2),
-      () => generateChainFloor(4, 5, 9, 7, 3, 3),
-      () => generateChainFloor(5, 5, 9, 7, 3, 3),
-      () => generateChainFloor(6, 5, 9, 7, 3, 3),
+      () => generateChainFloor(1, 3, 9, 7, 2, 2),
+      () => generateChainFloor(2, 3, 9, 7, 2, 2),
+      () => generateChainFloor(3, 3, 9, 7, 2, 2),
+      () => generateChainFloor(4, 3, 9, 7, 3, 3),
+      () => generateChainFloor(5, 3, 9, 7, 3, 3),
+      () => generateChainFloor(6, 3, 9, 7, 3, 3),
 #else
       () => generateSingleRoomFloor(1, 9, 7, 1, 1),
       () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
@@ -497,10 +497,14 @@ public class FloorGenerator {
 
     encounters.AddRange(extraEncounters);
 
+    int roomIntensity = 1;
     foreach (var room in floor.rooms) {
-      foreach(var encounter in encounters) {
-        encounter(floor, room);
+      for (var i = 0; i < roomIntensity; i++) {
+        foreach(var encounter in encounters) {
+          encounter(floor, room);
+        }
       }
+      roomIntensity++;
 
       // add slimes
       var entrancesAndExits = floor.EnumerateRoomPerimeter(room, -1).Where(pos => floor.tiles[pos].CanBeOccupied());
@@ -522,7 +526,7 @@ public class FloorGenerator {
 
     FloorUtils.TidyUpAroundStairs(floor);
     foreach(var room in floor.rooms) {
-      // make the room own the top, right, and bottom edges.
+      // make the room own the top and bottom edges.
       room.max += Vector2Int.one;
       room.min += new Vector2Int(0, -1);
     }

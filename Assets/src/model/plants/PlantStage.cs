@@ -7,12 +7,15 @@ using UnityEngine;
 public abstract class PlantStage {
   public Plant plant;
 
-  /// set when the plant actually enters into this stage
-  public float ageEntered { get; private set; }
-  /// how long the plant has been in this stage specifically
-  public float age => plant.age - ageEntered;
+  public int daysToGrow { get; private set; }
+  public int daysGrown { get; private set; }
+  public float percentGrown => (float)daysGrown / daysToGrow;
   public string name => GetType().Name;
   public List<Inventory> harvestOptions = new List<Inventory>();
+
+  protected PlantStage(int daysToGrow = 2) {
+    this.daysToGrow = daysToGrow;
+  }
 
   public PlantStage NextStage { get; set; }
 
@@ -24,40 +27,28 @@ public abstract class PlantStage {
       throw new Exception("Plant's stage isn't this stage!");
     }
     this.plant = plant;
-    ageEntered = plant.age;
+  }
+
+  internal void StepDay() {
+    daysGrown++;
+    if (daysGrown >= daysToGrow) {
+      GoNextStage();
+    }
   }
 
   internal void GoNextStage() => plant.GoNextStage();
-
-  public abstract float StepTime { get; }
-  public abstract void Step();
 }
 
 [Serializable]
 class Seed : PlantStage {
-  private readonly float stepTime;
-  public override float StepTime => stepTime;
-  public Seed(float stepTime = 320) {
-    this.stepTime = stepTime;
-  }
-
-  public override void Step() {
-    GoNextStage();
+  public Seed(int daysToGrow = 2) : base(daysToGrow) {
   }
 }
 
 [Serializable]
 class Young : PlantStage {
-  public override float StepTime => 320;
-  public override void Step() {
-    GoNextStage();
-  }
 }
 
 [Serializable]
 class Sapling : PlantStage {
-  public override float StepTime => 320;
-  public override void Step() {
-    GoNextStage();
-  }
 }

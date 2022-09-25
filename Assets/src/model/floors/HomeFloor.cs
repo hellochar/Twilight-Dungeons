@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ using UnityEngine;
 public class HomeFloor : Floor {
   public HomeFloor(int width, int height) : base(0, width, height) {
   }
+
+  public IEnumerable<Plant> plants => bodies.Where(b => b is Plant).Cast<Plant>();
 
   public int actionPoints = 3;
   public int maxActionPoints = 3;
@@ -30,6 +33,9 @@ public class HomeFloor : Floor {
 
   internal void PlayerWentHome() {
     actionPoints = maxActionPoints;
+    foreach(var p in plants) {
+      p.StepDay();
+    }
   }
 }
 

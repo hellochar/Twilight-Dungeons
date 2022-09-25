@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 106045
+    totalSpriteSurfaceArea: 107581
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -82,6 +82,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 030e17b16452e7045a7008c895d58160, type: 3}
   - {fileID: 21300000, guid: 08508fb1398e67849aee030fc1035f23, type: 3}
   - {fileID: 21300000, guid: c9f63cd16bff60342a3b6ff774adea1d, type: 3}
+  - {fileID: 1751589582205946468, guid: d7ac6be18a0622b479cb8e712f72abd1, type: 3}
+  - {fileID: -2255910211997708348, guid: d7ac6be18a0622b479cb8e712f72abd1, type: 3}
   - {fileID: 21300000, guid: 09d11de1b13732f4f98b4b0bbe12845d, type: 3}
   - {fileID: 21300000, guid: 82d92de1db2a0a24e8fccf6d2ae448f4, type: 3}
   - {fileID: -8923911374754931897, guid: 204704f1ffcdacf4b94906895238787e, type: 3}
@@ -146,6 +148,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 684dd2d49b97ae3419bbaee4cf6b1856, type: 3}
   - {fileID: -3527876879021525145, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
   - {fileID: -1927889906097043966, guid: 65e07ff4f7b55b6498e418a610f53941, type: 3}
+  - {fileID: 21300000, guid: a346da0527c22cb4c9bc6b1a1b84ddee, type: 3}
   - {fileID: 21300000, guid: bea1d425d2e70f44d9b52fd68bd3f875, type: 3}
   - {fileID: 21300000, guid: e6359b2549856624ea03a41ab6288a49, type: 3}
   - {fileID: 21300000, guid: 07dbe7358f70634448016e3aa340b653, type: 3}
@@ -213,6 +216,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2820d9285aa99f74dba9ddf2ecb7f380, type: 3}
   - {fileID: 21300000, guid: 9c0d0b48d5e38e747827d0fae553a32b, type: 3}
   - {fileID: 21300000, guid: 389d7d582bb7a0b4eb9be60692d33571, type: 3}
+  - {fileID: 21300000, guid: 3aa28d883f22c8f42bb4af5f3278de05, type: 3}
   - {fileID: 3361277931571337585, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
   - {fileID: -7862449231217127050, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
   - {fileID: -8322401864617249395, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
@@ -223,6 +227,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5fe55fb858146144aabef4d64ac925e4, type: 3}
   - {fileID: 21300000, guid: 54eca3d84122d7840a50c82d66e7c75a, type: 3}
   - {fileID: 21300000, guid: 7940bcd8c09c7974e81132867820f257, type: 3}
+  - {fileID: 21300000, guid: 8021c5f8d81c5b645814c08ba035db02, type: 3}
   - {fileID: 1844489048470511918, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: 6797942738329210198, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: -3283364832169978480, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
@@ -256,7 +261,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c68aa0babb197fd4b9cdda10f97751c4, type: 3}
   - {fileID: 21300000, guid: e25116ba1f11158458db3344153bfc53, type: 3}
   - {fileID: 21300000, guid: 0b9919ba4e568e140b9a1ead075c75db, type: 3}
-  - {fileID: 21300000, guid: 4dfaf7ca33710ed4aaf8669ce0b5b902, type: 3}
   - {fileID: 21300000, guid: f35660daef9c3cf43b043079a3be9853, type: 3}
   - {fileID: -8073104873308132409, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: 3395855674396057741, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
@@ -363,7 +367,6 @@ SpriteAtlas:
   - {fileID: -4611009959399730175, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: 21300000, guid: 184b4b5d160a3924fa61bae6a93071a6, type: 3}
   - {fileID: 21300000, guid: 4e996e9d3ecb6b34da4031a80baa2a65, type: 3}
-  - {fileID: 21300000, guid: e5cd23cd2f6b5524282a8f66c724cfeb, type: 3}
   - {fileID: 21300000, guid: d58ad4cd3ab97734aac279ebe56231ff, type: 3}
   - {fileID: 21300000, guid: 2dd03ccd0a5dcbb4cab08e9b386ffca3, type: 3}
   - {fileID: 21300000, guid: dcbe020e81d351a4993cb309785c2e33, type: 3}
@@ -417,6 +420,8 @@ SpriteAtlas:
   - redcap
   - Path Dot
   - butterfly
+  - vines-tiling
+  - vines-tiling-head
   - spider-silk-shoes
   - weakness
   - Purple_0
@@ -481,6 +486,7 @@ SpriteAtlas:
   - Hands
   - mushroom
   - mushroom-small
+  - campfire-fire
   - zen
   - hydra-heart
   - hardened-sap
@@ -548,6 +554,7 @@ SpriteAtlas:
   - water-pail
   - gear
   - spores
+  - fertilizer
   - border-top
   - border-right
   - border-bottom
@@ -558,6 +565,7 @@ SpriteAtlas:
   - pumpkin
   - agave
   - peace
+  - campfire
   - upstairs
   - ground
   - wall
@@ -591,7 +599,6 @@ SpriteAtlas:
   - poisoner
   - heart_animated_1
   - wildwood-leaf
-  - overgrowth
   - Stick
   - upstairs12
   - ground12
@@ -698,7 +705,6 @@ SpriteAtlas:
   - hanging-vines-bottom
   - thistlebog
   - scrollbar
-  - plant-matter
   - mushroom-cap
   - item shadow
   - muckola

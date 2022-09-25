@@ -97,7 +97,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         interaction.Perform();
       }
 
-      var isLevelSimulating = floor.depth > 0 && floor.steppableEntities.Count > 1;
+      var isLevelSimulating = floor.depth > 0 && GameModel.main.GetAllEntitiesInPlay().Count() > 1;
       if (isLevelSimulating) {
         InteractSimulatingLevel(handler, entity, interaction);
       } else {

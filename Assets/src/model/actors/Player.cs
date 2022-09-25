@@ -23,6 +23,12 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
+#if experimental_actionpoints
+  public int actionPoints = 3;
+
+  public int maxActionPoints = 3;
+#endif
+
   public bool isCamouflaged => Modifiers.Of<IPlayerCamouflage>(this).Any();
 
   // go to full HP and remove all debuffs
@@ -63,6 +69,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   private void OnSerializing(StreamingContext context) {
     /// clear player tasks on save
     ClearTasks();
+  }
+
+  internal void StepDay() {
+#if experimental_actionpoints
+    maxActionPoints++;
+    actionPoints = maxActionPoints;
+#endif
   }
 
   public override float GetActionCost(BaseAction action) {

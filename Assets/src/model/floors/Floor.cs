@@ -107,7 +107,7 @@ public class Floor {
     // if we're home, go back to the cave
     // if we're in the cave, go 1 deeper
     int nextDepth;
-#if experimental_alwaysgohome
+#if experimental_actionpoints
     if (depth == 0) {
       nextDepth = GameModel.main.cave.depth + 1;
     } else {

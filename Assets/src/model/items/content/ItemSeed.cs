@@ -53,29 +53,34 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 
   private void Plant(Ground soil) {
     var player = GameModel.main.player;
-    if (player.water >= waterCost) {
-      player.water -= waterCost;
-      var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-      var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
-      var floor = soil.floor;
-      floor.Put(plant);
-
-#if experimental_grasscovering
-      var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
-      foreach (var tile in adjacentTiles) {
-        if (tile.grass != null) {
-          tile.grass.Kill(plant);
-        } else if (tile is Ground) {
-          // is null!
-          floor.Put(new HardGround(tile.pos));
-        }
-      }
-#endif
-      GameModel.main.stats.plantsPlanted++;
-      stacks--;
-    } else {
+    if (player.water < waterCost) {
       throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
     }
+#if experimental_actionpoints
+    if (player.actionPoints < 1) {
+      throw new CannotPerformActionException("Need an action point!");
+    }
+    player.actionPoints--;
+#endif
+    player.water -= waterCost;
+    var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
+    var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
+    var floor = soil.floor;
+    floor.Put(plant);
+
+#if experimental_grasscovering
+    var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
+    foreach (var tile in adjacentTiles) {
+      if (tile.grass != null) {
+        tile.grass.Kill(plant);
+      } else if (tile is Ground) {
+        // is null!
+        floor.Put(new HardGround(tile.pos));
+      }
+    }
+#endif
+    GameModel.main.stats.plantsPlanted++;
+    stacks--;
   }
 
   internal override string GetStats() => $"Plant on a Soil - costs <color=lightblue>{waterCost}</color> water.\nMatures in 320 turns.";

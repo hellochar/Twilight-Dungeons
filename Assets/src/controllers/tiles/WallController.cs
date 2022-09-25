@@ -20,7 +20,7 @@ public class WallController : TileController {
     }
   }
 
-#if experimental_3x3soil
+#if experimental_actionpoints
   public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (tile.floor.depth == 0) {
       if (tile.visibility != TileVisiblity.Unexplored) {

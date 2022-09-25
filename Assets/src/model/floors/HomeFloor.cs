@@ -11,8 +11,6 @@ public class HomeFloor : Floor {
 
   public IEnumerable<Plant> plants => bodies.Where(b => b is Plant).Cast<Plant>();
 
-  public int actionPoints = 3;
-  public int maxActionPoints = 3;
 
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {
     if (root.Contains(t.pos)) {
@@ -32,7 +30,7 @@ public class HomeFloor : Floor {
   }
 
   internal void PlayerWentHome() {
-    actionPoints = maxActionPoints;
+    GameModel.main.player.StepDay();
     foreach(var p in plants) {
       p.StepDay();
     }

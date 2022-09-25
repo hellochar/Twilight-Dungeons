@@ -10,6 +10,10 @@ public class ActionPointsController : MonoBehaviour {
     text = GetComponent<TMPro.TMP_Text>();
     GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
     HandlePlayerChangeFloor(null, null);
+#if !experimental_actionpoints
+    Destroy();
+    return;
+#endif
   }
 
   void OnDestroy() {
@@ -22,8 +26,10 @@ public class ActionPointsController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    var points = GameModel.main.home.actionPoints;
-    var pointsMax = GameModel.main.home.maxActionPoints;
+#if experimental_actionpoints
+    var points = GameModel.main.player.actionPoints;
+    var pointsMax = GameModel.main.player.maxActionPoints;
     text.text = $"Actions: {points}/{pointsMax}";
+#endif
   }
 }

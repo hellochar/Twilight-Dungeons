@@ -60,8 +60,15 @@ public abstract class Plant : Body, IHideInSidebar {
   }
 
   internal void Harvest(int choiceIndex) {
+    var player = GameModel.main.player;
+#if experimental_actionpoints
+    if (player.actionPoints < 1) {
+      throw new CannotPerformActionException("Need an action point!");
+    }
+    player.actionPoints--;
+#endif
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
     OnHarvested?.Invoke();
-    Kill(GameModel.main.player);
+    Kill(player);
   }
 }

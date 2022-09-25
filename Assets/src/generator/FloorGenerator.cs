@@ -98,8 +98,8 @@ public class FloorGenerator {
   internal HomeFloor generateHomeFloor() {
     EncounterGroup = earlyGame;
     HomeFloor floor;
-#if experimental_3x3soil
-      floor = generateGardening3x3SoilFloor0();
+#if experimental_actionpoints
+      floor = generateGardeningActionPointsFloor0();
 #elif experimental_grasscovering
       floor = generateGardeningV1Floor0();
 #else
@@ -394,7 +394,7 @@ public class FloorGenerator {
     return floor;
   }
 
-  public HomeFloor generateGardening3x3SoilFloor0() {
+  public HomeFloor generateGardeningActionPointsFloor0() {
     HomeFloor floor = new HomeFloor(31, 25);
     FloorUtils.CarveGround(floor);
     // FloorUtils.SurroundWithWalls(floor);

@@ -100,7 +100,7 @@ public class GameModel {
     }
     generator = new FloorGenerator(floorSeeds);
     home = generator.generateHomeFloor();
-#if experimental_alwaysgohome
+#if experimental_actionpoints
     // HACK have an empty cave floor at depth 0 so when you go down
     // you get to depth 1
     cave = new Floor(0, 0, 0);

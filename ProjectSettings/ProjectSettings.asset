@@ -745,7 +745,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    7: experimental_grasscovering;experimental_retryondemand;experimental_equipmentperfloor;experimental_alwaysgohome;experimental_3x3soil;experimental_chainfloors;off_experimental_nodiagonalmovement;off_experimental_singleitemplant;off_experimental_fertilizer
+    7: experimental_grasscovering;experimental_retryondemand;experimental_equipmentperfloor;experimental_actionpoints;experimental_chainfloors;off_experimental_nodiagonalmovement;off_experimental_singleitemplant;off_experimental_fertilizer
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

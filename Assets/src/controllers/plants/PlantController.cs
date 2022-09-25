@@ -60,6 +60,9 @@ public class PlantController : BodyController, ILongTapHandler {
   }
 
   private void HandleHarvested() {
+    AudioClipStore.main.plantHarvest.Play(0.1f);
+    popupOpen = false;
+
     var particles = PrefabCache.Effects.Instantiate("Harvest Particles", transform.parent);
     particles.transform.localPosition = transform.localPosition;
     var ps = particles.GetComponent<ParticleSystem>();
@@ -102,8 +105,11 @@ public class PlantController : BodyController, ILongTapHandler {
   }
 
   public void Harvest(int choiceIndex) {
-    AudioClipStore.main.plantHarvest.Play(0.1f);
-    popupOpen = false;
-    plant.Harvest(choiceIndex);
+    try {
+      plant.Harvest(choiceIndex);
+    } catch (CannotPerformActionException e) {
+      popupOpen = false;
+      GameModel.main.turnManager.OnPlayerCannotPerform(e);
+    }
   }
 }

@@ -22,6 +22,12 @@ class WallTrigger : Trigger, IActorLeaveHandler {
     if (who is Player) {
       KillSelf();
       who.floor.Put(new Wall(pos));
+#if experimental_retryondemand
+      GameModel.main.EnqueueEvent(() => {
+        GameModel.main.DrainEventQueue();
+        Serializer.SaveMainToLevelStart();
+      });
+#endif
     }
   }
 }

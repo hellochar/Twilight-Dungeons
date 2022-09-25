@@ -8,7 +8,7 @@ public class Slime : Destructible, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    GameModel.main.player.water += 60;
+    GameModel.main.player.water += 30;
     GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
     floor.Put(new WallTrigger(pos));
   }
@@ -42,7 +42,7 @@ internal class SlimyStatus : StackingStatus, IAttackDamageTakenModifier {
     this.depth = depth;
   }
 
-  public override string Info() => $"You take {stacks} more attack damage.";
+  public override string Info() => $"You take {stacks / 2} more attack damage.";
 
   public override void Step() {
     if (GameModel.main.currentFloor.depth != depth) {
@@ -51,6 +51,6 @@ internal class SlimyStatus : StackingStatus, IAttackDamageTakenModifier {
   }
 
   public int Modify(int input) {
-    return input + stacks;
+    return input + stacks / 2;
   }
 }

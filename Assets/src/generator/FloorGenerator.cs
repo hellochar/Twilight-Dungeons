@@ -43,12 +43,12 @@ public class FloorGenerator {
       // early game
       () => generateHomeFloor(),
 #if experimental_chainfloors
-      () => generateChainFloor(1, 3, 9, 7, 2, 2),
-      () => generateChainFloor(2, 3, 9, 7, 2, 2),
-      () => generateChainFloor(3, 3, 9, 7, 2, 2),
-      () => generateChainFloor(4, 3, 9, 7, 3, 3),
-      () => generateChainFloor(5, 3, 9, 7, 3, 3),
-      () => generateChainFloor(6, 3, 9, 7, 3, 3),
+      () => generateChainFloor(1, 3, 7, 5, 2, 1),
+      () => generateChainFloor(2, 3, 7, 5, 2, 1),
+      () => generateChainFloor(3, 3, 7, 5, 2, 2),
+      () => generateChainFloor(4, 3, 7, 5, 3, 2),
+      () => generateChainFloor(5, 3, 7, 5, 3, 3),
+      () => generateChainFloor(6, 3, 7, 5, 3, 3),
 #else
       () => generateSingleRoomFloor(1, 9, 7, 1, 1),
       () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
@@ -479,7 +479,7 @@ public class FloorGenerator {
 
   public Floor generateChainFloor(int depth, int numRooms, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateChainRoomFloor(depth, width, height, numRooms, preMobEncounters == null);
-    ensureConnectedness(floor);
+    // ensureConnectedness(floor);
 
     List<Encounter> encounters = new List<Encounter>();
 
@@ -526,31 +526,48 @@ public class FloorGenerator {
 
     FloorUtils.TidyUpAroundStairs(floor);
     foreach(var room in floor.rooms) {
-      // make the room own the top and bottom edges.
+      // make the room own the top and bottom edges so visibility will properly show the wall edges
       room.max += Vector2Int.one;
-      room.min += new Vector2Int(0, -1);
+      room.min -= Vector2Int.one;
     }
     return floor;
   }
 
   private Floor tryGenerateChainRoomFloor(int depth, int width, int height, int numChains = 3, bool defaultEncounters = true) {
-    Floor floor = new Floor(depth, 2 + width * (numChains), height);
+    int maxHeight = height + numChains;
 
+    var rooms = new List<Room>();
+
+    var x = 1;
+    for(int i = 0; i < numChains; i++) {
+      var thisWidth = width + i;
+      var thisHeight = height + i;
+
+      var min = new Vector2Int(x, (maxHeight + 2 - thisHeight) / 2);
+      var max = min + new Vector2Int(thisWidth - 1, thisHeight - 1);
+      var room = new Room(min, max);
+      rooms.Add(room);
+
+      // leave one line of wall space
+      // HACK leave two so we can make each room have its own back wall
+      x = max.x + 3;
+    }
+
+    Floor floor = new Floor(depth, x + 1, maxHeight + 2);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
     }
 
-    floor.rooms = new List<Room>();
+    floor.rooms = rooms;
     for(int i = 0; i < numChains; i++) {
-      var min = new Vector2Int(1 + i * width, 1);
-      var max = new Vector2Int(min.x + width - 2, height - 2);
-      var room = new Room(min, max);
-      floor.rooms.Add(room);
+      var room = rooms[i];
 
       FloorUtils.CarveGround(floor, floor.EnumerateRoom(room));
       if (i > 0) {
-        floor.Put(new Ground(new Vector2Int(room.min.x - 1, floor.height / 2)));
+        //where the slime will go
+        floor.Put(new Ground(new Vector2Int(room.min.x - 1, room.center.y)));
+        floor.Put(new Ground(new Vector2Int(room.min.x - 2, room.center.y)));
       }
 
       if (defaultEncounters) {

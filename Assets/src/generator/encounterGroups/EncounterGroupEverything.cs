@@ -5,13 +5,15 @@ public static class EncounterGroupEverything {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
         { 1, AddClumpshroom },
-        { 0.5f, AddGrasper },
-        { 0.5f, AddBats },
-        { 0.2f, AddScorpions },
-        { 0.2f, AddParasite },
-        { 0.2f, AddThistlebog },
-        { 0.2f, AddGolems },
-        { 0.1f, AddHydra },
+        { 1f, AddFungalSentinel },
+        { 1f, AddFungalBreeder },
+        { 1f, AddGrasper },
+        { 1f, AddBats },
+        { 1f, AddScorpions },
+        { 0.5f, AddParasite },
+        { 0.5f, AddThistlebog },
+        { 0.5f, AddGolems },
+        { 0.2f, AddHydra },
       },
 
       Grasses = new EncounterBag {

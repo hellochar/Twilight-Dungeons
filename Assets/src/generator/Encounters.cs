@@ -114,6 +114,22 @@ public class Encounters {
     }
   }
 
+  public static void AddFungalSentinel(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    tiles.Shuffle();
+    var num = 3;
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new FungalSentinel(tile.pos));
+    }
+  }
+
+  public static void AddFungalBreeder(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new FungalBreeder(tile.pos));
+    }
+  }
+
   public static void AddSpiders(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();

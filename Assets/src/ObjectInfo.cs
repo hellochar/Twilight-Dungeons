@@ -53,6 +53,9 @@ public class ObjectInfo {
     },
   };
   public static ObjectInfo InfoFor(object item) {
+    if (item is ItemPlaceableEntity e) {
+      return InfoFor(e.entity);
+    }
     var type = item is Type t ? t : item.GetType();
     if (!Infos.ContainsKey(type)) {
       // try to load it from the attribute

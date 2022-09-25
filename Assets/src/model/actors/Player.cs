@@ -59,6 +59,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 #if experimental_grasscovering
     inventory.AddItem(new ItemShovel());
 #endif
+#if experimental_actionpoints
+    inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
+#endif
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

@@ -13,7 +13,11 @@ public class Campfire : Body {
 
   public void Heal() {
     Player p = GameModel.main.player;
-    p.Heal(p.maxHp - p.hp);
+    if (p.actionPoints < 1) {
+      throw new CannotPerformActionException("Need an action point!");
+    }
+    p.actionPoints--;
+    p.Heal(4);
     var debuffs = p.statuses.list.Where((s) => s.isDebuff);
     foreach (var debuff in debuffs) {
       p.statuses.Remove(debuff);

@@ -11,6 +11,9 @@ public class Floor {
   public int depth;
   private PathfindingManager pathfindingManager;
   private float lastStepTime = 0;
+  // the time the player first entered the floor.
+  public float timeBegan = -1;
+  public float age => GameModel.main.time - timeBegan;
 
   /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
   public StaticEntityGrid<Tile> tiles;
@@ -139,6 +142,10 @@ public class Floor {
   public virtual void Put(Entity entity) {
     try {
       this.entities.Add(entity);
+
+      if (entity is Player && timeBegan < 0) {
+        timeBegan = GameModel.main.time;
+      }
 
       if (entity is ISteppable s) {
         steppableEntities.Add(s);

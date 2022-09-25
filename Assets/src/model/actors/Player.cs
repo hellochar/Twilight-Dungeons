@@ -65,6 +65,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     ClearTasks();
   }
 
+  public override float GetActionCost(BaseAction action) {
+    if (floor is HomeFloor) {
+      return 0;
+    }
+    return base.GetActionCost(action);
+  }
+
   public void HandleDeath(Entity source) {
     GameModel.main.GameOver(false, source);
   }

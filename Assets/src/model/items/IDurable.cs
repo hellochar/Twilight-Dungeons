@@ -10,9 +10,9 @@ static class IDurableExtensions {
   public static void ReduceDurability(this IDurable durable) {
     bool shouldReduceDurability =
 #if experimental_equipmentperfloor
-      false;
+      durable is ISticky || !(durable is EquippableItem);
 #else
-      durable is ISticky || !(durable is EquippableItem)
+      true;
 #endif
     if (shouldReduceDurability) {
       durable.durability--;

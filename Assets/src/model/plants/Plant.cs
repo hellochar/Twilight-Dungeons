@@ -62,10 +62,13 @@ public abstract class Plant : Body, IHideInSidebar {
   internal void Harvest(int choiceIndex) {
     var player = GameModel.main.player;
 #if experimental_actionpoints
-    if (player.actionPoints < 1) {
-      throw new CannotPerformActionException("Need an action point!");
+    var isFreeHarvest = floor.depth > 0;
+    if (!isFreeHarvest) {
+      if (player.actionPoints < 1) {
+        throw new CannotPerformActionException("Need an action point!");
+      }
+      player.actionPoints--;
     }
-    player.actionPoints--;
 #endif
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
     OnHarvested?.Invoke();

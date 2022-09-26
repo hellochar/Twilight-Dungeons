@@ -21,7 +21,7 @@ public class ActionPointsController : MonoBehaviour {
   }
 
   private void HandlePlayerChangeFloor(Floor arg1, Floor arg2) {
-    gameObject.SetActive(GameModel.main.currentFloor == GameModel.main.home);
+    // gameObject.SetActive(GameModel.main.currentFloor == GameModel.main.home);
   }
 
   // Update is called once per frame

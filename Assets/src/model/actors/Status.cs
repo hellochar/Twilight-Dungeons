@@ -62,9 +62,9 @@ public abstract class Status : IStepModifier, IFloorChangeHandler {
   }
 
   public virtual void HandleFloorChanged(Floor newFloor, Floor oldFloor) {
-    if (isDebuff) {
-      Remove();
-    }
+    // if (isDebuff) {
+    //   Remove();
+    // }
   }
 }
 

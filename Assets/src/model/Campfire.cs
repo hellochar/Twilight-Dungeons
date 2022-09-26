@@ -21,6 +21,7 @@ public class Campfire : Body {
     var debuffs = p.statuses.list.Where((s) => s.isDebuff);
     foreach (var debuff in debuffs) {
       p.statuses.Remove(debuff);
+      break;
     }
     OnHealed?.Invoke();
   }

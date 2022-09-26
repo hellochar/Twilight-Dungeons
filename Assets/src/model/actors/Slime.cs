@@ -8,9 +8,11 @@ public class Slime : Destructible, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    // GameModel.main.player.water += 30;
     var inventory = new Inventory(new ItemSlime());
     inventory.TryDropAllItems(floor, pos);
+    if (MyRandom.value < 0.25f) {
+      GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
+    }
     floor.Put(new WallTrigger(pos));
 [Serializable]
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
@@ -70,15 +72,9 @@ internal class SlimyStatus : StackingStatus, IAttackDamageTakenModifier {
     this.depth = depth;
   }
 
-  public override string Info() => $"You take {stacks / 2} more attack damage.";
-
-  public override void Step() {
-    if (GameModel.main.currentFloor.depth != depth) {
-      Remove();
-    }
-  }
+  public override string Info() => $"You take {stacks} more attack damage.";
 
   public int Modify(int input) {
-    return input + stacks / 2;
+    return input + stacks;
   }
 }

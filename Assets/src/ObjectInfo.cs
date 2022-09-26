@@ -86,7 +86,7 @@ public class ObjectInfo {
   }
   
   public static string GetDescriptionFor(object item) {
-    return InfoFor(item).description;
+    return InfoFor(item)?.description ?? $"Description missing for {item.GetType()}";
   }
 
   public bool showOnPlayer = true;

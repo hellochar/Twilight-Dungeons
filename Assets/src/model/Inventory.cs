@@ -131,6 +131,10 @@ public class Inventory : IEnumerable<Item> {
     return true;
   }
 
+  public int GetSlotFor(Item item) {
+    return Array.IndexOf(items, item);
+  }
+
   public IEnumerator<Item> GetEnumerator() {
     return ((IEnumerable<Item>)items).GetEnumerator();
   }

@@ -47,11 +47,7 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
     if (isBloomed) {
       var player = GameModel.main.player;
       if (player.pos == pos) {
-        // player is over the deathbloom; try putting it into player inventory
-        var item = new ItemDeathbloomFlower();
-        if (!player.inventory.AddItem(item, this)) {
-          floor.Put(new ItemOnGround(pos, item, pos));
-        }
+        BecomeItemInInventory(new ItemDeathbloomFlower(), player);
       }
     }
   }

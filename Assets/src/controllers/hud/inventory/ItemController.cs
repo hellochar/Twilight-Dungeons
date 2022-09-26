@@ -23,6 +23,9 @@ public class ItemController : MonoBehaviour {
     var wantedSprite = ObjectInfo.GetSpriteFor(item);
     if (wantedSprite != null) {
       itemImage.sprite = wantedSprite;
+      if (item is ItemVisibleBox) {
+        itemImage.color = Color.grey;
+      }
     }
 
     if (item is ItemGrass grass) {
@@ -89,6 +92,7 @@ public class ItemController : MonoBehaviour {
             if (outer.InnerException is CannotPerformActionException e) {
               GameModel.main.turnManager.OnPlayerCannotPerform(e);
             }
+            throw outer;
           }
         }; 
         return (method.Name, action);

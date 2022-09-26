@@ -56,6 +56,9 @@ public class ObjectInfo {
     if (item is ItemPlaceableEntity e) {
       return InfoFor(e.entity);
     }
+    if (item is ItemVisibleBox b) {
+      return InfoFor(b.innerItem);
+    }
     var type = item is Type t ? t : item.GetType();
     if (!Infos.ContainsKey(type)) {
       // try to load it from the attribute

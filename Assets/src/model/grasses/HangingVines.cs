@@ -22,7 +22,7 @@ public class HangingVines : Grass, IDeathHandler {
 
   public void HandleDeath(Entity source) {
     if (appliedStatus == null) {
-      Inventory inventory = new Inventory(new ItemVineWhip(1));
+      Inventory inventory = new Inventory(new ItemVisibleBox(new ItemVineWhip(1)));
       inventory.TryDropAllItems(floor, tileBelow.pos);
     }
     if (appliedStatus != null) {
@@ -39,7 +39,7 @@ public class HangingVines : Grass, IDeathHandler {
 
   public void ConstrictedStatusEnded() {
     // when someone is able to break free; remove these vines
-    var actor = appliedStatus.actor;
+    var actor = appliedStatus?.actor;
     appliedStatus = null;
     Kill(actor);
   }

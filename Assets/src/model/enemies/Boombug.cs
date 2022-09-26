@@ -76,7 +76,7 @@ public class BoombugCorpse : Actor, IDeathHandler {
   public void HandleDeath(Entity source) {
     if (!exploded) {
       // We died before we could explode! Leave a corpse item instead.
-      var inventory = new Inventory(new ItemBoombugCorpse());
+      var inventory = new Inventory(new ItemVisibleBox(new ItemBoombugCorpse()));
       var floor = this.floor;
       var pos = this.pos;
       GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));

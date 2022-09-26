@@ -191,6 +191,11 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
         plant.GoNextStage();
       }
     }
+    if (Input.GetKeyDown(KeyCode.A)) {
+      if (player.floor is HomeFloor f) {
+        f.PlayerWentHome();
+      }
+    }
     if (Input.GetKeyDown(KeyCode.R)) {
       GameModel.main = Serializer.LoadSave0(false);
       GameModel.main.floorSeeds[GameModel.main.cave.depth + 1] = new System.Random().Next();

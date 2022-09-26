@@ -10,7 +10,7 @@ TextureImporter:
     second: young-plant
   - first:
       213: -461904142435350348
-    second: roguelikeSheet_transparent_2
+    second: station
   - first:
       213: -6424109324677615433
     second: roguelikeSheet_transparent_3
@@ -5609,6 +5609,27 @@ TextureImporter:
       bones: []
       spriteID: 0e0486cfe42546630800000000000000
       internalID: 3919348074914791648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: station
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 432
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b80cd531acf699f0800000000000000
+      internalID: -461904142435350348
       vertices: []
       indices: 
       edges: []

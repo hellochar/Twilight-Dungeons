@@ -60,7 +60,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     inventory.AddItem(new ItemShovel());
 #endif
 #if experimental_actionpoints
-    inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
+    inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())).RequireSpace());
 #endif
 
     equipment = new Equipment(this);

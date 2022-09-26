@@ -74,8 +74,11 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
       if (tile.grass != null) {
         tile.grass.Kill(plant);
       } else if (tile is Ground) {
-        // is null!
-        floor.Put(new HardGround(tile.pos));
+        if (tile is Soil) {
+          floor.Put(new Ground(tile.pos));
+        } else {
+          floor.Put(new HardGround(tile.pos));
+        }
       }
     }
 #endif

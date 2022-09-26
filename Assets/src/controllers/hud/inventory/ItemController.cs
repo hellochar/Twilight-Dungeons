@@ -29,8 +29,14 @@ public class ItemController : MonoBehaviour {
     }
 
     if (item is ItemGrass grass) {
-      var grassType = grass.grassType;
-      var prefab = Resources.Load<GameObject>($"Entities/Grasses/{grassType.Name}");
+      var type = grass.grassType;
+      var typePath =
+        type.IsSubclassOf(typeof(Grass)) ?  "Grasses" :
+        type.IsSubclassOf(typeof(Tile)) ? "Tiles" :
+        type.IsSubclassOf(typeof(Body)) ? "Actors" :
+        type.IsSubclassOf(typeof(Plant)) ? "Plants" :
+        "null";
+      var prefab = Resources.Load<GameObject>($"Entities/{typePath}/{type.Name}");
       var renderer = prefab.GetComponentInChildren<SpriteRenderer>();
       itemImage.sprite = renderer.sprite;
       itemImage.color = renderer.color;

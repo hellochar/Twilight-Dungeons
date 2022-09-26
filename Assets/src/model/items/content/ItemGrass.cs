@@ -39,11 +39,15 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
   }
 
   public void PerformTargettedAction(Player player, Entity target) {
+    if (player.actionPoints < 1) {
+      throw new CannotPerformActionException("Need an action point!");
+    }
+    player.actionPoints--;
     var floor = target.floor;
     var toPlant = floor.BreadthFirstSearch(target.pos, t => t is Ground && t.CanBeOccupied() && t.grass == null).Take(stacks).ToList();
     var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     floor.PutAll(toPlant.Select(t => {
-      return (Grass)constructorInfo.Invoke(new object[] { t.pos });
+      return (Entity)constructorInfo.Invoke(new object[] { t.pos });
     }));
     stacks -= toPlant.Count;
   }

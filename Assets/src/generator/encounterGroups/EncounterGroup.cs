@@ -75,7 +75,6 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, ChasmBridge },
     };
     Rewards = new EncounterBag {
-      { 1, AddMushroom },
       { 1, AddPumpkin },
       { 1, AddThickBranch },
       { 1, AddBatTooth },
@@ -84,6 +83,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, AddJackalHide },
       { 1, AddGloopShoes },
       { 1, OneButterfly },
+      { 1, AddSoil },
     };
     Plants = new EncounterBag {
       { 1, MatureBerryBush },

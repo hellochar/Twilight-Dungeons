@@ -263,7 +263,7 @@ public class Downstairs : Tile, IActorEnterHandler {
 
 [ObjectInfo(description: "Plant seeds here.", flavorText: "Fresh, moist, and perfect for growing. Hard to come by in the caves.")]
 [Serializable]
-public class Soil : Tile {
+public class Soil : Ground {
   public Soil(Vector2Int pos) : base(pos) { }
 }
 

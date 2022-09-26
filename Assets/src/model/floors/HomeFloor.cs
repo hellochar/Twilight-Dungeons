@@ -30,6 +30,7 @@ public class HomeFloor : Floor {
   }
 
   internal void PlayerWentHome() {
+    GameModel.main.day++;
     GameModel.main.player.StepDay();
     foreach(var p in plants) {
       p.StepDay();

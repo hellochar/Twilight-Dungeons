@@ -13,7 +13,11 @@ public class DepthTextController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.currentFloor.age;
+    if (GameModel.main.currentFloor is HomeFloor) {
+      text.text = "Day " + GameModel.main.day;
+    } else {
+      text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.currentFloor.age;
+    }
   }
 
 #if experimental_retryondemand

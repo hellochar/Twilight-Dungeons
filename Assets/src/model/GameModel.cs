@@ -17,6 +17,7 @@ public class GameModel {
   public Floor cave;
   public int depth = 0;
   public float time = 0;
+  public int day = 1;
   public List<int> floorSeeds;
   public FloorGenerator generator;
   public PlayStats stats;

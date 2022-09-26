@@ -8,9 +8,37 @@ public class Slime : Destructible, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    GameModel.main.player.water += 30;
-    GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
+    // GameModel.main.player.water += 30;
+    var inventory = new Inventory(new ItemSlime());
+    inventory.TryDropAllItems(floor, pos);
     floor.Put(new WallTrigger(pos));
+[Serializable]
+[ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
+public class ItemSlime : Item, IStackable {
+  public int stacks { get; set; }
+  public int stacksMax => 3;
+
+  public ItemSlime(int stacks) {
+    this.stacks = stacks;
+  }
+
+  public ItemSlime() : this(1) { }
+
+  public void Purify(Player player) {
+    if (player.actionPoints < 1) {
+      throw new CannotPerformActionException("Need an action point!");
+    }
+    player.actionPoints--;
+    player.water += MyRandom.Range(25, 36) * stacks;
+    Destroy();
+  }
+
+  public override List<MethodInfo> GetAvailableMethods(Player player) {
+    var methods = base.GetAvailableMethods(player);
+    if (player.floor.depth == 0) {
+      methods.Add(GetType().GetMethod("Purify"));
+    }
+    return methods;
   }
 }
 

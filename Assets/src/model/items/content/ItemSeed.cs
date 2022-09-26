@@ -95,7 +95,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 #if experimental_grasscovering
       player.floor.tiles.Where(tile =>
         tile is Ground && tile.isExplored && tile.CanBeOccupied()
-        && tile.floor.GetAdjacentTiles(tile.pos).Where(t => t is Ground).Count() >= 9
+        && tile.floor.GetAdjacentTiles(tile.pos).Where(t => t is Ground && t.CanBeOccupied()).Count() >= 9
       ).Cast<Ground>();
 #else
       (player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());

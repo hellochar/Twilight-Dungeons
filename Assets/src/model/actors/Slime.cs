@@ -38,10 +38,7 @@ public class ItemSlime : Item, IStackable {
   public ItemSlime() : this(1) { }
 
   public void Purify(Player player) {
-    if (player.actionPoints < 1) {
-      throw new CannotPerformActionException("Need an action point!");
-    }
-    player.actionPoints--;
+    player.UseActionPointOrThrow();
     player.water += MyRandom.Range(25, 36) * stacks;
     Destroy();
   }

@@ -37,12 +37,14 @@ public class Grass : Entity {
   }
 
   public void Uproot() {
-    if (floor.EnemiesLeft() == 0 && floor.availableToPickGrass) {
-      floor.availableToPickGrass = false;
+    var player = GameModel.main.player;
+    player.UseActionPointOrThrow();
+    // if (floor.EnemiesLeft() == 0 && floor.availableToPickGrass) {
+      // floor.availableToPickGrass = false;
       var whichGrasses = floor.BreadthFirstSearch(pos, t => t.grass?.GetType() == GetType()).Select(t => t.grass).ToList();
       var item = new ItemGrass(GetType(), whichGrasses.Count);
       GameModel.main.player.inventory.AddItem(item, this);
       floor.RemoveAll(whichGrasses);
-    }
+    // }
   }
 }

@@ -165,12 +165,8 @@ public class Wall : Tile {
 
   internal void CarveAway() {
     var player = GameModel.main.player;
-    if (player.actionPoints > 0) {
-      player.actionPoints--;
-      floor.Put(new Ground(tile.pos));
-    } else {
-      throw new CannotPerformActionException("Need an Action Point!");
-    }
+    player.UseActionPointOrThrow();
+    floor.Put(new Ground(tile.pos));
   }
 #endif
 }

@@ -64,10 +64,7 @@ public abstract class Plant : Body, IHideInSidebar {
 #if experimental_actionpoints
     var isFreeHarvest = floor.depth > 0;
     if (!isFreeHarvest) {
-      if (player.actionPoints < 1) {
-        throw new CannotPerformActionException("Need an action point!");
-      }
-      player.actionPoints--;
+      player.UseActionPointOrThrow();
     }
 #endif
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);

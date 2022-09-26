@@ -12,10 +12,7 @@ public class ItemBox : Item {
   }
 
   public virtual void Unwrap(Player p) {
-    if (p.actionPoints < 1) {
-      throw new CannotPerformActionException("Need an Action Point!");
-    }
-    p.actionPoints--;
+    p.UseActionPointOrThrow();
     var inventory = this.inventory;
     var slot = inventory.GetSlotFor(this);
     Destroy();

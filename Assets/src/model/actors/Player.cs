@@ -25,8 +25,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
 #if experimental_actionpoints
   public int actionPoints = 3;
-
   public int maxActionPoints = 3;
+  public void UseActionPointOrThrow(int num = 1) {
+    if (actionPoints < num) {
+      throw new CannotPerformActionException($"Need {num} Action Points!");
+    }
+    actionPoints -= num;
+  }
 #endif
 
   public bool isCamouflaged => Modifiers.Of<IPlayerCamouflage>(this).Any();

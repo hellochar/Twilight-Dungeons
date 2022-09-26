@@ -32,10 +32,7 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {
-    if (player.actionPoints < 1) {
-      throw new CannotPerformActionException("Need an action point!");
-    }
-    player.actionPoints--;
+    player.UseActionPointOrThrow();
     entity.pos = target.pos;
     player.floor.Put(entity);
     Destroy();

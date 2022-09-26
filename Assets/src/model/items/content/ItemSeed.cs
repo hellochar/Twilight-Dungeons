@@ -57,10 +57,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
       throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
     }
 #if experimental_actionpoints
-    if (player.actionPoints < 1) {
-      throw new CannotPerformActionException("Need an action point!");
-    }
-    player.actionPoints--;
+    player.UseActionPointOrThrow();
 #endif
     player.water -= waterCost;
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });

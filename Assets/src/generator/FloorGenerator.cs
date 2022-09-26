@@ -587,6 +587,8 @@ public class FloorGenerator {
 
     FloorUtils.NaturalizeEdges(floor);
 
+    floor.PlaceUpstairs(new Vector2Int(floor.upstairsRoom.min.x, floor.upstairsRoom.center.y));
+
     floor.root = floor.rooms[0];
     return floor;
   }

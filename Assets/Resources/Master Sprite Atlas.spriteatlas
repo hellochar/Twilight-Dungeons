@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 107581
+    totalSpriteSurfaceArea: 107837
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -269,6 +269,7 @@ SpriteAtlas:
   - {fileID: -3203700651048447089, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: -2248278797562551984, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7251549587093790700, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
+  - {fileID: 3919348074914791648, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 2050675941762335830, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 6909616205063585395, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -5443264033602365753, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -607,6 +608,7 @@ SpriteAtlas:
   - wall12
   - panel-tan-inset
   - roguelikeSheet_transparent_548
+  - young-plant
   - roguelikeSheet_transparent_520
   - panel-grey-inset-no-whitespace
   - panel-grey-inset

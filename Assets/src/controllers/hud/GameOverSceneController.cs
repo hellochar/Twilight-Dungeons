@@ -17,7 +17,11 @@ public class GameOverSceneController : MonoBehaviour {
       heading.text = $"You perished to {GameModel.main.stats.killedBy}...";
       button.GetComponent<Image>().color = Color.white;
       var text = button.GetComponentInChildren<TMPro.TMP_Text>();
+#if experimental_retryondemand
+      text.text = "Retry";
+#else
       text.text = "Restart";
+#endif
       text.color = Color.black;
     }
   }
@@ -26,8 +30,17 @@ public class GameOverSceneController : MonoBehaviour {
     if (GameModel.main.stats.won) {
       TheEnd();
     } else {
+#if experimental_retryondemand
+      Retry();
+#else
       Restart();
+#endif
     }
+  }
+
+  private void Retry() {
+    GameModel.main = Serializer.LoadLevelStart();
+    StartCoroutine(Transitions.GoToNewScene(this, null, "Scenes/Game"));
   }
 
   private void Restart() {

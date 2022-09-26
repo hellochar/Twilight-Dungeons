@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 [Serializable]
@@ -14,6 +16,15 @@ public class Slime : Destructible, IDeathHandler {
       GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
     }
     floor.Put(new WallTrigger(pos));
+#if experimental_retryondemand
+    GameModel.main.EnqueueEvent(() => {
+      GameModel.main.DrainEventQueue();
+      Serializer.SaveMainToLevelStart();
+    });
+#endif
+  }
+}
+
 [Serializable]
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
 public class ItemSlime : Item, IStackable {
@@ -52,12 +63,6 @@ class WallTrigger : Trigger, IActorLeaveHandler {
     if (who is Player) {
       KillSelf();
       who.floor.Put(new Wall(pos));
-#if experimental_retryondemand
-      GameModel.main.EnqueueEvent(() => {
-        GameModel.main.DrainEventQueue();
-        Serializer.SaveMainToLevelStart();
-      });
-#endif
     }
   }
 }

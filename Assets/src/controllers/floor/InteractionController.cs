@@ -140,7 +140,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     }
   }
 
-  public void ShowPopupFor(Entity entity) {
+  public static void ShowPopupFor(Entity entity) {
+    var floorController = FloorController.current;
     GameObject entityGameObject = floorController.GameObjectFor(entity);
     string description = entity.description + "\n\n";
     if (entity is Body b) {
@@ -156,7 +157,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     var sprite = ObjectInfo.GetSpriteFor(entity) ?? entityGameObject.GetComponentInChildren<SpriteRenderer>()?.sprite;
     image.sprite = sprite;
     image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
-    List<(string, Action)> buttons = null;
+    List<(string, Action)> buttons = new List<(string, Action)>();
 
     bool canPlant =
 #if experimental_grasscovering
@@ -165,9 +166,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       (entity is Soil soil && soil.body == null);
 #endif
 
+    var player = GameModel.main.player;
     if (canPlant) {
-      buttons = new List<(string, Action)>();
-      var player = GameModel.main.player;
       var seeds = player.inventory.Where((i) => i is ItemSeed).Cast<ItemSeed>();
       foreach (ItemSeed seed in seeds) {
         Action action = () => seed.MoveAndPlant(entity as Ground);

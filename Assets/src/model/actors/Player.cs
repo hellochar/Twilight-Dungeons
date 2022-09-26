@@ -76,7 +76,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   internal void StepDay() {
 #if experimental_actionpoints
-    maxActionPoints++;
+    if (maxActionPoints < 10) {
+      maxActionPoints++;
+    }
     actionPoints = maxActionPoints;
 #endif
   }

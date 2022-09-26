@@ -43,12 +43,12 @@ public class FloorGenerator {
       // early game
       () => generateHomeFloor(),
 #if experimental_chainfloors
-      () => generateChainFloor(1, 3, 7, 5, 2, 1),
-      () => generateChainFloor(2, 3, 7, 5, 2, 1),
-      () => generateChainFloor(3, 3, 7, 5, 2, 2),
-      () => generateChainFloor(4, 3, 7, 5, 3, 2),
-      () => generateChainFloor(5, 3, 7, 5, 3, 3),
-      () => generateChainFloor(6, 3, 7, 5, 3, 3),
+      () => generateChainFloor(1, 3, 7, 5, 2, 1, true),
+      () => generateChainFloor(2, 3, 7, 5, 2, 1, true),
+      () => generateChainFloor(3, 3, 7, 5, 2, 2, true),
+      () => generateChainFloor(4, 3, 7, 5, 3, 2, true),
+      () => generateChainFloor(5, 3, 7, 5, 3, 3, true),
+      () => generateChainFloor(6, 3, 7, 5, 3, 3, true),
 #else
       () => generateSingleRoomFloor(1, 9, 7, 1, 1),
       () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
@@ -356,38 +356,6 @@ public class FloorGenerator {
     Encounters.AddWater(floor, room0);
     Encounters.ThreeAstoriasInCorner(floor, room0);
 
-    #if UNITY_EDITOR
-    // Encounters.MatureStoutShrub(floor, room0);
-    floor.depth = 20;
-    // Encounters.AddOctopus(floor, room0);
-    // Encounters.AddSkulls(floor, room0);
-    // Encounters.AddIronJelly(floor, room0);
-    // Encounters.AddHoppers(floor, room0);
-    // Encounters.AddDeathbloom(floor, room0);
-    // Encounters.AddMushroom(floor, room0);
-    // Encounters.AddGrasper(floor, room0);
-    // Encounters.AddHydra(floor, room0);
-    // Encounters.AddViolets(floor, room0);
-    // Encounters.AddTunnelroot(floor, room0);
-    // Encounters.AddWildekins(floor, room0);
-    // Encounters.AddCrabs(floor, room0);
-    // Encounters.AddParasite(floor, room0);
-    // Encounters.AddCoralmoss(floor, room0);
-    // Encounters.AddHangingVines(floor, room0);
-    // Encounters.AddEveningBells(floor, room0);
-    // Encounters.OneButterfly(floor, room0);
-    // Encounters.AddSpiders(floor, room0);
-    // Encounters.AddSpore(floor, room0);
-    // Encounters.AddBladegrass(floor, room0);
-    // Encounters.ScatteredBoombugs(floor, room0);
-    // Encounters.AddBats(floor, room0);
-    // Encounters.AddPumpkin(floor, room0);
-    // Encounters.ScatteredBoombugs.Apply(floor, room0);
-    // Encounters.AFewSnails(floor, room0);
-    // Encounters.AFewBlobs(floor, room0);
-    floor.depth = 0;
-    #endif
-
     floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
 
     FloorUtils.TidyUpAroundStairs(floor);
@@ -493,7 +461,7 @@ public class FloorGenerator {
       encounters.Add(EncounterGroup.Grasses.GetRandomAndDiscount());
     }
 
-    encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
+    // encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
 
     encounters.AddRange(extraEncounters);
 
@@ -520,6 +488,7 @@ public class FloorGenerator {
       }
     }
 
+    // give a reward at the final room
     if (reward) {
       EncounterGroup.Rewards.GetRandomAndDiscount()(floor, floor.downstairsRoom);
     }

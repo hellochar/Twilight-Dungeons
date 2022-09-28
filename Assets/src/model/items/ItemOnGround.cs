@@ -5,8 +5,8 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Tap to pick up this item and see what it does.")]
-public class ItemOnGround : Entity, IActorEnterHandler {
-  public static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile.item == null;
+public class ItemOnGround : Entity {
+  public static bool CanOccupy(Tile tile) => tile is Ground && tile.item == null;
   public static void PlacementBehavior(Floor floor, ItemOnGround i) {
     var newPosition = floor.BreadthFirstSearch(i.pos, (_) => true)
       .Where(ItemOnGround.CanOccupy)
@@ -38,11 +38,11 @@ public class ItemOnGround : Entity, IActorEnterHandler {
     }
   }
 
-  public void HandleActorEnter(Actor who) {
-    if (who == GameModel.main.player) {
-      PickUp();
-    }
-  }
+  // public void HandleActorEnter(Actor who) {
+  //   if (who == GameModel.main.player) {
+  //     PickUp();
+  //   }
+  // }
 
   // BUGFIX - prior to 1.10.0 the _pos was erroneously marked nonserialized, meaning
   // players would lose all items on the ground when they saved and loaded.

@@ -29,7 +29,7 @@ public class Slime : Destructible, IDeathHandler {
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
 public class ItemSlime : Item, IStackable {
   public int stacks { get; set; }
-  public int stacksMax => 3;
+  public int stacksMax => 7;
 
   public ItemSlime(int stacks) {
     this.stacks = stacks;
@@ -39,7 +39,7 @@ public class ItemSlime : Item, IStackable {
 
   public void Purify(Player player) {
     player.UseActionPointOrThrow();
-    player.water += MyRandom.Range(25, 36) * stacks;
+    player.water += MyRandom.Range(18, 26) * stacks;
     Destroy();
   }
 

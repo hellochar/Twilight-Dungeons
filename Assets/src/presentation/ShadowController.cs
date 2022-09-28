@@ -18,4 +18,9 @@ public class ShadowController : MonoBehaviour {
       shadow.sprite = source.sprite;
     }
   }
+
+  // void OnValidate() {
+  //   shadow = GetComponent<SpriteRenderer>();
+  //   shadow.sprite = source.sprite;
+  // }
 }

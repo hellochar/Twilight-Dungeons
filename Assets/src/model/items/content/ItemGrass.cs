@@ -41,7 +41,7 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
   public void PerformTargettedAction(Player player, Entity target) {
     player.UseActionPointOrThrow();
     var floor = target.floor;
-    var toPlant = floor.BreadthFirstSearch(target.pos, t => t is Ground && t.CanBeOccupied() && t.grass == null).Take(stacks).ToList();
+    var toPlant = floor.BreadthFirstSearch(target.pos, t => t is Ground && t.CanBeOccupied() && t.grass == null, mooreNeighborhood: true).Take(stacks).ToList();
     var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     floor.PutAll(toPlant.Select(t => {
       return (Entity)constructorInfo.Invoke(new object[] { t.pos });
@@ -50,6 +50,6 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
   }
 
   public IEnumerable<Ground> Targets(Player player) {
-    return player.floor.tiles.Where(tile => tile is Ground && tile.CanBeOccupied() && tile.grass == null).Cast<Ground>();
+    return player.GetVisibleTiles().Where(tile => tile is Ground && tile.CanBeOccupied() && tile.grass == null).Cast<Ground>();
   }
 }

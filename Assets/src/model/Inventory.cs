@@ -67,8 +67,13 @@ public class Inventory : IEnumerable<Item> {
     return true;
   }
 
-  public virtual bool AddItem(Item item, Entity source = null) {
+  public virtual bool AddItem(Item item, Entity source = null, bool expandToFit = false) {
     var slot = GetFirstFreeSlot();
+    if (expandToFit && !slot.HasValue) {
+      Array.Resize(ref items, items.Length + 1);
+      slot = capacity - 1;
+    }
+
     if (!(item is IStackable) && slot == null) {
       return false;
     } else {

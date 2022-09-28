@@ -66,6 +66,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 #endif
 #if experimental_actionpoints
     inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())).RequireSpace());
+    inventory.AddItem(new ItemPlaceableEntity(new Desalinator(new Vector2Int())).RequireSpace());
+    inventory.AddItem(new ItemGrass(typeof(Soil), 9));
 #endif
 
     equipment = new Equipment(this);
@@ -81,7 +83,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   internal void StepDay() {
 #if experimental_actionpoints
-    if (maxActionPoints < 10) {
+    if (maxActionPoints < 8) {
       maxActionPoints++;
     }
     actionPoints = maxActionPoints;
@@ -206,7 +208,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
-  public IEnumerable<Tile> GetVisibleTiles() => floor.tiles.Where(t => t.isVisible);
+  public IEnumerable<Tile> GetVisibleTiles() => floor.tiles.Where(t => t.isExplored);
 
   // Actors that are Visible
   public IEnumerable<Actor> GetVisibleActors(Faction faction) => floor.bodies.Where((b) => b is Actor a && a.isVisible && faction.HasFlag(a.faction)).Cast<Actor>();

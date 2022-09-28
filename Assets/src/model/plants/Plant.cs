@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -33,6 +34,19 @@ public abstract class Plant : Body, IHideInSidebar {
     set {
       _stage = value;
       _stage.BindTo(this);
+      /// hack - apply soil improvements here
+      if (IsSurroundedByGrass()) {
+        var existingOptions = new List<Inventory>(_stage.harvestOptions);
+        _stage.harvestOptions.Clear();
+        _stage.plant = null;
+        _stage.BindTo(this);
+        for (int i = 0; i < _stage.harvestOptions.Count; i++) {
+          foreach (var item in existingOptions[i]) {
+            _stage.harvestOptions[i].AddItem(item, null, true);
+          }
+        }
+      }
+
       /// hack - apply fertilizer here
       if (fertilizer != null) {
         foreach (var inventory in _stage.harvestOptions) {
@@ -45,12 +59,17 @@ public abstract class Plant : Body, IHideInSidebar {
       }
     }
   }
-  public override string displayName => $"{base.displayName}{ (stage.NextStage == null ? "" : " (" + stage.name + ")") }";
+
+  public override string displayName => $"{base.displayName}{ (stage.NextStage == null ? "" : " (" + stage.name + ")") }{ (IsSurroundedByGrass() ? " 2x" : "") }";
 
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     this.stage = stage;
     this.hp = this.baseMaxHp = 1;
+  }
+
+  public bool IsSurroundedByGrass() {
+    return floor == null ? false : floor.GetAdjacentTiles(pos).Where(t => t.grass != null).Count() >= 8;
   }
 
   public void GoNextStage() {

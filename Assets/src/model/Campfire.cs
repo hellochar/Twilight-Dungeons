@@ -23,3 +23,31 @@ public class Campfire : Body {
     OnHealed?.Invoke();
   }
 }
+
+[Serializable]
+[ObjectInfo("station", description: "Purify your slime here.")]
+public class Desalinator : Body {
+  public Desalinator(Vector2Int pos) : base(pos) {
+  }
+
+  public void Purify(ItemSlime slime) {
+    slime.Purify(GameModel.main.player);
+  }
+}
+
+[Serializable]
+[ObjectInfo("station", description: "Build more shovels here.")]
+public class CraftingStation : Body {
+  public CraftingStation(Vector2Int pos) : base(pos) {}
+
+  public void CraftShovel(Player player) {
+    player.UseActionPointOrThrow();
+    player.inventory.AddItem(new ItemShovel(), this);
+  }
+}
+
+// Stations will provide access to verbs on Items and on yourself:
+// Crafting the hea
+// public class Station : Body {
+
+// }

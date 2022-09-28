@@ -36,15 +36,25 @@ public class Grass : Entity {
     }
   }
 
-  public void Uproot() {
-    var player = GameModel.main.player;
-    player.UseActionPointOrThrow();
-    // if (floor.EnemiesLeft() == 0 && floor.availableToPickGrass) {
-      // floor.availableToPickGrass = false;
-      var whichGrasses = floor.BreadthFirstSearch(pos, t => t.grass?.GetType() == GetType()).Select(t => t.grass).ToList();
-      var item = new ItemGrass(GetType(), whichGrasses.Count);
-      GameModel.main.player.inventory.AddItem(item, this);
-      floor.RemoveAll(whichGrasses);
-    // }
+  public virtual void StepHomeFloorDay() {
+    // spread to a nearby tile
+    if (tile is Soil) {
+    }
+  }
+
+  public void SpreadToOneNearbySoil() {
+      var canOccupyMethod = GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static);
+      bool canOccupy(Tile t) {
+        if (canOccupyMethod != null) {
+          return (bool) canOccupyMethod.Invoke(null, new object[] { t });
+        }
+        return t is Ground;
+      }
+      var openSpot = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => t is Soil && canOccupy(t) && t.grass == null && t.CanBeOccupied()));
+      if (openSpot != null) {
+        var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+        var newGrass = (Grass)constructor.Invoke(new object[] { openSpot.pos });
+        grass.floor.Put(newGrass);
+      }
   }
 }

@@ -13,7 +13,7 @@ public class InventorySlotController : ItemSlotController {
   public override Item item => inventory[slotIndex];
 
   public virtual void Start() {
-    if (GameModel.main == null) {
+    if (GameModel.main?.player?.inventory == null) {
       Destroy(gameObject);
       return;
     }

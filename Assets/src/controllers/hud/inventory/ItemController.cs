@@ -17,6 +17,7 @@ public class ItemController : MonoBehaviour {
   private TMPro.TMP_Text stacksText;
 
   void Start() {
+    stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
     /// on click - toggle the popup for this item
     GetComponent<Button>().onClick.AddListener(HandleItemClicked);
 
@@ -70,7 +71,6 @@ public class ItemController : MonoBehaviour {
       maturePlantBackground.SetActive(false);
     }
 
-    stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
     Update();
   }
 

@@ -68,14 +68,8 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 #if experimental_grasscovering
     var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
     foreach (var tile in adjacentTiles) {
-      if (tile.grass != null) {
-        tile.grass.Kill(plant);
-      } else if (tile is Ground) {
-        if (tile is Soil) {
-          floor.Put(new Ground(tile.pos));
-        } else {
-          floor.Put(new HardGround(tile.pos));
-        }
+      if (tile is Ground && !(tile is Soil)) {
+        floor.Put(new HardGround(tile.pos));
       }
     }
 #endif

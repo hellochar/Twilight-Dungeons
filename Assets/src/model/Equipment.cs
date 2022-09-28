@@ -22,7 +22,7 @@ public class Equipment : Inventory {
   public Player Player { get; }
 
   /// Equipment only allows adding EquippableItems; will return false and do nothing otherwise
-  public override bool AddItem(Item item, Entity source = null) {
+  public override bool AddItem(Item item, Entity source = null, bool expandToFit = false) {
     if (item is EquippableItem equippable) {
       var slot = (int) equippable.slot;
       // ensure there isn't a sticky item in the existing slot

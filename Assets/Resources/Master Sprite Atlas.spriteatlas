@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 107837
+    totalSpriteSurfaceArea: 108605
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -215,6 +215,8 @@ SpriteAtlas:
   - {fileID: -129089525569141178, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 21300000, guid: 2820d9285aa99f74dba9ddf2ecb7f380, type: 3}
   - {fileID: 21300000, guid: 9c0d0b48d5e38e747827d0fae553a32b, type: 3}
+  - {fileID: -6062009932711312251, guid: c70043583094ba244bf5f778f85d17db, type: 3}
+  - {fileID: 7746650723370773596, guid: c70043583094ba244bf5f778f85d17db, type: 3}
   - {fileID: 21300000, guid: 389d7d582bb7a0b4eb9be60692d33571, type: 3}
   - {fileID: 21300000, guid: 3aa28d883f22c8f42bb4af5f3278de05, type: 3}
   - {fileID: 3361277931571337585, guid: 77241f98c25b28e478d3210a17b98893, type: 3}
@@ -268,6 +270,7 @@ SpriteAtlas:
   - {fileID: 3430268509422621355, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: -3203700651048447089, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: -2248278797562551984, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
+  - {fileID: -461904142435350348, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7251549587093790700, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 3919348074914791648, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: 2050675941762335830, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -554,6 +557,8 @@ SpriteAtlas:
   - shovel
   - water-pail
   - gear
+  - action-point-empty
+  - action-point-filled
   - spores
   - fertilizer
   - border-top
@@ -607,6 +612,7 @@ SpriteAtlas:
   - fancy-ground12
   - wall12
   - panel-tan-inset
+  - station
   - roguelikeSheet_transparent_548
   - young-plant
   - roguelikeSheet_transparent_520

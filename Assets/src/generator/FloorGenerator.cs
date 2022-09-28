@@ -43,9 +43,9 @@ public class FloorGenerator {
       // early game
       () => generateHomeFloor(),
 #if experimental_chainfloors
-      () => generateChainFloor(1, 3, 7, 5, 2, 1, true),
-      () => generateChainFloor(2, 3, 7, 5, 2, 1, true),
-      () => generateChainFloor(3, 3, 7, 5, 2, 2, true),
+      () => generateChainFloor(1, 3, 6, 4, 2, 1, true),
+      () => generateChainFloor(2, 3, 6, 4, 2, 1, true),
+      () => generateChainFloor(3, 3, 6, 4, 2, 2, true),
       () => generateChainFloor(4, 3, 7, 5, 3, 2, true),
       () => generateChainFloor(5, 3, 7, 5, 3, 3, true),
       () => generateChainFloor(6, 3, 7, 5, 3, 3, true),
@@ -376,8 +376,8 @@ public class FloorGenerator {
     FloorUtils.NaturalizeEdges(floor);
 
     var root = new Room(
-      new Vector2Int(floor.width - 7, floor.height / 2 - 3),
-      new Vector2Int(floor.width - 1, floor.height / 2 + 3)
+      new Vector2Int(floor.width - 8, floor.height / 2 - 3),
+      new Vector2Int(floor.width - 1, floor.height / 2 + 4)
     );
     floor.rooms = new List<Room> { root };
     floor.root = root;
@@ -463,13 +463,23 @@ public class FloorGenerator {
 
     // encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
 
-    encounters.AddRange(extraEncounters);
+    Encounter rewardEncounter = null;
+    if (reward) {
+      rewardEncounter = EncounterGroup.Rewards.GetRandomAndDiscount();
+    }
+    // encounters.AddRange(extraEncounters);
+    // if (reward) {
+    //   encounters.Add(EncounterGroup.Rewards.GetRandomAndDiscount());
+    // }
 
     int roomIntensity = 1;
     foreach (var room in floor.rooms) {
       for (var i = 0; i < roomIntensity; i++) {
         foreach(var encounter in encounters) {
           encounter(floor, room);
+        }
+        if (rewardEncounter != null) {
+          rewardEncounter(floor, room);
         }
       }
       roomIntensity++;
@@ -486,11 +496,6 @@ public class FloorGenerator {
       foreach (var encounter in preMobEncounters) {
         encounter(floor, floor.downstairsRoom);
       }
-    }
-
-    // give a reward at the final room
-    if (reward) {
-      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, floor.downstairsRoom);
     }
 
     FloorUtils.TidyUpAroundStairs(floor);

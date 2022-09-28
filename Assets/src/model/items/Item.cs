@@ -32,7 +32,9 @@ public class Item : IModifierProvider {
     }
   }
 
-  internal virtual string GetStats() => "";
+  internal virtual string GetStats() {
+    return ObjectInfo.GetDescriptionFor(this);
+  }
 
   public virtual List<MethodInfo> GetAvailableMethods(Player player) {
     var methods = new List<MethodInfo>() {

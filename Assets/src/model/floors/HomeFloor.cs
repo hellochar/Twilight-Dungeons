@@ -29,11 +29,14 @@ public class HomeFloor : Floor {
     }
   }
 
-  internal void PlayerWentHome() {
+  public void PlayerWentHome() {
     GameModel.main.day++;
     GameModel.main.player.StepDay();
     foreach(var p in plants) {
       p.StepDay();
+    }
+    foreach(var g in grasses.ToList()) {
+      g.StepHomeFloorDay();
     }
   }
 }

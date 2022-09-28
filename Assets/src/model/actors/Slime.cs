@@ -57,7 +57,7 @@ class WallTrigger : Trigger, IActorLeaveHandler {
   public WallTrigger(Vector2Int pos) : base(pos) {}
 
   public void HandleActorLeave(Actor who) {
-    if (who is Player) {
+    if (who is Player && who.pos.x > pos.x) {
       KillSelf();
       who.floor.Put(new Wall(pos));
     }

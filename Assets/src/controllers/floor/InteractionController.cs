@@ -175,6 +175,16 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       }
     }
 
+    if (entity is Desalinator d && player.IsNextTo(d)) {
+      buttons.Add(("Purify", () => {
+        // find first Slime and purify it 
+        var slime = player.inventory.FirstOrDefault(i => i is ItemSlime) as ItemSlime;
+        if (slime != null) {
+          d.Purify(slime);
+        }
+      }));
+    }
+
     Popups.Create(
       title: entity.displayName,
       category: GetCategoryForEntity(entity),

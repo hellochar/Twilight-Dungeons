@@ -39,6 +39,9 @@ public abstract class Tile : Entity {
     if (body is Actor actor) {
       GameModel.main.EnqueueEvent(() => {
         foreach (var handler in this.Of<IActorLeaveHandler>()) {
+          if (floor.depth == 0 && handler is Grass) {
+            continue;
+          }
           handler.HandleActorLeave(actor);
         }
       });
@@ -49,6 +52,9 @@ public abstract class Tile : Entity {
     if (body is Actor actor) {
       GameModel.main.EnqueueEvent(() => {
         foreach (var handler in this.Of<IActorEnterHandler>()) {
+          if (floor.depth == 0 && handler is Grass) {
+            continue;
+          }
           handler.HandleActorEnter(actor);
         }
       });

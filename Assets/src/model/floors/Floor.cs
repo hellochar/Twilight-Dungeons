@@ -120,11 +120,10 @@ public class Floor {
       nextDepth = depth + 1;
     }
 #endif
-    if (nextDepth == 0) {
-      GameModel.main.home.PlayerWentHome();
-    }
-    Serializer.SaveMainToCheckpoint();
     GameModel.main.PutPlayerAt(nextDepth);
+    if (nextDepth == 0) {
+      GameModel.main.EnqueueEvent(GameModel.main.home.StepDay);
+    }
 #if experimental_retryondemand
     GameModel.main.DrainEventQueue();
     Serializer.SaveMainToLevelStart();

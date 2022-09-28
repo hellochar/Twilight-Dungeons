@@ -29,16 +29,18 @@ public class HomeFloor : Floor {
     }
   }
 
-  public void PlayerWentHome() {
+  public void StepDay() {
     GameModel.main.day++;
-    GameModel.main.player.StepDay();
-    foreach(var p in plants) {
-      p.StepDay();
-    }
-    foreach(var g in grasses.ToList()) {
-      g.StepHomeFloorDay();
+    foreach (var p in entities) {
+      if (p is IDaySteppable s) {
+        s.StepDay();
+      }
     }
   }
+}
+
+public interface IDaySteppable {
+  void StepDay();
 }
 
 [Serializable]

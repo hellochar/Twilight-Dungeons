@@ -8,7 +8,8 @@ using UnityEngine;
 [ObjectInfo(description: "Only you can use and equip items.\nOnly you can take stairs.", flavorText: "Though your illness makes you physically weak, your knowledge of flora and fauna helps you navigate these strange caves.")]
 public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   ITakeAnyDamageHandler, IDealAttackDamageHandler, IActionPerformedHandler,
-  IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler {
+  IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler,
+  IDaySteppable {
   private float timeLastLostWater = 0;
   private int m_water;
   public int water {
@@ -81,7 +82,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     ClearTasks();
   }
 
-  internal void StepDay() {
+  public void StepDay() {
 #if experimental_actionpoints
     if (maxActionPoints < 8) {
       maxActionPoints++;

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Plant : Body, IHideInSidebar {
+public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
   [field:NonSerialized] /// controller only
   public event Action OnHarvested;
 

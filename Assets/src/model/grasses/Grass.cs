@@ -7,7 +7,7 @@ using UnityEngine;
 public delegate void OnNoteworthyAction();
 
 [Serializable]
-public class Grass : Entity {
+public class Grass : Entity, IDaySteppable {
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
@@ -36,7 +36,7 @@ public class Grass : Entity {
     }
   }
 
-  public virtual void StepHomeFloorDay() {
+  public virtual void StepDay() {
     // spread to a nearby tile
     if (tile is Soil) {
     }

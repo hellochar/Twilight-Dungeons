@@ -250,6 +250,7 @@ public class Downstairs : Tile, IActorEnterHandler {
 
   public void TryGoDownstairs() {
     if (floor.EnemiesLeft() == 0) {
+      Serializer.SaveMainToCheckpoint();
       floor.PlayerGoDownstairs();
     } else {
       GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();

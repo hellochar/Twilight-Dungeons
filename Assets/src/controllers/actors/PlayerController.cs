@@ -193,7 +193,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     }
     if (Input.GetKeyDown(KeyCode.A)) {
       if (player.floor is HomeFloor f) {
-        f.PlayerWentHome();
+        f.StepDay();
       }
     }
     if (Input.GetKeyDown(KeyCode.R)) {

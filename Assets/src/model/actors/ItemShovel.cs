@@ -11,7 +11,7 @@ public class ItemShovel : Item, IDurable {
   }
 
   public int durability { get; set; }
-  public int maxDurability => 10;
+  public int maxDurability => 7;
 
   public void DigUp(Player player) {
     var grass = player.grass;

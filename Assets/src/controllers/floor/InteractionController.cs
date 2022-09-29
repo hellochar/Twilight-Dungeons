@@ -176,14 +176,13 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       }
     }
 
-    if (entity is Desalinator d && player.IsNextTo(d)) {
-      buttons.Add(("Purify", () => {
-        // find first Slime and purify it 
-        var slime = player.inventory.FirstOrDefault(i => i is ItemSlime) as ItemSlime;
-        if (slime != null) {
-          d.Purify(slime);
-        }
-      }));
+    if (player.floor.depth == 0) {
+      var playerActions = entity.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
+      foreach(var action in playerActions) {
+        buttons.Add((Util.WithSpaces(action.Name), () => {
+          action.Invoke(entity, new object[0]);
+        }));
+      }
     }
 
     Popups.Create(

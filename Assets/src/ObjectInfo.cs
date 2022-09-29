@@ -53,6 +53,9 @@ public class ObjectInfo {
     },
   };
   public static ObjectInfo InfoFor(object item) {
+    if (item is GrowingEntity g) {
+      return InfoFor(g.inner);
+    }
     if (item is ItemPlaceableEntity e) {
       return InfoFor(e.entity);
     }

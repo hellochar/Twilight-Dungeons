@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CampfireController : BodyController {
+public class CampfireController : StationController {
   public Campfire campfire => (Campfire) body;
   public GameObject fire;
+  public ParticleSystem ps;
 
   public override void Start() {
     base.Start();
@@ -15,6 +16,15 @@ public class CampfireController : BodyController {
 
   void OnDestroy() {
     campfire.OnHealed -= HandleCampfireHealed;
+  }
+
+  void Update() {
+    if (campfire.usedForTheDay && !ps.isStopped) {
+      ps.Stop();
+    }
+    else if (!campfire.usedForTheDay && ps.isStopped) {
+      ps.Play();
+    }
   }
 
   private void HandleCampfireHealed() {
@@ -34,16 +44,16 @@ public class CampfireController : BodyController {
     child.SetActive(true);
   }
 
-  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
-    Player player = GameModel.main.player;
-    if (body.IsDead) {
-      return base.GetPlayerInteraction(pointerEventData); // don't do anything to dead actors
-    }
-    return new SetTasksPlayerInteraction(
-      new ChaseTargetTask(player, body),
-      new GenericPlayerTask(player, () => {
-        campfire.Heal();
-      })
-    );
-  }
+  // public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+  //   Player player = GameModel.main.player;
+  //   if (body.IsDead) {
+  //     return base.GetPlayerInteraction(pointerEventData); // don't do anything to dead actors
+  //   }
+  //   return new SetTasksPlayerInteraction(
+  //     new ChaseTargetTask(player, body),
+  //     new GenericPlayerTask(player, () => {
+  //       campfire.Heal();
+  //     })
+  //   );
+  // }
 }

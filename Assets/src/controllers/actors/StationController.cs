@@ -5,9 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DesalinatorController : BodyController {
-  public Desalinator station => (Desalinator) body;
-
+public class StationController : BodyController {
   public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (body.IsDead) {
@@ -21,6 +19,6 @@ public class DesalinatorController : BodyController {
   }
 
   void ShowDialog() {
-    InteractionController.ShowPopupFor(station);
+    InteractionController.ShowPopupFor(body);
   }
 }

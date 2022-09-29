@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 5412613585624199155, guid: aa171a133c436fe4e9de2899024c98c1,
         type: 3}
       propertyPath: m_Name
-      value: _Station
+      value: Composter
       objectReference: {fileID: 0}
     - target: {fileID: 5412613585624199165, guid: aa171a133c436fe4e9de2899024c98c1,
         type: 3}
@@ -67,5 +67,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9057889158127284082, guid: aa171a133c436fe4e9de2899024c98c1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d7377627e72487e4ba0507dee22ed8c4,
+        type: 3}
+    m_RemovedComponents:
+    - {fileID: 7746170581121271534, guid: aa171a133c436fe4e9de2899024c98c1, type: 3}
+    - {fileID: 6067257247832422407, guid: aa171a133c436fe4e9de2899024c98c1, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa171a133c436fe4e9de2899024c98c1, type: 3}

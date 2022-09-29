@@ -375,9 +375,14 @@ public class FloorGenerator {
     }
     FloorUtils.NaturalizeEdges(floor);
 
+    // fits 4x2 structures, and +1 on each edge to see the walls
+    var rootWidth = (3 + 2 + 2 + 2) + 2;
+    var rootHeight = (3 + 2) + 2;
+    var middleRight = new Vector2Int(floor.width - 2, floor.height / 2);
+    var rootMin = new Vector2Int(middleRight.x - (rootWidth - 1), middleRight.y - (rootHeight - 1) / 2);
     var root = new Room(
-      new Vector2Int(floor.width - 8, floor.height / 2 - 3),
-      new Vector2Int(floor.width - 1, floor.height / 2 + 4)
+      rootMin,
+      rootMin + new Vector2Int(rootWidth - 1, rootHeight - 1)
     );
     floor.rooms = new List<Room> { root };
     floor.root = root;
@@ -385,7 +390,7 @@ public class FloorGenerator {
 
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
     Encounters.AddWater(floor, root);
-    Encounters.OneAstoria(floor, root);
+    // Encounters.OneAstoria(floor, root);
     FloorUtils.TidyUpAroundStairs(floor);
 
     // var tiles = FloorUtils.EmptyTilesInRoom(floor, room0).ToList();

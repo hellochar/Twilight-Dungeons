@@ -36,6 +36,28 @@ public class Encounters {
     }
   }
 
+  public static void AddWallflowers(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesFromCenter(floor, room).Where(Wallflower.CanOccupy);
+    var num = 1;
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Wallflower(tile.pos));
+    }
+  }
+
+  public static void AddChillers(Floor floor, Room room) {
+    var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
+    var startTile = Util.RandomPick(tiles);
+    var num = 1;
+    foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => tiles.Contains(t)).Take(num)) {
+      floor.Put(new ChillerGrass(tile.pos));
+    }
+  }
+
+  public static void AddShielders(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Shielder(Util.RandomPick(tiles).pos));
+  }
+
   public static void AddSkullys(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     // var num = RandomRangeBasedOnIndex(floor.depth / 2,
@@ -354,6 +376,16 @@ public class Encounters {
     );
     if (tile != null) {
       floor.Put(new Llaora(tile.pos));
+    }
+  }
+
+  public static void AddBloodwort(Floor floor, Room room) {
+    var tile = Util.RandomPick(
+      FloorUtils.TilesFromCenter(floor, room)
+        .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x <= 5)
+    );
+    if (tile != null) {
+      floor.Put(new Bloodwort(tile.pos));
     }
   }
 
@@ -681,6 +713,60 @@ public class Encounters {
     }
   }
 
+  public static void AddNubs(Floor floor, Room room) {
+    var start = Util.RandomPick(
+      FloorUtils
+        .TilesSortedByCorners(floor, room)
+        .Where(t => t is Ground)
+        .Take(9)
+    );
+    var num = 3;
+    if (start == null) {
+      Debug.Log("No place to spawn Nubs");
+      return;
+    }
+    foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
+      floor.Put(new Nubs(tile.pos));
+    }
+  }
+
+  public static void AddRedleaf(Floor floor, Room room) {
+    var tile = Util.RandomPick(
+      FloorUtils
+        .TilesSortedByCorners(floor, room)
+        .Where(t => t is Ground && t.grass == null && t.CanBeOccupied())
+    );
+    if (tile == null) {
+      Debug.Log("No place to spawn Redleaf");
+      return;
+    }
+    floor.Put(new Redleaf(tile.pos));
+  }
+
+  public static void AddSoftMoss(Floor floor, Room room) {
+    var start = Util.RandomPick(
+      FloorUtils
+        .TilesSortedByCorners(floor, room)
+        .Where(t => t is Ground)
+        .Take(9)
+    );
+    var num = 2;
+    if (start == null) {
+      Debug.Log("No place to spawn SoftMoss");
+      return;
+    }
+    foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
+      floor.Put(new SoftMoss(tile.pos));
+    }
+  }
+
+  public static void AddPlatelets(Floor floor, Room room) {
+    var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t is Ground);
+    var num = 1;
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Platelet(tile.pos));
+    }
+  }
 
   public static void AddMushroom(Floor floor, Room room) {
     var livableTiles = floor.EnumerateRoomTiles(room).Where(Mushroom.CanOccupy);

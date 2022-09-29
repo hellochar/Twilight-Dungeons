@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6712f5c49d786574b83a29226c76e145
+guid: 4069c01781c4a1c46a0f5dfffcc2d5fa
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7465855713940309216
-    second: Ground1_0
+      213: 2887890100549261210
+    second: Ground0_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -118,11 +118,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ground1_0
+      name: Ground0_0
       rect:
         serializedVersion: 2
-        x: 80
-        y: 16
+        x: 0
+        y: 48
         width: 16
         height: 16
       alignment: 0
@@ -132,8 +132,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0e48bbd473c0c9760800000000000000
-      internalID: 7465855713940309216
+      spriteID: a971b99eeb8d31820800000000000000
+      internalID: 2887890100549261210
       vertices: []
       indices: 
       edges: []

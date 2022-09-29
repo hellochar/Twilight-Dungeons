@@ -214,19 +214,8 @@ public class FloorGenerator {
     #if UNITY_EDITOR
     var depth = floor.depth;
     floor.depth = 20;
-    // Encounters.AddOctopus(floor, floor.root);
-    // Encounters.AddCheshireWeeds(floor, floor.root);
-    // Encounters.AddWebs2x(floor, floor.root);
-    // Encounters.AddLlaora(floor, floor.root);
-    // Encounters.AddBloodstone(floor, floor.root);
-    // Encounters.AddStalk(floor, floor.root);
-    // Encounters.AddClumpshroom(floor, floor.root);
-
-    // Encounters.AddFruitingBodies(floor, floor.root);
-    // Encounters.AddNecroroot(floor, floor.root);
-    // Encounters.AddPoisonmoss(floor, floor.root);
-    // Encounters.FillWithFerns(floor, floor.root);
-    // Encounters.AddFakeWall(floor, floor.root);
+    // put stuff here
+    // Encounters.AddSoftMoss(floor, floor.root);
     floor.depth = depth;
     #endif
 

@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-#if !experimental_grasscovering
-public class HardGroundController : TileController {}
-#else
 public class HardGroundController : TileController , IOnTopActionHandler {
 
   public string OnTopActionName => "Soften";
@@ -15,4 +12,3 @@ public class HardGroundController : TileController , IOnTopActionHandler {
     ((HardGround)tile).Soften();
   }
 }
-#endif

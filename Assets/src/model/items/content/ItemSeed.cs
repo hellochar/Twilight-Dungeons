@@ -65,14 +65,14 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
     var floor = soil.floor;
     floor.Put(plant);
 
-#if experimental_grasscovering && !experimental_actionpoints
-    var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
-    foreach (var tile in adjacentTiles) {
-      if (tile is Ground && !(tile is Soil)) {
-        floor.Put(new HardGround(tile.pos));
-      }
-    }
-#endif
+// #if experimental_actionpoints
+//     var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
+//     foreach (var tile in adjacentTiles) {
+//       if (tile is Ground && !(tile is Soil)) {
+//         floor.Put(new HardGround(tile.pos));
+//       }
+//     }
+// #endif
     GameModel.main.stats.plantsPlanted++;
     stacks--;
   }
@@ -83,7 +83,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 
   public string TargettedActionName => "Plant";
   public IEnumerable<Ground> Targets(Player player) =>
-#if experimental_grasscovering
+#if experimental_actionpoints
       player.floor.tiles.Where(tile =>
         tile is Soil && tile.isExplored && tile.CanBeOccupied()
         && tile.floor.GetAdjacentTiles(tile.pos).Where(t => t is Soil && ItemPlaceableEntity.StructureOccupiable(t, plantType)).Count() >= 9

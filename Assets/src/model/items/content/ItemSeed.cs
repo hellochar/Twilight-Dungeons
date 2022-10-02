@@ -61,7 +61,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 #endif
     player.water -= waterCost;
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-    var plant = (Plant)constructorInfo.Invoke(new object[] { soil.pos });
+    var plant = (Entity)constructorInfo.Invoke(new object[] { soil.pos });
     var floor = soil.floor;
     floor.Put(plant);
 

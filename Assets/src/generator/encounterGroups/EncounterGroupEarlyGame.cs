@@ -46,27 +46,27 @@ public static class EncounterGroupEarlyGame {
 
         { 0.5f, AddShielders },
         { 0.5f, AddFruitingBodies },
+        { 0.5f, AddSpore },
 
-        { 0.25f, AddSoftGrass },
-        { 0.25f, AddBladegrass },
+        // { 0.25f, AddSoftGrass },
+        // { 0.25f, AddBladegrass },
 
-        { 0.2f, AFewBlobs },
-        { 0.2f, AFewSnails },
-        { 0.2f, JackalPile },
-        { 0.2f, AddWater },
-        { 0.2f, ScatteredBoombugs },
+        // { 0.2f, AFewBlobs },
+        // { 0.2f, AFewSnails },
+        // { 0.2f, JackalPile },
+        // { 0.2f, AddWater },
+        // { 0.2f, ScatteredBoombugs },
 
         // { 0.1f, AddCoralmoss },
-        { 0.1f, AddDeathbloom },
-        { 0.1f, AddSpiders },
-        { 0.1f, AddGuardleaf },
-        { 0.1f, AddSpore },
+        // { 0.1f, AddDeathbloom },
+        // { 0.1f, AddSpiders },
+        // { 0.1f, AddGuardleaf },
 
-        { 0.05f, AddEveningBells },
-        { 0.05f, AddPoisonmoss },
-        { 0.05f, FillWithFerns },
+        // { 0.05f, AddEveningBells },
+        // { 0.05f, AddPoisonmoss },
+        // { 0.05f, FillWithFerns },
 
-        { 0.01f, AddNecroroot },
+        // { 0.01f, AddNecroroot },
       },
     };
   }

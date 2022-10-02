@@ -158,12 +158,14 @@ public class FloorGenerator {
   public void PostProcessFloor(Floor floor) {
     var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
     foreach(var enemy in enemies) {
-      var x = enemy.pos.x;
-      var pushBackChance = Util.MapLinear(x, 1, floor.width - 1, 0.9f, 0.0f);
+      var enemyRoom = enemy.room;
+      var xRel = enemy.pos.x - enemyRoom.min.x;
+      var pushBackChance = Util.MapLinear(xRel, 1, enemyRoom.width - 1, 0.9f, 0.0f);
       if (MyRandom.value < pushBackChance) {
         List<Tile> possibleLaterTiles = new List<Tile>();
         for(int y = 0; y < floor.height; y++) {
-          var x1 = x + 1;
+          var xPlusOneRel = xRel + 1;
+          var x1 = xPlusOneRel + enemyRoom.min.x;
           if (floor.tiles[x1, y].CanBeOccupied()) {
             possibleLaterTiles.Add(floor.tiles[x1, y]);
           }
@@ -455,7 +457,7 @@ public class FloorGenerator {
       encounters.Add(EncounterGroup.Grasses.GetRandomAndDiscount());
     }
 
-    // encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
+    encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
 
     Encounter rewardEncounter = null;
     if (reward) {
@@ -472,9 +474,14 @@ public class FloorGenerator {
         foreach(var encounter in encounters) {
           encounter(floor, room);
         }
+      }
+      if (roomIntensity >= 3) {
         if (rewardEncounter != null) {
           rewardEncounter(floor, room);
         }
+        // if (depth % 3 == 0) {
+        //   Encounters.OneAstoria(floor, room);
+        // }
       }
       roomIntensity++;
 

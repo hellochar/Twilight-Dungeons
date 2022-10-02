@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Lies in wait.")]
 public class Chiller : AIActor {
+  public override float turnPriority => 21;
   public Chiller(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 3;

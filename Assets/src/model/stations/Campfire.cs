@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("campfire", description: "Heals you to full HP and removes all negative statuses.")]
+[ObjectInfo("campfire", description: "Heals you for 4 HP and removes one negative status.")]
 public class Campfire : Station, IDaySteppable {
   public bool usedForTheDay { get; private set; }
 
@@ -23,7 +23,7 @@ public class Campfire : Station, IDaySteppable {
       throw new CannotPerformActionException("Already used this Campfire today!");
     }
     Player p = GameModel.main.player;
-    p.UseActionPointOrThrow();
+    usedForTheDay = true;
     p.Heal(4);
     var debuffs = p.statuses.list.Where((s) => s.isDebuff);
     foreach (var debuff in debuffs) {

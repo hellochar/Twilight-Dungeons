@@ -27,7 +27,7 @@ public class WallController : TileController {
         return new SetTasksPlayerInteraction(
           new MoveNextToTargetTask(GameModel.main.player, tile.pos),
           new GenericPlayerTask(GameModel.main.player, () => {
-            ((Wall)tile).CarveAway();
+            InteractionController.ShowPopupFor(tile);
           })
         );
       }

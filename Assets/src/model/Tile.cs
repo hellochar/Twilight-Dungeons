@@ -169,7 +169,8 @@ public class Wall : Tile {
     }
   }
 
-  internal void CarveAway() {
+  [PlayerAction]
+  public void CarveAway() {
     var player = GameModel.main.player;
     player.UseActionPointOrThrow();
     floor.Put(new Ground(tile.pos));

@@ -9,6 +9,7 @@ using UnityEngine;
 [Serializable]
 public class StoutShrub : Plant {
   public static int waterCost => 70;
+  protected override bool isFreeHarvest => true;
   [Serializable]
   class Mature : PlantStage {
     public readonly bool growChild;

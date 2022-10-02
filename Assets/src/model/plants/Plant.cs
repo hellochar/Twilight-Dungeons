@@ -78,10 +78,10 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
     }
   }
 
+  protected virtual bool isFreeHarvest => floor.depth > 0;
   internal void Harvest(int choiceIndex) {
     var player = GameModel.main.player;
 #if experimental_actionpoints
-    var isFreeHarvest = floor.depth > 0;
     if (!isFreeHarvest) {
       player.UseActionPointOrThrow();
     }

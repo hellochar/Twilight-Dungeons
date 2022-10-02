@@ -50,6 +50,13 @@ public class CraftingStation : Station, IDaySteppable {
       )
   ).RequireSpace());
 
+  [PlayerAction]
+  public void Driller() => Craft(new ItemPlaceableEntity(
+    new GrowingEntity(new Vector2Int(),
+      new Driller(new Vector2Int())
+    )
+  ));
+
   public void Craft(Item item) {
     crafting = item;
   }

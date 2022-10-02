@@ -122,7 +122,7 @@ public class Floor {
 #endif
     GameModel.main.PutPlayerAt(nextDepth);
     if (nextDepth == 0) {
-      GameModel.main.EnqueueEvent(GameModel.main.home.StepDay);
+      GameModel.main.EnqueueEvent(GameModel.main.GoNextDay);
     }
 #if experimental_retryondemand
     GameModel.main.DrainEventQueue();

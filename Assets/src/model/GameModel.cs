@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -89,6 +89,24 @@ public class GameModel {
     if (stats == null) {
       stats = new PlayStats();
     }
+  }
+
+  internal IEnumerator StepDay(Action then) {
+    yield return new WaitForSeconds(1.0f);
+    nextCaveDepth++;
+    GameModel.main.day++;
+    foreach (var p in home.entities.ToList()) {
+      if (p is IDaySteppable s) {
+        s.StepDay();
+        yield return new WaitForSeconds(0.2f);
+      }
+    }
+    then();
+  }
+
+  public void GoNextDay() {
+    // hack route to controller for now 
+    GameModelController.main.GoNextDay();
   }
 
   private void generate() {

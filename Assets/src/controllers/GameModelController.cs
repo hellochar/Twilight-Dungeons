@@ -74,6 +74,10 @@ public class GameModelController : MonoBehaviour {
     }
   }
 
+  public void GoNextDay() {
+    gameLoop = StartCoroutine(model.StepDay(() => gameLoop = null));
+  }
+
   private void HandlePlayersChoice() {
     gameLoop = null;
   }

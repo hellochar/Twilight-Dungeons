@@ -28,15 +28,6 @@ public class HomeFloor : Floor {
       }
     }
   }
-
-  public void StepDay() {
-    GameModel.main.day++;
-    foreach (var p in entities) {
-      if (p is IDaySteppable s) {
-        s.StepDay();
-      }
-    }
-  }
 }
 
 public interface IDaySteppable {

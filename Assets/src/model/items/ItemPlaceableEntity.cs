@@ -24,15 +24,25 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
 
   string ITargetedAction<Ground>.TargettedActionName => "Build";
   IEnumerable<Ground> ITargetedAction<Ground>.Targets(Player player) {
-    var tiles = player.floor.tiles.Where(t => t is Ground && t.isExplored && t.CanBeOccupied()).Cast<Ground>();
+    var tiles = player.floor.tiles.Where(t => t is Ground && t.isExplored && StructureOccupiable(t)).Cast<Ground>();
     if (requiresSpace) {
-      tiles = tiles.Where(tile => tile.floor.GetAdjacentTiles(tile.pos).Where(t => t.CanBeOccupied()).Count() >= 9);
+      tiles = tiles.Where(tile => tile.floor.GetAdjacentTiles(tile.pos).Where(StructureOccupiable).Count() >= 9);
     }
     return tiles;
   }
 
+  public static bool StructureOccupiable(Tile t) { return t.CanBeOccupied() || t.body is Player; }
+
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {
-    player.UseActionPointOrThrow();
+    // if it's growing, it's free
+    if (entity is GrowingEntity) {
+    } else {
+      player.UseActionPointOrThrow();
+    }
+    if (player.pos == target.pos) {
+      // move them off the target
+      player.floor.BodyPlacementBehavior(player);
+    }
     entity.pos = target.pos;
     player.floor.Put(entity);
     Destroy();

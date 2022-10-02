@@ -8,7 +8,7 @@ public class CameraZoom : MonoBehaviour {
   public float wantedZoom = 5;
   public float minZoom = 3;
   public float maxZoom = 15;
-  bool acceptUserInput = false;
+  bool acceptUserInput = true;
   public float lerpSpeed = 4;
 
   // Start is called before the first frame update

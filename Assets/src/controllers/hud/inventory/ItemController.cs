@@ -140,7 +140,10 @@ public class ItemController : MonoBehaviour {
       var target = await MapSelector.SelectUI(item.Targets(player));
       item.PerformTargettedAction(player, target);
       GameModel.main.DrainEventQueue();
-    } catch (PlayerSelectCanceledException) {}
+    } catch (PlayerSelectCanceledException) {
+    } catch (CannotPerformActionException e) {
+      GameModel.main.turnManager.OnPlayerCannotPerform(e);
+    }
   }
 
   // Update is called once per frame

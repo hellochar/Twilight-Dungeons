@@ -172,7 +172,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   protected override void OnFloorChanged(Floor newFloor, Floor oldFloor) {
     base.OnFloorChanged(newFloor, oldFloor);
     bool shouldDestroy = newFloor.depth != 0 || oldFloor.depth != 0;
-#if experimental_alwaysgohome
+#if experimental_actionpoints
     shouldDestroy = newFloor.depth == 0;
 #endif
     if (shouldDestroy) {

@@ -19,11 +19,16 @@ public class Wallflower : AIActor {
       }
     }
 
-    var touchingWalls = floor.GetCardinalNeighbors(pos).Where(t => t is Wall);
-    var candidateTiles = touchingWalls
-      .SelectMany(touchingWall => floor.GetCardinalNeighbors(touchingWall.pos))
-      .Where(t => CanOccupy(t) || t == this.tile)
-      .Intersect(floor.GetAdjacentTiles(pos));
+    var touchingWalls = floor.GetCardinalNeighbors(pos).Where(t => t is Wall).ToList();
+    var wallNeighborWalls = touchingWalls
+      .SelectMany(touchingWall => floor.GetCardinalNeighbors(touchingWall.pos, true).Where(t => t is Wall)).Distinct().ToList();
+    var wallNeighborWallNeighbors = wallNeighborWalls
+      .SelectMany(w => floor.GetCardinalNeighbors(w.pos)).Distinct().ToList();
+    var occupiableWallNeighborWallNeighbors = wallNeighborWallNeighbors
+      .Where(t => CanOccupy(t) || t == this.tile).ToList();
+    
+    var adjacent = floor.GetAdjacentTiles(pos).ToList();
+    var candidateTiles = occupiableWallNeighborWallNeighbors.Intersect(adjacent).ToList();
 
     var nextTile = candidateTiles.OrderBy((t) => t.DistanceTo(GameModel.main.player)).FirstOrDefault();
 

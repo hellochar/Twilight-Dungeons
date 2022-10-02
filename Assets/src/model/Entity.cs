@@ -9,6 +9,26 @@ public interface IDeathHandler {
   void HandleDeath(Entity source);
 }
 
+public interface IDeathInterceptor {
+  bool InterceptDeath(Entity source);
+}
+
+[Serializable]
+internal class CancelDeathException : Exception {
+  public CancelDeathException() {
+  }
+
+  public CancelDeathException(string message) : base(message) {
+  }
+
+  public CancelDeathException(string message, Exception innerException) : base(message, innerException) {
+  }
+
+  protected CancelDeathException(SerializationInfo info, StreamingContext context) : base(info, context) {
+  }
+}
+
+
 [Serializable]
 public abstract class Entity : IModifierProvider {
   public readonly Guid guid = System.Guid.NewGuid();
@@ -95,6 +115,13 @@ public abstract class Entity : IModifierProvider {
   public virtual void Kill(Entity source) {
     /// TODO remove references to this Actor if needed
     if (!IsDead) {
+      foreach (var interceptor in this.Of<IDeathInterceptor>()) {
+        if (interceptor.InterceptDeath(source)) {
+          // it's been intercepted! Stop dying; we expect the interceptor
+          // to do whatever is needed to ensure you're ok
+          return;
+        }
+      }
       IsDead = true;
       OnDeath(source);
       floor.Remove(this);

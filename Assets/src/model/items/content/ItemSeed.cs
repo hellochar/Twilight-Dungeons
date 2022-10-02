@@ -65,7 +65,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
     var floor = soil.floor;
     floor.Put(plant);
 
-#if experimental_grasscovering
+#if experimental_grasscovering && !experimental_actionpoints
     var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();
     foreach (var tile in adjacentTiles) {
       if (tile is Ground && !(tile is Soil)) {
@@ -86,7 +86,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 #if experimental_grasscovering
       player.floor.tiles.Where(tile =>
         tile is Soil && tile.isExplored && tile.CanBeOccupied()
-        && tile.floor.GetAdjacentTiles(tile.pos).Where(t => t is Soil && ItemPlaceableEntity.StructureOccupiable(t)).Count() >= 9
+        && tile.floor.GetAdjacentTiles(tile.pos).Where(t => t is Soil && ItemPlaceableEntity.StructureOccupiable(t, plantType)).Count() >= 9
       ).Cast<Ground>();
 #else
       (player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());

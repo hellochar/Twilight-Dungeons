@@ -59,15 +59,10 @@ public class ActorController : BodyController,
   }
 
   public virtual void HandleDeath(Entity source) {
-    var isNextToPlayer = actor.IsNextTo(GameModel.main.player);
-    var wasKilledByPlayerOrAlly = source is Actor a && a.faction == Faction.Ally;
-    var wasKilledBySelf = source == actor;
-    if ((wasKilledByPlayerOrAlly || isNextToPlayer) && !wasKilledBySelf) {
-      var audioSource = GetComponent<AudioSource>();
-      if (audioSource != null) {
-        audioSource.pitch = Random.Range(0.75f, 1.25f);
-        audioSource.Play();
-      }
+    var audioSource = GetComponent<AudioSource>();
+    if (audioSource != null) {
+      audioSource.pitch = Random.Range(0.75f, 1.25f);
+      audioSource.Play();
     }
     PrefabCache.Effects.Instantiate("LightCast", transform);
   }
@@ -197,6 +192,9 @@ public class ActorController : BodyController,
     // depending on the faction:
     // (1) ally or neutral - walk to
     // (2) enemy - attack
+    if (actor.floor.depth == 0) {
+      return new ArbitraryPlayerInteraction(() => InteractionController.ShowPopupFor(actor));
+    }
     switch (actor.faction) {
       case Faction.Ally:
         if (player.IsNextTo(actor)) {

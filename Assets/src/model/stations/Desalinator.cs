@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("station", description: "Purify your slime here.")]
+[ObjectInfo("fountain", description: "Purify your slime here.")]
 public class Desalinator : Station {
   public override int maxDurability => 7;
   public Desalinator(Vector2Int pos) : base(pos) { }

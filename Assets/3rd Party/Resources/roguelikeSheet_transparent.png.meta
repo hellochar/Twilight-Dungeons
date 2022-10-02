@@ -13,7 +13,7 @@ TextureImporter:
     second: station
   - first:
       213: -6424109324677615433
-    second: roguelikeSheet_transparent_3
+    second: fountain
   - first:
       213: -7991237368465618413
     second: roguelikeSheet_transparent_4
@@ -5622,7 +5622,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -5630,6 +5630,27 @@ TextureImporter:
       bones: []
       spriteID: 4b80cd531acf699f0800000000000000
       internalID: -461904142435350348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fountain
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 336
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b0f0580b9af8d6a0800000000000000
+      internalID: -6424109324677615433
       vertices: []
       indices: 
       edges: []

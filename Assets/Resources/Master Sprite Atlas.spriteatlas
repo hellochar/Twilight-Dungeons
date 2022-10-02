@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 110653
+    totalSpriteSurfaceArea: 111933
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -72,6 +72,7 @@ SpriteAtlas:
   - {fileID: -1177751882298852563, guid: ed9c2a01dd9890f409c7e5e02603eb17, type: 3}
   - {fileID: -7004018335022937449, guid: ed9c2a01dd9890f409c7e5e02603eb17, type: 3}
   - {fileID: 21300000, guid: 858e243180d885844a9369806b7f2044, type: 3}
+  - {fileID: 21300000, guid: 3e899631d568ceb4ab4c6913ef07609c, type: 3}
   - {fileID: 21300000, guid: 455492419490f7740b106f64e769bcf4, type: 3}
   - {fileID: 21300000, guid: 63aa1441b050666429e8b695d76f0f20, type: 3}
   - {fileID: 21300000, guid: 5120d641aadce704293cef3aded872ad, type: 3}
@@ -174,6 +175,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 9ff2e8e64ae8c1d4c854e1a58d49835c, type: 3}
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
   - {fileID: 2887890100549261210, guid: 4069c01781c4a1c46a0f5dfffcc2d5fa, type: 3}
+  - {fileID: 21300000, guid: d7377627e72487e4ba0507dee22ed8c4, type: 3}
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
   - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
@@ -194,6 +196,7 @@ SpriteAtlas:
   - {fileID: 4378210890812441524, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -3950408397821896629, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -2419293483790245602, guid: af4df3188a01af048a678513709d8278, type: 3}
+  - {fileID: -5040763472861491273, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -2362392033055028080, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -1300974183062543412, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -4393665168476997586, guid: af4df3188a01af048a678513709d8278, type: 3}
@@ -275,6 +278,7 @@ SpriteAtlas:
   - {fileID: 122417249131412153, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: 3430268509422621355, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: -3203700651048447089, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
+  - {fileID: -6424109324677615433, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -2248278797562551984, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -461904142435350348, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
   - {fileID: -7251549587093790700, guid: 59a4a8eada9da7c4299d17c07cb14daf, type: 3}
@@ -378,6 +382,7 @@ SpriteAtlas:
   - {fileID: -553817365315116960, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: -4611009959399730175, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: 21300000, guid: 184b4b5d160a3924fa61bae6a93071a6, type: 3}
+  - {fileID: 21300000, guid: 97ce6b7d8355f8e4fa7f0ce125222f3b, type: 3}
   - {fileID: 21300000, guid: 4e996e9d3ecb6b34da4031a80baa2a65, type: 3}
   - {fileID: 21300000, guid: d58ad4cd3ab97734aac279ebe56231ff, type: 3}
   - {fileID: 21300000, guid: 2dd03ccd0a5dcbb4cab08e9b386ffca3, type: 3}
@@ -422,6 +427,7 @@ SpriteAtlas:
   - tunnelroot_1
   - tunnelroot_2
   - web
+  - bird
   - stiffarm
   - flower-buds
   - goldgrass
@@ -524,6 +530,7 @@ SpriteAtlas:
   - fungal-wall
   - Player
   - Ground0_0
+  - composter
   - fruitingbody
   - blue-spore-explosion
   - Astoria
@@ -544,6 +551,7 @@ SpriteAtlas:
   - colored_transparent_packed_657
   - colored_transparent_packed_100
   - colored_transparent_packed_39
+  - snake
   - octopus
   - colored_transparent_packed_1046
   - mercenary
@@ -625,6 +633,7 @@ SpriteAtlas:
   - downstairs12
   - fancy-ground12
   - wall12
+  - fountain
   - panel-tan-inset
   - station
   - roguelikeSheet_transparent_548
@@ -728,6 +737,7 @@ SpriteAtlas:
   - hanging-vines-1x2
   - hanging-vines-bottom
   - thistlebog
+  - cloner
   - scrollbar
   - mushroom-cap
   - item shadow

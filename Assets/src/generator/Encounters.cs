@@ -44,6 +44,16 @@ public class Encounters {
     }
   }
 
+  public static void AddBird(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    floor.Put(new Bird(tile.pos));
+  }
+
+  public static void AddSnake(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    floor.Put(new Snake(tile.pos));
+  }
+
   public static void AddChillers(Floor floor, Room room) {
     var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
     var startTile = Util.RandomPick(tiles);

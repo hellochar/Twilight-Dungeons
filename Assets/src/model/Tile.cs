@@ -265,12 +265,6 @@ public class Downstairs : Tile, IActorEnterHandler {
   }
 }
 
-[ObjectInfo(description: "Plant seeds here.", flavorText: "Fresh, moist, and perfect for growing. Hard to come by in the caves.")]
-[Serializable]
-public class Soil : Ground {
-  public Soil(Vector2Int pos) : base(pos) { }
-}
-
 [ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]
 [Serializable]
 public class Water : Tile, IActorEnterHandler {

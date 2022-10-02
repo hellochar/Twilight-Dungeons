@@ -68,7 +68,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 #if experimental_actionpoints
     inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())).RequireSpace());
     inventory.AddItem(new ItemPlaceableEntity(new Desalinator(new Vector2Int())).RequireSpace());
-    inventory.AddItem(new ItemGrass(typeof(Soil), 9));
+    inventory.AddItem(new ItemSoil());
 #endif
 
     equipment = new Equipment(this);

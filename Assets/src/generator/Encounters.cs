@@ -908,8 +908,7 @@ public class Encounters {
   public static void AddSoil(Floor floor, Room room) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
-      // floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new Soil(new Vector2Int()))));
-      floor.Put(new ItemOnGround(tile.pos, new ItemGrass(typeof(Soil), 9)));
+      floor.Put(new ItemOnGround(tile.pos, new ItemSoil()));
     }
   }
 

@@ -916,6 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 0
   placeholder: {fileID: 0}
 --- !u!114 &144849416
@@ -1301,6 +1302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
+  allowDragAndDrop: 1
 --- !u!114 &177890845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2168,6 +2170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
+  allowDragAndDrop: 1
 --- !u!114 &364606511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3009,6 +3012,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 3
   placeholder: {fileID: 0}
 --- !u!114 &511734395
@@ -10378,6 +10382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 1
   placeholder: {fileID: 0}
 --- !u!114 &1040418726
@@ -13723,6 +13728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 2
   placeholder: {fileID: 0}
 --- !u!114 &1752462284
@@ -14114,6 +14120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 4
   placeholder: {fileID: 0}
 --- !u!114 &1810932525
@@ -16852,6 +16859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
+  allowDragAndDrop: 1
 --- !u!222 &1315002733549702259
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -17099,6 +17107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 2
   placeholder: {fileID: 0}
 --- !u!1 &1380929830346684063
@@ -17173,6 +17182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 4
   placeholder: {fileID: 0}
 --- !u!114 &1380929830354757243
@@ -17358,6 +17368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 3
   placeholder: {fileID: 0}
 --- !u!114 &1380929830580254509
@@ -17524,6 +17535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 0
   placeholder: {fileID: 0}
 --- !u!1 &1380929830880264019
@@ -17644,6 +17656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
+  allowDragAndDrop: 0
 --- !u!114 &1380929830914351947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17804,6 +17817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotIndex: 0
+  inventoryController: {fileID: 0}
   slot: 1
   placeholder: {fileID: 0}
 --- !u!1 &1380929831125517045

@@ -1,24 +1,27 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.U2D;
 using UnityEngine.UI;
 
 /// Renders one Item in the UI.
-public class ItemController : MonoBehaviour {
+public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
   [NonSerialized]
   public Item item;
   public Image itemImage;
   private TMPro.TMP_Text stacksText;
+  private Button button;
 
   void Start() {
     stacksText = GetComponentInChildren<TMPro.TMP_Text>(true);
     /// on click - toggle the popup for this item
-    GetComponent<Button>().onClick.AddListener(HandleItemClicked);
+    button = GetComponent<Button>();
+    button.onClick.AddListener(HandleItemClicked);
 
     var wantedSprite = ObjectInfo.GetSpriteFor(item);
     if (wantedSprite != null) {
@@ -151,5 +154,35 @@ public class ItemController : MonoBehaviour {
     } else {
       stacksText.gameObject.SetActive(false);
     }
+  }
+
+  void IDragHandler.OnDrag(PointerEventData eventData) {
+    // doesn't fully work; doesn't account for scaling of parents
+    // Vector2 offset = eventData.position - eventData.pressPosition;
+
+    // Debug.Log("OnDrag " + offset);
+    // (transform as RectTransform).anchoredPosition = offset;
+
+    // works
+    transform.Translate(eventData.delta);
+  }
+
+  int dragStartLayer;
+  void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
+    button.enabled = false;
+    InventorySlotController.BeginDragging(item);
+    dragStartLayer = gameObject.layer;
+    gameObject.layer = Physics.IgnoreRaycastLayer;
+    GetComponentInChildren<Graphic>().raycastTarget = false;
+    Debug.Log("OnBeginDrag");
+  }
+
+  void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
+    GetComponentInChildren<Graphic>().raycastTarget = true;
+    InventorySlotController.EndDragging(item);
+    gameObject.layer = dragStartLayer;
+    (transform as RectTransform).anchoredPosition = new Vector2();
+    button.enabled = true;
+    Debug.Log("OnEndDrag");
   }
 }

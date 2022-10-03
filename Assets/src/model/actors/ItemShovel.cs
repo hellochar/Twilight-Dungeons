@@ -16,17 +16,11 @@ public class ItemShovel : Item, IDurable {
   public void DigUp(Player player) {
     var grass = player.grass;
     if (grass != null) {
-    // player.UseActionPointOrThrow();
-    // if (floor.EnemiesLeft() == 0 && floor.availableToPickGrass) {
-      // floor.availableToPickGrass = false;
-      // var whichGrasses = floor.BreadthFirstSearch(pos, t => t.grass?.GetType() == GetType()).Select(t => t.grass).ToList();
-      var whichGrasses = new Grass[] { grass };
-      var item = new ItemGrass(grass.GetType(), whichGrasses.Length);
+      var item = new ItemGrass(grass.GetType());
       player.inventory.AddItem(item, grass);
       // they're *not* killed because we don't want to trigger actions on them
-      player.floor.RemoveAll(whichGrasses);
+      player.floor.Remove(grass);
       this.ReduceDurability();
-    // }
     }
   }
 

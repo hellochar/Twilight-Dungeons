@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Plant in your home base to stop Soil Hardening, or in the caves to provide a tactical advantage.")]
+[ObjectInfo(description: "Plant in your home base, or in the caves to provide a tactical advantage.")]
 public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> {
   public Type grassType;
   public ItemGrass(Type grassType, int stacks) {
@@ -38,18 +38,19 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
     return (other as ItemGrass).grassType == grassType;
   }
 
+  bool groundTypeRequirement(Tile t) =>
+     grassType == typeof(SoftMoss) ?
+     (t is Ground) :
+     (t is Soil);
+
   public void PerformTargettedAction(Player player, Entity target) {
-    player.UseActionPointOrThrow();
     var floor = target.floor;
-    var toPlant = floor.BreadthFirstSearch(target.pos, t => t is Ground && t.CanBeOccupied() && t.grass == null, mooreNeighborhood: true).Take(stacks).ToList();
     var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-    floor.PutAll(toPlant.Select(t => {
-      return (Entity)constructorInfo.Invoke(new object[] { t.pos });
-    }));
-    stacks -= toPlant.Count;
+    floor.Put((Entity)constructorInfo.Invoke(new object[] { target.pos }));
+    stacks--;
   }
 
   public IEnumerable<Ground> Targets(Player player) {
-    return player.GetVisibleTiles().Where(tile => tile is Ground && tile.CanBeOccupied() && tile.grass == null).Cast<Ground>();
+    return player.GetVisibleTiles().Where(tile => groundTypeRequirement(tile) && tile.CanBeOccupied() && tile.grass == null).Cast<Ground>();
   }
 }

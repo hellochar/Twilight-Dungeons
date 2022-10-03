@@ -9,19 +9,23 @@ public class GrowingEntityController : BodyController {
   public override void Start() {
     base.Start();
     spriteRenderer = sprite.GetComponent<SpriteRenderer>();
-    var prefab = FloorController.GetEntityPrefab(growingEntity.inner);
-    var prefabSpriteRenderer = prefab.GetComponentInChildren<SpriteRenderer>();
-    if (prefabSpriteRenderer != null) {
-      spriteRenderer.sprite = prefabSpriteRenderer.sprite;
+    var innerSprite = ObjectInfo.GetSpriteFor(growingEntity.inner);
+    if (innerSprite == null) {
+      var prefab = FloorController.GetEntityPrefab(growingEntity.inner);
+      var prefabSpriteRenderer = prefab.GetComponentInChildren<SpriteRenderer>();
+      if (prefabSpriteRenderer != null) {
+        innerSprite = prefabSpriteRenderer.sprite;
+      }
     }
+    spriteRenderer.sprite = innerSprite;
     initialColor = spriteRenderer.color;
   }
 
   void Update() {
     spriteRenderer.color = Color.Lerp(
       initialColor,
-      new Color(initialColor.r, initialColor.g, initialColor.b, 0.25f),
-      (Mathf.Sin(Time.time * 4) + 1) / 2
+      new Color(initialColor.r, initialColor.g, initialColor.b, 0.0f),
+      (Mathf.Sin(Time.time * 6) + 1) / 2
     );
   }
 }

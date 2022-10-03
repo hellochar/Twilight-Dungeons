@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,6 @@ using UnityEngine.UI;
 public class ItemController : MonoBehaviour {
   [NonSerialized]
   public Item item;
-  public GameObject maturePlantBackground;
   public Image itemImage;
   private TMPro.TMP_Text stacksText;
 
@@ -41,11 +40,7 @@ public class ItemController : MonoBehaviour {
       var renderer = prefab.GetComponentInChildren<SpriteRenderer>();
       itemImage.sprite = renderer.sprite;
       itemImage.color = renderer.color;
-      // maturePlantBackground.GetComponent<Image>().sprite = renderer.sprite;
-      // var pos = itemImage.transform.localPosition;
-      // pos.y -= 2;
-      // itemImage.transform.localPosition = pos;
-    } 
+    }
 
     /// HACK set color for fertilizer
     if (item is ItemFertilizer fertilizer) {
@@ -63,12 +58,9 @@ public class ItemController : MonoBehaviour {
       var plantPrefab = Resources.Load<GameObject>($"Entities/Plants/{plantType.Name}");
       var maturePlant = plantPrefab.transform.Find("Mature");
       var renderer = maturePlant.GetComponent<SpriteRenderer>();
-      maturePlantBackground.GetComponent<Image>().sprite = renderer.sprite;
-      var pos = itemImage.transform.localPosition;
-      pos.y -= 2;
-      itemImage.transform.localPosition = pos;
-    } else {
-      maturePlantBackground.SetActive(false);
+
+      itemImage.sprite = renderer.sprite;
+      itemImage.color = renderer.color;
     }
 
     Update();

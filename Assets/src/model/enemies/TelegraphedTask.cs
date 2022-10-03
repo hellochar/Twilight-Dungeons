@@ -6,7 +6,8 @@ public class TelegraphedTask : ActorTask {
   public override TaskStage WhenToCheckIsDone => TaskStage.After;
   private int turns;
   private readonly ActionType type;
-  private BaseAction then;
+  // temp
+  public BaseAction then;
   private bool done;
 
   public TelegraphedTask(Actor actor, int turns, BaseAction then, ActionType type) : base(actor) {

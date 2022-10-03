@@ -9,7 +9,7 @@ public class Wallflower : AIActor {
     hp = baseMaxHp = 3;
   }
 
-  public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t is Ground && t.floor.GetCardinalNeighbors(t.pos).Any(n => n is Wall);
+  public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetCardinalNeighbors(t.pos).Any(n => n is Wall);
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;

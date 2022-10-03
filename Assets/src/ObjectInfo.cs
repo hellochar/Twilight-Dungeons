@@ -62,6 +62,9 @@ public class ObjectInfo {
     if (item is ItemVisibleBox b) {
       return InfoFor(b.innerItem);
     }
+    if (item is ItemGrass gt) {
+      return InfoFor(gt.grassType);
+    }
     var type = item is Type t ? t : item.GetType();
     if (!Infos.ContainsKey(type)) {
       // try to load it from the attribute

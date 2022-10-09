@@ -9,7 +9,11 @@ using UnityEngine;
 public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   ITakeAnyDamageHandler, IDealAttackDamageHandler, IActionPerformedHandler,
   IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler,
-  IDaySteppable {
+  IDaySteppable
+#if experimental_useplantondeath
+  , IDeathInterceptor
+#endif
+{
   private float timeLastLostWater = 0;
   private int m_water;
   public int water {
@@ -168,6 +172,12 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   protected override void HandleEnterFloor() {
     floor.RecomputeVisibility();
+#if experimental_useplantondeath
+    // hack - open these back up
+    foreach (var trigger in floor.triggers.Where(t => t is WallTrigger)) {
+      floor.Put(new Ground(trigger.pos));
+    }
+#endif
     UpdateVisibleEnemies();
   }
 
@@ -221,4 +231,31 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public bool IsInCombat() {
     return GetVisibleActors(Faction.Enemy).Any();
   }
+
+#if experimental_useplantondeath
+  public bool InterceptDeath(Entity source) {
+    // check if you have any plants left at home
+    var maturePlants = GameModel.main.home.plants.Where(p => p.isMatured);
+    var firstPlant = maturePlants.FirstOrDefault();
+    if (firstPlant != null) {
+      // put the player back home, having used up the plant - you get no rewards for it!
+      firstPlant.Kill(this);
+      inventory.TryDropAllItems(floor, pos);
+      foreach(var actor in floor.Enemies()) {
+        actor.SetTasks(new SleepTask(actor));
+      }
+      // this will *not* trigger a new day
+      GameModel.main.PutPlayerAt(0, firstPlant.pos);
+      hp = maxHp;
+      foreach (var status in new List<Status>(statuses.list)) {
+        statuses.Remove(status);
+      }
+      // give the player a new seed
+      var newSeedPos = floor.BreadthFirstSearch(pos, ItemOnGround.CanOccupy).Skip(1).First().pos;
+      floor.Put(new ItemOnGround(newSeedPos, new ItemSeed(firstPlant.GetType(), 1), pos));
+      return true;
+    }
+    return false;
+  }
+#endif
 }

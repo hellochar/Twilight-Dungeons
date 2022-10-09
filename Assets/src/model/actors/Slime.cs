@@ -58,7 +58,9 @@ class WallTrigger : Trigger, IActorLeaveHandler {
 
   public void HandleActorLeave(Actor who) {
     if (who is Player && who.pos.x > pos.x) {
+#if !experimental_useplantondeath
       KillSelf();
+#endif
       who.floor.Put(new Wall(pos));
     }
   }

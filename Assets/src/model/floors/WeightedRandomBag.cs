@@ -51,9 +51,13 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   private float GetAccumulatedWeight() => entries.Select(e => e.weight).Sum();
 
   /// Get an item and then mutate this bag such that the item has v% less weight
-  internal T GetRandomAndDiscount(float reduceChanceBy = 0.3f) {
+  public T GetRandomAndDiscount(float reduceChanceBy = 0.3f) {
     var item = GetRandom();
+    Discount(item);
+    return item;
+  }
 
+  public void Discount(T item, float reduceChanceBy = 0.3f) {
     var currentWeight = GetWeight(item);
     var accumulatedWeight = GetAccumulatedWeight();
 
@@ -75,16 +79,22 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
       newWeight = currentWeight;
     }
     SetWeight(item, newWeight);
-    return item;
   }
 
-  public T GetRandomWithout(params T[] encounters) {
+  public T GetRandomWithout(IEnumerable<T> encounters) {
     T pick;
     do {
       pick = GetRandom();
     } while (encounters.Contains(pick));
     return pick;
   }
+
+  public T GetRandomWithoutAndDiscount(IEnumerable<T> encounters, float reduceChanceBy = 0.3f) {
+    var pick = GetRandomWithout(encounters);
+    Discount(pick, reduceChanceBy);
+    return pick;
+  }
+
 
   public void Clear() {
     entries.Clear();

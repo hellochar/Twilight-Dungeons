@@ -465,7 +465,8 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var num = MyRandom.Range(numTiles / 10, numTiles / 5) * mult;
+      // var num = MyRandom.Range(numTiles / 10, numTiles / 5) * mult;
+      var num = 5;
       foreach (var tile in bfs.Take(num)) {
         var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
@@ -616,7 +617,8 @@ public class Encounters {
   public static void AddFruitingBodies(Floor floor, Room room) {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();
-    var num = Random.Range(3, (positions.Count + 1) / 4);
+    // var num = Random.Range(3, (positions.Count + 1) / 4);
+    var num = 1;
     foreach (var tile in positions.Take(num)) {
       if (!floor.GetAdjacentTiles(tile.pos).Any((t) => t.actor is FruitingBody)) {
         floor.Put(new FruitingBody(tile.pos));

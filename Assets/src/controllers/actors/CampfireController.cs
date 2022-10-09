@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class CampfireController : StationController {
   public Campfire campfire => (Campfire) body;
   public GameObject fire;
-  public ParticleSystem ps;
 
   public override void Start() {
     base.Start();
@@ -16,15 +15,6 @@ public class CampfireController : StationController {
 
   void OnDestroy() {
     campfire.OnHealed -= HandleCampfireHealed;
-  }
-
-  void Update() {
-    if (campfire.usedForTheDay && !ps.isStopped) {
-      ps.Stop();
-    }
-    else if (!campfire.usedForTheDay && ps.isStopped) {
-      ps.Play();
-    }
   }
 
   private void HandleCampfireHealed() {

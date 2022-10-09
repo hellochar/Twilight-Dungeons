@@ -87,7 +87,7 @@ public class Floor {
     availableToPickGrass = depth > 0;
   }
 
-  private void BodyPlacementBehavior(Body body) {
+  public void BodyPlacementBehavior(Body body) {
     var newPosition = this.BreadthFirstSearch(body.pos, (_) => true)
       .Where(tile => tile.CanBeOccupied())
       .FirstOrDefault();

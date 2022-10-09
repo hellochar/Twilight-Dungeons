@@ -56,7 +56,7 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
       }
     }
 
-    if (item is ItemSeed seed && GameModel.main.player.inventory.HasItem(item)) {
+    if (item is ItemSeed seed) {
       var plantType = seed.plantType;
       var plantPrefab = Resources.Load<GameObject>($"Entities/Plants/{plantType.Name}");
       var maturePlant = plantPrefab.transform.Find("Mature");

@@ -14,8 +14,10 @@ public class Shielder : AIActor {
   protected override ActorTask GetNextTask() {
     if (status == null) {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, LinkWithClosestTarget));
+    } else {
+      return new GenericTask(this, MaintainLink);
     }
-    return new WaitTask(this, 1);
+    // return new WaitTask(this, 1);
   }
 
   public override void HandleDeath(Entity source) {
@@ -26,20 +28,30 @@ public class Shielder : AIActor {
   }
 
   void LinkWithClosestTarget() {
-    var closestTarget = floor.bodies.Where(b => b is Actor a && !(b is Shielder)).Cast<Actor>().OrderBy(DistanceTo).FirstOrDefault();
+    var closestTarget = floor.bodies.Where(b =>
+      b is Actor a && !(b is Shielder) && floor.TestVisibility(pos, b.pos) == TileVisiblity.Visible
+    ).Cast<Actor>().OrderBy(DistanceTo).FirstOrDefault();
     if (closestTarget != null) {
       status = new ShieldLinkStatus(this);
       closestTarget.statuses.Add(status);
     }
   }
 
-  internal void TargetDied() {
+  void MaintainLink() {
+    // if visibility is lost, break status
+    var visibility = floor.TestVisibility(pos, status.actor.pos);
+    if (visibility != TileVisiblity.Visible) {
+      status.Remove();
+    }
+  }
+
+  internal void StatusLost() {
     status = null;
   }
 }
 
 [Serializable]
-public class ShieldLinkStatus : Status, IAnyDamageTakenModifier, IDeathHandler {
+public class ShieldLinkStatus : Status, IAnyDamageTakenModifier {
   public Shielder shielder;
 
   public ShieldLinkStatus(Shielder shielder) {
@@ -48,8 +60,9 @@ public class ShieldLinkStatus : Status, IAnyDamageTakenModifier, IDeathHandler {
 
   public override bool Consume(Status other) { return false; }
 
-  public void HandleDeath(Entity source) {
-    shielder.TargetDied();
+  public override void End() {
+    base.End();
+    shielder.StatusLost();
   }
 
   public override void Step() {
@@ -67,5 +80,9 @@ public class ShieldLinkStatus : Status, IAnyDamageTakenModifier, IDeathHandler {
       return input;
     }
     return input - 1;
+  }
+
+  public override void HandleFloorChanged(Floor newFloor, Floor oldFloor) {
+    Remove();
   }
 }

@@ -4,8 +4,14 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("platelet", "Plant at home. Will add to nearby plants' harvests.")]
-public class Platelet : Grass {
+public class Platelet : Grass, IActorEnterHandler {
   public Platelet(Vector2Int pos) : base(pos) {
+  }
+
+  public void HandleActorEnter(Actor who) {
+    if (who is Player p) {
+      BecomeItemInInventory(new ItemGrass(GetType()), p);
+    }
   }
 
   protected override void HandleEnterFloor() {

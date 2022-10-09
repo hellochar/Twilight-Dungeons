@@ -39,16 +39,24 @@ public class ItemSlime : Item, IStackable {
 
   public void Purify(Player player) {
     player.UseActionPointOrThrow();
-    player.water += MyRandom.Range(18, 26) * stacks;
+    PurifyFree(player);
+  }
+
+  public void PurifyFree(Player player) {
+    for(int i = 0; i < stacks; i++) {
+      player.water += MyRandom.Range(22, 33);
+    }
     Destroy();
   }
 
   public override List<MethodInfo> GetAvailableMethods(Player player) {
-    var methods = base.GetAvailableMethods(player);
-    if (player.floor.depth == 0) {
-      methods.Add(GetType().GetMethod("Purify"));
-    }
-    return methods;
+    // disallow dropping or destroying
+    return new List<MethodInfo>();
+    // var methods = base.GetAvailableMethods(player);
+    // if (player.floor.depth == 0) {
+    //   methods.Add(GetType().GetMethod("Purify"));
+    // }
+    // return methods;
   }
 }
 

@@ -4,7 +4,10 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 2887890100549261210
-    second: Ground0_0
+    second: creature-food
+  - first:
+      213: 4894206273632725685
+    second: mulch
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -118,15 +121,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ground0_0
+      name: creature-food
       rect:
         serializedVersion: 2
-        x: 0
+        x: 16
         y: 48
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -134,6 +137,27 @@ TextureImporter:
       bones: []
       spriteID: a971b99eeb8d31820800000000000000
       internalID: 2887890100549261210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mulch
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5baed5ddca6bbe340800000000000000
+      internalID: 4894206273632725685
       vertices: []
       indices: 
       edges: []

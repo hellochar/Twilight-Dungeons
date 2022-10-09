@@ -40,6 +40,9 @@ public class CraftingStation : Station, IDaySteppable {
   public void Shovel() => Craft(new ItemShovel());
 
   [PlayerAction]
+  public void CreatureFood() => Craft(new ItemCreatureFood());
+
+  [PlayerAction]
   public void Campfire() => Craft(new ItemPlaceableEntity(
     new GrowingEntity(new Vector2Int(),
       new Campfire(new Vector2Int())

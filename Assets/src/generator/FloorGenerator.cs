@@ -139,6 +139,7 @@ public class FloorGenerator {
       #if !UNITY_EDITOR
       try {
         floor = generator();
+        PostProcessFloor(floor);
       } catch (Exception e) {
         Debug.LogError(e);
         GameModel.main.turnManager.latestException = e;
@@ -154,7 +155,6 @@ public class FloorGenerator {
     if (floor.depth != depth) {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
-    PostProcessFloor(floor);
     return floor;
   }
 

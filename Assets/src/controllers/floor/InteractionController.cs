@@ -149,7 +149,9 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       if (b is Actor a && a.BaseAttackDamage() != (0, 0)) {
         description += "Deals " + Util.DescribeDamageSpread(a.BaseAttackDamage());
       }
-      description += $"Max HP: {b.maxHp}\n";
+      if (b.maxHp > 0) {
+        description += $"Max HP: {b.maxHp}\n";
+      }
     }
 
     var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
@@ -169,6 +171,12 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
           action.Invoke(entity, new object[0]);
         }));
       }
+      // if (entity is IDaySteppable d) {
+      //   buttons.Add(("Activate", () => {
+      //     player.UseActionPointOrThrow();
+      //     d.StepDay();
+      //   }));
+      // }
     }
     if (entity is IInteractableInventory i) {
       inventory = i.inventory;

@@ -80,10 +80,16 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   public void StepDay() {
+    var numDays = GameModel.main.day;
 #if experimental_actionpoints
-    if (maxActionPoints < 8) {
-      maxActionPoints++;
+    maxActionPoints = 3;
+    // maxActionPoints = Mathf.Clamp(2 + numDays / 2, 3, 8);
+    var anyEnemies = GameModel.main.cave.bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Any();
+    if (!anyEnemies) {
+      maxActionPoints += 1;
     }
+    var numHelpers = floor.bodies.Where(t => t is AIActor a && a.statuses.Has<CharmedStatus>()).Count();
+    maxActionPoints += numHelpers;
     actionPoints = maxActionPoints;
 #endif
   }

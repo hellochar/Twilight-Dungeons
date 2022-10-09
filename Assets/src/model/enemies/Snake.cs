@@ -14,11 +14,13 @@ public class Snake : AIActor {
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    if (player.pos.x == pos.x || player.pos.y == pos.y) {
-      var task = new AttackGroundTask(this, player.pos, 1);
-      var targetPos = player.pos;
-      task.then = new GenericBaseAction(this, () => AttackLine(targetPos), ActionType.ATTACK);
-      return task;
+    if (CanTargetPlayer()) {
+      if (player.pos.x == pos.x || player.pos.y == pos.y) {
+        var task = new AttackGroundTask(this, player.pos, 1);
+        var targetPos = player.pos;
+        task.then = new GenericBaseAction(this, () => AttackLine(targetPos), ActionType.ATTACK);
+        return task;
+      }
     }
     return new WaitTask(this, 1);
   }

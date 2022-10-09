@@ -109,7 +109,7 @@ public class Floor {
     int nextDepth;
 #if experimental_actionpoints
     if (depth == 0) {
-      nextDepth = GameModel.main.cave.depth + 1;
+      nextDepth = GameModel.main.nextCaveDepth;
     } else {
       nextDepth = 0;
     }
@@ -122,6 +122,7 @@ public class Floor {
 #endif
     GameModel.main.PutPlayerAt(nextDepth);
     if (nextDepth == 0) {
+      GameModel.main.nextCaveDepth++;
       GameModel.main.EnqueueEvent(GameModel.main.GoNextDay);
     }
 #if experimental_retryondemand

@@ -38,7 +38,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
   public void MoveAndPlant(Ground soil) {
     var model = GameModel.main;
     Player player = model.player;
-    if (model.depth != 0) {
+    if (model.currentFloor.depth != 0) {
       throw new CannotPerformActionException("Plant on the home floor.");
     }
     player.SetTasks(

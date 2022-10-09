@@ -15,7 +15,7 @@ public class GameModel {
   public Player player;
   public HomeFloor home;
   public Floor cave;
-  public int depth = 0;
+  public int nextCaveDepth = 1;
   public float time = 0;
   public int day = 1;
   public List<int> floorSeeds;
@@ -32,7 +32,7 @@ public class GameModel {
       return _turnManager;
     }
   }
-  public Floor currentFloor => depth == 0 ? home : cave;
+  public Floor currentFloor => player.floor;
 
   [field:NonSerialized] /// Controller only
   public event Action<Floor, Floor> OnPlayerChangeFloor;
@@ -93,11 +93,15 @@ public class GameModel {
 
   internal IEnumerator StepDay(Action then) {
     yield return new WaitForSeconds(1.0f);
-    nextCaveDepth++;
-    GameModel.main.day++;
+    day++;
     foreach (var p in home.entities.ToList()) {
       if (p is IDaySteppable s) {
-        s.StepDay();
+        try {
+          s.StepDay();
+        } catch (Exception e) {
+          Debug.LogError(e);
+          turnManager.latestException = e;
+        }
         yield return new WaitForSeconds(0.2f);
       }
     }
@@ -153,8 +157,8 @@ public class GameModel {
   private void FinalizeStats(bool won, string killedBy = null) {
     stats.won = won;
     stats.killedBy = killedBy;
-    stats.timeTaken = GameModel.main.time;
-    stats.floorsCleared = GameModel.main.cave.depth;
+    stats.timeTaken = time;
+    stats.floorsCleared = cave.depth;
   }
 
   public void EnqueueEvent(Action cb) {
@@ -195,7 +199,6 @@ public class GameModel {
     Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
     Floor oldFloor = player.floor;
 
-    this.depth = depth;
     // this could take a while
     var newFloor = depth == 0 ? home : depth == cave.depth ? cave : generator.generateCaveFloor(depth);
 

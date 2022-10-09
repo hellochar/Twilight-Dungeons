@@ -67,7 +67,7 @@ namespace SingleItemPlant {
     public void MoveAndPlant(Soil soil) {
       var model = GameModel.main;
       Player player = model.player;
-      if (model.depth != 0) {
+      if (model.currentFloor.depth != 0) {
         throw new CannotPerformActionException("Plant on the home floor.");
       }
       player.SetTasks(

@@ -425,19 +425,19 @@ public class FloorGenerator {
 
     // X mobs
     for (var i = 0; i < numMobs; i++) {
-      encounters.Add(EncounterGroup.Mobs.GetRandomAndDiscount());
+      encounters.Add(EncounterGroup.Mobs.GetRandomWithoutAndDiscount(encounters));
     }
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
-      encounters.Add(EncounterGroup.Grasses.GetRandomAndDiscount());
+      encounters.Add(EncounterGroup.Grasses.GetRandomWithoutAndDiscount(encounters));
     }
 
-    encounters.Add(EncounterGroup.Spice.GetRandomAndDiscount());
+    encounters.Add(EncounterGroup.Spice.GetRandomWithoutAndDiscount(encounters));
 
     Encounter rewardEncounter = null;
     if (reward) {
-      rewardEncounter = EncounterGroup.Rewards.GetRandomAndDiscount();
+      rewardEncounter = EncounterGroup.Rewards.GetRandomWithoutAndDiscount(encounters);
     }
     // encounters.AddRange(extraEncounters);
     // if (reward) {

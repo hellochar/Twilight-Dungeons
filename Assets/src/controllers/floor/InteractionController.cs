@@ -159,6 +159,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     image.sprite = sprite;
     image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
     List<(string, Action)> buttons = new List<(string, Action)>();
+    Inventory inventory = null;
 
     var player = GameModel.main.player;
     if (player.floor.depth == 0) {
@@ -169,6 +170,9 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         }));
       }
     }
+    if (entity is IInteractableInventory i) {
+      inventory = i.inventory;
+    }
 
     Popups.Create(
       title: entity.displayName,
@@ -176,7 +180,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       info: description.Trim(),
       flavor: ObjectInfo.GetFlavorTextFor(entity),
       sprite: spriteGameObject,
-      buttons: buttons
+      buttons: buttons,
+      inventory: inventory
     );
     Destroy(spriteGameObject);
   }

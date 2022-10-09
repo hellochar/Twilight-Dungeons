@@ -43,12 +43,17 @@ public class FloorGenerator {
       // early game
       () => generateHomeFloor(),
 #if experimental_chainfloors
-      () => generateChainFloor(1, 3, 6, 4, 2, 1, true),
-      () => generateChainFloor(2, 3, 6, 4, 2, 1, true),
-      () => generateChainFloor(3, 3, 6, 4, 2, 2, true),
-      () => generateChainFloor(4, 3, 7, 5, 3, 2, true),
-      () => generateChainFloor(5, 3, 7, 5, 3, 3, true),
-      () => generateChainFloor(6, 3, 7, 5, 3, 3, true),
+      () => generateChainFloor(1, 3, 6, 5, 2, 1, true),
+      () => generateChainFloor(2, 3, 6, 5, 2, 1, true),
+      () => generateChainFloor(3, 3, 6, 5, 2, 1, true),
+      () => generateChainFloor(4, 3, 7, 6, 3, 2, true),
+      () => generateChainFloor(5, 3, 7, 6, 3, 2, true),
+      () => generateChainFloor(6, 3, 7, 6, 3, 2, true),
+      () => generateChainFloor(7, 3, 7, 6, 3, 2, true),
+      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
+      () => generateChainFloor(9, 3, 8, 7, 3, 2),
+      () => generateChainFloor(10, 3, 8, 7, 3, 2),
+      () => generateChainFloor(11, 3, 8, 7, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter),
 #else
       () => generateSingleRoomFloor(1, 9, 7, 1, 1),
       () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
@@ -56,12 +61,12 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(4, 9, 7, 2, 1, true, extraEncounters: Encounters.OneAstoria),
       () => generateSingleRoomFloor(5, 9, 7, 2, 1),
       () => generateSingleRoomFloor(6, 9, 7, 2, 1),
-#endif
       () => generateSingleRoomFloor(7, 9, 7, 2, 1),
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
       () => generateSingleRoomFloor(9, 10, 7, 3, 2),
       () => generateSingleRoomFloor(10, 10, 7, 3, 2),
       () => generateSingleRoomFloor(11, 10, 7, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter),
+#endif
       () => generateBlobBossFloor(12),
 
       // midgame
@@ -485,14 +490,15 @@ public class FloorGenerator {
   }
 
   private Floor tryGenerateChainRoomFloor(int depth, int width, int height, int numChains = 3, bool defaultEncounters = true) {
-    int maxHeight = height + numChains;
+    int maxHeight = height + 1;
+    // int maxHeight = height;
 
     var rooms = new List<Room>();
 
     var x = 1;
     for(int i = 0; i < numChains; i++) {
       var thisWidth = width + i;
-      var thisHeight = height + i;
+      var thisHeight = height + (i >= 2 ? 1 : 0);
 
       var min = new Vector2Int(x, (maxHeight + 2 - thisHeight) / 2);
       var max = min + new Vector2Int(thisWidth - 1, thisHeight - 1);

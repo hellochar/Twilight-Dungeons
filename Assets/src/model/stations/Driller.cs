@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("driller", description: "Destroys nearby Walls and then removes itself.")]
+[ObjectInfo("Rock0_0", description: "Destroys nearby Walls and then removes itself.")]
 internal class Driller : Station, IDaySteppable {
   public Driller(Vector2Int pos) : base(pos) {
   }

@@ -3,13 +3,14 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("campfire", description: "Heals you for 4 HP and removes one negative status.")]
+[ObjectInfo("campfire", description: "Heals you for 1 HP and removes one negative status.")]
 public class Campfire : Station, IDaySteppable {
   public bool usedForTheDay { get; private set; }
+  public override bool isActive => !usedForTheDay;
 
   public override string description => $"{(usedForTheDay ? "Already used today.\n\n" : "")}{base.description}";
 
-  public override int maxDurability => 7;
+  public override int maxDurability => 6;
 
   [field:NonSerialized] /// controller-only
   public event Action OnHealed;
@@ -23,12 +24,18 @@ public class Campfire : Station, IDaySteppable {
       throw new CannotPerformActionException("Already used this Campfire today!");
     }
     Player p = GameModel.main.player;
+    // p.UseActionPointOrThrow();
     usedForTheDay = true;
-    p.Heal(4);
+    p.Heal(1);
     var debuffs = p.statuses.list.Where((s) => s.isDebuff);
     foreach (var debuff in debuffs) {
-      p.statuses.Remove(debuff);
-      break;
+      if (debuff is StackingStatus s) {
+        s.stacks--;
+        break;
+      } else {
+        p.statuses.Remove(debuff);
+        break;
+      }
     }
     OnHealed?.Invoke();
     this.ReduceDurability();

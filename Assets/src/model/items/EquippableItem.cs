@@ -43,3 +43,6 @@ public abstract class EquippableItem : Item {
 
 /// cannot be unequipped or destroyed once it's equipped
 public interface ISticky { }
+
+// cannot be moved from out of your inventory once it's there
+public interface IStuckToInventory : ISticky { }

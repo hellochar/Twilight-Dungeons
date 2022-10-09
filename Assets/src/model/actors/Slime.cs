@@ -27,7 +27,7 @@ public class Slime : Destructible, IDeathHandler {
 
 [Serializable]
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
-public class ItemSlime : Item, IStackable {
+public class ItemSlime : Item, IStackable, IStuckToInventory {
   public int stacks { get; set; }
   public int stacksMax => 7;
 

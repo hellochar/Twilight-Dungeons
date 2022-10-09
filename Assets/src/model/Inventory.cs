@@ -25,6 +25,10 @@ public class Inventory : IEnumerable<Item> {
   public Inventory(int cap) : this(new Item[cap]) { }
 
   internal virtual bool AddItem(Item item, int slot, Entity source = null) {
+    // disallow moving to a different inventory
+    if (item is IStuckToInventory && item.inventory != null && item.inventory != this) {
+      return false;
+    }
     if (item is IStackable stackable) {
       // go through existing stacks and add as much as possible
       foreach (IStackable i in ItemsNonNull().Where(i => i.GetType() == item.GetType())) {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -36,6 +36,21 @@ public class GameModel {
 
   [field:NonSerialized] /// Controller only
   public event Action<Floor, Floor> OnPlayerChangeFloor;
+
+  internal bool CheckObviouslyBroken() {
+    if (!player.floor.InBounds(player.pos)) {
+      return true;
+    }
+    return false;
+  }
+
+  internal void TryRecoverFromBrokenState() {
+    // we should never get here, but we did. reset player back to home floor and delete the floor we just tried to generate
+    PutPlayerAt(0);
+    // hack force new seed and regenerate
+    floorSeeds[cave.depth] = new System.Random().Next();
+    cave = generator.generateCaveFloor(cave.depth);
+  }
 
   [NonSerialized] /// Controller only
   public Action<Boss> OnBossSeen = delegate {};

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +26,9 @@ public class GameModelController : MonoBehaviour {
     if (GameModel.main == null) {
       if (Serializer.HasSave()) {
         GameModel.main = Serializer.LoadSave0();
+        if (GameModel.main.CheckObviouslyBroken()) {
+          GameModel.main.TryRecoverFromBrokenState();
+        }
       } else {
         GameModel.GenerateNewGameAndSetMain();
       }

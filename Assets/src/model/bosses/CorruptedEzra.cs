@@ -33,26 +33,39 @@ public class Corruption : Grass, ISteppable, IDeathHandler, IActorEnterHandler {
   public float turnPriority => 9;
   public Corruption(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated + 5;
-    if (allGrassTypeConstructors == null) {
-      allGrassTypeConstructors = AppDomain.CurrentDomain.GetAssemblies()
-        .SelectMany(a => a.GetTypes())
-        .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(Grass)) && !t.IsSubclassOf(typeof(Corruption)))
-        .Select(grassType => grassType.GetConstructor(new Type[1] { typeof(Vector2Int) }))
-        .Where(c => c != null)
-        .ToList();
-    }
-    if (allCreatureTypeConstructors == null) {
-     allCreatureTypeConstructors = AppDomain.CurrentDomain.GetAssemblies()
-        .SelectMany(a => a.GetTypes())
-        .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(AIActor)) && !t.IsSubclassOf(typeof(Boss)))
-        .Select(creatureType => creatureType.GetConstructor(new Type[1] { typeof(Vector2Int) }))
-        .Where(c => c != null)
-        .ToList();
+    // allGrassTypeConstructors;
+    // allCreatureTypeConstructors;
+  }
+
+  private static List<System.Reflection.ConstructorInfo> _allGrassTypeConstructors;
+  public static List<System.Reflection.ConstructorInfo> allGrassTypeConstructors {
+    get {
+      if (_allGrassTypeConstructors == null) {
+        _allGrassTypeConstructors = AppDomain.CurrentDomain.GetAssemblies()
+          .SelectMany(a => a.GetTypes())
+          .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(Grass)) && !t.IsSubclassOf(typeof(Corruption)))
+          .Select(grassType => grassType.GetConstructor(new Type[1] { typeof(Vector2Int) }))
+          .Where(c => c != null)
+          .ToList();
+      }
+      return _allGrassTypeConstructors;
     }
   }
 
-  private static List<System.Reflection.ConstructorInfo> allGrassTypeConstructors;
-  private static List<System.Reflection.ConstructorInfo> allCreatureTypeConstructors;
+  private static List<System.Reflection.ConstructorInfo> _allCreatureTypeConstructors;
+  public static List<System.Reflection.ConstructorInfo> allCreatureTypeConstructors {
+    get {
+      if (_allCreatureTypeConstructors == null) {
+      _allCreatureTypeConstructors = AppDomain.CurrentDomain.GetAssemblies()
+          .SelectMany(a => a.GetTypes())
+          .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(AIActor)) && !t.IsSubclassOf(typeof(Boss)))
+          .Select(creatureType => creatureType.GetConstructor(new Type[1] { typeof(Vector2Int) }))
+          .Where(c => c != null)
+          .ToList();
+      }
+      return _allCreatureTypeConstructors;
+    }
+  }
 
   public void HandleDeath(Entity source) {
     if (source != this) {

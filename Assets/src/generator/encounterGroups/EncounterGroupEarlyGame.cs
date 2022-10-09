@@ -7,7 +7,6 @@ public static class EncounterGroupEarlyGame {
         { 1.0f, AddBird },
         { 1.0f, AddSnake },
         { 1.0f, AddWallflowers },
-        { 1.0f, AddChillers },
         { 1.0f, AFewBlobs },
         { 1.0f, JackalPile },
         { 1.0f, AddSkullys },
@@ -47,6 +46,7 @@ public static class EncounterGroupEarlyGame {
         { 0.5f, AddShielders },
         { 0.5f, AddFruitingBodies },
         { 0.5f, AddSpore },
+        { 0.5f, AddChillers },
 
         // { 0.25f, AddSoftGrass },
         // { 0.25f, AddBladegrass },

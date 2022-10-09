@@ -12,6 +12,13 @@ public class Wallflower : AIActor {
   public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetCardinalNeighbors(t.pos).Any(n => n is Wall);
 
   protected override ActorTask GetNextTask() {
+    var touchingWalls = floor.GetCardinalNeighbors(pos).Where(t => t is Wall).ToList();
+
+    if (!touchingWalls.Any()) {
+      // oh god! walk randomly until you are touching
+      return new MoveRandomlyTask(this);
+    }
+
     var player = GameModel.main.player;
     if (CanTargetPlayer()) {
       if (IsNextTo(player)) {
@@ -19,7 +26,6 @@ public class Wallflower : AIActor {
       }
     }
 
-    var touchingWalls = floor.GetCardinalNeighbors(pos).Where(t => t is Wall).ToList();
     var wallNeighborWalls = touchingWalls
       .SelectMany(touchingWall => floor.GetCardinalNeighbors(touchingWall.pos, true).Where(t => t is Wall)).Distinct().ToList();
     var wallNeighborWallNeighbors = wallNeighborWalls

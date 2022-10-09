@@ -46,6 +46,16 @@ public abstract class AIActor : Actor, IDeathHandler {
     return base.Step();
   }
 
+  [PlayerAction]
+  public void PickUp() {
+    var player = GameModel.main.player;
+    bool bSuccess = player.inventory.AddItem(new ItemPlaceableEntity(this).RequireSpace(), this);
+    if (bSuccess) {
+      // we're *not* killing the entity
+      floor.Remove(this);
+    }
+  }
+
   /// this is technically correct but it created a bunch of errors; fix later
   // protected override void GoToNextTask() {
   //   if (taskQueue.Count == 1 && task.IsDoneOrForceOpen()) {

@@ -19,6 +19,9 @@ static class IDurableExtensions {
       if (durable.durability <= 0 && durable is Item i) {
         i.Destroy();
       }
+      if (durable.durability <= 0 && durable is Entity e) {
+        e.KillSelf();
+      }
     }
   }
 

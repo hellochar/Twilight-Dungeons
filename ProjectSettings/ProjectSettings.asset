@@ -127,7 +127,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: v2.0.0-actionpoints-start-88-g2e6c2e2
+  bundleVersion: v2.0.0-actionpoints-start-127-g27d4321
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -745,7 +745,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    7: off_experimental_retryondemand;experimental_equipmentperfloor;experimental_actionpoints;experimental_chainfloors;off_experimental_nodiagonalmovement;off_experimental_singleitemplant;off_experimental_fertilizer
+    7: experimental_retryondemand;experimental_equipmentperfloor;experimental_actionpoints;experimental_chainfloors;experimental_useplantondeath;off_experimental_nodiagonalmovement;off_experimental_singleitemplant;off_experimental_fertilizer
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

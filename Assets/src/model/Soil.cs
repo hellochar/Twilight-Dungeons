@@ -19,8 +19,8 @@ public class ItemSoil : Item, ITargetedAction<Ground> {
     player.UseActionPointOrThrow();
     foreach (var tile in player.floor.GetAdjacentTiles(target.pos).ToList()) {
       if (tile.GetType() == typeof(Ground)) {
-        // player.floor.Put(new Soil(tile.pos));
-        player.floor.Put(new GrowingEntity(tile.pos, new Soil(tile.pos)));
+        player.floor.Put(new Soil(tile.pos));
+        // player.floor.Put(new GrowingEntity(tile.pos, new Soil(tile.pos)));
       }
     }
     Destroy();

@@ -159,26 +159,47 @@ public class FloorGenerator {
   }
 
   public void PostProcessFloor(Floor floor) {
-    var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
+    // var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
+    var enemies = floor.bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy && !(a is Boss)).Cast<AIActor>().ToList();
     foreach(var enemy in enemies) {
       var enemyRoom = enemy.room;
-      var xRel = enemy.pos.x - enemyRoom.min.x;
-      var pushBackChance = Util.MapLinear(xRel, 1, enemyRoom.width - 1, 0.9f, 0.0f);
-      if (MyRandom.value < pushBackChance) {
-        List<Tile> possibleLaterTiles = new List<Tile>();
-        for(int y = 0; y < floor.height; y++) {
-          var xPlusOneRel = xRel + 1;
-          var x1 = xPlusOneRel + enemyRoom.min.x;
-          if (floor.tiles[x1, y].CanBeOccupied()) {
-            possibleLaterTiles.Add(floor.tiles[x1, y]);
-          }
+      if (enemyRoom == null) {
+        continue;
+      }
+      var canOccupyMethod = enemy.GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy);
+      bool canOccupy(Tile t) {
+        if (!t.CanBeOccupied()) {
+          return false;
         }
-        var newTile = Util.RandomPick(possibleLaterTiles);
+        if (canOccupyMethod != null) {
+          return (bool) canOccupyMethod.Invoke(null, new object[] { t });
+        }
+        return true;
+      }
+      var newTile = floor
+        .EnumerateRoomTiles(enemyRoom)
+        .Where(canOccupy)
+        .OrderByDescending(t => t.pos.x)
+        .Skip(MyRandom.Range(0, 10))
+        .FirstOrDefault();
+      // var xRel = enemy.pos.x - enemyRoom.min.x;
+      // // var pushBackChance = Util.MapLinear(xRel, 1, enemyRoom.width - 1, 0.9f, 0.0f);
+      // var pushBackChance = 1;
+      // if (MyRandom.value < pushBackChance) {
+      //   List<Tile> possibleLaterTiles = new List<Tile>();
+      //   var xPlusOneRel = xRel + 1;
+      //   var x1 = xPlusOneRel + enemyRoom.min.x;
+      //   for(int y = 0; y < floor.height; y++) {
+      //     if (floor.tiles[x1, y].CanBeOccupied()) {
+      //       possibleLaterTiles.Add(floor.tiles[x1, y]);
+      //     }
+      //   }
+      //   var newTile = Util.RandomPick(possibleLaterTiles);
         if (newTile != null) {
           // enemy.ForceSet(newTile.pos);
           enemy.pos = newTile.pos;
         }
-      }
+      // }
     }
 
     // var amountScalar = 0.67f;

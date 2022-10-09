@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Tap to pick up this item and see what it does.")]
-public class ItemOnGround : Entity {
+public class ItemOnGround : Entity, IDaySteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground && tile.item == null;
   public static void PlacementBehavior(Floor floor, ItemOnGround i) {
     var newPosition = floor.BreadthFirstSearch(i.pos, (_) => true)
@@ -35,6 +35,14 @@ public class ItemOnGround : Entity {
     var player = GameModel.main.player;
     if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
       Kill(player);
+    }
+  }
+
+  public virtual void StepDay() {
+    if (!(item is ItemMulch) && age > 0) {
+      var floor = this.floor;
+      KillSelf();
+      floor.Put(new ItemOnGround(pos, new ItemMulch(1)));
     }
   }
 

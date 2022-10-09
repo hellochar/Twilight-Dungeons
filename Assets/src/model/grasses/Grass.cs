@@ -7,7 +7,7 @@ using UnityEngine;
 public delegate void OnNoteworthyAction();
 
 [Serializable]
-public class Grass : Entity, IDaySteppable {
+public class Grass : Entity {
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
@@ -36,25 +36,46 @@ public class Grass : Entity, IDaySteppable {
     }
   }
 
-  public virtual void StepDay() {
-    // spread to a nearby tile
-    if (tile is Soil) {
+  // public virtual void StepDay() {
+  //   // spread to a nearby tile
+  //   // if (tile is Soil) {
+  //   //   SpreadAutomatically();
+  //   // }
+  //   OnNoteworthyAction();
+  // }
+
+  // [PlayerAction]
+  public void Spread() {
+    var canOccupyMethod = GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static);
+    bool canOccupy(Tile t) {
+      if (canOccupyMethod != null) {
+        return (bool) canOccupyMethod.Invoke(null, new object[] { t });
+      }
+      return true;
     }
+    var player = GameModel.main.player;
+    var openSpots = floor.GetCardinalNeighbors(pos).Where(t => t is Ground && canOccupy(t) && (t.body == null || t.body == player));
+    foreach (var openSpot in openSpots) {
+      var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+      var newGrass = (Grass)constructor.Invoke(new object[] { openSpot.pos });
+      grass.floor.Put(newGrass);
+    }
+    player.UseActionPointOrThrow();
   }
 
-  public void SpreadToOneNearbySoil() {
-      var canOccupyMethod = GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static);
-      bool canOccupy(Tile t) {
-        if (canOccupyMethod != null) {
-          return (bool) canOccupyMethod.Invoke(null, new object[] { t });
-        }
-        return t is Ground;
+  private void SpreadAutomatically() {
+    var canOccupyMethod = GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static);
+    bool canOccupy(Tile t) {
+      if (canOccupyMethod != null) {
+        return (bool) canOccupyMethod.Invoke(null, new object[] { t });
       }
-      var openSpot = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => t is Soil && canOccupy(t) && t.grass == null && t.CanBeOccupied()));
-      if (openSpot != null) {
-        var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
-        var newGrass = (Grass)constructor.Invoke(new object[] { openSpot.pos });
-        grass.floor.Put(newGrass);
-      }
+      return t is Ground;
+    }
+    var openSpot = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => t is Ground && canOccupy(t) && t.grass == null && t.CanBeOccupied()));
+    if (openSpot != null) {
+      var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+      var newGrass = (Grass)constructor.Invoke(new object[] { openSpot.pos });
+      grass.floor.Put(newGrass);
+    }
   }
 }

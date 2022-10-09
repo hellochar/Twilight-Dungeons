@@ -12,7 +12,8 @@ public static class Popups {
     GameObject sprite = null,
     Transform parent = null,
     List<(string, Action)> buttons = null,
-    string errorText = null
+    string errorText = null,
+    Inventory inventory = null
   ) {
     GameObject popup = InstantiatePopup(parent);
     var controller = popup.GetComponent<PopupController>();
@@ -51,14 +52,25 @@ public static class Popups {
 
     // Add buttons
     var buttonsContainer = popup.transform.Find("Frame/Actions");
-    if (buttons != null) {
+    if (buttons != null && buttons.Count > 0) {
       buttons.ForEach((b) => MakeButton(b.Item1, b.Item2, buttonsContainer, popup));
     } else {
+      popup.transform.Find("Frame/Space").gameObject.SetActive(false);
       buttonsContainer.gameObject.SetActive(false);
       // if there's no actions, clicking the frame itself will toggle the popup
       var frame = popup.transform.Find("Frame").gameObject;
       var frameButton = frame.AddComponent<Button>();
       frameButton.onClick.AddListener(controller.Close);
+    }
+
+    if (inventory != null) {
+      var inventoryContainer = controller.inventoryContainer;
+      inventoryContainer.SetActive(true);
+      var inventoryController = inventoryContainer.GetComponentInChildren<InventoryController>();
+      inventoryController.inventory = inventory;
+      // popup.transform.Find("Overlay").gameObject.SetActive(false);
+
+      controller.showPlayerInventoryOnTop = true;
     }
 
     return controller;

@@ -302,8 +302,9 @@ public class Floor {
 #if experimental_chainfloors
     var activeRoom = player.room;
     var tileRoom = t.room;
+    bool isNextToActiveRoom = activeRoom.DistanceTo(t.pos) <= 1;
     bool isCrossingRooms = tileRoom != null && activeRoom != tileRoom;
-    if (isCrossingRooms && !player.IsNextTo(t)) {
+    if (isCrossingRooms && !player.IsNextTo(t) && !isNextToActiveRoom) {
       return TileVisiblity.Unexplored;
     }
 #endif

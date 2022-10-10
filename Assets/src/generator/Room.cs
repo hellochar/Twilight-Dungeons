@@ -184,6 +184,17 @@ public class Room {
     min = Vector2Int.Min(min, room.min);
     max = Vector2Int.Max(max, room.max);
   }
+
+  // how far away is the point to the closest point in this room?
+  public int DistanceTo(Vector2Int pos) {
+    if (Contains(pos)) {
+      return 0;
+    }
+    // one will be negative, one will be positive - take the positive one
+    int distanceX = Math.Max(-(pos.x - min.x), pos.x - max.x);
+    int distanceY = Math.Max(-(pos.y - min.y), pos.y - max.y);
+    return Math.Max(distanceX, distanceY);
+  }
 }
 
 [System.Serializable]

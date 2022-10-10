@@ -103,7 +103,9 @@ public class FloorGenerator {
   internal HomeFloor generateHomeFloor() {
     EncounterGroup = earlyGame;
     HomeFloor floor;
-#if experimental_actionpoints
+#if experimental_survivalhomefloor
+      floor = generateSurvivalHomeFloor();
+#elif experimental_actionpoints
       floor = generateGardeningActionPointsFloor0();
 #else
       floor = generateFloor0();
@@ -401,7 +403,7 @@ public class FloorGenerator {
     );
     floor.rooms = new List<Room> { root };
     floor.root = root;
-    floor.AddInitialThickBrush();
+    floor.AddWallsOutsideRoot();
 
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
     Encounters.AddWater(floor, root);
@@ -411,6 +413,39 @@ public class FloorGenerator {
     // var tiles = FloorUtils.EmptyTilesInRoom(floor, room0).ToList();
     // tiles.Shuffle();
     // floor.PutAll(tiles.Take(10).Select(t => new HardGround(t.pos)).ToList());
+
+    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, root);
+
+    return floor;
+  }
+
+  public HomeFloor generateSurvivalHomeFloor() {
+    HomeFloor floor = new HomeFloor(40, 40);
+    foreach (var p in floor.EnumerateFloor()) {
+      floor.Put(new HomeGround(p));
+    }
+    // foreach (var p in floor.EnumerateFloor()) {
+    //   var dx = new Random().NextDouble();
+    //   var dy = new Random().NextDouble();
+    //   var noise = Mathf.PerlinNoise(p.x / 6.3f + (float)dx, p.y / 6.4f + (float)dy);
+    //   if (noise < 0.33f && floor.tiles[p].CanBeOccupied()) {
+    //     floor.Put(new BigTree(p));
+    //   }
+    // }
+    floor.rooms = new List<Room>();
+    for (int x = 0; x < floor.width; x += 9) {
+      for (int y = 0; y < floor.height; y += 6) {
+        var room = new Room(new Vector2Int(x, y), new Vector2Int(x + 8, y + 5));
+        floor.rooms.Add(room);
+      }
+    }
+    var root = floor.rooms.OrderBy(r => (r.center - floor.center).sqrMagnitude).First();
+
+    // var root = new Room(floor.center - new Vector2Int(5, 5), floor.center + new Vector2Int(5, 5));
+    floor.root = root;
+    floor.PlaceDownstairs(root.center, false);
+
+    floor.AddThickBrushOutsideRoot();
 
     EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, root);
 

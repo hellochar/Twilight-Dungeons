@@ -10,7 +10,7 @@ public class WaterIndicatorController : MonoBehaviour {
   }
 
   void Update() {
-    if (GameModel.main == null) {
+    if (GameModel.main.player == null) {
       enabled = false;
       return;
     }

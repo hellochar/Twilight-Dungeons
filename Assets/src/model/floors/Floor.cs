@@ -429,12 +429,14 @@ public class Floor {
     }
   }
 
-  public void PlaceDownstairs(Vector2Int pos) {
+  public void PlaceDownstairs(Vector2Int pos, bool addHardGround = true) {
     Put(new Downstairs(pos));
     // surround with Hard Ground
-    var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();
-    foreach (var ground in adjacentGrounds) {
-      Put(new HardGround(ground.pos));
+    if (addHardGround) {
+      var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();
+      foreach (var ground in adjacentGrounds) {
+        Put(new HardGround(ground.pos));
+      }
     }
   }
 }

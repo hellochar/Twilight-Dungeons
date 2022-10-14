@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("bloodwort", "If the Player takes attack damage while standing over the Bloodwort, they get 4 stacks of strength and the Bloodwort dies.")]
+[ObjectInfo("bloodwort", description: "If the Player takes attack damage while standing over the Bloodwort, they get 4 stacks of strength and the Bloodwort dies.")]
 public class Bloodwort : Grass, IBodyTakeAttackDamageHandler {
   public Bloodwort(Vector2Int pos) : base(pos) {
   }

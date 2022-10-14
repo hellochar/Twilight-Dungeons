@@ -5,7 +5,7 @@ public static class EncounterGroupMidGame {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
         { 1f, AddHoppers },
-        { 1f, AddScorpions },
+        // { 1f, AddScorpions },
         { 1f, AddWildekins },
         { 1f, AddDizapper },
         { 1f, AddGoo },
@@ -15,8 +15,8 @@ public static class EncounterGroupMidGame {
         // { 0.5f, AddVulnera },
         { 0.5f, AddMuckola },
         // { 0.5f, AddPistrala },
-        { 0.5f, AddGolems },
-        { 0.5f, AddHydra },
+        // { 0.5f, AddGolems },
+        // { 0.5f, AddHydra },
       },
 
       Grasses = new EncounterBag {
@@ -28,13 +28,13 @@ public static class EncounterGroupMidGame {
         { 0.75f, AddIronJelly },
         { 0.75f, AddCheshireWeeds },
 
-        { 0.5f, AddVibrantIvy },
-        { 0.5f, AddHangingVines2x },
-        { 0.5f, AddDeathbloom },
+        // { 0.5f, AddVibrantIvy },
+        // { 0.5f, AddHangingVines2x },
+        // { 0.5f, AddDeathbloom },
         { 0.5f, AddPoisonmoss },
-        { 0.5f, AddSpore },
+        // { 0.5f, AddSpore },
 
-        { 0.3f, AddEveningBells },
+        // { 0.3f, AddEveningBells },
 
         { 0.2f, ScatteredBoombugs4x },
         { 0.2f, AddGuardleaf4x },

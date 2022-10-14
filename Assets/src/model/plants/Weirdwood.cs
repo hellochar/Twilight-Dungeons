@@ -135,7 +135,7 @@ internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandle
   public int maxDurability => 3;
 
   public void OnAttack(int damage, Body target) {
-    if (target is Actor actor) {
+    if (target is Actor actor && !(actor.task is RunAwayTask) && !(actor is Boss)) {
       actor.SetTasks(new RunAwayTask(actor, player.pos, 10));
     }
   }

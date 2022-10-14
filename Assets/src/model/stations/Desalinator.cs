@@ -20,7 +20,7 @@ public class Desalinator : Station
     //   throw new CannotPerformActionException("Slime already added!");
     // }
     var player = GameModel.main.player;
-    player.UseActionPointOrThrow();
+    // player.UseActionPointOrThrow();
     var slime = player.inventory.FirstOrDefault(i => i is ItemSlime) as ItemSlime;
     if (slime != null) {
       // this.slime = slime;

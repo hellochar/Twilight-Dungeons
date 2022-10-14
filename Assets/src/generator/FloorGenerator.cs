@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = System.Random;
 
 [Serializable]
-public class FloorGenerator {
+public abstract class FloorGenerator {
   public EncounterGroupShared shared;
   public EncounterGroup EncounterGroup;
   public List<int> floorSeeds;
@@ -38,67 +38,7 @@ public class FloorGenerator {
     InitFloorGenerators();
   }
 
-  private void InitFloorGenerators() {
-    floorGenerators = new List<Func<Floor>>() {
-      // early game
-      () => generateHomeFloor(),
-#if experimental_chainfloors
-      () => generateChainFloor(1, 3, 6, 5, 2, 1, true),
-      () => generateChainFloor(2, 3, 6, 5, 2, 1, true),
-      () => generateChainFloor(3, 3, 6, 5, 2, 1, true),
-      () => generateChainFloor(4, 3, 7, 6, 3, 2, true),
-      () => generateChainFloor(5, 3, 7, 6, 3, 2, true),
-      () => generateChainFloor(6, 3, 7, 6, 3, 2, true),
-      () => generateChainFloor(7, 3, 7, 6, 3, 2, true),
-      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
-      () => generateChainFloor(9, 3, 8, 7, 3, 2),
-      () => generateChainFloor(10, 3, 8, 7, 3, 2),
-      () => generateChainFloor(11, 3, 8, 7, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter),
-#else
-      () => generateSingleRoomFloor(1, 9, 7, 1, 1),
-      () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(3, 9, 7, 1, 1),
-      () => generateSingleRoomFloor(4, 9, 7, 2, 1, true, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(5, 9, 7, 2, 1),
-      () => generateSingleRoomFloor(6, 9, 7, 2, 1),
-      () => generateSingleRoomFloor(7, 9, 7, 2, 1),
-      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
-      () => generateSingleRoomFloor(9, 10, 7, 3, 2),
-      () => generateSingleRoomFloor(10, 10, 7, 3, 2),
-      () => generateSingleRoomFloor(11, 10, 7, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter),
-#endif
-      () => generateBlobBossFloor(12),
-
-      // midgame
-      () => generateSingleRoomFloor(13, 11, 8, 2, 1),
-      () => generateSingleRoomFloor(14, 11, 8, 2, 1),
-      () => generateSingleRoomFloor(15, 11, 8, 2, 1),
-      () => generateRewardFloor(16, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
-      () => generateSingleRoomFloor(17, 12, 8, 3, 2),
-      () => generateSingleRoomFloor(18, 12, 8, 3, 2),
-      () => generateSingleRoomFloor(19, 12, 8, 4, 3, true),
-      () => generateSingleRoomFloor(20, 12, 8, 5, 2),
-      () => generateSingleRoomFloor(21, 12, 8, 6, 3),
-      () => generateSingleRoomFloor(22, 12, 8, 7, 4, true, null, Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
-      () => generateFungalColonyBossFloor(23),
-      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater),
-
-      // endgame
-      () => generateSingleRoomFloor(25, 12, 8, 2, 2),
-      () => generateSingleRoomFloor(26, 12, 8, 2, 2),
-      () => generateSingleRoomFloor(27, 13, 9, 3, 3, false, null, Encounters.AddWater),
-      () => generateSingleRoomFloor(28, 13, 9, 4, 3, false, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls2 }),
-      () => generateSingleRoomFloor(29, 13, 9, 5, 3),
-      () => generateSingleRoomFloor(30, 13, 9, 6, 3),
-      () => generateSingleRoomFloor(31, 14, 9, 7, 4),
-      () => generateRewardFloor(32, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
-      () => generateSingleRoomFloor(33, 14, 9, 8, 5),
-      () => generateSingleRoomFloor(34, 14, 9, 9, 6),
-      () => generateSingleRoomFloor(35, 14, 9, 10, 7),
-      () => generateEndBossFloor(36),
-      () => generateEndFloor(37),
-    };
-  }
+  protected abstract void InitFloorGenerators(); 
 
   internal HomeFloor generateHomeFloor() {
     EncounterGroup = earlyGame;
@@ -114,19 +54,15 @@ public class FloorGenerator {
     return floor;
   }
 
+  protected abstract EncounterGroup GetEncounterGroup(int depth);
+
   public Floor generateCaveFloor(int depth) {
     /// The generators rely on the following state:
     /// (1) encounter group
     /// (2) MyRandom seed
 
     /// configure the EncounterGroup
-    if (depth <= 12) {
-      EncounterGroup = earlyGame;
-    } else if (depth <= 24) {
-      EncounterGroup = everything;
-    } else {
-      EncounterGroup = midGame;
-    }
+    EncounterGroup = GetEncounterGroup(depth);
 
     /// set the seed
     Debug.Log("Depth " + depth + " seed " + floorSeeds[depth].ToString("x"));
@@ -256,6 +192,14 @@ public class FloorGenerator {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
       }
     }
+  }
+
+  public static FloorGenerator Create(List<int> floorSeeds) {
+#if experimental_chainfloors
+    return new FloorGeneratorChainFloors(floorSeeds);
+#else
+    return new FloorGenerator200Start(floorSeeds);
+#endif
   }
 
   public Floor generateEndFloor(int depth) {

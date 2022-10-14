@@ -32,7 +32,8 @@ public class GameModel {
       return _turnManager;
     }
   }
-  public Floor currentFloor => player.floor;
+  // if the player's dead, they probably died in the cave
+  public Floor currentFloor => player.floor ?? cave;
 
   [field:NonSerialized] /// Controller only
   public event Action<Floor, Floor> OnPlayerChangeFloor;
@@ -136,7 +137,7 @@ public class GameModel {
     for (int i = 0; i < 37; i++) {
       floorSeeds.Add(MyRandom.Next());
     }
-    generator = new FloorGenerator(floorSeeds);
+    generator = FloorGenerator.Create(floorSeeds);
     home = generator.generateHomeFloor();
 #if experimental_actionpoints
     // HACK have an empty cave floor at depth 0 so when you go down
@@ -158,7 +159,7 @@ public class GameModel {
     for (int i = 0; i < 37; i++) {
       floorSeeds.Add(MyRandom.Next());
     }
-    generator = new FloorGenerator(floorSeeds);
+    generator = new FloorGenerator200Start(floorSeeds);
     home = new TutorialFloor();
     home.Put(player);
   }

@@ -7,7 +7,7 @@ using UnityEngine;
 [ObjectInfo(description: "Leaves a trail of Corruption that spreads across the map.")]
 public class CorruptedEzra : Boss, IBodyMoveHandler {
   public CorruptedEzra(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 100;
+    hp = baseMaxHp = 72;
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
@@ -88,7 +88,7 @@ public class Corruption : Grass, ISteppable, IDeathHandler, IActorEnterHandler {
   }
 
   public float Step() {
-    foreach (var tile in floor.GetCardinalNeighbors(pos).Where(t => t is Ground).ToList()) {
+    foreach (var tile in floor.GetCardinalNeighbors(pos).Where(t => t is Ground && t.grass == null).ToList()) {
       floor.Put(new Corruption(tile.pos));
     }
     KillSelf();

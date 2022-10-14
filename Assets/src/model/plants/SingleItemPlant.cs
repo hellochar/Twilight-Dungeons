@@ -80,7 +80,7 @@ namespace SingleItemPlant {
       );
     }
 
-    int waterCost = 50;
+    int waterCost = 45;
 
     private void Plant(Soil soil) {
       var player = GameModel.main.player;
@@ -97,13 +97,13 @@ namespace SingleItemPlant {
   }
 
   [Serializable]
-  public class CustomEncounterGroupShared : EncounterGroup {
+  public class CustomEncounterGroupShared : EncounterGroupShared {
     public CustomEncounterGroupShared() : base() {
       var allItemTypes = AppDomain.CurrentDomain.GetAssemblies()
       .SelectMany(a => a.GetTypes())
       .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(Item)) && t.GetConstructor(new Type[0]) != null);
       Plants.Clear();
-      Rewards.Clear();
+      // Rewards.Clear();
 
       foreach (var type in allItemTypes) {
         Plants.Add(1, (Floor floor, Room room) => {

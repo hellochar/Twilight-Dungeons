@@ -61,15 +61,22 @@ public class ClumpedLungStatus : StackingStatus, IFloorChangeHandler {
     Remove();
   }
 
+  public int numToKill = 
+#if experimental_chainfloors
+    50;
+#else
+    20;
+#endif
+
   public override bool Consume(Status otherParam) {
     var baseRetVal = base.Consume(otherParam);
-    if (stacks >= 20) {
+    if (stacks >= numToKill) {
       actor.KillSelf();
     }
     return baseRetVal;
   }
 
   public override string Info() {
-    return "At 20 stacks, you die.";
+    return $"At {numToKill} stacks, you die.";
   }
 }

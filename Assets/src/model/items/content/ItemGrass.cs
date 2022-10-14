@@ -38,10 +38,11 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
     return (other as ItemGrass).grassType == grassType;
   }
 
-  bool groundTypeRequirement(Tile t) =>
-     grassType == typeof(SoftMoss) ?
-     (t is Ground) :
-     (t is Soil);
+  public static bool groundTypeRequirement(Tile t) =>
+    t is Ground && (t.floor.GetAdjacentTiles(t.pos).Where(t => t.CanBeOccupied()).Count() >= 9);
+    //  grassType == typeof(SoftMoss) ?
+    //  (t is Ground) :
+    //  (t is Soil);
 
   public void PerformTargettedAction(Player player, Entity target) {
     var floor = target.floor;

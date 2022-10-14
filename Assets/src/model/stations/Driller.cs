@@ -17,7 +17,8 @@ internal class Driller : Station, IDaySteppable {
     var nearbyWall = Util.RandomPick(NearbyWalls());
     if (nearbyWall != null) {
       floor.Put(new Ground(nearbyWall.pos));
-    } else {
+    }
+    if (!isActive) {
       // we're done
       KillSelf();
     }

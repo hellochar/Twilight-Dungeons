@@ -913,6 +913,12 @@ public class Encounters {
       floor.Put(new ItemOnGround(tile.pos, new ItemSoil()));
     }
   }
+  public static void AddCrafting(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new CraftingStation(new Vector2Int())).RequireSpace()));
+    }
+  }
 
 
   private static void RewardItemImpl(Floor floor, Room room, Item item) {

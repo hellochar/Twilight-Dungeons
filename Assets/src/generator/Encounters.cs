@@ -31,6 +31,9 @@ public class Encounters {
       (2, 2),
       (3, 3)
     );
+#if experimental_chainfloors
+    num = 1;
+#endif
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Jackal(tile.pos));
     }
@@ -88,6 +91,9 @@ public class Encounters {
       (1, 1),
       (2, 2)
     );
+#if experimental_chainfloors
+    num = 1;
+#endif
     tiles.Shuffle();
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Octopus(tile.pos));
@@ -119,6 +125,9 @@ public class Encounters {
       (1, 2),
       (2, 3)
     );
+#if experimental_chainfloors
+    numBlobs = 1;
+#endif
     foreach (var tile in tiles.Take(numBlobs)) {
       floor.Put(new Blob(tile.pos));
     }
@@ -132,6 +141,9 @@ public class Encounters {
       (2, 2),
       (2, 3)
     );
+#if experimental_chainfloors
+    num = 1;
+#endif
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Snail(tile.pos));
     }
@@ -173,6 +185,9 @@ public class Encounters {
       (4, 4), // 16 - 19
       (4, 4)  // 20 - 23
     );
+#if experimental_chainfloors
+    num = 1;
+#endif
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Spider(tile.pos));
     }
@@ -187,6 +202,9 @@ public class Encounters {
       (1, 1), // 20 - 23
       (2, 2) // 24+
     );
+#if experimental_chainfloors
+    num = 1;
+#endif
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Scorpion(tile.pos));
     }
@@ -196,6 +214,9 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = floor.depth < 24 ? 1 : MyRandom.Range(2, 2);
+#if experimental_chainfloors
+    num = 1;
+#endif
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Golem(tile.pos));
     }
@@ -211,7 +232,11 @@ public class Encounters {
   public static void AddParasite(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    foreach (var tile in tiles.Take(3)) {
+    var num = 3;
+#if experimental_chainfloors
+    num = 1;
+#endif
+    foreach (var tile in tiles.Take(num)) {
       floor.Put(new Parasite(tile.pos));
     }
   }
@@ -283,6 +308,9 @@ public class Encounters {
         (2, 2), // 28-31
         (2, 3)  // 32-35
       );
+#if experimental_chainfloors
+      num = 1;
+  #endif
       foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => t.CanBeOccupied()).Take(num)) {
         floor.Put(new Hopper(tile.pos));
       }

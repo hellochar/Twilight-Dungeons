@@ -490,7 +490,10 @@ public abstract class FloorGenerator {
   }
 
   private Floor tryGenerateChainRoomFloor(int depth, int width, int height, int numChains = 3, bool defaultEncounters = true) {
-    int maxHeight = height + 1;
+    int heightFor(int i) {
+      return height + (i >= 2 ? 1 : 0);
+    }
+    int maxHeight = heightFor(numChains - 1);
     // int maxHeight = height;
 
     var rooms = new List<Room>();
@@ -498,7 +501,7 @@ public abstract class FloorGenerator {
     var x = 1;
     for(int i = 0; i < numChains; i++) {
       var thisWidth = width + i;
-      var thisHeight = height + (i >= 2 ? 1 : 0);
+      var thisHeight = heightFor(i);
 
       var min = new Vector2Int(x, (maxHeight + 2 - thisHeight) / 2);
       var max = min + new Vector2Int(thisWidth - 1, thisHeight - 1);

@@ -780,7 +780,7 @@ public class Encounters {
       Debug.Log("No place to spawn Redleaf");
       return;
     }
-    floor.Put(new Redleaf(tile.pos));
+    floor.Put(new Redpod(tile.pos));
   }
 
   // public static void AddSoftMoss(Floor floor, Room room) {

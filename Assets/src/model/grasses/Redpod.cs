@@ -2,15 +2,15 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("redleaf", "Plant at home to heal you 1 HP per floor.")]
-public class Redleaf : Grass, IDaySteppable, IActorEnterHandler {
-  public Redleaf(Vector2Int pos) : base(pos) {
+[ObjectInfo("Astoria", "Plant at home to heal you 1 HP per floor.")]
+public class Redpod : Grass, IDaySteppable, IActorEnterHandler {
+  public Redpod(Vector2Int pos) : base(pos) {
   }
 
   public void HandleActorEnter(Actor who) {
     if (who is Player p) {
       // BecomeItemInInventory(new ItemGrass(GetType(), 1), p);
-      BecomeItemInInventory(new ItemPlaceableEntity(new Redleaf(new Vector2Int())), p);
+      BecomeItemInInventory(new ItemPlaceableEntity(new Redpod(new Vector2Int())), p);
     }
   }
 

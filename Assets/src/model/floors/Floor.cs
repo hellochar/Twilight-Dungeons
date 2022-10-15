@@ -42,21 +42,25 @@ public class Floor {
   [NonSerialized] /// not used beyond generator
 #endif
   internal List<Room> rooms;
-  [NonSerialized] /// not used beyond generator
-  internal Room upstairsRoom;
+  // [NonSerialized] /// not used beyond generator
+  internal Room startRoom => startTile?.room;
   [NonSerialized] /// not used beyond generator
   internal Room downstairsRoom;
 
-  public Upstairs upstairs {
-    get {
-      foreach (Tile t in this.tiles) {
-        if (t is Upstairs) {
-          return (Upstairs)t;
-        }
-      }
-      return null;
-    }
-  }
+  public Vector2Int startPos;
+  public Tile startTile => this.tiles[startPos];
+
+  // public Upstairs upstairs {
+  //   get {
+  //     foreach (Tile t in this.tiles) {
+  //       if (t is Upstairs) {
+  //         return (Upstairs)t;
+  //       }
+  //     }
+  //     return null;
+  //   }
+  // }
+
   public Downstairs downstairs {
     get {
       foreach (Tile t in this.tiles) {
@@ -85,6 +89,7 @@ public class Floor {
     this.steppableEntities = new List<ISteppable>();
     pathfindingManager = new PathfindingManager(this);
     availableToPickGrass = depth > 0;
+    startPos = this.center;
   }
 
   public void BodyPlacementBehavior(Body body) {
@@ -419,8 +424,9 @@ public class Floor {
     return pos.x >= 0 && pos.y >= 0 && pos.x < width && pos.y < height;
   }
 
-  public void PlaceUpstairs(Vector2Int pos, bool addHardGround = true) {
-    Put(new Upstairs(pos));
+  public void SetStartPos(Vector2Int pos, bool addHardGround = true) {
+    // Put(new Upstairs(pos));
+    startPos = pos;
     // surround with Hard Ground
     if (addHardGround) {
       var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();

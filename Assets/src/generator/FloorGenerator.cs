@@ -186,7 +186,7 @@ public abstract class FloorGenerator {
     /// add a signpost onto the floor
     if (Tips.tipMap.ContainsKey(floor.depth)) {
       /// put it near the upstairs
-      var signpostSearchStartPos = floor.upstairs?.landing ?? floor.root.center;
+      var signpostSearchStartPos = floor.startPos;
       var signpostPos = floor.BreadthFirstSearch(signpostSearchStartPos, (tile) => true).Skip(5).Where(t => t is Ground && t.CanBeOccupied() && t.grass == null).FirstOrDefault();
       if (signpostPos != null) {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
@@ -230,7 +230,7 @@ public abstract class FloorGenerator {
       }
     }
 
-    floor.PlaceUpstairs(new Vector2Int(floor.width / 2 - 1, 1), false);
+    floor.SetStartPos(new Vector2Int(floor.width / 2 - 1, 1), false);
 
     Room roomBot = new Room(Vector2Int.one, new Vector2Int(floor.width - 2, 11));
     for (var i = 0; i < 1; i++) {
@@ -272,7 +272,7 @@ public abstract class FloorGenerator {
 
     var room0 = new Room(floor);
 
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
+    floor.SetStartPos(new Vector2Int(room0.min.x, room0.max.y));
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
     Encounters.AddOneWater(floor, room0);
@@ -349,6 +349,7 @@ public abstract class FloorGenerator {
     floor.root = root;
     floor.AddWallsOutsideRoot();
 
+    floor.startPos = new Vector2Int(root.min.x, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
     Encounters.AddWater(floor, root);
     // Encounters.OneAstoria(floor, root);
@@ -404,7 +405,7 @@ public abstract class FloorGenerator {
 
     var room0 = new Room(floor);
 
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
+    floor.SetStartPos(new Vector2Int(room0.min.x, room0.max.y));
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
     // Encounters.PlaceFancyGround(floor, room0);
@@ -539,7 +540,7 @@ public abstract class FloorGenerator {
       }
       floor.PlaceDownstairs(room.max - Vector2Int.one);
       if (i == 0) {
-        floor.upstairsRoom = room;
+        // floor.startRoom = room;
       } else if (i == numChains - 1) {
         floor.downstairsRoom = room;
       }
@@ -547,7 +548,7 @@ public abstract class FloorGenerator {
 
     FloorUtils.NaturalizeEdges(floor);
 
-    floor.PlaceUpstairs(new Vector2Int(floor.upstairsRoom.min.x, floor.upstairsRoom.center.y));
+    floor.SetStartPos(new Vector2Int(rooms[0].min.x, rooms[0].center.y));
 
     floor.root = floor.rooms[0];
     return floor;
@@ -619,12 +620,12 @@ public abstract class FloorGenerator {
       EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
     }
 
-    floor.PlaceUpstairs(new Vector2Int(room0.min.x - 1, floor.height / 2));
+    floor.SetStartPos(new Vector2Int(room0.min.x - 1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(room0.max.x + 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
-    floor.upstairsRoom = room0;
+    // floor.startRoom = room0;
     floor.downstairsRoom = room0;
 
     return floor;
@@ -650,12 +651,12 @@ public abstract class FloorGenerator {
     floor.Put(new Wall(room0.center + new Vector2Int(-2, -2)));
     floor.Put(new Wall(room0.center + new Vector2Int(-2, 2)));
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    floor.SetStartPos(new Vector2Int(1, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
-    floor.upstairsRoom = room0;
+    // floor.startRoom = room0;
     floor.downstairsRoom = room0;
 
     // add boss
@@ -704,12 +705,12 @@ public abstract class FloorGenerator {
 
     // block entrance
     // floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
-    floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
+    floor.SetStartPos(new Vector2Int(0, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
-    floor.upstairsRoom = room0;
+    // floor.startRoom = room0;
     floor.downstairsRoom = room0;
 
 #if experimental_grassesonbossfloor
@@ -738,12 +739,12 @@ public abstract class FloorGenerator {
     Room room0 = new Room(floor);
 
     floor.Put(new CorruptedEzra(room0.center));
-    floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
+    floor.SetStartPos(new Vector2Int(0, floor.height / 2));
     floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
-    floor.upstairsRoom = room0;
+    // floor.startRoom = room0;
     floor.downstairsRoom = room0;
 
     FloorUtils.TidyUpAroundStairs(floor);
@@ -759,13 +760,13 @@ public abstract class FloorGenerator {
     ensureConnectedness(floor);
 
     var intermediateRooms = floor.rooms
-      .Where((room) => room != floor.upstairsRoom && room != floor.downstairsRoom);
+      .Where((room) => room != floor.startRoom && room != floor.downstairsRoom);
 
     Room rewardRoom = null;
     if (hasReward) {
       // the non-downstairs terminal room farthest away from the upstairs according to pathfinding
       rewardRoom = intermediateRooms
-        .OrderByDescending((room) => floor.FindPath(floor.upstairs.pos, room.center).Count)
+        .OrderByDescending((room) => floor.FindPath(floor.startTile.pos, room.center).Count)
         .First();
 
       Encounters.PlaceFancyGround(floor, rewardRoom);
@@ -784,7 +785,7 @@ public abstract class FloorGenerator {
     }
 
     foreach (var room in floor.rooms) {
-      if (room != floor.upstairsRoom && room != rewardRoom) {
+      if (room != floor.startRoom && room != rewardRoom) {
         // spawn a random encounter
         var encounter = EncounterGroup.Mobs.GetRandomAndDiscount();
         encounter(floor, room);
@@ -820,7 +821,7 @@ public abstract class FloorGenerator {
       .Where(t => t.BasePathfindingWeight() != 0)
     );
     
-    var mainland = makeGroup(floor.upstairs, ref walkableTiles);
+    var mainland = makeGroup(floor.startTile, ref walkableTiles);
     int guard = 0;
     while (walkableTiles.Any() && (guard++ < 99)) {
       var island = makeGroup(walkableTiles.First(), ref walkableTiles);
@@ -891,7 +892,7 @@ public abstract class FloorGenerator {
     Room upstairsRoom = rooms.First();
     // 1-px padding from the top-left of the room
     Vector2Int upstairsPos = new Vector2Int(upstairsRoom.min.x + 1, upstairsRoom.max.y - 1);
-    floor.PlaceUpstairs(upstairsPos);
+    floor.SetStartPos(upstairsPos);
 
     Room downstairsRoom = rooms.Last();
     // 1-px padding from the bottom-right of the room
@@ -900,7 +901,7 @@ public abstract class FloorGenerator {
 
     floor.root = root;
     floor.rooms = rooms;
-    floor.upstairsRoom = upstairsRoom;
+    // floor.startRoom = upstairsRoom;
     floor.downstairsRoom = downstairsRoom;
 
     // fill each room with floor
@@ -959,7 +960,7 @@ public abstract class FloorGenerator {
   }
 
   public static bool AreStairsConnected(Floor floor) {
-    var path = floor.FindPath(floor.downstairs.pos, floor.upstairs.pos);
+    var path = floor.FindPath(floor.downstairs.pos, floor.startTile.pos);
     return path.Any();
   }
 }

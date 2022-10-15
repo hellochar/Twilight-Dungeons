@@ -208,33 +208,33 @@ public class Chasm : Tile {
   }
 }
 
-[Serializable]
-[ObjectInfo(description: "Go back home.")]
-public class Upstairs : Tile, IActorEnterHandler {
-  /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
-  public Vector2Int landing => pos + Vector2Int.right;
-  public Upstairs(Vector2Int pos) : base(pos) {}
+// [Serializable]
+// [ObjectInfo(description: "Go back home.")]
+// public class Upstairs : Tile, IActorEnterHandler {
+//   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
+//   public Vector2Int landing => pos + Vector2Int.right;
+//   public Upstairs(Vector2Int pos) : base(pos) {}
 
-  protected override void HandleEnterFloor() {
-    base.HandleEnterFloor();
-    grass?.Kill(this);
-  }
+//   protected override void HandleEnterFloor() {
+//     base.HandleEnterFloor();
+//     grass?.Kill(this);
+//   }
 
-  public void TryGoHome() {
-    if (floor.EnemiesLeft() == 0) {
-      Serializer.SaveMainToCheckpoint();
-      GameModel.main.PutPlayerAt(0);
-    } else {
-      GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
-    }
-  }
+//   public void TryGoHome() {
+//     if (floor.EnemiesLeft() == 0) {
+//       Serializer.SaveMainToCheckpoint();
+//       GameModel.main.PutPlayerAt(0);
+//     } else {
+//       GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
+//     }
+//   }
 
-  public void HandleActorEnter(Actor who) {
-    if (who is Player) {
-      GameModel.main.EnqueueEvent(TryGoHome);
-    }
-  }
-}
+//   public void HandleActorEnter(Actor who) {
+//     if (who is Player) {
+//       GameModel.main.EnqueueEvent(TryGoHome);
+//     }
+//   }
+// }
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]

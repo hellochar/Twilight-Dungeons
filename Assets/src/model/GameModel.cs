@@ -223,7 +223,7 @@ public class GameModel {
       if (depth == 0) {
         pos = newFloor.downstairs.landing;
       } else {
-        pos = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height / 2);
+        pos = newFloor.startPos;
       }
     }
     oldFloor.RecordLastStepTime(this.time);

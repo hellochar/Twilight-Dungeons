@@ -1056,7 +1056,7 @@ public class Encounters {
     var line = floor
       .EnumerateLine(start, end)
       .Select(p => floor.tiles[p])
-      .Where(t => t.CanBeOccupied() && !(t is Downstairs || t is Upstairs)).ToList();
+      .Where(t => t.CanBeOccupied() && !(t is Downstairs || t == floor.startTile)).ToList();
     // remove the middle
     var openingSize = Random.Range(2, line.Count / 2 + 1);
     var openingStart = Random.Range(0, line.Count - 1 - openingSize + 1);

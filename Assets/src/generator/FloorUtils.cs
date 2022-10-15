@@ -10,16 +10,16 @@ public static class FloorUtils {
   /// Prevent these negative gameplay experiences.
   public static void TidyUpAroundStairs(Floor floor) {
     /// sometimes the Wall generators may put Walls right in the landing spot. Prevent that.
-    if (floor.upstairs != null && !floor.tiles[floor.upstairs.landing].CanBeOccupied()) {
-      floor.Put(new HardGround(floor.upstairs.landing));
+    if (floor.startTile != null && !floor.tiles[floor.startPos].CanBeOccupied()) {
+      floor.Put(new HardGround(floor.startPos));
     }
     if (floor.downstairs != null && !floor.tiles[floor.downstairs.landing].CanBeOccupied()) {
       floor.Put(new HardGround(floor.downstairs.landing));
     }
 
     // Clear hanging vines and move immediately adjacent enemies
-    if (floor.upstairs != null) {
-      foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
+    if (floor.startTile != null) {
+      foreach (var tile in floor.GetAdjacentTiles(floor.startTile.pos)) {
         if (tile.grass is HangingVines) {
           // do NOT call Kill(); we don't want the vine whip to drop.
           floor.Remove(tile.grass);
@@ -50,7 +50,7 @@ public static class FloorUtils {
   }
 
   internal static List<Tile> EmptyTilesInRoom(Floor floor, Room room) {
-    return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs || t is Upstairs)).ToList();
+    return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs)).ToList();
   }
 
   internal static List<Tile> TilesFromCenter(Floor floor, Room room) {

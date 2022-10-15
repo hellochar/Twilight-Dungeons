@@ -6,5 +6,5 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class UpstairsController : TileController {
-  public Upstairs upstairs => (Upstairs) tile;
+  // public Upstairs upstairs => (Upstairs) tile;
 }

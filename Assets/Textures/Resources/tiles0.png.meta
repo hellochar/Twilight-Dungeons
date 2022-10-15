@@ -17,6 +17,9 @@ TextureImporter:
   - first:
       213: -7606177257534976177
     second: fancy-ground
+  - first:
+      213: 163147654842516210
+    second: teleporter0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -222,7 +225,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -230,6 +233,27 @@ TextureImporter:
       bones: []
       spriteID: f4f09f1651e617690800000000000000
       internalID: -7606177257534976177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: teleporter0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f283dc7ded934200800000000000000
+      internalID: 163147654842516210
       vertices: []
       indices: 
       edges: []

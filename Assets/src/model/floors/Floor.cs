@@ -224,8 +224,10 @@ public class Floor {
 
     if (entity is AIActor a && a.faction == Faction.Enemy && EnemiesLeft() == 0) {
       // create a teleporter
-      var freeSpot =
-        Util.RandomPick(FloorUtils.EmptyTilesInRoom(this, GameModel.main.player.room));
+      var freeSpot = FloorUtils.TilesFromCenter(this, GameModel.main.player.room).FirstOrDefault();
+      if (freeSpot == null) {
+        freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
+      }
       Put(new Teleporter(freeSpot.pos));
     }
   }

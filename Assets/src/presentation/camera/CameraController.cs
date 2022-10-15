@@ -33,16 +33,20 @@ public class CameraController : MonoBehaviour {
 #if experimental_survivalhomefloor
       boundCameraToFloor.enabled = false;
       centerCameraOnActiveRoom.enabled = true;
+      cameraFollowEntity.enabled = true;
+      cameraZoom.enabled = true;
 #elif experimental_chainfloors
       var isHome = floor == GameModel.main.home;
       boundCameraToFloor.enabled = isHome;
       centerCameraOnActiveRoom.enabled = !isHome;
+      cameraFollowEntity.enabled = isHome;
+      cameraZoom.enabled = isHome;
 #else
       boundCameraToFloor.enabled = true;
       centerCameraOnActiveRoom.enabled = false;
-#endif
       cameraFollowEntity.enabled = true;
       cameraZoom.enabled = true;
+#endif
     }
   }
 }

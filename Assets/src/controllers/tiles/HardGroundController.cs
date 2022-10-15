@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class HardGroundController : TileController , IOnTopActionHandler {
+public class HardGroundController : TileController
+// , IOnTopActionHandler
+{
 
-  public string OnTopActionName => "Soften";
+  // public string OnTopActionName => "Soften";
 
-  public void HandleOnTopAction() {
-    ((HardGround)tile).Soften();
-  }
+  // public void HandleOnTopAction() {
+  //   ((HardGround)tile).Soften();
+  // }
 }

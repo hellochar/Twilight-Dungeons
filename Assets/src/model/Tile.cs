@@ -257,7 +257,7 @@ public class Downstairs : Tile, IActorEnterHandler {
     }
   }
 
-  public void HandleActorEnter(Actor who) {
+  public virtual void HandleActorEnter(Actor who) {
     if (who is Player) {
       GameModel.main.EnqueueEvent(TryGoDownstairs);
     }
@@ -268,6 +268,10 @@ public class Downstairs : Tile, IActorEnterHandler {
 [ObjectInfo(description: "A way back home!")]
 public class Teleporter : Downstairs {
   public Teleporter(Vector2Int pos) : base(pos) {
+  }
+
+  public override void HandleActorEnter(Actor who) {
+    // no op
   }
 }
 

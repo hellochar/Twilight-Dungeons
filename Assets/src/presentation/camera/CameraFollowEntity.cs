@@ -19,19 +19,23 @@ public class CameraFollowEntity : MonoBehaviour {
     //   }
     // }
 
+    transform.position = LerpTowardsPosition(transform.position, target.transform.position, followSpeed, jumpThreshold);
+  }
+
+  public static Vector3 LerpTowardsPosition(Vector3 position, Vector3 target, float followSpeed, float jumpThreshold) {
     // jump immediately if too far away
-    if (Vector2.Distance(Util.getXY(this.transform.position), Util.getXY(this.target.transform.position)) > jumpThreshold) {
-      this.transform.position = Util.withZ(Util.getXY(this.target.transform.position), this.transform.position.z);
+    if (Vector2.Distance(Util.getXY(position), Util.getXY(target)) > jumpThreshold) {
+      return Util.withZ(Util.getXY(target), position.z);
     } else {
       // lerp towards target
-      this.transform.position = Util.withZ(
+      return Util.withZ(
         Vector2.Lerp(
-          Util.getXY(this.transform.position),
-          Util.getXY(this.target.transform.position),
+          Util.getXY(position),
+          Util.getXY(target),
           // followSpeed / 60f
-          this.followSpeed * Time.deltaTime
+          followSpeed * Time.deltaTime
         ),
-      this.transform.position.z);
+      position.z);
     }
   }
 }

@@ -61,7 +61,7 @@ internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
   }
 
   public void HandleStatusAdded(Status status) {
-    if (status is SporedStatus) {
+    if (status.isDebuff) {
       status.actor.Heal(1);
       status.Remove();
       this.ReduceDurability();
@@ -74,7 +74,7 @@ internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
 
   public int maxDurability => 3;
 
-  internal override string GetStats() => "If you'd get the Spored Status, prevent it and heal 1 HP instead.";
+  internal override string GetStats() => "If you'd get a debuff, prevent it and heal 1 HP instead.";
 }
 
 [Serializable]

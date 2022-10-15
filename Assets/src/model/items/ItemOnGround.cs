@@ -39,11 +39,11 @@ public class ItemOnGround : Entity, IDaySteppable {
   }
 
   public virtual void StepDay() {
-    if (!(item is ItemMulch) && age > 0) {
-      var floor = this.floor;
-      KillSelf();
-      floor.Put(new ItemOnGround(pos, new ItemMulch(1)));
-    }
+    // if (!(item is ItemMulch) && age > 0) {
+    //   var floor = this.floor;
+    //   KillSelf();
+    //   floor.Put(new ItemOnGround(pos, new ItemMulch(1)));
+    // }
   }
 
   // public void HandleActorEnter(Actor who) {

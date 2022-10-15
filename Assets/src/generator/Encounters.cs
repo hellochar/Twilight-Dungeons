@@ -800,13 +800,13 @@ public class Encounters {
   //   }
   // }
 
-  public static void AddPlatelets(Floor floor, Room room) {
-    var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t is Ground);
-    var num = 1;
-    foreach (var tile in tiles.Take(num)) {
-      floor.Put(new Platelet(tile.pos));
-    }
-  }
+  // public static void AddPlatelets(Floor floor, Room room) {
+  //   var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t is Ground);
+  //   var num = 1;
+  //   foreach (var tile in tiles.Take(num)) {
+  //     floor.Put(new Platelet(tile.pos));
+  //   }
+  // }
 
   public static void AddMushroom(Floor floor, Room room) {
     var livableTiles = floor.EnumerateRoomTiles(room).Where(Mushroom.CanOccupy);

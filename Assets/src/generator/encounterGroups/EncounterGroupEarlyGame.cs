@@ -21,7 +21,7 @@ public static class EncounterGroupEarlyGame {
         // { 1f, AddSoftMoss },
         { 1f, AddNubs },
         { 1f, AddRedleaf },
-        { 1f, AddPlatelets },
+        // { 1f, AddPlatelets },
         { 1f, AddLlaora },
         { 1f, AddGuardleaf },
         { 1f, AddBladegrass },

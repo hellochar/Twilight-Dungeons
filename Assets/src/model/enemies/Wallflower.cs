@@ -6,7 +6,7 @@ using UnityEngine;
 public class Wallflower : AIActor {
   public Wallflower(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 3;
+    hp = baseMaxHp = 2;
   }
 
   public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetCardinalNeighbors(t.pos).Any(n => n is Wall);

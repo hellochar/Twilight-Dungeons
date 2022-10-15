@@ -83,6 +83,8 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, AddJackalHide },
       { 1, AddGloopShoes },
       { 1, OneButterfly },
+      { 1f, AddNubs },
+      { 1f, AddRedleaf },
       // { 1, AddSoil },
       // { 1, AddCrafting },
     };

@@ -2,14 +2,15 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("redleaf", "Produces healing when planted at home.")]
+[ObjectInfo("redleaf", "Plant at home to heal you 1 HP per floor.")]
 public class Redleaf : Grass, IDaySteppable, IActorEnterHandler {
   public Redleaf(Vector2Int pos) : base(pos) {
   }
 
   public void HandleActorEnter(Actor who) {
     if (who is Player p) {
-      BecomeItemInInventory(new ItemGrass(GetType(), 1), p);
+      // BecomeItemInInventory(new ItemGrass(GetType(), 1), p);
+      BecomeItemInInventory(new ItemPlaceableEntity(new Redleaf(new Vector2Int())), p);
     }
   }
 
@@ -17,7 +18,7 @@ public class Redleaf : Grass, IDaySteppable, IActorEnterHandler {
     var player = GameModel.main.player;
     if (player.hp < player.maxHp) {
       player.Heal(1);
-      KillSelf();
+      // KillSelf();
     }
     // floor.Put(new ItemOnGround(pos, new ItemRedleaf(), pos));
   }

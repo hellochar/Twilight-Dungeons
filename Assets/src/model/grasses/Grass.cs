@@ -66,7 +66,7 @@ public class Grass : Entity {
   private void SpreadAutomatically() {
     var canOccupyMethod = GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static);
     bool canOccupy(Tile t) {
-      if (!ItemGrass.groundTypeRequirement(t)) {
+      if (!ItemGrass.groundTypeRequirement(t, GetType())) {
         return false;
       }
       if (canOccupyMethod != null) {

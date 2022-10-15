@@ -38,8 +38,9 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
     return (other as ItemGrass).grassType == grassType;
   }
 
-  public static bool groundTypeRequirement(Tile t) =>
-    t is Ground && (t.floor.GetAdjacentTiles(t.pos).Where(t => t.CanBeOccupied()).Count() >= 9);
+  public static bool groundTypeRequirement(Tile t, Type grassType) =>
+    ItemPlaceableEntity.StructureOccupiable(t, grassType);
+    // t is Ground && (t.floor.GetAdjacentTiles(t.pos).Where(t => t.CanBeOccupied()).Count() >= 9);
     //  grassType == typeof(SoftMoss) ?
     //  (t is Ground) :
     //  (t is Soil);
@@ -52,6 +53,6 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
   }
 
   public IEnumerable<Ground> Targets(Player player) {
-    return player.GetVisibleTiles().Where(tile => groundTypeRequirement(tile) && tile.CanBeOccupied() && tile.grass == null).Cast<Ground>();
+    return player.GetVisibleTiles().Where(tile => groundTypeRequirement(tile, grassType)).Cast<Ground>();
   }
 }

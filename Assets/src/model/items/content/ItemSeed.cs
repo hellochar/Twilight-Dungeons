@@ -86,8 +86,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
 #if experimental_actionpoints
       player.floor.tiles.Where(tile =>
         tile.floor.GetAdjacentTiles(tile.pos)
-          // null == we can't cluster Plants right next to each other
-          .Where(t => t is Soil && ItemPlaceableEntity.StructureOccupiable(t, null))
+          .Where(t => ItemPlaceableEntity.StructureOccupiable(t))
           .Count() >= 9
       ).Cast<Ground>();
 #else

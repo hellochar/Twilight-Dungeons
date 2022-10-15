@@ -23,15 +23,15 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   string ITargetedAction<Ground>.TargettedActionName => "Build";
   IEnumerable<Ground> ITargetedAction<Ground>.Targets(Player player) {
     var entityType = entity is GrowingEntity g ? g.inner.GetType() : entity.GetType();
-    var tiles = player.floor.tiles.Where(t => t is Ground && t.isExplored && StructureOccupiable(t, entityType)).Cast<Ground>();
+    var tiles = player.floor.tiles.Where(t => t is Ground && t.isExplored && StructureOccupiable(t)).Cast<Ground>();
     if (requiresSpace) {
-      tiles = tiles.Where(tile => tile.floor.GetAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t, entityType)).Count() >= 9);
+      tiles = tiles.Where(tile => tile.floor.GetAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t)).Count() >= 9);
     }
     return tiles;
   }
 
-  public static bool StructureOccupiable(Tile t, Type placingType) {
-    return t.CanBeOccupied() || t.body is Player || (t.body != null && t.body.GetType() == placingType);
+  public static bool StructureOccupiable(Tile t) {
+    return t.CanBeOccupied() || t.body is Player;
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {

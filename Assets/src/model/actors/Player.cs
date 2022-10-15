@@ -35,6 +35,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     if (actionPoints < num) {
       throw new CannotPerformActionException($"Need {num} Action Points!");
     }
+    if (floor.depth != 0) {
+      throw new CannotPerformActionException("Go home first!");
+    }
     actionPoints -= num;
   }
 #endif
@@ -68,8 +71,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     inventory = new Inventory(8);
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
-    inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())).RequireSpace());
-    inventory.AddItem(new ItemSoil());
+    // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())).RequireSpace());
+    // inventory.AddItem(new ItemSoil());
 #endif
 
     equipment = new Equipment(this);
@@ -86,13 +89,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public void StepDay() {
     var numDays = GameModel.main.day;
 #if experimental_actionpoints
-    maxActionPoints = 3;
-    // maxActionPoints = Mathf.Clamp(2 + numDays / 2, 3, 8);
-    var anyEnemies = GameModel.main.cave.bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Any();
-    if (!anyEnemies) {
-      maxActionPoints += 1;
-    }
-    var numHelpers = floor.bodies.Where(t => t is AIActor a && a.statuses.Has<CharmedStatus>()).Count();
+    // maxActionPoints = 3;
+    maxActionPoints = Mathf.Clamp(2 + numDays / 2, 3, 8);
+    // var anyEnemies = GameModel.main.cave.bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Any();
+    // if (!anyEnemies) {
+    //   maxActionPoints += 1;
+    // }
+    var numHelpers = floor.bodies.Where(t => t is AIActor a).Count();
     maxActionPoints += numHelpers;
     actionPoints = maxActionPoints;
 #endif

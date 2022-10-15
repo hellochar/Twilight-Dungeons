@@ -349,7 +349,7 @@ public abstract class FloorGenerator {
     floor.root = root;
     floor.AddWallsOutsideRoot();
 
-    floor.startPos = new Vector2Int(root.min.x, root.center.y);
+    floor.startPos = new Vector2Int(root.min.x + 1, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
     Encounters.AddWater(floor, root);
     // Encounters.OneAstoria(floor, root);

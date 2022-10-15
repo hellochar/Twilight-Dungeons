@@ -18,7 +18,7 @@ public static class EncounterGroupEarlyGame {
       Grasses = new EncounterBag {
         { 1f, AddSoftGrass },
         { 1f, AddBloodwort },
-        { 1f, AddSoftMoss },
+        // { 1f, AddSoftMoss },
         { 1f, AddNubs },
         { 1f, AddRedleaf },
         { 1f, AddPlatelets },

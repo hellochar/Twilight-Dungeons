@@ -783,22 +783,22 @@ public class Encounters {
     floor.Put(new Redleaf(tile.pos));
   }
 
-  public static void AddSoftMoss(Floor floor, Room room) {
-    var start = Util.RandomPick(
-      FloorUtils
-        .TilesSortedByCorners(floor, room)
-        .Where(t => t is Ground)
-        .Take(9)
-    );
-    var num = 2;
-    if (start == null) {
-      Debug.Log("No place to spawn SoftMoss");
-      return;
-    }
-    foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
-      floor.Put(new SoftMoss(tile.pos));
-    }
-  }
+  // public static void AddSoftMoss(Floor floor, Room room) {
+  //   var start = Util.RandomPick(
+  //     FloorUtils
+  //       .TilesSortedByCorners(floor, room)
+  //       .Where(t => t is Ground)
+  //       .Take(9)
+  //   );
+  //   var num = 2;
+  //   if (start == null) {
+  //     Debug.Log("No place to spawn SoftMoss");
+  //     return;
+  //   }
+  //   foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
+  //     floor.Put(new SoftMoss(tile.pos));
+  //   }
+  // }
 
   public static void AddPlatelets(Floor floor, Room room) {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t is Ground);

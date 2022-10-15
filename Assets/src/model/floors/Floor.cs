@@ -221,6 +221,13 @@ public class Floor {
 
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
+
+    if (entity is AIActor a && a.faction == Faction.Enemy && EnemiesLeft() == 0) {
+      // create a teleporter
+      var freeSpot =
+        Util.RandomPick(FloorUtils.EmptyTilesInRoom(this, GameModel.main.player.room));
+      Put(new Teleporter(freeSpot.pos));
+    }
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {
@@ -437,7 +444,11 @@ public class Floor {
   }
 
   public void PlaceDownstairs(Vector2Int pos, bool addHardGround = true) {
-    Put(new Downstairs(pos));
+    if (depth > 0) {
+      Put(new Teleporter(pos));
+    } else {
+      Put(new Downstairs(pos));
+    }
     // surround with Hard Ground
     if (addHardGround) {
       var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();

@@ -538,7 +538,7 @@ public abstract class FloorGenerator {
         // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
         // EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room);
       }
-      floor.PlaceDownstairs(room.max - Vector2Int.one);
+      // floor.PlaceDownstairs(room.max - Vector2Int.one);
       if (i == 0) {
         // floor.startRoom = room;
       } else if (i == numChains - 1) {

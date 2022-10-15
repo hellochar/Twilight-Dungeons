@@ -264,6 +264,13 @@ public class Downstairs : Tile, IActorEnterHandler {
   }
 }
 
+[Serializable]
+[ObjectInfo(description: "A way back home!")]
+public class Teleporter : Downstairs {
+  public Teleporter(Vector2Int pos) : base(pos) {
+  }
+}
+
 [ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]
 [Serializable]
 public class Water : Tile, IActorEnterHandler {

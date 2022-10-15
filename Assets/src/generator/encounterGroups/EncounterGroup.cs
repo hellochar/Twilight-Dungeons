@@ -84,6 +84,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, AddGloopShoes },
       { 1, OneButterfly },
       { 1, AddSoil },
+      { 1, AddCrafting },
     };
     Plants = new EncounterBag {
       { 1, MatureBerryBush },

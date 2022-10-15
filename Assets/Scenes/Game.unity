@@ -3306,10 +3306,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207118bb6298389458a1251c399540fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddingTop: 0
-  paddingRight: 0
+  paddingTop: 2
+  paddingRight: 1
   paddingBottom: 1
-  paddingLeft: 0
+  paddingLeft: 1
   minZoom: 3
 --- !u!1 &539203642
 GameObject:

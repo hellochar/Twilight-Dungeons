@@ -12,9 +12,9 @@ public class Slime : Destructible, IDeathHandler {
   public void HandleDeath(Entity source) {
     var inventory = new Inventory(new ItemSlime());
     inventory.TryDropAllItems(floor, pos);
-    if (MyRandom.value < 0.25f) {
-      GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
-    }
+    // if (MyRandom.value < 0.1f) {
+    //   GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
+    // }
     floor.Put(new WallTrigger(pos));
 #if experimental_retryondemand
     GameModel.main.EnqueueEvent(() => {
@@ -43,9 +43,11 @@ public class ItemSlime : Item, IStackable, IStuckToInventory {
   }
 
   public void PurifyFree(Player player) {
+    var water = 0;
     for(int i = 0; i < stacks; i++) {
-      player.water += MyRandom.Range(22, 33);
+      water += MyRandom.Range(13, 20);
     }
+    player.water += water;
     Destroy();
   }
 

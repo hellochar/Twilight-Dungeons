@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 111933
+    totalSpriteSurfaceArea: 117393
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -109,6 +109,7 @@ SpriteAtlas:
   - {fileID: 6863177282590538995, guid: e89875627aa2fdc46b4f878b9f6ee8b7, type: 3}
   - {fileID: 2963363428357665508, guid: e89875627aa2fdc46b4f878b9f6ee8b7, type: 3}
   - {fileID: 21300000, guid: 3c2060a2c70778f428cf0f512b064479, type: 3}
+  - {fileID: 21300000, guid: 9de532c2c9a1795439b4e2b69ceea1ff, type: 3}
   - {fileID: -2126246720042785711, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
   - {fileID: -174042169833062346, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
   - {fileID: 8958670535985375444, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
@@ -174,6 +175,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cae03ec69fc80534f9ddb93d5d508ac3, type: 3}
   - {fileID: 21300000, guid: 9ff2e8e64ae8c1d4c854e1a58d49835c, type: 3}
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
+  - {fileID: 4894206273632725685, guid: 4069c01781c4a1c46a0f5dfffcc2d5fa, type: 3}
   - {fileID: 2887890100549261210, guid: 4069c01781c4a1c46a0f5dfffcc2d5fa, type: 3}
   - {fileID: 21300000, guid: d7377627e72487e4ba0507dee22ed8c4, type: 3}
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
@@ -250,6 +252,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ebd81429ce1a6bf419267467a8fd6e7b, type: 3}
   - {fileID: 21300000, guid: 70a67e796667a6d4ab895dfe6b076e8e, type: 3}
   - {fileID: 21300000, guid: bf300789f15b9204f9f6138ca7ab5ecb, type: 3}
+  - {fileID: 1438498060667405789, guid: 3e77ba895a08fae4fabbebd19d53d08d, type: 3}
+  - {fileID: 1836480988546292557, guid: 3e77ba895a08fae4fabbebd19d53d08d, type: 3}
+  - {fileID: 4911186594709405831, guid: 3e77ba895a08fae4fabbebd19d53d08d, type: 3}
+  - {fileID: 3890854285223289294, guid: 3e77ba895a08fae4fabbebd19d53d08d, type: 3}
   - {fileID: 8991455535210373810, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
   - {fileID: -3278524096712110203, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
   - {fileID: -2892910820977171364, guid: 334dfa9942a478b42af429f39c199dc7, type: 3}
@@ -464,6 +470,7 @@ SpriteAtlas:
   - cheshire-weed_0
   - cheshire-weed-mature
   - bacillomyte
+  - pit
   - blood_0
   - blood_1
   - blood_2
@@ -529,7 +536,8 @@ SpriteAtlas:
   - player-dead
   - fungal-wall
   - Player
-  - Ground0_0
+  - mulch
+  - creature-food
   - composter
   - fruitingbody
   - blue-spore-explosion
@@ -605,6 +613,10 @@ SpriteAtlas:
   - pumpkin-helmet
   - witchs-shiv
   - recovering
+  - tiles-aboveground-ground2
+  - tiles-aboveground-ground1
+  - tiles-aboveground-ground0
+  - bigtree
   - snail_3
   - snail_2
   - snail_1

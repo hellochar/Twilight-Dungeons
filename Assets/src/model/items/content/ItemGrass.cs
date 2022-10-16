@@ -39,7 +39,8 @@ public class ItemGrass : Item, IConditionallyStackable, ITargetedAction<Ground> 
   }
 
   public static bool groundTypeRequirement(Tile t, Type grassType) =>
-    ItemPlaceableEntity.StructureOccupiable(t, grassType);
+    // ItemPlaceableEntity.StructureOccupiable(t, grassType);
+    ItemPlaceableEntity.HasSpaceForStructure(t, grassType);
     // t is Ground && (t.floor.GetAdjacentTiles(t.pos).Where(t => t.CanBeOccupied()).Count() >= 9);
     //  grassType == typeof(SoftMoss) ?
     //  (t is Ground) :

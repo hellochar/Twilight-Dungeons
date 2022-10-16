@@ -433,21 +433,24 @@ public abstract class FloorGenerator {
 
     List<Encounter> encounters = new List<Encounter>();
 
+    // this is essentially a poor man's "don't show the same content until all of it has been cycled through"
+    var reduceChance = 0.999f;
+
     // X mobs
     for (var i = 0; i < numMobs; i++) {
-      encounters.Add(EncounterGroup.Mobs.GetRandomWithoutAndDiscount(encounters));
+      encounters.Add(EncounterGroup.Mobs.GetRandomWithoutAndDiscount(encounters, reduceChance));
     }
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
-      encounters.Add(EncounterGroup.Grasses.GetRandomWithoutAndDiscount(encounters));
+      encounters.Add(EncounterGroup.Grasses.GetRandomWithoutAndDiscount(encounters, reduceChance));
     }
 
-    encounters.Add(EncounterGroup.Spice.GetRandomWithoutAndDiscount(encounters));
+    encounters.Add(EncounterGroup.Spice.GetRandom());
 
     Encounter rewardEncounter = null;
     if (reward) {
-      rewardEncounter = EncounterGroup.Rewards.GetRandomWithoutAndDiscount(encounters);
+      rewardEncounter = EncounterGroup.Rewards.GetRandomWithoutAndDiscount(encounters, reduceChance);
     }
     // encounters.AddRange(extraEncounters);
     // if (reward) {

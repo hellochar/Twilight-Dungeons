@@ -137,7 +137,12 @@ public class Floor {
   }
 
   public int EnemiesLeft() {
-    return Enemies().Count();
+    var enemyActors = Enemies();
+    var enemyGrasses = grasses
+      .Where(g => g.room == GameModel.main.player.room)
+      .Where(g => g is IEnemyGrass);
+    // return Enemies().Count();
+    return enemyActors.Count() + enemyGrasses.Count();
   }
 
   public IEnumerable<AIActor> Enemies() {
@@ -222,13 +227,17 @@ public class Floor {
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
 
-    if (entity is AIActor a && a.faction == Faction.Enemy && EnemiesLeft() == 0) {
-      // create a teleporter
-      var freeSpot = FloorUtils.TilesFromCenter(this, GameModel.main.player.room).FirstOrDefault();
-      if (freeSpot == null) {
-        freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
-      }
-      Put(new Teleporter(freeSpot.pos));
+    if (entity is AIActor a && a.faction == Faction.Enemy || entity is IEnemyGrass) {
+      GameModel.main.EnqueueEvent(() => {
+        if (EnemiesLeft() == 0) {
+          // create a teleporter
+          var freeSpot = FloorUtils.TilesFromCenter(this, GameModel.main.player.room).FirstOrDefault();
+          if (freeSpot == null) {
+            freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
+          }
+          Put(new Teleporter(freeSpot.pos));
+        }
+      });
     }
   }
 

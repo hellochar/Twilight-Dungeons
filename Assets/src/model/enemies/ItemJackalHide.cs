@@ -7,7 +7,9 @@ public class ItemJackalHide : EquippableItem, IDurable, IAttackDamageTakenModifi
 
   public int maxDurability => 4;
 
-  public ItemJackalHide() {}
+  public ItemJackalHide() {
+    durability = maxDurability;
+  }
 
   public int Modify(int input) {
     return input - 1;

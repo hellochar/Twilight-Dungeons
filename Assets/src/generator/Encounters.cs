@@ -760,7 +760,7 @@ public class Encounters {
         .Where(t => t is Ground)
         .Take(9)
     );
-    var num = 3;
+    var num = 1;
     if (start == null) {
       Debug.Log("No place to spawn Nubs");
       return;

@@ -31,12 +31,11 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   }
 
   public static bool StructureOccupiable(Tile t, Type grassType = null) {
-     return t is Ground && (t.CanBeOccupied() || t.body is Player) && (t.grass == null || t.GetType() == grassType);
+     return t is Ground && (t.CanBeOccupied() || t.body is Player) && (t.grass == null || t.grass.GetType() == grassType);
   }
 
   public static bool HasSpaceForStructure(Tile tile, Type grassType = null) {
-    return tile.grass.GetType() != grassType &&
-      (tile.floor.GetAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t, grassType)).Count() >= 9);
+    return (tile.floor.GetAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t, grassType)).Count() >= 9);
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {

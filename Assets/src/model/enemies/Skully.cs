@@ -40,7 +40,7 @@ public class Skully : AIActor, IActorKilledHandler {
 
 [System.Serializable]
 [ObjectInfo(description: "Regenerates into a Skully after three turns.\nStep on the Muck to remove it.")]
-public class Muck : Grass, ISteppable, IActorEnterHandler {
+public class Muck : Grass, ISteppable, IActorEnterHandler, IEnemyGrass {
   public Muck(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated + 1;
   }
@@ -66,4 +66,7 @@ public class Muck : Grass, ISteppable, IActorEnterHandler {
     }
     return 1;
   }
+}
+
+internal interface IEnemyGrass {
 }

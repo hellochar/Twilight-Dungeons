@@ -2,15 +2,15 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("nubs", "Plant at home to produce 8 water per floor.")]
+[ObjectInfo("nubs", description: "Plant at home to produce 8 water per floor.")]
 public class Nubs : Grass, IDaySteppable, IActorEnterHandler {
   public Nubs(Vector2Int pos) : base(pos) {
   }
 
   public void HandleActorEnter(Actor who) {
     if (who is Player p) {
-      // BecomeItemInInventory(new ItemGrass(GetType()), p);
-      BecomeItemInInventory(new ItemPlaceableEntity(new Nubs(new Vector2Int())), p);
+      BecomeItemInInventory(new ItemGrass(GetType()), p);
+      // BecomeItemInInventory(new ItemPlaceableEntity(new Nubs(new Vector2Int())), p);
     }
   }
 

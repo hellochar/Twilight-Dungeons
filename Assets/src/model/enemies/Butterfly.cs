@@ -6,6 +6,9 @@ using UnityEngine;
 [ObjectInfo("butterfly", flavorText: "Delicate and gentle, this Butterfly seems drawn to you, waiting for your command.")]
 public class ItemButterfly : Item, IUsable {
   public void Use(Actor a) {
+    if (GameModel.main.currentFloor.depth == 0) {
+      throw new CannotPerformActionException("Use in the caves!");
+    }
     var tile = Util.RandomPick(a.floor.GetAdjacentTiles(a.pos).Where((t) => t.CanBeOccupied()));
     if (tile != null) {
       a.floor.Put(new Butterfly(tile.pos));
@@ -17,7 +20,8 @@ public class ItemButterfly : Item, IUsable {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Every 5 turns, the Butterfly duplicates the Grass you're standing on to the four cardinally adjacent tiles.")]
+// [ObjectInfo("butterfly", description: "Every 5 turns, the Butterfly duplicates the Grass you're standing on to the four cardinally adjacent tiles.")]
+[ObjectInfo("butterfly", description: "Gives 1 AP.")]
 public class Butterfly : AIActor {
 
   private static float DUPLICATE_CD = 5;
@@ -27,7 +31,18 @@ public class Butterfly : AIActor {
     faction = Faction.Ally;
     hp = baseMaxHp = 1;
     ClearTasks();
-    statuses.Add(new CharmedStatus());
+    // statuses.Add(new CharmedStatus());
+    SetAI(new WaitAI(this));
+  }
+
+  protected override void HandleEnterFloor() {
+    base.HandleEnterFloor();
+    GameModel.main.player.maxActionPoints += 1;
+  }
+
+  protected override void HandleLeaveFloor() {
+    base.HandleLeaveFloor();
+    GameModel.main.player.maxActionPoints -= 1;
   }
 
   protected override ActorTask GetNextTask() {

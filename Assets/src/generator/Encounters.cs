@@ -908,7 +908,8 @@ public class Encounters {
   public static void OneButterfly(Floor floor, Room room) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
-      floor.Put(new ItemOnGround(tile.pos, new ItemButterfly()));
+      // floor.Put(new ItemOnGround(tile.pos, new ItemButterfly()));
+      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new Butterfly(new Vector2Int())).RequireSpace()));
     }
   }
 

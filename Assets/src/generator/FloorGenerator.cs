@@ -337,17 +337,20 @@ public abstract class FloorGenerator {
     FloorUtils.NaturalizeEdges(floor);
 
     // fits 4x2 structures, and +1 on each edge to see the walls
-    var rootWidth = (3 + 2 + 2 + 2) + 2;
-    var rootHeight = (3 + 2) + 2;
+    // var rootWidth = (3 + 2 + 2 + 2) + 2;
+    // var rootHeight = (3 + 2) + 2;
+    var rootWidth = 5 + 2;
+    var rootHeight = 3 + 2;
     var middleRight = new Vector2Int(floor.width - 2, floor.height / 2);
-    var rootMin = new Vector2Int(middleRight.x - (rootWidth - 1), middleRight.y - (rootHeight - 1) / 2);
+    var rootMin = new Vector2Int(middleRight.x - (rootWidth - 2), middleRight.y - (rootHeight - 1) / 2);
     var root = new Room(
       rootMin,
       rootMin + new Vector2Int(rootWidth - 1, rootHeight - 1)
     );
     floor.rooms = new List<Room> { root };
     floor.root = root;
-    floor.AddWallsOutsideRoot();
+    // floor.AddWallsOutsideRoot();
+    floor.AddThickBrushOutsideRoot();
 
     floor.startPos = new Vector2Int(root.min.x + 1, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));

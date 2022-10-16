@@ -10,12 +10,15 @@ public class Slime : Destructible, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    var inventory = new Inventory(new ItemSlime());
-    inventory.TryDropAllItems(floor, pos);
     // if (MyRandom.value < 0.1f) {
     //   GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
     // }
+    var floor = this.floor;
     floor.Put(new WallTrigger(pos));
+    GameModel.main.EnqueueEvent(() => {
+      var inventory = new Inventory(new ItemSlime());
+      inventory.TryDropAllItems(floor, pos);
+    });
 #if experimental_retryondemand
     GameModel.main.EnqueueEvent(() => {
       GameModel.main.DrainEventQueue();
@@ -29,7 +32,7 @@ public class Slime : Destructible, IDeathHandler {
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
 public class ItemSlime : Item, IStackable, IStuckToInventory {
   public int stacks { get; set; }
-  public int stacksMax => 7;
+  public int stacksMax => 8;
 
   public ItemSlime(int stacks) {
     this.stacks = stacks;
@@ -46,7 +49,7 @@ public class ItemSlime : Item, IStackable, IStuckToInventory {
   public void PurifyFree(Player player) {
     var water = 0;
     for(int i = 0; i < stacks; i++) {
-      water += MyRandom.Range(13, 20);
+      water += MyRandom.Range(13, 28);
     }
     player.water += water;
     Destroy();

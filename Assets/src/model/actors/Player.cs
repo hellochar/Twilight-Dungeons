@@ -68,7 +68,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
-    inventory = new Inventory(8);
+    inventory = new Inventory(9);
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
     // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())).RequireSpace());

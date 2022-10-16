@@ -168,12 +168,12 @@ public class Wall : Tile {
     }
   }
 
-  [PlayerAction]
-  public void CarveAway() {
-    var player = GameModel.main.player;
-    player.UseActionPointOrThrow();
-    floor.Put(new Ground(tile.pos));
-  }
+  // [PlayerAction]
+  // public void CarveAway() {
+  //   var player = GameModel.main.player;
+  //   player.UseActionPointOrThrow();
+  //   floor.Put(new Ground(tile.pos));
+  // }
 #endif
 }
 

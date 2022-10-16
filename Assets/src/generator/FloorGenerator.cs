@@ -179,6 +179,7 @@ public abstract class FloorGenerator {
     var depth = floor.depth;
     floor.depth = 20;
     // put stuff here
+    Encounters.OneButterfly(floor, floor.root);
     // Encounters.AddSoftMoss(floor, floor.root);
     floor.depth = depth;
     #endif
@@ -334,7 +335,7 @@ public abstract class FloorGenerator {
         floor.Put(new Chasm(p));
       }
     }
-    FloorUtils.NaturalizeEdges(floor);
+    // FloorUtils.NaturalizeEdges(floor);
 
     // fits 4x2 structures, and +1 on each edge to see the walls
     // var rootWidth = (3 + 2 + 2 + 2) + 2;
@@ -460,21 +461,21 @@ public abstract class FloorGenerator {
           encounter(floor, room);
         }
       }
-      if (roomIntensity >= 3) {
+      // if (roomIntensity >= 3) {
         if (rewardEncounter != null) {
           rewardEncounter(floor, room);
         }
         // if (depth % 3 == 0) {
         //   Encounters.OneAstoria(floor, room);
         // }
-      }
+      // }
       roomIntensity++;
 
       // add slimes
-      var entrancesAndExits = floor.EnumerateRoomPerimeter(room, -1).Where(pos => floor.tiles[pos].CanBeOccupied());
-      foreach (var pos in entrancesAndExits) {
-        floor.Put(new Slime(pos));
-      }
+      // var entrancesAndExits = floor.EnumerateRoomPerimeter(room, -1).Where(pos => floor.tiles[pos].CanBeOccupied());
+      // foreach (var pos in entrancesAndExits) {
+      //   floor.Put(new Slime(pos));
+      // }
     }
 
     // specifically used for e.g. moving downstairs to a center.
@@ -530,8 +531,13 @@ public abstract class FloorGenerator {
       FloorUtils.CarveGround(floor, floor.EnumerateRoom(room));
       if (i > 0) {
         //where the slime will go
-        floor.Put(new Ground(new Vector2Int(room.min.x - 1, room.center.y)));
-        floor.Put(new Ground(new Vector2Int(room.min.x - 2, room.center.y)));
+        var p1 = new Vector2Int(room.min.x - 1, room.center.y);
+        var p2 = new Vector2Int(room.min.x - 2, room.center.y);
+        floor.Put(new Ground(p1));
+        floor.Put(new Slime(p1));
+
+        floor.Put(new Ground(p2));
+        floor.Put(new Slime(p2));
       }
 
       if (defaultEncounters) {

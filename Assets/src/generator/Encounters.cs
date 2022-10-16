@@ -410,7 +410,7 @@ public class Encounters {
   public static void AddLlaora(Floor floor, Room room) {
     var tile = Util.RandomPick(
       FloorUtils.TilesFromCenter(floor, room)
-        .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x <= 5)
+        .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x < room.center.x)
     );
     if (tile != null) {
       floor.Put(new Llaora(tile.pos));
@@ -420,7 +420,7 @@ public class Encounters {
   public static void AddBloodwort(Floor floor, Room room) {
     var tile = Util.RandomPick(
       FloorUtils.TilesFromCenter(floor, room)
-        .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x <= 5)
+        .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x < room.center.x)
     );
     if (tile != null) {
       floor.Put(new Bloodwort(tile.pos));

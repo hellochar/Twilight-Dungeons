@@ -3,12 +3,12 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Lies in wait.")]
+[ObjectInfo(description: "Chases and attacks its target until it dies.")]
 public class Chiller : AIActor {
   public override float turnPriority => 21;
   public Chiller(Vector2Int pos) : base(pos) {
     faction = Faction.Neutral;
-    hp = baseMaxHp = 3;
+    hp = baseMaxHp = 1;
   }
 
   public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t is Ground && t.floor.GetCardinalNeighbors(t.pos).Any(n => n is Wall);
@@ -44,6 +44,7 @@ public class Chiller : AIActor {
 }
 
 [Serializable]
+[ObjectInfo("Ground1_0", description: "A creature lies in wait here. Anything that walks over it will become targeted.")]
 public class ChillerGrass : Grass, IActorLeaveHandler {
   public ChillerGrass(Vector2Int pos) : base(pos) {
   }

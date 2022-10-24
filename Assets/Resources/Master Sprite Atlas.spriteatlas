@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 117393
+    totalSpriteSurfaceArea: 118929
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -60,6 +60,7 @@ SpriteAtlas:
   - {fileID: -2937719900985434881, guid: f0ee99406d79c4e47844d789a3a9d9c3, type: 3}
   - {fileID: -3083117422368779406, guid: f0ee99406d79c4e47844d789a3a9d9c3, type: 3}
   - {fileID: 21300000, guid: b50fff40b9569c44e8dff2fa971ba30d, type: 3}
+  - {fileID: 21300000, guid: 93a95350ee0e25b47816912f59de74b8, type: 3}
   - {fileID: 21300000, guid: 98a7e8608a1c1424881ada22e392c9a5, type: 3}
   - {fileID: 21300000, guid: 979f00c0bb3c75f42b60c47b58af59a0, type: 3}
   - {fileID: 21300000, guid: 333cf6e0d3509fa4292aaac5e3257a40, type: 3}
@@ -78,6 +79,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5120d641aadce704293cef3aded872ad, type: 3}
   - {fileID: 21300000, guid: bab8bb41f981cd649a1e50040d3b29da, type: 3}
   - {fileID: 21300000, guid: 89882f71cb7576848931d1fc509bd862, type: 3}
+  - {fileID: 21300000, guid: be07cf91672add549b64d1c7e19de279, type: 3}
   - {fileID: 21300000, guid: 328524a1f9c496047a7e4d34ad95c8bc, type: 3}
   - {fileID: 21300000, guid: b72444a1a06d5b84f823895a9959900e, type: 3}
   - {fileID: 21300000, guid: 030e17b16452e7045a7008c895d58160, type: 3}
@@ -183,10 +185,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
   - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
   - {fileID: 4387054635027142472, guid: bce04467b170db74288608f80a2944cb, type: 3}
+  - {fileID: 21300000, guid: 95273b6722e96e54a97a023230cbfc89, type: 3}
   - {fileID: 21300000, guid: b6c6bb7768fd8a9469338ddbfb3c7fe0, type: 3}
   - {fileID: 21300000, guid: 15090c87344335c428cc783a3ed766f8, type: 3}
   - {fileID: -4053755205593523716, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: 7211112119216217755, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
+  - {fileID: 7516488083110176496, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: 4397024048997671812, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: 1192398356205429106, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: 900136251804514652, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
@@ -244,6 +248,7 @@ SpriteAtlas:
   - {fileID: -3283364832169978480, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: 7666448229789118058, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: -7606177257534976177, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
+  - {fileID: 163147654842516210, guid: 0a722bf87f2c9f84eac8d204286c24f5, type: 3}
   - {fileID: 21300000, guid: 8471abf8d0b850e4a81d6948893069f6, type: 3}
   - {fileID: 21300000, guid: 6a00f109fd67eda458a649a4685af2df, type: 3}
   - {fileID: 21300000, guid: c4ccea09c2c32fb4ebd2b98cd3e42318, type: 3}
@@ -279,6 +284,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e25116ba1f11158458db3344153bfc53, type: 3}
   - {fileID: 21300000, guid: 0b9919ba4e568e140b9a1ead075c75db, type: 3}
   - {fileID: 21300000, guid: f35660daef9c3cf43b043079a3be9853, type: 3}
+  - {fileID: 6074616107221955953, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: -8073104873308132409, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: 3395855674396057741, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
   - {fileID: 122417249131412153, guid: 7585a0ea9a1c98a43aa683c4e478d83e, type: 3}
@@ -421,6 +427,7 @@ SpriteAtlas:
   - muck2
   - skully2
   - prickly-growth
+  - z-bush
   - grasper
   - broodleaf
   - clumpshroom
@@ -439,6 +446,7 @@ SpriteAtlas:
   - goldgrass
   - poisoned-status
   - strength
+  - redpod
   - hydra-head
   - poisonmoss
   - redcap
@@ -544,10 +552,12 @@ SpriteAtlas:
   - Astoria
   - hearty-veggie
   - wallflower
+  - teleporter
   - snail-shell
   - Transparent1x1
   - fancy-ground24
   - wall24
+  - teleporter24
   - upstairs24
   - ground24
   - downstairs24
@@ -605,6 +615,7 @@ SpriteAtlas:
   - wall
   - downstairs
   - fancy-ground
+  - teleporter0
   - altar
   - vile-growth
   - Circle5
@@ -640,6 +651,7 @@ SpriteAtlas:
   - heart_animated_1
   - wildwood-leaf
   - Stick
+  - teleporter12
   - upstairs12
   - ground12
   - downstairs12

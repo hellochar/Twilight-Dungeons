@@ -41,7 +41,8 @@ public class ItemSlime : Item, IStackable, IStuckToInventory {
   public ItemSlime() : this(1) { }
 
   [PlayerAction]
-  public void Purify(Player player) {
+  public void Purify() {
+    var player = GameModel.main.player;
     player.UseActionPointOrThrow();
     PurifyFree(player);
   }

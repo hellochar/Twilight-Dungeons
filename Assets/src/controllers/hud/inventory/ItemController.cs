@@ -104,6 +104,15 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
         Action action = () => ShowTargetingUIThenPerform(selectorUI, player);
         buttons.Insert(0, (name, action));
       }
+
+      if (player.floor.depth == 0) {
+        var playerActions = item.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
+        foreach(var action in playerActions) {
+          buttons.Add((Util.WithSpaces(action.Name), () => {
+            action.Invoke(item, new object[0]);
+          }));
+        }
+      }
     }
 
     popup = Popups.Create(

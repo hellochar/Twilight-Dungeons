@@ -41,7 +41,7 @@ public class HomeFloor : Floor {
   public void AddThickBrushOutsideRoot() {
     var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
     foreach(var pos in this.EnumerateFloor()) {
-      if (!rootInset.Contains(pos) && tiles[pos].CanBeOccupied()) {
+      if (!rootInset.Contains(pos) && tiles[pos].CanBeOccupied() && tiles[pos] is Ground && tiles[pos].item == null) {
         Put(new ThickBrush(pos));
       }
     }

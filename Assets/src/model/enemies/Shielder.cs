@@ -12,6 +12,9 @@ public class Shielder : AIActor {
   ShieldLinkStatus status;
 
   protected override ActorTask GetNextTask() {
+    if (floor.EnemiesLeft() == 0) {
+      return new GenericTask(this, KillSelf);
+    }
     if (status == null) {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, LinkWithClosestTarget));
     } else {
@@ -40,7 +43,7 @@ public class Shielder : AIActor {
   void MaintainLink() {
     // if visibility is lost, break status
     var visibility = floor.TestVisibility(pos, status.actor.pos);
-    if (visibility != TileVisiblity.Visible) {
+    if (visibility != TileVisiblity.Visible || status.actor.IsDead) {
       status.Remove();
     }
   }
@@ -51,6 +54,7 @@ public class Shielder : AIActor {
 }
 
 [Serializable]
+[ObjectInfo("shielder")]
 public class ShieldLinkStatus : Status, IAnyDamageTakenModifier {
   public Shielder shielder;
 
@@ -71,7 +75,7 @@ public class ShieldLinkStatus : Status, IAnyDamageTakenModifier {
     }
   }
 
-  public override string Info() => "The shielder will block 1 damage from all sources.";
+  public override string Info() => "The Shielder has linked you! Block 1 damage from all sources.";
 
   public int Modify(int input) {
     if (shielder.IsDead) {

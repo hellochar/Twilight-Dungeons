@@ -332,7 +332,7 @@ public abstract class FloorGenerator {
       if (p.x == floor.width - 1) {
         floor.Put(new Wall(p));
       } else {
-        floor.Put(new Chasm(p));
+        floor.Put(new Ground(p));
       }
     }
     // FloorUtils.NaturalizeEdges(floor);
@@ -350,6 +350,41 @@ public abstract class FloorGenerator {
     );
     floor.rooms = new List<Room> { root };
     floor.root = root;
+
+    List<Room> farAwayRooms = new List<Room>();
+    // add rewards and plants randomly
+    var SECTIONS = 5;
+    for(int i = 0; i < floor.width; i += floor.width / SECTIONS + 1) {
+      for(int j = 0; j < floor.height; j += floor.height / SECTIONS + 1) {
+        var room = new Room(new Vector2Int(i, j), new Vector2Int(i + floor.width / SECTIONS, j + floor.height / SECTIONS));
+        if (floor.InBounds(room.max)) {
+          if (!room.rect.Overlaps(root.rect)) {
+            farAwayRooms.Add(room);
+          }
+        }
+      }
+    }
+
+    shared.Plants.GetRandomAndDiscount(1f)(floor, root);
+
+    // pick three of them for plants, the rest for rewards
+    var room1 = Util.RandomPick(farAwayRooms);
+    farAwayRooms.Remove(room1);
+    var room2 = Util.RandomPick(farAwayRooms);
+    farAwayRooms.Remove(room2);
+    var room3 = Util.RandomPick(farAwayRooms);
+    farAwayRooms.Remove(room3);
+
+    shared.Plants.GetRandomAndDiscount(1)(floor, room1);
+    shared.Plants.GetRandomAndDiscount(1)(floor, room2);
+    shared.Plants.GetRandomAndDiscount(1)(floor, room3);
+
+    foreach(var r in farAwayRooms) {
+      // Encounters.PutSlime(floor, r);
+      Encounters.AddOneWater(floor, r);
+      // shared.Rewards.GetRandom()(floor, r);
+    }
+
     // floor.AddWallsOutsideRoot();
     floor.AddThickBrushOutsideRoot();
 
@@ -362,8 +397,6 @@ public abstract class FloorGenerator {
     // var tiles = FloorUtils.EmptyTilesInRoom(floor, room0).ToList();
     // tiles.Shuffle();
     // floor.PutAll(tiles.Take(10).Select(t => new HardGround(t.pos)).ToList());
-
-    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, root);
 
     return floor;
   }

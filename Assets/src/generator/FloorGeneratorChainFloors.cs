@@ -27,7 +27,8 @@ public class FloorGeneratorChainFloors : FloorGenerator {
       () => generateChainFloor(3 , 5, 6, 5, 2, 2, true),
       () => generateChainFloor(4 , 5, 7, 6, 2, 2, true),
       () => generateChainFloor(5 , 5, 7, 6, 3, 3, true),
-      () => generateRewardFloor(6, shared.Plants.GetRandomAndDiscount(1f)),
+      // () => generateRewardFloor(6, shared.Plants.GetRandomAndDiscount(1f)),
+      () => generateRewardFloor(6, Encounters.AddWater, Encounters.OneAstoria),
       () => generateBlobBossFloor(7),
 
       // midgame
@@ -36,7 +37,8 @@ public class FloorGeneratorChainFloors : FloorGenerator {
       () => generateChainFloor(10 , 5, 7, 6, 2, 2, true),
       () => generateChainFloor(11 , 5, 8, 7, 2, 2, true),
       () => generateChainFloor(12, 5, 8, 7, 3, 3, true),
-      () => generateRewardFloor(13, shared.Plants.GetRandomAndDiscount(1f)),
+      // () => generateRewardFloor(13, shared.Plants.GetRandomAndDiscount(1f)),
+      () => generateRewardFloor(13, Encounters.AddWater, Encounters.OneAstoria),
       () => generateFungalColonyBossFloor(14),
 
       // endgame
@@ -45,7 +47,8 @@ public class FloorGeneratorChainFloors : FloorGenerator {
       () => generateChainFloor(17, 5, 9, 7, 2, 2, true),
       () => generateChainFloor(18, 5, 10, 8, 2, 2, true),
       () => generateChainFloor(19, 5, 10, 8, 3, 3, true),
-      () => generateRewardFloor(20, shared.Plants.GetRandomAndDiscount(1f)),
+      // () => generateRewardFloor(20, shared.Plants.GetRandomAndDiscount(1f)),
+      () => generateRewardFloor(20, Encounters.AddWater, Encounters.OneAstoria),
       () => generateEndBossFloor(21),
       () => generateEndFloor(22),
     };

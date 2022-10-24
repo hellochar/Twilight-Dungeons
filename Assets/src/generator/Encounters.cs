@@ -389,6 +389,7 @@ public class Encounters {
       plant.GoNextStage();
       floor.Put(plant);
     }
+    floor.PutAll(floor.GetAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
   }
 
   public static void AddSoftGrass(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);

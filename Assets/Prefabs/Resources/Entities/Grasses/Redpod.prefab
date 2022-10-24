@@ -101,13 +101,13 @@ PrefabInstance:
     - target: {fileID: 9126458090356110524, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Name
-      value: Redleaf
+      value: Redpod
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd,
+      objectReference: {fileID: 21300000, guid: be07cf91672add549b64d1c7e19de279,
         type: 3}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}

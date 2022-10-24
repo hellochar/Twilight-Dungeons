@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("Astoria", "Plant at home to heal you 1 HP per floor.")]
+[ObjectInfo("redpod", "Plant at home to heal you 1 HP per floor.")]
 public class Redpod : Grass, IDaySteppable, IActorEnterHandler {
   public Redpod(Vector2Int pos) : base(pos) {
   }

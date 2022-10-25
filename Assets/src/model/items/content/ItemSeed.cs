@@ -4,32 +4,18 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Ground> {
+public class ItemSeed : Item, ITargetedAction<Ground> {
   public Type plantType;
 
-  public bool CanStackWith(IConditionallyStackable other) {
+  protected override bool StackingPredicate(Item other) {
     return ((ItemSeed) other).plantType == plantType;
   }
 
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-  public int stacksMax => 20;
+  public override int stacksMax => 20;
   public int waterCost;
 
-  public ItemSeed(Type plantType, int stacks) {
+  public ItemSeed(Type plantType, int stacks) : base(stacks) {
     this.plantType = plantType;
-    this.stacks = stacks;
     this.waterCost = (int?) plantType.GetProperty("waterCost")?.GetValue(null) ?? 100;
   }
 

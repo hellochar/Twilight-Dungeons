@@ -193,7 +193,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 #endif
     if (shouldDestroy) {
       foreach(var e in equipment) {
-        if (e is IDurable && !(e is ISticky)) {
+        if (e.disjoint && !(e is ISticky)) {
           e.Destroy();
         }
       }
@@ -204,10 +204,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public void OnAttack(int damage, Body target) {
     var item = equipment[EquipmentSlot.Weapon];
     if (!(target is Destructible)) {
-      if (item is IDurable durable) {
-        GameModel.main.EnqueueEvent(durable.ReduceDurability);
-      } else if (item is IStackable s) {
-        GameModel.main.EnqueueEvent(() => s.stacks--);
+      if (item != null && item != Hands) {
+#if !experimental_equipmentperfloor
+        GameModel.main.EnqueueEvent(() => item.stacks--);
+#endif
       }
     }
     if (task is FollowPathTask) {

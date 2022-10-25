@@ -34,9 +34,8 @@ class PushPlayerGrass : Grass, ISteppable {
 
 [Serializable]
 [ObjectInfo("irridine")]
-public class ItemIrridine : Item, IStackable, ITargetedAction<Tile> {
-  public int stacks { get; set; }
-  public int stacksMax => 999;
+public class ItemIrridine : Item, ITargetedAction<Tile> {
+  public override int stacksMax => 999;
 
   public ItemIrridine(int stacks) : base() {
     this.stacks = stacks;

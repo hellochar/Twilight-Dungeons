@@ -33,23 +33,18 @@ public class Thornleaf : Plant {
 
 [Serializable]
 [ObjectInfo("thornmail", "A layer of spiky leaves is fashioned on top of a comfortable inner mesh.")]
-internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTakeAttackDamageHandler {
+internal class ItemThornmail : EquippableItem, IMaxHPModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 14;
-
-  public ItemThornmail() {
-    durability = maxDurability;
-  }
+  public override int stacksMax => 14;
+  public override bool disjoint => true;
 
   public void HandleTakeAttackDamage(int dmg, int hp, Actor source) {
     var player = GameModel.main.player;
     // rarely, the thing that attacks you may already be dead (AKA parasite)
     if (source != player && !source.IsDead) {
       source.TakeDamage(2, player);
-      this.ReduceDurability();
+      stacks--;
     }
   }
 
@@ -62,7 +57,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
 
 [Serializable]
 [ObjectInfo("thornshield", "Thornleaf timber is actually quite supple, allowing you to get a good bash in once in a while.")]
-internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
+internal class ItemThornShield : EquippableItem, IModifierProvider {
   [Serializable]
   private class TakeLessDamage : IAttackDamageTakenModifier {
     private ItemThornShield itemThornShield;
@@ -72,7 +67,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
     }
 
     public int Modify(int input) {
-      itemThornShield.ReduceDurability();
+      itemThornShield.stacks--;
       return input - 1;
     }
   }
@@ -85,7 +80,7 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
     }
 
     public int Modify(int input) {
-      itemThornShield.ReduceDurability();
+      itemThornShield.stacks--;
       return input + 1;
     }
   }
@@ -96,12 +91,10 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 11;
+  public override int stacksMax => 11;
+  public override bool disjoint => true;
 
   public ItemThornShield() {
-    durability = maxDurability;
     Modifiers = new List<object> { new TakeLessDamage(this), new DealMoreDamage(this) };
   }
 
@@ -110,16 +103,12 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
 [Serializable]
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
-internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
+internal class ItemHeartOfThorns : EquippableItem, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
   internal override string GetStats() => "Take 2 less damage from all sources.\nWhen you would take damage from any source, grow, sharpen, or trigger Bladegrass on all adjacent tiles.";
 
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
-  public int durability { get; set; }
-  public int maxDurability => 29;
-
-  public ItemHeartOfThorns() {
-    durability = maxDurability;
-  }
+  public override int stacksMax => 29;
+  public override bool disjoint => true;
 
   public void HandleTakeAnyDamage(int dmg) {
     foreach (var tile in player.floor.GetAdjacentTiles(player.pos).Where(Bladegrass.CanOccupy)) {
@@ -135,7 +124,7 @@ internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModi
         player.floor.Put(new Bladegrass(tile.pos));
       }
     }
-    this.ReduceDurability();
+    stacks--;
   }
 
   public int Modify(int input) {

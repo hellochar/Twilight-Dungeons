@@ -20,26 +20,11 @@ public class Agave : Grass, IActorEnterHandler {
 
 [Serializable]
 [ObjectInfo("agave", flavorText: "An unassuming and earthy succulent with thick, nutrient bearing leaves.")]
-class ItemAgave : Item, IStackable {
-  public ItemAgave(int stacks) {
-    this.stacks = stacks;
+class ItemAgave : Item {
+  public ItemAgave(int stacks) : base(stacks) {
   }
 
-  public int stacksMax => 4;
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-
+  public override int stacksMax => 4;
   public void Refine(Player player) {
     player.SetTasks(new GenericPlayerTask(player, () => RefineImpl(player)));
   }

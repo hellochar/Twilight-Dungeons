@@ -32,26 +32,9 @@ public class Weirdwood : Plant {
 
 [Serializable]
 [ObjectInfo("vile-potion", "Weirdwood roots are notoriously used in demonic rituals... You wonder why?")]
-internal class ItemVilePotion : Item, IStackable, IUsable {
-  public ItemVilePotion(int stacks = 3) {
-    this.stacks = stacks;
-  }
-  public int stacksMax => 3;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-
+internal class ItemVilePotion : Item, IUsable {
+  public ItemVilePotion(int stacks = 3) : base(stacks) {}
+  public override int stacksMax => 3;
 
   public void Use(Actor actor) {
     var player = (Player) actor;
@@ -96,43 +79,33 @@ internal class VileGrowth : Grass, ISteppable, INoTurnDelay {
 
 [Serializable]
 [ObjectInfo("colored_transparent_packed_39", "")]
-internal class ItemBackstepShoes : EquippableItem, IDurable, IAttackHandler {
+internal class ItemBackstepShoes : EquippableItem, IAttackHandler {
   internal override string GetStats() => "After you make an attack, get 3 Free Moves.";
 
   public void OnAttack(int damage, Body target) {
     if (player.statuses.FindOfType<FreeMoveStatus>() == null) {
       player.statuses.Add(new FreeMoveStatus(3));
-      this.ReduceDurability();
+      stacks--;
     }
-  }
-
-  public ItemBackstepShoes() {
-    durability = maxDurability;
   }
 
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 7;
+  public override int stacksMax => 7;
+  public override bool disjoint => true;
 }
 
 [Serializable]
 [ObjectInfo("witchs-shiv", "Wendy the Witch,\nFound the Snitch,\nNow he's lying,\nIn a ditch")]
-internal class ItemWitchsShiv : EquippableItem, IWeapon, IDurable, IAttackHandler {
+internal class ItemWitchsShiv : EquippableItem, IWeapon, IAttackHandler {
   public override string displayName => "Witch's Shiv";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   internal override string GetStats() => "Attacking a target fears them for 10 turns.";
 
-  public ItemWitchsShiv() {
-    durability = maxDurability;
-  }
-
   public (int, int) AttackSpread => (2, 2);
 
-  public int durability { get; set; }
-
-  public int maxDurability => 3;
+  public override int stacksMax => 3;
+  public override bool disjoint => true;
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor actor && !(actor.task is RunAwayTask) && !(actor is Boss)) {

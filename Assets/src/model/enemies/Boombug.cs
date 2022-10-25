@@ -37,25 +37,11 @@ public class Boombug : AIActor {
 
 [Serializable]
 [ObjectInfo(spriteName: "boombug", flavorText: "This boombug corpse has been defused, but can be easily triggered again...")]
-public class ItemBoombugCorpse : Item, IStackable, ITargetedAction<Tile> {
-  public ItemBoombugCorpse(int stacks) {
-    this.stacks = stacks;
+public class ItemBoombugCorpse : Item, ITargetedAction<Tile> {
+  public ItemBoombugCorpse(int stacks) : base(stacks) {
   }
-  public int stacksMax => 7;
 
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+  public override int stacksMax => 7;
 
   internal override string GetStats() => "Throw at any visible tile to leave an explosive Boombug Corpse there.";
 

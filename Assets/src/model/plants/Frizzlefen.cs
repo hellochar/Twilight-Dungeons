@@ -40,37 +40,27 @@ public class Frizzlefen : Plant {
 
 [Serializable]
 [ObjectInfo("thick-stick")]
-class ItemThickBranch : EquippableItem, IWeapon, IDurable {
+class ItemThickBranch : EquippableItem, IWeapon {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-
   public (int, int) AttackSpread => (3, 3);
-
-  public int durability { get; set; }
-
-  public int maxDurability => 2;
-
-  public ItemThickBranch() {
-    durability = maxDurability;
-  }
+  public override int stacksMax => 2;
+  public override bool disjoint => true;
 }
 
 [Serializable]
 [ObjectInfo("plated-armor")]
-class ItemPlatedArmor : EquippableItem, IDurable, IAttackDamageTakenModifier {
+class ItemPlatedArmor : EquippableItem, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
 
-  public int durability { get; set; }
-  int damageBlock => (maxDurability + 1) - durability;
-  public int maxDurability => 4;
-
-  public ItemPlatedArmor() {
-    durability = maxDurability;
-  }
+  int damageBlock => (stacksMax + 1) - stacks;
+  public override int stacksMax => 4;
+  public override bool disjoint => true;
 
   public int Modify(int damage) {
     if (damage > 0) {
-      this.ReduceDurability();
-      return damage - damageBlock;
+      var amountBlocked = damageBlock;
+      stacks--;
+      return damage - amountBlocked;
     } else {
       return damage;
     }

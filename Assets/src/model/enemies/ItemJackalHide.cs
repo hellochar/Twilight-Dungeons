@@ -1,14 +1,12 @@
 [System.Serializable]
 [ObjectInfo(spriteName: "jackal-fur", flavorText: "Patches of matted fur strewn together.")]
-public class ItemJackalHide : EquippableItem, IDurable, IAttackDamageTakenModifier {
+public class ItemJackalHide : EquippableItem, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 4;
+  public override int stacksMax => 4;
+  public override bool disjoint => true;
 
   public ItemJackalHide() {
-    durability = maxDurability;
   }
 
   public int Modify(int input) {

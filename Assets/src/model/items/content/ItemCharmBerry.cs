@@ -4,26 +4,10 @@ using System.Linq;
 
 [Serializable]
 [ObjectInfo(spriteName: "charmberry", flavorText: "It's sweet, sour, and tart! Loved by creatures of all sorts.")]
-public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
-  public int stacksMax => 12;
+public class ItemCharmBerry : Item, ITargetedAction<AIActor> {
+  public override int stacksMax => 12;
 
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-
-  public ItemCharmBerry(int stacks) {
-    this.stacks = stacks;
-  }
+  public ItemCharmBerry(int stacks) : base(stacks) {}
 
   internal override string GetStats() => "Makes a target loyal to you; they will follow you and attack nearby enemies, but cannot traverse floors. Enemies will not re-direct their focus to attack them.";
 

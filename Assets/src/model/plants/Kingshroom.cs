@@ -32,19 +32,14 @@ public class Kingshroom : Plant {
 
 [Serializable]
 [ObjectInfo("living-armor", "")]
-internal class ItemLivingArmor : EquippableItem, ISticky, IDurable, IActionPerformedHandler, IAttackDamageTakenModifier {
+internal class ItemLivingArmor : EquippableItem, ISticky, IActionPerformedHandler, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
-  public ItemLivingArmor() {
-    durability = maxDurability;
-  }
-
-  public int durability { get; set; }
-
-  public int maxDurability => 60;
+  public override int stacksMax => 60;
+  public override bool disjoint => true;
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
-      this.ReduceDurability();
+      stacks--;
     }
   }
 
@@ -55,43 +50,34 @@ internal class ItemLivingArmor : EquippableItem, ISticky, IDurable, IActionPerfo
 
 [Serializable]
 [ObjectInfo("mushroom-cap", "Spongy and porous holes dot the top, catching and eating air particulates.")]
-internal class ItemMushroomCap : EquippableItem, IDurable, IStatusAddedHandler {
-  public ItemMushroomCap() {
-    durability = maxDurability;
-  }
-
+internal class ItemMushroomCap : EquippableItem, IStatusAddedHandler {
   public void HandleStatusAdded(Status status) {
     if (status.isDebuff) {
       status.actor.Heal(1);
       status.Remove();
-      this.ReduceDurability();
+      stacks--;
     }
   }
 
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 3;
+  public override int stacksMax => 3;
+  public override bool disjoint => true;
 
   internal override string GetStats() => "If you'd get a debuff, prevent it and heal 1 HP instead.";
 }
 
 [Serializable]
 [ObjectInfo("colored_transparent_packed_657", "")]
-public class ItemKingshroomPowder : Item, IDurable, ITargetedAction<Actor> {
-  public ItemKingshroomPowder() {
-    durability = maxDurability;
-  }
+public class ItemKingshroomPowder : Item, ITargetedAction<Actor> {
+  public override int stacksMax => 3;
+  public override bool disjoint => true;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 3;
 
   public void Infect(Player player, Actor target) {
     if (target.IsNextTo(player)) {
       target.statuses.Add(new InfectedStatus());
-      this.ReduceDurability();
+      stacks--;
     }
   }
 
@@ -131,14 +117,9 @@ class InfectedStatus : Status {
 
 [Serializable]
 [ObjectInfo("germ", "")]
-internal class ItemGerm : Item, IDurable, IUsable {
-  public ItemGerm() {
-    durability = maxDurability;
-  }
-
-  public int durability { get; set; }
-
-  public int maxDurability => 4;
+internal class ItemGerm : Item, IUsable {
+  public override int stacksMax => 4;
+  public override bool disjoint => true;
 
   public void Use(Actor a) {
     // create a ring of mushrooms around you.
@@ -146,7 +127,7 @@ internal class ItemGerm : Item, IDurable, IUsable {
       a.floor.Put(new ThickMushroom(tile.pos));
     }
     AudioClipStore.main.summon.Play();
-    this.ReduceDurability();
+    stacks--;
   }
 
 

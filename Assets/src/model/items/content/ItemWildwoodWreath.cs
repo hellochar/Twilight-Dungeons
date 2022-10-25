@@ -3,20 +3,16 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class ItemWildwoodWreath : EquippableItem, IDurable, IBodyMoveHandler {
-  public ItemWildwoodWreath() {
-    durability = maxDurability;
-  }
-
+public class ItemWildwoodWreath : EquippableItem, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
-  public int durability { get; set; }
-  public int maxDurability => 10;
+  public override int stacksMax => 10;
+  public override bool disjoint => true;
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     var target = Util.RandomPick(player.floor.AdjacentActors(player.pos).Where(a => a.faction != Faction.Ally && !a.statuses.Has<ConfusedStatus>()));
     if (target != null) {
       target.statuses.Add(new ConfusedStatus(5));
-      this.ReduceDurability();
+      stacks--;
     }
   }
 

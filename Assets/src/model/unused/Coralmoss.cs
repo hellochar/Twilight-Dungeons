@@ -58,25 +58,10 @@ internal class Coral : Body, IAnyDamageTakenModifier, IDeathHandler {
 [System.Serializable]
 
 [ObjectInfo("coral", "rough to the touch")]
-internal class ItemCoralChunk : Item, IStackable {
-  public ItemCoralChunk(int stacks) {
-    this.stacks = stacks;
+internal class ItemCoralChunk : Item {
+  public ItemCoralChunk(int stacks) : base(stacks) {
   }
-  public int stacksMax => 100;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new System.ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+  public override int stacksMax => 100;
 
   public void Plant(Actor a) {
     a.floor.Put(new Coralmoss(a.pos));

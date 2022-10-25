@@ -2,25 +2,10 @@ using System;
 using System.Linq;
 
 [Serializable]
-class ItemWildwoodLeaf : Item, IStackable, IEdible {
-  public ItemWildwoodLeaf(int stacks) {
-    this.stacks = stacks;
-  }
-  public int stacksMax => 10;
+class ItemWildwoodLeaf : Item, IEdible {
+  public ItemWildwoodLeaf(int stacks) : base(stacks) {}
 
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+  public override int stacksMax => 10;
 
   public void Eat(Actor a) {
     a.statuses.Add(new StatusWild());

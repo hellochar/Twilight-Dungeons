@@ -32,19 +32,14 @@ public class ChangErsWillow : Plant {
 
 [Serializable]
 [ObjectInfo("flower-buds")]
-class ItemFlowerBuds : Item, IDurable, IEdible {
-  public int durability { get; set; }
-
-  public int maxDurability => 3;
-
-  public ItemFlowerBuds() {
-    durability = maxDurability;
-  }
+class ItemFlowerBuds : Item, IEdible {
+  public override int stacksMax => 3;
+  public override bool disjoint => true;
 
   public void Eat(Actor a) {
     a.Heal(1);
     a.statuses.Add(new StrengthStatus(2));
-    this.ReduceDurability();
+    stacks--;
   }
 
   internal override string GetStats() => "Eat to heal 1 HP and get 2 stacks of Strength.";
@@ -52,22 +47,17 @@ class ItemFlowerBuds : Item, IDurable, IEdible {
 
 [Serializable]
 [ObjectInfo("catkin", "Tiny flowers packaged up in a single stem - legend says wearing one will grant you the Moon Goddess's protection.")]
-internal class ItemCatkin : EquippableItem, IDurable, ITakeAnyDamageHandler {
+internal class ItemCatkin : EquippableItem, ITakeAnyDamageHandler {
   internal override string GetStats() => "When you take damage, heal an equivalent amount after 25 turns.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 3;
-
-  public ItemCatkin() {
-    durability = maxDurability;
-  }
+  public override int stacksMax => 3;
+  public override bool disjoint => true;
 
   public void HandleTakeAnyDamage(int damage) {
     if (damage > 0) {
       player.statuses.Add(new RecoveringStatus(damage));
-      this.ReduceDurability();
+      stacks--;
     }
   }
 }
@@ -96,23 +86,18 @@ public class RecoveringStatus : StackingStatus {
 
 [Serializable]
 [ObjectInfo("hardened-sap")]
-internal class ItemHardenedSap : EquippableItem, IDurable, IHealHandler, IMaxHPModifier {
+internal class ItemHardenedSap : EquippableItem, IHealHandler, IMaxHPModifier {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 5;
-
-  public ItemHardenedSap() {
-    durability = maxDurability;
-  }
+  public override int stacksMax => 5;
+  public override bool disjoint => true;
 
   internal override string GetStats() => "+4 Max HP.\nWhen you heal, gain that many stacks of the Armored Status.";
 
   public void HandleHeal(int amount) {
     if (amount > 0) {
       player.statuses.Add(new ArmoredStatus(amount));
-      this.ReduceDurability();
+      stacks--;
     }
   }
 
@@ -123,37 +108,33 @@ internal class ItemHardenedSap : EquippableItem, IDurable, IHealHandler, IMaxHPM
 
 [Serializable]
 [ObjectInfo("crescent-vengeance", "Chang-Er's disciples spent many years crafting an item worthy of their Goddess's attention.")]
-internal class ItemCrescentVengeance : EquippableItem, IWeapon, IDurable {
+internal class ItemCrescentVengeance : EquippableItem, IWeapon {
   internal override string GetStats() => "If possible, Crescent Vengeance removes a stack of the Armored Status rather than lose durability.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-  private int m_durability;
-  public int durability {
-    get => m_durability;
+  public override int stacks {
+    get => base.stacks;
     set {
-      if (value >= m_durability) {
-        m_durability = value;
+      if (value >= base.stacks) {
+        base.stacks = value;
         return;
       }
       var status = player?.statuses.FindOfType<ArmoredStatus>();
       if (status == null) {
-        m_durability = value;
+        base.stacks = value;
         return;
       }
 
-      var amountToLose = m_durability - value;
+      var amountToLose = base.stacks - value;
       var stacksLost = Mathf.Min(amountToLose, status.stacks);
       status.stacks -= stacksLost;
       amountToLose -= stacksLost;
 
-      m_durability -= amountToLose;
+      base.stacks -= amountToLose;
     }
   }
 
-  public int maxDurability => 10;
+  public override int stacksMax => 10;
+  public override bool disjoint => true;
 
   public (int, int) AttackSpread => (3, 5);
-
-  public ItemCrescentVengeance() {
-    durability = maxDurability;
-  }
 }

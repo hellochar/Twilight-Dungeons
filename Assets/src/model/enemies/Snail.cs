@@ -40,25 +40,11 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
 
 [Serializable]
 [ObjectInfo(spriteName: "snail-shell", flavorText: "A dinky little thing.")]
-public class ItemSnailShell : Item, IStackable, ITargetedAction<Actor> {
-  public ItemSnailShell(int stacks) {
-    this.stacks = stacks;
+public class ItemSnailShell : Item, ITargetedAction<Actor> {
+  public ItemSnailShell(int stacks) : base(stacks) {
   }
-  public int stacksMax => 3;
 
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+  public override int stacksMax => 3;
 
   public void Throw(Player player, Actor target) {
     target.TakeAttackDamage(3, player);

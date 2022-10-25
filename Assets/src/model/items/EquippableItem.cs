@@ -4,6 +4,9 @@ using System.Reflection;
 
 [Serializable]
 public abstract class EquippableItem : Item {
+  protected EquippableItem(int stacks) : base(stacks) {}
+  protected EquippableItem() : base() {}
+
   public abstract EquipmentSlot slot { get; }
   protected Player player => GameModel.main.player;
   public bool IsEquipped => inventory != null;

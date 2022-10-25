@@ -7,8 +7,11 @@ using System.Reflection;
 public class ItemBox : Item {
   public Item innerItem { get; protected set; }
 
-  public ItemBox(Item innerItem) {
+  public ItemBox(Item innerItem, int stacks) : base(stacks) {
     this.innerItem = innerItem;
+  }
+
+  public ItemBox(Item innerItem) : this(innerItem, innerItem.stacks) {
   }
 
   public virtual void Unwrap(Player p) {
@@ -29,7 +32,7 @@ public class ItemBox : Item {
 }
 
 [Serializable]
-public class ItemVisibleBox : ItemBox, IConditionallyStackable {
+public class ItemVisibleBox : ItemBox {
   public override string displayName => $"Essence of {innerItem.displayName}";
   public ItemVisibleBox(Item innerItem) : base(innerItem) {
   }
@@ -38,34 +41,22 @@ public class ItemVisibleBox : ItemBox, IConditionallyStackable {
     return $"Unwrap at home to access the {innerItem.displayName}.";
   }
 
-  int IStackable.stacks {
+  public override int stacks {
     get {
-      if (innerItem is IStackable i) {
-        return i.stacks;
-      }
-      return 1;
+      return innerItem.stacks;
     }
 
     set {
-      if (innerItem is IStackable i) {
-        i.stacks = value;
-      } else {
-        throw new Exception("Setting stack on non-stackable inner item!");
+      if (innerItem != null) {
+        innerItem.stacks = value;
       }
     }
   }
-  int IStackable.stacksMax => (innerItem is IStackable i) ? i.stacksMax : 1;
-  bool IConditionallyStackable.CanStackWith(IConditionallyStackable otherBox) {
-    var other = (otherBox as ItemVisibleBox).innerItem;
-    if (!(innerItem is IStackable)) {
-      return false;
-    }
-    if (other.GetType() != innerItem.GetType()) {
-      return false;
-    }
-    if (innerItem is IConditionallyStackable s1 && other is IConditionallyStackable s2) {
-      return s2.CanStackWith(s1);
-    }
-    return true;
+
+  public override int stacksMax => innerItem.stacksMax;
+
+  protected override bool StackingPredicate(Item other) {
+    var otherInnerItem = (other as ItemVisibleBox).innerItem;
+    return innerItem.CanStackWith(otherInnerItem);
   }
 }

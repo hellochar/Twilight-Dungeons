@@ -152,14 +152,14 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
 
   // Update is called once per frame
   void Update() {
-    if (item is IStackable i) {
-      stacksText.text = i.stacks.ToString();
-    } else if (item is IDurable d) {
-      if (d.durability < d.maxDurability) {
-        stacksText.text = $"{d.durability}/{d.maxDurability}";
+    if (item.disjoint) {
+      if (item.stacks < item.stacksMax) {
+        stacksText.text = $"{item.stacks}/{item.stacksMax}";
       } else {
         stacksText.text = "";
       }
+    } else if (item.stacksMax > 1) {
+      stacksText.text = item.stacks.ToString();
     } else {
       stacksText.gameObject.SetActive(false);
     }

@@ -1,18 +1,12 @@
 [System.Serializable]
-public class ItemBarkShield : EquippableItem, IDurable, IAttackDamageTakenModifier {
+public class ItemBarkShield : EquippableItem, IAttackDamageTakenModifier {
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
-
-  public int durability { get; set; }
-  public int maxDurability { get; protected set; }
-
-  public ItemBarkShield() {
-    this.maxDurability = 6;
-    this.durability = maxDurability;
-  }
+  public override int stacksMax => 6;
+  public override bool disjoint => true;
 
   public int Modify(int damage) {
     if (damage > 0) {
-      this.ReduceDurability();
+      stacks--;
       return damage - 2;
     } else {
       return damage;

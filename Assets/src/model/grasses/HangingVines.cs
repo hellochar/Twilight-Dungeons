@@ -78,28 +78,12 @@ public class Trigger : Entity, IActorEnterHandler {
 
 [Serializable]
 [ObjectInfo("vine-whip", flavorText: "Just the sound of it whipping through the air makes you a little nervous.")]
-internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler, IStackable {
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-
-  public int stacksMax => 7;
+internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler {
+  public override int stacksMax => 7;
   public (int, int) AttackSpread => (stacks, stacks);
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
-  public ItemVineWhip(int stacks) {
-    this.stacks = stacks;
-  }
+  public ItemVineWhip(int stacks) : base(stacks) {}
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor) {

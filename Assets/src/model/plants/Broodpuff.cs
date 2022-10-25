@@ -34,20 +34,19 @@ public class Broodpuff : Plant {
 
 [Serializable]
 [ObjectInfo(spriteName: "leecher")]
-public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
+public class ItemLeecher : Item, ITargetedAction<Tile> {
 
   internal override string GetStats() => "Summon a stationary Leecher within vision. It will attack enemies for 1 damage per turn (this uses Durability).\nYou may pickup the Leecher by tapping it.\nWhen the Leecher runs out of Durability, it drops a Broodpuff Seed.";
 
-  public int durability { get; set; }
+  public override int stacksMax => 7;
+  public override bool disjoint => true;
 
-  public int maxDurability => 7;
-
-  public ItemLeecher(int durability = 7) {
-    this.durability = durability;
+  public ItemLeecher() {}
+  public ItemLeecher(int startingStacks) : base(startingStacks) {
   }
 
   public void Summon(Player player, Vector2Int position) {
-    player.floor.Put(new Leecher(position, durability));
+    player.floor.Put(new Leecher(position, stacks));
     AudioClipStore.main.summon.Play();
     Destroy();
   }
@@ -114,20 +113,16 @@ public class Leecher : AIActor, IAttackHandler {
 
 [Serializable]
 [ObjectInfo("bacillomyte")]
-public class ItemBacillomyte : Item, IUsable, IDurable {
-  public ItemBacillomyte() {
-    this.durability = maxDurability;
-  }
-
-  public int durability { get; set; }
-  public int maxDurability => 4;
+public class ItemBacillomyte : Item, IUsable {
+  public override int stacksMax => 4;
+  public override bool disjoint => true;
   internal override string GetStats() => "Use to grow Bacillomytes around you. Enemies standing over Bacillomyte take 1 extra attack damage.";
 
   public void Use(Actor a) {
     foreach (var tile in a.floor.GetAdjacentTiles(a.pos).Where(Bacillomyte.CanOccupy)) {
       a.floor.Put(new Bacillomyte(tile.pos));
     }
-    durability--;
+    stacks--;
   }
 }
 
@@ -148,15 +143,12 @@ public class Bacillomyte : Grass {
 
 [Serializable]
 [ObjectInfo("broodleaf", flavorText: "Dangerous toxins line the spiky tips of this otherwise unassuming leaf.")]
-public class ItemBroodleaf : EquippableItem, IWeapon, IDurable, IAttackHandler, IActionCostModifier {
+public class ItemBroodleaf : EquippableItem, IWeapon, IAttackHandler, IActionCostModifier {
   internal override string GetStats() => "Applies the Vulnerable Status to attacked Creatures, making them take 1 more attack damage for 20 turns.\nAttacks twice as fast.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
   public (int, int) AttackSpread => (1, 1);
-  public int durability { get; set; }
-  public int maxDurability => 25;
-  public ItemBroodleaf() {
-    durability = maxDurability;
-  }
+  public override int stacksMax => 25;
+  public override bool disjoint => true;
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor a) {

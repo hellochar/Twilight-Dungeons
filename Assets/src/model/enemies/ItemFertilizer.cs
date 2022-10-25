@@ -4,11 +4,10 @@ using System.Linq;
 
 [Serializable]
 [ObjectInfo("fertilizer")]
-public class ItemFertilizer : Item, IConditionallyStackable, ITargetedAction<Plant> {
+public class ItemFertilizer : Item, ITargetedAction<Plant> {
   public override string displayName => $"{Util.WithSpaces(aiActorType.Name)} Fertilizer";
-  public int stacks { get; set; }
-  public int stacksMax => 9;
-  bool IConditionallyStackable.CanStackWith(IConditionallyStackable other) {
+  public override int stacksMax => 9;
+  protected override bool StackingPredicate(Item other) {
     return (other as ItemFertilizer).aiActorType == aiActorType;
   }
 
@@ -16,7 +15,6 @@ public class ItemFertilizer : Item, IConditionallyStackable, ITargetedAction<Pla
 
   public ItemFertilizer(Type type) {
     this.aiActorType = type;
-    stacks = 1;
   }
 
   public void Fertilize(Plant p) {

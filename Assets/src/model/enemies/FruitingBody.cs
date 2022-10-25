@@ -69,21 +69,18 @@ public class FruitingBody : AIActor, INoTurnDelay {
 
 [Serializable]
 [ObjectInfo("tanglefoot")]
-class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
+class ItemTanglefoot : EquippableItem, IBodyMoveHandler, ISticky {
   // 3.5% chance per turn
   private static float prdC = (float) PseudoRandomDistribution.CfromP(0.04m);
   internal override string GetStats() => "You're infected with Tanglefoot!\nMoving over a Tile without grass will occasionally Constrict you and grow a Guardleaf at your location.\nDoes not trigger at home.";
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 5;
+  public override int stacksMax => 5;
+  public override bool disjoint => true;
 
   private PseudoRandomDistribution prd;
 
   public ItemTanglefoot() {
-    durability = maxDurability;
-    
     prd = new PseudoRandomDistribution(prdC);
   }
 
@@ -97,22 +94,21 @@ class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
     if (shouldTrigger) {
       player.statuses.Add(new ConstrictedStatus(null));
       player.floor.Put(new Guardleaf(player.pos));
-      this.ReduceDurability();
+      stacks--;
     }
   }
 }
 
 [Serializable]
 [ObjectInfo("stiffarm")]
-class ItemStiffarm : EquippableItem, IDurable, IWeapon, IAttackDamageTakenModifier, ISticky {
+class ItemStiffarm : EquippableItem, IWeapon, IAttackDamageTakenModifier, ISticky {
   internal override string GetStats() => "You're infected with Stiffarm!\nYou take +1 damage from attacks.";
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-  public int durability { get; set; }
-  public int maxDurability => 15;
+  public override int stacksMax => 15;
+  public override bool disjoint => true;
   public (int, int) AttackSpread => (2, 3);
 
   public ItemStiffarm() {
-    durability = maxDurability;
   }
 
   public int Modify(int input) {
@@ -122,21 +118,19 @@ class ItemStiffarm : EquippableItem, IDurable, IWeapon, IAttackDamageTakenModifi
 
 [Serializable]
 [ObjectInfo("bulbous-skin")]
-class ItemBulbousSkin : EquippableItem, IDurable, ISticky {
+class ItemBulbousSkin : EquippableItem, ISticky {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
 
-  public int durability { get; set; }
-
-  public int maxDurability => 1;
+  public override int stacksMax => 1;
+  public override bool disjoint => true;
 
   internal override string GetStats() => "You're infected with Bulbous Skin!\nPress Germinate to take 1 damage and create 4 Mushrooms around you.";
   public ItemBulbousSkin() {
-    durability = maxDurability;
   }
 
   public void Germinate(Player player) {
     player.SetTasks(new GenericPlayerTask(player, GerminateBaseAction));
-    this.ReduceDurability();
+    stacks--;
   }
 
   void GerminateBaseAction() {
@@ -157,14 +151,13 @@ class ItemBulbousSkin : EquippableItem, IDurable, ISticky {
 
 [Serializable]
 [ObjectInfo("third-eye")]
-class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler, IAttackDamageTakenModifier {
+class ItemThirdEye : EquippableItem, ISticky, IActionPerformedHandler, IAttackDamageTakenModifier {
   internal override string GetStats() => "You're infected with a Third Eye!\nYou can see creatures' exact HP.\nTake 1 more attack damage.";
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
-  public int durability { get; set; }
-  public int maxDurability => 40;
+  public override int stacksMax => 40;
+  public override bool disjoint => true;
   private float reduction;
   public ItemThirdEye() {
-    durability = maxDurability;
   }
 
   public override void OnEquipped() {
@@ -176,7 +169,7 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler,
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    this.ReduceDurability();
+    stacks--;
   }
 
   public int Modify(int input) {
@@ -186,22 +179,21 @@ class ItemThirdEye : EquippableItem, IDurable, ISticky, IActionPerformedHandler,
 
 [Serializable]
 [ObjectInfo("scaly-skin")]
-class ItemScalySkin : EquippableItem, ISticky, IDurable, IAttackDamageTakenModifier, IActionPerformedHandler {
+class ItemScalySkin : EquippableItem, ISticky, IAttackDamageTakenModifier, IActionPerformedHandler {
   internal override string GetStats() => "You're infected with Scaly Skin!\nBlock 1 damage.\nLose 8 water every 25 turns.";
 
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
-  public int durability { get; set; }
-  public int maxDurability => 8;
+  public override int stacksMax => 8;
+  public override bool disjoint => true;
   private float timeLostWater;
 
   public ItemScalySkin() {
-    durability = maxDurability;
     timeLostWater = GameModel.main.time;
   }
 
   public int Modify(int input) {
     if (input > 0) {
-      this.ReduceDurability();
+      stacks--;
     }
     return input - 1;
   }

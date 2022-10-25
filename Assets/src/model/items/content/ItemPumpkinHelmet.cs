@@ -1,17 +1,16 @@
 [System.Serializable]
 [ObjectInfo(spriteName: "pumpkin-helmet", flavorText: "Protects your noggin from gentle hits, but a hearty thwak will break it.")]
-internal class ItemPumpkinHelmet : EquippableItem, IDurable, IAttackDamageTakenModifier, IBodyTakeAttackDamageHandler {
+internal class ItemPumpkinHelmet : EquippableItem, IAttackDamageTakenModifier, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
-  public int durability { get; set; }
-  public int maxDurability => 5;
+  public override int stacksMax => 5;
+  public override bool disjoint => true;
 
   public ItemPumpkinHelmet() {
-    durability = maxDurability;
   }
 
   public int Modify(int damage) {
     if (damage > 0) {
-      this.ReduceDurability();
+      stacks--;
     }
     return damage - 1;
   }

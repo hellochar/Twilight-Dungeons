@@ -1,15 +1,9 @@
 using System;
 
 [Serializable]
-class ItemStick : EquippableItem, IDurable, IWeapon {
+class ItemStick : EquippableItem, IWeapon {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-  public int durability { get; set; }
-
-  public int maxDurability => 3;
-
+  public override int stacksMax => 3;
+  public override bool disjoint => true;
   public (int, int) AttackSpread => (2, 2);
-
-  public ItemStick() {
-    this.durability = maxDurability;
-  }
 }

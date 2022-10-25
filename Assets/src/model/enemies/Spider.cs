@@ -95,30 +95,11 @@ internal class Web : Grass, IActorEnterHandler {
 
 [Serializable]
 [ObjectInfo("spider-silk-shoes", "Finely woven from the web of spiders.")]
-internal class ItemSpiderSandals : EquippableItem, IStackable, IBodyMoveHandler {
+internal class ItemSpiderSandals : EquippableItem, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
-  public int stacksMax => 999;
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        GameModel.main.EnqueueEvent(() => {
-          if (player.grass is Web web) {
-            web.Kill(player);
-          }
-          Destroy();
-        });
-      }
-    }
-  }
+  public override int stacksMax => 999;
 
-  public ItemSpiderSandals(int stacks) {
-    this.stacks = stacks;
+  public ItemSpiderSandals(int stacks) : base(stacks) {
   }
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {

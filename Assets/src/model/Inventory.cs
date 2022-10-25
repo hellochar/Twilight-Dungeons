@@ -29,24 +29,19 @@ public class Inventory : IEnumerable<Item> {
     if (item is IStuckToInventory && item.inventory != null && item.inventory != this) {
       return false;
     }
-    if (item is IStackable stackable) {
-      // go through existing stacks and add as much as possible
-      foreach (IStackable i in ItemsNonNull().Where(i => i.GetType() == item.GetType())) {
-        bool isConsumed;
-        // if we cannot stack; go on
-        if (item is IConditionallyStackable c1 && i is IConditionallyStackable c2 && !c1.CanStackWith(c2)) {
-          isConsumed = false;
-        } else {
-          isConsumed = i.Merge(stackable);
-        }
+    // go through existing stacks and add as much as possible
+    foreach (Item i in ItemsNonNull()) {
+      // stack if we can
+      if (item.CanStackWith(i)) {
+        bool isConsumed = i.Merge(item);
         if (isConsumed) {
           item.Destroy();
           HandleItemAdded(item, source);
           return true;
         }
       }
-      // if we still exist, then continue
     }
+    // if we still exist, then continue
 
     if (slot == -1) {
       return false;
@@ -79,11 +74,7 @@ public class Inventory : IEnumerable<Item> {
       slot = capacity - 1;
     }
 
-    if (!(item is IStackable) && slot == null) {
-      return false;
-    } else {
-      return AddItem(item, slot ?? -1, source);
-    }
+    return AddItem(item, slot ?? -1, source);
   }
 
   protected virtual void HandleItemAdded(Item item, Entity source) {

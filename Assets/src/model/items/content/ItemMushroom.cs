@@ -4,25 +4,9 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("mushroom", "They have such an interesting taste!")]
-class ItemMushroom : Item, IStackable, IEdible {
-  public ItemMushroom(int stacks) {
-    this.stacks = stacks;
-  }
-  public int stacksMax => 100;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+class ItemMushroom : Item, IEdible {
+  public ItemMushroom(int stacks) : base(stacks) {}
+  public override int stacksMax => 100;
 
   public void Eat(Actor a) {
     a.statuses.Add(new PumpedUpStatus(stacks));

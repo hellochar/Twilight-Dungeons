@@ -30,15 +30,12 @@ public class Slime : Destructible, IDeathHandler {
 
 [Serializable]
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
-public class ItemSlime : Item, IStackable, IStuckToInventory {
-  public int stacks { get; set; }
-  public int stacksMax => 8;
+public class ItemSlime : Item, IStuckToInventory {
+  public ItemSlime(int stacks) : base(stacks) {}
 
-  public ItemSlime(int stacks) {
-    this.stacks = stacks;
-  }
+  public ItemSlime() : this(1) {}
 
-  public ItemSlime() : this(1) { }
+  public override int stacksMax => 8;
 
   [PlayerAction]
   public void Purify() {

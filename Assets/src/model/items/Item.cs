@@ -17,6 +17,36 @@ public class Item : IModifierProvider {
   public List<IItemMod> mods = new List<IItemMod>();
   public virtual IEnumerable<object> MyModifiers => mods;
 
+  private int _stacks;
+  public virtual int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      if (value > stacksMax) {
+        value = stacksMax;
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+  public virtual int stacksMax => 1;
+
+  // An item is disjoint if it cannot be merged or accept new stacks from other instances of the same
+  // item type.
+  public virtual bool disjoint => false;
+
+  public Item(int stacks) {
+    this.stacks = stacks;
+  }
+
+  public Item() {
+    this.stacks = disjoint ? stacksMax : 1;
+  }
+
   // must take a parameter so ItemController can invoke this without erroring
   public void Destroy(object unused = null) {
     if (inventory != null) {
@@ -49,6 +79,18 @@ public class Item : IModifierProvider {
     }
     return methods;
   }
+
+  public bool CanStackWith(Item other) {
+    if (disjoint || other.disjoint || GetType() != other.GetType()) {
+      return false;
+    }
+    return StackingPredicate(other);
+  }
+
+  // only called when other.GetType() == this.GetType()
+  protected virtual bool StackingPredicate(Item other) {
+    return true;
+  }
 }
 
 public interface IItemMod {
@@ -64,9 +106,20 @@ public static class ItemExtensions {
     if (item is IWeapon w) {
       text += Util.DescribeDamageSpread(w.AttackSpread);
     }
-    if (item is IDurable d) {
-      text += $"Durability: {d.durability}/{d.maxDurability}.";
+    if (item.disjoint) {
+      text += $"Uses: {item.stacks}/{item.stacksMax}.";
     }
     return text.Trim();
+  }
+
+  /// Merge as many stacks as possible from other into this one.
+  /// Return true if the other stack is now empty.
+  /// NOTE: it's the responsibility of the caller to then dispose of the IStackable!
+  public static bool Merge<T>(this T s, T other) where T : Item {
+    var spaceLeft = s.stacksMax - s.stacks;
+    var stacksToAdd = UnityEngine.Mathf.Clamp(other.stacks, 0, spaceLeft);
+    s.stacks += stacksToAdd;
+    other.stacks -= stacksToAdd;
+    return other.stacks == 0;
   }
 }

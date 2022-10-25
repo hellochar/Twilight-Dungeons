@@ -54,25 +54,9 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
 }
 
 [Serializable]
-internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
-  public ItemDeathbloomFlower(int stacks) {
-    this.stacks = stacks;
-  }
-  public int stacksMax => 10;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+internal class ItemDeathbloomFlower : Item, IEdible {
+  public ItemDeathbloomFlower(int stacks) : base(stacks) {}
+  public override int stacksMax => 10;
 
   public void Eat(Actor a) {
     a.statuses.RemoveOfType<WeaknessStatus>();

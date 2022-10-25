@@ -47,25 +47,11 @@ public class StoutShrub : Plant {
 
 [Serializable]
 [ObjectInfo("thicket")]
-public class ItemThicket : EquippableItem, IStackable, IBodyTakeAttackDamageHandler {
+public class ItemThicket : EquippableItem, IBodyTakeAttackDamageHandler {
   internal override string GetStats() => "Constrict enemies who attack you for 6 turns.";
   public override EquipmentSlot slot => EquipmentSlot.Armor;
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-  public int stacksMax => 100;
-  public ItemThicket(int stacks) {
-    this.stacks = stacks;
+  public override int stacksMax => 100;
+  public ItemThicket(int stacks) : base(stacks) {
   }
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
@@ -78,29 +64,13 @@ public class ItemThicket : EquippableItem, IStackable, IBodyTakeAttackDamageHand
 
 [Serializable]
 [ObjectInfo("prickler")]
-public class ItemPrickler : EquippableItem, IWeapon, IStackable, IAttackHandler {
+public class ItemPrickler : EquippableItem, IWeapon, IAttackHandler {
   internal override string GetStats() => "Leaves a Prickly Growth on the attacked Creature's tile, which deals 3 attack damage to the Creature standing over it next turn.";
-  private int _stacks;
-
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
-
-  public int stacksMax => 100;
+  public override int stacksMax => 100;
   public (int, int) AttackSpread => (1, 2);
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
-  public ItemPrickler(int stacks) {
-    this.stacks = stacks;
+  public ItemPrickler(int stacks) : base(stacks) {
   }
 
   public ItemPrickler() : this(1) { }
@@ -130,26 +100,24 @@ class PricklyGrowth : Grass, ISteppable {
 
 [Serializable]
 [ObjectInfo("stout-shield", "")]
-public class ItemStoutShield : EquippableItem, IDurable, IAttackDamageTakenModifier {
+public class ItemStoutShield : EquippableItem, IAttackDamageTakenModifier {
   // 50% chance per turn
   private static float prdC50 = (float) PseudoRandomDistribution.CfromP(0.5m);
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
   internal override string GetStats() => "50% chance to block all damage from an attack.";
 
-  public int durability { get; set; }
-  public int maxDurability { get; protected set; }
+  public override int stacksMax => 20;
+  public override bool disjoint => true;
   private PseudoRandomDistribution prd;
 
   public ItemStoutShield() {
-    this.maxDurability = 20;
-    this.durability = maxDurability;
     prd = new PseudoRandomDistribution(prdC50);
   }
 
   public int Modify(int damage) {
     // invert the test so the very first turn is actually 70%, but successive blocks are unlikely
     if (damage > 0 && !(prd.Test())) {
-      this.ReduceDurability();
+      stacks--;
       return 0;
     } else {
       return damage;

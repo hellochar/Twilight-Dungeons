@@ -36,7 +36,7 @@ public class DurabilityBarController : MonoBehaviour {
 
   public void UpdateActive() {
     // var isActive = gameObject.activeSelf;
-    var shouldBeActive = item is IDurable d || item is IStackable s;
+    var shouldBeActive = item != null && item.stacksMax > 1;
     gameObject.SetActive(shouldBeActive);
     if (shouldBeActive) {
       lastDurability = GetItemDurability();
@@ -61,21 +61,21 @@ public class DurabilityBarController : MonoBehaviour {
   }
 
   void UpdateTextAndBarFillAmount() {
-    if (item is IDurable durable) {
+    if (item.disjoint) {
       // durable case
-      text.text = $"{durable.durability}/{durable.maxDurability}";
-      bar.fillAmount = (float) durable.durability / durable.maxDurability;
+      text.text = $"{item.stacks}/{item.stacksMax}";
+      bar.fillAmount = (float) item.stacks / item.stacksMax;
       bar.color = Color.Lerp(colorUsed, colorGood, bar.fillAmount);
-    } else if (item is IStackable stackable) {
+    } else {
       // stackable case
-      text.text = $"{stackable.stacks}";
+      text.text = $"{item.stacks}";
       bar.fillAmount = 1;
       bar.color = Color.clear;
     }
   }
 
   void UpdateWidth() {
-    var wantedWidth = item is IDurable ? 80 : 40;
+    var wantedWidth = item.disjoint ? 80 : 40;
     if (rectTransform.sizeDelta.x != wantedWidth) {
       var sizeDelta = rectTransform.sizeDelta;
       sizeDelta.x = wantedWidth;
@@ -90,12 +90,6 @@ public class DurabilityBarController : MonoBehaviour {
   }
 
   private int GetItemDurability() {
-    if (item is IDurable durable) {
-      return durable.durability;
-    } else if (item is IStackable stackable) {
-      return stackable.stacks;
-    } else {
-      return -1;
-    }
+    return item.stacks;
   }
 }

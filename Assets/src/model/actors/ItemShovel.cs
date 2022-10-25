@@ -5,13 +5,11 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("shovel")]
-public class ItemShovel : Item, IDurable {
-  public ItemShovel() {
-    durability = maxDurability;
-  }
+public class ItemShovel : Item {
+  public ItemShovel() : base() {}
 
-  public int durability { get; set; }
-  public int maxDurability => 7;
+  public override int stacksMax => 7;
+  public override bool disjoint => true;
 
   public void DigUp(Player player) {
     var grass = player.grass;
@@ -20,7 +18,7 @@ public class ItemShovel : Item, IDurable {
       player.inventory.AddItem(item, grass);
       // they're *not* killed because we don't want to trigger actions on them
       player.floor.Remove(grass);
-      this.ReduceDurability();
+      stacks--;
     }
   }
 

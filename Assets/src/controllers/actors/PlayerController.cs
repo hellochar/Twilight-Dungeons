@@ -23,6 +23,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemRemoved += HandleEquipmentItemRemoved;
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
+    player.OnChangeOrganicMatter += HandleChangeOrganicMatter;
     player.OnMaxHPAdded += HandleMaxHPAdded;
     this.sfxAudio = GetComponent<AudioSource>();
   }
@@ -40,6 +41,17 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     } else {
       worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("# <sprite name=water>");
     }
+  }
+
+  private void HandleChangeOrganicMatter(int delta) {
+    var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
+    if (delta > 0) {
+      worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("+0");
+      SpriteFlyAnimation.Create(MasterSpriteAtlas.atlas.GetSprite("plant-matter"), transform.position, GameObject.Find("Organic Matter Icon"));
+    }
+    // else {
+    //   worldText.GetComponent<TMPro.TMP_Text>().text = delta.ToString("# <sprite name=water>");
+    // }
   }
 
   void OnApplicationPause(bool isPaused) {

@@ -63,6 +63,7 @@ public class ThickBrush : Destructible, IBlocksVision {
       f.root.ExtendToEncompass(new Room(pos - Vector2Int.one, pos + Vector2Int.one));
       f.RecomputeVisibility();
     }
+    floor.Put(new ItemOnGround(pos, new ItemOrganicMatter()));
   }
 
   [PlayerAction]

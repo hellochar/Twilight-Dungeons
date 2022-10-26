@@ -391,6 +391,9 @@ public abstract class FloorGenerator {
     floor.startPos = new Vector2Int(root.min.x + 1, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
     Encounters.AddWater(floor, root);
+    // Encounters.AddOrganicMatter(floor, root);
+    // Encounters.AddOrganicMatter(floor, root);
+    // Encounters.AddOrganicMatter(floor, root);
     // Encounters.OneAstoria(floor, root);
     FloorUtils.TidyUpAroundStairs(floor);
 

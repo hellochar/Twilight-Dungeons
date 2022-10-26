@@ -12,7 +12,7 @@ public class Item : IModifierProvider {
 
   public virtual Inventory inventory { get; set; }
 
-  [field:NonSerialized] /// controller only
+  [field:NonSerialized] /// controller uses this, but gameplay may as well
   public event Action OnDestroyed;
   public List<IItemMod> mods = new List<IItemMod>();
   public virtual IEnumerable<object> MyModifiers => mods;
@@ -49,8 +49,8 @@ public class Item : IModifierProvider {
 
   // must take a parameter so ItemController can invoke this without erroring
   public void Destroy(object unused = null) {
+    OnDestroyed?.Invoke();
     if (inventory != null) {
-      OnDestroyed?.Invoke();
       inventory.OnItemDestroyed?.Invoke(this);
       inventory.RemoveItem(this);
     }

@@ -28,6 +28,16 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
+  private int m_organicMatter;
+  public int organicMatter {
+    get => m_organicMatter;
+    set {
+      var diff = value - m_organicMatter;
+      m_organicMatter = value;
+      OnChangeOrganicMatter?.Invoke(diff);
+    }
+  }
+
 #if experimental_actionpoints
   public int actionPoints = 3;
   public int maxActionPoints = 3;
@@ -65,6 +75,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public override float turnPriority => 10;
   [field:NonSerialized] /// controller only, int delta
   public event Action<int> OnChangeWater;
+
+  [field:NonSerialized] /// controller only, int delta
+  public event Action<int> OnChangeOrganicMatter;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;

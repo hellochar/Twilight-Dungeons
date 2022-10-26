@@ -26,7 +26,7 @@ public class WaterIndicatorController : MonoBehaviour {
     Popups.Create(
       title: "Water",
       category: null,
-      info: "Use water for planting seeds back home, or other situations that require it.\n\nEvery 10 turns, 1 water evaporates.",
+      info: "Collect water from the caves.\nUse water for planting seeds back home.\n\nEvery 10 turns, 1 water evaporates.",
       flavor: "Water water everywhere...",
       sprite: transform.Find("Water Droplet").gameObject
     );

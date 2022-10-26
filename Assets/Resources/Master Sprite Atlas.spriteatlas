@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 118929
+    totalSpriteSurfaceArea: 119185
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -396,6 +396,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 184b4b5d160a3924fa61bae6a93071a6, type: 3}
   - {fileID: 21300000, guid: 97ce6b7d8355f8e4fa7f0ce125222f3b, type: 3}
   - {fileID: 21300000, guid: 4e996e9d3ecb6b34da4031a80baa2a65, type: 3}
+  - {fileID: 21300000, guid: e5cd23cd2f6b5524282a8f66c724cfeb, type: 3}
   - {fileID: 21300000, guid: d58ad4cd3ab97734aac279ebe56231ff, type: 3}
   - {fileID: 21300000, guid: 2dd03ccd0a5dcbb4cab08e9b386ffca3, type: 3}
   - {fileID: 21300000, guid: dcbe020e81d351a4993cb309785c2e33, type: 3}
@@ -763,6 +764,7 @@ SpriteAtlas:
   - thistlebog
   - cloner
   - scrollbar
+  - plant-matter
   - mushroom-cap
   - item shadow
   - muckola

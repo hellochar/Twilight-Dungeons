@@ -5,14 +5,16 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Tap to pick up this item and see what it does.")]
-public class ItemOnGround : Entity, IDaySteppable {
+public class ItemOnGround : Entity, IActorEnterHandler, IDaySteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground && tile.item == null && (tile.CanBeOccupied() || tile.body is Player);
   public static void PlacementBehavior(Floor floor, ItemOnGround i) {
     var newPosition = floor.BreadthFirstSearch(i.pos, (_) => true)
       .Where(ItemOnGround.CanOccupy)
-      .First()
-      .pos;
-    i._pos = newPosition;
+      .FirstOrDefault()
+      ?.pos ?? null;
+    if (newPosition.HasValue) {
+      i._pos = newPosition.Value;
+    }
   }
 
   private Vector2Int _pos;
@@ -28,7 +30,23 @@ public class ItemOnGround : Entity, IDaySteppable {
     this.start = start;
     this._pos = pos;
     this.item = item;
+    item.OnDestroyed += HandleItemDestroyed;
     Debug.AssertFormat(item.inventory == null, "Item's inventory should be null");
+  }
+
+  [OnDeserialized]
+  void HandleDeserialized() {
+    item.OnDestroyed += HandleItemDestroyed;
+  }
+
+  private void HandleItemDestroyed() {
+    KillSelf();
+  }
+
+  public void HandleActorEnter(Actor who) {
+    if (item is IActorEnterHandler h) {
+      h.HandleActorEnter(who);
+    }
   }
 
   internal void PickUp() {

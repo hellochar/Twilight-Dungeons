@@ -937,6 +937,7 @@ public class Encounters {
   public static void AddBatTooth(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemBatTooth());
   public static void AddSnailShell(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSnailShell(1));
   public static void AddSpiderSandals(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSpiderSandals(15));
+  public static void AddOrganicMatter(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemOrganicMatter());
   public static void AddSoil(Floor floor, Room room) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {

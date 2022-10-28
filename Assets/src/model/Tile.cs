@@ -6,9 +6,9 @@ using UnityEngine;
 [Serializable]
 public abstract class Tile : Entity {
   public TileVisiblity visibility = TileVisiblity.Unexplored;
-  private Vector2Int _pos;
   public bool isExplored => !IsDead && visibility != TileVisiblity.Unexplored;
 
+  private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
     /// do not allow moving tiles

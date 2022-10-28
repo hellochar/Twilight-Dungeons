@@ -130,11 +130,11 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
     } else {
       Array.Clear(grid, 0, grid.Length);
     }
-    foreach (var t in list) {
-      if (grid[t.pos.x, t.pos.y] != null) {
-        Debug.LogError("Bodies overlapping: " + grid[t.pos.x, t.pos.y] + " and " + t);
+    foreach (var e in list) {
+      if (grid[e.pos.x, e.pos.y] != null) {
+        Debug.LogError("Bodies overlapping: " + grid[e.pos.x, e.pos.y] + " and " + e);
       }
-      grid[t.pos.x, t.pos.y] = t;
+      grid[e.pos.x, e.pos.y] = e;
     }
     needsRecompute = false;
   }

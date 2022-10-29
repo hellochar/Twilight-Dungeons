@@ -72,11 +72,15 @@ public class StaticEntityGrid<T> : EntityStore<T> where T : Entity {
     }
     PlacementBehavior(entity);
 
-    grid[entity.pos.x, entity.pos.y] = entity;
+    foreach (var pos in entity.area) {
+      grid[pos.x, pos.y] = entity;
+    }
   }
 
   public override void Remove(T entity) {
-    grid[entity.pos.x, entity.pos.y] = null;
+    foreach (var pos in entity.area) {
+      grid[pos.x, pos.y] = null;
+    }
   }
 
   public override IEnumerator<T> GetEnumerator() {
@@ -131,10 +135,12 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
       Array.Clear(grid, 0, grid.Length);
     }
     foreach (var e in list) {
-      if (grid[e.pos.x, e.pos.y] != null) {
-        Debug.LogError("Bodies overlapping: " + grid[e.pos.x, e.pos.y] + " and " + e);
+      foreach (var pos in e.area) {
+        if (grid[pos.x, pos.y] != null) {
+          Debug.LogError("Bodies overlapping: " + grid[pos.x, pos.y] + " and " + e);
+        }
+        grid[pos.x, pos.y] = e;
       }
-      grid[e.pos.x, e.pos.y] = e;
     }
     needsRecompute = false;
   }

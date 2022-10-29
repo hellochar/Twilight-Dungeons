@@ -89,15 +89,15 @@ public class EncounterGroupShared : EncounterGroup {
       // { 1, AddCrafting },
     };
     Plants = new EncounterBag {
-      { 1, MatureBerryBush },
-      { 1, MatureThornleaf },
+      // { 1, MatureBerryBush },
+      // { 1, MatureThornleaf },
       { 1, MatureWildWood },
-      { 1, MatureWeirdwood },
-      { 1, MatureKingshroom },
-      { 1, MatureFrizzlefen },
-      { 1, MatureChangErsWillow },
-      { 1, MatureStoutShrub },
-      { 1, MatureBroodpuff },
+      // { 1, MatureWeirdwood },
+      // { 1, MatureKingshroom },
+      // { 1, MatureFrizzlefen },
+      // { 1, MatureChangErsWillow },
+      // { 1, MatureStoutShrub },
+      // { 1, MatureBroodpuff },
     };
     Rests = new EncounterBag {
       // { 1, Campfire },

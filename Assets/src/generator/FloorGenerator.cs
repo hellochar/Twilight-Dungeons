@@ -179,7 +179,7 @@ public abstract class FloorGenerator {
     var depth = floor.depth;
     floor.depth = 20;
     // put stuff here
-    Encounters.OneButterfly(floor, floor.root);
+    // Encounters.OneButterfly(floor, floor.root);
     // Encounters.AddSoftMoss(floor, floor.root);
     floor.depth = depth;
     #endif
@@ -375,9 +375,9 @@ public abstract class FloorGenerator {
     var room3 = Util.RandomPick(farAwayRooms);
     farAwayRooms.Remove(room3);
 
-    shared.Plants.GetRandomAndDiscount(1)(floor, room1);
-    shared.Plants.GetRandomAndDiscount(1)(floor, room2);
-    shared.Plants.GetRandomAndDiscount(1)(floor, room3);
+    // shared.Plants.GetRandomAndDiscount(1)(floor, room1);
+    // shared.Plants.GetRandomAndDiscount(1)(floor, room2);
+    // shared.Plants.GetRandomAndDiscount(1)(floor, room3);
 
     foreach(var r in farAwayRooms) {
       // Encounters.PutSlime(floor, r);

@@ -8,7 +8,7 @@ using UnityEngine;
 public class ItemShovel : Item {
   public ItemShovel() : base() {}
 
-  public override int stacksMax => 7;
+  public override int stacksMax => 1;
   public override bool disjoint => true;
 
   public void DigUp(Player player) {

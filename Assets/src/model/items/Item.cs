@@ -122,4 +122,16 @@ public static class ItemExtensions {
     other.stacks -= stacksToAdd;
     return other.stacks == 0;
   }
+
+  public static T Split<T>(this T item, int splitStack) where T : Item {
+    if (item.disjoint) {
+      return null;
+    } else {
+      splitStack = Mathf.Clamp(splitStack, 0, item.stacks);
+      T split = item.GetType().GetConstructor(new Type[0]).Invoke(new object[0]) as T;
+      split.stacks = splitStack;
+      item.stacks = item.stacks - splitStack;
+      return split;
+    }
+  }
 }

@@ -25,6 +25,7 @@ public class ObjectInfo {
     },
     [typeof(ItemStick)] = new ObjectInfo {
       spriteName = "Stick",
+      description = "",
       flavorText = "Stiff but brittle, this won't last long."
     },
     [typeof(ItemDeathbloomFlower)] = new ObjectInfo {

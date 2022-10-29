@@ -122,6 +122,8 @@ public class FloorController : MonoBehaviour {
         gameObject.GetComponent<GrassController>().grass = grass;
       } else if (entity is ItemOnGround itemOnGround) {
         gameObject.GetComponent<ItemOnGroundController>().itemOnGround = itemOnGround;
+      } else if (entity is Soil s) {
+        gameObject.GetComponent<SoilController>().soil = s;
       }
       gameObjectMap[entity] = gameObject;
     } else if (!(entity is Trigger)) {
@@ -144,6 +146,7 @@ public class FloorController : MonoBehaviour {
     if (body != null) visibleEntities.Add(body);
     if (itemOnGround != null) visibleEntities.Add(itemOnGround);
     if (grass != null) visibleEntities.Add(grass);
+    if (floor is HomeFloor f && f.soils[pos] != null) visibleEntities.Add(f.soils[pos]);
     if (tile?.isExplored ?? false) visibleEntities.Add(tile);
 
     return visibleEntities.ToArray();

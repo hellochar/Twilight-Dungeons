@@ -3,6 +3,7 @@ using System;
 [Serializable]
 [ObjectInfo("plant-matter", description: "Turn into organic matter at home.")]
 public class ItemOrganicMatter : Item, IActorEnterHandler {
+  public static int yieldCost = 5;
 
   [PlayerAction]
   public void Collect() {

@@ -4,9 +4,10 @@ using UnityEngine;
 
 [Serializable]
 public class ItemWildwoodWreath : EquippableItem, IBodyMoveHandler {
+  public static int yieldCost = 2;
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
-  public override int stacksMax => 10;
-  public override bool disjoint => true;
+  public override int stacksMax => int.MaxValue;
+  // public override bool disjoint => true;
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     var target = Util.RandomPick(player.floor.AdjacentActors(player.pos).Where(a => a.faction != Faction.Ally && !a.statuses.Has<ConfusedStatus>()));

@@ -192,7 +192,7 @@ public class Floor {
     }
   }
 
-  public void Remove(Entity entity) {
+  public virtual void Remove(Entity entity) {
     if (!entities.Contains(entity)) {
       Debug.LogError("Removing " + entity + " from a floor it doesn't live in!");
       return;

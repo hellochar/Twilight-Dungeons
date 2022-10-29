@@ -38,6 +38,10 @@ public abstract class Entity : IModifierProvider {
   public float timeCreated { get; }
   public abstract Vector2Int pos { get; set; }
 
+  public static Vector2Int[] DefaultShape = new Vector2Int[1] { Vector2Int.zero };
+  public virtual Vector2Int[] shape => DefaultShape;
+  public IEnumerable<Vector2Int> area => shape.Select(vertex => vertex + pos);
+
   public float age => GameModel.main.time - timeCreated;
   public Tile tile => floor.tiles[pos];
 #if experimental_chainfloors

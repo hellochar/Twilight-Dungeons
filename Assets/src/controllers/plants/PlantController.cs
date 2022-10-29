@@ -61,7 +61,7 @@ public class PlantController : BodyController, ILongTapHandler {
 
   private void HandleHarvested() {
     AudioClipStore.main.plantHarvest.Play(0.1f);
-    popupOpen = false;
+    // popupOpen = false;
 
     var particles = PrefabCache.Effects.Instantiate("Harvest Particles", transform.parent);
     particles.transform.localPosition = transform.localPosition;

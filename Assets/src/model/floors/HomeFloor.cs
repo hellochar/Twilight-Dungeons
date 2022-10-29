@@ -6,19 +6,31 @@ using UnityEngine;
 
 [Serializable]
 public class HomeFloor : Floor {
-  public HomeFloor(int width, int height) : base(0, width, height) {
-  }
-
+  public StaticEntityGrid<Soil> soils;
   public IEnumerable<Plant> plants => bodies.Where(b => b is Plant).Cast<Plant>();
 
-#if experimental_survivalhomefloor
+  public HomeFloor(int width, int height) : base(0, width, height) {
+    soils = new StaticEntityGrid<Soil>(this);
+  }
+
   public override void Put(Entity entity) {
+#if experimental_survivalhomefloor
     if (entity is Tile t) {
       t.visibility = TileVisiblity.Explored;
     }
+#endif
+    if (entity is Soil s) {
+      soils.Put(s);
+    }
     base.Put(entity);
   }
-#endif
+
+  public override void Remove(Entity entity) {
+    if (entity is Soil s) {
+      soils.Remove(s);
+    }
+    base.Remove(entity);
+  }
 
 #if !experimental_survivalhomefloor
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {

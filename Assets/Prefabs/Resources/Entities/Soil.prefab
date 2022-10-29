@@ -70,7 +70,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -186776217
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 14f27f986cad3024c9aa2d4bd8d05c69, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.32941177}
   m_FlipX: 0
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6434690483704839555}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 90ca1ab28ea56684c8a6e775f68266f6, type: 3}
   m_Name: 
@@ -106,10 +106,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2211706637318507891, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1428460151401945867, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
@@ -166,10 +181,25 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3689728111939461397, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3777084247053353605, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_Name
       value: Soil
+      objectReference: {fileID: 0}
+    - target: {fileID: 8308166497240942458, guid: 16637295e55e2db4dbd4caafff2523df,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1245066267101961157, guid: 16637295e55e2db4dbd4caafff2523df, type: 3}

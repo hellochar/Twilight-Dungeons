@@ -33,7 +33,10 @@ public static class Popups {
     var infoText = popup.transform.Find("Frame/Stats").GetComponent<TMPro.TMP_Text>();
     infoText.text = info;
 
-    controller.SetErrorText(errorText);
+    var errorContainer = popup.transform.Find("Frame/Scroll View").gameObject;
+    errorContainer.SetActive(errorText != null);
+    var text = errorContainer.transform.Find("Viewport/Content/Text").GetComponent<TMPro.TMP_Text>();
+    text.text = errorText;
 
     var flavorText = popup.transform.Find("Frame/Flavor Text").GetComponent<TMPro.TMP_Text>();
     flavorText.text = flavor;
@@ -64,7 +67,7 @@ public static class Popups {
     }
 
     if (inventory != null) {
-      var inventoryContainer = controller.inventoryContainer;
+      var inventoryContainer = popup.transform.Find("Frame/Inventory Container").gameObject;
       inventoryContainer.SetActive(true);
       var inventoryController = inventoryContainer.GetComponentInChildren<InventoryController>();
       inventoryController.inventory = inventory;

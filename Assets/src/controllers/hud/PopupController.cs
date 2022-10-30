@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class PopupController : MonoBehaviour {
   public event Action OnClose;
-  public GameObject errorContainer;
-  public GameObject inventoryContainer;
   internal bool showPlayerInventoryOnTop;
 
   private Transform playerInventoryOriginalParent;
@@ -29,12 +27,6 @@ public class PopupController : MonoBehaviour {
       playerInventory.transform.SetParent(transform.parent);
       playerInventory.transform.SetAsLastSibling();
     }
-  }
-
-  public void SetErrorText(string errorText) {
-    errorContainer.SetActive(errorText != null);
-    var text = errorContainer.transform.Find("Viewport/Content/Text").GetComponent<TMPro.TMP_Text>();
-    text.text = errorText;
   }
 
   void OnDestroy() {

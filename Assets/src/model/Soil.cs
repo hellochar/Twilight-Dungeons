@@ -5,7 +5,7 @@ using UnityEngine;
 
 [ObjectInfo("soil", description: "Plant seeds here.", flavorText: "Fresh, moist, and perfect for growing. Hard to come by in the caves.")]
 [Serializable]
-public class Soil : Entity {
+public class Soil : Entity, IDaySteppable {
   private Vector2Int _pos;
   public override Vector2Int pos { get => _pos; set {} }
   public static Vector2Int[] SoilShape = new Vector2Int[] {
@@ -37,6 +37,7 @@ public class Soil : Entity {
     if (player.water < waterCost) {
       throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
     }
+    // player.UseActionPointOrThrow();
     player.water -= waterCost;
     watered = true;
   }
@@ -50,6 +51,10 @@ public class Soil : Entity {
     }
     player.organicMatter -= organicMatterCost;
     nutrient++;
+  }
+
+  public void StepDay() {
+    watered = false;
   }
 }
 

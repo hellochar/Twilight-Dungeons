@@ -388,6 +388,7 @@ public class Encounters {
       plant.GoNextStage();
       plant.GoNextStage();
       floor.Put(plant);
+      floor.Put(new Soil(plant.pos));
     }
     floor.PutAll(floor.GetAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
   }

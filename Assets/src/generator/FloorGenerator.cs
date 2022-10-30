@@ -340,8 +340,8 @@ public abstract class FloorGenerator {
     // fits 4x2 structures, and +1 on each edge to see the walls
     // var rootWidth = (3 + 2 + 2 + 2) + 2;
     // var rootHeight = (3 + 2) + 2;
-    var rootWidth = 5 + 2;
-    var rootHeight = 3 + 2;
+    var rootWidth = 7 + 2;
+    var rootHeight = 5 + 2;
     var middleRight = new Vector2Int(floor.width - 2, floor.height / 2);
     var rootMin = new Vector2Int(middleRight.x - (rootWidth - 2), middleRight.y - (rootHeight - 1) / 2);
     var root = new Room(

@@ -72,6 +72,7 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
     base.HandleEnterFloor();
     dayCreated = GameModel.main.day;
     RecomputeAndRefillYield();
+    stage.RestockHarvests(yield);
   }
   public bool IsSurroundedByGrass() {
     return floor == null ? false : floor.GetAdjacentTiles(pos).Where(t => t.grass != null).Count() >= 8;
@@ -189,9 +190,9 @@ public delegate YieldContribution YieldContributionRule(Plant plant);
 
     var player = GameModel.main.player;
 #if experimental_actionpoints
-    if (!isFreeHarvest) {
-      player.UseActionPointOrThrow();
-    }
+    // if (!isFreeHarvest) {
+    //   player.UseActionPointOrThrow();
+    // }
 #endif
     var inventory = stage.harvestOptions[choiceIndex];
     var boughtItem = inventory.ItemsNonNull().FirstOrDefault();

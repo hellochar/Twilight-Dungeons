@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public static class Popups {
-  public static PopupController CreateEmpty(Transform parent = null) {
-    GameObject popup = InstantiatePopup(parent);
+  public static PopupController CreateEmpty() {
+    GameObject popup = InstantiatePopup();
     var controller = popup.GetComponent<PopupController>();
     return controller;
   }
@@ -16,12 +16,11 @@ public static class Popups {
     string info,
     string flavor,
     GameObject sprite = null,
-    Transform parent = null,
     List<(string, Action)> buttons = null,
     string errorText = null,
     Inventory inventory = null
   ) {
-    var controller = CreateEmpty(parent);
+    var controller = CreateEmpty();
     GameObject popup = controller.gameObject;
 
     GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("StandardPopupContent"), popup.transform);
@@ -86,10 +85,8 @@ public static class Popups {
     return controller;
   }
 
-  private static GameObject InstantiatePopup(Transform parent) {
-    if (parent == null) {
-      parent = GameObject.Find("Canvas").transform;
-    }
+  private static GameObject InstantiatePopup() {
+    var parent = GameObject.Find("Canvas").transform;
     return UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Popup"), new Vector3(), Quaternion.identity, parent);
   }
 

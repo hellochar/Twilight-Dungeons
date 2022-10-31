@@ -4,15 +4,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PopupController : MonoBehaviour {
+public class PopupController : MonoBehaviour, ICameraOverride {
   public Transform container;
-  public GameObject overlay;
+  public GameObject overlay, overlayLeanLeft, overlayLeanRight;
+  private HorizontalLayoutGroup horizontalLayoutGroup;
+  public Entity target;
 
   public event Action OnClose;
   internal bool showPlayerInventoryOnTop;
 
   private Transform playerInventoryOriginalParent;
   private int playerInventoryOriginalSiblingIndex;
+
+  public CameraState overrideState =>
+    horizontalLayoutGroup.childAlignment == TextAnchor.MiddleCenter ?
+    null : 
+    new CameraState {
+      lean = ViewportLean.Left,
+      target = this.target ?? GameModel.main.player,
+    };
+
+  void Awake() {
+    horizontalLayoutGroup = container.GetComponent<HorizontalLayoutGroup>();
+  }
+
   void Start() {
     // fill up the parent
     var rectTransform = GetComponent<RectTransform>();
@@ -37,7 +52,9 @@ public class PopupController : MonoBehaviour {
     if (alignment != TextAnchor.MiddleCenter) {
       overlay.GetComponent<Image>().color = Color.clear;
     }
-    container.GetComponent<HorizontalLayoutGroup>().childAlignment = alignment;
+    overlayLeanLeft.SetActive(alignment == TextAnchor.MiddleLeft);
+    overlayLeanRight.SetActive(alignment == TextAnchor.MiddleRight);
+    horizontalLayoutGroup.childAlignment = alignment;
   }
 
   void OnDestroy() {

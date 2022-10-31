@@ -46,19 +46,21 @@ public class CameraController : MonoBehaviour {
     }
     if (cameraOverride != null) {
       var state = cameraOverride.overrideState;
-      // ZoomLerp(camera, state.targetZoom, zoomLerpSpeed);
-      camera.orthographicSize = state.targetZoom;
+      if (state != null) {
+        ZoomLerp(camera, state.targetZoom, zoomLerpSpeed);
+        // camera.orthographicSize = state.targetZoom;
 
-      var targetPos = state.targetPos;
-      if (state.lean == ViewportLean.Left) {
-        // put the focus on the left half of the camera
-        var cameraBounds = OrthographicBounds(camera);
-        var cameraWidth = cameraBounds.size.x;
-        var leanOffset = new Vector2(cameraWidth / 4, 0);
-        targetPos += leanOffset;
+        var targetPos = state.targetPos;
+        if (state.lean == ViewportLean.Left) {
+          // put the focus on the left half of the camera
+          var cameraBounds = OrthographicBounds(camera);
+          var cameraWidth = cameraBounds.size.x;
+          var leanOffset = new Vector2(cameraWidth / 4, 0);
+          targetPos += leanOffset;
+        }
+        camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed * 3, jumpThreshold);
+        return;
       }
-      camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed, 0);
-      return;
     }
     var floor = GameModel.main.currentFloor;
     // after this the sprites look too small and misclicking is too easy
@@ -260,8 +262,8 @@ public enum ViewportLean { None, Left, Right }
 
 public class CameraState {
   public Entity target;
-  public ViewportLean lean;
-  public float targetZoom => extents.height + 1;
+  public ViewportLean lean = ViewportLean.None;
+  public float targetZoom => Mathf.Max((extents.height + 1) / 2.0f, 2);
   public Vector2 targetPos => extents.centerFloat + target.pos;
 
   private Room m_extents;

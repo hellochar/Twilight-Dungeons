@@ -26,7 +26,6 @@ public class PlantController : BodyController, ILongTapHandler {
         plantUIController.plantController = this;
         CameraController.main.SetCameraOverride(plantUIController);
       } else {
-        CameraController.main.SetCameraOverride(null);
         // closing popup
         Destroy(popup);
         popup = null;

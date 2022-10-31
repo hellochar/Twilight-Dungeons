@@ -182,7 +182,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       inventory = i.inventory;
     }
 
-    Popups.CreateStandard(
+    var controller = Popups.CreateStandard(
       title: entity.displayName,
       category: GetCategoryForEntity(entity),
       info: description.Trim(),
@@ -191,6 +191,9 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       buttons: buttons,
       inventory: inventory
     );
+    controller.target = entity;
+    controller.Init(TextAnchor.MiddleRight);
+    CameraController.main.SetCameraOverride(controller);
     Destroy(spriteGameObject);
   }
 

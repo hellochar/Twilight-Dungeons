@@ -34,7 +34,7 @@ public class DepthTextController : MonoBehaviour {
     #if experimental_retryondemand
     buttons.Add(("Retry Level", RetryLevel));
     #endif
-    Popups.Create(
+    Popups.CreateStandard(
       title: null,
       category: "",
       info: info,

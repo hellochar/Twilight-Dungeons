@@ -15,7 +15,7 @@ public class MercenaryController : ActorController {
       return new ArbitraryPlayerInteraction(() => {
         var buttons = new List<(string, Action)>();
         buttons.Add(("Hire (100 water)", mercenary.Hire));
-        Popups.Create("Mercenary", "", "\"You look a little out of your league partner. I'll help you, for a price.\"", "", null, null, buttons);
+        Popups.CreateStandard("Mercenary", "", "\"You look a little out of your league partner. I'll help you, for a price.\"", "", null, null, buttons);
       });
     }
   }

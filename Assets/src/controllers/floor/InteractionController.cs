@@ -182,7 +182,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       inventory = i.inventory;
     }
 
-    Popups.Create(
+    Popups.CreateStandard(
       title: entity.displayName,
       category: GetCategoryForEntity(entity),
       info: description.Trim(),

@@ -23,7 +23,7 @@ public class WaterIndicatorController : MonoBehaviour {
   }
 
   public void HandleClicked() {
-    Popups.Create(
+    Popups.CreateStandard(
       title: "Water",
       category: null,
       info: "Collect water from the caves.\nUse water for planting seeds back home.\n\nEvery 10 turns, 1 water evaporates.",

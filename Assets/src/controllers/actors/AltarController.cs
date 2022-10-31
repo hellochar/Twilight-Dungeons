@@ -44,7 +44,7 @@ public class AltarController : BodyController, ILongTapHandler {
     var image = spriteGameObject.GetComponentInChildren<Image>();
     image.sprite = sprite.GetComponent<SpriteRenderer>().sprite;
 
-    Popups.Create(
+    Popups.CreateStandard(
       "Altar",
       null,
       "Provides you immortality, if you choose it.",

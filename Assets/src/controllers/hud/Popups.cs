@@ -4,7 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public static class Popups {
-  public static PopupController Create(
+  public static PopupController CreateEmpty(Transform parent = null) {
+    GameObject popup = InstantiatePopup(parent);
+    var controller = popup.GetComponent<PopupController>();
+    return controller;
+  }
+
+  public static PopupController CreateStandard(
     string title,
     string category,
     string info,
@@ -15,34 +21,36 @@ public static class Popups {
     string errorText = null,
     Inventory inventory = null
   ) {
-    GameObject popup = InstantiatePopup(parent);
-    var controller = popup.GetComponent<PopupController>();
+    var controller = CreateEmpty(parent);
+    GameObject popup = controller.gameObject;
+
+    GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("StandardPopupContent"), popup.transform);
 
     /// TODO refactor into a Controller class
-    var titleText = popup.transform.Find("Frame/Title").GetComponent<TMPro.TMP_Text>();
+    var titleText = content.transform.Find("Title").GetComponent<TMPro.TMP_Text>();
     if (title == null) {
       titleText.gameObject.SetActive(false);
-      popup.transform.Find("Frame/Bottom Decorater Positioner").gameObject.SetActive(false);
+      content.transform.Find("Bottom Decorater Positioner").gameObject.SetActive(false);
     } else {
       titleText.text = title;
     }
 
-    var categoryText = popup.transform.Find("Frame/Title/Category").GetComponent<TMPro.TMP_Text>();
+    var categoryText = content.transform.Find("Title/Category").GetComponent<TMPro.TMP_Text>();
     categoryText.text = category;
 
-    var infoText = popup.transform.Find("Frame/Stats").GetComponent<TMPro.TMP_Text>();
+    var infoText = content.transform.Find("Stats").GetComponent<TMPro.TMP_Text>();
     infoText.text = info;
 
-    var errorContainer = popup.transform.Find("Frame/Scroll View").gameObject;
+    var errorContainer = content.transform.Find("Scroll View").gameObject;
     errorContainer.SetActive(errorText != null);
     var text = errorContainer.transform.Find("Viewport/Content/Text").GetComponent<TMPro.TMP_Text>();
     text.text = errorText;
 
-    var flavorText = popup.transform.Find("Frame/Flavor Text").GetComponent<TMPro.TMP_Text>();
+    var flavorText = content.transform.Find("Flavor Text").GetComponent<TMPro.TMP_Text>();
     flavorText.text = flavor;
 
     // Add sprite
-    var spriteContainer = popup.transform.Find("Frame/Sprite Container").gameObject;
+    var spriteContainer = content.transform.Find("Sprite Container").gameObject;
     if (sprite == null) {
       spriteContainer.SetActive(false);
     } else {
@@ -54,20 +62,19 @@ public static class Popups {
     }
 
     // Add buttons
-    var buttonsContainer = popup.transform.Find("Frame/Actions");
+    var buttonsContainer = content.transform.Find("Actions");
     if (buttons != null && buttons.Count > 0) {
       buttons.ForEach((b) => MakeButton(b.Item1, b.Item2, buttonsContainer, popup));
     } else {
-      popup.transform.Find("Frame/Space").gameObject.SetActive(false);
+      content.transform.Find("Space").gameObject.SetActive(false);
       buttonsContainer.gameObject.SetActive(false);
       // if there's no actions, clicking the frame itself will toggle the popup
-      var frame = popup.transform.Find("Frame").gameObject;
-      var frameButton = frame.AddComponent<Button>();
+      var frameButton = content.AddComponent<Button>();
       frameButton.onClick.AddListener(controller.Close);
     }
 
     if (inventory != null) {
-      var inventoryContainer = popup.transform.Find("Frame/Inventory Container").gameObject;
+      var inventoryContainer = content.transform.Find("Inventory Container").gameObject;
       inventoryContainer.SetActive(true);
       var inventoryController = inventoryContainer.GetComponentInChildren<InventoryController>();
       inventoryController.inventory = inventory;
@@ -93,5 +100,4 @@ public static class Popups {
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));
     return button;
   }
-
 }

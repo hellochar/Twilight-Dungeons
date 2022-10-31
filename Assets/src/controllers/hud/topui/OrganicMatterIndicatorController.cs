@@ -23,7 +23,7 @@ public class OrganicMatterIndicatorController : MonoBehaviour {
   }
 
   public void HandleClicked() {
-    Popups.Create(
+    Popups.CreateStandard(
       title: "Organic Matter",
       category: null,
       info: "Recycle unused items into Organic Matter.\nUse Organic Matter for creating structures back home.",

@@ -115,7 +115,7 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
       }
     }
 
-    popup = Popups.Create(
+    popup = Popups.CreateStandard(
       title: item.displayName,
       category: GetCategoryForItem(item),
       info: item.GetStatsFull(),

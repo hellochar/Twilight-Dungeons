@@ -41,7 +41,7 @@ public class Intro : MonoBehaviour {
   }
   
   public void ShowExceptionPopup(Exception e) {
-    var popup = Popups.Create(
+    var popup = Popups.CreateStandard(
       title: "Error",
       category: null,
       info: "Sorry, something went wrong! Please screenshot this and send it to hellocharlien@hotmail.com.",

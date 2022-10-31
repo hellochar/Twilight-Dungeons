@@ -105,7 +105,7 @@ public class GameModelController : MonoBehaviour {
       controller.floor = floor;
       floorControllers.Add(floor, controller);
       /// hack - play floor animation
-      Camera.main.GetComponent<CameraZoom>().PlayFloorZoomAnimation();
+      CameraController.main.PlayFloorZoomAnimation();
     }
     return floorControllers[floor];
   }

@@ -38,7 +38,6 @@ public class GameOverHandler : MonoBehaviour {
 
   IEnumerator WinGameAnimation(Actor ezra) {
     InteractionController.isInputAllowed = false;
-    Camera.main.GetComponent<BoundCameraToFloor>().enabled = false;
 
     // hide UI
     foreach (var g in uiToHide) {

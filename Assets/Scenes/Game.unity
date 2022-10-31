@@ -3216,14 +3216,9 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420033}
-  - component: {fileID: 519420030}
   - component: {fileID: 519420035}
-  - component: {fileID: 519420034}
   - component: {fileID: 519420036}
-  - component: {fileID: 519420037}
   - component: {fileID: 519420038}
-  - component: {fileID: 519420040}
   - component: {fileID: 519420039}
   m_Layer: 0
   m_Name: Main Camera
@@ -3240,21 +3235,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
---- !u!114 &519420030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ebee435206256949a29fafae1b11487, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 2052630406}
-  followSpeed: 8
-  jumpThreshold: 5
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -3319,38 +3299,6 @@ RectTransform:
   m_AnchoredPosition: {x: 20.06, y: 2.57}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd461da8031dd36429051359b23adf00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  paddingTop: 1
-  paddingRight: 1
-  paddingBottom: 1
-  paddingLeft: 1
---- !u!114 &519420034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d0aee9757f772a4b9f82aa4ceba2b66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wantedZoom: 3
-  minZoom: 2
-  maxZoom: 6
-  lerpSpeed: 4
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3381,23 +3329,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normal: {fileID: 1612004401}
   boss: {fileID: 1018460891}
---- !u!114 &519420037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ab6ee90ead2e994ab52926e15aebd94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  paddingTop: 1
-  paddingRight: 3
-  paddingBottom: 2
-  paddingLeft: 5.5
-  minZoom: 4
 --- !u!114 &519420038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3425,30 +3356,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eadfb0d03039ef4688e8eb202db81ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerCameraOnFloor: {fileID: 519420037}
-  centerCameraOnActiveRoom: {fileID: 519420040}
-  boundCameraToFloor: {fileID: 519420033}
-  cameraFollowEntity: {fileID: 519420030}
-  cameraZoom: {fileID: 519420034}
---- !u!114 &519420040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207118bb6298389458a1251c399540fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  paddingLeft: 0
+  paddingRight: 0
   paddingTop: 0
-  paddingRight: 1
   paddingBottom: 1
-  paddingLeft: 1
-  minZoom: 3
+  wantedZoom: 3
+  minZoom: 2
+  maxZoom: 6
+  lerpSpeed: 4
   followSpeed: 8
-  jumpThreshold: 20
+  jumpThreshold: 5
   zoomSpeed: 4
 --- !u!1 &539203642
 GameObject:

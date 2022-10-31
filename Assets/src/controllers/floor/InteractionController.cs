@@ -31,7 +31,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
 
   /// Register the hold.
   public void OnPointerDown(PointerEventData eventData) {
-    if (isInputAllowed && !CameraZoom.IsZoomGuardActive) {
+    if (isInputAllowed && !CameraController.IsZoomGuardActive) {
       hold = new InputHold(Time.time, eventData);
       HoldProgressBar.main.HoldStart();
     }
@@ -40,7 +40,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   /// Show Popup if it's a short-tap
   public void OnPointerUp(PointerEventData eventData) {
     var isShortTap = hold == null || !hold.triggered;
-    if (isInputAllowed && !CameraZoom.IsZoomGuardActive && isShortTap) {
+    if (isInputAllowed && !CameraController.IsZoomGuardActive && isShortTap) {
       var pos = RaycastToTilePos(eventData.pointerCurrentRaycast);
       Tap(pos);
     }
@@ -52,7 +52,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     if (hold != null && isInputAllowed) {
       /// zoom guard will only trigger *after* a hold has been created because
       /// zoom is 2 touches, so the first touch will be registered as the hold.
-      if (CameraZoom.IsZoomGuardActive) {
+      if (CameraController.IsZoomGuardActive) {
         hold = null;
       } else {
         var time = Time.time;

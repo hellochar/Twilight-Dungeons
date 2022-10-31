@@ -58,7 +58,7 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
       yield return Transitions.ZoomAndPanCamera(4, GameModel.main.player.pos, 0.5f);
       InteractionController.isInputAllowed = true;
     }
-    Camera.main.GetComponent<CameraFollowEntity>().StartCoroutine(CameraMotion());
+    CameraController.main.StartCoroutine(CameraMotion());
 
     animator.SetTrigger("Vibrate");
     AudioClipStore.main.bossDeath.Play();

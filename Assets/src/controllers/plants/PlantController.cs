@@ -14,19 +14,19 @@ public class PlantController : BodyController, ILongTapHandler {
   public GameObject mature;
   [NonSerialized]
   public GameObject activePlantStageObject;
-  private GameObject ui = null;
+  private PopupController popup = null;
   public bool popupOpen {
-    get => ui != null;
+    get => popup != null;
     set {
       if (value) {
         // opening popup
-        var parent = GameObject.Find("Canvas").transform;
-        ui = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Plant UI"), parent.position, Quaternion.identity, parent);
-        ui.GetComponentInChildren<PlantUIController>().plantController = this;
+        popup = Popups.CreateEmpty();
+        var plantUI = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Plant UI"), popup.transform);
+        plantUI.GetComponentInChildren<PlantUIController>().plantController = this;
       } else {
         // closing popup
-        Destroy(ui);
-        ui = null;
+        Destroy(popup);
+        popup = null;
       }
     }
   }

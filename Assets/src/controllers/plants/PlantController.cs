@@ -21,7 +21,7 @@ public class PlantController : BodyController, ILongTapHandler {
       if (value) {
         // opening popup
         popup = Popups.CreateEmpty();
-        var plantUI = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Plant UI"), popup.transform);
+        var plantUI = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Plant UI"), popup.container);
         plantUI.GetComponentInChildren<PlantUIController>().plantController = this;
       } else {
         // closing popup

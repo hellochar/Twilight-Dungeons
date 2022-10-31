@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public static class Popups {
-  public static PopupController CreateEmpty() {
-    GameObject popup = InstantiatePopup();
+  public static PopupController CreateEmpty(TextAnchor alignment = TextAnchor.MiddleCenter) {
+    var parent = GameObject.Find("Canvas").transform;
+    var popup = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Popup"), new Vector3(), Quaternion.identity, parent);
     var controller = popup.GetComponent<PopupController>();
+    controller.Init(alignment);
     return controller;
   }
 
@@ -23,7 +25,7 @@ public static class Popups {
     var controller = CreateEmpty();
     GameObject popup = controller.gameObject;
 
-    GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("StandardPopupContent"), popup.transform);
+    GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("StandardPopupContent"), controller.container);
 
     /// TODO refactor into a Controller class
     var titleText = content.transform.Find("Title").GetComponent<TMPro.TMP_Text>();
@@ -83,11 +85,6 @@ public static class Popups {
     }
 
     return controller;
-  }
-
-  private static GameObject InstantiatePopup() {
-    var parent = GameObject.Find("Canvas").transform;
-    return UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Popup"), new Vector3(), Quaternion.identity, parent);
   }
 
   private static GameObject MakeButton(string name, Action onClicked, Transform parent, GameObject popup) {

@@ -2,8 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PopupController : MonoBehaviour {
+  public Transform container;
+  public GameObject overlay;
+
   public event Action OnClose;
   internal bool showPlayerInventoryOnTop;
 
@@ -27,6 +31,13 @@ public class PopupController : MonoBehaviour {
       playerInventory.transform.SetParent(transform.parent);
       playerInventory.transform.SetAsLastSibling();
     }
+  }
+
+  public void Init(TextAnchor alignment) {
+    if (alignment != TextAnchor.MiddleCenter) {
+      overlay.GetComponent<Image>().color = Color.clear;
+    }
+    container.GetComponent<HorizontalLayoutGroup>().childAlignment = alignment;
   }
 
   void OnDestroy() {

@@ -19,11 +19,10 @@ public class CameraController : MonoBehaviour {
   public float wantedZoom = 5;
   public float minZoom = 3;
   public float maxZoom = 15;
-  public float lerpSpeed = 4;
+  public float zoomLerpSpeed = 10;
 
   public float followSpeed = 1f;
   public float jumpThreshold = 10f;
-  public float zoomSpeed = 1f;
 
   public new Camera camera { get; private set; }
 
@@ -47,8 +46,18 @@ public class CameraController : MonoBehaviour {
     }
     if (cameraOverride != null) {
       var state = cameraOverride.overrideState;
-      ZoomLerp(camera, state.targetZoom, lerpSpeed);
-      camera.transform.position = LerpTowardsPosition(camera.transform.position, state.targetPos, followSpeed, jumpThreshold);
+      // ZoomLerp(camera, state.targetZoom, zoomLerpSpeed);
+      camera.orthographicSize = state.targetZoom;
+
+      var targetPos = state.targetPos;
+      if (state.lean == ViewportLean.Left) {
+        // put the focus on the left half of the camera
+        var cameraBounds = OrthographicBounds(camera);
+        var cameraWidth = cameraBounds.size.x;
+        var leanOffset = new Vector2(cameraWidth / 4, 0);
+        targetPos += leanOffset;
+      }
+      camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed, 0);
       return;
     }
     var floor = GameModel.main.currentFloor;
@@ -137,7 +146,7 @@ public class CameraController : MonoBehaviour {
   bool acceptUserInput = true;
   private void cameraZoom() {
     if (zoomAnimation == null) {
-      ZoomLerp(camera, wantedZoom, lerpSpeed);
+      ZoomLerp(camera, wantedZoom, zoomLerpSpeed);
     }
     if (Input.touchSupported && acceptUserInput) {
       // Pinch to zoom
@@ -204,7 +213,7 @@ public class CameraController : MonoBehaviour {
         jumpThreshold
       );
       var zoom = Mathf.Max(minZoom, bounds.extents.y);
-      ZoomLerp(camera, zoom, zoomSpeed);
+      ZoomLerp(camera, zoom, zoomLerpSpeed);
     }
   }
 
@@ -253,7 +262,7 @@ public class CameraState {
   public Entity target;
   public ViewportLean lean;
   public float targetZoom => extents.height + 1;
-  public Vector2 targetPos => extents.centerFloat;
+  public Vector2 targetPos => extents.centerFloat + target.pos;
 
   private Room m_extents;
   private Room extents {

@@ -20,10 +20,13 @@ public class PlantController : BodyController, ILongTapHandler {
     set {
       if (value) {
         // opening popup
-        popup = Popups.CreateEmpty();
+        popup = Popups.CreateEmpty(TextAnchor.MiddleRight);
         var plantUI = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Plant UI"), popup.container);
-        plantUI.GetComponentInChildren<PlantUIController>().plantController = this;
+        var plantUIController = plantUI.GetComponentInChildren<PlantUIController>();
+        plantUIController.plantController = this;
+        CameraController.main.SetCameraOverride(plantUIController);
       } else {
+        CameraController.main.SetCameraOverride(null);
         // closing popup
         Destroy(popup);
         popup = null;

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlantUIController : MonoBehaviour, IPointerClickHandler {
+public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOverride {
   public TMP_Text uiName;
   public TMP_Text uiInfo;
   public TMP_Text contributions;
@@ -16,6 +16,11 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   [System.NonSerialized]
   public PlantController plantController;
   private Plant plant => plantController.plant;
+  public CameraState overrideState => new CameraState {
+    target = plant,
+    lean = ViewportLean.Left
+  };
+
   public GameObject tutorialExtras;
 
   void Start() {

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SoilController : MonoBehaviour, IEntityController, IPlayerInteractHandler {
+  [NonSerialized]
   public Soil soil;
   // public override void PointerClick(PointerEventData pointerEventData) {
   //   Player player = GameModel.main.player;

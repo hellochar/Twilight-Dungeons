@@ -71,9 +71,9 @@ public class ItemController : MonoBehaviour {
         return (method.Name, action);
       }).ToList();
 
-      if (item is ITargetedAction<Entity> selectorUI) {
-        var name = selectorUI.TargettedActionName;
-        Action action = () => ShowTargetingUIThenPerform(selectorUI, player);
+      if (item is ITargetedAction<Entity> targetedAction) {
+        var name = targetedAction.TargettedActionName;
+        Action action = () => targetedAction.ShowTargetingUIThenPerform(player);
         buttons.Insert(0, (name, action));
       }
     }
@@ -99,15 +99,6 @@ public class ItemController : MonoBehaviour {
       default:
         return "Item";
     }
-  }
-
-  public static async void ShowTargetingUIThenPerform<T>(ITargetedAction<T> item, Player player) where T : Entity {
-    var floor = player.floor;
-    try {
-      var target = await MapSelector.SelectUI(item.Targets(player));
-      item.PerformTargettedAction(player, target);
-      GameModel.main.DrainEventQueue();
-    } catch (PlayerSelectCanceledException) {}
   }
 
   // Update is called once per frame

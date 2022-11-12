@@ -47,12 +47,6 @@ public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
   }
 }
 
-public interface ITargetedAction<out T> where T : Entity {
-  string TargettedActionName { get; }
-  IEnumerable<T> Targets(Player player);
-  void PerformTargettedAction(Player player, Entity target);
-}
-
 [Serializable]
 public abstract class AI {
   public abstract ActorTask GetNextTask();

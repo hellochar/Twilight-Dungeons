@@ -154,6 +154,7 @@ public class FloorGeneratorChainFloors : FloorGenerator {
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));
     }
+    List<Vector2Int> slimeAdjacent = new List<Vector2Int>();
 
     floor.rooms = rooms;
     for(int i = 0; i < numChains; i++) {
@@ -163,12 +164,15 @@ public class FloorGeneratorChainFloors : FloorGenerator {
       if (i > 0) {
         //where the slime will go
         var p1 = new Vector2Int(room.min.x - 1, room.center.y);
-        var p2 = new Vector2Int(room.min.x - 2, room.center.y);
+        slimeAdjacent.Add(p1 + Vector2Int.right);
         floor.Put(new Ground(p1));
         floor.Put(new Slime(p1));
 
+        var p2 = new Vector2Int(room.min.x - 2, room.center.y);
+        slimeAdjacent.Add(p2 + Vector2Int.left);
         floor.Put(new Ground(p2));
         floor.Put(new Slime(p2));
+
       }
 
       if (defaultEncounters) {
@@ -189,6 +193,14 @@ public class FloorGeneratorChainFloors : FloorGenerator {
     FloorUtils.NaturalizeEdges(floor);
 
     floor.SetStartPos(new Vector2Int(rooms[0].min.x, rooms[0].center.y));
+
+    // ensure walkability
+    // foreach (var pos in floor.EnumerateLine(floor.startPos, new Vector2Int(floor.downstairsRoom.max.x, floor.downstairsRoom.center.y))) {
+    foreach (var pos in slimeAdjacent) {
+      if (!(floor.tiles[pos] is Ground)) {
+        floor.Put(new Ground(pos));
+      }
+    }
 
     floor.root = floor.rooms[0];
     return floor;

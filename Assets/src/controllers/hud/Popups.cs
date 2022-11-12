@@ -26,6 +26,7 @@ public static class Popups {
     GameObject popup = controller.gameObject;
 
     GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("StandardPopupContent"), controller.container);
+    content.name = "Content";
 
     /// TODO refactor into a Controller class
     var titleText = content.transform.Find("Title").GetComponent<TMPro.TMP_Text>();

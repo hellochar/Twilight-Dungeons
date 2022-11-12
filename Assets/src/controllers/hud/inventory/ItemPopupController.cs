@@ -11,7 +11,7 @@ public class ItemPopupController : MonoBehaviour {
   TMPro.TMP_Text stats;
 
   void Start() {
-    stats = transform.Find("Frame/Stats").GetComponent<TMPro.TMP_Text>();
+    stats = GetComponent<PopupController>().container.Find("Content/Stats").GetComponent<TMPro.TMP_Text>();
   }
 
   // Update is called once per frame

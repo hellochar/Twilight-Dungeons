@@ -47,7 +47,10 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
       return null; // don't do anything to dead actors
     }
     if (body.floor.depth == 0) {
-      return new ArbitraryPlayerInteraction(() => InteractionController.ShowPopupFor(body));
+      return new SetTasksPlayerInteraction(
+        new MoveNextToTargetTask(player, body.pos),
+        new GenericPlayerTask(player, () => InteractionController.ShowPopupFor(body))
+      );
     }
     return new SetTasksPlayerInteraction(
       new ChaseTargetTask(player, body),

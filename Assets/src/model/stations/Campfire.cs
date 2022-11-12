@@ -18,27 +18,39 @@ public class Campfire : Station, IDaySteppable {
     usedForTheDay = false;
   }
 
+  // [PlayerAction]
+  // public void Heal() {
+  //   if (usedForTheDay) {
+  //     throw new CannotPerformActionException("Already used this Campfire today!");
+  //   }
+  //   Player p = GameModel.main.player;
+  //   // p.UseActionPointOrThrow();
+  //   usedForTheDay = true;
+  //   p.Heal(1);
+  //   var debuffs = p.statuses.list.Where((s) => s.isDebuff);
+  //   foreach (var debuff in debuffs) {
+  //     if (debuff is StackingStatus s) {
+  //       s.stacks--;
+  //       break;
+  //     } else {
+  //       p.statuses.Remove(debuff);
+  //       break;
+  //     }
+  //   }
+  //   OnHealed?.Invoke();
+  //   this.ReduceDurability();
+  // }
+
   [PlayerAction]
-  public void Heal() {
+  public void GetFood() {
     if (usedForTheDay) {
       throw new CannotPerformActionException("Already used this Campfire today!");
     }
     Player p = GameModel.main.player;
-    // p.UseActionPointOrThrow();
+    p.UseActionPointOrThrow();
     usedForTheDay = true;
-    p.Heal(1);
-    var debuffs = p.statuses.list.Where((s) => s.isDebuff);
-    foreach (var debuff in debuffs) {
-      if (debuff is StackingStatus s) {
-        s.stacks--;
-        break;
-      } else {
-        p.statuses.Remove(debuff);
-        break;
-      }
-    }
-    OnHealed?.Invoke();
-    this.ReduceDurability();
+
+    floor.Put(new ItemOnGround(pos, new ItemCreatureFood()));
   }
 
   public void StepDay() {

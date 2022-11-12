@@ -6,7 +6,7 @@ internal class PlayerActionAttribute : Attribute {
 }
 
 [Serializable]
-public abstract class Station : Body, IInteractableInventory {
+public abstract class Station : Body {
   public Inventory inventory { get; }
   public Station(Vector2Int pos) : base(pos) {
     durability = maxDurability;

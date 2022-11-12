@@ -234,17 +234,21 @@ public class Floor {
     this.OnEntityRemoved?.Invoke(entity);
 
     if (entity is AIActor a && a.faction == Faction.Enemy || entity is IEnemyGrass) {
-      GameModel.main.EnqueueEvent(() => {
-        if (EnemiesLeft() == 0) {
-          // create a teleporter
-          var freeSpot = FloorUtils.TilesFromCenter(this, GameModel.main.player.room).FirstOrDefault();
-          if (freeSpot == null) {
-            freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
-          }
-          Put(new Teleporter(freeSpot.pos));
-        }
-      });
+      CheckTeleporter();
     }
+  }
+
+  public void CheckTeleporter() {
+    GameModel.main.EnqueueEvent(() => {
+      if (EnemiesLeft() == 0 && downstairs == null) {
+        // create a teleporter
+        var freeSpot = FloorUtils.TilesFromCenter(this, GameModel.main.player.room).FirstOrDefault();
+        if (freeSpot == null) {
+          freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
+        }
+        Put(new Teleporter(freeSpot.pos));
+      }
+    });
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {

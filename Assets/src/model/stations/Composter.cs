@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("composter", description: "Converts one nearby item into a Soil each day.")]
-public class Composter : Station, IDaySteppable {
+public class Composter : Station, IDaySteppable, IInteractableInventory {
   public override int maxDurability => 9;
   // public override bool isActive => NearbySoilableGrounds.Any() && NearbyItems.Any();
   public override bool isActive => NearbySoilableGrounds.Any() && inventory[0] != null;

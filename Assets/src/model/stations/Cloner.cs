@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("cloner", description: "Duplicates the ItemGrass put in it.")]
-public class Cloner : Station, IDaySteppable {
+public class Cloner : Station, IDaySteppable, IInteractableInventory {
   public override int maxDurability => 9;
   // public override bool isActive => NearbyGrasses.Any() && NearbyGrounds.Any();
   public override bool isActive => itemGrass != null;

@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 [Serializable]
-[ObjectInfo("creature-food", description: "Your item has been overtaken by mold!")]
+[ObjectInfo("creature-food", description: "Feed to a Creature at 1 HP to pacify them!")]
 public class ItemCreatureFood : Item, ITargetedAction<AIActor> {
   public ItemCreatureFood() {
   }
 
   string ITargetedAction<AIActor>.TargettedActionName => "Feed";
   IEnumerable<AIActor> ITargetedAction<AIActor>.Targets(Player player) {
-    return player.floor.Enemies();
+    return player.floor.Enemies().Where(e => e.IsNextTo(player));
   }
 
   void ITargetedAction<AIActor>.PerformTargettedAction(Player player, Entity entity) {
@@ -21,13 +22,17 @@ public class ItemCreatureFood : Item, ITargetedAction<AIActor> {
       target.SetAI(new WaitAI(target));
       // target.statuses.Add(new CharmedStatus());
       target.faction = Faction.Ally;
+      target.floor.CheckTeleporter();
+
       // we're *not* killing the entity
-      target.floor.Remove(target);
-      var item = new ItemPlaceableEntity(target).RequireSpace();
-      var success = player.inventory.AddItem(item, slot, entity);
-      if (!success) {
-        player.floor.Put(new ItemOnGround(target.pos, item));
-      }
+      // target.floor.Remove(target);
+      // var item = new ItemPlaceableEntity(target).RequireSpace();
+      // var success = player.inventory.AddItem(item, slot, entity);
+      // if (!success) {
+      //   player.floor.Put(new ItemOnGround(target.pos, item));
+      // }
+    } else {
+      throw new CannotPerformActionException("Target has too much HP!");
     }
   }
 }

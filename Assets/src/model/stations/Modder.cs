@@ -4,7 +4,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("gnarled-tree", description: "Modifies the Equipment to have the properties of a random Creature or Grass.")]
-class Modder : Station, IDaySteppable {
+class Modder : Station, IDaySteppable, IInteractableInventory {
   public Modder(Vector2Int pos) : base(pos) {
     inventory.allowDragAndDrop = true;
   }

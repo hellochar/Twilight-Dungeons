@@ -19,7 +19,7 @@ public class Blob : AIActor {
 
   protected override ActorTask GetNextTask() {
     if (CanTargetPlayer()) {
-      if (IsNextTo(GameModel.main.player)) {
+      if (IsDiagonallyNextTo(GameModel.main.player)) {
         return new AttackGroundTask(this, GameModel.main.player.pos, 1);
       } else {
         return new ChaseTargetTask(this, GameModel.main.player);

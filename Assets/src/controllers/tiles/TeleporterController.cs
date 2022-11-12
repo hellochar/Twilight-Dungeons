@@ -12,6 +12,6 @@ public class TeleporterController : TileController, IOnTopActionHandler {
 
   public void HandleOnTopAction() {
     // "downstairs"
-    t.TryGoDownstairs();
+    t.TryGoHome();
   }
 }

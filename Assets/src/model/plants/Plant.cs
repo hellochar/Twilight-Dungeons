@@ -75,7 +75,7 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
     stage.RestockHarvests(yield);
   }
   public bool IsSurroundedByGrass() {
-    return floor == null ? false : floor.GetAdjacentTiles(pos).Where(t => t.grass != null).Count() >= 8;
+    return floor == null ? false : floor.GetDiagonalAdjacentTiles(pos).Where(t => t.grass != null).Count() >= 8;
   }
 
   public void GoNextStage() {

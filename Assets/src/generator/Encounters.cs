@@ -390,7 +390,7 @@ public class Encounters {
       floor.Put(plant);
       floor.Put(new Soil(plant.pos));
     }
-    floor.PutAll(floor.GetAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
+    floor.PutAll(floor.GetDiagonalAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
   }
 
   public static void AddSoftGrass(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);
@@ -650,7 +650,7 @@ public class Encounters {
     // var num = Random.Range(3, (positions.Count + 1) / 4);
     var num = 1;
     foreach (var tile in positions.Take(num)) {
-      if (!floor.GetAdjacentTiles(tile.pos).Any((t) => t.actor is FruitingBody)) {
+      if (!floor.GetDiagonalAdjacentTiles(tile.pos).Any((t) => t.actor is FruitingBody)) {
         floor.Put(new FruitingBody(tile.pos));
       }
     }
@@ -665,14 +665,14 @@ public class Encounters {
         var center = tile.pos;
         floor.Put(new Stump(center));
         floor.PutAll(floor
-          .GetAdjacentTiles(center)
+          .GetDiagonalAdjacentTiles(center)
           .Where(EveningBells.CanOccupy)
           .Select((t) => {
             var angle = Vector2.SignedAngle(new Vector2(0, -1), t.pos - center);
             return new EveningBells(t.pos, angle);
           })
         );
-        locations.ExceptWith(floor.GetAdjacentTiles(tile.pos));
+        locations.ExceptWith(floor.GetDiagonalAdjacentTiles(tile.pos));
       }
     }
   }
@@ -1016,7 +1016,7 @@ public class Encounters {
     var num = Random.Range(3, (positions.Count + 1) / 2);
     var isWall = Random.value < 0.8f;
     foreach (var pos in positions.Take(num)) {
-      if (!floor.GetAdjacentTiles(pos).Any((t) => t is Wall)) {
+      if (!floor.GetDiagonalAdjacentTiles(pos).Any((t) => t is Wall)) {
         if (isWall) {
           floor.Put(new Wall(pos));
         } else {
@@ -1111,7 +1111,7 @@ public class Encounters {
         floorsOnCliffEdge.Add(tile);
       }
 
-      var adjacent = floor.GetAdjacentTiles(tile.pos).Except(seen).ToList();
+      var adjacent = floor.GetDiagonalAdjacentTiles(tile.pos).Except(seen).ToList();
       foreach (var next in adjacent) {
         var existingDistance = distanceToWall.ContainsKey(next) ? distanceToWall[next] : 9999;
         var nextDistance = Mathf.Min(existingDistance, distance + 1);

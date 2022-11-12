@@ -19,7 +19,7 @@ public static class FloorUtils {
 
     // Clear hanging vines and move immediately adjacent enemies
     if (floor.startTile != null) {
-      foreach (var tile in floor.GetAdjacentTiles(floor.startTile.pos)) {
+      foreach (var tile in floor.GetDiagonalAdjacentTiles(floor.startTile.pos)) {
         if (tile.grass is HangingVines) {
           // do NOT call Kill(); we don't want the vine whip to drop.
           floor.Remove(tile.grass);

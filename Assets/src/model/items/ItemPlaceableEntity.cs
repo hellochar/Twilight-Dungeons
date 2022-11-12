@@ -35,7 +35,7 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   }
 
   public static bool HasSpaceForStructure(Tile tile, Type grassType = null) {
-    return (tile.floor.GetAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t, grassType)).Count() >= 9);
+    return (tile.floor.GetDiagonalAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t, grassType)).Count() >= 9);
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {

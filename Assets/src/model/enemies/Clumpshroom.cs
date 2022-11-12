@@ -22,7 +22,7 @@ public class Clumpshroom : AIActor, IBaseActionModifier, INoTurnDelay {
 
   public void Duplicate() {
     var iter = floor
-      .GetAdjacentTiles(pos)
+      .GetDiagonalAdjacentTiles(pos)
       .Where(t => t.CanBeOccupied() && t.pos != pos).ToList();
     iter.Shuffle();
     floor.PutAll(iter.Take(MyRandom.Range(2, 4)).Select(t => new Clumpshroom(t.pos)));

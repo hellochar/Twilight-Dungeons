@@ -108,6 +108,16 @@ public abstract class Entity : IModifierProvider {
 #endif
   }
 
+  public bool IsDiagonallyNextTo(Entity other) {
+    return IsDiagonallyNextTo(other.pos);
+  }
+
+  public bool IsDiagonallyNextTo(Vector2Int other) {
+    var xDist = Math.Abs(pos.x - other.x);
+    var yDist = Math.Abs(pos.y - other.y);
+    return xDist <= 1 && yDist <= 1;
+  }
+
   public override string ToString() {
     return $"{base.ToString()}@({pos.x}, {pos.y}) {(IsDead ? "Dead" : "")} {(floor == null ? "floor=null" : "")}".Trim();
   }

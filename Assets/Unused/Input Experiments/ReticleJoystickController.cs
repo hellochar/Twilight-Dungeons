@@ -15,17 +15,17 @@ public class ReticleJoystickController : MonoBehaviour {
   private float timePressed;
 
   // misclick inset
-  private static float d = 0.17f;
+  private static float d = 0.5f;
   private static float innerEdge = 0.5f + d;
   private static float outerEdge = innerEdge + 1;
   public (Rect rect, Vector2Int move)[] TracerButtons = new[] {
-    (new Rect(innerEdge,  innerEdge,  1,   1  ), new Vector2Int(1, 1)),
+    // (new Rect(innerEdge,  innerEdge,  1,   1  ), new Vector2Int(1, 1)),
     (new Rect(innerEdge,  -d,         1,   2*d), new Vector2Int(1, 0)),
-    (new Rect(innerEdge,  -outerEdge, 1,   1  ), new Vector2Int(1, -1)),
+    // (new Rect(innerEdge,  -outerEdge, 1,   1  ), new Vector2Int(1, -1)),
     (new Rect(-d,         -outerEdge, 2*d, 1  ), new Vector2Int(0, -1)),
-    (new Rect(-outerEdge, -outerEdge, 1,   1  ), new Vector2Int(-1, -1)),
+    // (new Rect(-outerEdge, -outerEdge, 1,   1  ), new Vector2Int(-1, -1)),
     (new Rect(-outerEdge, -d,         1,   2*d), new Vector2Int(-1, 0)),
-    (new Rect(-outerEdge, innerEdge,  1,   1  ), new Vector2Int(-1, 1)),
+    // (new Rect(-outerEdge, innerEdge,  1,   1  ), new Vector2Int(-1, 1)),
     (new Rect(-d,         innerEdge,  2*d, 1  ), new Vector2Int(0, 1)),
   };
 
@@ -86,7 +86,7 @@ public class ReticleJoystickController : MonoBehaviour {
     // show reticle if we're successfully in one
     if (TracerButtons[0].rect.Contains(offset)) {
       UpdateReticle(GameModel.main.player.pos + TracerButtons[0].move);
-      // LetGo();
+      LetGo();
     } else {
       EnsureReticleDestroyed();
     }

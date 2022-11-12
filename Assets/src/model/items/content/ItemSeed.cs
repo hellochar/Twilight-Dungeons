@@ -72,7 +72,7 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
   public IEnumerable<Ground> Targets(Player player) =>
 #if experimental_actionpoints
       player.floor.tiles.Where(tile =>
-        tile.floor.GetAdjacentTiles(tile.pos)
+        tile.floor.GetDiagonalAdjacentTiles(tile.pos)
           .Where(t => ItemPlaceableEntity.StructureOccupiable(t))
           .Count() >= 9
       ).Cast<Ground>();

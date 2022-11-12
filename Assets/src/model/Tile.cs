@@ -238,30 +238,39 @@ public class Chasm : Tile {
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class Downstairs : Tile, IActorEnterHandler {
+public class Downstairs : Tile {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.left;
   public Downstairs(Vector2Int pos) : base(pos) {}
 
-  protected override void HandleEnterFloor() {
-    base.HandleEnterFloor();
-    grass?.Kill(this);
+  // protected override void HandleEnterFloor() {
+  //   base.HandleEnterFloor();
+  //   grass?.Kill(this);
+  // }
+
+  [PlayerAction]
+  public void Delve() {
+    Serializer.SaveMainToCheckpoint();
+    floor.PlayerGoDownstairs();
   }
 
-  public void TryGoDownstairs() {
-    if (floor.EnemiesLeft() == 0) {
-      Serializer.SaveMainToCheckpoint();
-      floor.PlayerGoDownstairs();
-    } else {
-      GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
+  public override string description {
+    get {
+      var entityTypes = GameModel.main.cave
+        .bodies.Where(b => !(b is IHideInSidebar)).GroupBy(b => b.GetType()).Select(grouping => grouping.First()).Cast<Entity>()
+        .Concat(
+          GameModel.main.cave
+          .grasses.GroupBy(g => g.GetType()).Select(grouping => grouping.First())
+        );
+      return "You peer into the cavern and see " + String.Join(", ", entityTypes.Select(e => e.displayName)) + ".";
     }
   }
 
-  public virtual void HandleActorEnter(Actor who) {
-    if (who is Player) {
-      GameModel.main.EnqueueEvent(TryGoDownstairs);
-    }
-  }
+  // public virtual void HandleActorEnter(Actor who) {
+  //   if (who is Player) {
+  //     GameModel.main.EnqueueEvent(TryGoDownstairs);
+  //   }
+  // }
 }
 
 [Serializable]
@@ -270,9 +279,14 @@ public class Teleporter : Downstairs {
   public Teleporter(Vector2Int pos) : base(pos) {
   }
 
-  public override void HandleActorEnter(Actor who) {
-    // no op
+  internal void TryGoHome() {
+    Serializer.SaveMainToCheckpoint();
+    floor.PlayerGoHome();
   }
+
+  // public override void HandleActorEnter(Actor who) {
+  //   // no op
+  // }
 }
 
 [ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]

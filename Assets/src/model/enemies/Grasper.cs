@@ -16,7 +16,7 @@ public class Grasper : AIActor, IBaseActionModifier {
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
     var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where(tendrils.Contains).Cast<Tendril>();
-    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 4;
+    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 2;
     if (isPlayerSurrounded) {
       foreach (var t in tendrilsSurroundingPlayer) {
         t.OnPulse();

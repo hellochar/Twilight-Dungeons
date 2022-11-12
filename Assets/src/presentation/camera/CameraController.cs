@@ -47,7 +47,7 @@ public class CameraController : MonoBehaviour {
     if (cameraOverride != null) {
       var state = cameraOverride.overrideState;
       if (state != null) {
-        ZoomLerp(camera, state.targetZoom, zoomLerpSpeed);
+        ZoomLerp(camera, state.targetZoom, zoomLerpSpeed * 2);
         // camera.orthographicSize = state.targetZoom;
 
         var targetPos = state.targetPos;
@@ -58,7 +58,7 @@ public class CameraController : MonoBehaviour {
           var leanOffset = new Vector2(cameraWidth / 4, 0);
           targetPos += leanOffset;
         }
-        camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed * 3, jumpThreshold);
+        camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed * 2, jumpThreshold);
         return;
       }
     }
@@ -81,7 +81,7 @@ public class CameraController : MonoBehaviour {
       if (isHome) {
         cameraFollowEntity();
         cameraZoom();
-        boundCameraToFloor();
+        // boundCameraToFloor();
       } else {
         centerCameraOnActiveRoom();
       }

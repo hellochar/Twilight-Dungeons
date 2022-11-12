@@ -24,6 +24,10 @@ public struct Settings {
       if (PlayerPrefs.HasKey("settings")) {
         var savedJson = PlayerPrefs.GetString("settings");
         var settings = JsonUtility.FromJson<Settings>(savedJson);
+        settings.useDPad = false;
+        settings.swipeToMove = true;
+      // useDPad = false,
+      // swipeToMove = true
         return settings;
       }
     } catch(Exception e) {
@@ -38,8 +42,8 @@ public struct Settings {
       music = true,
       sfx = true,
       rightHanded = true,
-      useDPad = true,
-      swipeToMove = false
+      useDPad = false,
+      swipeToMove = true
     };
   }
 

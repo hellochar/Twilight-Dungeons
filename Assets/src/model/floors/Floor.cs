@@ -110,7 +110,7 @@ public class Floor {
   /// what should happen when the player goes downstairs
   internal virtual void PlayerGoDownstairs() {
     // if we're home, go back to the cave
-    // if we're in the cave, go 1 deeper
+    // if we're in the cave, go home
     int nextDepth;
 #if experimental_actionpoints
     if (depth == 0) {
@@ -125,15 +125,21 @@ public class Floor {
       nextDepth = depth + 1;
     }
 #endif
-    GameModel.main.PutPlayerAt(nextDepth);
     if (nextDepth == 0) {
-      GameModel.main.nextCaveDepth++;
-      GameModel.main.EnqueueEvent(GameModel.main.GoNextDay);
+      PlayerGoHome();
+    } else {
+      GameModel.main.PutPlayerAt(nextDepth);
     }
 #if experimental_retryondemand
     GameModel.main.DrainEventQueue();
     Serializer.SaveMainToLevelStart();
 #endif
+  }
+
+  internal void PlayerGoHome() {
+    GameModel.main.PutPlayerAt(0);
+    GameModel.main.GenerateAndSetCaveDepth(GameModel.main.nextCaveDepth + 1);
+    GameModel.main.EnqueueEvent(GameModel.main.GoNextDay);
   }
 
   public int EnemiesLeft() {
@@ -409,6 +415,20 @@ public class Floor {
       }
     }
 #endif
+    return list;
+  }
+
+  public List<Tile> GetDiagonalAdjacentTiles(Vector2Int pos) {
+    List<Tile> list = new List<Tile>();
+    int xMin = Mathf.Clamp(pos.x - 1, 0, width - 1);
+    int xMax = Mathf.Clamp(pos.x + 1, 0, width - 1);
+    int yMin = Mathf.Clamp(pos.y - 1, 0, height - 1);
+    int yMax = Mathf.Clamp(pos.y + 1, 0, height - 1);
+    for (int x = xMin; x <= xMax; x++) {
+      for (int y = yMin; y <= yMax; y++) {
+        list.Add(tiles[x, y]);
+      }
+    }
     return list;
   }
 

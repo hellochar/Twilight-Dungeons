@@ -15,7 +15,7 @@ public class GameModel {
   public Player player;
   public HomeFloor home;
   public Floor cave;
-  public int nextCaveDepth = 1;
+  public int nextCaveDepth { get; private set; }
   public float time = 0;
   public int day = 1;
   public List<int> floorSeeds;
@@ -83,6 +83,7 @@ public class GameModel {
   public GameModel() {
     seed = new System.Random().Next();
     stats = new PlayStats();
+    nextCaveDepth = 1;
     #if UNITY_EDITOR
     // this.seed = 0xf380d57;
     #endif
@@ -142,7 +143,8 @@ public class GameModel {
 #if experimental_actionpoints
     // HACK have an empty cave floor at depth 0 so when you go down
     // you get to depth 1
-    cave = new Floor(0, 0, 0);
+    // cave = new Floor(0, 0, 0);
+    GenerateAndSetCaveDepth(nextCaveDepth);
 #else
     cave = generator.generateCaveFloor(1);
 #endif
@@ -216,7 +218,15 @@ public class GameModel {
     Floor oldFloor = player.floor;
 
     // this could take a while
-    var newFloor = depth == 0 ? home : depth == cave.depth ? cave : generator.generateCaveFloor(depth);
+    Floor newFloor;
+    if (depth == 0) {
+      newFloor = home;
+    } else if (depth == cave.depth) {
+      newFloor = cave;
+    } else {
+      GenerateAndSetCaveDepth(depth);
+      newFloor = cave;
+    }
 
     // going home
     if (pos == null) {
@@ -240,6 +250,11 @@ public class GameModel {
     oldFloor.Remove(actor);
     actor.pos = pos;
     floor.Put(actor);
+  }
+
+  internal void GenerateAndSetCaveDepth(int newDepth) {
+    nextCaveDepth = newDepth;
+    cave = generator.generateCaveFloor(newDepth);
   }
 
   /// Get all actors that should be simulated, in no particular order. This includes: 

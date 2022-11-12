@@ -16,7 +16,7 @@ public class Spores : Grass, IActorEnterHandler {
   }
 
   public void Activate() {
-    var freeSpots = floor.GetAdjacentTiles(pos).Where(x => x.CanBeOccupied()).ToList();
+    var freeSpots = floor.GetDiagonalAdjacentTiles(pos).Where(x => x.CanBeOccupied()).ToList();
     freeSpots.Shuffle();
     foreach (var tile in freeSpots.Take(3)) {
       floor.Put(new SporeBloat(tile.pos));

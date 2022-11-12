@@ -97,7 +97,7 @@ public class BoombugCorpse : Actor, IDeathHandler {
     exploded = true;
     OnExploded?.Invoke();
     var adjacentBoombugs = new List<BoombugCorpse>();
-    foreach (var tile in floor.GetAdjacentTiles(pos)) {
+    foreach (var tile in floor.GetDiagonalAdjacentTiles(pos)) {
       if (tile.body is BoombugCorpse c && c != this) {
         adjacentBoombugs.Add(c);
       } else if (tile.body != null && tile.body != this) {

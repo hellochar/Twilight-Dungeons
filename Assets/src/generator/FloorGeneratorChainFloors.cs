@@ -59,27 +59,29 @@ public class FloorGeneratorChainFloors : FloorGenerator {
     Floor floor = tryGenerateChainRoomFloor(depth, width, height, numRooms, preMobEncounters == null);
     // ensureConnectedness(floor);
 
-    List<Encounter> encounters = new List<Encounter>();
+    List<Encounter> mobEncounters = new List<Encounter>();
+    List<Encounter> grassEncounters = new List<Encounter>();
 
     // this is essentially a poor man's "don't show the same content until all of it has been cycled through"
     var reduceChance = 0.999f;
 
     // X mobs
     for (var i = 0; i < numMobs; i++) {
-      encounters.Add(EncounterGroup.Mobs.GetRandomWithoutAndDiscount(encounters, reduceChance));
+      mobEncounters.Add(EncounterGroup.Mobs.GetRandomWithoutAndDiscount(mobEncounters, reduceChance));
     }
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
-      encounters.Add(EncounterGroup.Grasses.GetRandomWithoutAndDiscount(encounters, reduceChance));
+      grassEncounters.Add(EncounterGroup.Grasses.GetRandomWithoutAndDiscount(grassEncounters, reduceChance));
     }
 
-    encounters.Add(EncounterGroup.Spice.GetRandom());
+    grassEncounters.Add(EncounterGroup.Spice.GetRandom());
 
-    Encounter rewardEncounter = null;
-    if (reward) {
-      rewardEncounter = EncounterGroup.Rewards.GetRandomWithoutAndDiscount(encounters, reduceChance);
-    }
+    // Encounter rewardEncounter = null;
+    // if (reward) {
+    //   rewardEncounter = EncounterGroup.Rewards.GetRandomWithoutAndDiscount(encounters, reduceChance);
+    // }
+
     // encounters.AddRange(extraEncounters);
     // if (reward) {
     //   encounters.Add(EncounterGroup.Rewards.GetRandomAndDiscount());
@@ -88,14 +90,17 @@ public class FloorGeneratorChainFloors : FloorGenerator {
     int roomIntensity = 1;
     foreach (var room in floor.rooms) {
       for (var i = 0; i < roomIntensity; i++) {
-        foreach(var encounter in encounters) {
+        foreach(var encounter in mobEncounters) {
           encounter(floor, room);
         }
       }
+      foreach(var encounter in grassEncounters) {
+        encounter(floor, room);
+      }
       // if (roomIntensity >= 3) {
-        if (rewardEncounter != null) {
-          rewardEncounter(floor, room);
-        }
+        // if (rewardEncounter != null) {
+        //   rewardEncounter(floor, room);
+        // }
         // if (depth % 3 == 0) {
         //   Encounters.OneAstoria(floor, room);
         // }

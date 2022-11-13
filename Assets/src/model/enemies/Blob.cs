@@ -9,12 +9,12 @@ using UnityEngine;
 public class Blob : AIActor {
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority;
   public Blob(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 6;
+    hp = baseMaxHp = 4;
     faction = Faction.Enemy;
   }
 
   internal override (int, int) BaseAttackDamage() {
-    return (2, 3);
+    return (2, 2);
   }
 
   protected override ActorTask GetNextTask() {

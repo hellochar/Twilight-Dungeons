@@ -11,35 +11,45 @@ public class MapSelectorController : MonoBehaviour {
   public event Action<Entity> OnSelected;
   public event Action OnCancelled;
   public IEnumerable<Entity> entities;
-  private GameObject canvas;
+  public string message;
+  private GameObject hud;
+  private GameObject messageGameObject;
 
   // Start is called before the first frame update
   void Start() {
-    // first, highlight all visible, unoccupied soils
-
-    // for each soil, we want to add a highlight onto it.
+    // for each entity, we want to add a highlight onto it.
     foreach (var e in entities) {
       var highlight = Instantiate(selectHighlightPrefab, Util.withZ(e.pos, -1), Quaternion.identity, transform);
       highlight.SetActive(true);
       highlight.GetComponent<Button>().onClick.AddListener(() => Selected(e));
     }
 
-    this.canvas = GameObject.Find("Canvas");
-    canvas.SetActive(false);
+    // show message
+    if (message != null && message.Length > 0) {
+      messageGameObject = PrefabCache.UI.Instantiate("Map Selector Message");
+      messageGameObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
+      var textComponent = messageGameObject.GetComponentInChildren<TMPro.TMP_Text>();
+      textComponent.text = message;
+    }
+
+    // hide UI
+    this.hud = GameObject.Find("HUD");
+    hud.SetActive(false);
   }
 
   void OnDestroy() {
-    canvas.SetActive(true);
+    hud.SetActive(true);
+    Destroy(messageGameObject);
   }
 
   public void Selected(Entity e) {
-    canvas.SetActive(true);
+    hud.SetActive(true);
     OnSelected?.Invoke(e);
     Destroy(gameObject);
   }
 
   public void Cancel() {
-    canvas.SetActive(true);
+    hud.SetActive(true);
     OnCancelled?.Invoke();
     Destroy(gameObject);
   }

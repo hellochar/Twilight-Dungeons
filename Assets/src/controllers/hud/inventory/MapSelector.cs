@@ -8,11 +8,12 @@ public static class MapSelector {
   /// Contract: if player properly selects, return the Soil.
   /// If player cancels, throw PlayerSelectCanceledException.
   /// how to "send" messages to this method from another gameobject?
-  public static async Task<T> SelectUI<T>(IEnumerable<T> entities) where T : Entity {
+  public static async Task<T> SelectUI<T>(IEnumerable<T> entities, string message = "") where T : Entity {
     var mapSelectorPrefab = PrefabCache.UI.GetPrefabFor("Map Selector");
     var mapSelector = UnityEngine.GameObject.Instantiate(mapSelectorPrefab);
     var controller = mapSelector.GetComponent<MapSelectorController>();
     controller.entities = entities;
+    controller.message = message;
     T entity = null;
     bool cancelled = false;
     controller.OnSelected += (e) => entity = (T) e;

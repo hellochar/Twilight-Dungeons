@@ -37,6 +37,7 @@ public class ItemFertilizer : Item, ITargetedAction<Plant> {
   internal override string GetStats() => "Get 9 stacks, then Fertilize a planted Seed.\n\nOnce grown, the plant's <#FFFF00>Weapons</color> will be imbued with:\n\t<#FFFF00>+1 damage.</color>";
 
   string ITargetedAction<Plant>.TargettedActionName => "Fertilize";
+  string ITargetedAction<Plant>.TargettedActionDescription => "Choose a plant to Fertilize.";
   IEnumerable<Plant> ITargetedAction<Plant>.Targets(Player player) {
     return player.floor.bodies.Where((b) => b is Plant p && !p.isMatured).Cast<Plant>();
   }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 [Serializable]
-[ObjectInfo("creature-food", description: "Feed to a Creature at 1 HP to pacify them!")]
+[ObjectInfo("creature-food", description: "Feed to a Creature at 1 HP to tame them!")]
 public class ItemCreatureFood : Item, ITargetedAction<AIActor> {
   public ItemCreatureFood() {
   }
 
   string ITargetedAction<AIActor>.TargettedActionName => "Feed";
+  string ITargetedAction<AIActor>.TargettedActionDescription => "Choose a Creature to Feed.";
   IEnumerable<AIActor> ITargetedAction<AIActor>.Targets(Player player) {
     return player.floor.Enemies().Where(e => e.IsNextTo(player));
   }

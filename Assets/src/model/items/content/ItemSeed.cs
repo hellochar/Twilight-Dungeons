@@ -69,6 +69,7 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 
   public string TargettedActionName => "Plant";
+  public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   public IEnumerable<Ground> Targets(Player player) =>
 #if experimental_actionpoints
       player.floor.tiles.Where(tile =>

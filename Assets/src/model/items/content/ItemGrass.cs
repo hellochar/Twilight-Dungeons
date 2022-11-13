@@ -18,7 +18,7 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   public override int stacksMax => 99;
 
   public string TargettedActionName => "Plant";
-
+  public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   protected override bool StackingPredicate(Item other) {
     return (other as ItemGrass).grassType == grassType;
   }

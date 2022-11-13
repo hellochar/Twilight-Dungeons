@@ -51,6 +51,7 @@ public class ItemBoombugCorpse : Item, ITargetedAction<Tile> {
   }
 
   public string TargettedActionName => "Throw";
+  public string TargettedActionDescription => "Choose where to throw Boombug.";
   public IEnumerable<Tile> Targets(Player player) =>
     player.floor
       .EnumerateFloor()

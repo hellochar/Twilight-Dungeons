@@ -19,6 +19,7 @@ public class ItemCharmBerry : Item, ITargetedAction<AIActor> {
   }
 
   public string TargettedActionName => "Charm";
+  public string TargettedActionDescription => "Choose target.";
 
   public IEnumerable<AIActor> Targets(Player player) => player.GetVisibleActors(Faction.Enemy).Where((a) => a is AIActor && !(a is Boss)).Cast<AIActor>();
 

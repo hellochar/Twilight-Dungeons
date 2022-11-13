@@ -20,7 +20,8 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
     return this;
   }
 
-  string ITargetedAction<Ground>.TargettedActionName => "Build";
+  string ITargetedAction<Ground>.TargettedActionName => "Place";
+  string ITargetedAction<Ground>.TargettedActionDescription => $"Choose where to place the {entity.displayName}.";
   IEnumerable<Ground> ITargetedAction<Ground>.Targets(Player player) {
     var entityType = entity is GrowingEntity g ? g.inner.GetType() : entity.GetType();
     var tiles = player.floor.tiles.Where(t => t is Ground && t.isExplored && StructureOccupiable(t)).Cast<Ground>();

@@ -63,6 +63,7 @@ public class Soil : Entity, IDaySteppable {
 [ObjectInfo("soil", description: "Place in your home floor.")]
 public class ItemSoil : Item, ITargetedAction<Ground> {
   public string TargettedActionName => "Sow";
+  public string TargettedActionDescription => "Choose where to place Soil.";
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.UseActionPointOrThrow();

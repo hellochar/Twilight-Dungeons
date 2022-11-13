@@ -52,7 +52,7 @@ public class ItemLeecher : Item, ITargetedAction<Tile> {
   }
 
   public string TargettedActionName => "Summon";
-
+  public string TargettedActionDescription => "Choose where to summon the Leecher.";
   public IEnumerable<Tile> Targets(Player player) =>
     player
       .GetVisibleTiles()

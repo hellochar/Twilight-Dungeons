@@ -61,6 +61,7 @@ namespace SingleItemPlant {
     public override string displayName => $"{Util.WithSpaces(itemType.Name.Substring(4))} Seed";
 
     public string TargettedActionName => "Plant";
+    public string TargettedActionDescription => "Plant";
     public IEnumerable<Soil> Targets(Player player) => player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Soil>();
     public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Soil)target);
 

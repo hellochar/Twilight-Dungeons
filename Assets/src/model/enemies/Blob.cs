@@ -22,7 +22,10 @@ public class Blob : AIActor {
       if (IsDiagonallyNextTo(GameModel.main.player)) {
         return new AttackGroundTask(this, GameModel.main.player.pos, 1);
       } else {
-        return new ChaseTargetTask(this, GameModel.main.player);
+        var chase = new ChaseTargetTask(this, GameModel.main.player);
+        chase.maxMoves = 1;
+        return chase;
+        // return new ChaseTargetTask(this, GameModel.main.player);
       }
     } else {
       return new MoveRandomlyTask(this);

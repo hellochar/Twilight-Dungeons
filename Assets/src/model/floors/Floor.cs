@@ -240,7 +240,9 @@ public class Floor {
 
   public void CheckTeleporter() {
     GameModel.main.EnqueueEvent(() => {
-      if (EnemiesLeft() == 0 && downstairs == null) {
+      var activeRoom = GameModel.main.player.room;
+      var existingTeleporter = this.EnumerateRoom(activeRoom).Select(p => tiles[p]).OfType<Teleporter>().FirstOrDefault();
+      if (EnemiesLeft() == 0 && existingTeleporter == null) {
         // create a teleporter
         var freeSpot = FloorUtils.TilesFromCenter(this, GameModel.main.player.room).FirstOrDefault();
         if (freeSpot == null) {

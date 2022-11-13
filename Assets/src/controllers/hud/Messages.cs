@@ -11,11 +11,13 @@ public static class Messages {
     message.transform.SetParent(GameObject.Find("Canvas").transform, false);
     var textComponent = message.GetComponentInChildren<TMPro.TMP_Text>();
     textComponent.text = text;
-    textComponent.StartCoroutine(PauseThenFade());
+    if (duration > 0) {
+      textComponent.StartCoroutine(PauseThenFade());
 
-    IEnumerator PauseThenFade() {
-      yield return new WaitForSeconds(duration);
-      message.AddComponent<FadeThenDestroy>().fadeTime = 0.2f;
+      IEnumerator PauseThenFade() {
+        yield return new WaitForSeconds(duration);
+        message.AddComponent<FadeThenDestroy>().fadeTime = 0.2f;
+      }
     }
 
     return message;

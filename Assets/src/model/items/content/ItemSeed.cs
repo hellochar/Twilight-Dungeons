@@ -70,6 +70,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 
   public string TargettedActionName => "Plant";
+  public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   public IEnumerable<Soil> Targets(Player player) => player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Soil>();
   public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Soil) target);
 }

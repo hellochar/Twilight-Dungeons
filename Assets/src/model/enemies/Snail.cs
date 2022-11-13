@@ -68,7 +68,7 @@ public class ItemSnailShell : Item, IStackable, ITargetedAction<Actor> {
   internal override string GetStats() => "Deals 3 attack damage when thrown.";
 
   public string TargettedActionName => "Throw";
-
+  public string TargettedActionDescription => "Choose target.";
   public IEnumerable<Actor> Targets(Player player) => player.GetVisibleActors(Faction.Enemy | Faction.Neutral);
 
   public void PerformTargettedAction(Player player, Entity target) {

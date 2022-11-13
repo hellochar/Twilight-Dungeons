@@ -58,6 +58,7 @@ public class ItemIrridine : Item, IStackable, ITargetedAction<Tile> {
   }
 
   string ITargetedAction<Tile>.TargettedActionName => "Transplant";
+  string ITargetedAction<Tile>.TargettedActionDescription => "Transplant";
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) =>
     // player.floor.depth != 0 ?
     // Enumerable.Empty<Ground>() :

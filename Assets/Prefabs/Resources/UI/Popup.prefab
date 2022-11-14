@@ -217,6 +217,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8602525125636298448}
   - component: {fileID: 5115529293540931671}
+  - component: {fileID: 7078106849772748063}
   m_Layer: 5
   m_Name: Popup
   m_TagString: Popup
@@ -263,6 +264,20 @@ MonoBehaviour:
   overlay: {fileID: 8602525126250381968}
   overlayLeanLeft: {fileID: 5927242616361212266}
   overlayLeanRight: {fileID: 8657093885459566172}
+  horizontalLayoutGroup: {fileID: 3759887165565785814}
+  canvasGroup: {fileID: 7078106849772748063}
+--- !u!225 &7078106849772748063
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8602525125636298455}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8602525126250381968
 GameObject:
   m_ObjectHideFlags: 0

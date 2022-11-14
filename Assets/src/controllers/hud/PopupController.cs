@@ -5,13 +5,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PopupController : MonoBehaviour, ICameraOverride {
-  public Transform container;
-  public GameObject overlay, overlayLeanLeft, overlayLeanRight;
-  private HorizontalLayoutGroup horizontalLayoutGroup;
+  // set externally
   public Entity target;
-
   public event Action OnClose;
   internal bool showPlayerInventoryOnTop;
+
+  public Transform container;
+  public GameObject overlay, overlayLeanLeft, overlayLeanRight;
+  public HorizontalLayoutGroup horizontalLayoutGroup;
+  public CanvasGroup canvasGroup;
+
 
   private Transform playerInventoryOriginalParent;
   private int playerInventoryOriginalSiblingIndex;
@@ -24,11 +27,11 @@ public class PopupController : MonoBehaviour, ICameraOverride {
       target = this.target ?? GameModel.main.player,
     };
 
-  void Awake() {
-    horizontalLayoutGroup = container.GetComponent<HorizontalLayoutGroup>();
-  }
-
   void Start() {
+    StartCoroutine(Transitions.Animate(0.5f, t => {
+      canvasGroup.alpha = t;
+      container.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+    }, null, EasingFunctions.EaseOutExpo));
     // fill up the parent
     var rectTransform = GetComponent<RectTransform>();
     rectTransform.offsetMax = new Vector2();

@@ -46,12 +46,6 @@ public static class EntityPopup {
           action.Invoke(entity, new object[0]);
         }));
       }
-      // if (entity is IDaySteppable d) {
-      //   buttons.Add(("Activate", () => {
-      //     player.UseActionPointOrThrow();
-      //     d.StepDay();
-      //   }));
-      // }
     }
     if (entity is IInteractableInventory i) {
       inventory = i.inventory;

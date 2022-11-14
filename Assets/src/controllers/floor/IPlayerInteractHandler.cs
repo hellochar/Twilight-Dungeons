@@ -33,6 +33,6 @@ public interface IPlayerInteractHandler {
   PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData);
 }
 
-public interface ILongTapHandler {
-  void HandleLongTap();
+public interface IPopupOverride {
+  void HandleShowPopup();
 }

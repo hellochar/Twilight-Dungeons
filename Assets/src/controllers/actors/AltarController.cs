@@ -6,13 +6,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AltarController : BodyController, ILongTapHandler {
+public class AltarController : BodyController {
   // public TeleportStone stone => (TeleportStone)actor;
   public new ParticleSystem particleSystem;
-
-  public void HandleLongTap() {
-    throw new NotImplementedException();
-  }
 
   void Update() {
     var model = GameModel.main;

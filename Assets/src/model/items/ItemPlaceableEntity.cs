@@ -9,34 +9,51 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   public override string displayName => entity.displayName;
   internal override string GetStats() => $"{ ObjectInfo.GetDescriptionFor(entity) }\n\nBuild for one Action Point.";
 
-  public bool requiresSpace = true;
   public Entity entity { get; }
   public ItemPlaceableEntity(Entity entity) {
     this.entity = entity;
   }
 
-  internal ItemPlaceableEntity RequireSpace() {
-    requiresSpace = true;
-    return this;
+  // We can place the Body at tile T if:
+  // T can be occupied
+  // all of T's neighbors either have no Body, or has the same type Body
+  public static bool CanPlaceEntityOfType(Type entityType, Tile t) {
+    if (!(t is Ground)) {
+      return false;
+    }
+
+    var selfAndNeighborsCanBeOccupied = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => {
+      if (t.body is Player) {
+        return true;
+      }
+
+      if (t.body == null) {
+        return true;
+      }
+
+      if (t.body.GetType() == entityType) {
+        return true;
+      }
+
+      return false;
+    });
+
+    if (!selfAndNeighborsCanBeOccupied) {
+      return false;
+    }
+
+    return true;
   }
 
   string ITargetedAction<Ground>.TargettedActionName => "Place";
   string ITargetedAction<Ground>.TargettedActionDescription => $"Choose where to place the {entity.displayName}.";
   IEnumerable<Ground> ITargetedAction<Ground>.Targets(Player player) {
     var entityType = entity is GrowingEntity g ? g.inner.GetType() : entity.GetType();
-    var tiles = player.floor.tiles.Where(t => t is Ground && t.isExplored && StructureOccupiable(t)).Cast<Ground>();
-    if (requiresSpace) {
-      tiles = tiles.Where(t => HasSpaceForStructure(t));
-    }
-    return tiles;
+    return player.GetVisibleTiles().Where(tile => CanPlaceEntityOfType(entityType, tile)).Cast<Ground>();
   }
 
-  public static bool StructureOccupiable(Tile t, Type grassType = null) {
-     return t is Ground && (t.CanBeOccupied() || t.body is Player) && (t.grass == null || t.grass.GetType() == grassType);
-  }
-
-  public static bool HasSpaceForStructure(Tile tile, Type grassType = null) {
-    return (tile.floor.GetDiagonalAdjacentTiles(tile.pos).Where(t => StructureOccupiable(t, grassType)).Count() >= 9);
+  public static bool StructureOccupiable(Tile t, Type type = null) {
+     return t is Ground && (t.CanBeOccupied() || t.body is Player) && (t.grass == null || t.grass.GetType() == type);
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {

@@ -49,7 +49,7 @@ public abstract class AIActor : Actor, IDeathHandler {
   [PlayerAction]
   public void PickUp() {
     var player = GameModel.main.player;
-    bool bSuccess = player.inventory.AddItem(new ItemPlaceableEntity(this).RequireSpace(), this);
+    bool bSuccess = player.inventory.AddItem(new ItemPlaceableEntity(this), this);
     if (bSuccess) {
       // we're *not* killing the entity
       floor.Remove(this);

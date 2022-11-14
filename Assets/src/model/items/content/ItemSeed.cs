@@ -72,11 +72,7 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
   public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   public IEnumerable<Ground> Targets(Player player) =>
 #if experimental_actionpoints
-      player.floor.tiles.Where(tile =>
-        tile.floor.GetDiagonalAdjacentTiles(tile.pos)
-          .Where(t => ItemPlaceableEntity.StructureOccupiable(t))
-          .Count() >= 9
-      ).Cast<Ground>();
+      player.floor.tiles.Where(tile => ItemPlaceableEntity.CanPlaceEntityOfType(null, tile)).Cast<Ground>();
 #else
       (player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());
 #endif

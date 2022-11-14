@@ -911,7 +911,7 @@ public class Encounters {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       // floor.Put(new ItemOnGround(tile.pos, new ItemButterfly()));
-      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new Butterfly(new Vector2Int())).RequireSpace()));
+      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new Butterfly(new Vector2Int()))));
     }
   }
 
@@ -948,7 +948,7 @@ public class Encounters {
   public static void AddCrafting(Floor floor, Room room) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
-      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new CraftingStation(new Vector2Int())).RequireSpace()));
+      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new CraftingStation(new Vector2Int()))));
     }
   }
 

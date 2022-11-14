@@ -23,14 +23,32 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
     return (other as ItemGrass).grassType == grassType;
   }
 
-  public static bool groundTypeRequirement(Tile t, Type grassType) =>
-    // ItemPlaceableEntity.StructureOccupiable(t, grassType);
-    // ItemPlaceableEntity.HasSpaceForStructure(t, grassType);
-    t is Ground && t.CanBeOccupied();
-    // t is Ground && (t.floor.GetAdjacentTiles(t.pos).Where(t => t.CanBeOccupied()).Count() >= 9);
-    //  grassType == typeof(SoftMoss) ?
-    //  (t is Ground) :
-    //  (t is Soil);
+  // we can plant a Grass of type Type at tile T if:
+  // T can be occupied
+  // T doesn't already have a Grass
+  // all of T's neighbors can be occupied
+  // all of T's neighbors either have no grass, or has the same type Grass.
+  public static bool CanPlantGrassOfType(Type grassType, Tile t) {
+    if (!(t is Ground)) {
+      return false;
+    }
+
+    var selfAndNeighborsCanBeOccupied = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => t.CanBeOccupied() || t.body is Player);
+    if (!selfAndNeighborsCanBeOccupied) {
+      return false;
+    }
+
+    if (t.grass != null) {
+      return false;
+    }
+
+    var neighborGrassesAreSameType = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => t.grass == null || t.grass.GetType() == grassType);
+    if (!neighborGrassesAreSameType) {
+      return false;
+    }
+
+    return true;
+  }
 
   public void PerformTargettedAction(Player player, Entity target) {
     var floor = target.floor;
@@ -40,6 +58,6 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   }
 
   public IEnumerable<Ground> Targets(Player player) {
-    return player.GetVisibleTiles().Where(tile => groundTypeRequirement(tile, grassType)).Cast<Ground>();
+    return player.GetVisibleTiles().Where(tile => CanPlantGrassOfType(grassType, tile)).Cast<Ground>();
   }
 }

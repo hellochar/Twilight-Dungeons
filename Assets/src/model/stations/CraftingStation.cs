@@ -34,7 +34,7 @@ public class CraftingStation : Station, IDaySteppable {
     new GrowingEntity(new Vector2Int(),
       new CraftingStation(new Vector2Int())
     )
-  ).RequireSpace());
+  ));
 
   [PlayerAction]
   public void Shovel() => Craft(new ItemShovel());
@@ -47,35 +47,35 @@ public class CraftingStation : Station, IDaySteppable {
     new GrowingEntity(new Vector2Int(),
       new Campfire(new Vector2Int())
     )
-  ).RequireSpace());
+  ));
 
   [PlayerAction]
   public void Desalinator() => Craft(new ItemPlaceableEntity(
     new GrowingEntity(new Vector2Int(),
       new Desalinator(new Vector2Int())
       )
-  ).RequireSpace());
+  ));
 
   [PlayerAction]
   public void Composter() => Craft(new ItemPlaceableEntity(
     new GrowingEntity(new Vector2Int(),
       new Composter(new Vector2Int())
       )
-  ).RequireSpace());
+  ));
 
   [PlayerAction]
   public void Cloner() => Craft(new ItemPlaceableEntity(
     new GrowingEntity(new Vector2Int(),
       new Cloner(new Vector2Int())
       )
-  ).RequireSpace());
+  ));
 
   [PlayerAction]
   public void Modder() => Craft(new ItemPlaceableEntity(
     new GrowingEntity(new Vector2Int(),
       new Modder(new Vector2Int())
     )
-  ).RequireSpace());
+  ));
 
   [PlayerAction]
   public void Driller() => Craft(new ItemPlaceableEntity(

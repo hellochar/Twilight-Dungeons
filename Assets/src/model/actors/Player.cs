@@ -84,8 +84,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     inventory = new Inventory(9);
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
-    // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())).RequireSpace());
-    inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())).RequireSpace());
+    // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
+    inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
     // inventory.AddItem(new ItemShovel());
     // inventory.AddItem(new ItemSoil());
 #endif

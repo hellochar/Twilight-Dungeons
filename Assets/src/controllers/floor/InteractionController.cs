@@ -82,6 +82,11 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       return;
     }
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
+    if (floor is HomeFloor) {
+      HomeFloorInteract(entities.FirstOrDefault(), worldPos);
+      return;
+    }
+
     if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out var entity)) {
       var interaction = handler.GetPlayerInteraction(eventData);
       if (interaction == null) {
@@ -105,6 +110,30 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       // if (highlight != null) {
       //   highlight.gameObject.AddComponent<FadeThenDestroy>();
       // }
+    }
+  }
+
+  private void HomeFloorInteract(Entity entity, Vector2Int worldPos) {
+    if (entity.tile.visibility == TileVisiblity.Unexplored) {
+      return;
+    }
+
+    if (entity.IsDead) {
+      return;
+    }
+
+    var player = GameModel.main.player;
+
+    // hack - make the home downstairs a Body (pit)
+    if (entity is Tile && !(entity is Downstairs)) {
+      new SetTasksPlayerInteraction(
+        new MoveToTargetTask(player, worldPos)
+      ).Perform();
+    } else {
+      new SetTasksPlayerInteraction(
+        new MoveNextToTargetTask(player, worldPos),
+        new GenericPlayerTask(player, () => ShowPopupFor(entity))
+      ).Perform();
     }
   }
 

@@ -192,9 +192,6 @@ public class ActorController : BodyController,
     // depending on the faction:
     // (1) ally or neutral - walk to
     // (2) enemy - attack
-    if (actor.floor.depth == 0) {
-      return new ArbitraryPlayerInteraction(() => InteractionController.ShowPopupFor(actor));
-    }
     switch (actor.faction) {
       case Faction.Ally:
         if (player.IsNextTo(actor)) {

@@ -6,20 +6,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AltarController : BodyController {
-  // public TeleportStone stone => (TeleportStone)actor;
+public class AltarController : BodyController, IPopupOverride {
   public new ParticleSystem particleSystem;
 
   void Update() {
     var model = GameModel.main;
     particleSystem.gameObject.SetActive(model.permadeath);
-  }
-
-  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
-    return new SetTasksPlayerInteraction(
-      new MoveNextToTargetTask(GameModel.main.player, body.pos),
-      new GenericPlayerTask(GameModel.main.player, ShowAltarDialog)
-    );
   }
 
   void ShowAltarDialog() {
@@ -48,5 +40,9 @@ public class AltarController : BodyController {
       spriteGameObject,
       buttons: buttons
     );
+  }
+
+  public void HandleShowPopup() {
+    ShowAltarDialog();
   }
 }

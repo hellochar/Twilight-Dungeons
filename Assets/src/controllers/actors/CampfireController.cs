@@ -33,17 +33,4 @@ public class CampfireController : StationController {
     child = Instantiate(fire, player.transform);
     child.SetActive(true);
   }
-
-  // public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
-  //   Player player = GameModel.main.player;
-  //   if (body.IsDead) {
-  //     return base.GetPlayerInteraction(pointerEventData); // don't do anything to dead actors
-  //   }
-  //   return new SetTasksPlayerInteraction(
-  //     new ChaseTargetTask(player, body),
-  //     new GenericPlayerTask(player, () => {
-  //       campfire.Heal();
-  //     })
-  //   );
-  // }
 }

@@ -41,20 +41,4 @@ public class StationController : BodyController {
       ps.Play();
     }
   }
-
-  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
-    Player player = GameModel.main.player;
-    if (body.IsDead) {
-      return base.GetPlayerInteraction(pointerEventData); // don't do anything to dead actors
-    }
-    
-    return new SetTasksPlayerInteraction(
-      new MoveNextToTargetTask(player, body.pos),
-      new GenericPlayerTask(player, ShowDialog)
-    );
-  }
-
-  void ShowDialog() {
-    InteractionController.ShowPopupFor(body);
-  }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 using static YieldContribution;
 
 [Serializable]
-public abstract partial class Plant : Body, IHideInSidebar, IDaySteppable {
+public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
   [field:NonSerialized] /// controller only
   public event Action OnHarvested;
 

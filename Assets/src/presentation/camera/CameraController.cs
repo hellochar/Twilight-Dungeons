@@ -195,7 +195,9 @@ public class CameraController : MonoBehaviour {
 
   private void cameraFollowEntity() {
     var target = GameObject.Find("Player");
-    transform.position = LerpTowardsPosition(transform.position, target.transform.position, followSpeed, jumpThreshold);
+    if (target != null) {
+      transform.position = LerpTowardsPosition(transform.position, target.transform.position, followSpeed, jumpThreshold);
+    }
   }
 
   private readonly static Vector2 half = new Vector2(0.5f, 0.5f);

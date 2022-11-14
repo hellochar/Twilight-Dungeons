@@ -32,7 +32,3 @@ public class ArbitraryPlayerInteraction : PlayerInteraction {
 public interface IPlayerInteractHandler {
   PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData);
 }
-
-public interface IPopupOverride {
-  void HandleShowPopup();
-}

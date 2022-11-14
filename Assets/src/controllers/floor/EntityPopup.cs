@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+public interface IPopupOverride {
+  void HandleShowPopup();
+}
 
 public static class EntityPopup {
   public static void Show(Entity entity) {

@@ -86,7 +86,7 @@ public class PlantController : BodyController, IPopupOverride {
   }
 
   public void HandleShowPopup() {
-    GetPlayerInteraction(null);
+    GetPlayerInteraction(null).Perform();
   }
 
   public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {

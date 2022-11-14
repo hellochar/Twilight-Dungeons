@@ -3,7 +3,7 @@ using UnityEngine;
 
 [System.Serializable]
 [ObjectInfo(description: "Moving five times on Soft Grass gives the Player one Free Move.", flavorText: "Feels nice on your feet.")]
-public class SoftGrass : Grass, IActorEnterHandler{
+public class SoftGrass : Grass, IActorEnterHandler {
   public SoftGrass(Vector2Int pos) : base(pos) {
   }
 

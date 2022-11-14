@@ -21,7 +21,7 @@ public class DownstairsController : TileController {
     Player player = GameModel.main.player;
     return new SetTasksPlayerInteraction(
       new MoveNextToTargetTask(player, tile.pos),
-      new GenericPlayerTask(player, () => InteractionController.ShowPopupFor(tile))
+      new GenericPlayerTask(player, () => EntityPopup.Show(tile))
     );
   }
 }

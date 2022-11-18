@@ -66,9 +66,6 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
     this.hp = this.baseMaxHp = 1;
   }
 
-  public HomeFloor home => floor as HomeFloor;
-  public Soil soil => home.soils[pos];
-
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
     dayCreated = GameModel.main.day;

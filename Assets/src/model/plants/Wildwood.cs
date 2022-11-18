@@ -69,7 +69,7 @@ public class Wildwood : Plant {
     stage.NextStage = new Mature();
   }
 
-  public static YieldContribution ThreeEmptySpacesYieldContribution(Plant p) {
+  public static YieldContribution ThreeEmptySpacesYieldContribution(Entity p) {
     var emptySpaces = p.floor.GetAdjacentTiles(p.pos).Where(t => t.CanBeOccupied() || t.body is Player);
     var numEmptySpaces = emptySpaces.Count();
     return new YieldContribution {

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-public delegate YieldContribution YieldContributionRule(Plant plant);
+public delegate YieldContribution YieldContributionRule(Entity e);
 
 [Serializable]
 public class YieldContribution {
@@ -21,13 +21,13 @@ public class YieldContribution {
   // "+4 - Soil has {4} nutrients.";
   // "+3 - Next to {3} Grasses.";
 
-  public static YieldContribution AgeYieldContribution(Plant p) => new YieldContribution {
+  public static YieldContribution AgeYieldContribution(Entity e) => new YieldContribution {
     active = true,
-    bonus = 3 + p.dayAge,
-    description = $"Age {p.dayAge}.",
+    bonus = 3 + ((Plant)e).dayAge,
+    description = $"Age {((Plant)e).dayAge}.",
   };
 
-  public static YieldContribution NearGrassYieldContribution(Plant p) {
+  public static YieldContribution NearGrassYieldContribution(Entity p) {
     var nearbyGrasses = p.floor.GetAdjacentTiles(p.pos).Select(t => t.grass).Where(t => t != null);
     var numNearbyGrasses = nearbyGrasses.Count();
     return new YieldContribution {
@@ -37,7 +37,7 @@ public class YieldContribution {
     };
   }
 
-  public static YieldContribution SoilWateredYieldContribution(Plant p) {
+  public static YieldContribution SoilWateredYieldContribution(Entity p) {
     var soil = p.soil;
     var active = soil?.watered ?? false;
     return new YieldContribution {
@@ -47,7 +47,7 @@ public class YieldContribution {
     };
   }
 
-  public static YieldContribution SoilNutrientYieldContribution(Plant p) {
+  public static YieldContribution SoilNutrientYieldContribution(Entity p) {
     var soil = p.soil;
     var nutrient = soil?.nutrient ?? 0;
     var active = nutrient > 0;

@@ -21,7 +21,7 @@ public class ItemCreatureFood : Item, ITargetedAction<AIActor> {
       var slot = inventory.GetSlotFor(this);
       Destroy();
       target.SetAI(new WaitAI(target));
-      // target.statuses.Add(new CharmedStatus());
+      target.statuses.Add(new CharmedStatus());
       target.faction = Faction.Ally;
       target.floor.CheckTeleporter();
 

@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Does not attack.\nLeaves an explosive corpse on death.", flavorText: "How such a creature was able to survive and breed is Nature's mystery.")]
 public class Boombug : AIActor {
+  public static Item HomeItem => new ItemBoombugCorpse();
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.WAIT] = 2f,
     [ActionType.MOVE] = 2f,
@@ -38,10 +39,9 @@ public class Boombug : AIActor {
 [Serializable]
 [ObjectInfo(spriteName: "boombug", flavorText: "This boombug corpse has been defused, but can be easily triggered again...")]
 public class ItemBoombugCorpse : Item, ITargetedAction<Tile> {
-  public ItemBoombugCorpse(int stacks) : base(stacks) {
-  }
+  public ItemBoombugCorpse() : base() {}
 
-  public override int stacksMax => 7;
+  public override int stacksMax => 1;
 
   internal override string GetStats() => "Throw at any visible tile to leave an explosive Boombug Corpse there.";
 
@@ -77,13 +77,14 @@ public class BoombugCorpse : Actor, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    if (!exploded) {
-      // We died before we could explode! Leave a corpse item instead.
-      var inventory = new Inventory(new ItemVisibleBox(new ItemBoombugCorpse(1)));
-      var floor = this.floor;
-      var pos = this.pos;
-      GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));
-    }
+    Explode();
+    // if (!exploded) {
+    //   // We died before we could explode! Leave a corpse item instead.
+    //   var inventory = new Inventory(new ItemVisibleBox(new ItemBoombugCorpse()));
+    //   var floor = this.floor;
+    //   var pos = this.pos;
+    //   GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));
+    // }
   }
 
   public override float Step() {

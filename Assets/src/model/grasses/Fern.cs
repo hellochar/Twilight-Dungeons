@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(spriteName: "fern", description: "Blocks vision, but creatures can still walk over it. You can cut it down when standing over it.")]
 public class Fern : Grass, IBlocksVision {
+  public static Item HomeItem => new ItemFernCutting();
   public static bool CanOccupy(Tile tile) => tile is Ground && (tile.body == null || tile.body is Actor);
 
   public Fern(Vector2Int pos) : base(pos) {}
@@ -13,6 +14,22 @@ public class Fern : Grass, IBlocksVision {
     foreach (var fern in floor.GetAdjacentTiles(pos).Select(t => t.grass).Where(g => g is Fern).ToList()) {
       fern.Kill(player);
     }
+  }
+}
+
+[Serializable]
+[ObjectInfo("fern")]
+internal class ItemFernCutting : EquippableItem, IUsable {
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
+
+  public void Use(Actor a) {
+    a.floor.PutAll(
+      a.floor.GetAdjacentTiles(a.pos).Where(t => Violets.CanOccupy(t)).Select(t => {
+        var v = new Fern(t.pos);
+        return v;
+      })
+    );
+    stacks--;
   }
 }
 

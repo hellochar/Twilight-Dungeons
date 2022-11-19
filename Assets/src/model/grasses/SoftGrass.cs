@@ -2,8 +2,9 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Moving five times on Soft Grass gives the Player one Free Move.", flavorText: "Feels nice on your feet.")]
+[ObjectInfo(description: "Player has double movespeed on Soft Grass.", flavorText: "Feels nice on your feet.")]
 public class SoftGrass : Grass, IActorEnterHandler {
+  public static Item HomeItem => new ItemGrassSlippers();
   public SoftGrass(Vector2Int pos) : base(pos) {
   }
 
@@ -12,6 +13,21 @@ public class SoftGrass : Grass, IActorEnterHandler {
       player.statuses.Add(new SoftGrassStatus(1));
       OnNoteworthyAction();
     }
+  }
+}
+
+[Serializable]
+[ObjectInfo("grass-slippers", description: "Double movespeed walking over any Grass other than Soft Grass.")]
+internal class ItemGrassSlippers : EquippableItem, IActionCostModifier {
+  public override EquipmentSlot slot => EquipmentSlot.Footwear;
+  public override int stacksMax => int.MaxValue;
+
+  public ActionCosts Modify(ActionCosts input) {
+    if (player.grass != null && !(player.grass is SoftGrass)) {
+      input[ActionType.MOVE] *= 0.5f;
+      stacks--;
+    }
+    return input;
   }
 }
 

@@ -7,8 +7,7 @@ public class ItemGloopShoes : EquippableItem, ISticky, IBaseActionModifier {
   public ItemGloopShoes() {
   }
 
-  public override int stacksMax => 3;
-  public override bool disjoint => true;
+  public override int stacksMax => int.MaxValue;
 
   public BaseAction Modify(BaseAction input) {
     if (input.Type == ActionType.MOVE) {

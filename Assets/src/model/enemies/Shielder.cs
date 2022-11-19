@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 [Serializable]
 public class Shielder : AIActor {
+  public static Item HomeItem => new ItemShielderSpore();
   public Shielder(Vector2Int pos) : base(pos) {
     faction = Faction.Neutral;
     hp = baseMaxHp = 1;
@@ -50,6 +52,22 @@ public class Shielder : AIActor {
 
   internal void StatusLost() {
     status = null;
+  }
+}
+
+[Serializable]
+[ObjectInfo("shielder", description: "Use to spawn a Shielder next to you.")]
+internal class ItemShielderSpore : EquippableItem, ITargetedAction<Tile> {
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
+
+  string ITargetedAction<Tile>.TargettedActionName => "Spawn";
+  string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Shielder.";
+  void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
+    player.floor.Put(new Shielder(target.pos));
+  }
+
+  IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {
+    return player.floor.GetAdjacentTiles(player.pos).Where(t => t.CanBeOccupied());
   }
 }
 

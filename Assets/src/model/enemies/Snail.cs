@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Goes into its shell for 3 turns when it takes damage.\nWhile in its shell, it takes 1 less attack damage.\nPauses after each action.")]
 public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
+  public static Item HomeItem => new ItemSnailShell();
   public Snail(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 3;
     faction = Faction.Enemy;
@@ -41,10 +42,7 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
 [Serializable]
 [ObjectInfo(spriteName: "snail-shell", flavorText: "A dinky little thing.")]
 public class ItemSnailShell : Item, ITargetedAction<Actor> {
-  public ItemSnailShell(int stacks) : base(stacks) {
-  }
-
-  public override int stacksMax => 3;
+  public override int stacksMax => int.MaxValue;
 
   public void Throw(Player player, Actor target) {
     target.TakeAttackDamage(3, player);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.", flavorText: "One man's dead brother is a fungi's feast.")]
 public class Spores : Grass, IActorEnterHandler {
+  public static Item HomeItem => new ItemSporeBloat();
   public Spores(Vector2Int pos) : base(pos) {
   }
 
@@ -21,6 +23,20 @@ public class Spores : Grass, IActorEnterHandler {
     foreach (var tile in freeSpots.Take(3)) {
       floor.Put(new SporeBloat(tile.pos));
     }
+  }
+}
+
+[Serializable]
+[ObjectInfo("spore-bloat")]
+internal class ItemSporeBloat : Item, ITargetedAction<Tile> {
+  string ITargetedAction<Tile>.TargettedActionName => "Spawn";
+  string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Spore Bloat.";
+  void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
+    player.floor.Put(new SporeBloat(target.pos));
+  }
+
+  IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {
+    return player.floor.GetAdjacentTiles(player.pos).Where(t => t.CanBeOccupied());
   }
 }
 

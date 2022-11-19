@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -46,6 +47,9 @@ public class Chiller : AIActor {
 [Serializable]
 [ObjectInfo("Ground1_0", description: "A creature lies in wait here. Anything that walks over it will become targeted.")]
 public class ChillerGrass : Grass, IActorLeaveHandler {
+  internal static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile is Ground;
+
+  public static Item HomeItem => new ItemChillerGrassCutting();
   public ChillerGrass(Vector2Int pos) : base(pos) {
   }
 
@@ -54,5 +58,19 @@ public class ChillerGrass : Grass, IActorLeaveHandler {
       floor.Put(new Chiller(pos).Targetting(who));
       Kill(who);
     }
+  }
+}
+
+[Serializable]
+[ObjectInfo("Ground1_0")]
+internal class ItemChillerGrassCutting : Item, ITargetedAction<Tile> {
+  string ITargetedAction<Tile>.TargettedActionName => "Spawn";
+  string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Shielder.";
+  void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
+    player.floor.Put(new Shielder(target.pos));
+  }
+
+  IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {
+    return player.floor.GetAdjacentTiles(player.pos).Where(ChillerGrass.CanOccupy);
   }
 }

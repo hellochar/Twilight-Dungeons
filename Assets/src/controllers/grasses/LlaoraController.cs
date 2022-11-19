@@ -5,9 +5,12 @@ public class LlaoraController : GrassController, IOnTopActionHandler {
   public string OnTopActionName => "Disperse";
   public void HandleOnTopAction() {
     llaora.Disperse(GameModel.main.player);
+  }
+
+  public static void PlayPoofVfx(Entity e) {
     var poof = PrefabCache.Effects.Instantiate("RedcapPoof", null);
-    poof.transform.position = transform.position;
-    var scale = llaora.radius * 2f / 3;
+    poof.transform.position = FloorController.current.GameObjectFor(e).transform.position;
+    var scale = Llaora.radius * 2f / 3;
     poof.transform.localScale = new Vector3(scale, scale, 1);
     var ps = poof.GetComponent<ParticleSystem>();
     var main = ps.main;

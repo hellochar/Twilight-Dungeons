@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Alternates moving 1 and 2 tiles.\nRuns away when another Jackal dies.\nChases you.")]
 public class Jackal : AIActor {
+  public static Item HomeItem => new ItemJackalHide();
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.67f,
   };

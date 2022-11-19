@@ -7,6 +7,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Chases you.\nWhen Skully dies, it turns into Muck.\nMuck regenerates into a new Skully after three turns.\nStep on the Muck to remove it.")]
 public class Skully : AIActor, IActorKilledHandler {
+  public static Item HomeItem => new ItemSkullyJuice();
   public Skully(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 1;
@@ -36,6 +37,19 @@ public class Skully : AIActor, IActorKilledHandler {
   }
 
   internal override (int, int) BaseAttackDamage() => (1, 1);
+}
+
+[Serializable]
+[ObjectInfo("muck2", flavorText: "You've slathered your body with this foul smelling substance!")]
+class ItemSkullyJuice : EquippableItem, IDeathInterceptor {
+  public override EquipmentSlot slot => EquipmentSlot.Armor;
+
+  public bool InterceptDeath(Entity source) {
+    // heal player back up to 0 plus number of stacks
+    player.Heal((-player.hp) + stacks);
+    Destroy();
+    return true;
+  }
 }
 
 [System.Serializable]

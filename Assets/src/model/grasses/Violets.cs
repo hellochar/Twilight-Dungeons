@@ -1,8 +1,11 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
 [ObjectInfo(spriteName: "Purple_5", description: "Alternately opens and closes every 12 turns.\nWhile open, Pacifies the creature standing over it.")]
 public class Violets : Grass, ISteppable, IActorEnterHandler {
+  public static Item HomeItem => new ItemVioletCutting();
   public const int turnsToChange = 12;
   public float timeNextAction { get; set; }
   public float turnPriority => 20;
@@ -31,6 +34,22 @@ public class Violets : Grass, ISteppable, IActorEnterHandler {
       actor?.statuses.Add(new PacifiedStatus());
     }
     return 1;
+  }
+}
+
+[Serializable]
+[ObjectInfo("Purple_5", description: "Grow Violets on all adjacent tiles.")]
+internal class ItemVioletCutting : EquippableItem, IUsable {
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
+
+  public void Use(Actor a) {
+    a.floor.PutAll(
+      a.floor.GetAdjacentTiles(a.pos).Where(t => Violets.CanOccupy(t)).Select(t => {
+        var v = new Violets(t.pos);
+        return v;
+      })
+    );
+    stacks--;
   }
 }
 

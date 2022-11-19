@@ -936,7 +936,7 @@ public class Encounters {
   public static void AddPumpkin(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemPumpkin());
   public static void AddThickBranch(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemThickBranch());
   public static void AddBatTooth(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemBatTooth());
-  public static void AddSnailShell(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSnailShell(1));
+  public static void AddSnailShell(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSnailShell());
   public static void AddSpiderSandals(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSpiderSandals(15));
   public static void AddOrganicMatter(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemOrganicMatter());
   public static void AddSoil(Floor floor, Room room) {

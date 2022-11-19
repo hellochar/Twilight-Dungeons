@@ -16,6 +16,9 @@ public class FloorController : MonoBehaviour {
   public static FloorController current => GameModelController.main.CurrentFloorController;
 
   public static GameObject GetEntityPrefab(Entity e) {
+    if (e == null) {
+      return null;
+    }
     var type = e.GetType();
     if (!EntityPrefabs.ContainsKey(type)) {
       if (e is Player) {

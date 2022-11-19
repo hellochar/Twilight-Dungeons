@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
+using static YieldContribution;
 
 public delegate void OnNoteworthyAction();
 
 [Serializable]
-public class Grass : Entity {
+public class Grass : Entity, IDaySteppable {
   private Vector2Int _pos;
   public override Vector2Int pos {
     get => _pos;
@@ -34,5 +35,34 @@ public class Grass : Entity {
     if (!player.inventory.AddItem(item, this)) {
       floor.Put(new ItemOnGround(pos, item, pos));
     }
+  }
+
+  public static YieldContributionRule[] BaseGrassContributionRules => new YieldContributionRule[] {
+    // AgeYieldContribution,
+    // NearGrassYieldContribution,
+    SoilWateredYieldContribution,
+    SoilNutrientYieldContribution
+  };
+
+  public virtual YieldContributionRule[] contributionRules => BaseGrassContributionRules;
+
+  public List<YieldContribution> latestContributions = new List<YieldContribution>();
+
+  public virtual void StepDay() {
+    var item = this.GetHomeItem();
+    if (item == null) {
+      return;
+    }
+
+    // int yield = YieldContributionUtils.Recompute(this, contributionRules, this.latestContributions);
+
+    // int itemCost = YieldContributionUtils.GetCost(item);
+    // int stacks = yield / itemCost;
+    
+    // if (stacks > 0) {
+    //   // our yield is high enough, drop an item
+    //   item.stacks = stacks;
+      floor.Put(new ItemOnGround(pos, item));
+    // }
   }
 }

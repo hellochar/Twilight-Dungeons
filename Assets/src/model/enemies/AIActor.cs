@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using static YieldContribution;
 
 /// An actor whose actions are controlled by some sort of AI.
 [Serializable]
-public abstract class AIActor : Actor, IDeathHandler {
+public abstract class AIActor : Actor, IDeathHandler, IDaySteppable {
   public Inventory inventory = new Inventory(2);
   private AI aiOverride;
   public AIActor(Vector2Int pos) : base(pos) {
@@ -65,4 +67,33 @@ public abstract class AIActor : Actor, IDeathHandler {
   //   }
   //   base.GoToNextTask();
   // }
+
+  public static YieldContributionRule[] BaseAIActorContributionRules => new YieldContributionRule[] {
+    // AgeYieldContribution,
+    // NearGrassYieldContribution,
+    SoilWateredYieldContribution,
+    SoilNutrientYieldContribution
+  };
+
+  public virtual YieldContributionRule[] contributionRules => BaseAIActorContributionRules;
+
+  public List<YieldContribution> latestContributions = new List<YieldContribution>();
+
+  public virtual void StepDay() {
+    var item = this.GetHomeItem();
+    if (item == null) {
+      return;
+    }
+
+    // int yield = YieldContributionUtils.Recompute(this, contributionRules, this.latestContributions);
+
+    // int itemCost = YieldContributionUtils.GetCost(item);
+    // int stacks = yield / itemCost;
+    
+    // if (stacks > 0) {
+    //   // our yield is high enough, drop an item
+    //   item.stacks = stacks;
+      floor.Put(new ItemOnGround(pos, item));
+    // }
+  }
 }

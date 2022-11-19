@@ -192,3 +192,14 @@ public class TimedEvent {
     owner.timedEvents.Remove(this);
   }
 }
+
+public static class EntityExtensions {
+  public static Item GetHomeItem(this Entity e) {
+    var homeItemProperty = e.GetType().GetProperty("HomeItem");
+    if (homeItemProperty == null) {
+      return null;
+    }
+
+    return homeItemProperty.GetValue(null) as Item;
+  }
+}

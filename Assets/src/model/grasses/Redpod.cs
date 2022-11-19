@@ -14,7 +14,7 @@ public class Redpod : Grass, IDaySteppable, IActorEnterHandler {
     }
   }
 
-  public void StepDay() {
+  public override void StepDay() {
     var player = GameModel.main.player;
     if (player.hp < player.maxHp) {
       player.Heal(1);

@@ -277,7 +277,13 @@ public class Floor {
     }
 
     public IEnumerable<Entity> Targets(Player player) {
-      return player.floor.grasses.Cast<Entity>().Concat(player.floor.bodies.OfType<AIActor>()).Where(e => e.room == player.room);
+      var floor = player.floor;
+      return floor
+        .grasses
+        .Cast<Entity>()
+        .Concat(player.floor.bodies.OfType<AIActor>())
+        .Where(e => e.room == player.room)
+        .Where(e => e.GetHomeItem() != null);
     }
   }
 

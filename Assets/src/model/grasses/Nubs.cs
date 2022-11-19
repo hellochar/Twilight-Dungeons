@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("nubs", description: "Plant at home to produce 8 water per floor.")]
-public class Nubs : Grass, IDaySteppable, IActorEnterHandler {
+public class Nubs : Grass, IActorEnterHandler {
   public Nubs(Vector2Int pos) : base(pos) {
   }
 
@@ -20,7 +20,7 @@ public class Nubs : Grass, IDaySteppable, IActorEnterHandler {
   //   }
   // }
 
-  public void StepDay() {
+  public override void StepDay() {
     GameModel.main.player.water += 8;
   }
 }

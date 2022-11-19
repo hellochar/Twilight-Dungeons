@@ -195,6 +195,12 @@ public class TimedEvent {
 
 public static class EntityExtensions {
   public static Item GetHomeItem(this Entity e) {
+    var isHarvestableProperty = e.GetType().GetProperty("IsHarvestable");
+    var isHarvestable = isHarvestableProperty != null ? ((bool)isHarvestableProperty.GetValue(e)) : true;
+    if (!isHarvestable) {
+      return null;
+    }
+
     var homeItemProperty = e.GetType().GetProperty("HomeItem");
     if (homeItemProperty == null) {
       return null;

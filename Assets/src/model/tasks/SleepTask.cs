@@ -6,6 +6,7 @@ using System.Linq;
 [System.Serializable]
 class SleepTask : ActorTask, IAttackDamageTakenModifier, ITakeAnyDamageHandler {
   public override TaskStage WhenToCheckIsDone => TaskStage.After;
+  public override bool IsPlayerOverridable => isDeepSleep;
   private bool done = false;
   private int? maxTurns;
   public readonly bool isDeepSleep;

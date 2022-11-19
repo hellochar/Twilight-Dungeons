@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 119249
+    totalSpriteSurfaceArea: 120273
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -240,6 +240,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 14f27f986cad3024c9aa2d4bd8d05c69, type: 3}
   - {fileID: 21300000, guid: f02c01a8dd6cfc140afa469f6270dce4, type: 3}
   - {fileID: 21300000, guid: 45f265a897d4c604092c4d7a58ab63eb, type: 3}
+  - {fileID: 21300000, guid: a4d9b5a87adf84543a6e809a34b5a716, type: 3}
   - {fileID: 21300000, guid: 5fe55fb858146144aabef4d64ac925e4, type: 3}
   - {fileID: 21300000, guid: 54eca3d84122d7840a50c82d66e7c75a, type: 3}
   - {fileID: 21300000, guid: 7940bcd8c09c7974e81132867820f257, type: 3}
@@ -315,6 +316,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7116b40bb6fd2e84f8da3456cd6462a8, type: 3}
   - {fileID: 21300000, guid: d3348d1bcedd79a4da36ad1b2a767be5, type: 3}
   - {fileID: 21300000, guid: 6ac50a3b39f67084fbe18f065f6a54c7, type: 3}
+  - {fileID: 21300000, guid: 6864815b6884b5646b1f22f86fc9ea30, type: 3}
   - {fileID: 21300000, guid: e745c97b0c70bad4dbcf450819afd45a, type: 3}
   - {fileID: 21300000, guid: 20da3b7b701352c498e8d7da707f6ada, type: 3}
   - {fileID: 21300000, guid: 28bc988b23e0d8a44b6e60a07db77ac7, type: 3}
@@ -394,6 +396,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 8a77c04d6ab46854eaa6241498e9ac46, type: 3}
   - {fileID: -553817365315116960, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
   - {fileID: -4611009959399730175, guid: 90639e4da818ff04c8ef9c52783874e9, type: 3}
+  - {fileID: 21300000, guid: 51fda95d83c951f4ea7ec56303385c57, type: 3}
   - {fileID: 21300000, guid: 184b4b5d160a3924fa61bae6a93071a6, type: 3}
   - {fileID: 21300000, guid: 97ce6b7d8355f8e4fa7f0ce125222f3b, type: 3}
   - {fileID: 21300000, guid: 4e996e9d3ecb6b34da4031a80baa2a65, type: 3}
@@ -406,6 +409,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2bbc792eb00b6d64e9a8a96453f4afb0, type: 3}
   - {fileID: 21300000, guid: 0d72523ecfaf46f47856da981213e3f8, type: 3}
   - {fileID: 21300000, guid: c2f7f23e6e084f240a0a5f87fc5c3b51, type: 3}
+  - {fileID: 21300000, guid: 5766045efba4d954ca2e94f01aaec066, type: 3}
   - {fileID: 21300000, guid: 9295d66e7959a084fa6a62a35e3675cd, type: 3}
   - {fileID: 21300000, guid: 047e017ea14be984488b0cc0fb65fc58, type: 3}
   - {fileID: 21300000, guid: 3b02067e89e560a43a46256b160ecf3d, type: 3}
@@ -609,6 +613,7 @@ SpriteAtlas:
   - soil
   - chasm
   - constricted-particle
+  - snake-venom
   - pumpkin
   - agave
   - peace
@@ -684,6 +689,7 @@ SpriteAtlas:
   - golem-head
   - fern
   - vibrant-ivy
+  - bird-wings
   - golden-fern
   - tanglefoot
   - confused
@@ -763,6 +769,7 @@ SpriteAtlas:
   - thornmail
   - hanging-vines-1x2
   - hanging-vines-bottom
+  - grass-slippers
   - thistlebog
   - cloner
   - scrollbar
@@ -775,6 +782,7 @@ SpriteAtlas:
   - thicket
   - leaf
   - guardroot
+  - octopus-stinger
   - coralmoss
   - thick-stick
   - dotted-line-single

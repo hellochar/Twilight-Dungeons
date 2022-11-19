@@ -5,6 +5,7 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo(description: "Constricts any creature that walks into its hook.\nYou may destroy the Hanging Vines by tapping the Wall it's attached to.")]
 public class HangingVines : Grass, IDeathHandler {
+  public static Item HomeItem => new ItemVineWhip();
   public Tile tileBelow => floor.tiles[pos + Vector2Int.down];
   private Trigger triggerBelow;
 
@@ -21,10 +22,10 @@ public class HangingVines : Grass, IDeathHandler {
   }
 
   public void HandleDeath(Entity source) {
-    if (appliedStatus == null) {
-      Inventory inventory = new Inventory(new ItemVisibleBox(new ItemVineWhip(1)));
-      inventory.TryDropAllItems(floor, tileBelow.pos);
-    }
+    // if (appliedStatus == null) {
+    //   Inventory inventory = new Inventory(new ItemVisibleBox(new ItemVineWhip(1)));
+    //   inventory.TryDropAllItems(floor, tileBelow.pos);
+    // }
     if (appliedStatus != null) {
       appliedStatus.Remove();
     }
@@ -82,8 +83,6 @@ internal class ItemVineWhip : EquippableItem, IWeapon, IAttackHandler {
   public override int stacksMax => 7;
   public (int, int) AttackSpread => (stacks, stacks);
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
-
-  public ItemVineWhip(int stacks) : base(stacks) {}
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor) {

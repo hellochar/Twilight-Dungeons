@@ -52,6 +52,14 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 #endif
 
+  public void UseWaterOrThrow(int waterCost) {
+    if (water < waterCost) {
+      throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
+    }
+    water -= waterCost;
+  }
+
+
   public bool isCamouflaged => Modifiers.Of<IPlayerCamouflage>(this).Any();
 
   // go to full HP and remove all debuffs

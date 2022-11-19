@@ -40,13 +40,10 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
 
   private void Plant(Ground soil) {
     var player = GameModel.main.player;
-    if (player.water < waterCost) {
-      throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
-    }
 #if experimental_actionpoints
     player.UseActionPointOrThrow();
 #endif
-    player.water -= waterCost;
+    player.UseWaterOrThrow(waterCost);
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     var plant = (Entity)constructorInfo.Invoke(new object[] { soil.pos });
     var floor = soil.floor;

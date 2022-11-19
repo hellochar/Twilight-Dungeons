@@ -128,12 +128,8 @@ public class HardGround : Tile {
 
   public void Soften() {
     var player = GameModel.main.player;
-    if (player.water < 11) {
-      throw new CannotPerformActionException("Need 11 water!");
-    } else {
-      player.water -= 11;
-      floor.Put(new Ground(pos));
-    }
+    player.UseWaterOrThrow(11);
+    floor.Put(new Ground(pos));
   }
 
   protected override void HandleEnterFloor() {

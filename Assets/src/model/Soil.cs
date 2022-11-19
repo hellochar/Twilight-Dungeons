@@ -32,13 +32,9 @@ public class Soil : Entity, IDaySteppable {
 
   [PlayerAction]
   public void Water() {
-    int waterCost = 25;
     var player = GameModel.main.player;
-    if (player.water < waterCost) {
-      throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
-    }
+    player.UseWaterOrThrow(25);
     // player.UseActionPointOrThrow();
-    player.water -= waterCost;
     watered = true;
   }
 

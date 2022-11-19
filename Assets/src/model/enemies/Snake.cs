@@ -3,8 +3,9 @@ using UnityEngine;
 
 [System.Serializable]
 // [ObjectInfo(description: "Doesn't move.\nTelegraphs an attack towards you at range when you're on the same row or column. Jumps next to the location it attacks.")]
-[ObjectInfo(description: "Doesn't move.\nAttacks deal no damage but apply poison.")]
+[ObjectInfo(description: "Chases you.\nAttacks deal no damage but apply poison.")]
 public class Snake : AIActor, IDealAttackDamageHandler {
+  public static Item HomeItem => new ItemSnakeVenom();
   // attack shortly after the player - this lets the player set up an attack on another target
   // and then get out of the way
   public override float turnPriority => task is AttackGroundTask ? 20 : base.turnPriority;
@@ -15,16 +16,26 @@ public class Snake : AIActor, IDealAttackDamageHandler {
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    if (CanTargetPlayer() && IsNextTo(player)) {
-      // if (player.pos.x == pos.x || player.pos.y == pos.y) {
-      //   var task = new AttackGroundTask(this, player.pos, 1);
-      //   var targetPos = player.pos;
-      //   task.then = new GenericBaseAction(this, () => AttackLine(targetPos), ActionType.ATTACK);
-      //   return task;
-      // }
-      return new AttackTask(this, player);
+    // if (CanTargetPlayer() && IsNextTo(player)) {
+    //   // if (player.pos.x == pos.x || player.pos.y == pos.y) {
+    //   //   var task = new AttackGroundTask(this, player.pos, 1);
+    //   //   var targetPos = player.pos;
+    //   //   task.then = new GenericBaseAction(this, () => AttackLine(targetPos), ActionType.ATTACK);
+    //   //   return task;
+    //   // }
+    //   return new AttackTask(this, player);
+    // } else {
+    //   return new WaitTask(this, 1);
+    // }
+    if (CanTargetPlayer()) {
+      if (IsNextTo(player)) {
+        return new AttackTask(this, player);
+      } else {
+        return new ChaseTargetTask(this, player);
+      }
+    } else {
+      return new WaitTask(this, 1);
     }
-    return new WaitTask(this, 1);
   }
 
   // private void AttackLine(Vector2Int targetPos) {
@@ -59,6 +70,20 @@ public class Snake : AIActor, IDealAttackDamageHandler {
   public void HandleDealAttackDamage(int damage, Body target) {
     if (target is Actor a) {
       a.statuses.Add(new PoisonedStatus(1));
+    }
+  }
+}
+
+[Serializable]
+[ObjectInfo("snake-venom", description: "While equipped, your attacks apply poison.")]
+public class ItemSnakeVenom : EquippableItem, IAttackHandler {
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
+  public override int stacksMax => int.MaxValue;
+
+  public void OnAttack(int damage, Body target) {
+    if (target is Actor a) {
+      a.statuses.Add(new PoisonedStatus(1));
+      stacks--;
     }
   }
 }

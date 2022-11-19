@@ -41,6 +41,7 @@ public class Violets : Grass, ISteppable, IActorEnterHandler {
 [ObjectInfo("Purple_5", description: "Grow Violets on all adjacent tiles.")]
 internal class ItemVioletCutting : EquippableItem, IUsable {
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
+  public override int stacksMax => int.MaxValue;
 
   public void Use(Actor a) {
     a.floor.PutAll(

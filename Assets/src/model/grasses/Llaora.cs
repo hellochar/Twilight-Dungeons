@@ -30,6 +30,7 @@ public class Llaora : Grass {
 [ObjectInfo("floral-headdress")]
 internal class ItemFloralHeaddress : EquippableItem, IUsable {
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
+  public override int stacksMax => int.MaxValue;
 
   public void Use(Actor a) {
     Llaora.DisperseEffect(a);

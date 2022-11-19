@@ -21,6 +21,7 @@ public class Fern : Grass, IBlocksVision {
 [ObjectInfo("fern")]
 internal class ItemFernCutting : EquippableItem, IUsable {
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
+  public override int stacksMax => int.MaxValue;
 
   public void Use(Actor a) {
     a.floor.PutAll(

@@ -57,6 +57,7 @@ public class Bird : AIActor, IActionPerformedHandler {
 [ObjectInfo("bird-wings")]
 public class ItemBirdWings : EquippableItem, ITargetedAction<Tile> {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
+  public override int stacksMax => int.MaxValue;
 
   string ITargetedAction<Tile>.TargettedActionName => "Fly";
 
@@ -64,6 +65,7 @@ public class ItemBirdWings : EquippableItem, ITargetedAction<Tile> {
 
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
     player.SetTasks(new JumpToTargetTask(player, target.pos));
+    stacks--;
   }
 
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {

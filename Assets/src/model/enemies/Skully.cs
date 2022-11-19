@@ -43,6 +43,7 @@ public class Skully : AIActor, IActorKilledHandler {
 [ObjectInfo("muck2", flavorText: "You've slathered your body with this foul smelling substance!")]
 class ItemSkullyJuice : EquippableItem, IDeathInterceptor {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
+  public override int stacksMax => int.MaxValue;
 
   public bool InterceptDeath(Entity source) {
     // heal player back up to 0 plus number of stacks

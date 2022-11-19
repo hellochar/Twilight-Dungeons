@@ -21,6 +21,7 @@ public class Bloodwort : Grass, IBodyTakeAttackDamageHandler {
 [ObjectInfo("bloodwort", description: "Gain 4 stacks of Strength whenever you take attack damage.")]
 internal class ItemBloodwortTunic : EquippableItem, IBodyTakeAttackDamageHandler {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
+  public override int stacksMax => int.MaxValue;
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
     player.statuses.Add(new StrengthStatus(4));

@@ -59,11 +59,13 @@ public class Shielder : AIActor {
 [ObjectInfo("shielder", description: "Use to spawn a Shielder next to you.")]
 internal class ItemShielderSpore : EquippableItem, ITargetedAction<Tile> {
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
+  public override int stacksMax => int.MaxValue;
 
   string ITargetedAction<Tile>.TargettedActionName => "Spawn";
   string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Shielder.";
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
     player.floor.Put(new Shielder(target.pos));
+    stacks--;
   }
 
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {

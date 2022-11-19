@@ -64,10 +64,13 @@ public class ChillerGrass : Grass, IActorLeaveHandler {
 [Serializable]
 [ObjectInfo("Ground1_0")]
 internal class ItemChillerGrassCutting : Item, ITargetedAction<Tile> {
-  string ITargetedAction<Tile>.TargettedActionName => "Spawn";
-  string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Shielder.";
+  public override int stacksMax => int.MaxValue;
+
+  string ITargetedAction<Tile>.TargettedActionName => "Place";
+  string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to place the Chiller.";
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
-    player.floor.Put(new Shielder(target.pos));
+    player.floor.Put(new Chiller(target.pos));
+    stacks--;
   }
 
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {

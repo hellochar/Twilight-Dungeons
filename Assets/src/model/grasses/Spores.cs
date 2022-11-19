@@ -6,7 +6,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.", flavorText: "One man's dead brother is a fungi's feast.")]
 public class Spores : Grass, IActorEnterHandler {
-  public static Item HomeItem => new ItemSporeBloat();
+  public static Item HomeItem => new ItemSporePowder();
   public Spores(Vector2Int pos) : base(pos) {
   }
 
@@ -27,16 +27,20 @@ public class Spores : Grass, IActorEnterHandler {
 }
 
 [Serializable]
-[ObjectInfo("spore-bloat")]
-internal class ItemSporeBloat : Item, ITargetedAction<Tile> {
-  string ITargetedAction<Tile>.TargettedActionName => "Spawn";
+[ObjectInfo("spore-powder", description: "Use to place a Spore Bloat at the target location which will explode after one turn.")]
+internal class ItemSporePowder : Item, ITargetedAction<Tile> {
+  string ITargetedAction<Tile>.TargettedActionName => "Place";
   string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Spore Bloat.";
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
-    player.floor.Put(new SporeBloat(target.pos));
+    var sb = new SporeBloat(target.pos);
+    sb.SetTasks(new TelegraphedTask(sb, 1, new GenericBaseAction(sb, sb.KillSelf)));
+    player.floor.Put(sb);
   }
 
+  public override int stacksMax => int.MaxValue;
+
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {
-    return player.floor.GetAdjacentTiles(player.pos).Where(t => t.CanBeOccupied());
+    return player.GetVisibleTiles().Where(t => t.CanBeOccupied());
   }
 }
 

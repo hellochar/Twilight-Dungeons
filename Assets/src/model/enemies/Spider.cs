@@ -6,8 +6,18 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Spins Webs underneath itself.\nAttacks deal no damage but apply Poison.\nAttacks any creature next to it.")]
-public class Spider : AIActor, IDealAttackDamageHandler {
+[ObjectInfo(description: "Moves randomly.\nSpins Webs underneath itself.")]
+public class Spider : AIActor {
+  // mark it as being capturable, but doesn't spawn a HomeItem
+  public static Item HomeItem => null;
+  public override void StepDay() {
+    // create a nearby web
+    var tile = Util.RandomPick(floor.GetDiagonalAdjacentTiles(pos).Where(Web.CanOccupy));
+    if (tile != null) {
+      floor.Put(new Web(tile.pos));
+    }
+  }
+
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 4;
@@ -51,18 +61,19 @@ public class Spider : AIActor, IDealAttackDamageHandler {
     }
   }
 
-  public void HandleDealAttackDamage(int dmg, Body target) {
-    if (target is Actor a) {
-      a.statuses.Add(new PoisonedStatus(1));
-    }
-  }
+  // public void HandleDealAttackDamage(int dmg, Body target) {
+  //   if (target is Actor a) {
+  //     a.statuses.Add(new PoisonedStatus(1));
+  //   }
+  // }
 
-  internal override (int, int) BaseAttackDamage() => (0, 0);
+  internal override (int, int) BaseAttackDamage() => (1, 1);
 }
 
 [System.Serializable]
 [ObjectInfo(description: "Take +1 damage from the next attack. You must spend one turn to break the Web.")]
 internal class Web : Grass, IActorEnterHandler {
+  public static Item HomeItem => new ItemSpiderSandals(1);
   public static bool CanOccupy(Tile tile) => tile is Ground && !(tile.grass is Web);
 
   public Web(Vector2Int pos) : base(pos) {}

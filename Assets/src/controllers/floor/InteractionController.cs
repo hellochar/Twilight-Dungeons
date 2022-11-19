@@ -81,6 +81,11 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     if (!isInputAllowed) {
       return;
     }
+    var player = GameModel.main.player;
+    if (player.task != null && !player.task.IsPlayerOverridable) {
+      return;
+    }
+
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
     if (floor is HomeFloor) {
       HomeFloorInteract(entities.FirstOrDefault(), worldPos);

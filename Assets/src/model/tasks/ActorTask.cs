@@ -36,6 +36,7 @@ public abstract class ActorTask {
   public bool forceOnlyCheckBefore = false;
   /// when to check whether this task is "done":
   public virtual TaskStage WhenToCheckIsDone => TaskStage.Before;
+  public virtual bool IsPlayerOverridable => true;
 
   protected ActorTask(Actor actor) {
     Name = Util.WithSpaces(GetType().Name.Replace("Task", ""));

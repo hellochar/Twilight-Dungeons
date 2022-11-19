@@ -77,6 +77,13 @@ public class ObjectInfo {
           flavorText = attribute.flavorText,
           description = attribute.description
         };
+        if (Infos[type].spriteName == null) {
+          // try extracting sprite from prefab
+          var prefab = FloorController.GetEntityPrefab(item as Entity);
+          if (prefab != null) {
+            Infos[type].spriteName = prefab.GetComponentInChildren<SpriteRenderer>().sprite.name;
+          }
+        }
       } else {
         Infos[type] = DEFAULT;
       }

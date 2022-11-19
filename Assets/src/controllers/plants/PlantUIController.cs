@@ -69,7 +69,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOve
     transform.Find("Inventory").GetComponent<InventoryController>().inventory = inventory;
     Button button = transform.Find("HarvestButton").GetComponent<Button>();
     var firstItem = inventory.ItemsNonNull().FirstOrDefault();
-    int cost = (int) firstItem.GetType().GetField("yieldCost").GetValue(null);
+    int cost = YieldContributionUtils.GetCost(firstItem);
     if (plant.floor is TutorialFloor && index > 0 || cost > plant.yield) {
       // disable past index 0
       button.interactable = false;

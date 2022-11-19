@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public delegate YieldContribution YieldContributionRule(Entity e);
@@ -60,3 +61,26 @@ public class YieldContribution {
 
 }
 
+public static class YieldContributionUtils {
+  public static int GetCost(Item item) {
+    int cost = (int) item.GetType().GetField("yieldCost")?.GetValue(null);
+    if (cost == 0) {
+      UnityEngine.Debug.LogWarning(item + " cost 0! Defaulting to 2");
+      cost = 2;
+    }
+    return cost;
+  }
+
+  public static int Recompute(
+      Entity e,
+      YieldContributionRule[] contributionRules,
+      List<YieldContribution> outLatestContributions) {
+    int totalYield = 0;
+    foreach (var Rule in contributionRules) {
+      var contribution = Rule.Invoke(e);
+      totalYield += contribution.active ? contribution.bonus : 0;
+      outLatestContributions.Add(contribution);
+    }
+    return totalYield;
+  }
+}

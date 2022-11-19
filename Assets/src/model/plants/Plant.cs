@@ -109,14 +109,8 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
   public List<YieldContribution> latestContributions = new List<YieldContribution>();
 
   public void RecomputeAndRefillYield() {
-    var totalYield = 0;
     latestContributions.Clear();
-    foreach (var Rule in contributionRules) {
-      var contribution = Rule.Invoke(this);
-      totalYield += contribution.active ? contribution.bonus : 0;
-      latestContributions.Add(contribution);
-    }
-    yield = totalYield;
+    yield = YieldContributionUtils.Recompute(this, contributionRules, latestContributions);
   }
 
   public int yield = 1;

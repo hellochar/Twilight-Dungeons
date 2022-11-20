@@ -106,6 +106,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
     inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
     inventory.AddItem(new ItemPlaceableEntity(new Composter(new Vector2Int())));
+    inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
     // inventory.AddItem(new ItemShovel());
     // inventory.AddItem(new ItemSoil());
 #endif

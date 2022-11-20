@@ -28,7 +28,7 @@ public class Wildwood : Plant {
     public static Dictionary<Type, int> MakeOfferings(params Type[] types) {
       Dictionary<Type, int> offerings = new Dictionary<Type, int>();
       foreach(Type t in types) {
-        int cost = (int) t.GetField("yieldCost")?.GetValue(null);
+        int cost = YieldContributionUtils.GetCost(t);
         offerings[t] = cost;
       }
       return offerings;

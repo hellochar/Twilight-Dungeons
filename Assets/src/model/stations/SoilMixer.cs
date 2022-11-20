@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("fountain", description: "Create soil from Water and Organic Mater.")]
+[ObjectInfo("fountain", description: "Create soil for 100 Water, 10 Organic Matter, and 1 AP.")]
 public class SoilMixer : Station, IDaySteppable {
   public override int maxDurability => 9;
 

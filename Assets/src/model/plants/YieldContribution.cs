@@ -63,9 +63,17 @@ public class YieldContribution {
 
 public static class YieldContributionUtils {
   public static int GetCost(Item item) {
-    int cost = (int) item.GetType().GetField("yieldCost")?.GetValue(null);
+    return GetCost(item.GetType());
+  }
+
+  public static int GetCost(Type itemType) {
+    int cost = 0;
+    var field = itemType.GetField("yieldCost", System.Reflection.BindingFlags.Static);
+    if (field != null) {
+      cost = (int) field.GetValue(null);
+    }
     if (cost == 0) {
-      UnityEngine.Debug.LogWarning(item + " cost 0! Defaulting to 2");
+      UnityEngine.Debug.LogWarning(itemType + " cost 0! Defaulting to 2");
       cost = 2;
     }
     return cost;

@@ -82,7 +82,7 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
     }
   }
 
-  public virtual int lifetime => 8;
+  public virtual int lifetime => 10;
 
   public void StepDay() {
     if (dayAge > lifetime) {
@@ -131,7 +131,7 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
     var inventory = stage.harvestOptions[choiceIndex];
     var boughtItem = inventory.ItemsNonNull().FirstOrDefault();
     if (boughtItem != null) {
-      int cost = (int) boughtItem.GetType().GetField("yieldCost").GetValue(null);
+      int cost = YieldContributionUtils.GetCost(boughtItem);
       if (yield >= cost) {
         yield -= cost;
         // var splitItem = boughtItem.Split(1);

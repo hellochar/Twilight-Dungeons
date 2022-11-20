@@ -43,12 +43,14 @@ public class Campfire : Station, IDaySteppable {
 
   [PlayerAction]
   public void GetFood() {
-    if (usedForTheDay) {
-      throw new CannotPerformActionException("Already used this Campfire today!");
-    }
+    // if (usedForTheDay) {
+    //   throw new CannotPerformActionException("Already used this Campfire today!");
+    // }
     Player p = GameModel.main.player;
-    p.UseActionPointOrThrow();
-    usedForTheDay = true;
+    // p.UseActionPointOrThrow();
+    // usedForTheDay = true;
+
+    p.UseResourcesOrThrow(water: 25);
 
     floor.Put(new ItemOnGround(pos, new ItemCreatureFood()));
   }

@@ -43,7 +43,11 @@ public static class EntityPopup {
       var playerActions = entity.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
       foreach(var action in playerActions) {
         buttons.Add((Util.WithSpaces(action.Name), () => {
-          action.Invoke(entity, new object[0]);
+          try {
+            action.Invoke(entity, new object[0]);
+          } catch (CannotPerformActionException e) {
+            GameModel.main.turnManager.OnPlayerCannotPerform(e);
+          }
         }));
       }
     }

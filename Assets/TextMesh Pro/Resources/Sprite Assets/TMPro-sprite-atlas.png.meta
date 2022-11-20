@@ -4,7 +4,10 @@ TextureImporter:
   internalIDToNameTable:
   - first:
       213: 8017635173807290971
-    second: TMPro-sprite-atlas_0
+    second: water
+  - first:
+      213: 8412992027498627020
+    second: organic-matter
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -106,15 +109,15 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TMPro-sprite-atlas_0
+      name: water
       rect:
         serializedVersion: 2
         x: 0
-        y: 112
+        y: 0
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -122,6 +125,27 @@ TextureImporter:
       bones: []
       spriteID: b5af57916bc544f60800000000000000
       internalID: 8017635173807290971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: organic-matter
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccfbf31dca3f0c470800000000000000
+      internalID: 8412992027498627020
       vertices: []
       indices: 
       edges: []

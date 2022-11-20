@@ -51,6 +51,9 @@ public class Soil : Entity, IDaySteppable {
 
   public void StepDay() {
     watered = false;
+    if (nutrient > 0) {
+      nutrient--;
+    }
   }
 }
 

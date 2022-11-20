@@ -80,6 +80,9 @@ public class ObjectInfo {
         if (Infos[type].spriteName == null) {
           // try extracting sprite from prefab
           var prefab = FloorController.GetEntityPrefab(item as Entity);
+          if (prefab == null) {
+            prefab = FloorController.GetEntityPrefab(item as Type);
+          }
           if (prefab != null) {
             Infos[type].spriteName = prefab.GetComponentInChildren<SpriteRenderer>().sprite.name;
           }

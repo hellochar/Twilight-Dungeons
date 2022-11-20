@@ -139,7 +139,7 @@ public class Floor {
   internal void PlayerGoHome() {
     GameModel.main.PutPlayerAt(0);
     GameModel.main.GenerateAndSetCaveDepth(GameModel.main.nextCaveDepth + 1);
-    GameModel.main.EnqueueEvent(GameModel.main.GoNextDay);
+    GameModel.main.GoNextDay();
   }
 
   public int EnemiesLeft() {

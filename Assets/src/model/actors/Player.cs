@@ -52,11 +52,22 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 #endif
 
-  public void UseWaterOrThrow(int waterCost) {
-    if (water < waterCost) {
-      throw new CannotPerformActionException($"Need <color=lightblue>{waterCost}</color> water!");
+  public void UseResourcesOrThrow(int water = 0, int organicMatter = 0, int actionPoints = 0) {
+    if (this.water < water) {
+      throw new CannotPerformActionException($"Need <color=lightblue>{water}</color> water!");
     }
-    water -= waterCost;
+    if (this.organicMatter < organicMatter) {
+      throw new CannotPerformActionException($"Need <color=green>{organicMatter}</color> organic matter!");
+    }
+    if (this.actionPoints < actionPoints) {
+      throw new CannotPerformActionException($"Need {actionPoints} Action Points!");
+    }
+    if (actionPoints > 0 && floor.depth != 0) {
+      throw new CannotPerformActionException("Go home first!");
+    }
+    this.water -= water;
+    this.organicMatter -= organicMatter;
+    this.actionPoints -= actionPoints;
   }
 
 

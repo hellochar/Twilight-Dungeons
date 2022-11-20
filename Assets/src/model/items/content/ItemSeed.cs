@@ -41,9 +41,8 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
   private void Plant(Ground soil) {
     var player = GameModel.main.player;
 #if experimental_actionpoints
-    player.UseActionPointOrThrow();
+    player.UseResourcesOrThrow(water: waterCost, actionPoints: 1);
 #endif
-    player.UseWaterOrThrow(waterCost);
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     var plant = (Entity)constructorInfo.Invoke(new object[] { soil.pos });
     var floor = soil.floor;

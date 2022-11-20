@@ -33,7 +33,7 @@ public class Soil : Entity, IDaySteppable {
   [PlayerAction]
   public void Water() {
     var player = GameModel.main.player;
-    player.UseWaterOrThrow(25);
+    player.UseResourcesOrThrow(water: 25);
     // player.UseActionPointOrThrow();
     watered = true;
   }

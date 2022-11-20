@@ -128,7 +128,7 @@ public class HardGround : Tile {
 
   public void Soften() {
     var player = GameModel.main.player;
-    player.UseWaterOrThrow(11);
+    player.UseResourcesOrThrow(water: 11);
     floor.Put(new Ground(pos));
   }
 

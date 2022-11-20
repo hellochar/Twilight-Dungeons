@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -22,11 +24,19 @@ public class EveningBells : Grass, IActorEnterHandler {
 }
 
 [Serializable]
-[ObjectInfo("evening-bell", description: "Use to put all adjacent Creatures (including yourself!) to Sleep for three turns.")]
-internal class ItemEveningPowder : Item, IUsable {
-  public void Use(Actor a) {
-    foreach(var actor in a.floor.AdjacentActors(a.pos)) {
-      actor.SetTasks(new SleepTask(actor, 3, true));
-    }
+[ObjectInfo("evening-bell", description: "Use to put target adjacent Creature to Deep Sleep for three turns.")]
+internal class ItemEveningPowder : Item, ITargetedAction<Actor> {
+  public override int stacksMax => int.MaxValue;
+
+  public string TargettedActionName => "Apply";
+  public string TargettedActionDescription => "Choose target.";
+
+  public void PerformTargettedAction(Player player, Entity target) {
+    var actor = target as Actor;
+    actor.SetTasks(new SleepTask(actor, 3, true));
+  }
+
+  public IEnumerable<Actor> Targets(Player player) {
+    return player.floor.AdjacentActors(player.pos).Where(a => !(a is Player));
   }
 }

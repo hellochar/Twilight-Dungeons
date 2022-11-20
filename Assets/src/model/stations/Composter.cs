@@ -16,11 +16,11 @@ public class Composter : Station, IDaySteppable, IInteractableInventory {
   public void Compost() {
     if (inventory[0] != null) {
       var item = inventory[0];
-      item.Destroy();
-      int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2 * item.stacks;
+      int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2;
       for (int i = 0; i < numOrganicMatters; i++) {
-        floor.Put(new ItemOnGround(pos, new ItemOrganicMatter()));
+        floor.Put(new OrganicMatterOnGround(pos));
       }
+      item.stacks--;
     }
   }
 

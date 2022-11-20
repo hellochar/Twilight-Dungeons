@@ -91,7 +91,7 @@ public class ThickBrush : Destructible, IBlocksVision {
         brush.Kill(player);
       }
     }
-    player.floor.Put(new ItemOnGround(pos, new ItemOrganicMatter()));
+    player.floor.Put(new OrganicMatterOnGround(pos));
     player.floor.RecomputeVisibility();
   }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Tap to pick up this item and see what it does.")]
-public class ItemOnGround : Entity, IActorEnterHandler, IDaySteppable {
+public class ItemOnGround : Entity, IDaySteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground && tile.item == null && (tile.CanBeOccupied() || tile.body is Player);
   public static void PlacementBehavior(Floor floor, ItemOnGround i) {
     var newPosition = floor.BreadthFirstSearch(i.pos, (_) => true)
@@ -43,13 +43,7 @@ public class ItemOnGround : Entity, IActorEnterHandler, IDaySteppable {
     KillSelf();
   }
 
-  public void HandleActorEnter(Actor who) {
-    if (item is IActorEnterHandler h) {
-      h.HandleActorEnter(who);
-    }
-  }
-
-  public void PickUp() {
+  public virtual void PickUp() {
     var player = GameModel.main.player;
     if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
       Kill(player);
@@ -57,12 +51,12 @@ public class ItemOnGround : Entity, IActorEnterHandler, IDaySteppable {
   }
 
   public virtual void StepDay() {
-    // if (!(item is ItemOrganicMatter) && age > 0) {
+    // if (age > 0) {
     //   var floor = this.floor;
     //   KillSelf();
     //   int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2;
     //   for (int i = 0; i < numOrganicMatters; i++) {
-    //     floor.Put(new ItemOnGround(pos, new ItemOrganicMatter()));
+    //     floor.Put(new OrganicMatterOnGround(pos));
     //   }
     // }
   }

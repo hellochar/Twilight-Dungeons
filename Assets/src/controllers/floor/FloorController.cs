@@ -39,6 +39,9 @@ public class FloorController : MonoBehaviour {
           category = "Actors/";
         }
         string resourcePath = $"Entities/{category}{type.Name}";
+        if (type.IsSubclassOf(typeof(ItemOnGround))) {
+          resourcePath = "Entities/ItemOnGround";
+        }
         EntityPrefabs.Add(type, Resources.Load<GameObject>(resourcePath));
       }
     }

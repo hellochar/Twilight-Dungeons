@@ -92,7 +92,11 @@ public static class Popups {
     var button = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Action Button"), new Vector3(), Quaternion.identity, parent);
     button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
-    button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));
+
+    // lol we should really make this better
+    if (name != "Compost") {
+      button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));
+    }
     return button;
   }
 }

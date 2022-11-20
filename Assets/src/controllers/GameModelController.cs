@@ -77,8 +77,13 @@ public class GameModelController : MonoBehaviour {
     }
   }
 
+  public bool isSteppingDay = false;
   public void GoNextDay() {
-    gameLoop = StartCoroutine(model.StepDay(() => gameLoop = null));
+    isSteppingDay = true;
+    gameLoop = StartCoroutine(model.StepDay(() => {
+      gameLoop = null;
+      isSteppingDay = false;
+    }));
   }
 
   private void HandlePlayersChoice() {

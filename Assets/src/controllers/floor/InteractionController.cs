@@ -130,9 +130,14 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     var player = GameModel.main.player;
 
     // hack - make the home downstairs a Body (pit)
-    if ((entity is Tile && !(entity is Downstairs)) || entity is ItemOnGround) {
+    if ((entity is Tile && !(entity is Downstairs))) {
       new SetTasksPlayerInteraction(
         new MoveToTargetTask(player, worldPos)
+      ).Perform();
+    } else if (entity is ItemOnGround g) {
+      new SetTasksPlayerInteraction(
+        new MoveToTargetTask(player, worldPos),
+        new GenericPlayerTask(player, g.PickUp)
       ).Perform();
     } else {
       new SetTasksPlayerInteraction(

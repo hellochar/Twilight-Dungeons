@@ -4,36 +4,41 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("composter", description: "Converts one nearby item into a Soil each day.")]
+[ObjectInfo("composter", description: "Converts an item into Organic Matter.")]
 public class Composter : Station, IDaySteppable, IInteractableInventory {
   public override int maxDurability => 9;
-  // public override bool isActive => NearbySoilableGrounds.Any() && NearbyItems.Any();
-  public override bool isActive => NearbySoilableGrounds.Any() && inventory[0] != null;
+  public override bool isActive => inventory[0] != null;
   public Composter(Vector2Int pos) : base(pos) {
     inventory.allowDragAndDrop = true;
   }
 
-  private IEnumerable<Tile> NearbySoilableGrounds =>
-    floor.GetAdjacentTiles(pos).Where(t => t is Ground && !(t is Soil));
-
-  private IEnumerable<ItemOnGround> NearbyItems =>
-    floor.GetAdjacentTiles(pos).Select(t => t.item).Where(i => i != null);
+  [PlayerAction]
+  public void Compost() {
+    if (inventory[0] != null) {
+      var item = inventory[0];
+      item.Destroy();
+      int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2 * item.stacks;
+      for (int i = 0; i < numOrganicMatters; i++) {
+        floor.Put(new ItemOnGround(pos, new ItemOrganicMatter()));
+      }
+    }
+  }
 
   public void StepDay() {
-    var nearbyGroundToTurnIntoSoil = Util.RandomPick(NearbySoilableGrounds);
-    // there's nothing left
-    if (nearbyGroundToTurnIntoSoil == null) {
-      KillSelf();
-      return;
-    }
-    // var nearbyItemToConsume = Util.RandomPick(NearbyItems);
-    // if (nearbyItemToConsume != null) {
-    //   floor.Put(new Soil(nearbyGroundToTurnIntoSoil.pos));
-    //   nearbyItemToConsume.Kill(this);
+    // var nearbyGroundToTurnIntoSoil = Util.RandomPick(NearbySoilableGrounds);
+    // // there's nothing left
+    // if (nearbyGroundToTurnIntoSoil == null) {
+    //   KillSelf();
+    //   return;
     // }
-    if (inventory[0] != null) {
-      floor.Put(new Soil(nearbyGroundToTurnIntoSoil.pos));
-      inventory[0].Destroy();
-    }
+    // // var nearbyItemToConsume = Util.RandomPick(NearbyItems);
+    // // if (nearbyItemToConsume != null) {
+    // //   floor.Put(new Soil(nearbyGroundToTurnIntoSoil.pos));
+    // //   nearbyItemToConsume.Kill(this);
+    // // }
+    // if (inventory[0] != null) {
+    //   floor.Put(new Soil(nearbyGroundToTurnIntoSoil.pos));
+    //   inventory[0].Destroy();
+    // }
   }
 }

@@ -49,7 +49,7 @@ public class ItemOnGround : Entity, IActorEnterHandler, IDaySteppable {
     }
   }
 
-  internal void PickUp() {
+  public void PickUp() {
     var player = GameModel.main.player;
     if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
       Kill(player);
@@ -57,10 +57,13 @@ public class ItemOnGround : Entity, IActorEnterHandler, IDaySteppable {
   }
 
   public virtual void StepDay() {
-    // if (!(item is ItemMulch) && age > 0) {
+    // if (!(item is ItemOrganicMatter) && age > 0) {
     //   var floor = this.floor;
     //   KillSelf();
-    //   floor.Put(new ItemOnGround(pos, new ItemMulch(1)));
+    //   int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2;
+    //   for (int i = 0; i < numOrganicMatters; i++) {
+    //     floor.Put(new ItemOnGround(pos, new ItemOrganicMatter()));
+    //   }
     // }
   }
 

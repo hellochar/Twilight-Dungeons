@@ -73,7 +73,7 @@ public class Spider : AIActor {
 [System.Serializable]
 [ObjectInfo(description: "Take +1 damage from the next attack. You must spend one turn to break the Web.")]
 internal class Web : Grass, IActorEnterHandler {
-  public static Item HomeItem => new ItemSpiderSandals(1);
+  public static Item HomeItem => new SilkSandals(3);
   public static bool CanOccupy(Tile tile) => tile is Ground && !(tile.grass is Web);
 
   public Web(Vector2Int pos) : base(pos) {}
@@ -100,17 +100,17 @@ internal class Web : Grass, IActorEnterHandler {
   }
 
   public static bool IsActorNice(Actor actor) {
-    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Footwear] is ItemSpiderSandals);
+    return actor is Spider spider || (actor is Player player && player.equipment[EquipmentSlot.Footwear] is SilkSandals);
   }
 }
 
 [Serializable]
 [ObjectInfo("spider-silk-shoes", "Finely woven from the web of spiders.")]
-internal class ItemSpiderSandals : EquippableItem, IBodyMoveHandler {
+internal class SilkSandals : EquippableItem, IBodyMoveHandler {
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
-  public override int stacksMax => 999;
+  public override int stacksMax => int.MaxValue;
 
-  public ItemSpiderSandals(int stacks) : base(stacks) {
+  public SilkSandals(int stacks) : base(stacks) {
   }
 
   public void HandleMove(Vector2Int pos, Vector2Int oldPos) {

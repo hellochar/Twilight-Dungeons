@@ -15,7 +15,7 @@ public class Shielder : AIActor {
 
   protected override ActorTask GetNextTask() {
     if (floor.EnemiesLeft() == 0) {
-      return new GenericTask(this, KillSelf);
+      return new WaitTask(this, 1);
     }
     if (status == null) {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, LinkWithClosestTarget));

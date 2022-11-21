@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Blocks your path. Leaves a debuff when you kill it")]
 public class Slime : Destructible, IDeathHandler {
-  public Slime(Vector2Int pos) : base(pos, 3) {
+  public Slime(Vector2Int pos) : base(pos, 1) {
   }
 
   public void HandleDeath(Entity source) {
@@ -16,8 +17,10 @@ public class Slime : Destructible, IDeathHandler {
     var floor = this.floor;
     floor.Put(new WallTrigger(pos));
     GameModel.main.EnqueueEvent(() => {
-      var inventory = new Inventory(new ItemSlime());
-      inventory.TryDropAllItems(floor, pos);
+      // var inventory = new Inventory(new ItemSlime());
+      // inventory.TryDropAllItems(floor, pos);
+      var dropPos = GameModel.main.home.soils.First().pos;
+      GameModel.main.home.Put(new ItemOnGround(dropPos, new ItemSlime()));
     });
 #if experimental_retryondemand
     GameModel.main.EnqueueEvent(() => {

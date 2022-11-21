@@ -365,7 +365,7 @@ public abstract class FloorGenerator {
       }
     }
 
-    shared.Plants.GetRandomAndDiscount(1f)(floor, root);
+    // shared.Plants.GetRandomAndDiscount(1f)(floor, root);
 
     // pick three of them for plants, the rest for rewards
     var room1 = Util.RandomPick(farAwayRooms);

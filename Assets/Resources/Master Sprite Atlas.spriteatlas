@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 120273
+    totalSpriteSurfaceArea: 120785
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -84,7 +84,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b72444a1a06d5b84f823895a9959900e, type: 3}
   - {fileID: 21300000, guid: 030e17b16452e7045a7008c895d58160, type: 3}
   - {fileID: 21300000, guid: 08508fb1398e67849aee030fc1035f23, type: 3}
+  - {fileID: 21300000, guid: 99996ad1ce7f79a49ae96f4add6c5792, type: 3}
   - {fileID: 21300000, guid: c9f63cd16bff60342a3b6ff774adea1d, type: 3}
+  - {fileID: 21300000, guid: 2e65ddd1d7e4f3544be46e176171270b, type: 3}
   - {fileID: 1751589582205946468, guid: d7ac6be18a0622b479cb8e712f72abd1, type: 3}
   - {fileID: -2255910211997708348, guid: d7ac6be18a0622b479cb8e712f72abd1, type: 3}
   - {fileID: 21300000, guid: 09d11de1b13732f4f98b4b0bbe12845d, type: 3}
@@ -457,7 +459,9 @@ SpriteAtlas:
   - poisonmoss
   - redcap
   - Path Dot
+  - spore-powder
   - butterfly
+  - evening-powder
   - vines-tiling
   - vines-tiling-head
   - spider-silk-shoes

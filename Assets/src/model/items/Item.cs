@@ -75,7 +75,11 @@ public class Item : IModifierProvider {
       methods.Add(GetType().GetMethod("Eat"));
     }
     if (this is IUsable usable) {
-      methods.Add(GetType().GetMethod("Use"));
+      if (this is EquippableItem i && !i.IsEquipped) {
+        // EquippableItems can only be used while equipped 
+      } else {
+        methods.Add(GetType().GetMethod("Use"));
+      }
     }
     return methods;
   }

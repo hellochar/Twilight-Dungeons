@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public static class Tips {
   public static Dictionary<int, string> tipMap = new Dictionary<int, string>() {
-    [0] = "The game auto-saves.\n\nPinch to zoom.\n\nLong tap to inspect a Creature or Grass.",
+    // [0] = "The game auto-saves.\n\nPinch to zoom.\n\nLong tap to inspect a Creature or Grass.",
     [1] = "Take your time. The game rewards carefully thinking through what will happen each turn.",
     [2] = "Diagonal movement is just as easy as straight movement.",
     [3] = "Sometimes, the best move is to wait!",

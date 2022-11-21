@@ -40,12 +40,11 @@ public class Soil : Entity, IDaySteppable {
 
   [PlayerAction]
   public void Fertilize() {
-    int organicMatterCost = 1;
     var player = GameModel.main.player;
-    if (player.organicMatter < organicMatterCost) {
-      throw new CannotPerformActionException($"Need <color=green>{organicMatterCost}</color> organic matter!");
+    if (nutrient >= 5) {
+      throw new CannotPerformActionException("Already at max nutrients!");
     }
-    player.organicMatter -= organicMatterCost;
+    player.UseResourcesOrThrow(organicMatter: 1);
     nutrient++;
   }
 

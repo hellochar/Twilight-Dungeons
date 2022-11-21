@@ -50,8 +50,8 @@ public class CameraController : MonoBehaviour {
         // ZoomLerp(camera, state.targetZoom, zoomLerpSpeed);
         // camera.orthographicSize = state.targetZoom;
 
-        // var targetPos = state.targetPos;
-        var targetPos = new Vector2(GameModel.main.player.pos.x, GameModel.main.player.pos.y);
+        var targetPos = state.targetPos;
+        // var targetPos = new Vector2(GameModel.main.player.pos.x, GameModel.main.player.pos.y);
         if (state.lean == ViewportLean.Left) {
           // put the focus on the left half of the camera
           var cameraBounds = OrthographicBounds(camera);

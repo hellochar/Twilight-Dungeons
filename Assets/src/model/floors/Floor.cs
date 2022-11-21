@@ -267,10 +267,14 @@ public class Floor {
       }
 
       if (item != null) {
-        var success = player.inventory.AddItem(item, target);
-        if (!success) {
-          player.floor.Put(new ItemOnGround(target.pos, item));
-        }
+        // place it at home
+        var dropPos = GameModel.main.home.soils.First().pos;
+        GameModel.main.home.Put(new ItemOnGround(dropPos, item));
+
+        // var success = player.inventory.AddItem(item, target);
+        // if (!success) {
+        //   player.floor.Put(new ItemOnGround(target.pos, item));
+        // }
         // they're *not* killed because we don't want to trigger actions on them
         target.floor.Remove(target);
       }

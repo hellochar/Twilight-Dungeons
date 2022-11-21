@@ -24,7 +24,7 @@ public class EveningBells : Grass, IActorEnterHandler {
 }
 
 [Serializable]
-[ObjectInfo("evening-bell", description: "Use to put target adjacent Creature to Deep Sleep for three turns.")]
+[ObjectInfo("evening-powder", description: "Use to put target adjacent Creature to Deep Sleep for three turns.")]
 internal class ItemEveningPowder : Item, ITargetedAction<Actor> {
   public override int stacksMax => int.MaxValue;
 

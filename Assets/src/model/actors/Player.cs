@@ -131,8 +131,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     // if (!anyEnemies) {
     //   maxActionPoints += 1;
     // }
-    var numHelpers = floor.bodies.Where(t => t is AIActor a).Count();
-    maxActionPoints += numHelpers;
+    // var numHelpers = floor.bodies.Where(t => t is AIActor a).Count();
+    // maxActionPoints += numHelpers;
     actionPoints = maxActionPoints;
 #endif
   }

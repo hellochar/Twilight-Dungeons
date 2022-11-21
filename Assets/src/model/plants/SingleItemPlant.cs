@@ -8,7 +8,7 @@ namespace SingleItemPlant {
   [Serializable]
   public class SingleItemPlant : Plant {
     public static void AddSingleItemPlantSeedToRoom(Floor floor, Room room, Type itemType) {
-      Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t is Soil && t.CanBeOccupied()));
+      Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied()));
       if (tile == null) {
         tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
       }
@@ -62,7 +62,7 @@ namespace SingleItemPlant {
 
     public string TargettedActionName => "Plant";
     public string TargettedActionDescription => "Plant";
-    public IEnumerable<Soil> Targets(Player player) => player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Soil>();
+    public IEnumerable<Soil> Targets(Player player) => player.floor.tiles.Where(tile => tile.isExplored && tile.CanBeOccupied()).Cast<Soil>();
     public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Soil)target);
 
     public void MoveAndPlant(Soil soil) {

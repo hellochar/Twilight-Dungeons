@@ -276,6 +276,18 @@ public class Teleporter : Downstairs {
   }
 
   internal void TryGoHome() {
+    // destroy player's inventory
+    var inventoryItems = GameModel.main.player.inventory.ItemsNonNull();
+    foreach (var item in inventoryItems) {
+      // aaand it's just gone
+      GameModel.main.player.inventory.RemoveItem(item);
+    }
+
+    var equipmentItems = GameModel.main.player.equipment.ItemsNonNull();
+    foreach (var item in equipmentItems) {
+      GameModel.main.player.equipment.RemoveItem(item);
+    }
+
     Serializer.SaveMainToCheckpoint();
     floor.PlayerGoHome();
   }

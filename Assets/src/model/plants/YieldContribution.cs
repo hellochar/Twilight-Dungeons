@@ -68,7 +68,7 @@ public static class YieldContributionUtils {
 
   public static int GetCost(Type itemType) {
     int cost = 0;
-    var field = itemType.GetField("yieldCost", System.Reflection.BindingFlags.Static);
+    var field = itemType.GetField("yieldCost");
     if (field != null) {
       cost = (int) field.GetValue(null);
     }

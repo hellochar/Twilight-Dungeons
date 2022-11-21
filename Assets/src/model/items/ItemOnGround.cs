@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Tap to pick up this item and see what it does.")]
-public class ItemOnGround : Entity, IDaySteppable {
+public class ItemOnGround : Entity {
   public static bool CanOccupy(Tile tile) => tile is Ground && tile.item == null && (tile.CanBeOccupied() || tile.body is Player);
   public static void PlacementBehavior(Floor floor, ItemOnGround i) {
     var newPosition = floor.BreadthFirstSearch(i.pos, (_) => true)

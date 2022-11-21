@@ -4,7 +4,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("campfire", description: "Heals you for 1 HP and removes one negative status.")]
-public class Campfire : Station, IDaySteppable {
+public class Campfire : Station {
   public bool usedForTheDay { get; private set; }
   public override bool isActive => !usedForTheDay;
 
@@ -53,9 +53,10 @@ public class Campfire : Station, IDaySteppable {
     p.UseResourcesOrThrow(water: 25);
 
     floor.Put(new ItemOnGround(pos, new ItemCreatureFood()));
+    OnHealed?.Invoke();
   }
 
-  public void StepDay() {
-    usedForTheDay = false;
-  }
+  // public void StepDay() {
+  //   usedForTheDay = false;
+  // }
 }

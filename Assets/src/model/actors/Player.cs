@@ -8,8 +8,7 @@ using UnityEngine;
 [ObjectInfo(description: "Only you can use and equip items.\nOnly you can take stairs.", flavorText: "Though your illness makes you physically weak, your knowledge of flora and fauna helps you navigate these strange caves.")]
 public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   ITakeAnyDamageHandler, IDealAttackDamageHandler, IActionPerformedHandler,
-  IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler,
-  IDaySteppable
+  IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler
 #if experimental_useplantondeath
   , IDeathInterceptor
 #endif
@@ -122,7 +121,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     ClearTasks();
   }
 
-  public void StepDay() {
+  public void ReplenishActionPoints() {
     var numDays = GameModel.main.day;
 #if experimental_actionpoints
     // maxActionPoints = 3;

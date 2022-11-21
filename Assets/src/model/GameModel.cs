@@ -108,18 +108,19 @@ public class GameModel {
     }
   }
 
-  internal IEnumerator StepDay(Action then) {
+  internal IEnumerator StepDay(Action<Entity> OnEntityTurn, Action then) {
     yield return new WaitForSeconds(1.0f);
     day++;
     foreach (var p in home.entities.ToList()) {
-      if (p is IDaySteppable s) {
+      if (p is IDaySteppable s && p.isVisible) {
         try {
+          OnEntityTurn(p);
           s.StepDay();
         } catch (Exception e) {
           Debug.LogError(e);
           turnManager.latestException = e;
         }
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(1f);
       }
     }
     then();
@@ -128,6 +129,7 @@ public class GameModel {
   public void GoNextDay() {
     // hack route to controller for now 
     GameModelController.main.GoNextDay();
+    GameModel.main.player.ReplenishActionPoints();
   }
 
   private void generate() {

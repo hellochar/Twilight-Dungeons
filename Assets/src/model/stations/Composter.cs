@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("composter", description: "Converts an item into Organic Matter.")]
-public class Composter : Station, IDaySteppable, IInteractableInventory {
+public class Composter : Station, IInteractableInventory {
   public override int maxDurability => 9;
   public override bool isActive => inventory[0] != null;
   public Composter(Vector2Int pos) : base(pos) {
@@ -22,23 +22,5 @@ public class Composter : Station, IDaySteppable, IInteractableInventory {
       }
       item.stacks--;
     }
-  }
-
-  public void StepDay() {
-    // var nearbyGroundToTurnIntoSoil = Util.RandomPick(NearbySoilableGrounds);
-    // // there's nothing left
-    // if (nearbyGroundToTurnIntoSoil == null) {
-    //   KillSelf();
-    //   return;
-    // }
-    // // var nearbyItemToConsume = Util.RandomPick(NearbyItems);
-    // // if (nearbyItemToConsume != null) {
-    // //   floor.Put(new Soil(nearbyGroundToTurnIntoSoil.pos));
-    // //   nearbyItemToConsume.Kill(this);
-    // // }
-    // if (inventory[0] != null) {
-    //   floor.Put(new Soil(nearbyGroundToTurnIntoSoil.pos));
-    //   inventory[0].Destroy();
-    // }
   }
 }

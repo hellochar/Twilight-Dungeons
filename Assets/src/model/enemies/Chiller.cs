@@ -69,7 +69,7 @@ internal class ItemChillerGrassCutting : Item, ITargetedAction<Tile> {
   string ITargetedAction<Tile>.TargettedActionName => "Place";
   string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to place the Chiller.";
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
-    player.floor.Put(new Chiller(target.pos));
+    player.floor.Put(new ChillerGrass(target.pos));
     stacks--;
   }
 

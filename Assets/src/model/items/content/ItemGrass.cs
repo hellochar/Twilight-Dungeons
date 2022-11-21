@@ -33,8 +33,7 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
       return false;
     }
 
-    var selfAndNeighborsCanBeOccupied = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => t.CanBeOccupied() || t.body is Player);
-    if (!selfAndNeighborsCanBeOccupied) {
+    if (t.soil == null) {
       return false;
     }
 
@@ -42,10 +41,15 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
       return false;
     }
 
-    var neighborGrassesAreSameType = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => t.grass == null || t.grass.GetType() == grassType);
-    if (!neighborGrassesAreSameType) {
-      return false;
-    }
+    // var selfAndNeighborsCanBeOccupied = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => t.CanBeOccupied() || t.body is Player);
+    // if (!selfAndNeighborsCanBeOccupied) {
+    //   return false;
+    // }
+
+    // var neighborGrassesAreSameType = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => t.grass == null || t.grass.GetType() == grassType);
+    // if (!neighborGrassesAreSameType) {
+    //   return false;
+    // }
 
     return true;
   }

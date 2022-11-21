@@ -22,25 +22,41 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
       return false;
     }
 
-    var selfAndNeighborsCanBeOccupied = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => {
-      if (t.body is Player) {
-        return true;
-      }
-
-      if (t.body == null) {
-        return true;
-      }
-
-      if (t.body.GetType() == entityType) {
-        return true;
-      }
-
-      return false;
-    });
-
-    if (!selfAndNeighborsCanBeOccupied) {
+    if (!t.CanBeOccupied()) {
       return false;
     }
+
+    if (t.grass != null) {
+      return false;
+    }
+
+    // var isStation = entityType.IsSubclassOf(typeof(Station));
+    // if (!isStation) {
+    //   // only place on soils
+    //   if (t.soil == null) {
+    //     return false;
+    //   }
+    // }
+
+    // var selfAndNeighborsCanBeOccupied = t.floor.GetDiagonalAdjacentTiles(t.pos).All(t => {
+    //   if (t.body is Player) {
+    //     return true;
+    //   }
+
+    //   if (t.body == null) {
+    //     return true;
+    //   }
+
+    //   if (t.body.GetType() == entityType) {
+    //     return true;
+    //   }
+
+    //   return false;
+    // });
+
+    // if (!selfAndNeighborsCanBeOccupied) {
+    //   return false;
+    // }
 
     return true;
   }

@@ -45,7 +45,7 @@ public class Chiller : AIActor {
 }
 
 [Serializable]
-[ObjectInfo("Ground1_0", description: "A creature lies in wait here. Anything that walks over it will become targeted.")]
+[ObjectInfo("chiller-grass", description: "A creature lies in wait here. Anything that walks over it will become targeted.")]
 public class ChillerGrass : Grass, IActorLeaveHandler {
   internal static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile is Ground;
 
@@ -62,7 +62,7 @@ public class ChillerGrass : Grass, IActorLeaveHandler {
 }
 
 [Serializable]
-[ObjectInfo("Ground1_0")]
+[ObjectInfo("chiller-grass")]
 internal class ItemChillerGrassCutting : Item, ITargetedAction<Tile> {
   public override int stacksMax => int.MaxValue;
 

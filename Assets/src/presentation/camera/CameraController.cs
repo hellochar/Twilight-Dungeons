@@ -282,7 +282,3 @@ public class CameraState {
     }
   }
 }
-
-public interface ICameraOverride {
-  public CameraState overrideState { get; }
-}

@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 120785
+    totalSpriteSurfaceArea: 121297
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -78,6 +78,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 63aa1441b050666429e8b695d76f0f20, type: 3}
   - {fileID: 21300000, guid: 5120d641aadce704293cef3aded872ad, type: 3}
   - {fileID: 21300000, guid: bab8bb41f981cd649a1e50040d3b29da, type: 3}
+  - {fileID: 21300000, guid: 4e51a651b5f89bf4088e19b1355bd2b8, type: 3}
   - {fileID: 21300000, guid: 89882f71cb7576848931d1fc509bd862, type: 3}
   - {fileID: 21300000, guid: be07cf91672add549b64d1c7e19de279, type: 3}
   - {fileID: 21300000, guid: 328524a1f9c496047a7e4d34ad95c8bc, type: 3}
@@ -126,6 +127,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a2a493b3652ea624d8b4a95595992591, type: 3}
   - {fileID: 21300000, guid: 423675349ef54b54ea991dfa899a486a, type: 3}
   - {fileID: 21300000, guid: 436f9534bacc2f5458e5415e478a9771, type: 3}
+  - {fileID: 21300000, guid: 75684a44b2825d7428018ca7804d8975, type: 3}
   - {fileID: 6733317360203888005, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -125294812525453898, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
   - {fileID: -3032536096966241093, guid: 13f4d2547f23d4b42b4436b3591ba35b, type: 3}
@@ -453,6 +455,7 @@ SpriteAtlas:
   - flower-buds
   - goldgrass
   - poisoned-status
+  - chiller-grass
   - strength
   - redpod
   - hydra-head
@@ -501,6 +504,7 @@ SpriteAtlas:
   - boombug
   - sign
   - sleeping-bag
+  - floral-headdress
   - tumorous-growth
   - monochrome-thick-path
   - monochrome-blob

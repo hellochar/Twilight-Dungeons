@@ -39,7 +39,7 @@ public class ItemFertilizer : Item, ITargetedAction<Plant> {
   string ITargetedAction<Plant>.TargettedActionName => "Fertilize";
   string ITargetedAction<Plant>.TargettedActionDescription => "Choose a plant to Fertilize.";
   IEnumerable<Plant> ITargetedAction<Plant>.Targets(Player player) {
-    return player.floor.bodies.Where((b) => b is Plant p && !p.isMatured).Cast<Plant>();
+    return GameModel.main.home.plants.Where((p) => !p.isMatured).Cast<Plant>();
   }
 
   void ITargetedAction<Plant>.PerformTargettedAction(Player player, Entity target) {

@@ -59,7 +59,6 @@ public abstract class Entity : IEntity, IModifierProvider {
   public ItemOnGround item => floor?.items[pos];
   public Trigger trigger => floor?.triggers[pos]; /// TODO remove null from floor
   public Body body => floor?.bodies[pos];
-  public Soil soil => floor is HomeFloor home ? home.soils[pos] : null;
   public Actor actor => body as Actor;
   public virtual string displayName => Util.WithSpaces(GetType().Name);
   public virtual string description => ObjectInfo.GetDescriptionFor(this);

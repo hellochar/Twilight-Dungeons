@@ -5,7 +5,7 @@ using UnityEngine;
 using static YieldContribution;
 
 [Serializable]
-public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
+public abstract class Plant : Piece, IHideInSidebar, IDaySteppable {
   [field:NonSerialized] /// controller only
   public event Action OnHarvested;
 
@@ -59,16 +59,12 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
 
   public static Vector2Int[] PlantShape = new Vector2Int[] { Vector2Int.zero, Vector2Int.up };
   public override Vector2Int[] shape => PlantShape;
-  public int dayCreated;
-  public int dayAge => GameModel.main.day - dayCreated;
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     this.stage = stage;
-    this.hp = this.baseMaxHp = 1;
   }
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
-    dayCreated = GameModel.main.day;
     RecomputeAndRefillYield();
     stage.RestockHarvests(yield);
   }

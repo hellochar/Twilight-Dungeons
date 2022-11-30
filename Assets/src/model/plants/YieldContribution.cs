@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public delegate YieldContribution YieldContributionRule(Entity e);
+public delegate YieldContribution YieldContributionRule(Piece p);
 
 [Serializable]
 public class YieldContribution {
@@ -22,13 +22,13 @@ public class YieldContribution {
   // "+4 - Soil has {4} nutrients.";
   // "+3 - Next to {3} Grasses.";
 
-  public static YieldContribution AgeYieldContribution(Entity e) => new YieldContribution {
+  public static YieldContribution AgeYieldContribution(Piece p) => new YieldContribution {
     active = true,
-    bonus = 3 + ((Plant)e).dayAge,
-    description = $"Age {((Plant)e).dayAge}.",
+    bonus = 3 + ((Plant)p).dayAge,
+    description = $"Age {((Plant)p).dayAge}.",
   };
 
-  public static YieldContribution NearGrassYieldContribution(Entity p) {
+  public static YieldContribution NearGrassYieldContribution(Piece p) {
     var nearbyGrasses = p.floor.GetAdjacentTiles(p.pos).Select(t => t.grass).Where(t => t != null);
     var numNearbyGrasses = nearbyGrasses.Count();
     return new YieldContribution {
@@ -38,7 +38,7 @@ public class YieldContribution {
     };
   }
 
-  public static YieldContribution SoilWateredYieldContribution(Entity p) {
+  public static YieldContribution SoilWateredYieldContribution(Piece p) {
     var soil = p.soil;
     var active = soil?.watered ?? false;
     return new YieldContribution {
@@ -48,7 +48,7 @@ public class YieldContribution {
     };
   }
 
-  public static YieldContribution SoilNutrientYieldContribution(Entity p) {
+  public static YieldContribution SoilNutrientYieldContribution(Piece p) {
     var soil = p.soil;
     var nutrient = soil?.nutrient ?? 0;
     var active = nutrient > 0;
@@ -80,12 +80,12 @@ public static class YieldContributionUtils {
   }
 
   public static int Recompute(
-      Entity e,
+      Piece p,
       YieldContributionRule[] contributionRules,
       List<YieldContribution> outLatestContributions) {
     int totalYield = 0;
     foreach (var Rule in contributionRules) {
-      var contribution = Rule.Invoke(e);
+      var contribution = Rule.Invoke(p);
       totalYield += contribution.active ? contribution.bonus : 0;
       outLatestContributions.Add(contribution);
     }

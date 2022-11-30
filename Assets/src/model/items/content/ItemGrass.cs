@@ -33,7 +33,12 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
       return false;
     }
 
-    if (t.soil == null) {
+    var home = t.floor as HomeFloor;
+    if (home == null) {
+      return false;
+    }
+
+    if (home.soils[t.pos] == null) {
       return false;
     }
 

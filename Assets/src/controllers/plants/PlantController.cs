@@ -6,8 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class PlantController : BodyController, IPopupOverride {
-  public Plant plant => (Plant) body;
+public class PlantController : PieceController, IPopupOverride {
+  public Plant plant => (Plant) piece;
   public GameObject particles;
   public GameObject seed;
   public GameObject young;

@@ -116,7 +116,7 @@ public class Piece : Entity {
   public int dayCreated { get; }
   public int dayAge => GameModel.main.day - dayCreated;
   public Piece(Vector2Int pos) : base() {
-    this.pos = pos;
+    _pos = pos;
     dayCreated = GameModel.main.day;
   }
 

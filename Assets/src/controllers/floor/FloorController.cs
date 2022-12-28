@@ -129,6 +129,8 @@ public class FloorController : MonoBehaviour {
         gameObject.GetComponent<ItemOnGroundController>().itemOnGround = itemOnGround;
       } else if (entity is Soil s) {
         gameObject.GetComponent<SoilController>().soil = s;
+      } else if (entity is Piece p) {
+        gameObject.GetComponent<PieceController>().piece = p;
       }
       gameObjectMap[entity] = gameObject;
     } else if (!(entity is Trigger)) {

@@ -33,7 +33,7 @@ public abstract class Tile : Entity {
 
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
-  public float GetPathfindingWeight() => body != null ? 0 : BasePathfindingWeight();
+  public virtual float GetPathfindingWeight() => body != null ? 0 : BasePathfindingWeight();
 
   internal void BodyLeft(Body body) {
     if (body is Actor actor) {
@@ -244,6 +244,21 @@ public class Downstairs : Tile {
   //   grass?.Kill(this);
   // }
 
+  // public virtual void HandleActorEnter(Actor who) {
+  //   if (who is Player) {
+  //     GameModel.main.EnqueueEvent(TryGoDownstairs);
+  //   }
+  // }
+}
+
+[Serializable]
+[ObjectInfo(description: "Jump into the dungeon.")]
+public class Pit : Piece {
+  public Pit(Vector2Int pos) : base(pos) { }
+
+  public static Vector2Int[] Shape2x2 = new Vector2Int[] { Vector2Int.zero, new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(1, 1) };
+  public override Vector2Int[] shape => Shape2x2;
+
   [PlayerAction]
   public void Delve() {
     Serializer.SaveMainToCheckpoint();
@@ -261,12 +276,6 @@ public class Downstairs : Tile {
       return "You peer into the cavern and see " + String.Join(", ", entityTypes.Select(e => e.displayName)) + ".";
     }
   }
-
-  // public virtual void HandleActorEnter(Actor who) {
-  //   if (who is Player) {
-  //     GameModel.main.EnqueueEvent(TryGoDownstairs);
-  //   }
-  // }
 }
 
 [Serializable]
@@ -305,12 +314,32 @@ public class Water : Tile, IActorEnterHandler {
 
   public void Collect() {
     GameModel.main.player.water += MyRandom.Range(55, 65);
-    floor.Put(new Ground(pos));
+    if (floor is HomeFloor) {
+      floor.Put(new HomeGround(pos));
+    } else {
+      floor.Put(new Ground(pos));
+    }
   }
 
   public void HandleActorEnter(Actor who) {
     if (who == GameModel.main.player) {
       Collect();
     }
+  }
+}
+
+public static class TileExtensions {
+  public static bool CanPlaceShape(this Tile tile, Vector2Int[] shape) {
+    var floor = tile.floor;
+    foreach (Vector2Int offset in shape) {
+      var newPos = tile.pos + offset;
+      if (!floor.InBounds(newPos)) {
+        return false;
+      }
+      if (!floor.tiles[newPos].CanBeOccupied()) {
+        return false;
+      }
+    }
+    return true;
   }
 }

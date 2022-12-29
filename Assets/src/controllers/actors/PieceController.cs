@@ -22,7 +22,8 @@ public class PieceController : MonoBehaviour, IEntityController, IPlayerInteract
 
     Tile t = pointerEventData == null ? piece.tile : Util.GetVisibleTileAt(pointerEventData.position);
     return new SetTasksPlayerInteraction(
-      new MoveToTargetThenPerformTask(player, t.pos, () => EntityPopup.Show(piece))
+      new MoveNextToTargetTask(player, t.pos),
+      new GenericPlayerTask(player, () => EntityPopup.Show(piece))
     );
   }
 }

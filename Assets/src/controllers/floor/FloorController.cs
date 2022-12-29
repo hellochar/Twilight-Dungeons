@@ -35,6 +35,8 @@ public class FloorController : MonoBehaviour {
           category = "Grasses/";
         } else if (type.IsSubclassOf(typeof(Plant))) {
           category = "Plants/";
+        } else if (type.IsSubclassOf(typeof(Piece))) {
+          category = "Pieces/";
         } else if (type.IsSubclassOf(typeof(Body))) {
           category = "Actors/";
         }
@@ -150,10 +152,13 @@ public class FloorController : MonoBehaviour {
     var grass = tile.grass;
   
     var visibleEntities = new List<Entity>();
+    if (floor is HomeFloor f) {
+      if (f.pieces[pos] != null) visibleEntities.Add(f.pieces[pos]);
+      if (f.soils[pos] != null) visibleEntities.Add(f.soils[pos]);
+    }
     if (body != null) visibleEntities.Add(body);
     if (itemOnGround != null) visibleEntities.Add(itemOnGround);
     if (grass != null) visibleEntities.Add(grass);
-    if (floor is HomeFloor f && f.soils[pos] != null) visibleEntities.Add(f.soils[pos]);
     if (tile?.isExplored ?? false) visibleEntities.Add(tile);
 
     return visibleEntities.ToArray();

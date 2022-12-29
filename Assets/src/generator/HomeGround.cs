@@ -4,6 +4,13 @@ using UnityEngine;
 public class HomeGround : Ground {
   public HomeGround(Vector2Int pos) : base(pos) {
   }
+
+  public override float GetPathfindingWeight() {
+    if (floor is HomeFloor f) {
+      return f.pieces[pos] == null ? 1 : 0;
+    }
+    return (body != null && body != GameModel.main.player) ? 0 : BasePathfindingWeight();
+  }
 }
 
 [System.Serializable]

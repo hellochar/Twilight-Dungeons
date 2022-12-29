@@ -62,6 +62,7 @@ public class Soil : Entity, IDaySteppable {
 public class ItemSoil : Item, ITargetedAction<Ground> {
   public string TargettedActionName => "Sow";
   public string TargettedActionDescription => "Choose where to place Soil.";
+  Soil s = new Soil(new Vector2Int());
 
   public void PerformTargettedAction(Player player, Entity target) {
     player.UseActionPointOrThrow();
@@ -71,14 +72,21 @@ public class ItemSoil : Item, ITargetedAction<Ground> {
     //     // player.floor.Put(new GrowingEntity(tile.pos, new Soil(tile.pos)));
     //   }
     // }
-    player.floor.Put(new Soil(target.pos));
+    s.pos = target.pos;
+    player.floor.Put(s);
     Destroy();
   }
 
   public IEnumerable<Ground> Targets(Player player) {
+    HomeFloor h = GameModel.main.home;
+    if (player.floor != h) {
+      return null;
+    }
+
     return player.GetVisibleTiles().Where(tile =>
-      tile.GetType() == typeof(Ground) &&
-      tile.CanBeOccupied()
+      tile is Ground &&
+      // h.CanPlacePiece(s, tile.pos)
+      tile.CanPlaceShape(Soil.SoilShape)
     ).Cast<Ground>();
   }
 }

@@ -162,12 +162,16 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   public override void Update() {
     #if UNITY_EDITOR
-    if (Input.GetKeyDown(KeyCode.V)) {
-      player.SetTasks(new SleepTask(player, 100, true));
+    UpdateDebug();
+    #endif
+    base.Update();
+  }
+
+  void UpdateDebug() {
+    if (IngameDebugConsole.DebugLogManager.Instance.IsLogWindowVisible) {
+      return;
     }
-    if (Input.GetKeyDown(KeyCode.Space)) {
-      player.floor.ForceAddVisibility();
-    }
+    // gameObject
     if (Input.GetKeyDown(KeyCode.S)) {
       Serializer.SaveMainToFile();
     }
@@ -177,10 +181,6 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     }
     if (Input.GetKeyDown(KeyCode.N)) {
       GameModel.GenerateNewGameAndSetMain();
-      SceneManager.LoadSceneAsync("Scenes/Game");
-    }
-    if (Input.GetKeyDown(KeyCode.M)) {
-      GameModel.GenerateTutorialAndSetMain();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
     if (Input.GetKeyDown(KeyCode.Minus)) {
@@ -194,19 +194,6 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       GameModel.main.currentFloor.PlayerGoDownstairs();
       // GameModel.main.PutPlayerAt(GameModel.main.cave.depth + 1);
     }
-    if (Input.GetKeyDown(KeyCode.W)) {
-      player.water += 1000;
-    }
-    if (Input.GetKeyDown(KeyCode.G)) {
-      foreach(var plant in GameModel.main.home.plants.ToList()) {
-        plant.GoNextStage();
-      }
-    }
-    if (Input.GetKeyDown(KeyCode.A)) {
-      if (player.floor is HomeFloor f) {
-        GameModel.main.GoNextDay();
-      }
-    }
     if (Input.GetKeyDown(KeyCode.R)) {
       GameModel.main = Serializer.LoadSave0(false);
       GameModel.main.floorSeeds[GameModel.main.cave.depth + 1] = new System.Random().Next();
@@ -217,19 +204,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       player.floor.ForceAddVisibility();
       SceneManager.LoadSceneAsync("Scenes/Game");
     }
-    if (Input.GetKeyDown(KeyCode.T)) {
+    if (Input.GetKeyDown(KeyCode.Z)) {
       ScreenCapture.CaptureScreenshot("screenshot.png", 2);
     }
-    if (Input.GetKeyDown(KeyCode.H)) {
-      if (canvas == null) {
-        canvas = GameObject.Find("Canvas");
-      }
-      canvas.SetActive(!canvas.activeSelf);
-    }
-    #endif
-    base.Update();
   }
-  private GameObject canvas;
 
   public override void HandleActionPerformed(BaseAction action, BaseAction initial) {
     if (action is WaitBaseAction) {

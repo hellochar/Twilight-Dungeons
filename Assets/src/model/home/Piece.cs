@@ -27,6 +27,10 @@ public class Piece : Entity {
   }
 }
 
+public interface IDaySteppable {
+  void StepDay();
+}
+
 // A Piece that represents an Entity in the caves such as a 
 // Grass or Creature
 [Serializable]

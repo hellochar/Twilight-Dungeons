@@ -14,6 +14,35 @@ public class PlayerConsoleMethods {
     GameModel.main.player.inventory.AddItem(itemGrass);
   }
 
+  [ConsoleMethod("CheatAddItem", "Add an Item to player inventory")]
+  public static void CheatAddItem(string itemTypeStr) {
+    Type itemType = Assembly.GetExecutingAssembly().GetType(itemTypeStr);
+    var constructor = itemType.GetConstructor(new Type[0]);
+    var item = (Item)constructor.Invoke(new object[0]);
+    GameModel.main.player.inventory.AddItem(item);
+  }
+
+  [ConsoleMethod("CheatAddItemPlaceableEntity", "Add an ItemPlaceableEntity to player inventory")]
+  public static void CheatAddItemPlaceableEntity(string entityTypeStr, int stacks = 1) {
+    // Type grassType = Assembly.GetExecutingAssembly().GetType(grassTypeStr);
+    Type entityType = Assembly.GetExecutingAssembly().GetType(entityTypeStr);
+    var constructor = entityType.GetConstructor(new Type[] { typeof(Vector2Int) });
+    var entity = (Entity) constructor.Invoke(new object[] { new Vector2Int(0, 0) });
+    if (entity is AIActor actor) {
+      actor.SetAI(new WaitAI(actor));
+      actor.statuses.Add(new CharmedStatus());
+      actor.faction = Faction.Ally;
+    }
+    ItemPlaceableEntity item = new ItemPlaceableEntity(entity);
+    item.stacks = stacks;
+    GameModel.main.player.inventory.AddItem(item);
+  }
+
+  [ConsoleMethod("CheatTriggerCaptureAction", "Trigger capture action")]
+  public static void CheatTriggerCaptureAction() {
+    new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
+  }
+
   [ConsoleMethod("CheatAddVisibility", "Force add visibility")]
   public static void CheatAddVisibility() {
     GameModel.main.player.floor.ForceAddVisibility();

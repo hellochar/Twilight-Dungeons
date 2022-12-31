@@ -6,10 +6,12 @@ public class HomeGround : Ground {
   }
 
   public override float GetPathfindingWeight() {
-    if (floor is HomeFloor f) {
-      return f.pieces[pos] == null ? 1 : 0;
+    var originalPathfindingWeight = (body != null && body != GameModel.main.player) ? 0 : BasePathfindingWeight();
+    // at home, consider Pieces to also block pathfinding
+    if (floor is HomeFloor f && f.pieces[pos] != null) {
+      return 0;
     }
-    return (body != null && body != GameModel.main.player) ? 0 : BasePathfindingWeight();
+    return originalPathfindingWeight;
   }
 }
 

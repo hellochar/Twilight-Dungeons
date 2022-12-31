@@ -44,7 +44,7 @@ public abstract class FloorGenerator {
     EncounterGroup = earlyGame;
     HomeFloor floor;
 #if experimental_expandinghome
-      floor = ExpandingHomeFloor.generate(new Vector2Int(7, 7), floorSeeds.Count());
+      floor = ExpandingHomeFloor.generate(floorSeeds.Count());
 #elif experimental_survivalhomefloor
       floor = generateSurvivalHomeFloor();
 #elif experimental_actionpoints

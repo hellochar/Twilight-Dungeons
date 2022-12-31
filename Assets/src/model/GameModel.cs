@@ -130,6 +130,9 @@ public class GameModel {
     // hack route to controller for now 
     GameModelController.main.GoNextDay();
     GameModel.main.player.ReplenishActionPoints();
+    if (home is ExpandingHomeFloor expandingHomeFloor) {
+      expandingHomeFloor.Expand();
+    }
   }
 
   private void generate() {
@@ -232,11 +235,7 @@ public class GameModel {
 
     // going home
     if (pos == null) {
-      if (depth == 0) {
-        pos = newFloor.downstairs.landing;
-      } else {
         pos = newFloor.startPos;
-      }
     }
     oldFloor.RecordLastStepTime(this.time);
     newFloor.CatchUpStep(this.time);

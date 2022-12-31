@@ -4,14 +4,14 @@ using UnityEngine;
 
 [Serializable]
 public class ExpandingHomeFloor : HomeFloor {
-  public static ExpandingHomeFloor generate(Vector2Int startSize, int numFloors) {
+  public static ExpandingHomeFloor generate(int numFloors) {
+    var startSize = new Vector2Int(6, 6);
     var finalSize = startSize + 2 * Vector2Int.one * numFloors;
     ExpandingHomeFloor floor = new ExpandingHomeFloor(finalSize.x, finalSize.y);
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Chasm(p));
     }
 
-    // put a pit at the center
     var center = floor.center;
     var min = floor.center - startSize / 2;
     Room room0 = new Room(
@@ -25,6 +25,7 @@ public class ExpandingHomeFloor : HomeFloor {
     }
 
     floor.startPos = new Vector2Int(room0.min.x, room0.center.y);
+    // put a pit at the center
     floor.Put(new Pit(room0.center));
     Encounters.AddWater(floor, room0);
 
@@ -36,4 +37,12 @@ public class ExpandingHomeFloor : HomeFloor {
   }
 
   public ExpandingHomeFloor(int width, int height) : base(width, height) { }
+
+  public void Expand() {
+    foreach(var pos in this.EnumerateRoomPerimeter(root)) {
+      Put(new HomeGround(pos));
+    }
+    root.max += Vector2Int.one;
+    root.min -= Vector2Int.one;
+  }
 }

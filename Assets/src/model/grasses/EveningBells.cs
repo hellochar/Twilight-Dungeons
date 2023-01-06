@@ -34,6 +34,7 @@ internal class ItemEveningPowder : Item, ITargetedAction<Actor> {
   public void PerformTargettedAction(Player player, Entity target) {
     var actor = target as Actor;
     actor.SetTasks(new SleepTask(actor, 3, true));
+    stacks--;
   }
 
   public IEnumerable<Actor> Targets(Player player) {

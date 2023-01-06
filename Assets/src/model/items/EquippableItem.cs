@@ -9,7 +9,7 @@ public abstract class EquippableItem : Item {
 
   public abstract EquipmentSlot slot { get; }
   protected Player player => GameModel.main.player;
-  public bool IsEquipped => inventory != null;
+  public bool IsEquipped => inventory is Equipment;
 
   public void Equip(Actor a) {
     var player = (Player) a;

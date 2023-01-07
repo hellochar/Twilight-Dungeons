@@ -59,9 +59,9 @@ public class Wildwood : Plant {
       //   harvestOptions.Add(new Inventory(organicMatters.ToArray()));
       // }
 
-      // if (yield >= 50) {
-      //   harvestOptions.Add(new Inventory(new ItemSeed(typeof(Wildwood), 1)));
-      // }
+      if (yield >= 20) {
+        harvestOptions.Add(new Inventory(new ItemSeed(typeof(Wildwood), 1)));
+      }
     }
   }
 
@@ -69,18 +69,18 @@ public class Wildwood : Plant {
     stage.NextStage = new Mature();
   }
 
-  public static YieldContribution ThreeEmptySpacesYieldContribution(Entity p) {
-    var emptySpaces = p.floor.GetAdjacentTiles(p.pos).Where(t => t.CanBeOccupied() || t.body is Player);
-    var numEmptySpaces = emptySpaces.Count();
+  public static YieldContribution AllAreaAdjacentTilesEmptyYieldContribution(Entity p) {
+    // var emptySpaces = p.floor.GetAdjacentTiles(p.pos).Where(t => t.CanBeOccupied() || t.body is Player);
+    var occupiedSpaces = p.AreaAdjacentTiles().Where(t => !(t.CanBeOccupied() || t.body is Player));
     return new YieldContribution {
-      active = numEmptySpaces >= 3,
-      bonus = 3,
-      description = "At least three empty adjacent Tiles."
+      active = occupiedSpaces.Any(),
+      bonus = 10,
+      description = "All adjacent Tiles are empty."
     };
   }
 
   public static YieldContributionRule[] MyContributionRules => BaseContributionRules.Concat(
-    new YieldContributionRule[] { ThreeEmptySpacesYieldContribution }
+    new YieldContributionRule[] { AllAreaAdjacentTilesEmptyYieldContribution }
   ).ToArray();
   public override YieldContributionRule[] contributionRules => MyContributionRules;
 }

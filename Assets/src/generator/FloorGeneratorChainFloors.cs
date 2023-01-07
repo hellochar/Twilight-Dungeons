@@ -10,7 +10,7 @@ public class FloorGeneratorChainFloors : FloorGenerator {
 
   protected override EncounterGroup GetEncounterGroup(int depth) {
     /// configure the EncounterGroup
-    if (depth <= 6) {
+    if (depth <= 10) {
       return earlyGame;
     } else if (depth <= 12) {
       return everything;

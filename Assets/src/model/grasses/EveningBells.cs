@@ -25,8 +25,9 @@ public class EveningBells : Grass, IActorEnterHandler {
 
 [Serializable]
 [ObjectInfo("evening-powder", description: "Use to put target adjacent Creature to Deep Sleep for three turns.")]
-internal class ItemEveningPowder : Item, ITargetedAction<Actor> {
+internal class ItemEveningPowder : EquippableItem, ITargetedAction<Actor> {
   public override int stacksMax => int.MaxValue;
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
 
   public string TargettedActionName => "Apply";
   public string TargettedActionDescription => "Choose target.";

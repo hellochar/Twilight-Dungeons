@@ -33,9 +33,11 @@ public class Guardleaf : Grass, IActorEnterHandler {
 }
 
 [Serializable]
-[ObjectInfo("guardleaf", description: "Use to grow a Guardleaf at your position.")]
-public class ItemGuardleafCutting : Item, IUsable {
+[ObjectInfo("guardroot-seed", description: "Use to grow a Guardleaf at your position.")]
+public class ItemGuardleafCutting : EquippableItem, IUsable {
   public override int stacksMax => int.MaxValue;
+  public override EquipmentSlot slot => EquipmentSlot.Offhand;
+
   public void Use(Actor a) {
     a.floor.Put(new Guardleaf(a.pos));
     stacks--;

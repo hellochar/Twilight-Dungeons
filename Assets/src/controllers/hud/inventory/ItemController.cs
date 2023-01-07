@@ -100,9 +100,18 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
       }).ToList();
 
       if (item is ITargetedAction<Entity> targetedAction) {
-        var name = targetedAction.TargettedActionName;
-        Action action = () => targetedAction.ShowTargetingUIThenPerform(player);
-        buttons.Insert(0, (name, action));
+        bool canActivateNow;
+        if (item is EquippableItem e) {
+          canActivateNow = e.IsEquipped;
+        } else {
+          canActivateNow = true;
+        }
+
+        if (canActivateNow) {
+          var name = targetedAction.TargettedActionName;
+          Action action = () => targetedAction.ShowTargetingUIThenPerform(player);
+          buttons.Insert(0, (name, action));
+        }
       }
 
       if (player.floor.depth == 0) {

@@ -66,6 +66,9 @@ public class ObjectInfo {
     if (item is ItemGrass gt) {
       return InfoFor(gt.grassType);
     }
+    if (item is ItemPlaceableTile pt) {
+      return InfoFor(pt.tileType);
+    }
     var type = item is Type t ? t : item.GetType();
     if (!Infos.ContainsKey(type)) {
       // try to load it from the attribute

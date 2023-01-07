@@ -15,8 +15,9 @@ class CaptureAction : ITargetedAction<Entity> {
 
     if (item != null) {
       // place it at home
-      var dropPos = GameModel.main.home.soils.First().pos;
-      GameModel.main.home.Put(new ItemOnGround(dropPos, item));
+      // var dropPos = GameModel.main.home.soils.First().pos;
+      // GameModel.main.home.Put(new ItemOnGround(dropPos, item));
+      GameModel.main.home.Put(new ItemOnGround(GameModel.main.home.center, item));
 
       // var success = player.inventory.AddItem(item, target);
       // if (!success) {

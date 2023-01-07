@@ -43,6 +43,13 @@ public class PlayerConsoleMethods {
     new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
   }
 
+  [ConsoleMethod("CheatGetReward", "Show reward UI")]
+  public static void CheatGetReward() {
+    // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
+    GameModel.main.currentFloor.CreateRewards().ShowUI();
+  }
+
+
   [ConsoleMethod("CheatAddVisibility", "Force add visibility")]
   public static void CheatAddVisibility() {
     GameModel.main.player.floor.ForceAddVisibility();
@@ -73,9 +80,12 @@ public class PlayerConsoleMethods {
     }
   }
 
+  private static GameObject canvas;
   [ConsoleMethod("ToggleHUD", "")]
   public static void ToggleHUD() {
-    var canvas = GameObject.Find("Canvas");
+    if (canvas == null) {
+      canvas = GameObject.Find("Canvas");
+    }
     canvas.SetActive(!canvas.activeSelf);
   }
 }

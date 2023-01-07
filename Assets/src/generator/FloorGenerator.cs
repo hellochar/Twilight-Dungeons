@@ -87,6 +87,7 @@ public abstract class FloorGenerator {
       }
       #else
       floor = generator();
+      PostProcessFloor(floor);
       #endif
     }
     if (floor == null) {
@@ -195,6 +196,7 @@ public abstract class FloorGenerator {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
       }
     }
+    floor.ComputeEntityTypes();
   }
 
   public static FloorGenerator Create(List<int> floorSeeds) {

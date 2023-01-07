@@ -45,4 +45,13 @@ public class ExpandingHomeFloor : HomeFloor {
     root.max += Vector2Int.one;
     root.min -= Vector2Int.one;
   }
+
+  public override void Put(Entity entity) {
+    base.Put(entity);
+    if (entity is HomeGround) {
+      root.ExtendToEncompass(new Room(entity.pos - Vector2Int.one, entity.pos + Vector2Int.one));
+      RecomputeVisibility();
+      // f.RecomputeVisibility();
+    }
+  }
 }

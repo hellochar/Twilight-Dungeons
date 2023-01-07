@@ -246,9 +246,50 @@ public partial class Floor {
           freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
         }
         Put(new Teleporter(freeSpot.pos));
-        new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
+        CreateRewards().ShowUI();
+        // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
       }
     });
+  }
+
+  public List<Type> EntityTypes = new List<Type>();
+  public void ComputeEntityTypes() {
+    EntityTypes =
+      bodies
+      .Where(b => !(b is IHideInSidebar))
+      .Select(b => b.GetType())
+      .Concat(
+        grasses
+        .Where(g => !(g is IHideInSidebar))
+        .Select(g => g.GetType())
+      )
+      .Distinct()
+      .ToList();
+  }
+
+  public Rewards CreateRewards() {
+    var rewards = new Rewards(EntityTypes.Select(type => {
+      if (type.IsSubclassOf(typeof(Grass))) {
+        return new Inventory(new ItemGrass(type, 1));
+      } else if (type.IsSubclassOf(typeof(Body))) {
+        var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
+        var entity = (Entity) constructor.Invoke(new object[] { new Vector2Int(0, 0) });
+        if (entity.GetHomeItem() == null) {
+          return null;
+        }
+        if (entity is AIActor actor) {
+          actor.SetAI(new WaitAI(actor));
+          actor.statuses.Add(new CharmedStatus());
+          actor.faction = Faction.Ally;
+        }
+        ItemPlaceableEntity item = new ItemPlaceableEntity(entity);
+        return new Inventory(item);
+      } else {
+        return null;
+      }
+    }).Where(i => i != null).ToList());
+    rewards.inventories.Add(new Inventory(new ItemPlaceableTile(typeof(HomeGround), 3)));
+    return rewards;
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {

@@ -171,8 +171,25 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (IngameDebugConsole.DebugLogManager.Instance.IsLogWindowVisible) {
       return;
     }
+    Action<Vector2Int, PointerEventData> Interact = InteractionController.current.Interact;
+    if (Input.GetKeyDown(KeyCode.W)) {
+      var pos = GameModel.main.player.pos + Vector2Int.up;
+      Interact(pos, null);
+    } else if (Input.GetKeyDown(KeyCode.A)) {
+      var pos = GameModel.main.player.pos + Vector2Int.left;
+      Interact(pos, null);
+    } else if (Input.GetKeyDown(KeyCode.S)) {
+      var pos = GameModel.main.player.pos + Vector2Int.down;
+      Interact(pos, null);
+    } else if (Input.GetKeyDown(KeyCode.D)) {
+      var pos = GameModel.main.player.pos + Vector2Int.right;
+      Interact(pos, null);
+    } else if (Input.GetKeyDown(KeyCode.Space)) {
+      // wait a turn
+      Interact(GameModel.main.player.pos, null);
+    }
     // gameObject
-    if (Input.GetKeyDown(KeyCode.S)) {
+    if (Input.GetKeyDown(KeyCode.K)) {
       Serializer.SaveMainToFile();
     }
     if (Input.GetKeyDown(KeyCode.L)) {

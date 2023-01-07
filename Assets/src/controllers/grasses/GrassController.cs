@@ -26,4 +26,12 @@ public class GrassController : MonoBehaviour, IEntityController {
       }
     }
   }
+
+  void Update() {
+    if (grass.readyToExpand && Mathf.Abs(transform.localScale.x - 1) < 0.01f) {
+      if (GetComponent<PulseAnimation>() == null) {
+        gameObject.AddComponent<PulseAnimation>().pulseScale = 0.9f;
+      }
+    }
+  }
 }

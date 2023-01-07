@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEngine;
 using static YieldContribution;
@@ -49,6 +50,8 @@ public class Grass : Entity, IDaySteppable {
   public List<YieldContribution> latestContributions = new List<YieldContribution>();
 
   public virtual void StepDay() {
+    justPlanted = false;
+
     var item = this.GetHomeItem();
     if (item == null) {
       return;
@@ -63,6 +66,54 @@ public class Grass : Entity, IDaySteppable {
     //   // our yield is high enough, drop an item
     //   item.stacks = stacks;
       floor.Put(new ItemOnGround(pos, item));
+      if (MyRandom.value < 0.5f) {
+        readyToExpand = true;
+        // floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
+      }
     // }
   }
+
+  public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
+    if (readyToExpand) {
+      methods.Add(GetType().GetMethod("Cultivate"));
+    }
+  }
+
+  public void Cultivate() {
+    var player = GameModel.main.player;
+    bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), 2), this);
+    if (bSuccess) {
+      // we're *not* killing the entity
+      floor.Remove(this);
+    }
+  }
+
+  // [PlayerAction]
+  // public void PickUp() {
+  //   if (justPlanted) {
+  //     throw new CannotPerformActionException("Just planted!");
+  //   }
+  //   var player = GameModel.main.player;
+  //   bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), 1), this);
+  //   if (bSuccess) {
+  //     // we're *not* killing the entity
+  //     floor.Remove(this);
+  //   }
+  // }
+
+  // [PlayerAction]
+  // public void Harvest() {
+  //   if (justPlanted) {
+  //     throw new CannotPerformActionException("Just planted!");
+  //   }
+  //   var player = GameModel.main.player;
+  //   bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), 1), this);
+  //   if (bSuccess) {
+  //     // we're *not* killing the entity
+  //     floor.Remove(this);
+  //   }
+  // }
+
+  private bool justPlanted = true;
+  public bool readyToExpand = false;
 }

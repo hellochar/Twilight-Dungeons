@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -40,7 +41,12 @@ public static class EntityPopup {
 
     var player = GameModel.main.player;
     if (player.floor.depth == 0) {
-      var playerActions = entity.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
+      List<MethodInfo> playerActions = entity.GetType().GetMethods()
+        .Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any())
+        .ToList();
+
+      entity.GetAvailablePlayerActions(playerActions);
+
       foreach(var action in playerActions) {
         buttons.Add((Util.WithSpaces(action.Name), () => {
           try {

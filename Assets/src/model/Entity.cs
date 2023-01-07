@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -169,9 +170,17 @@ public abstract class Entity : IEntity, IModifierProvider {
       handler.OnKill(this);
     }
   }
+
+  public virtual void GetAvailablePlayerActions(List<MethodInfo> methods) {
+    // no-op by default
+  }
 }
 
 public static class EntityExtensions {
+  public static IEnumerable<Tile> AreaAdjacentTiles(this Entity e) {
+    return e.area.SelectMany(pos => e.floor.GetAdjacentTiles(pos)).Except(e.area.Select(p => e.floor.tiles[p]));
+  }
+
   public static Item GetHomeItem(this Entity e) {
     var isHarvestableProperty = e.GetType().GetProperty("IsHarvestable");
     var isHarvestable = isHarvestableProperty != null ? ((bool)isHarvestableProperty.GetValue(e)) : true;

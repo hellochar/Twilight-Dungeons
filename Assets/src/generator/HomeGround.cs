@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
+[ObjectInfo("tiles-aboveground-ground0")]
 public class HomeGround : Ground {
   public HomeGround(Vector2Int pos) : base(pos) {
   }
@@ -8,7 +9,7 @@ public class HomeGround : Ground {
   public override float GetPathfindingWeight() {
     var originalPathfindingWeight = (body != null && body != GameModel.main.player) ? 0 : BasePathfindingWeight();
     // at home, consider Pieces to also block pathfinding
-    if (floor is HomeFloor f && f.pieces[pos] != null) {
+    if (floor is HomeFloor f && (f.pieces[pos] != null || f.grasses[pos] != null)) {
       return 0;
     }
     return originalPathfindingWeight;

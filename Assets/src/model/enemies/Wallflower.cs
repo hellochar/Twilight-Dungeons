@@ -4,15 +4,16 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Chases you.\nMust stick next to a wall.")]
 public class Wallflower : AIActor {
+  public static Item HomeItem => new ItemPlaceableTile(typeof(Wall));
   public Wallflower(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 2;
   }
 
-  public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetCardinalNeighbors(t.pos).Any(n => n is Wall);
+  public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetDiagonalAdjacentTiles(t.pos).Any(n => n is Wall);
 
   protected override ActorTask GetNextTask() {
-    var touchingWalls = floor.GetCardinalNeighbors(pos).Where(t => t is Wall).ToList();
+    var touchingWalls = floor.GetDiagonalAdjacentTiles(pos).Where(t => t is Wall).ToList();
 
     if (!touchingWalls.Any()) {
       // oh god! walk randomly until you are touching

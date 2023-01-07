@@ -17,10 +17,10 @@ public class Slime : Destructible, IDeathHandler {
     var floor = this.floor;
     floor.Put(new WallTrigger(pos));
     GameModel.main.EnqueueEvent(() => {
-      // var inventory = new Inventory(new ItemSlime());
-      // inventory.TryDropAllItems(floor, pos);
-      var dropPos = GameModel.main.home.soils.First().pos;
-      GameModel.main.home.Put(new ItemOnGround(dropPos, new ItemSlime()));
+      var inventory = new Inventory(new ItemSlime());
+      inventory.TryDropAllItems(floor, pos);
+      // var dropPos = GameModel.main.home.soils.First().pos;
+      // GameModel.main.home.Put(new ItemOnGround(dropPos, new ItemSlime()));
     });
 #if experimental_retryondemand
     GameModel.main.EnqueueEvent(() => {

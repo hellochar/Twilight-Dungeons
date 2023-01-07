@@ -51,14 +51,14 @@ public class ItemOnGround : Entity {
   }
 
   public virtual void StepDay() {
-    // if (age > 0) {
-    //   var floor = this.floor;
-    //   KillSelf();
-    //   int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2;
-    //   for (int i = 0; i < numOrganicMatters; i++) {
-    //     floor.Put(new OrganicMatterOnGround(pos));
-    //   }
-    // }
+    if (age > 0) {
+      var floor = this.floor;
+      KillSelf();
+      int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2;
+      for (int i = 0; i < numOrganicMatters; i++) {
+        floor.Put(new OrganicMatterOnGround(pos));
+      }
+    }
   }
 
   // public void HandleActorEnter(Actor who) {

@@ -134,6 +134,24 @@ public partial class Floor {
   }
 
   internal void PlayerGoHome() {
+    Serializer.SaveMainToCheckpoint();
+    // destroy player's inventory
+    var inventoryItems = GameModel.main.player.inventory.ItemsNonNull();
+    foreach (var item in inventoryItems) {
+      // aaand it's just gone
+      GameModel.main.player.inventory.RemoveItem(item);
+      if (item is ItemOfPiece || item is ItemGrass || item is ItemPlaceableEntity || item is ItemBox) {
+        // put pieces at home base automatically
+        GameModel.main.home.Put(new ItemOnGround(GameModel.main.home.center, item));
+      }
+    }
+
+    var equipmentItems = GameModel.main.player.equipment.ItemsNonNull();
+    foreach (var item in equipmentItems) {
+      GameModel.main.player.equipment.RemoveItem(item);
+    }
+
+    GameModel.main.player.Replenish();
     GameModel.main.PutPlayerAt(0);
     GameModel.main.GenerateAndSetCaveDepth(GameModel.main.nextCaveDepth + 1);
     GameModel.main.GoNextDay();

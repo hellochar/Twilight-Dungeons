@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class GameOverSceneController : MonoBehaviour {
   public GameObject button;
+  public GameObject goHomeButton;
   public TMPro.TMP_Text heading;
   public Image blackOverlay;
 
@@ -36,6 +37,10 @@ public class GameOverSceneController : MonoBehaviour {
       Restart();
 #endif
     }
+  }
+
+  public void GoHomeButtonPressed() {
+    GameModel.main.currentFloor.PlayerGoHome();
   }
 
   private void Retry() {

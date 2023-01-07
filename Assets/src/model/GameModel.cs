@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -237,7 +237,9 @@ public class GameModel {
     if (pos == null) {
         pos = newFloor.startPos;
     }
-    oldFloor.RecordLastStepTime(this.time);
+    if (oldFloor != null) {
+      oldFloor.RecordLastStepTime(this.time);
+    }
     newFloor.CatchUpStep(this.time);
     player.ChangeFloors(newFloor, pos.Value);
     if (newFloor.depth == cave.depth + 1) {

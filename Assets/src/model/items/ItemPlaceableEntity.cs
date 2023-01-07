@@ -30,6 +30,11 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
       return false;
     }
 
+    var home = t.floor as HomeFloor;
+    if (home == null) {
+      return false;
+    }
+
     // var isStation = entityType.IsSubclassOf(typeof(Station));
     // if (!isStation) {
     //   // only place on soils
@@ -74,15 +79,23 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {
     // if it's growing, it's free
-    if (entity is GrowingEntity) {
-    } else {
-      player.UseActionPointOrThrow();
-    }
-    if (player.pos == target.pos) {
+    // if (entity is GrowingEntity) {
+    // } else {
+    //   player.UseActionPointOrThrow();
+    // }
+    player.SetTasks(
+      new MoveNextToTargetTask(player, target.pos),
+      new GenericOneArgTask<Vector2Int>(player, PlaceEntity, target.pos)
+    );
+  }
+
+  private void PlaceEntity(Vector2Int pos) {
+    var player = GameModel.main.player;
+    if (player.pos == pos) {
       // move them off the target
       player.floor.BodyPlacementBehavior(player);
     }
-    entity.pos = target.pos;
+    entity.pos = pos;
     player.floor.Put(entity);
     Destroy();
   }

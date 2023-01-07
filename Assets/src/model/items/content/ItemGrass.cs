@@ -38,11 +38,19 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
       return false;
     }
 
-    if (home.soils[t.pos] == null) {
+    // if (home.soils[t.pos] == null) {
+    //   return false;
+    // }
+
+    if (home.pieces[t.pos] != null) {
       return false;
     }
 
     if (t.grass != null) {
+      return false;
+    }
+
+    if (t.body != null) {
       return false;
     }
 
@@ -60,9 +68,21 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   }
 
   public void PerformTargettedAction(Player player, Entity target) {
-    var floor = target.floor;
+    player.SetTasks(
+      new MoveNextToTargetTask(player, target.pos),
+      new GenericOneArgTask<Vector2Int>(player, PlaceGrass, target.pos)
+    );
+  }
+
+  private void PlaceGrass(Vector2Int pos) {
+    var player = GameModel.main.player;
+    if (player.pos == pos) {
+      // move them off the target
+      player.floor.BodyPlacementBehavior(player);
+    }
+    var floor = player.floor;
     var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-    floor.Put((Entity)constructorInfo.Invoke(new object[] { target.pos }));
+    floor.Put((Entity)constructorInfo.Invoke(new object[] { pos }));
     stacks--;
   }
 

@@ -298,3 +298,21 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 #endif
 }
+
+[Serializable]
+public class PlayerInventory : Inventory {
+  public PlayerInventory(int cap) : base(cap) { }
+
+  internal override bool AddItem(Item item, int slot, Entity source = null) {
+    if (item is ItemOfPiece || item is ItemGrass || item is ItemPlaceableEntity || item is ItemBox) {
+      if (GameModel.main.currentFloor == GameModel.main.home) {
+        return base.AddItem(item, slot, source);
+      } else {
+        // put pieces at home base automatically
+        GameModel.main.home.Put(new ItemOnGround(GameModel.main.home.center, item));
+        return true;
+      }
+    }
+    return base.AddItem(item, slot, source);
+  }
+}

@@ -11,7 +11,7 @@ public class Snake : AIActor, IDealAttackDamageHandler {
   public override float turnPriority => task is AttackGroundTask ? 20 : base.turnPriority;
   public Snake(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 2;
+    hp = baseMaxHp = 3;
   }
 
   protected override ActorTask GetNextTask() {

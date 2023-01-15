@@ -17,7 +17,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   FloorController floorController;
   Floor floor => floorController.floor;
 
-  public static InteractionController current => FloorController.current.GetComponent<InteractionController>();
+  public static InteractionController current => FloorController.current?.GetComponent<InteractionController>();
 
   /// Represents a single hold interaction. This stores:
   ///   The time the hold started

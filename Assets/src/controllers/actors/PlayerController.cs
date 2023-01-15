@@ -171,6 +171,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     if (IngameDebugConsole.DebugLogManager.Instance.IsLogWindowVisible) {
       return;
     }
+    if (InteractionController.current == null) {
+      return;
+    }
+
     Action<Vector2Int, PointerEventData> Interact = InteractionController.current.Interact;
     if (Input.GetKeyDown(KeyCode.W)) {
       var pos = GameModel.main.player.pos + Vector2Int.up;

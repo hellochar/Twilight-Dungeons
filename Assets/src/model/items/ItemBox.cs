@@ -49,6 +49,9 @@ public class ItemVisibleBox : ItemBox {
     set {
       if (innerItem != null) {
         innerItem.stacks = value;
+        if (innerItem.stacks <= 0) {
+          Destroy();
+        }
       }
     }
   }

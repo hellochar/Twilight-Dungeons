@@ -30,12 +30,18 @@ public class Grass : Entity, IDaySteppable {
 
   string HomeDescription() {
     var homeItem = this.GetHomeItem();
-    return $@"
-    Provides a {homeItem.displayName} every day:
+    string description;
+    if (homeItem != null) {
+      description = $@"
+Provides a {homeItem.displayName} every day:
 
-    {homeItem.GetStatsFull()}
+{homeItem.GetStatsFull()}".Trim();
+    } else {
+      description = base.description;
+    }
+    return $@"{description}
 
-    Needed synergies: {string.Join(", ", synergy.offsets)}".Trim();
+Needed synergies: {string.Join(", ", synergy.offsets)}".Trim();
   }
 
   public Grass(Vector2Int pos) : base() {
@@ -76,11 +82,6 @@ public class Grass : Entity, IDaySteppable {
       // }
     // }
 
-    var item = this.GetHomeItem();
-    if (item == null) {
-      return;
-    }
-
     var hasSynergy = synergy.IsSatisfied(this);
     if (hasSynergy) {
       // item.stacks *= 2;
@@ -92,6 +93,11 @@ public class Grass : Entity, IDaySteppable {
     // int itemCost = YieldContributionUtils.GetCost(item);
     // int stacks = yield / itemCost;
     
+    var item = this.GetHomeItem();
+    if (item == null) {
+      return;
+    }
+
     // if (stacks > 0) {
     //   // our yield is high enough, drop an item
     //   item.stacks = stacks;

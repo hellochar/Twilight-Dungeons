@@ -25,6 +25,19 @@ public class Grass : Entity, IDaySteppable {
     OnNoteworthyAction = delegate {};
   }
 
+  public override string description => (floor == null || floor is HomeFloor) ?
+    HomeDescription() : base.description;
+
+  string HomeDescription() {
+    var homeItem = this.GetHomeItem();
+    return $@"
+    Provides a {homeItem.displayName} every day:
+
+    {homeItem.GetStatsFull()}
+
+    Needed synergies: {string.Join(", ", synergy.offsets)}".Trim();
+  }
+
   public Grass(Vector2Int pos) : base() {
     this._pos = pos;
   }
@@ -49,12 +62,29 @@ public class Grass : Entity, IDaySteppable {
 
   public List<YieldContribution> latestContributions = new List<YieldContribution>();
 
+  public virtual Synergy synergy => Synergy.SynergyMapping.GetValueOrDefault(GetType()) ?? Synergy.Never;
+
   public virtual void StepDay() {
     justPlanted = false;
+    // if (MyRandom.value < 0.5f) {
+      // readyToExpand = true;
+      // floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
+      // var p = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => ItemGrass.CanPlantGrassOfType(GetType(), t)));
+      // if (p != null) {
+      //   var constructorInfo = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+      //   floor.Put((Grass)constructorInfo.Invoke(new object[] { pos }));
+      // }
+    // }
 
     var item = this.GetHomeItem();
     if (item == null) {
       return;
+    }
+
+    var hasSynergy = synergy.IsSatisfied(this);
+    if (hasSynergy) {
+      // item.stacks *= 2;
+      readyToExpand = true;
     }
 
     // int yield = YieldContributionUtils.Recompute(this, contributionRules, this.latestContributions);
@@ -66,10 +96,6 @@ public class Grass : Entity, IDaySteppable {
     //   // our yield is high enough, drop an item
     //   item.stacks = stacks;
       floor.Put(new ItemOnGround(pos, item));
-      if (MyRandom.value < 0.5f) {
-        readyToExpand = true;
-        // floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
-      }
     // }
   }
 
@@ -79,9 +105,15 @@ public class Grass : Entity, IDaySteppable {
     }
   }
 
+  [PlayerAction]
+  public void Destroy() {
+    floor.Remove(this);
+  }
+
   public void Cultivate() {
     var player = GameModel.main.player;
     bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), 2), this);
+    readyToExpand = bSuccess ? false : true;
     if (bSuccess) {
       // we're *not* killing the entity
       floor.Remove(this);

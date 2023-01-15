@@ -8,6 +8,7 @@ public class GrassController : MonoBehaviour, IEntityController {
   public Grass grass;
   public PulseType pulses = PulseType.Smaller;
 
+  public LineRenderer synergyLinePositive;
   // Start is called before the first frame update
   public virtual void Start() {
     this.transform.position = Util.withZ(this.grass.pos, this.transform.position.z);
@@ -27,10 +28,29 @@ public class GrassController : MonoBehaviour, IEntityController {
     }
   }
 
+  private static Vector3[] zeroes = new Vector3[] {
+    Vector3.zero,
+    Vector3.zero, Vector3.zero,
+    Vector3.zero, Vector3.zero,
+    Vector3.zero, Vector3.zero,
+    Vector3.zero, Vector3.zero
+  };
+
   void Update() {
-    if (grass.readyToExpand && Mathf.Abs(transform.localScale.x - 1) < 0.01f) {
-      if (GetComponent<PulseAnimation>() == null) {
-        gameObject.AddComponent<PulseAnimation>().pulseScale = 0.9f;
+    // if (grass.readyToExpand && Mathf.Abs(transform.localScale.x - 1) < 0.01f) {
+    //   if (GetComponent<PulseAnimation>() == null && GetComponent<GrowAtStart>() == null) {
+    //     gameObject.AddComponent<PulseAnimation>().pulseScale = 0.9f;
+    //   }
+    // }
+
+    if (grass.floor is HomeFloor) {
+      synergyLinePositive.SetPositions(zeroes);
+      if (grass.synergy.IsSatisfied(grass)) {
+        int counter = 0;
+        foreach(var offset in grass.synergy.offsets) {
+          synergyLinePositive.SetPosition(1 + counter * 2, Util.withZ(offset));
+          counter++;
+        }
       }
     }
   }

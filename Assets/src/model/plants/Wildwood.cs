@@ -59,9 +59,7 @@ public class Wildwood : Plant {
       //   harvestOptions.Add(new Inventory(organicMatters.ToArray()));
       // }
 
-      if (yield >= 20) {
-        harvestOptions.Add(new Inventory(new ItemSeed(typeof(Wildwood), 1)));
-      }
+      harvestOptions.Add(new Inventory(new ItemSeed(typeof(Wildwood), 1)));
     }
   }
 

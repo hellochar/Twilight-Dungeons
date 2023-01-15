@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 public class ItemSeed : Item, ITargetedAction<Ground> {
-  public static int yieldCost = 50;
+  public static int yieldCost = 20;
   public Type plantType;
 
   protected override bool StackingPredicate(Item other) {

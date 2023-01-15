@@ -66,19 +66,19 @@ public class Synergy {
 
   public static readonly Synergy Never = new Synergy(new Vector2Int[0]);
 
-  public bool IsSatisfied(Grass grass) {
+  public bool IsSatisfied(Entity entity) {
     if (offsets == null || offsets.Length == 0) {
       return false;
     }
 
-    var floor = grass.floor;
+    var floor = entity.floor as HomeFloor;
     foreach (var offset in offsets) {
-      var targetPos = grass.pos + offset;
+      var targetPos = entity.pos + offset;
       if (!floor.InBounds(targetPos)) {
         return false;
       }
-      var targetGrass = floor.grasses[targetPos];
-      if (targetGrass == null || targetGrass.GetType() == grass.GetType()) {
+      var targetEntity = floor.grasses[targetPos] as Entity ?? floor.bodies[targetPos] as AIActor ?? floor.pieces[targetPos] as Entity;
+      if (targetEntity == null || targetEntity.GetType() == entity.GetType()) {
         return false;
       }
     }

@@ -6937,27 +6937,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: octopus
-      rect:
-        serializedVersion: 2
-        x: 400
-        y: 208
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 09cca8166f8173fd0800000000000000
-      internalID: -2362392033055028080
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: mouse
       rect:
         serializedVersion: 2

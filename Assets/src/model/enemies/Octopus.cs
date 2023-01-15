@@ -40,9 +40,10 @@ public class Octopus : AIActor {
 }
 
 [Serializable]
-[ObjectInfo("octopus-stinger")]
+[ObjectInfo("octopus-stinger", description: "Can attack at range 2-3.")]
 internal class ItemOctopusStinger : EquippableItem, IWeapon, ITargetedAction<Body> {
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
+  public override int stacksMax => int.MaxValue;
 
   public (int, int) AttackSpread => (1, 2);
 
@@ -51,7 +52,8 @@ internal class ItemOctopusStinger : EquippableItem, IWeapon, ITargetedAction<Bod
   string ITargetedAction<Body>.TargettedActionDescription => "Choose a target.";
 
   void ITargetedAction<Body>.PerformTargettedAction(Player player, Entity target) {
-    player.SetTasks(new AttackGroundTask(player, target.pos, 1));
+    player.SetTasks(new AttackGroundTask(player, target.pos, 0));
+    // player.SetTasks(new AttackTask(player, target as Body));
   }
 
   IEnumerable<Body> ITargetedAction<Body>.Targets(Player player) {

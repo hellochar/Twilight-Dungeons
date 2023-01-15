@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Player has double movespeed on Soft Grass.", flavorText: "Feels nice on your feet.")]
 public class SoftGrass : Grass, IActorEnterHandler {
-  public static Item HomeItem => new ItemGrassSlippers();
+  public static Item HomeItem => new ItemGrassSlippers(4);
   public SoftGrass(Vector2Int pos) : base(pos) {
   }
 
@@ -18,14 +18,22 @@ public class SoftGrass : Grass, IActorEnterHandler {
 
 [Serializable]
 [ObjectInfo("grass-slippers", description: "Double movespeed walking over any Grass other than Soft Grass.")]
-internal class ItemGrassSlippers : EquippableItem, IActionCostModifier {
+internal class ItemGrassSlippers : EquippableItem, IActionCostModifier, IBodyMoveHandler {
+  public ItemGrassSlippers(int stacks) : base(stacks) { }
+
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
   public override int stacksMax => int.MaxValue;
+
+  public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
+    var oldGrass = player.floor.grasses[oldPos];
+    if (oldGrass != null && !(oldGrass is SoftGrass)) {
+      stacks--;
+    }
+  }
 
   public ActionCosts Modify(ActionCosts input) {
     if (player.grass != null && !(player.grass is SoftGrass)) {
       input[ActionType.MOVE] *= 0.5f;
-      stacks--;
     }
     return input;
   }

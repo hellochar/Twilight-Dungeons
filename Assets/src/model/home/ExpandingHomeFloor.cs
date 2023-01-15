@@ -80,9 +80,11 @@ public class HomeSection {
         }
 
         var tileType = Types[x, y];
-        var constructor = tileType.GetConstructor(new Type[] { typeof(Vector2Int) });
-        var tile = (Tile)constructor.Invoke(new object[] { pos });
-        floor.Put(tile);
+        if (tileType != typeof(Chasm)) {
+          var constructor = tileType.GetConstructor(new Type[] { typeof(Vector2Int) });
+          var tile = (Tile)constructor.Invoke(new object[] { pos });
+          floor.Put(tile);
+        }
       }
     }
   }
@@ -139,6 +141,94 @@ xxx
   }
 
   public static HomeSection[] StandardSections = FromMultiString(@"
+xxx_
+xxxx
+xxx_
+_xx_
+
+====
+
+_xxx_
+xxxx_
+_xxxx
+__xx_
+
+====
+
+xxxx
+xx_x
+xxxx
+_xxx
+
+====
+
+__xx
+_xxx
+xxxx
+xxx_
+xx__
+
+====
+
+_x_x_
+xxxx_
+_xxxx
+__xxx
+
+====
+
+xx_xx
+xxxx_
+_xxxx
+xx_xx
+
+====
+
+xx__
+xxx_
+xxxx
+_xx_
+
+====
+
+xxx_
+__xx
+x_x_
+xxxx
+
+====
+
+xxxx
+x_xx
+x__x
+xxxx
+
+====
+
+xxxx_
+x___x
+x_x_x
+xxxxx
+
+====
+
+xxx___
+xxx___
+___xxx
+___xxx
+___xx_
+
+====
+
+__xx__
+_xxxx_
+xxx_xx
+xx__x_
+_xxxx_
+
+");
+
+  public static HomeSection[] StandardSectionsSmall = FromMultiString(@"
 xx_
 xxx
 _xx

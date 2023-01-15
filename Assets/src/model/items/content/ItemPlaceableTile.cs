@@ -21,22 +21,22 @@ public class ItemPlaceableTile : Item, ITargetedAction<Tile> {
 
   [PlayerAction]
   public void Merge() {
-    if (stacks >= 5) {
+    if (stacks >= 3) {
       HomeSection section = Util.RandomPick(HomeSection.StandardSections);
       ItemHomeSection item = new ItemHomeSection(section);
       if (!inventory.AddItem(item)) {
         GameModel.main.player.floor.Put(new ItemOnGround(GameModel.main.player.pos, item));
       }
-      stacks -= 5;
+      stacks -= 3;
     }
   }
 
   public void PerformTargettedAction(Player player, Entity target) {
-    // var tile = (Tile) tileType
-    //   .GetConstructor(new Type[] { typeof(Vector2Int) })
-    //   .Invoke(new object[] { target.pos });
-    // target.floor.Put(tile);
-    // stacks--;
+    var tile = (Tile) tileType
+      .GetConstructor(new Type[] { typeof(Vector2Int) })
+      .Invoke(new object[] { target.pos });
+    target.floor.Put(tile);
+    stacks--;
   }
 
   public IEnumerable<Tile> Targets(Player player) {

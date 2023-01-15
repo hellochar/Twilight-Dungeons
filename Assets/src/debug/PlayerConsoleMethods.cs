@@ -30,7 +30,7 @@ public class PlayerConsoleMethods {
     var entity = (Entity) constructor.Invoke(new object[] { new Vector2Int(0, 0) });
     if (entity is AIActor actor) {
       actor.SetAI(new WaitAI(actor));
-      actor.statuses.Add(new CharmedStatus());
+      // actor.statuses.Add(new CharmedStatus());
       actor.faction = Faction.Ally;
     }
     ItemPlaceableEntity item = new ItemPlaceableEntity(entity);

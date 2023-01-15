@@ -21,6 +21,7 @@ public class Nubs : Grass, IActorEnterHandler {
   // }
 
   public override void StepDay() {
+    base.StepDay();
     GameModel.main.player.water += 8;
   }
 }

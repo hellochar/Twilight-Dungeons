@@ -20,7 +20,7 @@ public static class EncounterGroupEarlyGame {
         { 1f, AddBloodwort },
 
         { 1f, AddNubs },
-        { 1f, AddRedleaf },
+        // { 1f, AddRedleaf },
 
         // { 1f, AddSoftMoss },
         // { 1f, AddPlatelets },
@@ -33,7 +33,7 @@ public static class EncounterGroupEarlyGame {
         { 0.5f, AddEveningBells },
 
         // { 0.4f, AddDeathbloom },
-        { 0.4f, AddWebs },
+        // { 0.4f, AddWebs },
         // { 0.4f, AddAgave },
 
         // { 0.35f, AddHangingVines },

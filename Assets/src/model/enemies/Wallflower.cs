@@ -4,7 +4,8 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Chases you.\nMust stick next to a wall.")]
 public class Wallflower : AIActor {
-  public static Item HomeItem => new ItemPlaceableTile(typeof(Wall));
+  // public static Item HomeItem => new ItemPlaceableTile(typeof(Wall));
+  public static Item HomeItem => new ItemWallflowerTendril();
   public Wallflower(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
     hp = baseMaxHp = 2;
@@ -51,4 +52,25 @@ public class Wallflower : AIActor {
   }
 
   internal override (int, int) BaseAttackDamage() => (1, 1);
+}
+
+[System.Serializable]
+[ObjectInfo("wallflower-tendril", description: "Also makes a free attack on the creature directionally behind the one you attack.")]
+public class ItemWallflowerTendril : EquippableItem, IWeapon, IActionPerformedHandler {
+  public (int, int) AttackSpread => (1, 1);
+  public override EquipmentSlot slot => EquipmentSlot.Weapon;
+
+  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    if (final is AttackBaseAction attack) {
+      var target = attack.target;
+      var attacker = attack.actor;
+      var offset = target.pos - attacker.pos;
+      if (target.IsNextTo(attacker)) {
+        var posBehind = target.pos + offset;
+        if (attacker.floor.InBounds(posBehind) && attacker.floor.bodies[posBehind] != null) {
+          attacker.Perform(new AttackBaseAction(attacker, attacker.floor.bodies[posBehind]));
+        }
+      }
+    }
+  }
 }

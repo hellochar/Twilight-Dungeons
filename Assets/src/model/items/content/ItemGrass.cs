@@ -23,6 +23,12 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
     return (other as ItemGrass).grassType == grassType;
   }
 
+  internal override string GetStats() {
+    var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
+    Grass grass = (Grass)constructorInfo.Invoke(new object[] { Vector2Int.zero });
+    return grass.description;
+  }
+
   // we can plant a Grass of type Type at tile T if:
   // T can be occupied
   // T doesn't already have a Grass

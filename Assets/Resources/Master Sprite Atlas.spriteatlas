@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 121297
+    totalSpriteSurfaceArea: 121809
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -188,7 +188,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
   - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
-  - {fileID: 4387054635027142472, guid: bce04467b170db74288608f80a2944cb, type: 3}
   - {fileID: 21300000, guid: 95273b6722e96e54a97a023230cbfc89, type: 3}
   - {fileID: 21300000, guid: b6c6bb7768fd8a9469338ddbfb3c7fe0, type: 3}
   - {fileID: 21300000, guid: 15090c87344335c428cc783a3ed766f8, type: 3}
@@ -208,7 +207,6 @@ SpriteAtlas:
   - {fileID: -3950408397821896629, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -2419293483790245602, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -5040763472861491273, guid: af4df3188a01af048a678513709d8278, type: 3}
-  - {fileID: -2362392033055028080, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -1300974183062543412, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -4393665168476997586, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 2649766951672498382, guid: af4df3188a01af048a678513709d8278, type: 3}
@@ -331,6 +329,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 93cb4bfbf0123a5458ad10d2a85cd3bb, type: 3}
   - {fileID: 21300000, guid: 60be7e1c431b9d54c85f5de87f926665, type: 3}
   - {fileID: 21300000, guid: 2641043c9d5a829458afbc09045ba821, type: 3}
+  - {fileID: 21300000, guid: 4b8d1c4cee4ecc8479f8f991ae26cd59, type: 3}
   - {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50, type: 3}
   - {fileID: 21300000, guid: 11be7c5c44b483742a0d140b11df3506, type: 3}
   - {fileID: -6675388002913187193, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
@@ -418,6 +417,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 047e017ea14be984488b0cc0fb65fc58, type: 3}
   - {fileID: 21300000, guid: 3b02067e89e560a43a46256b160ecf3d, type: 3}
   - {fileID: 21300000, guid: 15218f7e9e85da94fa3e84dd94fdd5a6, type: 3}
+  - {fileID: 21300000, guid: 584f3b9e2c418ec4aaae51af7354fb56, type: 3}
   - {fileID: 21300000, guid: d323feae203eaa14f9c8cb43e26ca88b, type: 3}
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: 0bd9eeee31e21fe489be4f2d82911a11, type: 3}
@@ -425,6 +425,8 @@ SpriteAtlas:
   - {fileID: -6237171270670925116, guid: b6ee113f63e6bdc4f8ad62c219a78f33, type: 3}
   - {fileID: 21300000, guid: a7e7706fcac3a254eb1e05fd2e935fc5, type: 3}
   - {fileID: 21300000, guid: baa91f6f3c3ba6a45bdb64450293936d, type: 3}
+  - {fileID: 4156500899432365343, guid: b8336a7f18729ad4b98b95d41dda92f0, type: 3}
+  - {fileID: -7497252004463009965, guid: b8336a7f18729ad4b98b95d41dda92f0, type: 3}
   - {fileID: 21300000, guid: 24e1cc9fda07a6f4fb2960d8e24f024e, type: 3}
   - {fileID: 21300000, guid: 4c795eafbe0b47f4ba29ac7c9d34ee6c, type: 3}
   - {fileID: 21300000, guid: 412ebcbf536e16f429a709567bf38f2a, type: 3}
@@ -565,7 +567,6 @@ SpriteAtlas:
   - blue-spore-explosion
   - Astoria
   - hearty-veggie
-  - wallflower
   - teleporter
   - snail-shell
   - Transparent1x1
@@ -585,7 +586,6 @@ SpriteAtlas:
   - colored_transparent_packed_100
   - colored_transparent_packed_39
   - snake
-  - octopus
   - colored_transparent_packed_1046
   - mercenary
   - gambler
@@ -708,6 +708,7 @@ SpriteAtlas:
   - evening-bell
   - fade-top
   - fungal-colony
+  - guardroot-seed
   - parasite-egg
   - dandypuff
   - necroroot-body_0
@@ -795,6 +796,7 @@ SpriteAtlas:
   - thick-stick
   - dotted-line-single
   - healer
+  - octopus
   - vile-potion
   - charmberry
   - growing-fungus
@@ -802,6 +804,8 @@ SpriteAtlas:
   - iron-jelly_0
   - vulnera
   - stompinboots
+  - wallflower-tendril
+  - wallflower
   - living-armor
   - Square
   - infected

@@ -32,6 +32,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pulses: 0
+  synergyLinePositive: {fileID: 369823021023396398}
 --- !u!1001 &3382840378102839288
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -136,6 +137,12 @@ PrefabInstance:
 --- !u!1 &5788799123519996740 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9126458090356110524, guid: 24aa84cb97063fb44ae466e268ea266b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3382840378102839288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!120 &369823021023396398 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: 3158047476313126358, guid: 24aa84cb97063fb44ae466e268ea266b,
     type: 3}
   m_PrefabInstance: {fileID: 3382840378102839288}
   m_PrefabAsset: {fileID: 0}

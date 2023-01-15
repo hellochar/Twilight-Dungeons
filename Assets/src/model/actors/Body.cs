@@ -60,10 +60,10 @@ public class Body : Entity {
 
   public void ChangeFloors(Floor newFloor, Vector2Int newPos) {
     var oldFloor = floor;
-    var oldTile = oldFloor.tiles[_pos];
+    var oldTile = oldFloor?.tiles[_pos];
 
-    oldTile.BodyLeft(this);
-    oldFloor.Remove(this);
+    oldTile?.BodyLeft(this);
+    oldFloor?.Remove(this);
 
     _pos = newPos;
 

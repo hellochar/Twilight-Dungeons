@@ -16,10 +16,10 @@ public class EveningBells : Grass, IActorEnterHandler {
   public EveningBells(Vector2Int pos) : this(pos, 0) {}
 
   public void HandleActorEnter(Actor actor) {
-    // if (actor != GameModel.main.player) {
+    if (actor != GameModel.main.player) {
       actor.SetTasks(new SleepTask(actor, 3, true));
       GameModel.main.EnqueueEvent(() => Kill(actor));
-    // }
+    }
   }
 }
 

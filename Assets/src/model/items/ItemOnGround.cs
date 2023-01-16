@@ -45,7 +45,17 @@ public class ItemOnGround : Entity {
 
   public virtual void PickUp() {
     var player = GameModel.main.player;
-    if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
+    if (!IsNextTo(player)) {
+      return;
+    }
+
+    Inventory inventory = player.inventory;
+#if experimental_autoequip
+    if (item is EquippableItem) {
+      inventory = player.equipment;
+    }
+#endif
+    if (inventory.AddItem(item, this)) {
       Kill(player);
     }
   }

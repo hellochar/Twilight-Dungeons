@@ -21,7 +21,8 @@ public class GameOverSceneController : MonoBehaviour {
 #if experimental_retryondemand
       text.text = "Retry";
 #else
-      text.text = "Restart";
+      text.text = "New Game";
+      goHomeButton.SetActive(false);
 #endif
       text.color = Color.black;
     }
@@ -34,7 +35,7 @@ public class GameOverSceneController : MonoBehaviour {
 #if experimental_retryondemand
       Retry();
 #else
-      Restart();
+      NewGame();
 #endif
     }
   }
@@ -48,7 +49,7 @@ public class GameOverSceneController : MonoBehaviour {
     StartCoroutine(Transitions.GoToNewScene(this, null, "Scenes/Game"));
   }
 
-  private void Restart() {
+  private void NewGame() {
     GameModel.GenerateNewGameAndSetMain();
     StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
   }

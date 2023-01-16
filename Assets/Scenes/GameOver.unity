@@ -984,7 +984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1903669207}
-  goHomeButton: {fileID: 0}
+  goHomeButton: {fileID: 1929012834}
   heading: {fileID: 2059614417}
   blackOverlay: {fileID: 1196418246}
 --- !u!114 &1196418246 stripped

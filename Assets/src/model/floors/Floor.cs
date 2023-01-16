@@ -151,7 +151,9 @@ public partial class Floor {
       GameModel.main.player.equipment.RemoveItem(item);
     }
 
+#if experimental_autoreplenish
     GameModel.main.player.Replenish();
+#endif
     GameModel.main.PutPlayerAt(0);
     GameModel.main.GenerateAndSetCaveDepth(GameModel.main.nextCaveDepth + 1);
     GameModel.main.GoNextDay();

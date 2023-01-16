@@ -102,14 +102,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     inventory = new Inventory(5);
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
-    // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
+    // // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
+    // // inventory.AddItem(new ItemSoil());
+    // // inventory.AddItem(new ItemShovel());
     inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
     inventory.AddItem(new ItemPlaceableEntity(new Composter(new Vector2Int())));
     inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
-    // inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
-    // inventory.AddItem(new ItemSoil());
     inventory.AddItem(new ItemSeed(typeof(Wildwood), 1));
-    // inventory.AddItem(new ItemShovel());
 #endif
 
     equipment = new Equipment(this);

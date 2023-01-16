@@ -130,9 +130,6 @@ public class GameModel {
     // hack route to controller for now 
     GameModelController.main.GoNextDay();
     GameModel.main.player.ReplenishActionPoints();
-    // if (home is ExpandingHomeFloor expandingHomeFloor) {
-    //   expandingHomeFloor.Expand();
-    // }
   }
 
   private void generate() {

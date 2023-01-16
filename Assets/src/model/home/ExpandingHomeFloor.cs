@@ -40,14 +40,6 @@ public class ExpandingHomeFloor : HomeFloor {
 
   public ExpandingHomeFloor(int width, int height) : base(width, height) { }
 
-  public void Expand() {
-    foreach(var pos in this.EnumerateRoomPerimeter(root)) {
-      Put(new HomeGround(pos));
-    }
-    root.max += Vector2Int.one;
-    root.min -= Vector2Int.one;
-  }
-
   public override void Put(Entity entity) {
     base.Put(entity);
     if (entity is HomeGround) {

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pulses: 1
+  synergyLinePositive: {fileID: 54636185361762727}
   flowerStages:
   - {fileID: -5645376200931320486, guid: 204704f1ffcdacf4b94906895238787e, type: 3}
   - {fileID: 9214806981023359645, guid: 204704f1ffcdacf4b94906895238787e, type: 3}
@@ -138,7 +139,7 @@ PrefabInstance:
     - target: {fileID: 2794709762671576195, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2794709762671576195, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
@@ -149,6 +150,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5239909107960941388, guid: 24aa84cb97063fb44ae466e268ea266b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110514, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
@@ -233,6 +239,12 @@ GameObject:
 --- !u!4 &6176134280595556547 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9126458090356110514, guid: 24aa84cb97063fb44ae466e268ea266b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3103464068718574705}
+  m_PrefabAsset: {fileID: 0}
+--- !u!120 &54636185361762727 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: 3158047476313126358, guid: 24aa84cb97063fb44ae466e268ea266b,
     type: 3}
   m_PrefabInstance: {fileID: 3103464068718574705}
   m_PrefabAsset: {fileID: 0}

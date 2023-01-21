@@ -136,6 +136,7 @@ public partial class Floor {
   internal void PlayerGoHome() {
     Serializer.SaveMainToCheckpoint();
     // destroy player's inventory
+#if experimental_autodestroyitems
     var inventoryItems = GameModel.main.player.inventory.ItemsNonNull();
     foreach (var item in inventoryItems) {
       // aaand it's just gone
@@ -150,6 +151,7 @@ public partial class Floor {
     foreach (var item in equipmentItems) {
       GameModel.main.player.equipment.RemoveItem(item);
     }
+#endif
 
 #if experimental_autoreplenish
     GameModel.main.player.Replenish();

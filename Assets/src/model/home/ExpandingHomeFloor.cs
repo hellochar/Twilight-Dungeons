@@ -26,7 +26,7 @@ public class ExpandingHomeFloor : HomeFloor {
       floor.Put(new HomeGround(p));
     }
 
-    floor.startPos = new Vector2Int(room0.min.x, room0.center.y);
+    floor.startPos = new Vector2Int(room0.min.x + 1, room0.center.y);
     // put a pit at the center
     floor.Put(new Pit(room0.center));
     Encounters.AddWater(floor, room0);

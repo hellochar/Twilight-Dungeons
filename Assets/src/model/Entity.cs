@@ -181,18 +181,21 @@ public static class EntityExtensions {
     return e.area.SelectMany(pos => e.floor.GetAdjacentTiles(pos)).Except(e.area.Select(p => e.floor.tiles[p]));
   }
 
+  public static Item GetHomeItem(Type entityType) {
+    var homeItemProperty = entityType.GetProperty("HomeItem");
+    if (homeItemProperty == null) {
+      return null;
+    }
+
+    return homeItemProperty.GetValue(null) as Item;
+  }
+
   public static Item GetHomeItem(this Entity e) {
     var isHarvestableProperty = e.GetType().GetProperty("IsHarvestable");
     var isHarvestable = isHarvestableProperty != null ? ((bool)isHarvestableProperty.GetValue(e)) : true;
     if (!isHarvestable) {
       return null;
     }
-
-    var homeItemProperty = e.GetType().GetProperty("HomeItem");
-    if (homeItemProperty == null) {
-      return null;
-    }
-
-    return homeItemProperty.GetValue(null) as Item;
+    return GetHomeItem(e.GetType());
   }
 }

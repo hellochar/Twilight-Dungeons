@@ -68,7 +68,9 @@ public static class EntityPopup {
       flavor: ObjectInfo.GetFlavorTextFor(entity),
       sprite: spriteGameObject,
       buttons: buttons,
-      inventory: inventory
+      inventory: inventory,
+      entity: entity,
+      prefab: entity.popupPrefab ?? "StandardPopupContent"
     );
     controller.target = entity;
     controller.Init(TextAnchor.MiddleRight);

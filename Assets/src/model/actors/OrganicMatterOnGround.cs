@@ -4,6 +4,7 @@ using UnityEngine;
 [Serializable]
 public class OrganicMatterOnGround : ItemOnGround, IActorEnterHandler {
   // just to capture the ObjectInfo
+  [Serializable]
   [ObjectInfo("plant-matter", description: "Turn into organic matter at home.")]
   private class ItemOrganicMatterProxy : Item {}
 

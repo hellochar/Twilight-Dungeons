@@ -174,6 +174,8 @@ public abstract class Entity : IEntity, IModifierProvider {
   public virtual void GetAvailablePlayerActions(List<MethodInfo> methods) {
     // no-op by default
   }
+
+  public virtual string popupPrefab => null;
 }
 
 public static class EntityExtensions {

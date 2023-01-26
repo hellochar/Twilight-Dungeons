@@ -20,12 +20,14 @@ public static class Popups {
     GameObject sprite = null,
     List<(string, Action)> buttons = null,
     string errorText = null,
-    Inventory inventory = null
+    Inventory inventory = null,
+    Entity entity = null,
+    string prefab = "StandardPopupContent"
   ) {
     var controller = CreateEmpty();
     GameObject popup = controller.gameObject;
 
-    GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("StandardPopupContent"), controller.container);
+    GameObject content = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor(prefab), controller.container);
     content.name = "Content";
 
     /// TODO refactor into a Controller class
@@ -94,9 +96,10 @@ public static class Popups {
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
 
     // lol we should really make this better
-    if (name != "Compost") {
+    if (name != "Compost" && name != "Process") {
       button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));
     }
+    button.name = name;
     return button;
   }
 }

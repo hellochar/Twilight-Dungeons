@@ -4,7 +4,8 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo("station", description: "Build more items here.")]
 public class CraftingStation : Station, IDaySteppable {
-  public override int maxDurability => 6;
+  public override int maxDurability => 8;
+  public override string popupPrefab => "CraftingStationPopupContent";
   private Item crafting {
     get => inventory[0];
     set {
@@ -37,52 +38,52 @@ public class CraftingStation : Station, IDaySteppable {
   ));
 
   [PlayerAction]
-  public void Shovel() => Craft(new ItemShovel());
+  public void Shovel() => Craft(new ItemShovel(3));
 
   [PlayerAction]
   public void CreatureFood() => Craft(new ItemCreatureFood());
 
   [PlayerAction]
-  public void Campfire() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new Campfire(new Vector2Int())
-    )
+  public void Processor() => Craft(new ItemPlaceableEntity(
+    new Processor(new Vector2Int())
   ));
 
   [PlayerAction]
-  public void Desalinator() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new Desalinator(new Vector2Int())
-      )
+  public void Campfire() => Craft(new ItemPlaceableEntity(
+    new Campfire(new Vector2Int())
   ));
 
   [PlayerAction]
   public void Composter() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new Composter(new Vector2Int())
-      )
+    new Composter(new Vector2Int())
   ));
 
   [PlayerAction]
-  public void Cloner() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new Cloner(new Vector2Int())
-      )
+  public void SoilMixer() => Craft(new ItemPlaceableEntity(
+    new SoilMixer(new Vector2Int())
   ));
 
-  [PlayerAction]
-  public void Modder() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new Modder(new Vector2Int())
-    )
-  ));
 
-  [PlayerAction]
-  public void Driller() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new Driller(new Vector2Int())
-    )
-  ));
+  // [PlayerAction]
+  // public void Cloner() => Craft(new ItemPlaceableEntity(
+  //   new GrowingEntity(new Vector2Int(),
+  //     new Cloner(new Vector2Int())
+  //     )
+  // ));
+
+  // [PlayerAction]
+  // public void Modder() => Craft(new ItemPlaceableEntity(
+  //   new GrowingEntity(new Vector2Int(),
+  //     new Modder(new Vector2Int())
+  //   )
+  // ));
+
+  // [PlayerAction]
+  // public void Driller() => Craft(new ItemPlaceableEntity(
+  //   new GrowingEntity(new Vector2Int(),
+  //     new Driller(new Vector2Int())
+  //   )
+  // ));
 
   public void Craft(Item item) {
     // crafting = item;

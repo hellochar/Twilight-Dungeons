@@ -6,10 +6,10 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo("shovel")]
 public class ItemShovel : Item {
-  public ItemShovel() : base() {}
+  public ItemShovel(int stacks) : base(stacks) {}
 
-  public override int stacksMax => 1;
-  public override bool disjoint => true;
+  public override int stacksMax => int.MaxValue;
+  // public override bool disjoint => true;
 
   public void DigUp(Player player) {
     var grass = player.grass;

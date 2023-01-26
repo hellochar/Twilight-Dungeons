@@ -50,6 +50,9 @@ TextureImporter:
   - first:
       213: -2860817149020656267
     second: monochrome-thick-path-end
+  - first:
+      213: 8566550835790466286
+    second: caret-right
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -432,7 +435,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -453,7 +456,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -461,6 +464,27 @@ TextureImporter:
       bones: []
       spriteID: 57d2741d5f55c48d0800000000000000
       internalID: -2860817149020656267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caret-right
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eeccd9df89082e670800000000000000
+      internalID: 8566550835790466286
       vertices: []
       indices: 
       edges: []

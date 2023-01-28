@@ -32,6 +32,9 @@ public class Rewards {
   internal void Choose(Inventory inventory) {
     chosenInventory = inventory;
     // add to home
-    inventory.TryDropAllItems(GameModel.main.home, GameModel.main.home.center);
+    // inventory.TryDropAllItems(GameModel.main.home, GameModel.main.home.center);
+    foreach(var item in inventory.ItemsNonNull()) {
+      GameModel.main.player.inventory.AddItem(item);
+    }
   }
 }

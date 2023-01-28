@@ -5,7 +5,7 @@ using UnityEngine;
 // [ObjectInfo(description: "Doesn't move.\nTelegraphs an attack towards you at range when you're on the same row or column. Jumps next to the location it attacks.")]
 [ObjectInfo(description: "Chases you.\nAttacks deal no damage but apply poison.")]
 public class Snake : AIActor, IDealAttackDamageHandler {
-  public static Item HomeItem => new ItemSnakeVenom();
+  public static Item HomeItem => new ItemSnakeVenom(3);
   // attack shortly after the player - this lets the player set up an attack on another target
   // and then get out of the way
   public override float turnPriority => task is AttackGroundTask ? 20 : base.turnPriority;
@@ -77,6 +77,8 @@ public class Snake : AIActor, IDealAttackDamageHandler {
 [Serializable]
 [ObjectInfo("snake-venom", description: "While equipped, your attacks apply poison.")]
 public class ItemSnakeVenom : EquippableItem, IAttackHandler {
+  public ItemSnakeVenom(int stacks) : base(stacks) { }
+
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
   public override int stacksMax => int.MaxValue;
 

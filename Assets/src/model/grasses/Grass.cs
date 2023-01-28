@@ -28,20 +28,20 @@ public class Grass : Entity, IDaySteppable {
   public override string description => (floor == null || floor is HomeFloor) ?
     HomeDescription() : base.description;
 
+  static Dictionary<Vector2Int, string> directionNames = new Dictionary<Vector2Int, string>() {
+    [Vector2Int.left] = "left",
+    [Vector2Int.down] = "down",
+    [Vector2Int.right] = "right",
+    [Vector2Int.up] = "up",
+  };
+
   string HomeDescription() {
     var homeItem = this.GetHomeItem();
     string description;
-    if (homeItem != null) {
-      description = $@"
-Provides a {homeItem.displayName} every day:
-
-{homeItem.GetStatsFull()}".Trim();
-    } else {
-      description = base.description;
-    }
-    return $@"{description}
-
-Needed synergies: {string.Join(", ", synergy.offsets)}".Trim();
+    string desc1 = floor == null ? "" : $"Harvest to get {(synergy.IsSatisfied(this) ? 3 : 2)}.";
+    description = $@"{desc1}
+Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValueOrDefault(o) ?? o.ToString()))}.".Trim();
+    return description;
   }
 
   public Grass(Vector2Int pos) : base() {
@@ -73,7 +73,7 @@ Needed synergies: {string.Join(", ", synergy.offsets)}".Trim();
   public virtual void StepDay() {
     justPlanted = false;
     // if (MyRandom.value < 0.5f) {
-      // readyToExpand = true;
+    readyToExpand = true;
       // floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
       // var p = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => ItemGrass.CanPlantGrassOfType(GetType(), t)));
       // if (p != null) {
@@ -82,48 +82,48 @@ Needed synergies: {string.Join(", ", synergy.offsets)}".Trim();
       // }
     // }
 
-    var hasSynergy = synergy.IsSatisfied(this);
-    if (hasSynergy) {
-      // item.stacks *= 2;
-      readyToExpand = true;
-    }
-
-    // int yield = YieldContributionUtils.Recompute(this, contributionRules, this.latestContributions);
-
-    // int itemCost = YieldContributionUtils.GetCost(item);
-    // int stacks = yield / itemCost;
-    
-    var item = this.GetHomeItem();
-    if (item == null) {
-      return;
-    }
-
-    // if (stacks > 0) {
-    //   // our yield is high enough, drop an item
-    //   item.stacks = stacks;
-      floor.Put(new ItemOnGround(pos, item));
+    // var hasSynergy = synergy.IsSatisfied(this);
+    // if (hasSynergy) {
+    //   readyToExpand = true;
     // }
   }
 
   public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
     if (readyToExpand) {
-      methods.Add(GetType().GetMethod("Cultivate"));
+      methods.Add(GetType().GetMethod("Harvest"));
+      // methods.Add(GetType().GetMethod("Duplicate"));
     }
   }
 
-  [PlayerAction]
-  public void Destroy() {
-    floor.Remove(this);
-  }
+  // [PlayerAction]
+  // public void Destroy() {
+  //   floor.Remove(this);
+  // }
 
-  public void Cultivate() {
+  // [PlayerAction]
+  // public void Harvest() {
+  //   var item = this.GetHomeItem();
+  //   if (item == null) {
+  //     return;
+  //   }
+
+  //   if (synergy.IsSatisfied(this)) {
+  //     item.stacks *= 2;
+  //   }
+  //   if (!GameModel.main.player.inventory.AddItem(item, this)) {
+  //     floor.Put(new ItemOnGround(pos, item));
+  //   }
+  //   floor.Remove(this);
+  // }
+
+  public void Harvest() {
     var player = GameModel.main.player;
-    bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), 2), this);
-    readyToExpand = bSuccess ? false : true;
-    if (bSuccess) {
-      // we're *not* killing the entity
-      floor.Remove(this);
+    var numStacks = synergy.IsSatisfied(this) ? 3 : 2;
+    bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), numStacks), this);
+    if (!bSuccess) {
+      throw new CannotPerformActionException("Inventory full!");
     }
+    Kill(player);
   }
 
   // [PlayerAction]

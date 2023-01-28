@@ -6,11 +6,9 @@ public class VioletsController : GrassController {
   public Sprite[] flowerStages;
   public Sprite open;
   public Violets violets => (Violets) grass;
-  private SpriteRenderer sr;
 
   public override void Start() {
     base.Start();
-    sr = transform.Find("Flower").GetComponent<SpriteRenderer>();
     Update();
   }
 

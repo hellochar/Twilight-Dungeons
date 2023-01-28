@@ -9,10 +9,17 @@ public class GrassController : MonoBehaviour, IEntityController {
   public PulseType pulses = PulseType.Smaller;
 
   public LineRenderer synergyLinePositive;
-  // Start is called before the first frame update
+
+  protected SpriteRenderer sr;
+  private Color startColor;
   public virtual void Start() {
     this.transform.position = Util.withZ(this.grass.pos, this.transform.position.z);
     grass.OnNoteworthyAction += HandleNoteworthyAction;
+    if (synergyLinePositive == null) {
+      synergyLinePositive = transform.Find("SynergyPositive").gameObject.GetComponent<LineRenderer>();
+    }
+    sr = GetComponent<SpriteRenderer>();
+    startColor = sr.color;
   }
 
   private void HandleNoteworthyAction() {
@@ -44,6 +51,14 @@ public class GrassController : MonoBehaviour, IEntityController {
     // }
 
     if (grass.floor is HomeFloor) {
+      if (!grass.readyToExpand) {
+        Color gs = new Color(startColor.grayscale, startColor.grayscale, startColor.grayscale, startColor.a);
+        Color transparent = gs;
+        transparent.a = 0;
+        sr.color = Color.Lerp(gs, transparent, Mathf.Pow(Mathf.Sin(Time.time * 2), 2));
+      } else {
+        sr.color = startColor;
+      }
       synergyLinePositive.SetPositions(zeroes);
       if (grass.synergy.IsSatisfied(grass)) {
         int counter = 0;

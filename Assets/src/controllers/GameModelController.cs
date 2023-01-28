@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -81,24 +82,26 @@ public class GameModelController : MonoBehaviour {
   public bool isSteppingDay = false;
   public void GoNextDay() {
     isSteppingDay = true;
-    CameraFocuser focuser = new CameraFocuser(GameModel.main.player);
+    // CameraFocuser focuser = new CameraFocuser(GameModel.main.player);
+    CameraFocuser focuser = new CameraFocuser(GameModel.main.home.entities.OfType<Pit>().First());
     CameraController.main.SetCameraOverride(focuser);
 
-    var messageGameObject = PrefabCache.UI.Instantiate("Map Selector Message");
-    messageGameObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
-    var textComponent = messageGameObject.GetComponentInChildren<TMPro.TMP_Text>();
-    textComponent.text = "While you were away...";
+    // var messageGameObject = PrefabCache.UI.Instantiate("Map Selector Message");
+    // messageGameObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
+    // var textComponent = messageGameObject.GetComponentInChildren<TMPro.TMP_Text>();
+    // textComponent.text = "While you were away...";
 
     gameLoop = StartCoroutine(model.StepDay(
       // handle entity turn
       (Entity e) => {
-        textComponent.text = $"{e.displayName}'s Turn";
+        // textComponent.text = $"{e.displayName}'s Turn";
         var gameObject = CurrentFloorController.GameObjectFor(e);
-        var pulse = gameObject.AddComponent<PulseAnimation>();
+        // gameObject might be null if we're loading the game from scratch and the Floor GameObjects haven't been created yet
+        var pulse = gameObject?.AddComponent<PulseAnimation>();
         if (pulse != null) {
           pulse.pulseScale = 0.75f;
         }
-        focuser.target = e;
+        // focuser.target = e;
       },
 
       // on StepDay finished
@@ -106,7 +109,7 @@ public class GameModelController : MonoBehaviour {
         gameLoop = null;
         isSteppingDay = false;
         CameraController.main.SetCameraOverride(null);
-        Destroy(messageGameObject);
+        // Destroy(messageGameObject);
       }
     ));
   }

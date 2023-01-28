@@ -109,7 +109,7 @@ public class GameModel {
   }
 
   internal IEnumerator StepDay(Action<Entity> OnEntityTurn, Action then) {
-    yield return new WaitForSeconds(1.0f);
+    yield return new WaitForSeconds(2f);
     day++;
     foreach (var p in home.entities.ToList()) {
       if (p is IDaySteppable s && p.isVisible) {
@@ -120,7 +120,7 @@ public class GameModel {
           Debug.LogError(e);
           turnManager.latestException = e;
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.05f);
       }
     }
     then();

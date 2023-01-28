@@ -69,16 +69,39 @@ public class Wildwood : Plant {
 
   public static YieldContribution AllAreaAdjacentTilesEmptyYieldContribution(Entity p) {
     // var emptySpaces = p.floor.GetAdjacentTiles(p.pos).Where(t => t.CanBeOccupied() || t.body is Player);
-    var occupiedSpaces = p.AreaAdjacentTiles().Where(t => !(t.CanBeOccupied() || t.body is Player));
+    var occupiedSpaces = p.AreaAdjacentTiles().Where(t => {
+      if (t.body is Player) {
+        return false;
+      }
+      if (t.grass != null) {
+        return true;
+      }
+      if (t.body != null) {
+        return true;
+      }
+      return false;
+    });
     return new YieldContribution {
-      active = occupiedSpaces.Any(),
+      active = occupiedSpaces.Count() < 2,
       bonus = 10,
-      description = "All adjacent Tiles are empty."
+      description = $"Only one adjacent Tile is occupied (there are {occupiedSpaces.Count()})."
+    };
+  }
+
+  public static YieldContribution NextToChasmYieldContribution(Entity p) {
+    var numChasms = p.AreaAdjacentTiles().OfType<Chasm>().Count();
+    return new YieldContribution {
+      active = numChasms > 0,
+      bonus = numChasms * 2,
+      description = $"+2 for each nearby chasm."
     };
   }
 
   public static YieldContributionRule[] MyContributionRules => BaseContributionRules.Concat(
-    new YieldContributionRule[] { AllAreaAdjacentTilesEmptyYieldContribution }
+    new YieldContributionRule[] {
+      AllAreaAdjacentTilesEmptyYieldContribution,
+      NextToChasmYieldContribution,
+    }
   ).ToArray();
   public override YieldContributionRule[] contributionRules => MyContributionRules;
 }

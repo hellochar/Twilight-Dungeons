@@ -8,6 +8,8 @@ public class ItemCreatureFood : Item, ITargetedAction<AIActor> {
   public ItemCreatureFood() {
   }
 
+  public override int stacksMax => int.MaxValue;
+
   string ITargetedAction<AIActor>.TargettedActionName => "Feed";
   string ITargetedAction<AIActor>.TargettedActionDescription => "Choose a Creature to Feed.";
   IEnumerable<AIActor> ITargetedAction<AIActor>.Targets(Player player) {
@@ -19,19 +21,20 @@ public class ItemCreatureFood : Item, ITargetedAction<AIActor> {
     if (target.hp <= 1) {
       // you caught it!
       var slot = inventory.GetSlotFor(this);
-      Destroy();
+      // Destroy();
+      stacks--;
       target.SetAI(new WaitAI(target));
       target.statuses.Add(new CharmedStatus());
       target.faction = Faction.Ally;
       target.floor.CheckTeleporter();
 
       // we're *not* killing the entity
-      // target.floor.Remove(target);
-      // var item = new ItemPlaceableEntity(target).RequireSpace();
-      // var success = player.inventory.AddItem(item, slot, entity);
-      // if (!success) {
-      //   player.floor.Put(new ItemOnGround(target.pos, item));
-      // }
+      target.floor.Remove(target);
+      var item = new ItemPlaceableEntity(target);
+      var success = player.inventory.AddItem(item, slot, entity);
+      if (!success) {
+        player.floor.Put(new ItemOnGround(target.pos, item));
+      }
     } else {
       throw new CannotPerformActionException("Target has too much HP!");
     }

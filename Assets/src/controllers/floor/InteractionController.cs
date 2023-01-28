@@ -147,7 +147,13 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     } else {
       new SetTasksPlayerInteraction(
         new MoveNextToTargetTask(player, worldPos),
-        new GenericPlayerTask(player, () => EntityPopup.Show(entity))
+        new GenericPlayerTask(player, () => {
+          // if (player.IsNextTo(entity)) {
+            EntityPopup.Show(entity);
+          // } else {
+          //   throw new CannotPerformActionException("Cannot reach!");
+          // }
+        })
       ).Perform();
     }
   }

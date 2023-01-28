@@ -12,7 +12,7 @@ public class Synergy {
 
     [typeof(Spores)] = new Synergy(
       Vector2Int.left,
-      Vector2Int.left * 2
+      Vector2Int.down
     ),
 
     [typeof(EveningBells)] = new Synergy(
@@ -77,7 +77,12 @@ public class Synergy {
       if (!floor.InBounds(targetPos)) {
         return false;
       }
-      var targetEntity = floor.grasses[targetPos] as Entity ?? floor.bodies[targetPos] as AIActor ?? floor.pieces[targetPos] as Entity;
+      Entity grass = floor.grasses[targetPos];
+      Entity body = floor.bodies[targetPos];
+      if (body is Player) {
+        body = null;
+      }
+      Entity targetEntity = grass ?? body;
       if (targetEntity == null || targetEntity.GetType() == entity.GetType()) {
         return false;
       }

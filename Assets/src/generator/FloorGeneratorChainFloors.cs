@@ -23,15 +23,15 @@ public class FloorGeneratorChainFloors : FloorGenerator {
     floorGenerators = new List<Func<Floor>>() {
       // early game
       () => generateHomeFloor(),
-      () => generateChainFloor(1 , 5, 6, 5, 1, 1, true),
-      () => generateChainFloor(2 , 5, 6, 5, 1, 1, true),
-      () => generateChainFloor(3 , 5, 6, 5, 2, 1, true),
-      () => generateChainFloor(4 , 5, 6, 6, 2, 2, true),
-      () => generateChainFloor(5 , 5, 6, 6, 2, 2, true),
-      () => generateChainFloor(6 , 5, 6, 6, 2, 2, true),
-      () => generateChainFloor(7 , 5, 7, 6, 3, 3, true),
-      () => generateChainFloor(8 , 5, 7, 6, 3, 3, true),
-      () => generateChainFloor(9 , 5, 7, 6, 3, 3, true),
+      () => generateChainFloor(1 , 7, 6, 5, 1, 1, true),
+      () => generateChainFloor(2 , 7, 6, 5, 1, 1, true),
+      () => generateChainFloor(3 , 7, 6, 5, 2, 1, true),
+      () => generateChainFloor(4 , 7, 6, 6, 2, 1, true),
+      () => generateChainFloor(5 , 7, 6, 6, 2, 1, true),
+      () => generateChainFloor(6 , 7, 6, 6, 2, 1, true),
+      () => generateChainFloor(7 , 7, 7, 6, 3, 1, true),
+      () => generateChainFloor(8 , 7, 7, 6, 3, 1, true),
+      () => generateChainFloor(9 , 7, 7, 6, 3, 1, true),
       () => generateBlobBossFloor(10),
 
       // midgame
@@ -70,6 +70,7 @@ public class FloorGeneratorChainFloors : FloorGenerator {
     // X mobs
     for (var i = 0; i < numMobs; i++) {
       mobEncounters.Add(EncounterGroup.Mobs.GetRandomWithoutAndDiscount(mobEncounters, reduceChance));
+      // mobEncounters.Add(EncounterGroup.Mobs.GetRandomAndDiscount());
     }
 
     // Y grasses
@@ -108,6 +109,7 @@ public class FloorGeneratorChainFloors : FloorGenerator {
         // }
       // }
       roomIntensity++;
+      // mobEncounters.Add(EncounterGroup.Mobs.GetRandomAndDiscount());
 
       // add slimes
       // var entrancesAndExits = floor.EnumerateRoomPerimeter(room, -1).Where(pos => floor.tiles[pos].CanBeOccupied());

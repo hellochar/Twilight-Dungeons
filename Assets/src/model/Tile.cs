@@ -265,6 +265,8 @@ public class Pit : Piece {
     floor.PlayerGoDownstairs();
   }
 
+  // public override string description => $"Delve into depth {GameModel.main.cave.depth}.";
+
   public override string description {
     get {
       var entityTypes = GameModel.main.cave
@@ -273,7 +275,7 @@ public class Pit : Piece {
           GameModel.main.cave
           .grasses.GroupBy(g => g.GetType()).Select(grouping => grouping.First())
         );
-      return "You peer into the cavern and see " + String.Join(", ", entityTypes.Select(e => e.displayName)) + ".";
+      return $"You peer into depth {GameModel.main.cave.depth} and see " + String.Join(", ", entityTypes.Select(e => e.displayName)) + ".";
     }
   }
 }

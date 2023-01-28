@@ -102,7 +102,8 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
       if (item is ITargetedAction<Entity> targetedAction) {
         bool canActivateNow;
         if (item is EquippableItem e) {
-          canActivateNow = e.IsEquipped;
+          canActivateNow = player.floor.depth != 0;
+          // canActivateNow = e.IsEquipped;
         } else {
           canActivateNow = true;
         }

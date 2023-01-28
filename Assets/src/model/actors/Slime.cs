@@ -14,14 +14,17 @@ public class Slime : Destructible, IDeathHandler {
     // if (MyRandom.value < 0.1f) {
     //   GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
     // }
-    var floor = this.floor;
-    floor.Put(new WallTrigger(pos));
-    GameModel.main.EnqueueEvent(() => {
-      var inventory = new Inventory(new ItemSlime());
-      inventory.TryDropAllItems(floor, pos);
-      // var dropPos = GameModel.main.home.soils.First().pos;
-      // GameModel.main.home.Put(new ItemOnGround(dropPos, new ItemSlime()));
-    });
+    GameModel.main.player.water += MyRandom.Range(13, 28);
+
+    // var floor = this.floor;
+    // floor.Put(new WallTrigger(pos));
+    // GameModel.main.EnqueueEvent(() => {
+    //   var inventory = new Inventory(new ItemSlime());
+    //   inventory.TryDropAllItems(floor, pos);
+    //   // var dropPos = GameModel.main.home.soils.First().pos;
+    //   // GameModel.main.home.Put(new ItemOnGround(dropPos, new ItemSlime()));
+    // });
+
 #if experimental_retryondemand
     GameModel.main.EnqueueEvent(() => {
       GameModel.main.DrainEventQueue();

@@ -78,6 +78,9 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {
+    if (!(player.floor is HomeFloor)) {
+      throw new CannotPerformActionException("Place at home!");
+    }
     // if it's growing, it's free
     // if (entity is GrowingEntity) {
     // } else {

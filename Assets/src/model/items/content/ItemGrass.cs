@@ -17,7 +17,7 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
 
   public override int stacksMax => 99;
 
-  public string TargettedActionName => "Plant";
+  public string TargettedActionName => "Plant (10 water)";
   public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   protected override bool StackingPredicate(Item other) {
     return (other as ItemGrass).grassType == grassType;
@@ -26,7 +26,7 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   internal override string GetStats() {
     var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     Grass grass = (Grass)constructorInfo.Invoke(new object[] { Vector2Int.zero });
-    return grass.description;
+    return "Plant at home or in the caves.\n" + grass.description;
   }
 
   // we can plant a Grass of type Type at tile T if:
@@ -74,6 +74,9 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   }
 
   public void PerformTargettedAction(Player player, Entity target) {
+    // if (!(player.floor is HomeFloor)) {
+    //   throw new CannotPerformActionException("Plant at home!");
+    // }
     player.SetTasks(
       new MoveNextToTargetTask(player, target.pos),
       new GenericOneArgTask<Vector2Int>(player, PlaceGrass, target.pos)
@@ -82,6 +85,7 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
 
   private void PlaceGrass(Vector2Int pos) {
     var player = GameModel.main.player;
+    player.UseResourcesOrThrow(10, 0, 0);
     if (player.pos == pos) {
       // move them off the target
       player.floor.BodyPlacementBehavior(player);

@@ -99,16 +99,20 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
-    inventory = new Inventory(5);
+    inventory = new Inventory(8);
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
-    // // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
     // // inventory.AddItem(new ItemSoil());
-    // // inventory.AddItem(new ItemShovel());
-    inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
-    inventory.AddItem(new ItemPlaceableEntity(new Composter(new Vector2Int())));
-    inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
-    inventory.AddItem(new ItemSeed(typeof(Wildwood), 1));
+    inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
+    // inventory.AddItem(new ItemShovel(3));
+    // inventory.AddItem(new ItemCreatureFood());
+    // inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
+    // inventory.AddItem(new ItemPlaceableEntity(new Composter(new Vector2Int())));
+    // inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
+    // inventory.AddItem(new ItemSeed(typeof(Wildwood), 1));
+    inventory.AddItem(new ItemGrass(typeof(Guardleaf), 1));
+    inventory.AddItem(new ItemGrass(typeof(Bladegrass), 1));
+    inventory.AddItem(new ItemGrass(typeof(Violets), 1));
 #endif
 
     equipment = new Equipment(this);

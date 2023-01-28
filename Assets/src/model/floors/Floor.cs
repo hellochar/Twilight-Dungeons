@@ -268,7 +268,9 @@ public partial class Floor {
           freeSpot = GetAdjacentTiles(GameModel.main.player.pos)[0];
         }
         Put(new Teleporter(freeSpot.pos));
+#if experimental_rewardui
         CreateRewards().ShowUI();
+#endif
         // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
       }
     });

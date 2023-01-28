@@ -38,6 +38,17 @@ public class YieldContribution {
     };
   }
 
+  public static YieldContribution NearCreatureYieldContribution(Piece p) {
+    var nearbyCreatures = p.floor.GetAdjacentTiles(p.pos).Select(t => t.body).OfType<AIActor>();
+    var num = nearbyCreatures.Count();
+    return new YieldContribution {
+      active = num > 0,
+      bonus = 3,
+      description = $"Next to a Creature.",
+    };
+  }
+
+
   public static YieldContribution SoilWateredYieldContribution(Piece p) {
     var soil = p.soil;
     var active = soil?.watered ?? false;

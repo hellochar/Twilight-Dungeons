@@ -63,9 +63,14 @@ public class ObjectInfo {
     if (item is ItemVisibleBox b) {
       return InfoFor(b.innerItem);
     }
-    // if (item is ItemGrass gt) {
-    //   return InfoFor(gt.grassType);
-    // }
+    if (item is ItemGrass gt) {
+      var gtObjectInfo = InfoFor(gt.grassType);
+      return new ObjectInfo {
+        spriteName = gtObjectInfo.spriteName,
+        flavorText = gtObjectInfo.flavorText,
+        // stats will be set by the ItemGrass
+      };
+    }
     if (item is ItemPlaceableTile pt) {
       return InfoFor(pt.tileType);
     }

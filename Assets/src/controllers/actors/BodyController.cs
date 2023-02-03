@@ -49,6 +49,12 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     if (body.tile.visibility == TileVisiblity.Unexplored) {
       return null;
     }
+    if (body.floor is HomeFloor || body is Station) {
+      return new SetTasksPlayerInteraction(
+        new MoveNextToTargetTask(player, body.pos),
+        new ShowInteractPopupTask(player, body)
+      );
+    }
     return new SetTasksPlayerInteraction(
       new ChaseTargetTask(player, body),
       new AttackTask(player, body)

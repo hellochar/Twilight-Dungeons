@@ -46,7 +46,7 @@ public class PlayerConsoleMethods {
   [ConsoleMethod("CheatGetReward", "Show reward UI")]
   public static void CheatGetReward() {
     // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
-    GameModel.main.currentFloor.CreateRewards().ShowUI();
+    GameModel.main.currentFloor.CreateRewards().ShowRewardUIAndWaitForChoice();
   }
 
 
@@ -62,8 +62,13 @@ public class PlayerConsoleMethods {
   }
 
   [ConsoleMethod("CheatAddWater", "")]
-  public static void CheatAddWater(int water = 1000) {
+  public static void CheatAddWater(int water = 100) {
     GameModel.main.player.water += water;
+  }
+
+  [ConsoleMethod("CheatAddActionPoint", "")]
+  public static void CheatAddActionPoint() {
+    GameModel.main.player.actionPoints++;
   }
 
   [ConsoleMethod("CheatMaturePlants", "")]

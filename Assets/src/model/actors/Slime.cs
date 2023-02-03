@@ -14,16 +14,20 @@ public class Slime : Destructible, IDeathHandler {
     // if (MyRandom.value < 0.1f) {
     //   GameModel.main.player.statuses.Add(new SlimyStatus(1, GameModel.main.currentFloor.depth));
     // }
-    GameModel.main.player.water += MyRandom.Range(13, 28);
+    // GameModel.main.player.water += MyRandom.Range(13, 28);
 
-    // var floor = this.floor;
+    var floor = this.floor;
     // floor.Put(new WallTrigger(pos));
-    // GameModel.main.EnqueueEvent(() => {
+    GameModel.main.EnqueueEvent(() => {
+      var slime = new ItemSlime();
+      if (!GameModel.main.player.inventory.AddItem(slime)) {
+        floor.Put(new ItemOnGround(pos, slime));
+      }
     //   var inventory = new Inventory(new ItemSlime());
     //   inventory.TryDropAllItems(floor, pos);
     //   // var dropPos = GameModel.main.home.soils.First().pos;
     //   // GameModel.main.home.Put(new ItemOnGround(dropPos, new ItemSlime()));
-    // });
+    });
 
 #if experimental_retryondemand
     GameModel.main.EnqueueEvent(() => {
@@ -36,24 +40,26 @@ public class Slime : Destructible, IDeathHandler {
 
 [Serializable]
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
-public class ItemSlime : Item, IStuckToInventory {
+public class ItemSlime : Item {
   public ItemSlime(int stacks) : base(stacks) {}
 
   public ItemSlime() : this(1) {}
 
-  public override int stacksMax => 8;
+  public override int stacksMax => 1;
 
   [PlayerAction]
-  public void Purify() {
+  public void PurifyAll() {
     var player = GameModel.main.player;
     player.UseActionPointOrThrow();
-    PurifyFree(player);
+    foreach(var slime in player.inventory.ItemsNonNull().OfType<ItemSlime>()) {
+      slime.PurifyFree(player);
+    }
   }
 
   public void PurifyFree(Player player) {
     var water = 0;
     for(int i = 0; i < stacks; i++) {
-      water += MyRandom.Range(13, 28);
+      water += MyRandom.Range(20, 33);
     }
     player.water += water;
     Destroy();

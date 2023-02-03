@@ -160,7 +160,7 @@ public class Wall : Tile {
 #if experimental_actionpoints
   protected override void HandleLeaveFloor() {
     if (floor is HomeFloor f) {
-      f.root.ExtendToEncompass(new Room(pos - Vector2Int.one, pos + Vector2Int.one));
+      f.root?.ExtendToEncompass(new Room(pos - Vector2Int.one, pos + Vector2Int.one));
     }
   }
 

@@ -158,4 +158,9 @@ public class Inventory : IEnumerable<Item> {
   internal bool HasItem(Item item) {
     return items.Any((i) => i == item);
   }
+
+  internal Inventory AllowDragAndDrop(bool allow = true) {
+    allowDragAndDrop = allow;
+    return this;
+  }
 }

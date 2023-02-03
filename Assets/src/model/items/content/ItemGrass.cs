@@ -15,9 +15,9 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
 
   public override string displayName => Util.WithSpaces(grassType.Name);
 
-  public override int stacksMax => 99;
+  public override int stacksMax => 1;
 
-  public string TargettedActionName => "Plant (10 water)";
+  public string TargettedActionName => "Plant (20 water)";
   public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   protected override bool StackingPredicate(Item other) {
     return (other as ItemGrass).grassType == grassType;
@@ -39,18 +39,18 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
       return false;
     }
 
-    var home = t.floor as HomeFloor;
-    if (home == null) {
-      return false;
-    }
-
-    // if (home.soils[t.pos] == null) {
+    // var home = t.floor as HomeFloor;
+    // if (home == null) {
     //   return false;
     // }
 
-    if (home.pieces[t.pos] != null) {
-      return false;
-    }
+    // // if (home.soils[t.pos] == null) {
+    // //   return false;
+    // // }
+
+    // if (home.pieces[t.pos] != null) {
+    //   return false;
+    // }
 
     if (t.grass != null) {
       return false;
@@ -77,15 +77,15 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
     // if (!(player.floor is HomeFloor)) {
     //   throw new CannotPerformActionException("Plant at home!");
     // }
+    player.UseResourcesOrThrow(20, 0, 0);
     player.SetTasks(
       new MoveNextToTargetTask(player, target.pos),
       new GenericOneArgTask<Vector2Int>(player, PlaceGrass, target.pos)
     );
   }
 
-  private void PlaceGrass(Vector2Int pos) {
+  public void PlaceGrass(Vector2Int pos) {
     var player = GameModel.main.player;
-    player.UseResourcesOrThrow(10, 0, 0);
     if (player.pos == pos) {
       // move them off the target
       player.floor.BodyPlacementBehavior(player);

@@ -43,7 +43,9 @@ public abstract class FloorGenerator {
   internal HomeFloor generateHomeFloor() {
     EncounterGroup = earlyGame;
     HomeFloor floor;
-#if experimental_expandinghome
+#if experimental_mistyhome
+      floor = MistsHomeFloor.generate(floorSeeds.Count());
+#elif experimental_expandinghome
       floor = ExpandingHomeFloor.generate(floorSeeds.Count());
 #elif experimental_survivalhomefloor
       floor = generateSurvivalHomeFloor();
@@ -58,7 +60,7 @@ public abstract class FloorGenerator {
 
   protected abstract EncounterGroup GetEncounterGroup(int depth);
 
-  public Floor generateCaveFloor(int depth) {
+  public virtual Floor generateCaveFloor(int depth) {
     /// The generators rely on the following state:
     /// (1) encounter group
     /// (2) MyRandom seed
@@ -217,6 +219,8 @@ public abstract class FloorGenerator {
   public static FloorGenerator Create(List<int> floorSeeds) {
 #if experimental_chainfloors
     return new FloorGeneratorChainFloors(floorSeeds);
+#elif experimental_mistyhome
+    return new FloorGeneratorMistsEncounters(floorSeeds);
 #else
     return new FloorGenerator200Start(floorSeeds);
 #endif
@@ -523,7 +527,7 @@ public abstract class FloorGenerator {
     return floor;
   }
 
-  private Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool defaultEncounters = true) {
+  protected Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool defaultEncounters = true) {
     // We want to inset the downstairs and upstairs into the left and right walls. To do this,
     // we add one more column on each side
     Floor floor = new Floor(depth, width + 2, height);
@@ -738,7 +742,7 @@ public abstract class FloorGenerator {
     return floor;
   }
 
-  private static void ensureConnectedness(Floor floor) {
+  protected static void ensureConnectedness(Floor floor) {
     // here's how we ensure connectedness:
     // 1. find all walkable tiles on a floor
     // 2. group them by connectedness using bfs, starting from the upstairs as the "mainland"

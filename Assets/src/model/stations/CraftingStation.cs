@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 [Serializable]
 [ObjectInfo("station", description: "Build more items here.")]
 public class CraftingStation : Station, IDaySteppable {
-  public override int maxDurability => 8;
+  public override int maxDurability => 1;
   public override string popupPrefab => "CraftingStationPopupContent";
   private Item crafting {
     get => inventory[0];
@@ -30,39 +32,43 @@ public class CraftingStation : Station, IDaySteppable {
 
   public CraftingStation(Vector2Int pos) : base(pos) {}
 
-  [PlayerAction]
-  public void Crafting() => Craft(new ItemPlaceableEntity(
-    new GrowingEntity(new Vector2Int(),
-      new CraftingStation(new Vector2Int())
-    )
-  ));
+  // [PlayerAction]
+  // public void Crafting() => Craft(new ItemPlaceableEntity(
+  //   new GrowingEntity(new Vector2Int(),
+  //     new CraftingStation(new Vector2Int())
+  //   )
+  // ));
 
-  [PlayerAction]
+  // [PlayerAction]
   public void Shovel() => Craft(new ItemShovel(3));
 
-  [PlayerAction]
+  // [PlayerAction]
   public void CreatureFood() => Craft(new ItemCreatureFood());
 
-  [PlayerAction]
-  public void Processor() => Craft(new ItemPlaceableEntity(
-    new Processor(new Vector2Int())
-  ));
+  public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
+    methods.Add(GetType().GetMethod("Shovel"));
+    methods.Add(GetType().GetMethod("CreatureFood"));
+  }
 
-  [PlayerAction]
-  public void Campfire() => Craft(new ItemPlaceableEntity(
-    new Campfire(new Vector2Int())
-  ));
+  // [PlayerAction]
+  // public void Processor() => Craft(new ItemPlaceableEntity(
+  //   new Processor(new Vector2Int())
+  // ));
 
-  [PlayerAction]
-  public void Composter() => Craft(new ItemPlaceableEntity(
-    new Composter(new Vector2Int())
-  ));
+  // [PlayerAction]
+  // public void Campfire() => Craft(new ItemPlaceableEntity(
+  //   new Campfire(new Vector2Int())
+  // ));
 
-  [PlayerAction]
-  public void SoilMixer() => Craft(new ItemPlaceableEntity(
-    new SoilMixer(new Vector2Int())
-  ));
+  // [PlayerAction]
+  // public void Composter() => Craft(new ItemPlaceableEntity(
+  //   new Composter(new Vector2Int())
+  // ));
 
+  // [PlayerAction]
+  // public void SoilMixer() => Craft(new ItemPlaceableEntity(
+  //   new SoilMixer(new Vector2Int())
+  // ));
 
   // [PlayerAction]
   // public void Cloner() => Craft(new ItemPlaceableEntity(
@@ -88,7 +94,7 @@ public class CraftingStation : Station, IDaySteppable {
   public void Craft(Item item) {
     // crafting = item;
     Player player = GameModel.main.player;
-    player.UseActionPointOrThrow();
+    // player.UseActionPointOrThrow();
     bool success = player.inventory.AddItem(item, this);
     if (!success) {
       player.floor.Put(new ItemOnGround(player.pos, item, player.pos));

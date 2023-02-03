@@ -103,16 +103,17 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
     // // inventory.AddItem(new ItemSoil());
-    inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
-    // inventory.AddItem(new ItemShovel(3));
-    // inventory.AddItem(new ItemCreatureFood());
+    // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));
+    // inventory.AddItem(new ItemPlaceableEntity(new Bedroll(new Vector2Int())));
+    inventory.AddItem(new ItemShovel(3));
+    inventory.AddItem(new ItemCreatureFood());
     // inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
     // inventory.AddItem(new ItemPlaceableEntity(new Composter(new Vector2Int())));
     // inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
     // inventory.AddItem(new ItemSeed(typeof(Wildwood), 1));
-    inventory.AddItem(new ItemGrass(typeof(Guardleaf), 1));
-    inventory.AddItem(new ItemGrass(typeof(Bladegrass), 1));
-    inventory.AddItem(new ItemGrass(typeof(Violets), 1));
+    // inventory.AddItem(new ItemGrass(typeof(Guardleaf), 1));
+    // inventory.AddItem(new ItemGrass(typeof(Bladegrass), 1));
+    // inventory.AddItem(new ItemGrass(typeof(Violets), 1));
 #endif
 
     equipment = new Equipment(this);
@@ -126,11 +127,20 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     ClearTasks();
   }
 
+  [PlayerAction]
+  public void Sleep() {
+    // GameModel.main.player.Heal(0);
+    GameModel.main.GoNextDay();
+  }
+
   public void ReplenishActionPoints() {
     var numDays = GameModel.main.day;
 #if experimental_actionpoints
     // maxActionPoints = 3;
     maxActionPoints = Mathf.Clamp(2 + numDays / 2, 3, 8);
+    if (hp == maxHp)  {
+      maxActionPoints += 1;
+    }
     // var anyEnemies = GameModel.main.cave.bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Any();
     // if (!anyEnemies) {
     //   maxActionPoints += 1;

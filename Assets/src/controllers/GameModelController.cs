@@ -83,13 +83,22 @@ public class GameModelController : MonoBehaviour {
   public void GoNextDay() {
     isSteppingDay = true;
     // CameraFocuser focuser = new CameraFocuser(GameModel.main.player);
-    CameraFocuser focuser = new CameraFocuser(GameModel.main.home.entities.OfType<Pit>().First());
+    CameraFocuser focuser = new CameraFocuser(
+#if experimental_expandinghome
+      GameModel.main.home.entities.OfType<Pit>().First()
+#else
+      GameModel.main.player
+#endif
+    );
     CameraController.main.SetCameraOverride(focuser);
 
-    // var messageGameObject = PrefabCache.UI.Instantiate("Map Selector Message");
-    // messageGameObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
-    // var textComponent = messageGameObject.GetComponentInChildren<TMPro.TMP_Text>();
+    var messageGameObject = PrefabCache.UI.Instantiate("Map Selector Message");
+    messageGameObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
+    var textComponent = messageGameObject.GetComponentInChildren<TMPro.TMP_Text>();
     // textComponent.text = "While you were away...";
+    textComponent.text = $"Day {GameModel.main.day + 1}";
+
+    // Messages.Create($"Day {GameModel.main.day + 1}");
 
     gameLoop = StartCoroutine(model.StepDay(
       // handle entity turn
@@ -101,7 +110,7 @@ public class GameModelController : MonoBehaviour {
         if (pulse != null) {
           pulse.pulseScale = 0.75f;
         }
-        // focuser.target = e;
+        focuser.target = e;
       },
 
       // on StepDay finished
@@ -109,7 +118,7 @@ public class GameModelController : MonoBehaviour {
         gameLoop = null;
         isSteppingDay = false;
         CameraController.main.SetCameraOverride(null);
-        // Destroy(messageGameObject);
+        Destroy(messageGameObject);
       }
     ));
   }

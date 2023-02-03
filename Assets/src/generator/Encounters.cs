@@ -382,15 +382,17 @@ public class Encounters {
     // if (tile == null) {
       Tile tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
     // }
+
     if (tile != null) {
-      var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
-      var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
-      plant.GoNextStage();
-      plant.GoNextStage();
-      floor.Put(plant);
-      floor.Put(new Soil(plant.pos));
+    //   var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
+    //   var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
+    //   plant.GoNextStage();
+    //   plant.GoNextStage();
+    //   floor.Put(plant);
+    //   floor.Put(new Soil(plant.pos));
+      floor.Put(new ItemOnGround(tile.pos, new ItemSeed(type, 1)));
     }
-    floor.PutAll(floor.GetDiagonalAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
+    // floor.PutAll(floor.GetDiagonalAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
   }
 
   public static void AddSoftGrass(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);
@@ -915,6 +917,32 @@ public class Encounters {
     }
   }
 
+  public static void AddSlime(Floor floor, Room room) {
+    var num = MyRandom.Range(3, 7);
+    var tiles = 
+      // FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile.grass == null).Take(num);
+      FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => tile.grass == null).ToList();
+    tiles.Shuffle();
+    floor.PutAll(tiles.Take(num).Select(tile => new Slime(tile.pos)));
+  }
+
+  public static void AddCrafting(Floor floor, Room room) {
+    floor.Put(new CraftingStation(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  }
+
+
+  public static void AddProcessor(Floor floor, Room room) {
+    floor.Put(new Processor(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  }
+
+  public static void AddCampfire(Floor floor, Room room) {
+    floor.Put(new Campfire(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  }
+
+  // public static void RandomTrade(Floor floor, Room room) {
+  //   floor.Put(new Processor(room.center));
+  // }
+
   public static void AddWater(Floor floor, Room room) {
     var numWaters = Random.Range(3, 6);
     var startPos = room.center;
@@ -944,13 +972,6 @@ public class Encounters {
       floor.Put(new ItemOnGround(tile.pos, new ItemSoil()));
     }
   }
-  public static void AddCrafting(Floor floor, Room room) {
-    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
-    if (tile != null) {
-      floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new CraftingStation(new Vector2Int()))));
-    }
-  }
-
 
   private static void RewardItemImpl(Floor floor, Room room, Item item) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));

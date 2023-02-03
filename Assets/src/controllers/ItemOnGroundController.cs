@@ -42,9 +42,13 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerI
   public PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (itemOnGround.isVisible) {
       Player player = GameModel.main.player;
-      return new SetTasksPlayerInteraction(
+      var tasks = new SetTasksPlayerInteraction(
         new MoveToTargetTask(player, itemOnGround.pos)
       );
+      if (itemOnGround.floor is HomeFloor) {
+        tasks.Then(new GenericPlayerTask(player, itemOnGround.PickUp));
+      }
+      return tasks;
     }
     return null;
   }

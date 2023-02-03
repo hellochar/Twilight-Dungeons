@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public enum PulseType { Smaller, Larger }
 
-public class GrassController : MonoBehaviour, IEntityController {
+public class GrassController : MonoBehaviour, IEntityController, IPlayerInteractHandler {
   [NonSerialized]
   public Grass grass;
   public PulseType pulses = PulseType.Smaller;
@@ -51,14 +52,14 @@ public class GrassController : MonoBehaviour, IEntityController {
     // }
 
     if (grass.floor is HomeFloor) {
-      if (!grass.readyToExpand) {
-        Color gs = new Color(startColor.grayscale, startColor.grayscale, startColor.grayscale, startColor.a);
-        Color transparent = gs;
-        transparent.a = 0;
-        sr.color = Color.Lerp(gs, transparent, Mathf.Pow(Mathf.Sin(Time.time * 2), 2));
-      } else {
-        sr.color = startColor;
-      }
+      // if (!grass.readyToExpand) {
+      //   Color gs = new Color(startColor.grayscale, startColor.grayscale, startColor.grayscale, startColor.a);
+      //   Color transparent = gs;
+      //   transparent.a = 0;
+      //   sr.color = Color.Lerp(gs, transparent, Mathf.Pow(Mathf.Sin(Time.time * 2), 2));
+      // } else {
+      //   sr.color = startColor;
+      // }
       synergyLinePositive.SetPositions(zeroes);
       if (grass.synergy.IsSatisfied(grass)) {
         int counter = 0;
@@ -68,5 +69,17 @@ public class GrassController : MonoBehaviour, IEntityController {
         }
       }
     }
+  }
+
+  public PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+    if (grass.floor is HomeFloor) {
+      return new SetTasksPlayerInteraction(
+        new MoveNextToTargetTask(GameModel.main.player, grass.pos),
+        new ShowInteractPopupTask(GameModel.main.player, grass)
+      );
+    }
+    return new SetTasksPlayerInteraction(
+      new MoveToTargetTask(GameModel.main.player, grass.pos)
+    );
   }
 }

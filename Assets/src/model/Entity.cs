@@ -52,9 +52,7 @@ public abstract class Entity : IEntity, IModifierProvider {
 
   public float age => GameModel.main.time - timeCreated;
   public Tile tile => floor.tiles[pos];
-#if experimental_chainfloors
   public Room room => floor?.rooms?.Find(r => r.isTerminal && r.Contains(pos));
-#endif
   /// TODO remove null from floor
   public Grass grass => floor?.grasses[pos];
   public ItemOnGround item => floor?.items[pos];

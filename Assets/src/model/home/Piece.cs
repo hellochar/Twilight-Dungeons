@@ -4,18 +4,19 @@ using UnityEngine;
 // A piece on the home garden.
 [Serializable]
 public class Piece : Entity {
-  private Vector2Int _pos;
+  // private Vector2Int _pos;
   public override Vector2Int pos {
-    get => _pos;
+    get; set;
+    // get => _pos;
     /// do not allow moving Pieces
-    set { }
+    // set { }
   }
   public HomeFloor home => floor as HomeFloor;
-  public Soil soil => home.soils[pos];
+  public Soil soil => home?.soils[pos];
   public int dayCreated { get; }
   public int dayAge => GameModel.main.day - dayCreated;
   public Piece(Vector2Int pos) : base() {
-    _pos = pos;
+    this.pos = pos;
     dayCreated = GameModel.main.day;
   }
 

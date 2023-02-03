@@ -24,7 +24,7 @@ public class Campfire : Station {
     //   throw new CannotPerformActionException("Already used this Campfire today!");
     // }
     Player p = GameModel.main.player;
-    p.UseResourcesOrThrow(actionPoints: 1);
+    // p.UseResourcesOrThrow(actionPoints: 1);
     // usedForTheDay = true;
     p.Heal(4);
     // var debuffs = p.statuses.list.Where((s) => s.isDebuff);

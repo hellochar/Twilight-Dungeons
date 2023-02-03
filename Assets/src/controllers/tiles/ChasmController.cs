@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ChasmController : TileController {
   public GameObject fade;
@@ -14,6 +15,12 @@ public class ChasmController : TileController {
     MaybeShowBorder(borderLeft, Vector2Int.left);
     MaybeShowBorder(borderBottom, Vector2Int.down);
     MaybeShowBorder(borderRight, Vector2Int.right);
+
+    if (tile.floor is HomeFloor && tile is Mist mist) {
+      var ps = GetComponent<ParticleSystem>();
+      var main = ps.main;
+      main.startLifetimeMultiplier = mist.depth;
+    }
   }
 
   private void MaybeShowBorder(GameObject fade, Vector2Int offset) {
@@ -22,5 +29,18 @@ public class ChasmController : TileController {
     if (shouldDestroy) {
       Destroy(fade);
     }
+  }
+
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+    // I'm lazy and don't want to create a new controller
+    if (tile.floor is HomeFloor && tile is Mist) {
+      if (tile.visibility != TileVisiblity.Unexplored) {
+        return new SetTasksPlayerInteraction(
+          new MoveNextToTargetTask(GameModel.main.player, tile.pos),
+          new ShowInteractPopupTask(GameModel.main.player, tile)
+        );
+      }
+    }
+    return base.GetPlayerInteraction(pointerEventData);
   }
 }

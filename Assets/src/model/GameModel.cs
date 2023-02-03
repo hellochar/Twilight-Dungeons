@@ -15,7 +15,8 @@ public class GameModel {
   public Player player;
   public HomeFloor home;
   public Floor cave;
-  public int nextCaveDepth { get; private set; }
+  internal Mist activeMist;
+  // public int nextCaveDepth { get; private set; }
   public float time = 0;
   public int day = 1;
   public List<int> floorSeeds;
@@ -83,7 +84,7 @@ public class GameModel {
   public GameModel() {
     seed = new System.Random().Next();
     stats = new PlayStats();
-    nextCaveDepth = 1;
+    // nextCaveDepth = 1;
     #if UNITY_EDITOR
     // this.seed = 0xf380d57;
     #endif
@@ -120,7 +121,7 @@ public class GameModel {
           Debug.LogError(e);
           turnManager.latestException = e;
         }
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.75f);
       }
     }
     then();
@@ -146,9 +147,9 @@ public class GameModel {
     // HACK have an empty cave floor at depth 0 so when you go down
     // you get to depth 1
     // cave = new Floor(0, 0, 0);
-    GenerateAndSetCaveDepth(nextCaveDepth);
+    // GenerateAndSetCaveDepth(nextCaveDepth);
 #else
-    cave = generator.generateCaveFloor(1);
+    // cave = generator.generateCaveFloor(1);
 #endif
     player = new Player(new Vector2Int(home.root.min.x + 1, home.root.center.y));
     home.Put(player);
@@ -216,17 +217,19 @@ public class GameModel {
 
   /// depth should be either 0, cave.depth, or cave.depth + 1
   internal void PutPlayerAt(int depth, Vector2Int? pos = null) {
-    Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
+    // Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
     Floor oldFloor = player.floor;
 
     // this could take a while
     Floor newFloor;
     if (depth == 0) {
       newFloor = home;
-    } else if (depth == cave.depth) {
-      newFloor = cave;
+    // } else if (depth == cave.depth) {
+    //   newFloor = cave;
     } else {
-      GenerateAndSetCaveDepth(depth);
+      if (cave == null) {
+        cave = generator.generateCaveFloor(depth);
+      }
       newFloor = cave;
     }
 
@@ -239,9 +242,9 @@ public class GameModel {
     }
     newFloor.CatchUpStep(this.time);
     player.ChangeFloors(newFloor, pos.Value);
-    if (newFloor.depth == cave.depth + 1) {
-      cave = newFloor;
-    }
+    // if (newFloor.depth == cave.depth + 1) {
+    //   cave = newFloor;
+    // }
     OnPlayerChangeFloor?.Invoke(oldFloor, newFloor);
   }
 
@@ -252,10 +255,10 @@ public class GameModel {
     floor.Put(actor);
   }
 
-  internal void GenerateAndSetCaveDepth(int newDepth) {
-    nextCaveDepth = newDepth;
-    cave = generator.generateCaveFloor(newDepth);
-  }
+  // internal void GenerateAndSetCaveDepth(int newDepth) {
+  //   nextCaveDepth = newDepth;
+  //   cave = generator.generateCaveFloor(newDepth);
+  // }
 
   /// Get all actors that should be simulated, in no particular order. This includes: 
   /// SteppableEntity's on the current floor, and

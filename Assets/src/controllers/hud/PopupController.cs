@@ -58,6 +58,10 @@ public class PopupController : MonoBehaviour, ICameraOverride, IPointerClickHand
 
   void Update() {
     if (target != null) {
+      if (target.IsDead) {
+        Close();
+        return;
+      }
       var infoText = container.transform.Find("Content/Stats")?.GetComponent<TMPro.TMP_Text>();
       if (infoText) {
         infoText.text = target.description;

@@ -38,9 +38,9 @@ public partial class Floor {
 
   internal Room root;
   /// all rooms (terminal bsp nodes). Sorted by 
-#if !experimental_chainfloors
-  [NonSerialized] /// not used beyond generator
-#endif
+// #if !experimental_chainfloors
+//   [NonSerialized] /// not used beyond generator
+// #endif
   internal List<Room> rooms;
   // [NonSerialized] /// not used beyond generator
   internal Room startRoom => startTile?.room;
@@ -111,7 +111,8 @@ public partial class Floor {
     int nextDepth;
 #if experimental_actionpoints
     if (depth == 0) {
-      nextDepth = GameModel.main.nextCaveDepth;
+      // nextDepth = GameModel.main.nextCaveDepth;
+      nextDepth = GameModel.main.cave.depth + 1;
     } else {
       nextDepth = 0;
     }
@@ -156,9 +157,9 @@ public partial class Floor {
 #if experimental_autoreplenish
     GameModel.main.player.Replenish();
 #endif
-    GameModel.main.PutPlayerAt(0);
-    GameModel.main.GenerateAndSetCaveDepth(GameModel.main.nextCaveDepth + 1);
-    GameModel.main.GoNextDay();
+    GameModel.main.activeMist.Clear();
+    GameModel.main.PutPlayerAt(0, GameModel.main.activeMist.pos);
+    GameModel.main.activeMist = null;
   }
 
   public int EnemiesLeft() {
@@ -258,6 +259,10 @@ public partial class Floor {
   }
 
   public void CheckTeleporter() {
+#if !experimental_chainfloors
+    return;
+#endif
+    // only makes sense in chainfloors
     GameModel.main.EnqueueEvent(() => {
       var activeRoom = GameModel.main.player.room;
       var existingTeleporter = this.EnumerateRoom(activeRoom).Select(p => tiles[p]).OfType<Teleporter>().FirstOrDefault();
@@ -312,7 +317,7 @@ public partial class Floor {
         return null;
       }
     }).Where(i => i != null).ToList());
-    rewards.inventories.Add(new Inventory(new ItemPlaceableTile(typeof(HomeGround), 3)));
+    rewards.inventories.Add(new Inventory(new ItemPlaceableTile(typeof(HomeGround), 1)));
     return rewards;
   }
 

@@ -25,7 +25,7 @@ public class Desalinator : Station
     if (slime != null) {
       // this.slime = slime;
       player.inventory.RemoveItem(slime);
-      slime.Purify();
+      slime.PurifyFree(player);
       this.ReduceDurability();
     }
   }

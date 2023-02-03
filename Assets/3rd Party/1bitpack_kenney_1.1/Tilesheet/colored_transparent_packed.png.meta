@@ -7,7 +7,7 @@ TextureImporter:
     second: skull
   - first:
       213: -2362392033055028080
-    second: octopus
+    second: question-mark
   - first:
       213: -8459985283990868690
     second: mouse
@@ -3172,7 +3172,7 @@ TextureImporter:
     second: skull
   - first:
       213: 4530940285694405697
-    second: octopus
+    second: question-mark
   - first:
       213: -848462766323141761
     second: mouse
@@ -7058,6 +7058,27 @@ TextureImporter:
       bones: []
       spriteID: 7bf835b145c9b0ab0800000000000000
       internalID: -5040763472861491273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: question-mark
+      rect:
+        serializedVersion: 2
+        x: 592
+        y: 128
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09cca8166f8173fd0800000000000000
+      internalID: -2362392033055028080
       vertices: []
       indices: 
       edges: []

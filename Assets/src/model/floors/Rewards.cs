@@ -23,7 +23,16 @@ public class Rewards {
     }
   }
 
-  public void ShowUI() {
+  public async void ShowRewardUIAndAddToInventory() {
+    var inventory = await ShowRewardUIAndWaitForChoice();
+    // add to home
+    // inventory.TryDropAllItems(GameModel.main.home, GameModel.main.home.center);
+    foreach(var item in inventory.ItemsNonNull()) {
+      GameModel.main.player.inventory.AddItem(item);
+    }
+  }
+
+  private void ShowUI() {
     var parent = GameObject.Find("Canvas").transform;
     var obj = PrefabCache.UI.Instantiate("Reward UI", parent);
     obj.GetComponent<RewardUIController>().rewards = this;
@@ -31,10 +40,5 @@ public class Rewards {
 
   internal void Choose(Inventory inventory) {
     chosenInventory = inventory;
-    // add to home
-    // inventory.TryDropAllItems(GameModel.main.home, GameModel.main.home.center);
-    foreach(var item in inventory.ItemsNonNull()) {
-      GameModel.main.player.inventory.AddItem(item);
-    }
   }
 }

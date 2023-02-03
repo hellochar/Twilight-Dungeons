@@ -47,8 +47,8 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
     var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
     var floor = soil.floor;
     floor.Put(plant);
-    plant.GoNextStage();
-    plant.GoNextStage();
+    // plant.GoNextStage();
+    // plant.GoNextStage();
 
 // #if experimental_actionpoints
 //     var adjacentTiles = floor.GetAdjacentTiles(soil.pos).ToList();

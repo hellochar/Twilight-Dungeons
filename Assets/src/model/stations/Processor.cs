@@ -26,7 +26,10 @@ public class Processor : Station, IInteractableInventory {
 
   private void HandleOnItemAdded(Item item, Entity source) {
     if (itemGrass != null) {
-      processedInventory.AddItem(EntityExtensions.GetHomeItem(itemGrass.grassType));
+      // processedInventory.AddItem(EntityExtensions.GetHomeItem(itemGrass.grassType));
+      var homeItem = EntityExtensions.GetHomeItem(itemGrass.grassType);
+      homeItem.stacks *= 3;
+      processedInventory.AddItem(homeItem);
     }
   }
 

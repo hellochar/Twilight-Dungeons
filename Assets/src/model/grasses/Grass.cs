@@ -38,7 +38,7 @@ public class Grass : Entity, IDaySteppable {
   string HomeDescription() {
     var homeItem = this.GetHomeItem();
     string description;
-    string desc1 = floor == null ? "" : $"Harvest to get {(synergy.IsSatisfied(this) ? 3 : 2)}.";
+    string desc1 = floor == null ? "" : synergy.IsSatisfied(this) ? $"Synergies satisfied! Reproducing." : "";
     description = $@"{desc1}
 Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValueOrDefault(o) ?? o.ToString()))}.".Trim();
     return description;
@@ -71,28 +71,20 @@ Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValu
   public virtual Synergy synergy => Synergy.SynergyMapping.GetValueOrDefault(GetType()) ?? Synergy.Never;
 
   public virtual void StepDay() {
-    justPlanted = false;
-    // if (MyRandom.value < 0.5f) {
-    readyToExpand = true;
-      // floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
-      // var p = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => ItemGrass.CanPlantGrassOfType(GetType(), t)));
-      // if (p != null) {
-      //   var constructorInfo = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
-      //   floor.Put((Grass)constructorInfo.Invoke(new object[] { pos }));
-      // }
-    // }
-
-    // var hasSynergy = synergy.IsSatisfied(this);
-    // if (hasSynergy) {
-    //   readyToExpand = true;
-    // }
+    // justPlanted = false;
+    // readyToExpand = true;
+    // var num = synergy.IsSatisfied(this) ? 2 : 1;
+    var hasSynergy = synergy.IsSatisfied(this);
+    if (hasSynergy) {
+      floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
+    }
   }
 
   public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
-    if (readyToExpand) {
-      methods.Add(GetType().GetMethod("Harvest"));
+    // if (readyToExpand) {
+      // methods.Add(GetType().GetMethod("Harvest"));
       // methods.Add(GetType().GetMethod("Duplicate"));
-    }
+    // }
   }
 
   // [PlayerAction]
@@ -116,15 +108,15 @@ Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValu
   //   floor.Remove(this);
   // }
 
-  public void Harvest() {
-    var player = GameModel.main.player;
-    var numStacks = synergy.IsSatisfied(this) ? 3 : 2;
-    bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), numStacks), this);
-    if (!bSuccess) {
-      throw new CannotPerformActionException("Inventory full!");
-    }
-    Kill(player);
-  }
+  // public void Harvest() {
+  //   var player = GameModel.main.player;
+  //   var numStacks = synergy.IsSatisfied(this) ? 3 : 2;
+  //   bool bSuccess = player.inventory.AddItem(new ItemGrass(GetType(), numStacks), this);
+  //   if (!bSuccess) {
+  //     throw new CannotPerformActionException("Inventory full!");
+  //   }
+  //   Kill(player);
+  // }
 
   // [PlayerAction]
   // public void PickUp() {
@@ -152,6 +144,6 @@ Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValu
   //   }
   // }
 
-  private bool justPlanted = true;
-  public bool readyToExpand = false;
+  // private bool justPlanted = true;
+  // public bool readyToExpand = false;
 }

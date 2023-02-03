@@ -40,7 +40,7 @@ public static class EntityPopup {
     Inventory inventory = null;
 
     var player = GameModel.main.player;
-    if (player.floor.depth == 0) {
+    // if (player.floor.depth == 0) {
       List<MethodInfo> playerActions = entity.GetType().GetMethods()
         .Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any())
         .ToList();
@@ -56,7 +56,7 @@ public static class EntityPopup {
           }
         }));
       }
-    }
+    // }
     if (entity is IInteractableInventory i) {
       inventory = i.inventory;
     }

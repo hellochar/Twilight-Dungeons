@@ -8,10 +8,10 @@ public class Nubs : Grass, IActorEnterHandler {
   }
 
   public void HandleActorEnter(Actor who) {
-    if (who is Player p) {
-      BecomeItemInInventory(new ItemGrass(GetType()), p);
-      // BecomeItemInInventory(new ItemPlaceableEntity(new Nubs(new Vector2Int())), p);
-    }
+    // if (who is Player p) {
+    // BecomeItemInInventory(new ItemGrass(GetType()), p);
+    // BecomeItemInInventory(new ItemPlaceableEntity(new Nubs(new Vector2Int())), p);
+    // }
   }
 
   // public void HandleActorLeave(Actor who) {

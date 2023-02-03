@@ -92,7 +92,7 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
     );
   }
 
-  private void PlaceEntity(Vector2Int pos) {
+  public void PlaceEntity(Vector2Int pos) {
     var player = GameModel.main.player;
     if (player.pos == pos) {
       // move them off the target

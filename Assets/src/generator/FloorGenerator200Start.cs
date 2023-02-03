@@ -22,17 +22,17 @@ public class FloorGenerator200Start : FloorGenerator {
     floorGenerators = new List<Func<Floor>>() {
       // early game
       () => generateHomeFloor(),
-      () => generateSingleRoomFloor(1, 9, 7, 1, 1),
-      () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(3, 9, 7, 1, 1),
-      () => generateSingleRoomFloor(4, 9, 7, 2, 1, true, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(5, 9, 7, 2, 1),
-      () => generateSingleRoomFloor(6, 9, 7, 2, 1),
-      () => generateSingleRoomFloor(7, 9, 7, 2, 1),
+      () => generateSingleRoomFloor(1, 9, 7, 3, 2),
+      () => generateSingleRoomFloor(2, 9, 7, 3, 2, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(3, 9, 7, 3, 3),
+      () => generateSingleRoomFloor(4, 9, 7, 5, 3, true, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(5, 9, 7, 5, 3),
+      () => generateSingleRoomFloor(6, 9, 7, 5, 3),
+      () => generateSingleRoomFloor(7, 9, 7, 6, 3),
       () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
-      () => generateSingleRoomFloor(9, 10, 7, 3, 2),
-      () => generateSingleRoomFloor(10, 10, 7, 3, 2),
-      () => generateSingleRoomFloor(11, 10, 7, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter),
+      () => generateSingleRoomFloor(9, 10, 7, 6, 3),
+      () => generateSingleRoomFloor(10, 10, 7, 7, 3),
+      () => generateSingleRoomFloor(11, 10, 7, 7, 3, true, null, Encounters.AddDownstairsInRoomCenter),
       () => generateBlobBossFloor(12),
 
       // midgame

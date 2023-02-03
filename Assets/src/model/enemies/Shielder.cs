@@ -8,7 +8,7 @@ public class Shielder : AIActor {
   public static Item HomeItem => new ItemShielderSpore();
   public Shielder(Vector2Int pos) : base(pos) {
     faction = Faction.Neutral;
-    hp = baseMaxHp = 1;
+    hp = baseMaxHp = 3;
   }
 
   ShieldLinkStatus status;
@@ -102,6 +102,9 @@ public class ShieldLinkStatus : Status, IAnyDamageTakenModifier {
       // schedule
       Remove();
       return input;
+    }
+    if (input > 0) {
+      shielder.TakeDamage(1, actor);
     }
     return input - 1;
   }

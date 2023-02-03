@@ -68,7 +68,7 @@ public class ItemWallflowerTendril : EquippableItem, IWeapon, IActionPerformedHa
       if (target.IsNextTo(attacker)) {
         var posBehind = target.pos + offset;
         if (attacker.floor.InBounds(posBehind) && attacker.floor.bodies[posBehind] != null) {
-          attacker.Perform(new AttackBaseAction(attacker, attacker.floor.bodies[posBehind]));
+          attacker.Perform(new AttackBaseAction(attacker, attacker.floor.bodies[posBehind], true));
         }
       }
     }

@@ -15,7 +15,7 @@ public class Octopus : AIActor {
   }
 
   public static bool IsInRange(Entity octopus, Entity target) {
-    return Util.DiamondMagnitude(target.pos - octopus.pos) <= 3;
+    return Util.DiamondMagnitude(target.pos - octopus.pos) <= 2;
   }
 
   protected override ActorTask GetNextTask() {

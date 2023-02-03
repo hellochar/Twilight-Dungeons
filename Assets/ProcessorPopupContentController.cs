@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ProcessorPopupContentController : MonoBehaviour {
-  public Entity entity { get; set; }
+  public Entity entity => GetComponentInParent<PopupController>().target;
   public Processor processor => entity as Processor;
   public InventoryController outputInventory;
 

@@ -14,6 +14,7 @@ public enum FloorType {
   Empty,
   // Trade,
   Combat,
+  Composter,
 }
 
 [System.Serializable]
@@ -36,10 +37,10 @@ public class Mist : Chasm {
     GameModel.main.player.UseResourcesOrThrow(actionPoints: 1);
     if (type == FloorType.Mystery) {
       // unbox mystery right now
-      var encounterTypes = Enum.GetValues(typeof(FloorType)).Cast<FloorType>().ToList();
-      encounterTypes.Remove(FloorType.Mystery);
-      encounterTypes.Remove(FloorType.Empty);
-      var newEncounterType = Util.RandomPick(encounterTypes);
+      // var encounterTypes = Enum.GetValues(typeof(FloorType)).Cast<FloorType>().ToList();
+      // encounterTypes.Remove(FloorType.Mystery);
+      // encounterTypes.Remove(FloorType.Empty);
+      var newEncounterType = MistsHomeFloor.bag.GetRandomWithout(new FloorType[] { FloorType.Mystery, FloorType.Empty });
       type = newEncounterType;
     }
 

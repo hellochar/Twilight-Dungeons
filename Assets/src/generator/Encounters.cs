@@ -918,7 +918,7 @@ public class Encounters {
   }
 
   public static void AddSlime(Floor floor, Room room) {
-    var num = MyRandom.Range(3, 7);
+    var num = MyRandom.Range(3, 7) + floor.depth;
     var tiles = 
       // FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile.grass == null).Take(num);
       FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => tile.grass == null).ToList();
@@ -937,6 +937,10 @@ public class Encounters {
 
   public static void AddCampfire(Floor floor, Room room) {
     floor.Put(new Campfire(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  }
+
+  public static void AddComposter(Floor floor, Room room) {
+    floor.Put(new Composter(FloorUtils.TilesFromCenter(floor, room).First().pos));
   }
 
   // public static void RandomTrade(Floor floor, Room room) {

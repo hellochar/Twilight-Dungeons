@@ -5,6 +5,16 @@ using UnityEngine;
 
 [Serializable]
 public class MistsHomeFloor : HomeFloor {
+  public static WeightedRandomBag<FloorType> bag = new WeightedRandomBag<FloorType>() {
+      { 2, FloorType.Slime },
+      { 0.5f, FloorType.Processor },
+      { 0.5f, FloorType.CraftingStation },
+      { 1, FloorType.Composter },
+      { 10, FloorType.Mystery },
+      { 1, FloorType.Healing },
+      { 2, FloorType.Empty },
+      { 3, FloorType.Combat },
+    };
   public static MistsHomeFloor generate(int numFloors) {
     var floor = new MistsHomeFloor(20, 20);
     var floorTypes = Enum.GetValues(typeof(FloorType)).Cast<FloorType>();
@@ -13,7 +23,8 @@ public class MistsHomeFloor : HomeFloor {
       // if (MyRandom.value < 0.5f) {
       //   type = FloorType.Empty;
       // } else {
-      type = Util.RandomPick(floorTypes);
+      // type = Util.RandomPick(floorTypes);
+      type = bag.GetRandom();
       // }
       if (type == FloorType.Empty) {
         floor.Put(new HomeGround(pos));
@@ -23,7 +34,7 @@ public class MistsHomeFloor : HomeFloor {
     }
 
     var center = floor.center;
-    Room room0 = new Room(floor.center - Vector2Int.one, floor.center + Vector2Int.one);
+    Room room0 = new Room(floor.center - Vector2Int.one * 2, floor.center + Vector2Int.one * 2);
     floor.rooms = new List<Room>() { room0 };
     floor.root = room0;
     foreach (var p in floor.EnumerateRoom(room0)) {

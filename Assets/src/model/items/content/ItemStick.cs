@@ -7,8 +7,8 @@ class ItemStick : EquippableItem, IWeapon {
   public override int stacksMax => int.MaxValue;
   // public override bool disjoint => true;
 
-  public ItemStick() : base() {
-  }
+  public ItemStick(int stacks) : base(stacks) { }
+  public ItemStick() : base() { }
 
   public (int, int) AttackSpread => (2, 2);
 }

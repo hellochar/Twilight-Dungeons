@@ -15,9 +15,9 @@ public class Composter : Station, IInteractableInventory {
   public void Compost() {
     if (inventory[0] != null) {
       var item = inventory[0];
-      if (!(item is ItemGrass)) {
-        throw new CannotPerformActionException("Must put in a Grass.");
-      }
+      // if (!(item is ItemGrass)) {
+      //   throw new CannotPerformActionException("Must put in a Grass.");
+      // }
       floor.Put(new OrganicMatterOnGround(pos));
       item.stacks--;
     }

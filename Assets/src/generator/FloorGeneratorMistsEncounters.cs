@@ -75,19 +75,24 @@ public class FloorGeneratorMistsEncounters : FloorGenerator {
   }
 
   public Floor generateFloorOfType(int depth, FloorType type) {
-    int width = 9 + (depth - 1) / 3;
-    int height = 7 + (depth - 1) / 3;
+    if (depth == 12) {
+      return generateEndFloor(12);
+    }
+    int width = 11 + (depth - 1) / 3;
+    int height = 8 + (depth - 1) / 3;
     switch(type) {
       case FloorType.Slime:
-        return generateEncounterFloor(depth, width, height, Encounters.AddSlime);
+        return generateSingleRoomFloor(depth, width, height, 2 + depth, depth, false, null, Encounters.AddSlime);
       case FloorType.Processor:
-        return generateEncounterFloor(depth, width, height, Encounters.AddProcessor);
+        return generateSingleRoomFloor(depth, width, height, 2 + depth, depth, false, null, Encounters.AddProcessor);
       case FloorType.CraftingStation:
-        return generateEncounterFloor(depth, width, height, Encounters.AddCrafting);
+        return generateSingleRoomFloor(depth, width, height, 2 + depth, depth, false, null, Encounters.AddCrafting);
       case FloorType.Healing:
-        return generateEncounterFloor(depth, width, height, Encounters.AddCampfire);
+        return generateSingleRoomFloor(depth, width, height, 2 + depth, depth, false, null, Encounters.AddCampfire);
       case FloorType.Plant:
-        return generateEncounterFloor(depth, width, height, shared.Plants.GetRandomAndDiscount(0.999f));
+        return generateSingleRoomFloor(depth, width, height, 2 + depth, depth, false, null, shared.Plants.GetRandomAndDiscount(0.999f));
+      case FloorType.Composter:
+        return generateSingleRoomFloor(depth, width, height, 2 + depth, depth, false, null, Encounters.AddComposter);
       case FloorType.Mystery:
         throw new CannotPerformActionException("Cannot generate mystery floor type!");
       case FloorType.Empty:

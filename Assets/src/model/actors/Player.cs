@@ -38,8 +38,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
 #if experimental_actionpoints
-  public int actionPoints = 3;
-  public int maxActionPoints = 3;
+  public int actionPoints = 6;
+  public int maxActionPoints = 6;
   public void UseActionPointOrThrow(int num = 1) {
     if (actionPoints < num) {
       throw new CannotPerformActionException($"Need {num} Action Points!");
@@ -99,7 +99,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
-    inventory = new Inventory(8);
+    inventory = new Inventory(12);
     inventory.allowDragAndDrop = true;
 #if experimental_actionpoints
     // // inventory.AddItem(new ItemSoil());
@@ -107,6 +107,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     // inventory.AddItem(new ItemPlaceableEntity(new Bedroll(new Vector2Int())));
     inventory.AddItem(new ItemShovel(3));
     inventory.AddItem(new ItemCreatureFood());
+    inventory.AddItem(new ItemStick(3));
     // inventory.AddItem(new ItemPlaceableEntity(new Campfire(new Vector2Int())));
     // inventory.AddItem(new ItemPlaceableEntity(new Composter(new Vector2Int())));
     // inventory.AddItem(new ItemPlaceableEntity(new SoilMixer(new Vector2Int())));
@@ -137,7 +138,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     var numDays = GameModel.main.day;
 #if experimental_actionpoints
     // maxActionPoints = 3;
-    maxActionPoints = Mathf.Clamp(2 + numDays / 2, 3, 8);
+    maxActionPoints = Mathf.Clamp(5 + numDays / 2, 3, 8);
     if (hp == maxHp)  {
       maxActionPoints += 1;
     }

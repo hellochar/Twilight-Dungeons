@@ -16,11 +16,6 @@ public class HomeFloor : Floor {
   }
 
   public override void Put(Entity entity) {
-#if experimental_survivalhomefloor
-    if (entity is Tile t) {
-      t.visibility = TileVisiblity.Explored;
-    }
-#endif
     if (entity is Soil s) {
       soils.Put(s);
     } else if (entity is Piece p) {
@@ -38,14 +33,12 @@ public class HomeFloor : Floor {
     base.Remove(entity);
   }
 
-#if !experimental_survivalhomefloor
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {
     if (root.Contains(t.pos)) {
       return base.RecomputeVisibilityFor(t);
     }
     return t.visibility;
   }
-#endif
 
   public void AddWallsOutsideRoot() {
     var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);

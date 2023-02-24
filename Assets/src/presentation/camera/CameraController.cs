@@ -72,12 +72,7 @@ public class CameraController : MonoBehaviour {
       // cameraFollowEntity();
       // cameraZoom();
     } else {
-#if experimental_survivalhomefloor
-      // boundCameraToFloor();
-      centerCameraOnActiveRoom();
-      cameraFollowEntity();
-      cameraZoom();
-#elif experimental_chainfloors
+#if experimental_chainfloors
       var isHome = floor == GameModel.main.home;
       if (isHome) {
         cameraFollowEntity();

@@ -127,7 +127,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: v2.0.0-twilight-gardens-start-92-gfd648df
+  bundleVersion: v2.0.0-plant-yields-and-shops-231-g4e7635f0
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -745,7 +745,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    7: experimental_mistyhome;off_experimental_retryondemand;off_experimental_equipmentperfloor;experimental_actionpoints;off_experimental_chainfloors;off_experimental_useplantondeath;off_experimental_survivalhomefloor;experimental_nodiagonalmovement;off_experimental_singleitemplants;off_experimental_fertilizer;off_experimental_expandinghome;off_experimental_autoequip;off_experimental_autoreplenish;off_experimental_autodestroyitems;off_experimental_rewardui
+    7: off_experimental_mistyhome;off_experimental_retryondemand;off_experimental_equipmentperfloor;experimental_actionpoints;off_experimental_chainfloors;off_experimental_useplantondeath;off_experimental_survivalhomefloor;experimental_nodiagonalmovement;off_experimental_singleitemplants;off_experimental_fertilizer;off_experimental_expandinghome;off_experimental_autoequip;off_experimental_autoreplenish;off_experimental_autodestroyitems;off_experimental_rewardui
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

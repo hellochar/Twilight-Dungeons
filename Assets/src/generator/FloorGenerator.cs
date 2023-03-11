@@ -47,6 +47,8 @@ public abstract class FloorGenerator {
       floor = MistsHomeFloor.generate(floorSeeds.Count());
 #elif experimental_expandinghome
       floor = ExpandingHomeFloor.generate(floorSeeds.Count());
+#elif experimental_multiroomhome
+      floor = MultiRoomHomeFloor.generate();
 #elif experimental_actionpoints
       floor = generateGardeningActionPointsFloor0();
 #else
@@ -217,8 +219,6 @@ public abstract class FloorGenerator {
   public static FloorGenerator Create(List<int> floorSeeds) {
 #if experimental_chainfloors
     return new FloorGeneratorChainFloors(floorSeeds);
-#elif experimental_mistyhome
-    return new FloorGeneratorMistsEncounters(floorSeeds);
 #else
     return new FloorGenerator200Start(floorSeeds);
 #endif
@@ -407,7 +407,7 @@ public abstract class FloorGenerator {
     }
 
     // floor.AddWallsOutsideRoot();
-    floor.AddThickBrushOutsideRoot();
+    floor.AddThickBrush(floor.root);
 
     floor.startPos = new Vector2Int(root.min.x + 1, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
@@ -448,6 +448,79 @@ public abstract class FloorGenerator {
     FloorUtils.TidyUpAroundStairs(floor);
     floor.root = room0;
 
+    return floor;
+  }
+
+  public Floor generateFloorOfType(int depth, FloorType type) {
+    if (depth == 12) {
+      return generateEndFloor(12);
+    }
+    int width = 11 + (depth - 1) / 3;
+    int height = 8 + (depth - 1) / 3;
+    switch(type) {
+      case FloorType.Slime:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth, false, null, Encounters.AddSlime);
+      case FloorType.Processor:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth, false, null, Encounters.AddProcessor);
+      case FloorType.CraftingStation:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth, false, null, Encounters.AddCrafting);
+      case FloorType.Healing:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth, false, null, Encounters.AddCampfire);
+      case FloorType.Plant:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth, false, null, shared.Plants.GetRandomAndDiscount(0.999f));
+      case FloorType.Composter:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth, false, null, Encounters.AddComposter);
+      case FloorType.Mystery:
+        throw new CannotPerformActionException("Cannot generate mystery floor type!");
+      case FloorType.Empty:
+        throw new CannotPerformActionException("Cannot generate empty floor type!");
+      // case MistType.Trade:
+      //   return generateEncounterFloor(depth, width, height, Encounters.RandomTrade);
+      case FloorType.Combat:
+      default:
+        return generateSingleRoomFloorSingleType(depth, width, height, 2 + depth, depth);
+    }
+  }
+
+  public Floor generateSingleRoomFloorSingleType(int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
+    Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
+    ensureConnectedness(floor);
+    floor.PutAll(
+      floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
+    );
+    var room0 = floor.root;
+    if (preMobEncounters != null) {
+      foreach (var encounter in preMobEncounters) {
+        encounter(floor, room0);
+      }
+    }
+
+    var mobEncounter = EncounterGroup.Mobs.GetRandomAndDiscount();
+    // X mobs
+    for (var i = 0; i < numMobs; i++) {
+      mobEncounter(floor, room0);
+      // EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
+    }
+
+    var grassEncounter = EncounterGroup.Grasses.GetRandomAndDiscount();
+    // Y grasses
+    for (var i = 0; i < numGrasses; i++) {
+      grassEncounter(floor, room0);
+      // EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+    }
+
+    foreach (var encounter in extraEncounters) {
+      encounter(floor, room0);
+    }
+
+    // a reward (optional)
+    if (reward) {
+      Encounters.AddWater(floor, room0);
+      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
+    }
+
+    EncounterGroup.Spice.GetRandom()(floor, room0);
+    FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }
 
@@ -707,7 +780,7 @@ public abstract class FloorGenerator {
     return floor;
   }
 
-  protected static void ensureConnectedness(Floor floor) {
+  public static void ensureConnectedness(Floor floor) {
     // here's how we ensure connectedness:
     // 1. find all walkable tiles on a floor
     // 2. group them by connectedness using bfs, starting from the upstairs as the "mainland"
@@ -835,7 +908,7 @@ public abstract class FloorGenerator {
   }
 
   /// Connect all the rooms together with at least one through-path
-  private static List<(Vector2Int, Vector2Int)> ComputeRoomConnections(List<Room> rooms, Room root) {
+  public static List<(Vector2Int, Vector2Int)> ComputeRoomConnections(List<Room> rooms, Room root) {
     return BSPSiblingRoomConnections(rooms, root);
   }
 

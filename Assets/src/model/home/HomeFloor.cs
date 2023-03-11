@@ -33,6 +33,19 @@ public class HomeFloor : Floor {
     base.Remove(entity);
   }
 
+  public override void RecomputeVisibility() {
+    var player = GameModel.main.player;
+    if (player == null || player.floor != this) {
+      return;
+    }
+
+    foreach (var tile in this.BreadthFirstSearch(player.pos, t => !t.ObstructsExploration(), mooreNeighborhood: true, includeEdge: true)) {
+      if (tile != null) {
+        tile.visibility = RecomputeVisibilityFor(tile);
+      }
+    }
+  }
+
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {
     if (root.Contains(t.pos)) {
       return base.RecomputeVisibilityFor(t);
@@ -49,10 +62,15 @@ public class HomeFloor : Floor {
     }
   }
 
-  public void AddThickBrushOutsideRoot() {
-    var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
+  public void AddThickBrush(Room excluded = null) {
+    // var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
     foreach(var pos in this.EnumerateFloor()) {
-      if (!rootInset.Contains(pos) && tiles[pos].CanBeOccupied() && tiles[pos] is Ground && tiles[pos].item == null) {
+      bool isExcluded = excluded != null && excluded.Contains(pos);
+      if (isExcluded) {
+        continue;
+      }
+
+      if (tiles[pos].CanBeOccupied() && tiles[pos] is Ground && tiles[pos].item == null) {
         Put(new ThickBrush(pos));
       }
     }

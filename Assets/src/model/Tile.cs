@@ -70,7 +70,7 @@ public abstract class Tile : Entity {
   }
 
   public virtual bool ObstructsExploration() {
-    return body is IBlocksExploration || grass is IBlocksExploration;
+    return this is IBlocksExploration || body is IBlocksExploration || grass is IBlocksExploration;
   }
 
   internal bool CanBeOccupied() {
@@ -147,14 +147,14 @@ public class FancyGround : Ground {
 
 [ObjectInfo(description: "Blocks vision and movement.", flavorText: "Hard earth that has weathered centuries of erosion; it's not going anywhere.")]
 [Serializable]
-#if experimental_actionpoints
-public class Wall : Tile, IBlocksExploration {
-#else
 public class Wall : Tile {
-#endif
   public Wall(Vector2Int pos) : base(pos) { }
   public override float BasePathfindingWeight() {
     return 0;
+  }
+
+  public override bool ObstructsExploration() {
+    return floor.depth == 0;
   }
 
 #if experimental_actionpoints

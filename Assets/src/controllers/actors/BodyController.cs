@@ -50,6 +50,12 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
       return null;
     }
     if (body.floor is HomeFloor || body is Station) {
+      if (body is ThickBrush b) {
+        return new SetTasksPlayerInteraction(
+          new MoveNextToTargetTask(player, body.pos),
+          new GenericPlayerTask(player, b.Cut)
+        );
+      }
       return new SetTasksPlayerInteraction(
         new MoveNextToTargetTask(player, body.pos),
         new ShowInteractPopupTask(player, body)

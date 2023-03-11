@@ -66,10 +66,12 @@ public class PlayerConsoleMethods {
     GameModel.main.player.water += water;
   }
 
+#if experimental_actionpoints
   [ConsoleMethod("CheatAddActionPoint", "")]
   public static void CheatAddActionPoint() {
     GameModel.main.player.actionPoints++;
   }
+#endif
 
   [ConsoleMethod("CheatMaturePlants", "")]
   public static void CheatMaturePlants() {

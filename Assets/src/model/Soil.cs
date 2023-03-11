@@ -65,7 +65,7 @@ public class ItemSoil : Item, ITargetedAction<Ground> {
   Soil s = new Soil(new Vector2Int());
 
   public void PerformTargettedAction(Player player, Entity target) {
-    player.UseActionPointOrThrow();
+    player.UseResourcesOrThrow(0, 0, 1);
     // foreach (var tile in player.floor.GetAdjacentTiles(target.pos).ToList()) {
     //   if (tile.GetType() == typeof(Ground)) {
     //     player.floor.Put(new Soil(tile.pos));

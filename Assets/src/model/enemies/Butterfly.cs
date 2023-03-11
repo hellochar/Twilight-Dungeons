@@ -37,12 +37,16 @@ public class Butterfly : AIActor {
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
+    #if experimental_actionpoints
     GameModel.main.player.maxActionPoints += 1;
+    #endif
   }
 
   protected override void HandleLeaveFloor() {
     base.HandleLeaveFloor();
+    #if experimental_actionpoints
     GameModel.main.player.maxActionPoints -= 1;
+    #endif
   }
 
   protected override ActorTask GetNextTask() {

@@ -87,10 +87,11 @@ public class Encounters {
 
   public static void AddOctopus(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    var num = RandomRangeBasedOnIndex(floor.depth / 6,
-      (1, 1),
-      (2, 2)
-    );
+    // var num = RandomRangeBasedOnIndex(floor.depth / 6,
+    //   (1, 1),
+    //   (2, 2)
+    // );
+    var num = 1;
 #if experimental_chainfloors
     num = 1;
 #endif
@@ -475,7 +476,7 @@ public class Encounters {
   }
 
   public static void FillWithFerns(Floor floor, Room room) {
-    var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null);
+    var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null && MyRandom.value < 0.5f);
 #if experimental_chainfloors
     occupiableTiles = occupiableTiles.Take(MyRandom.Range(5, 10));
 #endif

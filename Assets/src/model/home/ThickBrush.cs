@@ -4,7 +4,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo("z-bush", description: "Cut away to make more space.")]
-public class ThickBrush : Destructible, IBlocksVision {
+public class ThickBrush : Destructible, IBlocksExploration {
   public ThickBrush(Vector2Int pos) : base(pos, 0) {
   }
 
@@ -23,13 +23,16 @@ public class ThickBrush : Destructible, IBlocksVision {
     // var xStart = (pos.x / 3) * 3;
     // var yStart = (pos.y / 3) * 3;
     // foreach(var p in floor.EnumerateRectangle(new Vector2Int(xStart, yStart), new Vector2Int(xStart + 3, yStart + 3))) {
-    foreach (var p in floor.GetAdjacentTiles(pos).Select(t => t.pos)) {
-      var brush = player.floor.bodies[p] as ThickBrush;
-      if (brush != null) {
-        brush.Kill(player);
-      }
+    // foreach (var p in floor.GetAdjacentTiles(pos).Select(t => t.pos)) {
+    //   var brush = player.floor.bodies[p] as ThickBrush;
+    //   if (brush != null) {
+    //     brush.Kill(player);
+    //   }
+    // }
+    Kill(player);
+    if (MyRandom.value < 0.1f) {
+      player.floor.Put(new OrganicMatterOnGround(pos));
     }
-    player.floor.Put(new OrganicMatterOnGround(pos));
     player.floor.RecomputeVisibility();
   }
 }

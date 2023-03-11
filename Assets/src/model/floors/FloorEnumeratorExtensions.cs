@@ -124,11 +124,11 @@ public static class FloorEnumeratorExtensions {
     return floor.EnumerateRectangle(floor.boundsMin, floor.boundsMax);
   }
 
-  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, Vector2Int startPos, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true, bool mooreNeighborhood = false) {
-    return floor.BreadthFirstSearch(new Vector2Int[] { startPos }, predicate, randomizeNeighborOrder, mooreNeighborhood);
+  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, Vector2Int startPos, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true, bool mooreNeighborhood = false, bool includeEdge = false) {
+    return floor.BreadthFirstSearch(new Vector2Int[] { startPos }, predicate, randomizeNeighborOrder, mooreNeighborhood, includeEdge);
   }
 
-  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, IEnumerable<Vector2Int> startPositions, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true, bool mooreNeighborhood = false) {
+  public static IEnumerable<Tile> BreadthFirstSearch(this Floor floor, IEnumerable<Vector2Int> startPositions, Func<Tile, bool> predicate = null, bool randomizeNeighborOrder = true, bool mooreNeighborhood = false, bool includeEdge = false) {
     predicate = predicate ?? ((Tile t) => true);
     Queue<Tile> frontier = new Queue<Tile>(); // []
     HashSet<Tile> seen = new HashSet<Tile>(); // []
@@ -139,11 +139,17 @@ public static class FloorEnumeratorExtensions {
     while (frontier.Any()) {
       Tile tile = frontier.Dequeue();
       yield return tile;
-      var neighborhood = mooreNeighborhood ? floor.GetAdjacentTiles(tile.pos) : floor.GetCardinalNeighbors(tile.pos);
-      var adjacent = neighborhood.Except(seen).Where(predicate).ToList();
+      var neighborhood = mooreNeighborhood ? floor.GetDiagonalAdjacentTiles(tile.pos) : floor.GetCardinalNeighbors(tile.pos);
+      var adjacent = neighborhood.Except(seen).ToList();
       if (randomizeNeighborOrder) {
         adjacent.Shuffle();
       }
+      if (includeEdge) {
+        foreach (var t in adjacent) {
+          yield return t;
+        }
+      }
+      adjacent.RemoveAll(t => !predicate(t));
       foreach (var next in adjacent) {
         frontier.Enqueue(next);
         seen.Add(next);

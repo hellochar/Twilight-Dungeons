@@ -97,13 +97,16 @@ public static class FloorUtils {
     MAKE_WALL_BUMPS.ApplyWithRotations(floor);
   }
 
+  public static int WallIs1(Tile tile) => tile is Wall ? 1 : 0;
+
   static ShapeTransform SMOOTH_WALL_EDGES = new ShapeTransform(
     new int[3, 3] {
       {1, 1, 1},
       {0, 0, 1},
       {0, 0, 1},
     },
-    1
+    WallIs1,
+    (pos) => new Wall(pos)
   );
 
   static ShapeTransform SMOOTH_ROOM_EDGES = new ShapeTransform(
@@ -112,7 +115,8 @@ public static class FloorUtils {
       {1, 1, 0},
       {1, 1, 0},
     },
-    0
+    WallIs1,
+    pos => new Ground(pos)
   );
 
   static ShapeTransform MAKE_WALL_BUMPS = new ShapeTransform(
@@ -121,9 +125,8 @@ public static class FloorUtils {
       {1, 1, 1},
       {1, 1, 1},
     },
-    0,
+    WallIs1,
     // 50% chance to make a 2-run
-    1 - Mathf.Sqrt(0.5f)
-  // 0.33f
+    pos => MyRandom.value < (1 - Mathf.Sqrt(0.5f)) ? new Wall(pos) : null
   );
 }

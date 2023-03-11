@@ -17,6 +17,7 @@ public class MistsHomeFloor : HomeFloor {
     };
   public static MistsHomeFloor generate(int numFloors) {
     var floor = new MistsHomeFloor(20, 20);
+    var center = floor.center;
     var floorTypes = Enum.GetValues(typeof(FloorType)).Cast<FloorType>();
     foreach (var pos in floor.EnumerateFloor()) {
       FloorType type;
@@ -29,11 +30,11 @@ public class MistsHomeFloor : HomeFloor {
       if (type == FloorType.Empty) {
         floor.Put(new HomeGround(pos));
       } else {
-        floor.Put(new Mist(pos, type));
+        var depth = Util.DiamondMagnitude(pos - center) - 2;
+        floor.Put(new Mist(pos, type, depth));
       }
     }
 
-    var center = floor.center;
     Room room0 = new Room(floor.center - Vector2Int.one * 2, floor.center + Vector2Int.one * 2);
     floor.rooms = new List<Room>() { room0 };
     floor.root = room0;

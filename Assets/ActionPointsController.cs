@@ -13,7 +13,7 @@ public class ActionPointsController : MonoBehaviour {
     GameModel.main.OnPlayerChangeFloor += HandlePlayerChangeFloor;
     HandlePlayerChangeFloor(null, null);
 #if !experimental_actionpoints
-    Destroy();
+    Destroy(gameObject);
     return;
 #endif
   }

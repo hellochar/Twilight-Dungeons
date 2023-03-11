@@ -95,7 +95,7 @@ public class CraftingStation : Station, IDaySteppable {
     // crafting = item;
     Player player = GameModel.main.player;
     // player.UseActionPointOrThrow();
-    player.UseResourcesOrThrow(0, 1, 0);
+    player.UseResourcesOrThrow(0, 5, 0);
     bool success = player.inventory.AddItem(item, this);
     if (!success) {
       player.floor.Put(new ItemOnGround(player.pos, item, player.pos));

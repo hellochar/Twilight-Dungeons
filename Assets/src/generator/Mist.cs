@@ -21,13 +21,12 @@ public enum FloorType {
 [ObjectInfo(description: "Who knows what lies in the mists?")]
 public class Mist : Chasm {
   public FloorType type;
+  public readonly int depth;
 
-  public Mist(Vector2Int pos, FloorType type) : base(pos) {
+  public Mist(Vector2Int pos, FloorType type, int depth) : base(pos) {
     this.type = type;
+    this.depth = depth;
   }
-
-  public int offset => Util.DiamondMagnitude(pos - floor.center);
-  public int depth => offset - 1;
 
   public override string description => $"Depth {depth}. Type {type.ToString()}.";
 
@@ -49,7 +48,7 @@ public class Mist : Chasm {
       // immediately clear it
       floor.PlayerGoHome();
     } else {
-      GameModel.main.cave = (GameModel.main.generator as FloorGeneratorMistsEncounters).generateFloorOfType(depth, type);
+      GameModel.main.cave = GameModel.main.generator.generateFloorOfType(depth, type);
       GameModel.main.PutPlayerAt(depth);
     }
   }

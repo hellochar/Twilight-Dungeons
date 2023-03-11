@@ -74,9 +74,9 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   }
 
   public void PerformTargettedAction(Player player, Entity target) {
-    // if (!(player.floor is HomeFloor)) {
-    //   throw new CannotPerformActionException("Plant at home!");
-    // }
+    if (!(player.floor is HomeFloor)) {
+      throw new CannotPerformActionException("Plant at home!");
+    }
     player.UseResourcesOrThrow(20, 0, 0);
     player.SetTasks(
       new MoveNextToTargetTask(player, target.pos),

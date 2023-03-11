@@ -40,9 +40,7 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
 
   private void Plant(Ground soil) {
     var player = GameModel.main.player;
-#if experimental_actionpoints
     player.UseResourcesOrThrow(water: waterCost, actionPoints: 1);
-#endif
     var constructorInfo = plantType.GetConstructor(new Type[1] { typeof(Vector2Int) });
     var plant = (Plant) constructorInfo.Invoke(new object[] { soil.pos });
     var floor = soil.floor;
@@ -72,7 +70,7 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
 #if experimental_actionpoints
       player.floor.tiles.Where(tile => ItemPlaceableEntity.CanPlaceEntityOfType(plantType, tile)).Cast<Ground>();
 #else
-      (player.floor.tiles.Where(tile => tile is Soil && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());
+      (player.floor.tiles.Where(tile => (player.floor as HomeFloor).soils[tile.pos] != null && tile is Ground && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());
 #endif
 
   public void PerformTargettedAction(Player player, Entity target) => MoveAndPlant((Ground) target);

@@ -1,35 +1,34 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = MyRandom;
 
 class ShapeTransform {
   /// Each number is a pathfinding weight (0 means infinity)
   public int[,] input;
-  public int output;
-  /// only do the transform this % of the time
-  public float probability { get; }
+  private Func<Tile, int> selectFn;
+  private Func<Vector2Int, Entity> outputFn;
 
   private ShapeTransform rot90;
   private ShapeTransform rot180;
   private ShapeTransform rot270;
 
-  public ShapeTransform(int[,] input, int output, float probability = 1) {
+  public ShapeTransform(int[,] input, Func<Tile, int> selectFn, Func<Vector2Int, Entity> outputFn) {
     this.input = input;
-    this.output = output;
-    this.probability = probability;
+    this.selectFn = selectFn;
+    this.outputFn = outputFn;
   }
 
   /// Apply this transform to the floor. Accounts for all 4 rotations as well.
   public void ApplyWithRotations(Floor floor) {
     if (rot90 == null) {
-      rot90 = new ShapeTransform(Util.Rotate90(input), output, probability);
+      rot90 = new ShapeTransform(Util.Rotate90(input), selectFn, outputFn);
     }
     if (rot180 == null) {
-      rot180 = new ShapeTransform(Util.Rotate90(rot90.input), output, probability);
+      rot180 = new ShapeTransform(Util.Rotate90(rot90.input), selectFn, outputFn);
     }
     if (rot270 == null) {
-      rot270 = new ShapeTransform(Util.Rotate90(rot180.input), output, probability);
+      rot270 = new ShapeTransform(Util.Rotate90(rot180.input), selectFn, outputFn);
     }
     Apply(floor);
     rot90.Apply(floor);
@@ -49,9 +48,7 @@ class ShapeTransform {
 
   private void ApplyPlacesToChange(Floor floor, List<(int, int)> placesToChange) {
     foreach (var (x, y) in placesToChange) {
-      if (Random.value <= this.probability) {
-        ApplyOutputAt(floor, x, y, output);
-      }
+      ApplyOutputAt(floor, x, y);
     }
   }
 
@@ -62,7 +59,7 @@ class ShapeTransform {
       for (int y = 1; y < floor.height - 1; y++) {
         // iterate through every 3x3 block and try to match 
         /// We turn each tile into its pathfinding weight
-        Util.FillChunkCenteredAt(floor, x, y, ref chunk, (pos) => (int) floor.tiles[pos].GetPathfindingWeight(), 0);
+        Util.FillChunkCenteredAt(floor, x, y, ref chunk, (pos) => selectFn(floor.tiles[pos]), 0);
 
         if (ChunkEquals(chunk, input)) {
           placesToChange.Add((x, y));
@@ -77,18 +74,20 @@ class ShapeTransform {
   }
 
   /// only construct new tiles if the weight is different
-  private void ApplyOutputAt(Floor floor, int x, int y, int newValue) {
-    // HACK - convert chunks to tiles: 0 -> Wall, 1 -> Ground
+  private void ApplyOutputAt(Floor floor, int x, int y) {
     Vector2Int pos = new Vector2Int(x, y);
-    Tile currentTile = floor.tiles[pos.x, pos.y];
-    if (currentTile.GetPathfindingWeight() != newValue) {
-      Tile newTile;
-      if (newValue == 0) {
-        newTile = new Wall(pos);
-      } else {
-        newTile = new Ground(pos);
-      }
-      floor.Put(newTile);
+
+    Entity newEntity = outputFn(pos);
+    if (newEntity == null) {
+      return;
+    }
+
+    Entity currentEntity =
+      newEntity is Tile ? floor.tiles[pos] as Entity :
+      newEntity is Body ? floor.bodies[pos] as Entity : null;
+    // only replace if the tile is actually different
+    if (currentEntity == null || (currentEntity.GetType() != newEntity.GetType())) {
+      floor.Put(newEntity);
     }
   }
 }

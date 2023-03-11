@@ -40,7 +40,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 #if experimental_actionpoints
   public int actionPoints = 6;
   public int maxActionPoints = 6;
+#endif
+
   public void UseActionPointOrThrow(int num = 1) {
+    #if experimental_actionpoints
     if (actionPoints < num) {
       throw new CannotPerformActionException($"Need {num} Action Points!");
     }
@@ -48,8 +51,8 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
       throw new CannotPerformActionException("Go home first!");
     }
     actionPoints -= num;
+    #endif
   }
-#endif
 
   public void UseResourcesOrThrow(int water = 0, int organicMatter = 0, int actionPoints = 0) {
     if (this.water < water) {
@@ -58,15 +61,19 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     if (this.organicMatter < organicMatter) {
       throw new CannotPerformActionException($"Need <color=green>{organicMatter}</color> organic matter!");
     }
+#if experimental_actionpoints
     if (this.actionPoints < actionPoints) {
       throw new CannotPerformActionException($"Need {actionPoints} Action Points!");
     }
+#endif
     if (actionPoints > 0 && floor.depth != 0) {
       throw new CannotPerformActionException("Go home first!");
     }
     this.water -= water;
     this.organicMatter -= organicMatter;
+#if experimental_actionpoints
     this.actionPoints -= actionPoints;
+#endif
   }
 
 
@@ -101,6 +108,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     faction = Faction.Ally;
     inventory = new Inventory(12);
     inventory.allowDragAndDrop = true;
+
+    inventory.AddItem(new ItemShovel(3));
+    inventory.AddItem(new ItemCreatureFood());
+    inventory.AddItem(new ItemStick(3));
 #if experimental_actionpoints
     // // inventory.AddItem(new ItemSoil());
     // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));

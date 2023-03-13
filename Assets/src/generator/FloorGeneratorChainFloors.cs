@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Generators;
 
 [Serializable]
 public class FloorGeneratorChainFloors : FloorGenerator {

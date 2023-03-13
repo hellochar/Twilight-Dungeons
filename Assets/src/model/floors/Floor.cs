@@ -25,6 +25,7 @@ public partial class Floor {
   public List<Boss> bosses;
   public IEnumerable<Boss> seenBosses => bosses.Where(b => b.isSeen);
   public List<ISteppable> steppableEntities;
+  public List<Downstairs> downstairses;
 
   [field:NonSerialized] /// controller only (for now)
   public event Action<Entity> OnEntityAdded;
@@ -61,16 +62,7 @@ public partial class Floor {
   //   }
   // }
 
-  public Downstairs downstairs {
-    get {
-      foreach (Tile t in this.tiles) {
-        if (t is Downstairs) {
-          return (Downstairs)t;
-        }
-      }
-      return null;
-    }
-  }
+  public Downstairs downstairs => downstairses[0];
 
   public Floor(int depth, int width, int height) {
     this.depth = depth;
@@ -196,6 +188,9 @@ public partial class Floor {
 
       if (entity is Tile tile) {
         tiles.Put(tile);
+        if (entity is Downstairs d) {
+          downstairses.Add(d);
+        }
       } else if (entity is Body body) {
         bodies.Put(body);
       } else if (entity is Grass grass) {
@@ -235,6 +230,9 @@ public partial class Floor {
 
     if (entity is Tile tile) {
       tiles.Remove(tile);
+        if (entity is Downstairs d) {
+          downstairses.Remove(d);
+        }
     } else if (entity is Body b) {
       bodies.Remove(b);
     } else if (entity is Grass g) {

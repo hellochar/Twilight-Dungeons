@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
+public static partial class Generate {
   /// <summary>
   /// Generates one single room with one wall variation, X mob encounters, Y grass encounters, an optional reward.
   /// Good for a contained experience.
   /// </summary>
-  public static Floor generateSingleRoomFloor(EncounterGroup EncounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
+  public static Floor SingleRoomFloor(EncounterGroup EncounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateSingleRoomFloor(EncounterGroup, depth, width, height, preMobEncounters == null);
     ensureConnectedness(floor);
     floor.PutAll(

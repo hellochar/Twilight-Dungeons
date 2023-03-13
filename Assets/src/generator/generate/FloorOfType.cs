@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
-  public static Floor generateFloorOfType(EncounterGroup EncounterGroup, EncounterGroupShared shared, int depth, FloorType type) {
+public static partial class Generate {
+  public static Floor FloorOfType(EncounterGroup EncounterGroup, EncounterGroupShared shared, int depth, FloorType type) {
     if (depth == 12) {
-      return generateEndFloor(12);
+      return EndFloor(12);
     }
     int width = 11 + (depth - 1) / 3;
     int height = 8 + (depth - 1) / 3;

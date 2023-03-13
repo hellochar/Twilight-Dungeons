@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
+public static partial class Generate {
 
-  public static Floor generateChainFloor(EncounterGroup EncounterGroup, int depth, int numRooms, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
+  public static Floor ChainFloor(EncounterGroup EncounterGroup, int depth, int numRooms, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateChainRoomFloor(EncounterGroup, depth, width, height, numRooms, preMobEncounters == null);
     // ensureConnectedness(floor);
 

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
-  public static Floor generateEndBossFloor(int depth) {
+public static partial class Generate {
+  public static Floor EndBossFloor(int depth) {
     Floor floor = new BossFloor(depth, 15, 11);
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Ground(p));

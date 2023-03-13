@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
+public static partial class Generate {
   // A little dose of coziness, a half-reward, something nice, a breather
   // maybe a pool of water to wash off on, a place to rest and recover
   // maybe healing
   // 
-  public static Floor generateRestFloor(int depth, EncounterGroup shared) {
+  public static Floor RestFloor(int depth, EncounterGroup shared) {
     Floor floor = new Floor(depth, 8 + 2, 6 + 2);
     FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);

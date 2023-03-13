@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
-  public static HomeFloor generateGardeningActionPointsFloor0() {
+public static partial class Generate {
+  public static HomeFloor GardeningActionPointsFloor0() {
     HomeFloor floor = new HomeFloor(31, 25);
     FloorUtils.CarveGround(floor);
     // FloorUtils.SurroundWithWalls(floor);

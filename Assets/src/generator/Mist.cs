@@ -48,7 +48,7 @@ public class Mist : Chasm {
       // immediately clear it
       floor.PlayerGoHome();
     } else {
-      GameModel.main.cave = Generators.generateFloorOfType(GameModel.main.generator.EncounterGroup, GameModel.main.generator.shared, depth, type);
+      GameModel.main.cave = Generate.FloorOfType(GameModel.main.generator.EncounterGroup, GameModel.main.generator.shared, depth, type);
       GameModel.main.PutPlayerAt(depth);
     }
   }

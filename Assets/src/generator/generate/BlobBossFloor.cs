@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
+public static partial class Generate {
 
-  public static Floor generateBlobBossFloor(int depth) {
+  public static Floor BlobBossFloor(int depth) {
     Floor floor = new BossFloor(depth, 12, 9);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {

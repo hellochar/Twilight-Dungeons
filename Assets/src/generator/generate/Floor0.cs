@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
-  public static HomeFloor generateFloor0(EncounterGroup EncounterGroup) {
+public static partial class Generate {
+  public static HomeFloor Floor0(EncounterGroup EncounterGroup) {
     HomeFloor floor = new HomeFloor(15, 11);
 
     // fill with floor tiles by default

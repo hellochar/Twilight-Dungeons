@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
+public static partial class Generate {
   /// <summary>
   /// Generate a floor broken up into X smaller rooms, based on a number of "splits". Each room contains:
   /// one mob, one grass, one random encounter.
   /// </summary>
-  public static Floor generateMultiRoomFloor(EncounterGroup EncounterGroup, int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false, params Encounter[] specialDownstairsEncounters) {
+  public static Floor MultiRoomFloor(EncounterGroup EncounterGroup, int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false, params Encounter[] specialDownstairsEncounters) {
     Floor floor = tryGenerateMultiRoomFloor(depth, width, height, numSplits);
     ensureConnectedness(floor);
 

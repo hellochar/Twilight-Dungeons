@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
-  public static Floor generateRewardFloor(int depth, params Encounter[] extraEncounters) {
+public static partial class Generate {
+  public static Floor RewardFloor(int depth, params Encounter[] extraEncounters) {
     Floor floor = new Floor(depth, 12, 8);
     FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);

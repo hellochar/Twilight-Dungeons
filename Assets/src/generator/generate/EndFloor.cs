@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
-  public static Floor generateEndFloor(int depth) {
+public static partial class Generate {
+  public static Floor EndFloor(int depth) {
     // use bossfloor to get rid of the sound
     Floor floor = new BossFloor(depth, 14, 42);
 

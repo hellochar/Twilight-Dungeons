@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static partial class Generators {
+public static partial class Generate {
   
-  
-  public static Floor generateFungalColonyBossFloor(int depth) {
+  public static Floor FungalColonyBossFloor(int depth) {
     Floor floor = new BossFloor(depth, 13, 9);
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Wall(p));

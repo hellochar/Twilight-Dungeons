@@ -10,6 +10,8 @@ public delegate void EncounterDelegate(Floor floor, Room room);
 [Serializable]
 public class Encounter : ISerializable {
   protected readonly EncounterDelegate fn;
+  // set by Encounters static constructor
+  public string Name;
 
   public Encounter(EncounterDelegate fn) {
     this.fn = fn;
@@ -17,19 +19,25 @@ public class Encounter : ISerializable {
 
   public Encounter(SerializationInfo info, StreamingContext context) : base() {
     var encounterName = info.GetString("name");
-    var existingEncounterProperty = typeof(Encounters).GetProperty(encounterName);
-    if (existingEncounterProperty != null) {
-      var existingEncounter = existingEncounterProperty.GetValue(null) as Encounter;
+    var existingEncounterField = typeof(Encounters).GetField(encounterName);
+    if (existingEncounterField != null) {
+      var existingEncounter = existingEncounterField.GetValue(null) as Encounter;
       // TODO it'd be nice if we could serialize directly to the Existing Encounter but I don't know
       // how so copy it instead
       this.fn = existingEncounter.fn;
+      this.Name = encounterName;
     } else {
       Debug.LogWarning($"Couldn't find Encounter {encounterName}.");
     }
   }
 
   public void GetObjectData(SerializationInfo info, StreamingContext context) {
-    info.AddValue("name", fn.Method.Name);
+    if (Name == null) {
+      Debug.LogWarning($"Cannot save unnamed Encounter {fn}");
+      info.AddValue("name", "");
+      return;
+    }
+    info.AddValue("name", Name);
   }
 
   public void Apply(Floor floor, Room room) {
@@ -39,6 +47,17 @@ public class Encounter : ISerializable {
 
 /// Specific Encounters are static, but bags of encounters are not; picking out of a bag will discount it.
 public class Encounters {
+
+  [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+  public static void HookupEncounterNames() {
+    foreach(var field in typeof(Encounters).GetFields()) {
+      var Encounter = field.GetValue(null) as Encounter;
+      if (Encounter != null) {
+        Encounter.Name = field.Name;
+      }
+    }
+  }
+
   private static Encounter Twice(Encounter input) {
     Encounter result = new Encounter((floor, room) => {
       input.Apply(floor, room);

@@ -77,6 +77,7 @@ public partial class Floor {
     this.entities = new HashSet<Entity>();
     this.bosses = new List<Boss>();
     this.steppableEntities = new List<ISteppable>();
+    this.downstairses = new List<Downstairs>();
     pathfindingManager = new PathfindingManager(this);
     startPos = this.center;
   }

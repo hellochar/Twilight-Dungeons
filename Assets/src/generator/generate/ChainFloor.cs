@@ -41,11 +41,11 @@ public static partial class Generate {
     foreach (var room in floor.rooms) {
       for (var i = 0; i < roomIntensity; i++) {
         foreach(var encounter in mobEncounters) {
-          encounter(floor, room);
+          encounter.Apply(floor, room);
         }
       }
       foreach(var encounter in grassEncounters) {
-        encounter(floor, room);
+        encounter.Apply(floor, room);
       }
       // if (roomIntensity >= 3) {
         // if (rewardEncounter != null) {
@@ -68,7 +68,7 @@ public static partial class Generate {
     // specifically used for e.g. moving downstairs to a center.
     if (preMobEncounters != null) {
       foreach (var encounter in preMobEncounters) {
-        encounter(floor, floor.downstairsRoom);
+        encounter.Apply(floor, floor.downstairsRoom);
       }
     }
 
@@ -133,7 +133,7 @@ public static partial class Generate {
 
       if (defaultEncounters) {
         // one wall variation
-        EncounterGroup.Walls.GetRandomAndDiscount()(floor, room);
+        EncounterGroup.Walls.GetRandomAndDiscount().Apply(floor, room);
         
         // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
         // EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room);

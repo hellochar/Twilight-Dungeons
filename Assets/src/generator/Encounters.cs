@@ -1,18 +1,49 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using Random = MyRandom;
 
-public delegate void Encounter(Floor floor, Room room);
+public delegate void EncounterDelegate(Floor floor, Room room);
+
+[Serializable]
+public class Encounter : ISerializable {
+  protected readonly EncounterDelegate fn;
+
+  public Encounter(EncounterDelegate fn) {
+    this.fn = fn;
+  }
+
+  public Encounter(SerializationInfo info, StreamingContext context) : base() {
+    var encounterName = info.GetString("name");
+    var existingEncounterProperty = typeof(Encounters).GetProperty(encounterName);
+    if (existingEncounterProperty != null) {
+      var existingEncounter = existingEncounterProperty.GetValue(null) as Encounter;
+      // TODO it'd be nice if we could serialize directly to the Existing Encounter but I don't know
+      // how so copy it instead
+      this.fn = existingEncounter.fn;
+    } else {
+      Debug.LogWarning($"Couldn't find Encounter {encounterName}.");
+    }
+  }
+
+  public void GetObjectData(SerializationInfo info, StreamingContext context) {
+    info.AddValue("name", fn.Method.Name);
+  }
+
+  public void Apply(Floor floor, Room room) {
+    fn(floor, room);
+  }
+}
 
 /// Specific Encounters are static, but bags of encounters are not; picking out of a bag will discount it.
 public class Encounters {
   private static Encounter Twice(Encounter input) {
-    Encounter result = (floor, room) => {
-      input(floor, room);
-      input(floor, room);
-    };
+    Encounter result = new Encounter((floor, room) => {
+      input.Apply(floor, room);
+      input.Apply(floor, room);
+    });
     return result;
   }
 
@@ -22,9 +53,9 @@ public class Encounters {
   }
 
   // no op
-  public static void Empty(Floor Floor, Room Room) { }
+  public static Encounter Empty = new Encounter((Floor Floor, Room Room) => { });
 
-  public static void JackalPile(Floor floor, Room room) {
+  public static Encounter JackalPile = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     var num = RandomRangeBasedOnIndex(floor.depth / 4,
       (1, 1),
@@ -37,41 +68,41 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Jackal(tile.pos));
     }
-  }
+  });
 
-  public static void AddWallflowers(Floor floor, Room room) {
+  public static Encounter AddWallflowers = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room).Where(Wallflower.CanOccupy);
     var num = 1;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Wallflower(tile.pos));
     }
-  }
+  });
 
-  public static void AddBird(Floor floor, Room room) {
+  public static Encounter AddBird = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     floor.Put(new Bird(tile.pos));
-  }
+  });
 
-  public static void AddSnake(Floor floor, Room room) {
+  public static Encounter AddSnake = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     floor.Put(new Snake(tile.pos));
-  }
+  });
 
-  public static void AddChillers(Floor floor, Room room) {
+  public static Encounter AddChillers = new Encounter((Floor floor, Room room) => {
     var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
     var startTile = Util.RandomPick(tiles);
     var num = 1;
     foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => tiles.Contains(t)).Take(num)) {
       floor.Put(new ChillerGrass(tile.pos));
     }
-  }
+  });
 
-  public static void AddShielders(Floor floor, Room room) {
+  public static Encounter AddShielders = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     floor.Put(new Shielder(Util.RandomPick(tiles).pos));
-  }
+  });
 
-  public static void AddSkullys(Floor floor, Room room) {
+  public static Encounter AddSkullys = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     // var num = RandomRangeBasedOnIndex(floor.depth / 2,
     //   (1, 2),
@@ -83,9 +114,9 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Skully(tile.pos));
     }
-  }
+  });
 
-  public static void AddOctopus(Floor floor, Room room) {
+  public static Encounter AddOctopus = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     // var num = RandomRangeBasedOnIndex(floor.depth / 6,
     //   (1, 1),
@@ -99,26 +130,26 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Octopus(tile.pos));
     }
-  }
+  });
 
-  public static void AddCheshireWeeds(Floor floor, Room room) {
+  public static Encounter AddCheshireWeeds = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room).Where(CheshireWeedSprout.CanOccupy);
     // tiles.Shuffle();
     var num = floor.depth <= 12 ? 1 : floor.depth <= 24 ? 2 : 3;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new CheshireWeedSprout(tile.pos));
     }
-  }
+  });
 
-  public static void AddClumpshroom(Floor floor, Room room) {
+  public static Encounter AddClumpshroom = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesAwayFromCenter(floor, room).Where(t => t.pos.x >= room.center.x);
     var startTile = tiles.Skip(MyRandom.Range(0, 4)).FirstOrDefault();
     if (startTile != null) {
       floor.Put(new Clumpshroom(startTile.pos));
     }
-  }
+  });
 
-  public static void AFewBlobs(Floor floor, Room room) {
+  public static Encounter AFewBlobs = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var numBlobs = RandomRangeBasedOnIndex(floor.depth / 4,
@@ -132,9 +163,9 @@ public class Encounters {
     foreach (var tile in tiles.Take(numBlobs)) {
       floor.Put(new Blob(tile.pos));
     }
-  }
+  });
 
-  public static void AFewSnails(Floor floor, Room room) {
+  public static Encounter AFewSnails = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 4,
@@ -148,34 +179,34 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Snail(tile.pos));
     }
-  }
+  });
 
-  public static void AddBats(Floor floor, Room room) {
+  public static Encounter AddBats = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = 1;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Bat(tile.pos));
     }
-  }
+  });
 
-  public static void AddFungalSentinel(Floor floor, Room room) {
+  public static Encounter AddFungalSentinel = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = 3;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new FungalSentinel(tile.pos));
     }
-  }
+  });
 
-  public static void AddFungalBreeder(Floor floor, Room room) {
+  public static Encounter AddFungalBreeder = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new FungalBreeder(tile.pos));
     }
-  }
+  });
 
-  public static void AddSpiders(Floor floor, Room room) {
+  public static Encounter AddSpiders = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 4,
@@ -192,9 +223,9 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Spider(tile.pos));
     }
-  }
+  });
 
-  public static void AddScorpions(Floor floor, Room room) {
+  public static Encounter AddScorpions = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
@@ -209,9 +240,9 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Scorpion(tile.pos));
     }
-  }
+  });
 
-  public static void AddGolems(Floor floor, Room room) {
+  public static Encounter AddGolems = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = floor.depth < 24 ? 1 : MyRandom.Range(2, 2);
@@ -221,16 +252,16 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Golem(tile.pos));
     }
-  }
+  });
 
-  // public static void AddTeleportStone(Floor floor, Room room0) {
+  // public static Encounter AddTeleportStone = new Encounter((Floor floor, Room room0) => {
   //   var tiles = FloorUtils.TilesFromCenter(floor, room0).Where((t) => t.CanBeOccupied());
   //   var tile = tiles.First();
   //   // var tile = floor.upstairs;
   //   floor.Put(new TeleportStone(tile.pos));
-  // }
+  // });
 
-  public static void AddParasite(Floor floor, Room room) {
+  public static Encounter AddParasite = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = 3;
@@ -240,24 +271,29 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Parasite(tile.pos));
     }
-  }
-  public static void AddParasite8x(Floor floor, Room room) => Twice(Twice(Twice(AddParasite)))(floor, room);
+  });
 
-  public static void AddHydra(Floor floor, Room room) {
+  public static Encounter AddParasite8x = new Encounter((Floor floor, Room room) => {
+    for (int i = 0; i < 8; i++) {
+      AddParasite.Apply(floor, room);
+    }
+  });
+
+  public static Encounter AddHydra = new Encounter((Floor floor, Room room) => {
     var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied()).FirstOrDefault();
     if (tile != null) {
       floor.Put(new HydraHeart(tile.pos));
     }
-  }
+  });
 
-  public static void AddIronJelly(Floor floor, Room room) {
+  public static Encounter AddIronJelly = new Encounter((Floor floor, Room room) => {
     var tile = FloorUtils.TilesFromCenter(floor, room).Where((t) => t.CanBeOccupied() && t.pos.x == 3).FirstOrDefault();
     if (tile != null) {
       floor.Put(new IronJelly(tile.pos));
     }
-  }
+  });
 
-  public static void AddGrasper(Floor floor, Room room) {
+  public static Encounter AddGrasper = new Encounter((Floor floor, Room room) => {
     // put it on a wall that's next to a Ground
     // var tile = Util.RandomPick(floor.EnumerateRoomTiles(room, 1).Where(t => t is Wall && t.body == null && floor.GetCardinalNeighbors(t.pos).Any(t2 => t2 is Ground)));
     var tile = Util.RandomPick(
@@ -266,9 +302,9 @@ public class Encounters {
     if (tile != null) {
       floor.Put(new Grasper(tile.pos));
     }
-  }
+  });
 
-  public static void AddWildekins(Floor floor, Room room) {
+  public static Encounter AddWildekins = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
       (1, 1), // 24-27
@@ -278,30 +314,30 @@ public class Encounters {
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Wildekin(tile.pos));
     }
-  }
+  });
 
-  public static void AddDizapper(Floor floor, Room room) {
+  public static Encounter AddDizapper = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new Dizapper(tile.pos));
     }
-  }
+  });
 
-  public static void AddGoo(Floor floor, Room room) {
+  public static Encounter AddGoo = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new Goo(tile.pos));
     }
-  }
+  });
 
-  public static void AddHardShell(Floor floor, Room room) {
+  public static Encounter AddHardShell = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new HardShell(tile.pos));
     }
-  }
+  });
 
-  public static void AddHoppers(Floor floor, Room room) {
+  public static Encounter AddHoppers = new Encounter((Floor floor, Room room) => {
     var startTile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (startTile != null) {
       var num = RandomRangeBasedOnIndex((floor.depth - 24) / 4,
@@ -316,66 +352,66 @@ public class Encounters {
         floor.Put(new Hopper(tile.pos));
       }
     }
-  }
+  });
 
-  public static void AddThistlebog(Floor floor, Room room) {
+  public static Encounter AddThistlebog = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new Thistlebog(tile.pos));
     }
-  }
+  });
 
-  public static void AddCrabs(Floor floor, Room room) {
+  public static Encounter AddCrabs = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     foreach (var tile in tiles.Take(1)) {
       floor.Put(new Crab(tile.pos));
     }
-  }
+  });
 
-  public static void AddHealer(Floor floor, Room room) {
+  public static Encounter AddHealer = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     floor.Put(new Healer(Util.RandomPick(tiles).pos));
-  }
+  });
 
-  public static void AddPoisoner(Floor floor, Room room) {
+  public static Encounter AddPoisoner = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     floor.Put(new Poisoner(Util.RandomPick(tiles).pos));
-  }
+  });
 
-  public static void AddVulnera(Floor floor, Room room) {
+  public static Encounter AddVulnera = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     floor.Put(new Vulnera(Util.RandomPick(tiles).pos));
-  }
+  });
 
-  public static void AddMuckola(Floor floor, Room room) {
+  public static Encounter AddMuckola = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     floor.Put(new Muckola(Util.RandomPick(tiles).pos));
-  }
+  });
 
-  public static void AddPistrala(Floor floor, Room room) {
+  public static Encounter AddPistrala = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     floor.Put(new Pistrala(Util.RandomPick(tiles).pos));
-  }
+  });
 
-  public static void AddStalk(Floor floor, Room room) {
+  public static Encounter AddStalk = new Encounter((Floor floor, Room room) => {
     // var x = MyRandom.Range(room.min.x + 1, room.max.x);
     var x = room.center.x;
     var line = floor
       .EnumerateLine(new Vector2Int(x, 0), new Vector2Int(x, floor.height - 1))
       .Where(pos => floor.tiles[pos].CanBeOccupied());
     floor.PutAll(line.Select(pos => new Stalk(pos)));
-  }
+  });
 
-  public static void MatureBerryBush(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(BerryBush));
-  public static void MatureWildWood(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Wildwood));
-  public static void MatureThornleaf(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Thornleaf));
-  public static void MatureWeirdwood(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Weirdwood));
-  public static void MatureKingshroom(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Kingshroom));
-  public static void MatureFrizzlefen(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Frizzlefen));
-  public static void MatureChangErsWillow(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(ChangErsWillow));
-  public static void MatureStoutShrub(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(StoutShrub));
-  public static void MatureBroodpuff(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Broodpuff));
+  public static Encounter MatureBerryBush = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(BerryBush)));
+  public static Encounter MatureWildWood = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Wildwood)));
+  public static Encounter MatureThornleaf = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Thornleaf)));
+  public static Encounter MatureWeirdwood = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Weirdwood)));
+  public static Encounter MatureKingshroom = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Kingshroom)));
+  public static Encounter MatureFrizzlefen = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Frizzlefen)));
+  public static Encounter MatureChangErsWillow = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(ChangErsWillow)));
+  public static Encounter MatureStoutShrub = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(StoutShrub)));
+  public static Encounter MatureBroodpuff = new Encounter((Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Broodpuff)));
 
   private static void AddPlantToRoom(Floor floor, Room room, System.Type type) {
     // Add to random soil, or center of room
@@ -396,8 +432,8 @@ public class Encounters {
     // floor.PutAll(floor.GetDiagonalAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
   }
 
-  public static void AddSoftGrass(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);
-  public static void AddSoftGrass4x(Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1);
+  public static Encounter AddSoftGrass = new Encounter((Floor floor, Room room) => AddSoftGrassImpl(floor, room, 1));
+  public static Encounter AddSoftGrass4x = new Encounter((Floor floor, Room room) => AddSoftGrassImpl(floor, room, 4));
   public static void AddSoftGrassImpl(Floor floor, Room room, int mult) {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
     var numTiles = occupiableTiles.Count;
@@ -412,7 +448,7 @@ public class Encounters {
     }
   }
 
-  public static void AddLlaora(Floor floor, Room room) {
+  public static Encounter AddLlaora = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(
       FloorUtils.TilesFromCenter(floor, room)
         .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x < room.center.x)
@@ -420,9 +456,9 @@ public class Encounters {
     if (tile != null) {
       floor.Put(new Llaora(tile.pos));
     }
-  }
+  });
 
-  public static void AddBloodwort(Floor floor, Room room) {
+  public static Encounter AddBloodwort = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(
       FloorUtils.TilesFromCenter(floor, room)
         .Where(tile => Llaora.CanOccupy(tile) && tile.grass == null && tile.pos.x < room.center.x)
@@ -430,9 +466,9 @@ public class Encounters {
     if (tile != null) {
       floor.Put(new Bloodwort(tile.pos));
     }
-  }
+  });
 
-  public static void AddBloodstone(Floor floor, Room room) {
+  public static Encounter AddBloodstone = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(
       FloorUtils.EmptyTilesInRoom(floor, room)
         .Where(tile => tile.pos.x < 3)
@@ -440,9 +476,9 @@ public class Encounters {
     if (tile != null) {
       floor.Put(new Bloodstone(tile.pos));
     }
-  }
+  });
 
-  public static void AddGoldGrass(Floor floor, Room room) {
+  public static Encounter AddGoldGrass = new Encounter((Floor floor, Room room) => {
     var roomTiles = floor.EnumerateRoomTiles(room);
 
     var perimeter = roomTiles
@@ -465,17 +501,17 @@ public class Encounters {
     foreach (var pos in path.Where(p => floor.tiles[p] is Ground)) {
       floor.Put(new GoldGrass(pos));
     }
-  }
+  });
 
-  public static void FillWithSoftGrass(Floor floor, Room room) {
+  public static Encounter FillWithSoftGrass = new Encounter((Floor floor, Room room) => {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
     foreach (var tile in occupiableTiles) {
       var grass = new SoftGrass(tile.pos);
       floor.Put(grass);
     }
-  }
+  });
 
-  public static void FillWithFerns(Floor floor, Room room) {
+  public static Encounter FillWithFerns = new Encounter((Floor floor, Room room) => {
     var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null && MyRandom.value < 0.5f);
 #if experimental_chainfloors
     occupiableTiles = occupiableTiles.Take(MyRandom.Range(5, 10));
@@ -488,18 +524,18 @@ public class Encounters {
     //   ferns[indexToReplace] = new GoldenFern(ferns[indexToReplace].pos);
     // }
     floor.PutAll(ferns);
-  }
+  });
 
-  public static void AddBladegrass(Floor floor, Room room) => AddBladegrassImpl(floor, room, 1);
-  public static void AddBladegrass4x(Floor floor, Room room) => AddBladegrassImpl(floor, room, 4);
-  public static void AddBladegrassImpl(Floor floor, Room room, int mult) {
+  public static Encounter AddBladegrass = new Encounter((Floor floor, Room room) => AddBladegrassImpl(floor, room, 1));
+  public static Encounter AddBladegrass4x = new Encounter((Floor floor, Room room) => AddBladegrassImpl(floor, room, 4));
+  public static void AddBladegrassImpl(Floor floor, Room room, int multiplier) {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(tile => Bladegrass.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
       // var num = MyRandom.Range(numTiles / 10, numTiles / 5) * mult;
-      var num = 5;
+      var num = 5 * multiplier;
       foreach (var tile in bfs.Take(num)) {
         var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
@@ -507,7 +543,7 @@ public class Encounters {
     }
   }
 
-  public static void AddViolets(Floor floor, Room room) {
+  public static Encounter AddViolets = new Encounter((Floor floor, Room room) => {
     var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where(tile => Violets.CanOccupy(tile) && tile.grass == null).ToList();
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
@@ -521,11 +557,11 @@ public class Encounters {
         floor.Put(grass);
       }
     }
-  }
+  });
 
-  public static void AddGuardleaf(Floor floor, Room room) => AddGuardleafImpl(floor, room, 1);
-  public static void AddGuardleaf2x(Floor floor, Room room) => AddGuardleafImpl(floor, room, 2);
-  public static void AddGuardleaf4x(Floor floor, Room room) => AddGuardleafImpl(floor, room, 4);
+  public static Encounter AddGuardleaf = new Encounter((Floor floor, Room room) => AddGuardleafImpl(floor, room, 1));
+  public static Encounter AddGuardleaf2x = new Encounter((Floor floor, Room room) => AddGuardleafImpl(floor, room, 2));
+  public static Encounter AddGuardleaf4x = new Encounter((Floor floor, Room room) => AddGuardleafImpl(floor, room, 4));
   public static void AddGuardleafImpl(Floor floor, Room room, int mult) {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => Guardleaf.CanOccupy(tile) && tile.grass == null));
     var numTiles = occupiableTiles.Count;
@@ -539,7 +575,7 @@ public class Encounters {
     }
   }
 
-  public static void AddTunnelroot(Floor floor, Room room) {
+  public static Encounter AddTunnelroot = new Encounter((Floor floor, Room room) => {
     var start = FloorUtils.TilesAwayFromCenter(floor, room)
       .Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null)
       .Skip(MyRandom.Range(0, 4)).FirstOrDefault();
@@ -566,10 +602,10 @@ public class Encounters {
     floor.Put(root1);
     floor.Put(root2);
     root1.PartnerWith(root2);
-  }
-  public static void AddTunnelroot4x(Floor floor, Room room) => Twice(Twice(AddTunnelroot))(floor, room);
+  });
+  public static Encounter AddTunnelroot4x = Twice(Twice(AddTunnelroot));
 
-  public static void AddPoisonmoss(Floor floor, Room room) {
+  public static Encounter AddPoisonmoss = new Encounter((Floor floor, Room room) => {
     var occupiableTiles = new HashSet<Tile>(
       floor
         .EnumerateRoomTiles(room)
@@ -585,9 +621,9 @@ public class Encounters {
         floor.Put(new Poisonmoss(tile.pos));
       }
     }
-  }
+  });
 
-  public static void AddCoralmoss(Floor floor, Room room) {
+  public static Encounter AddCoralmoss = new Encounter((Floor floor, Room room) => {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Coralmoss.CanOccupy));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
@@ -598,10 +634,10 @@ public class Encounters {
         floor.Put(new Coralmoss(tile.pos));
       }
     }
-  }
+  });
 
-  public static void AddWebs2x(Floor floor, Room room) => Twice(AddWebs)(floor, room);
-  public static void AddWebs(Floor floor, Room room) {
+  public static Encounter AddWebs2x = Twice(AddWebs);
+  public static Encounter AddWebs = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => tile.grass == null && tile is Ground).ToList();
     tiles.Reverse();
     var num = Random.Range(tiles.Count / 12, tiles.Count / 8);
@@ -613,9 +649,9 @@ public class Encounters {
         floor.Put(new Web(tile.pos));
       }
     }
-  }
+  });
 
-  public static void AddBrambles(Floor floor, Room room) {
+  public static Encounter AddBrambles = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils
       .TilesSortedByCorners(floor, room)
       // don't spawn under creatures since it will cause room collapse
@@ -628,9 +664,9 @@ public class Encounters {
       tiles.RemoveRange(tiles.Count - 2, 2);
       num -= 2;
     }
-  }
+  });
 
-  public static void AddSpore(Floor floor, Room room) {
+  public static Encounter AddSpore = new Encounter((Floor floor, Room room) => {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
@@ -638,16 +674,16 @@ public class Encounters {
       var grass = new Spores(start.pos);
       floor.Put(grass);
     }
-  }
+  });
 
-  public static void AddNecroroot(Floor floor, Room room) {
+  public static Encounter AddNecroroot = new Encounter((Floor floor, Room room) => {
     var tiles = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null).OrderBy(t => Vector2.Distance(t.pos, room.centerFloat));
     foreach (var tile in tiles.Take(tiles.Count() / 2)) {
       floor.Put(new Necroroot(tile.pos));
     }
-  }
+  });
 
-  public static void AddFruitingBodies(Floor floor, Room room) {
+  public static Encounter AddFruitingBodies = new Encounter((Floor floor, Room room) => {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();
     // var num = Random.Range(3, (positions.Count + 1) / 4);
@@ -657,9 +693,9 @@ public class Encounters {
         floor.Put(new FruitingBody(tile.pos));
       }
     }
-  }
+  });
 
-  public static void AddEveningBells(Floor floor, Room room) {
+  public static Encounter AddEveningBells = new Encounter((Floor floor, Room room) => {
     var locations = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => !Mushroom.CanOccupy(tile)));
     var num = 1;
     for (var i = 0; i < num; i++) {
@@ -678,9 +714,9 @@ public class Encounters {
         locations.ExceptWith(floor.GetDiagonalAdjacentTiles(tile.pos));
       }
     }
-  }
+  });
 
-  public static void AddVibrantIvy(Floor floor, Room room) {
+  public static Encounter AddVibrantIvy = new Encounter((Floor floor, Room room) => {
     var startTile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(VibrantIvy.CanOccupy));
     if (startTile == null) {
       Debug.LogWarning("Couldn't find a location for Vibrant Ivy!");
@@ -696,9 +732,9 @@ public class Encounters {
           .Select(t => new VibrantIvy(t.pos))
       );
     }
-  }
+  });
 
-  public static void AddHangingVines(Floor floor, Room room) {
+  public static Encounter AddHangingVines = new Encounter((Floor floor, Room room) => {
     var wallsWithGroundBelow = new HashSet<Vector2Int>(floor
       .EnumerateRoomTiles(room, 1)
       .Where((tile) =>
@@ -724,11 +760,11 @@ public class Encounters {
       wallsWithGroundBelow.Remove(pos);
       wallsWithGroundBelow.Remove(pos + Vector2Int.right);
     }
-  }
+  });
 
-  public static void AddHangingVines2x(Floor floor, Room room) => Twice(AddHangingVines)(floor, room);
+  public static Encounter AddHangingVines2x = Twice(AddHangingVines);
 
-  public static void AddAgave(Floor floor, Room room) {
+  public static Encounter AddAgave = new Encounter((Floor floor, Room room) => {
     var livableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Agave.CanOccupy));
     var start = Util.RandomPick(livableTiles);
     var num = Random.Range(1, 3);
@@ -739,9 +775,9 @@ public class Encounters {
     } else {
       Debug.LogWarning("Couldn't find room to place Agave");
     }
-  }
+  });
 
-  public static void AddRedcaps(Floor floor, Room room) {
+  public static Encounter AddRedcaps = new Encounter((Floor floor, Room room) => {
     var start = Util.RandomPick(
       FloorUtils
         .TilesSortedByCorners(floor, room)
@@ -756,9 +792,9 @@ public class Encounters {
     foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
       floor.Put(new Redcap(tile.pos));
     }
-  }
+  });
 
-  public static void AddNubs(Floor floor, Room room) {
+  public static Encounter AddNubs = new Encounter((Floor floor, Room room) => {
     var start = Util.RandomPick(
       FloorUtils
         .TilesSortedByCorners(floor, room)
@@ -773,9 +809,9 @@ public class Encounters {
     foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
       floor.Put(new Nubs(tile.pos));
     }
-  }
+  });
 
-  public static void AddRedleaf(Floor floor, Room room) {
+  public static Encounter AddRedleaf = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(
       FloorUtils
         .TilesSortedByCorners(floor, room)
@@ -786,9 +822,9 @@ public class Encounters {
       return;
     }
     floor.Put(new Redpod(tile.pos));
-  }
+  });
 
-  // public static void AddSoftMoss(Floor floor, Room room) {
+  // public static Encounter AddSoftMoss = new Encounter((Floor floor, Room room) => {
   //   var start = Util.RandomPick(
   //     FloorUtils
   //       .TilesSortedByCorners(floor, room)
@@ -803,17 +839,17 @@ public class Encounters {
   //   foreach (var tile in floor.BreadthFirstSearch(start.pos, t => t is Ground).Take(num)) {
   //     floor.Put(new SoftMoss(tile.pos));
   //   }
-  // }
+  // });
 
-  // public static void AddPlatelets(Floor floor, Room room) {
+  // public static Encounter AddPlatelets = new Encounter((Floor floor, Room room) => {
   //   var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t is Ground);
   //   var num = 1;
   //   foreach (var tile in tiles.Take(num)) {
   //     floor.Put(new Platelet(tile.pos));
   //   }
-  // }
+  // });
 
-  public static void AddMushroom(Floor floor, Room room) {
+  public static Encounter AddMushroom = new Encounter((Floor floor, Room room) => {
     var livableTiles = floor.EnumerateRoomTiles(room).Where(Mushroom.CanOccupy);
     if (!livableTiles.Any()) {
       Debug.LogError("Couldn't find a location for mushrooms!");
@@ -825,48 +861,48 @@ public class Encounters {
 #endif
       floor.Put(new Mushroom(tile.pos));
     }
-  }
+  });
 
-  public static void PlaceFancyGround(Floor floor, Room room) {
+  public static Encounter PlaceFancyGround = new Encounter((Floor floor, Room room) => {
     var groundTiles = floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground);
     foreach (var tile in groundTiles) {
       // this doesn't replace the grass, item, or actor
       floor.Put(new FancyGround(tile.pos));
     }
-  }
+  });
 
-  public static void SurroundWithRubble(Floor floor, Room room) {
+  public static Encounter SurroundWithRubble = new Encounter((Floor floor, Room room) => {
     var perimeter = floor.EnumerateRoomTiles(room, 1).Except(floor.EnumerateRoomTiles(room, 0));
     var entrancesAndExits = perimeter.Where(tile => tile.CanBeOccupied());
     foreach (var tile in entrancesAndExits) {
       floor.Put(new Rubble(tile.pos));
     }
-  }
+  });
 
-  public static void ThreeAstoriasInCorner(Floor floor, Room room) {
+  public static Encounter ThreeAstoriasInCorner = new Encounter((Floor floor, Room room) => {
     var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
     foreach (var tile in positions.Take(3)) {
       floor.Put(new Astoria(tile.pos));
     }
-  }
+  });
 
-  public static void TwelveRandomAstoria(Floor floor, Room room) {
+  public static Encounter TwelveRandomAstoria = new Encounter((Floor floor, Room room) => {
     var positions = FloorUtils.EmptyTilesInRoom(floor, room);
     positions.Shuffle();
     foreach (var tile in positions.Take(12)) {
       floor.Put(new Astoria(tile.pos));
     }
-  }
+  });
 
-  public static void OneAstoria(Floor floor, Room room) {
+  public static Encounter OneAstoria = new Encounter((Floor floor, Room room) => {
     var positions = FloorUtils.TilesSortedByCorners(floor, room).Where(t => t.CanBeOccupied() && t is Ground && t.grass == null);
     foreach (var tile in positions.Take(1)) {
       floor.Put(new Astoria(tile.pos));
     }
-  }
+  });
 
 
-  public static void ScatteredBoombugs(Floor floor, Room room) {
+  public static Encounter ScatteredBoombugs = new Encounter((Floor floor, Room room) => {
     var emptyTilesInRoom = FloorUtils.EmptyTilesInRoom(floor, room);
     emptyTilesInRoom.Shuffle();
     var num = 1;
@@ -874,8 +910,8 @@ public class Encounters {
       var boombug = new Boombug(tile.pos);
       floor.Put(boombug);
     }
-  }
-  public static void ScatteredBoombugs4x(Floor floor, Room room) {
+  });
+  public static Encounter ScatteredBoombugs4x = new Encounter((Floor floor, Room room) => {
     var startTile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (startTile != null) {
       var num = MyRandom.Range(4, 11);
@@ -885,9 +921,9 @@ public class Encounters {
         floor.Put(boombug);
       }
     }
-  }
+  });
 
-  // public static void AddDandypuffs(Floor floor, Room room) {
+  // public static Encounter AddDandypuffs = new Encounter((Floor floor, Room room) => {
   //   var start = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(Dandypuff.CanOccupy));
   //   var num = MyRandom.Range(1, 2);
   //   if (start == null) {
@@ -897,9 +933,9 @@ public class Encounters {
   //   foreach (var tile in floor.BreadthFirstSearch(start.pos, Dandypuff.CanOccupy).Take(num)) {
   //     floor.Put(new Dandypuff(tile.pos));
   //   }
-  // }
+  // });
 
-  public static void AddDeathbloom(Floor floor, Room room) {
+  public static Encounter AddDeathbloom = new Encounter((Floor floor, Room room) => {
     // Tile tile = FloorUtils.EmptyTileNearestCenter(floor, room);
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room).Where((t) => t is Ground && t.grass == null).ToList();
     tiles.Sort((x, y) => Vector2Int.Distance(x.pos, room.center) < Vector2Int.Distance(y.pos, room.center) ? -1 : 1);
@@ -908,75 +944,75 @@ public class Encounters {
     if (tile != null) {
       floor.Put(new Deathbloom(tile.pos));
     }
-  }
+  });
 
-  public static void OneButterfly(Floor floor, Room room) {
+  public static Encounter OneButterfly = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       // floor.Put(new ItemOnGround(tile.pos, new ItemButterfly()));
       floor.Put(new ItemOnGround(tile.pos, new ItemPlaceableEntity(new Butterfly(new Vector2Int()))));
     }
-  }
+  });
 
-  public static void AddSlime(Floor floor, Room room) {
+  public static Encounter AddSlime = new Encounter((Floor floor, Room room) => {
     var num = MyRandom.Range(3, 7) + floor.depth;
     var tiles = 
       // FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile.grass == null).Take(num);
       FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => tile.grass == null).ToList();
     tiles.Shuffle();
     floor.PutAll(tiles.Take(num).Select(tile => new Slime(tile.pos)));
-  }
+  });
 
-  public static void AddCrafting(Floor floor, Room room) {
+  public static Encounter AddCrafting = new Encounter((Floor floor, Room room) => {
     floor.Put(new CraftingStation(FloorUtils.TilesFromCenter(floor, room).First().pos));
-  }
+  });
 
 
-  public static void AddProcessor(Floor floor, Room room) {
+  public static Encounter AddProcessor = new Encounter((Floor floor, Room room) => {
     floor.Put(new Processor(FloorUtils.TilesFromCenter(floor, room).First().pos));
-  }
+  });
 
-  public static void AddCampfire(Floor floor, Room room) {
+  public static Encounter AddCampfire = new Encounter((Floor floor, Room room) => {
     floor.Put(new Campfire(FloorUtils.TilesFromCenter(floor, room).First().pos));
-  }
+  });
 
-  public static void AddComposter(Floor floor, Room room) {
+  public static Encounter AddComposter = new Encounter((Floor floor, Room room) => {
     floor.Put(new Composter(FloorUtils.TilesFromCenter(floor, room).First().pos));
-  }
+  });
 
-  // public static void RandomTrade(Floor floor, Room room) {
+  // public static Encounter RandomTrade = new Encounter((Floor floor, Room room) => {
   //   floor.Put(new Processor(room.center));
-  // }
+  // });
 
-  public static void AddWater(Floor floor, Room room) {
+  public static Encounter AddWater = new Encounter((Floor floor, Room room) => {
     var numWaters = Random.Range(3, 6);
     var startPos = room.center;
     foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
       floor.Put(new Water(tile.pos));
     }
-  }
+  });
 
-  public static void AddOneWater(Floor floor, Room room) {
+  public static Encounter AddOneWater = new Encounter((Floor floor, Room room) => {
     var numWaters = 1;
     var startPos = room.center;
     foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
       floor.Put(new Water(tile.pos));
     }
-  }
+  });
 
-  public static void AddJackalHide(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemJackalHide()); 
-  public static void AddGloopShoes(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemGloopShoes());
-  public static void AddPumpkin(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemPumpkin());
-  public static void AddThickBranch(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemThickBranch());
-  public static void AddBatTooth(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemBatTooth());
-  public static void AddSnailShell(Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSnailShell());
-  public static void AddSpiderSandals(Floor floor, Room room) => RewardItemImpl(floor, room, new SilkSandals(15));
-  public static void AddSoil(Floor floor, Room room) {
+  public static Encounter AddJackalHide = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new ItemJackalHide()));
+  public static Encounter AddGloopShoes = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new ItemGloopShoes()));
+  public static Encounter AddPumpkin = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new ItemPumpkin()));
+  public static Encounter AddThickBranch = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new ItemThickBranch()));
+  public static Encounter AddBatTooth = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new ItemBatTooth()));
+  public static Encounter AddSnailShell = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new ItemSnailShell()));
+  public static Encounter AddSpiderSandals = new Encounter((Floor floor, Room room) => RewardItemImpl(floor, room, new SilkSandals(15)));
+  public static Encounter AddSoil = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new ItemOnGround(tile.pos, new ItemSoil()));
     }
-  }
+  });
 
   private static void RewardItemImpl(Floor floor, Room room, Item item) {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
@@ -985,7 +1021,7 @@ public class Encounters {
     }
   }
 
-  public static void AddFakeWall(Floor floor, Room room) {
+  public static Encounter AddFakeWall = new Encounter((Floor floor, Room room) => {
     var tiles = new List<Tile>();
     // only spawn along the top edge
     for (int x = 0; x < floor.width - 1; x++) {
@@ -998,9 +1034,9 @@ public class Encounters {
     if (t != null) {
       floor.Put(new FakeWall(t.pos));
     }
-  }
+  });
 
-  public static void AddDownstairsInRoomCenter(Floor floor, Room room) {
+  public static Encounter AddDownstairsInRoomCenter = new Encounter((Floor floor, Room room) => {
     // remove current downstairs
     floor.Put(new Ground(floor.downstairs.pos));
 
@@ -1013,9 +1049,9 @@ public class Encounters {
       }
     }
     floor.PlaceDownstairs(center);
-  }
+  });
 
-  public static void FungalColonyAnticipation(Floor floor, Room room) {
+  public static Encounter FungalColonyAnticipation = new Encounter((Floor floor, Room room) => {
     var downstairs = floor.downstairs;
     // // remove all enemies
     // foreach (var body in floor.EnumerateRoom(room, 1).Select(p => floor.bodies[p]).Where(b => b != null)) {
@@ -1033,9 +1069,9 @@ public class Encounters {
     if (breederTile != null) {
       floor.Put(new FungalBreeder(breederTile.pos));
     }
-  }
+  });
 
-  public static void WallPillars(Floor floor, Room room) {
+  public static Encounter WallPillars = new Encounter((Floor floor, Room room) => {
     var positions = floor.EnumerateRoom(room).Where(p => floor.tiles[p] is Ground).ToList();
     positions.Shuffle();
     var num = Random.Range(3, (positions.Count + 1) / 2);
@@ -1049,9 +1085,9 @@ public class Encounters {
         }
       }
     }
-  }
+  });
 
-  public static void PerlinCutoffs(Floor floor, Room room) {
+  public static Encounter PerlinCutoffs = new Encounter((Floor floor, Room room) => {
     var offsetX = Random.value;
     var offsetY = Random.value;
     foreach (var pos in floor.EnumerateRoom(room, 1)) {
@@ -1060,9 +1096,9 @@ public class Encounters {
         floor.Put(new Chasm(pos));
       }
     }
-  }
+  });
 
-  public static void ChunkInMiddle(Floor floor, Room room) {
+  public static Encounter ChunkInMiddle = new Encounter((Floor floor, Room room) => {
     var chunkSize = Random.Range(1, 6);
     var positions = floor.BreadthFirstSearch(room.center).Where(t => t is Ground).Take(chunkSize).Select(t => t.pos);
     var isWall = Random.value < 0.8f;
@@ -1073,9 +1109,9 @@ public class Encounters {
         floor.Put(new Rubble(pos));
       }
     }
-  }
+  });
 
-  public static void LineWithOpening(Floor floor, Room room) {
+  public static Encounter LineWithOpening = new Encounter((Floor floor, Room room) => {
     var start = Util.RandomPick(floor.EnumerateRoomPerimeter(room));
     var offset = start - room.min;
 
@@ -1093,9 +1129,9 @@ public class Encounters {
     foreach (var oldTile in line) {
       floor.Put(new Wall(oldTile.pos));
     }
-  }
+  });
 
-  public static void InsetLayerWithOpening(Floor floor, Room room) {
+  public static Encounter InsetLayerWithOpening = new Encounter((Floor floor, Room room) => {
     var insetLength = Random.Range(3, 6);
     var inset = floor.EnumerateRoomPerimeter(room, insetLength).ToList();
     var start = Random.Range(0, inset.Count);
@@ -1109,10 +1145,10 @@ public class Encounters {
     foreach (var pos in inset.Skip(3)) {
       floor.Put(new Wall(pos));
     }
-  }
+  });
 
-  public static void ChasmsAwayFromWalls2(Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 2);
-  public static void ChasmsAwayFromWalls1(Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 1, 2);
+  public static Encounter ChasmsAwayFromWalls2 = new Encounter((Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 2));
+  public static Encounter ChasmsAwayFromWalls1 = new Encounter((Floor floor, Room room) => ChasmsAwayFromWallsImpl(floor, room, 1, 2));
 
   /// only replaces Grounds (not HardGround or stairs)
   private static void ChasmsAwayFromWallsImpl(Floor floor, Room room, int cliffEdgeSize, int extrude = 1) {
@@ -1155,7 +1191,7 @@ public class Encounters {
     }
   }
 
-  public static void ChasmBridge(Floor floor, Room room) {
+  public static Encounter ChasmBridge = new Encounter((Floor floor, Room room) => {
     switch(MyRandom.Range(0, 3)) {
       case 0:
         // top-right cutoff
@@ -1171,7 +1207,7 @@ public class Encounters {
         ChasmBridgeImpl(floor, room, 3, 0);
         break;
     }
-  }
+  });
   private static void ChasmBridgeImpl(Floor floor, Room room, int thickness, int crossScalar) {
     // ignore room. Connect the stairs
     var origin = /*floor.upstairs?.pos ??*/ new Vector2Int(1, floor.boundsMax.y - 1);
@@ -1193,7 +1229,7 @@ public class Encounters {
   }
 
   /// experimental; unused
-  public static void ChasmGrowths(Floor floor, Room room) {
+  public static Encounter ChasmGrowths = new Encounter((Floor floor, Room room) => {
     // var numGrowths = 3;
     // for(var i = 0; i < numGrowths; i++) {
       // var pos = MyRandom.Range(floor.boundsMin, floor.boundsMax);
@@ -1204,5 +1240,5 @@ public class Encounters {
       var num = (int)(numTiles / 3);
       floor.PutAll(floor.BreadthFirstSearch(pos).Take(num).Select(t => new Chasm(t.pos)).ToList());
     // }
-  }
+  });
 }

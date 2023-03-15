@@ -21,7 +21,7 @@ public class OldDude : AIActor {
       numWantedDeathblooms = Mathf.Min(GameModel.main.player.inventory.capacity, floor.EnemiesLeft());
       var hasDeathbloom = floor.grasses.Any(g => g is Deathbloom);
       if (!hasDeathbloom) {
-        Encounters.AddDeathbloom(floor, floor.root);
+        Encounters.AddDeathbloom.Apply(floor, floor.root);
       }
     });
   }
@@ -67,7 +67,7 @@ public class MossMan : AIActor {
     GameModel.main.EnqueueEvent(() => {
       var hasSpores = floor.grasses.Any(g => g is Spores);
       if (!hasSpores) {
-        Encounters.AddSpore(floor, floor.root);
+        Encounters.AddSpore.Apply(floor, floor.root);
       }
     });
   }

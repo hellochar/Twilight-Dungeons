@@ -18,9 +18,9 @@ public static partial class Generate {
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
     // EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
     // Encounters.AddTeleportStone(floor, room0);
-    Encounters.AddOneWater(floor, room0);
+    Encounters.AddOneWater.Apply(floor, room0);
     foreach (var encounter in extraEncounters) {
-      encounter(floor, room0);
+      encounter.Apply(floor, room0);
     }
 
     FloorUtils.TidyUpAroundStairs(floor);

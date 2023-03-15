@@ -107,12 +107,12 @@ namespace SingleItemPlant {
       // Rewards.Clear();
 
       foreach (var type in allItemTypes) {
-        Plants.Add(1, (Floor floor, Room room) => {
+        Plants.Add(1, new Encounter((Floor floor, Room room) => {
           SingleItemPlant.AddSingleItemPlantSeedToRoom(floor, room, type);
-        });
-        Rewards.Add(1, (Floor floor, Room room) => {
+        }));
+        Rewards.Add(1, new Encounter((Floor floor, Room room) => {
           SingleItemPlant.AddSingleItemPlantSeedToRoom(floor, room, type);
-        });
+        }));
         Debug.Log(type.Name);
       }
     }

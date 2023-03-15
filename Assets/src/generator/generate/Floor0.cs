@@ -32,10 +32,10 @@ public static partial class Generate {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
+    EncounterGroup.Plants.GetRandomAndDiscount(1f).Apply(floor, room0);
 
-    Encounters.AddWater(floor, room0);
-    Encounters.ThreeAstoriasInCorner(floor, room0);
+    Encounters.AddWater.Apply(floor, room0);
+    Encounters.ThreeAstoriasInCorner.Apply(floor, room0);
 
     floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
 

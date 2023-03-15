@@ -27,7 +27,7 @@ public class ExpandingHomeFloor : HomeFloor {
     floor.startPos = new Vector2Int(room0.min.x + 1, room0.center.y);
     // put a pit at the center
     floor.Put(new Pit(room0.center));
-    Encounters.AddWater(floor, room0);
+    Encounters.AddWater.Apply(floor, room0);
 
     // show chasm edges
     room0.max += Vector2Int.one;

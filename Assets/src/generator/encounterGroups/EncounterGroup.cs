@@ -1,7 +1,4 @@
 using System;
-using System.Linq;
-using System.Runtime.Serialization;
-using UnityEngine;
 using static Encounters;
 
 [System.Serializable]
@@ -107,30 +104,6 @@ public class EncounterGroupShared : EncounterGroup {
 }
 
 [Serializable]
-public class EncounterBag : WeightedRandomBag<Encounter>, ISerializable {
+public class EncounterBag : WeightedRandomBag<Encounter> {
   public EncounterBag() : base() { }
-
-  public EncounterBag(SerializationInfo info, StreamingContext context) : base() {
-    var length = info.GetInt32("length");
-    for(int i = 0; i < length; i++) {
-      var weight = info.GetSingle($"item-{i}-weight");
-      var methodName = info.GetString($"item-{i}-name");
-      var methodInfo = typeof(Encounters).GetMethod(methodName);
-      if (methodInfo != null) {
-        var encounter = (Encounter) Delegate.CreateDelegate(typeof(Encounter), methodInfo);
-        Add(weight, encounter);
-      } else {
-        Debug.LogWarning($"Couldn't find Encounter {methodName}.");
-      }
-    }
-  }
-
-  public void GetObjectData(SerializationInfo info, StreamingContext context) {
-    info.AddValue("length", entries.Count);
-    for(int i = 0; i < entries.Count; i++) {
-      var entry = entries[i];
-      info.AddValue($"item-{i}-weight", entry.weight);
-      info.AddValue($"item-{i}-name", entry.item.Method.Name);
-    }
-  }
 }

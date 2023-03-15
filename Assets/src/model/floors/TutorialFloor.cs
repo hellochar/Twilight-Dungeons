@@ -86,10 +86,10 @@ class TutorialFloor : HomeFloor {
     this.berryBush = new BerryBush(bushRoom.center);
     berryBush.GoNextStage();
     Put(berryBush);
-    Encounters.AddWater(this, bushRoom);
+    Encounters.AddWater.Apply(this, bushRoom);
 
     // last room - two blobs and a bat, filled with soft grass
-    Encounters.FillWithSoftGrass(this, endRoom);
+    Encounters.FillWithSoftGrass.Apply(this, endRoom);
     Put(new Blob(endRoom.center));
     Put(new Blob(endRoom.center + Vector2Int.up));
     this.bat = new Bat(endRoom.center + new Vector2Int(-1, -2));

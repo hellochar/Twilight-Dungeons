@@ -35,11 +35,11 @@ public static partial class Generate {
 
     Room roomBot = new Room(Vector2Int.one, new Vector2Int(floor.width - 2, 11));
     for (var i = 0; i < 1; i++) {
-      Encounters.AddWater(floor, roomBot);
+      Encounters.AddWater.Apply(floor, roomBot);
     }
-    Encounters.TwelveRandomAstoria(floor, roomBot);
+    Encounters.TwelveRandomAstoria.Apply(floor, roomBot);
     for (var i = 0; i < 12; i++) {
-      Encounters.AddGuardleaf(floor, roomBot);
+      Encounters.AddGuardleaf.Apply(floor, roomBot);
     }
 
     foreach (var t in floor.EnumerateRoom(roomBot).Where(p => floor.tiles[p] is Ground && floor.grasses[p] == null)) {

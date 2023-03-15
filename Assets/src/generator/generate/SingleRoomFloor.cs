@@ -16,30 +16,30 @@ public static partial class Generate {
     var room0 = floor.root;
     if (preMobEncounters != null) {
       foreach (var encounter in preMobEncounters) {
-        encounter(floor, room0);
+        encounter.Apply(floor, room0);
       }
     }
     // X mobs
     for (var i = 0; i < numMobs; i++) {
-      EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
+      EncounterGroup.Mobs.GetRandomAndDiscount().Apply(floor, room0);
     }
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
-      EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+      EncounterGroup.Grasses.GetRandomAndDiscount().Apply(floor, room0);
     }
 
     foreach (var encounter in extraEncounters) {
-      encounter(floor, room0);
+      encounter.Apply(floor, room0);
     }
 
     // a reward (optional)
     if (reward) {
-      Encounters.AddWater(floor, room0);
-      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
+      Encounters.AddWater.Apply(floor, room0);
+      EncounterGroup.Rewards.GetRandomAndDiscount().Apply(floor, room0);
     }
 
-    EncounterGroup.Spice.GetRandom()(floor, room0);
+    EncounterGroup.Spice.GetRandom().Apply(floor, room0);
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }
@@ -62,11 +62,11 @@ public static partial class Generate {
 
     if (defaultEncounters) {
       // one wall variation
-      EncounterGroup.Walls.GetRandomAndDiscount()(floor, room0);
+      EncounterGroup.Walls.GetRandomAndDiscount().Apply(floor, room0);
       FloorUtils.NaturalizeEdges(floor);
       
       // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
-      EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
+      EncounterGroup.Chasms.GetRandomAndDiscount(0.04f).Apply(floor, room0);
     }
 
     floor.SetStartPos(new Vector2Int(room0.min.x - 1, floor.height / 2));

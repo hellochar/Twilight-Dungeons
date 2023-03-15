@@ -60,7 +60,7 @@ public static partial class Generate {
 
     foreach(var r in farAwayRooms) {
       // Encounters.PutSlime(floor, r);
-      Encounters.AddOneWater(floor, r);
+      Encounters.AddOneWater.Apply(floor, r);
       // shared.Rewards.GetRandom()(floor, r);
     }
 
@@ -69,7 +69,7 @@ public static partial class Generate {
 
     floor.startPos = new Vector2Int(root.min.x + 1, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
-    Encounters.AddWater(floor, root);
+    Encounters.AddWater.Apply(floor, root);
     // Encounters.AddOrganicMatter(floor, root);
     // Encounters.AddOrganicMatter(floor, root);
     // Encounters.AddOrganicMatter(floor, root);

@@ -18,8 +18,8 @@ public static partial class Generate {
     floor.SetStartPos(new Vector2Int(room0.min.x, room0.max.y));
     floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
-    Encounters.AddOneWater(floor, room0);
-    shared.Rests.GetRandomAndDiscount(0.5f)(floor, room0);
+    Encounters.AddOneWater.Apply(floor, room0);
+    shared.Rests.GetRandomAndDiscount(0.5f).Apply(floor, room0);
 
     FloorUtils.TidyUpAroundStairs(floor);
     floor.root = room0;

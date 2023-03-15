@@ -43,35 +43,35 @@ public static partial class Generate {
     var room0 = floor.root;
     if (preMobEncounters != null) {
       foreach (var encounter in preMobEncounters) {
-        encounter(floor, room0);
+        encounter.Apply(floor, room0);
       }
     }
 
     var mobEncounter = EncounterGroup.Mobs.GetRandomAndDiscount();
     // X mobs
     for (var i = 0; i < numMobs; i++) {
-      mobEncounter(floor, room0);
+      mobEncounter.Apply(floor, room0);
       // EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
     }
 
     var grassEncounter = EncounterGroup.Grasses.GetRandomAndDiscount();
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
-      grassEncounter(floor, room0);
+      grassEncounter.Apply(floor, room0);
       // EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
     }
 
     foreach (var encounter in extraEncounters) {
-      encounter(floor, room0);
+      encounter.Apply(floor, room0);
     }
 
     // a reward (optional)
     if (reward) {
-      Encounters.AddWater(floor, room0);
-      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
+      Encounters.AddWater.Apply(floor, room0);
+      EncounterGroup.Rewards.GetRandomAndDiscount().Apply(floor, room0);
     }
 
-    EncounterGroup.Spice.GetRandom()(floor, room0);
+    EncounterGroup.Spice.GetRandom().Apply(floor, room0);
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }

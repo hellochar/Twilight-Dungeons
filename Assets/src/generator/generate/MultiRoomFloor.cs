@@ -21,26 +21,26 @@ public static partial class Generate {
         .OrderByDescending((room) => floor.FindPath(floor.startTile.pos, room.center).Count)
         .First();
 
-      Encounters.PlaceFancyGround(floor, rewardRoom);
-      Encounters.SurroundWithRubble(floor, rewardRoom);
+      Encounters.PlaceFancyGround.Apply(floor, rewardRoom);
+      Encounters.SurroundWithRubble.Apply(floor, rewardRoom);
       var rewardEncounter = EncounterGroup.Rewards.GetRandomAndDiscount();
-      rewardEncounter(floor, rewardRoom);
+      rewardEncounter.Apply(floor, rewardRoom);
     }
 
     var deadEndRooms = intermediateRooms.Where((room) => room != rewardRoom && room.connections.Count < 2);
     foreach (var room in deadEndRooms) {
       if (MyRandom.value < 0.05f) {
-        Encounters.SurroundWithRubble(floor, room);
+        Encounters.SurroundWithRubble.Apply(floor, room);
       }
       var encounter = EncounterGroup.Spice.GetRandomAndDiscount();
-      encounter(floor, room);
+      encounter.Apply(floor, room);
     }
 
     foreach (var room in floor.rooms) {
       if (room != floor.startRoom && room != rewardRoom) {
         // spawn a random encounter
         var encounter = EncounterGroup.Mobs.GetRandomAndDiscount();
-        encounter(floor, room);
+        encounter.Apply(floor, room);
       }
 #if experimental_chainfloors
       Encounters.SurroundWithRubble(floor, room);
@@ -50,11 +50,11 @@ public static partial class Generate {
     // this includes abstract rooms!
     foreach(var room in floor.root.Traverse().Where((room) => room.depth >= 2)) {
       var encounter = EncounterGroup.Grasses.GetRandomAndDiscount();
-      encounter(floor, room);
+      encounter.Apply(floor, room);
     }
 
     foreach (var encounter in specialDownstairsEncounters) {
-      encounter(floor, floor.downstairsRoom);
+      encounter.Apply(floor, floor.downstairsRoom);
     }
 
     FloorUtils.TidyUpAroundStairs(floor);
@@ -132,7 +132,7 @@ public static partial class Generate {
     // occasionally create a chasm in the multi room. Feels tight and cool, and makes the level harder.
     if (MyRandom.value < 0.1) {
       var depth2Room = Util.RandomPick(root.Traverse().Where(r => r.depth == 2));
-      Encounters.ChasmsAwayFromWalls1(floor, depth2Room);
+      Encounters.ChasmsAwayFromWalls1.Apply(floor, depth2Room);
     }
 #endif
 

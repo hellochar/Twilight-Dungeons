@@ -1,10 +1,21 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
+public class RewardFloorParams {
+  public readonly int depth;
+  public readonly Encounter[] extraEncounters;
+  public RewardFloorParams(int depth, params Encounter[] extraEncounters) {
+    this.depth = depth;
+    this.extraEncounters = extraEncounters;
+  }
+}
+
 public static partial class Generate {
-  public static Floor RewardFloor(int depth, params Encounter[] extraEncounters) {
-    Floor floor = new Floor(depth, 12, 8);
+  public static Floor RewardFloor(RewardFloorParams obj) {
+    Floor floor = new Floor(obj.depth, 12, 8);
     FloorUtils.CarveGround(floor);
     FloorUtils.SurroundWithWalls(floor);
     FloorUtils.NaturalizeEdges(floor);
@@ -19,7 +30,7 @@ public static partial class Generate {
     // EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
     // Encounters.AddTeleportStone(floor, room0);
     Encounters.AddOneWater.Apply(floor, room0);
-    foreach (var encounter in extraEncounters) {
+    foreach (var encounter in obj.extraEncounters) {
       encounter.Apply(floor, room0);
     }
 

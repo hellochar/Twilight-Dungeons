@@ -35,7 +35,7 @@ public static partial class Generate {
   }
 
   public static Floor generateSingleRoomFloorSingleType(EncounterGroup EncounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
-    Floor floor = tryGenerateSingleRoomFloor(EncounterGroup, depth, width, height, preMobEncounters == null);
+    Floor floor = tryGenerateSingleRoomFloor(new SingleRoomFloorParams(EncounterGroup, depth, width, height, numMobs, numGrasses));
     ensureConnectedness(floor);
     floor.PutAll(
       floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))

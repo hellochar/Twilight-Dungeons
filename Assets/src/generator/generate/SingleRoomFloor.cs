@@ -2,52 +2,77 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
+public struct SingleRoomFloorParams {
+  public readonly EncounterGroup EncounterGroup;
+  public readonly int depth;
+  public readonly int width;
+  public readonly int height;
+  public readonly int numMobs;
+  public readonly int numGrasses;
+  public readonly bool reward;
+  public readonly Encounter[] preMobEncounters;
+  public readonly Encounter[] extraEncounters;
+  public SingleRoomFloorParams(EncounterGroup encounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) : this() {
+    EncounterGroup = encounterGroup;
+    this.depth = depth;
+    this.width = width;
+    this.height = height;
+    this.numMobs = numMobs;
+    this.numGrasses = numGrasses;
+    this.reward = reward;
+    this.preMobEncounters = preMobEncounters;
+    this.extraEncounters = extraEncounters;
+  }
+}
+
 public static partial class Generate {
   /// <summary>
   /// Generates one single room with one wall variation, X mob encounters, Y grass encounters, an optional reward.
   /// Good for a contained experience.
   /// </summary>
-  public static Floor SingleRoomFloor(EncounterGroup EncounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
-    Floor floor = tryGenerateSingleRoomFloor(EncounterGroup, depth, width, height, preMobEncounters == null);
+  public static Floor SingleRoomFloor(SingleRoomFloorParams args) {
+    Floor floor = tryGenerateSingleRoomFloor(args);
     ensureConnectedness(floor);
     floor.PutAll(
       floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
     );
     var room0 = floor.root;
-    if (preMobEncounters != null) {
-      foreach (var encounter in preMobEncounters) {
+    if (args.preMobEncounters != null) {
+      foreach (var encounter in args.preMobEncounters) {
         encounter.Apply(floor, room0);
       }
     }
     // X mobs
-    for (var i = 0; i < numMobs; i++) {
-      EncounterGroup.Mobs.GetRandomAndDiscount().Apply(floor, room0);
+    for (var i = 0; i < args.numMobs; i++) {
+      args.EncounterGroup.Mobs.GetRandomAndDiscount().Apply(floor, room0);
     }
 
     // Y grasses
-    for (var i = 0; i < numGrasses; i++) {
-      EncounterGroup.Grasses.GetRandomAndDiscount().Apply(floor, room0);
+    for (var i = 0; i < args.numGrasses; i++) {
+      args.EncounterGroup.Grasses.GetRandomAndDiscount().Apply(floor, room0);
     }
 
-    foreach (var encounter in extraEncounters) {
+    foreach (var encounter in args.extraEncounters) {
       encounter.Apply(floor, room0);
     }
 
     // a reward (optional)
-    if (reward) {
+    if (args.reward) {
       Encounters.AddWater.Apply(floor, room0);
-      EncounterGroup.Rewards.GetRandomAndDiscount().Apply(floor, room0);
+      args.EncounterGroup.Rewards.GetRandomAndDiscount().Apply(floor, room0);
     }
 
-    EncounterGroup.Spice.GetRandom().Apply(floor, room0);
+    args.EncounterGroup.Spice.GetRandom().Apply(floor, room0);
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }
 
-  static Floor tryGenerateSingleRoomFloor(EncounterGroup EncounterGroup, int depth, int width, int height, bool defaultEncounters = true) {
+  static Floor tryGenerateSingleRoomFloor(SingleRoomFloorParams args) {
+    bool defaultEncounters = args.preMobEncounters == null;
     // We want to inset the downstairs and upstairs into the left and right walls. To do this,
     // we add one more column on each side
-    Floor floor = new Floor(depth, width + 2, height);
+    Floor floor = new Floor(args.depth, args.width + 2, args.height);
     Room room0 = new Room(
       new Vector2Int(2, 1),
       new Vector2Int(floor.width - 3, floor.height - 2)
@@ -62,11 +87,11 @@ public static partial class Generate {
 
     if (defaultEncounters) {
       // one wall variation
-      EncounterGroup.Walls.GetRandomAndDiscount().Apply(floor, room0);
+      args.EncounterGroup.Walls.GetRandomAndDiscount().Apply(floor, room0);
       FloorUtils.NaturalizeEdges(floor);
       
       // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
-      EncounterGroup.Chasms.GetRandomAndDiscount(0.04f).Apply(floor, room0);
+      args.EncounterGroup.Chasms.GetRandomAndDiscount(0.04f).Apply(floor, room0);
     }
 
     floor.SetStartPos(new Vector2Int(room0.min.x - 1, floor.height / 2));

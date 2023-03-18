@@ -92,7 +92,10 @@ public static class FloorUtils {
 
   public static void AddCavePathToNode(Floor floor, CaveNode child) {
     // find a free tile and put a downstairs there
-    var tile = Util.RandomPick(TilesAwayFromCenter(floor, floor.root).Where(t => t.CanBeOccupied() && t.grass == null && !(t is Downstairs)).Skip(3).Take(5));
+    var tile = Util.RandomPick(
+      floor.EnumerateFloor().OrderByDescending(pos => pos.x).Select(pos => floor.tiles[pos])
+      .Where(t => t.CanBeOccupied() && t.grass == null && !(t is Downstairs)).Skip(2).Take(3)
+    );
     var cavePath = new CavePath(tile.pos, child);
     floor.Put(cavePath);
   }

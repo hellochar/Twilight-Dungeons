@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 public class CheshireWeedSproutController : GrassController, IEntityControllerRemoveOverride {
   public Sprite[] stages;
   public CheshireWeedSprout sprout => (CheshireWeedSprout) grass;
-  public SpriteRenderer sr;
 
   public override void Start() {
     base.Start();

@@ -44,9 +44,9 @@ public class PlayerConsoleMethods {
   }
 
   [ConsoleMethod("CheatGetReward", "Show reward UI")]
-  public static void CheatGetReward() {
+  public static void CheatGetRewardAsync() {
     // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
-    GameModel.main.currentFloor.CreateRewards().ShowRewardUIAndWaitForChoice();
+    var _ = GameModel.main.currentFloor.CreateRewards().ShowRewardUIAndWaitForChoice();
   }
 
 

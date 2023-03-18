@@ -7,11 +7,9 @@ using UnityEngine.EventSystems;
 public class TunnelrootController : GrassController {
   public Tunnelroot tunnelroot => (Tunnelroot) grass;
   public Sprite closed, middle, open;
-  SpriteRenderer sr;
 
   // Start is called before the first frame update
   public override void Start() {
-    sr = GetComponent<SpriteRenderer>();
     tunnelroot.OnOpenChanged += HandleOpenChanged;
     HandleOpenChanged(tunnelroot.IsOpen());
   }

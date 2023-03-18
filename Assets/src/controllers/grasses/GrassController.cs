@@ -71,7 +71,7 @@ public class GrassController : MonoBehaviour, IEntityController, IPlayerInteract
     }
   }
 
-  public PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+  public virtual PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     if (grass.floor is HomeFloor) {
       return new SetTasksPlayerInteraction(
         new MoveNextToTargetTask(GameModel.main.player, grass.pos),

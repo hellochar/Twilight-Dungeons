@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pulses: 1
+  synergyLinePositive: {fileID: 0}
   stages:
   - {fileID: 6863177282590538995, guid: e89875627aa2fdc46b4f878b9f6ee8b7, type: 3}
   - {fileID: -5225107957912007751, guid: e89875627aa2fdc46b4f878b9f6ee8b7, type: 3}
   - {fileID: 7481033153413792636, guid: e89875627aa2fdc46b4f878b9f6ee8b7, type: 3}
   - {fileID: 6951358424564025818, guid: e89875627aa2fdc46b4f878b9f6ee8b7, type: 3}
-  sr: {fileID: 928648345069322157}
 --- !u!1001 &8233857719605791504
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -125,7 +125,7 @@ PrefabInstance:
     - target: {fileID: 9126458090356110524, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
       propertyPath: m_Name
-      value: CheshireWeed
+      value: CheshireWeedSprout
       objectReference: {fileID: 0}
     - target: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
         type: 3}
@@ -144,12 +144,6 @@ PrefabInstance:
 --- !u!1 &928648345069322156 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9126458090356110524, guid: 24aa84cb97063fb44ae466e268ea266b,
-    type: 3}
-  m_PrefabInstance: {fileID: 8233857719605791504}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &928648345069322157 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 9126458090356110525, guid: 24aa84cb97063fb44ae466e268ea266b,
     type: 3}
   m_PrefabInstance: {fileID: 8233857719605791504}
   m_PrefabAsset: {fileID: 0}

@@ -263,9 +263,7 @@ public partial class Floor {
   }
 
   public void CheckTeleporter() {
-#if !experimental_chainfloors
-    return;
-#endif
+#if experimental_chainfloors
     // only makes sense in chainfloors
     GameModel.main.EnqueueEvent(() => {
       var activeRoom = GameModel.main.player.room;
@@ -283,6 +281,7 @@ public partial class Floor {
         // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
       }
     });
+#endif
   }
 
   public List<Type> EntityTypes = new List<Type>();

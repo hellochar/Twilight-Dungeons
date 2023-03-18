@@ -170,17 +170,10 @@ public class TurnManager {
         entity is Entity e &&
         e.isVisible &&
         (e is Actor || forceStaggerThisTurn);
-      if (model.currentFloor.depth == 0) {
-        shouldStagger = true;
-      }
       if (shouldStagger) {
         forceStaggerThisTurn = false;
         // stagger actors just a bit for juice
-        if (model.currentFloor.depth == 0) {
-          yield return new WaitForSeconds(0.2f);
-        } else {
-          yield return new WaitForSeconds(JUICE_STAGGER_SECONDS);
-        }
+        yield return new WaitForSeconds(JUICE_STAGGER_SECONDS);
       }
 
       activeEntity = null;

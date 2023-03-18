@@ -109,9 +109,6 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     inventory = new Inventory(12);
     inventory.allowDragAndDrop = true;
 
-    inventory.AddItem(new ItemShovel(3));
-    inventory.AddItem(new ItemCreatureFood());
-    inventory.AddItem(new ItemStick(3));
 #if experimental_actionpoints
     // // inventory.AddItem(new ItemSoil());
     // inventory.AddItem(new ItemPlaceableEntity(new CraftingStation(new Vector2Int())));

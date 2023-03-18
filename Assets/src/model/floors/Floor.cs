@@ -552,11 +552,11 @@ public partial class Floor {
   }
 
   public void PlaceDownstairs(Vector2Int pos, bool addHardGround = true) {
-    if (depth > 0) {
+    // if (depth > 0) {
       Put(new Teleporter(pos));
-    } else {
-      Put(new Downstairs(pos));
-    }
+    // } else {
+    //   Put(new Downstairs(pos));
+    // }
     // surround with Hard Ground
     if (addHardGround) {
       var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();

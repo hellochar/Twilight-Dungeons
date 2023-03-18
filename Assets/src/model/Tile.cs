@@ -234,14 +234,18 @@ public class Chasm : Tile {
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class Downstairs : Tile {
+public abstract class Downstairs : Tile, IOnTopActionHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.left;
+
+  public virtual string OnTopActionName => "Go Down";
+
   public Downstairs(Vector2Int pos) : base(pos) {}
 
-  [PlayerAction]
-  public void GoDownstairs() {
-    // GameModel.main.PutPlayerAt();
+  public abstract void GoDownstairs();
+
+  public void HandleOnTopAction() {
+    GoDownstairs();
   }
 
   // protected override void HandleEnterFloor() {
@@ -258,18 +262,13 @@ public class Downstairs : Tile {
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class CavePath : Tile {
-  /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
-  public Vector2Int landing => pos + Vector2Int.left;
-
-  // The tile you'll land on when you take this stair.
+public class CavePath : Downstairs {
   public CaveNode destination;
   public CavePath(Vector2Int pos, CaveNode destination) : base(pos) {
     this.destination = destination;
   }
 
-  [PlayerAction]
-  public void GoDown() {
+  public override void GoDownstairs() {
     GameModel.main.PutPlayerAt(destination);
   }
 }
@@ -306,16 +305,13 @@ public class Pit : Piece {
 [Serializable]
 [ObjectInfo(description: "A way back home!")]
 public class Teleporter : Downstairs {
-  public Teleporter(Vector2Int pos) : base(pos) {
-  }
+  public Teleporter(Vector2Int pos) : base(pos) {}
 
-  internal void GoHome() {
+  public override string OnTopActionName => "Go Home";
+
+  public override void GoDownstairs() {
     floor.PlayerGoHome();
   }
-
-  // public override void HandleActorEnter(Actor who) {
-  //   // no op
-  // }
 }
 
 [ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]

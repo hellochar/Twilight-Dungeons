@@ -16,7 +16,7 @@ MonoBehaviour:
     type: 3}
   sprite24: {fileID: 7516488083110176496, guid: 316a90b7aaca01a4392eb34b1eb0f876,
     type: 3}
---- !u!114 &4842171859019699654
+--- !u!114 &85291718364062376
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -25,7 +25,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7508045371615732405}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e345669257a6a469f1d623b69c18dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 38f91304e1f905147882d13b710e9341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   renderers:
@@ -123,7 +123,7 @@ PrefabInstance:
     - target: {fileID: 3777084247053353605, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7840429437644720119, guid: 16637295e55e2db4dbd4caafff2523df,
         type: 3}

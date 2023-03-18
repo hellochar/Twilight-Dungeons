@@ -164,7 +164,9 @@ public class GameModelController : MonoBehaviour {
         StartCoroutine(TransitionBetweenHomeFloor());
       } else {
         // we're never going to visit this depth again; destroy it
-        Destroy(currentFloorController.gameObject);
+        currentFloorController.gameObject.SetActive(false);
+        // floorControllers.Remove(currentFloorController.floor);
+        // Destroy(currentFloorController.gameObject);
         ActivateNewFloor(model.currentFloor);
       }
     }

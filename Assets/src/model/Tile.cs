@@ -239,6 +239,11 @@ public class Downstairs : Tile {
   public Vector2Int landing => pos + Vector2Int.left;
   public Downstairs(Vector2Int pos) : base(pos) {}
 
+  [PlayerAction]
+  public void GoDownstairs() {
+    // GameModel.main.PutPlayerAt();
+  }
+
   // protected override void HandleEnterFloor() {
   //   base.HandleEnterFloor();
   //   grass?.Kill(this);
@@ -249,6 +254,24 @@ public class Downstairs : Tile {
   //     GameModel.main.EnqueueEvent(TryGoDownstairs);
   //   }
   // }
+}
+
+[Serializable]
+[ObjectInfo(description: "Go deeper into the dungeon.")]
+public class CavePath : Tile {
+  /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
+  public Vector2Int landing => pos + Vector2Int.left;
+
+  // The tile you'll land on when you take this stair.
+  public CaveNode destination;
+  public CavePath(Vector2Int pos, CaveNode destination) : base(pos) {
+    this.destination = destination;
+  }
+
+  [PlayerAction]
+  public void GoDown() {
+    GameModel.main.PutPlayerAt(destination);
+  }
 }
 
 [Serializable]

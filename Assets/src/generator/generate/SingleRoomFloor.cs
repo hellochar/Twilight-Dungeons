@@ -1,11 +1,23 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[System.Serializable]
-public struct SingleRoomFloorParams {
-  public readonly EncounterGroup EncounterGroup;
+[Serializable]
+public abstract class FloorGenerationParams {
   public readonly int depth;
+  public int seed = (new System.Random().Next());
+
+  public FloorGenerationParams(int depth) {
+    this.depth = depth;
+  }
+
+  public abstract Floor generate();
+}
+
+[Serializable]
+public class SingleRoomFloorParams : FloorGenerationParams {
+  public readonly EncounterGroup EncounterGroup;
   public readonly int width;
   public readonly int height;
   public readonly int numMobs;
@@ -13,9 +25,9 @@ public struct SingleRoomFloorParams {
   public readonly bool reward;
   public readonly Encounter[] preMobEncounters;
   public readonly Encounter[] extraEncounters;
-  public SingleRoomFloorParams(EncounterGroup encounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) : this() {
+  public SingleRoomFloorParams(EncounterGroup encounterGroup, int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters)
+    : base(depth) {
     EncounterGroup = encounterGroup;
-    this.depth = depth;
     this.width = width;
     this.height = height;
     this.numMobs = numMobs;
@@ -23,6 +35,11 @@ public struct SingleRoomFloorParams {
     this.reward = reward;
     this.preMobEncounters = preMobEncounters;
     this.extraEncounters = extraEncounters;
+  }
+
+  public override Floor generate() {
+    // todo move implementation here
+    return Generate.SingleRoomFloor(this);
   }
 }
 

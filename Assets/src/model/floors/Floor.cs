@@ -14,6 +14,7 @@ public partial class Floor {
   // the time the player first entered the floor.
   public float timeBegan = -1;
   public float age => GameModel.main.time - timeBegan;
+  public string name;
 
   /// TODO refactor this into "layers": Tile Layer, Floor Layer, Main layer.
   public StaticEntityGrid<Tile> tiles;
@@ -62,7 +63,7 @@ public partial class Floor {
   //   }
   // }
 
-  public Downstairs downstairs => downstairses[0];
+  public Downstairs downstairs => downstairses.Any() ? downstairses[0] : null;
 
   public Floor(int depth, int width, int height) {
     this.depth = depth;
@@ -96,6 +97,10 @@ public partial class Floor {
   private void ItemPlacementBehavior(ItemOnGround item) => ItemOnGround.PlacementBehavior(this, item);
 
   public void BodyMoved() => bodies.ScheduleRecompute();
+
+  public override string ToString() {
+    return $"[{(name != null ? name : base.ToString())} depth {depth}]";
+  }
 
   /// what should happen when the player goes downstairs
   internal virtual void PlayerGoDownstairs() {
@@ -150,8 +155,8 @@ public partial class Floor {
 #if experimental_autoreplenish
     GameModel.main.player.Replenish();
 #endif
-    GameModel.main.activeMist.Clear();
-    GameModel.main.PutPlayerAt(0, GameModel.main.activeMist.pos);
+    GameModel.main.activeMist?.Clear();
+    GameModel.main.PutPlayerAt(0, GameModel.main.activeMist?.pos);
     GameModel.main.activeMist = null;
   }
 

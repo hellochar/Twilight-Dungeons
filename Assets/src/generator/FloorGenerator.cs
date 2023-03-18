@@ -49,10 +49,12 @@ public abstract class FloorGenerator {
       floor = ExpandingHomeFloor.generate(floorSeeds.Count());
 #elif experimental_multiroomhome
       floor = MultiRoomHomeFloor.generate();
+#elif experimental_cavenetwork
+      floor = Generate.CaveNetworkHomeFloor(EncounterGroup);
 #elif experimental_actionpoints
       floor = generateGardeningActionPointsFloor0();
 #else
-      floor = generateFloor0();
+      floor = Generate.Floor0(EncounterGroup);
 #endif
     PostProcessFloor(floor);
     return floor;
@@ -60,46 +62,52 @@ public abstract class FloorGenerator {
 
   protected abstract EncounterGroup GetEncounterGroup(int depth);
 
-  public virtual Floor generateCaveFloor(int depth) {
-    /// The generators rely on the following state:
-    /// (1) encounter group
-    /// (2) MyRandom seed
-
-    /// configure the EncounterGroup
-    EncounterGroup = GetEncounterGroup(depth);
-
-    /// set the seed
-    Debug.Log("Depth " + depth + " seed " + floorSeeds[depth].ToString("x"));
-    MyRandom.SetSeed(floorSeeds[depth]);
-
-    // pick the generator
-    var generator = floorGenerators[depth];
-    Floor floor = null;
-
-    int guard = 0;
-    while (floor == null && guard++ < 20) {
-      #if !UNITY_EDITOR
-      try {
-        floor = generator();
-        PostProcessFloor(floor);
-      } catch (Exception e) {
-        Debug.LogError(e);
-        GameModel.main.turnManager.latestException = e;
-        MyRandom.Next();
-      }
-      #else
-      floor = generator();
-      PostProcessFloor(floor);
-      #endif
-    }
-    if (floor == null) {
-      throw GameModel.main.turnManager.latestException;
-    }
-    if (floor.depth != depth) {
-      throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
-    }
-    return floor;
+  public Floor generateFloor(FloorGenerationParams parameters) {
+    Floor f = parameters.generate();
+    PostProcessFloor(f);
+    return f;
   }
+
+  // public Floor generateCaveFloor(int depth) {
+  //   /// The generators rely on the following state:
+  //   /// (1) encounter group
+  //   /// (2) MyRandom seed
+
+  //   /// configure the EncounterGroup
+  //   EncounterGroup = GetEncounterGroup(depth);
+
+  //   /// set the seed
+  //   Debug.Log("Depth " + depth + " seed " + floorSeeds[depth].ToString("x"));
+  //   MyRandom.SetSeed(floorSeeds[depth]);
+
+  //   // pick the generator
+  //   var generator = floorGenerators[depth];
+  //   Floor floor = null;
+
+  //   int guard = 0;
+  //   while (floor == null && guard++ < 20) {
+  //     #if !UNITY_EDITOR
+  //     try {
+  //       floor = generator();
+  //       PostProcessFloor(floor);
+  //     } catch (Exception e) {
+  //       Debug.LogError(e);
+  //       GameModel.main.turnManager.latestException = e;
+  //       MyRandom.Next();
+  //     }
+  //     #else
+  //     floor = generator();
+  //     PostProcessFloor(floor);
+  //     #endif
+  //   }
+  //   if (floor == null) {
+  //     throw GameModel.main.turnManager.latestException;
+  //   }
+  //   if (floor.depth != depth) {
+  //     throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
+  //   }
+  //   return floor;
+  // }
 
   public void PostProcessFloor(Floor floor) {
 #if experimental_chainfloors

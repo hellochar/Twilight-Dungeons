@@ -36,6 +36,7 @@ public class FloorGenerator200Start : FloorGenerator {
       () => Generate.BlobBossFloor(12),
 
       // midgame
+      // CAREFUL - EncounterGroup has mutated here!
       () => Generate.SingleRoomFloor(new SingleRoomFloorParams(EncounterGroup, 13, 11, 8, 2, 1)),
       () => Generate.SingleRoomFloor(new SingleRoomFloorParams(EncounterGroup, 14, 11, 8, 2, 1)),
       () => Generate.SingleRoomFloor(new SingleRoomFloorParams(EncounterGroup, 15, 11, 8, 2, 1)),

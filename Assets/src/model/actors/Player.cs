@@ -139,11 +139,13 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     ClearTasks();
   }
 
+#if experimental_actionpoints
   [PlayerAction]
   public void Sleep() {
     // GameModel.main.player.Heal(0);
     GameModel.main.GoNextDay();
   }
+#endif
 
   public void ReplenishActionPoints() {
     var numDays = GameModel.main.day;
@@ -164,9 +166,11 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   public override float GetActionCost(BaseAction action) {
+#if !experimental_cavenetwork
     if (floor is HomeFloor) {
       return 0;
     }
+#endif
     return base.GetActionCost(action);
   }
 

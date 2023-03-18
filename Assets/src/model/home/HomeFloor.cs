@@ -34,6 +34,10 @@ public class HomeFloor : Floor {
   }
 
   public override void RecomputeVisibility() {
+#if experimental_cavenetwork
+    base.RecomputeVisibility();
+    return;
+#else
     var player = GameModel.main.player;
     if (player == null || player.floor != this) {
       return;
@@ -44,6 +48,7 @@ public class HomeFloor : Floor {
         tile.visibility = RecomputeVisibilityFor(tile);
       }
     }
+#endif
   }
 
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {

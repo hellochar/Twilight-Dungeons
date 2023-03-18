@@ -4,18 +4,6 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class FloorGenerationParams {
-  public readonly int depth;
-  public int seed = (new System.Random().Next());
-
-  public FloorGenerationParams(int depth) {
-    this.depth = depth;
-  }
-
-  public abstract Floor generate();
-}
-
-[Serializable]
 public class SingleRoomFloorParams : FloorGenerationParams {
   public readonly EncounterGroup EncounterGroup;
   public readonly int width;

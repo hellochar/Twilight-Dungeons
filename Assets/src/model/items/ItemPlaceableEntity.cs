@@ -30,10 +30,12 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
       return false;
     }
 
+#if !experimental_cavenetwork
     var home = t.floor as HomeFloor;
     if (home == null) {
       return false;
     }
+#endif
 
     // var isStation = entityType.IsSubclassOf(typeof(Station));
     // if (!isStation) {

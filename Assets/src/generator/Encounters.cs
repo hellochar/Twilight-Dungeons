@@ -440,13 +440,13 @@ public class Encounters {
     // }
 
     if (tile != null) {
-    //   var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
-    //   var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
-    //   plant.GoNextStage();
-    //   plant.GoNextStage();
-    //   floor.Put(plant);
-    //   floor.Put(new Soil(plant.pos));
-      floor.Put(new ItemOnGround(tile.pos, new ItemSeed(type, 1)));
+      var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
+      var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });
+      plant.GoNextStage();
+      plant.GoNextStage();
+      floor.Put(plant);
+      // floor.Put(new Soil(plant.pos));
+      // floor.Put(new ItemOnGround(tile.pos, new ItemSeed(type, 1)));
     }
     // floor.PutAll(floor.GetDiagonalAdjacentTiles(tile.pos).Select(t => new HardGround(t.pos)).ToList());
   }

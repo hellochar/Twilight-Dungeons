@@ -67,7 +67,7 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
   public string TargettedActionName => "Plant";
   public string TargettedActionDescription => $"Choose where to plant {displayName}.";
   public IEnumerable<Ground> Targets(Player player) =>
-#if experimental_actionpoints
+#if experimental_actionpoints || experimental_cavenetwork
       player.floor.tiles.Where(tile => ItemPlaceableEntity.CanPlaceEntityOfType(plantType, tile)).Cast<Ground>();
 #else
       (player.floor.tiles.Where(tile => (player.floor as HomeFloor).soils[tile.pos] != null && tile is Ground && tile.isExplored && tile.CanBeOccupied()).Cast<Ground>());

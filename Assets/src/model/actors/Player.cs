@@ -37,15 +37,15 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
-  public static int HUNGER_LEVEL_HUNGRY = 400;
-  public static int HUNGER_LEVEL_FAMISHED = 600;
-  public static int HUNGER_LEVEL_STARVATION = 800;
+  public static int HUNGER_LEVEL_HUNGRY = 200;
+  public static int HUNGER_LEVEL_FAMISHED = 300;
+  public static int HUNGER_LEVEL_STARVATION = 400;
 
   private int m_hunger;
   public int hunger {
     get => m_hunger;
     set {
-      m_hunger = value;
+      m_hunger = Mathf.Clamp(value, 0, HUNGER_LEVEL_STARVATION);
       if (hunger >= HUNGER_LEVEL_STARVATION) {
         statuses.Add(new StarvationStatus());
         statuses.RemoveOfType<FamishedStatus>();

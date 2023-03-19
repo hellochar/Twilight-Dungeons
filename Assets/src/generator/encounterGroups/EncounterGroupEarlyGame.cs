@@ -19,7 +19,7 @@ public static class EncounterGroupEarlyGame {
         { 1f, AddSoftGrass },
         { 1f, AddBloodwort },
 
-        { 1f, AddNubs },
+        // { 1f, AddNubs },
         // { 1f, AddRedleaf },
 
         // { 1f, AddSoftMoss },
@@ -27,16 +27,16 @@ public static class EncounterGroupEarlyGame {
         { 1f, AddLlaora },
         { 1f, AddGuardleaf },
         { 1f, AddBladegrass },
-        // { 1f, AddMushroom },
+        { 1f, AddMushroom },
 
         // { 0.5f, ScatteredBoombugs },
         { 0.5f, AddEveningBells },
 
-        // { 0.4f, AddDeathbloom },
+        { 0.4f, AddDeathbloom },
         // { 0.4f, AddWebs },
-        // { 0.4f, AddAgave },
+        { 0.4f, AddAgave },
 
-        // { 0.35f, AddHangingVines },
+        { 0.35f, AddHangingVines },
 
         { 0.2f, AddViolets },
         { 0.2f, FillWithFerns }

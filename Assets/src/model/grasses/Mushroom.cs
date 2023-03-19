@@ -6,17 +6,17 @@ using UnityEngine;
 
 [System.Serializable]
 [ObjectInfo(description: "Walk over it to harvest.")]
-public class Mushroom : Grass/*, IActorEnterHandler*/ {
+public class Mushroom : Grass, IActorEnterHandler {
   public static Item HomeItem => new ItemMushroom(4);
   public Mushroom(Vector2Int pos) : base(pos) {
   }
 
-  // public void HandleActorEnter(Actor actor) {
-  //   var player = GameModel.main.player;
-  //   if (actor == player) {
-  //     BecomeItemInInventory(new ItemMushroom(1), player);
-  //   }
-  // }
+  public void HandleActorEnter(Actor actor) {
+    var player = GameModel.main.player;
+    if (actor == player) {
+      BecomeItemInInventory(new ItemMushroom(1), player);
+    }
+  }
 
   public static bool CanOccupy(Tile tile) {
     var floor = tile.floor;

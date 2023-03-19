@@ -553,7 +553,7 @@ public partial class Floor {
 
   public void PlaceDownstairs(Vector2Int pos, bool addHardGround = true) {
     // if (depth > 0) {
-      Put(new Teleporter(pos));
+    //  Put(new Teleporter(pos));
     // } else {
     //   Put(new Downstairs(pos));
     // }

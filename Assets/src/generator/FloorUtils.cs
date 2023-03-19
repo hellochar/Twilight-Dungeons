@@ -90,16 +90,6 @@ public static class FloorUtils {
     }
   }
 
-  public static void AddCavePathToNode(Floor floor, CaveNode child) {
-    // find a free tile and put a downstairs there
-    var tile = Util.RandomPick(
-      floor.EnumerateFloor().OrderByDescending(pos => pos.x).Select(pos => floor.tiles[pos])
-      .Where(t => t.CanBeOccupied() && t.grass == null && !(t is Downstairs)).Skip(2).Take(3)
-    );
-    var cavePath = new CavePath(tile.pos, child);
-    floor.Put(cavePath);
-  }
-
   ///<summary>Apply a natural look across the floor by smoothing both wall corners and space corners</summary>
   public static void NaturalizeEdges(Floor floor) {
     SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);

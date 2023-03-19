@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 /*
 Cave network user flow:
 1. Player starts at home base. Sees 2 downstairs.
 2. The first time a player walks into the downstairs, that level
-   gets lazily generated. The stairs you took is saved.
+gets lazily generated. The stairs you took is saved.
 3. The player is in Floor 1A (or 1B). There's combat. There is
-   no upstairs, but there's a Rope that takes you back.
+no upstairs, but there's a Rope that takes you back.
 
 
 So we have Real Floors but we also have "blueprint" floors.
 We have a Blueprint for the entire cave system that already maps out:
-  What nodes there are
-  For each node, what the generation parameters are
-  What their connections are
+What nodes there are
+For each node, what the generation parameters are
+What their connections are
 */
 
 [Serializable]
@@ -47,11 +48,23 @@ public class CaveNode {
       Floor = GameModel.main.generator.generateFloor(parameters);
       Floor.name = name;
       foreach(var child in children) {
-        FloorUtils.AddCavePathToNode(Floor, child);
+        AddCavePathToNode(this, child);
       }
     }
     return Floor;
   }
+
+  public static void AddCavePathToNode(CaveNode source, CaveNode destination) {
+    var floor = source.Floor;
+    // find a free tile and put a downstairs there
+    var tile = Util.RandomPick(
+      floor.EnumerateFloor().OrderByDescending(pos => pos.x).Select(pos => floor.tiles[pos])
+      .Where(t => t.CanBeOccupied() && t.grass == null && !(t is Downstairs)).Skip(2).Take(3)
+    );
+    var cavePath = new CavePath(tile.pos, source, destination);
+    floor.Put(cavePath);
+  }
+
 
   public void Connect(CaveNode other) {
     children.Add(other);

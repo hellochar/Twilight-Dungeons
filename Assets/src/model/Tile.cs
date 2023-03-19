@@ -153,10 +153,11 @@ public class Wall : Tile {
     return 0;
   }
 
+#if !experimental_cavenetwork
   public override bool ObstructsExploration() {
-    // return floor.depth == 0;
-    return true;
+    return floor.depth == 0;
   }
+#endif
 
 #if experimental_actionpoints
   protected override void HandleLeaveFloor() {
@@ -264,13 +265,35 @@ public abstract class Downstairs : Tile, IOnTopActionHandler {
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
 public class CavePath : Downstairs {
+  public CaveNode source;
   public CaveNode destination;
-  public CavePath(Vector2Int pos, CaveNode destination) : base(pos) {
+  public CavePath(Vector2Int pos, CaveNode source, CaveNode destination) : base(pos) {
+    this.source = source;
     this.destination = destination;
   }
 
   public override void GoDownstairs() {
     GameModel.main.PutPlayerAt(destination);
+    GameModel.main.currentFloor.Put(new Rope(GameModel.main.player.pos, source, pos));
+  }
+}
+
+[Serializable]
+public class Rope : Downstairs {
+  private CaveNode target;
+  private Vector2Int floorPos;
+
+  public Rope(Vector2Int pos, CaveNode target, Vector2Int floorPos) : base(pos) {
+    this.pos = pos;
+    this.target = target;
+    this.floorPos = floorPos;
+  }
+
+  public override string OnTopActionName => "Go Back";
+
+  public override void GoDownstairs() {
+    GameModel.main.PutPlayerAt(target, floorPos);
+    floor.Put(new Ground(pos));
   }
 }
 

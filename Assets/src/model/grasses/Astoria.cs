@@ -11,7 +11,7 @@ public class Astoria : Grass, IActorEnterHandler {
         actor.Heal(4);
         Kill(actor);
       } else {
-        // BecomeItemInInventory(new ItemAstoria(), p);
+        BecomeItemInInventory(new ItemAstoria(), p);
       }
     }
   }

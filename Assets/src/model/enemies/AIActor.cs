@@ -47,12 +47,12 @@ public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractab
     var floor = this.floor;
     var pos = this.pos;
     GameModel.main.EnqueueEvent(() => inventory.TryDropAllItems(floor, pos));
-    if (faction == Faction.Enemy) {
-      GameModel.main.EnqueueEvent(() => {
-        var iMatter = new OrganicMatterOnGround(pos);
-        floor.Put(iMatter);
-      });
-    }
+    // if (faction == Faction.Enemy) {
+    //   GameModel.main.EnqueueEvent(() => {
+    //     var iMatter = new OrganicMatterOnGround(pos);
+    //     floor.Put(iMatter);
+    //   });
+    // }
   }
 
   private static int MaxRetries = 2;

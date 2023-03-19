@@ -37,6 +37,35 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     }
   }
 
+  public static int HUNGER_LEVEL_HUNGRY = 400;
+  public static int HUNGER_LEVEL_FAMISHED = 600;
+  public static int HUNGER_LEVEL_STARVATION = 800;
+
+  private int m_hunger;
+  public int hunger {
+    get => m_hunger;
+    set {
+      m_hunger = value;
+      if (hunger >= HUNGER_LEVEL_STARVATION) {
+        statuses.Add(new StarvationStatus());
+        statuses.RemoveOfType<FamishedStatus>();
+        statuses.RemoveOfType<HungryStatus>();
+      } else if (hunger >= HUNGER_LEVEL_FAMISHED) {
+        statuses.RemoveOfType<StarvationStatus>();
+        statuses.Add(new FamishedStatus());
+        statuses.RemoveOfType<HungryStatus>();
+      } else if (hunger > HUNGER_LEVEL_HUNGRY) {
+        statuses.RemoveOfType<StarvationStatus>();
+        statuses.RemoveOfType<FamishedStatus>();
+        statuses.Add(new HungryStatus());
+      } else {
+        statuses.RemoveOfType<StarvationStatus>();
+        statuses.RemoveOfType<FamishedStatus>();
+        statuses.RemoveOfType<HungryStatus>();
+      }
+    }
+  }
+
 #if experimental_actionpoints
   public int actionPoints = 6;
   public int maxActionPoints = 6;
@@ -221,6 +250,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
         }
         timeLastLostWater = GameModel.main.time;
       }
+      hunger++;
     });
     // player didn't do what they intended! We should reset and give
     // player a choice.
@@ -324,6 +354,73 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
     return false;
   }
 #endif
+}
+
+[Serializable]
+public abstract class HungerLevelStatus : Status {}
+
+[Serializable]
+[ObjectInfo("hungry")]
+public class HungryStatus : HungerLevelStatus {
+  public HungryStatus() { }
+
+  public override bool Consume(Status other) {
+    return true;
+  }
+
+  public override string Info() => "You could use a bite!";
+}
+
+[Serializable]
+[ObjectInfo("famished")]
+public class FamishedStatus : HungerLevelStatus, IAttackDamageModifier {
+  public FamishedStatus() { }
+
+  public override bool Consume(Status other) {
+    return true;
+  }
+
+  public override string Info() => "You're famished! -1 to attack damage.";
+
+  public int Modify(int input) {
+    return input - 1;
+  }
+}
+
+[Serializable]
+[ObjectInfo("starving")]
+public class StarvationStatus : HungerLevelStatus, IAttackDamageModifier {
+  private float timeLastStarvingTick;
+  public static int TURNS_PER_DAMAGE = 20;
+
+  public StarvationStatus() { }
+
+  public override bool Consume(Status other) {
+    return true;
+  }
+
+  public override string Info() => $"You're dying of starvation! -1 to attack damage, and you take 1 damage every {TURNS_PER_DAMAGE} turns.";
+
+  public int Modify(int input) {
+    return input - 1;
+  }
+
+  public override void Start() {
+    base.Start();
+    TickDamage();
+  }
+
+  private void TickDamage() {
+    timeLastStarvingTick = GameModel.main.time;
+    actor.TakeUnavoidableDamage(1, actor);
+  }
+
+  public override void Step() {
+    if (GameModel.main.time - timeLastStarvingTick > 20) {
+      TickDamage();
+    }
+    base.Step();
+  }
 }
 
 [Serializable]

@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 132049
+    totalSpriteSurfaceArea: 132817
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -186,6 +186,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1514f9f629dba08428e6deee286a5974, type: 3}
   - {fileID: 4894206273632725685, guid: 4069c01781c4a1c46a0f5dfffcc2d5fa, type: 3}
   - {fileID: 2887890100549261210, guid: 4069c01781c4a1c46a0f5dfffcc2d5fa, type: 3}
+  - {fileID: -9145399092572839174, guid: 2f21641773f0ff64f863355646e07080, type: 3}
+  - {fileID: -2314812656051306035, guid: 2f21641773f0ff64f863355646e07080, type: 3}
+  - {fileID: -2600171239241460710, guid: 2f21641773f0ff64f863355646e07080, type: 3}
   - {fileID: 21300000, guid: d7377627e72487e4ba0507dee22ed8c4, type: 3}
   - {fileID: 21300000, guid: 83aefb27ee4004942a0d8f31c53878f8, type: 3}
   - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
@@ -570,6 +573,9 @@ SpriteAtlas:
   - Player
   - mulch
   - creature-food
+  - starving
+  - hungry
+  - famished
   - composter
   - fruitingbody
   - blue-spore-explosion

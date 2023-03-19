@@ -146,6 +146,13 @@ public class Body : Entity {
       return;
     }
     damage = Modifiers.Process(this.AnyDamageTakenModifiers(), damage);
+    TakeUnavoidableDamage(damage, source);
+  }
+
+  public void TakeUnavoidableDamage(int damage, Entity source) {
+    if (IsDead) {
+      return;
+    }
     damage = Math.Max(damage, 0);
     OnTakeAnyDamage(damage);
     hp -= damage;

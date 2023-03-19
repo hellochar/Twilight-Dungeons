@@ -159,16 +159,16 @@ public class GameModelController : MonoBehaviour {
     if (model.currentFloor != currentFloorController.floor && !isTransitioningBetweenHome) {
       int newDepth = model.currentFloor.depth;
       int oldDepth = currentFloorController.floor.depth;
-      if (oldDepth == 0 || newDepth == 0) {
-        // we teleported; do a slow animation
-        StartCoroutine(TransitionBetweenHomeFloor());
-      } else {
+      // if (oldDepth == 0 || newDepth == 0) {
+      //   // we teleported; do a slow animation
+      //   StartCoroutine(TransitionBetweenHomeFloor());
+      // } else {
         // we're never going to visit this depth again; destroy it
         currentFloorController.gameObject.SetActive(false);
         // floorControllers.Remove(currentFloorController.floor);
         // Destroy(currentFloorController.gameObject);
         ActivateNewFloor(model.currentFloor);
-      }
+      // }
     }
   }
 

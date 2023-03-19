@@ -25,8 +25,8 @@ public class Grass : Entity, IDaySteppable {
     OnNoteworthyAction = delegate {};
   }
 
-  public override string description => (floor == null || floor is HomeFloor) ?
-    HomeDescription() : base.description;
+  // public override string description => (floor == null || floor is HomeFloor) ?
+  //   HomeDescription() : base.description;
 
   static Dictionary<Vector2Int, string> directionNames = new Dictionary<Vector2Int, string>() {
     [Vector2Int.left] = "left",

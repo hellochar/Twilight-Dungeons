@@ -49,7 +49,7 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     if (body.tile.visibility == TileVisiblity.Unexplored) {
       return null;
     }
-    if (body.floor is HomeFloor || body is Station) {
+    if (/*body.floor is HomeFloor || */body is Station) {
       if (body is ThickBrush b) {
         return new SetTasksPlayerInteraction(
           new MoveNextToTargetTask(player, body.pos),

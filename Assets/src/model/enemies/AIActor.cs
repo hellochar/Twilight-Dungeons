@@ -37,11 +37,11 @@ public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractab
     processedInventory.AddItem(this.GetHomeItem());
   }
 
-  public override string description => floor is HomeFloor ?
-    stomach[0] == null ? 
-    $"Feed an item to the {displayName}." :
-    $"Digesting! Come back tomorrow."
-  : base.description;
+  // public override string description => floor is HomeFloor ?
+  //   stomach[0] == null ? 
+  //   $"Feed an item to the {displayName}." :
+  //   $"Digesting! Come back tomorrow."
+  // : base.description;
 
   public virtual void HandleDeath(Entity source) {
     var floor = this.floor;

@@ -95,8 +95,10 @@ public class CameraController : MonoBehaviour {
 
     var floor = GameModel.main.currentFloor;
 
-    Vector2Int min = floor is HomeFloor ? floor.root.min : floor.boundsMin;
-    Vector2Int max = floor is HomeFloor ? floor.root.max : floor.boundsMax;
+    // Vector2Int min = floor is HomeFloor ? floor.root.min : floor.boundsMin;
+    // Vector2Int max = floor is HomeFloor ? floor.root.max : floor.boundsMax;
+    Vector2Int min = floor.boundsMin;
+    Vector2Int max = floor.boundsMax;
     bounds.min = Util.withZ(min) + new Vector3(-paddingLeft, -paddingBottom, 0);
     bounds.max = Util.withZ(max) + new Vector3(paddingRight, paddingTop, 0);
 

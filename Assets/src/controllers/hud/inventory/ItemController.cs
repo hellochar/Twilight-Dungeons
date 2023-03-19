@@ -115,14 +115,14 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
         }
       }
 
-      if (player.floor.depth == 0) {
+      // if (player.floor.depth == 0) {
         var playerActions = item.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
         foreach(var action in playerActions) {
           buttons.Add((Util.WithSpaces(action.Name), () => {
             action.Invoke(item, new object[0]);
           }));
         }
-      }
+      // }
     }
 
     popup = Popups.CreateStandard(

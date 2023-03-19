@@ -6,9 +6,9 @@ using UnityEngine;
 [ObjectInfo("butterfly", flavorText: "Delicate and gentle, this Butterfly seems drawn to you, waiting for your command.")]
 public class ItemButterfly : Item, IUsable {
   public void Use(Actor a) {
-    if (GameModel.main.currentFloor.depth == 0) {
-      throw new CannotPerformActionException("Use in the caves!");
-    }
+    // if (GameModel.main.currentFloor.depth == 0) {
+    //   throw new CannotPerformActionException("Use in the caves!");
+    // }
     var tile = Util.RandomPick(a.floor.GetAdjacentTiles(a.pos).Where((t) => t.CanBeOccupied()));
     if (tile != null) {
       a.floor.Put(new Butterfly(tile.pos));

@@ -8,12 +8,14 @@ public class ThickBrush : Destructible, IBlocksExploration {
   public ThickBrush(Vector2Int pos) : base(pos, 0) {
   }
 
+#if !experimental_cavenetwork
   protected override void HandleLeaveFloor() {
     if (floor is HomeFloor f) {
       f.root.ExtendToEncompass(new Room(pos - Vector2Int.one, pos + Vector2Int.one));
       f.RecomputeVisibility();
     }
   }
+#endif
 
   [PlayerAction]
   public void Cut() {

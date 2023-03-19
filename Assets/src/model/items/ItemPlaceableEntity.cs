@@ -80,9 +80,11 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   }
 
   void ITargetedAction<Ground>.PerformTargettedAction(Player player, Entity target) {
+#if !experimental_cavenetwork
     if (!(player.floor is HomeFloor)) {
       throw new CannotPerformActionException("Place at home!");
     }
+#endif
     // if it's growing, it's free
     // if (entity is GrowingEntity) {
     // } else {

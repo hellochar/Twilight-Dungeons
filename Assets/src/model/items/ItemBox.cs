@@ -24,9 +24,9 @@ public class ItemBox : Item {
 
   public override List<MethodInfo> GetAvailableMethods(Player player) {
     var methods = base.GetAvailableMethods(player);
-    if (player.floor.depth == 0) {
+    // if (player.floor.depth == 0) {
       methods.Add(GetType().GetMethod("Unwrap"));
-    }
+    // }
     return methods;
   }
 }

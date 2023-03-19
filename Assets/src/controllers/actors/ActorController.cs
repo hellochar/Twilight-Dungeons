@@ -189,12 +189,12 @@ public class ActorController : BodyController,
     if (actor.IsDead) {
       return null; // don't do anything to dead actors
     }
-    if (body.floor is HomeFloor) {
-      return new SetTasksPlayerInteraction(
-        new MoveNextToTargetTask(player, body.pos),
-        new ShowInteractPopupTask(player, body)
-      );
-    }
+    // if (body.floor is HomeFloor) {
+    //   return new SetTasksPlayerInteraction(
+    //     new MoveNextToTargetTask(player, body.pos),
+    //     new ShowInteractPopupTask(player, body)
+    //   );
+    // }
     // depending on the faction:
     // (1) ally or neutral - walk to
     // (2) enemy - attack

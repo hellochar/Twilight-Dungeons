@@ -247,9 +247,9 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
         player.ClearTasks();
       });
     } else {
-      if (player.floor is HomeFloor) {
-        return new ArbitraryPlayerInteraction(() => EntityPopup.Show(player));
-      }
+      // if (player.floor is HomeFloor) {
+      //   return new ArbitraryPlayerInteraction(() => EntityPopup.Show(player));
+      // }
       return new SetTasksPlayerInteraction(
         new WaitTask(player, 1)
       );

@@ -17,17 +17,17 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
 
   [OnDeserialized]
   protected override void HandleEnterFloor() {
-    if (floor is HomeFloor) {
-      isBloomed = true;
-    } else {
+    // if (floor is HomeFloor) {
+    //   isBloomed = true;
+    // } else {
       floor.OnEntityRemoved += HandleEntityRemoved;
-    }
+    // }
   }
 
   protected override void HandleLeaveFloor() {
-    if (!(floor is HomeFloor)) {
+    // if (!(floor is HomeFloor)) {
       floor.OnEntityRemoved -= HandleEntityRemoved;
-    }
+    // }
   }
 
   private void HandleEntityRemoved(Entity entity) {

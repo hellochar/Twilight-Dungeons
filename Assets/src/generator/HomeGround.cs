@@ -6,14 +6,14 @@ public class HomeGround : Ground {
   public HomeGround(Vector2Int pos) : base(pos) {
   }
 
-  public override float GetPathfindingWeight() {
-    var originalPathfindingWeight = (body != null && body != GameModel.main.player) ? 0 : BasePathfindingWeight();
-    // at home, consider Pieces to also block pathfinding
-    if (floor is HomeFloor f && (f.pieces[pos] != null || f.grasses[pos] != null)) {
-      return 0;
-    }
-    return originalPathfindingWeight;
-  }
+  // public override float GetPathfindingWeight() {
+  //   var originalPathfindingWeight = (body != null && body != GameModel.main.player) ? 0 : BasePathfindingWeight();
+  //   // at home, consider Pieces to also block pathfinding
+  //   if (floor is HomeFloor f && (f.pieces[pos] != null || f.grasses[pos] != null)) {
+  //     return 0;
+  //   }
+  //   return originalPathfindingWeight;
+  // }
 }
 
 [System.Serializable]

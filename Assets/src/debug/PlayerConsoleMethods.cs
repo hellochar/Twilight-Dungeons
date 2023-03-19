@@ -82,9 +82,7 @@ public class PlayerConsoleMethods {
 
   [ConsoleMethod("CheatGoNextDay", "")]
   public static void CheatGoNextDay() {
-    if (GameModel.main.player.floor is HomeFloor f) {
-      GameModel.main.GoNextDay();
-    }
+    GameModel.main.GoNextDay();
   }
 
   private static GameObject canvas;

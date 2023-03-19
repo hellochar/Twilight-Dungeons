@@ -16,7 +16,7 @@ public class ChasmController : TileController {
     MaybeShowBorder(borderBottom, Vector2Int.down);
     MaybeShowBorder(borderRight, Vector2Int.right);
 
-    if (tile.floor is HomeFloor && tile is Mist mist) {
+    if (/*tile.floor is HomeFloor && */tile is Mist mist) {
       var ps = GetComponent<ParticleSystem>();
       var main = ps.main;
       main.startLifetimeMultiplier = mist.depth;
@@ -33,7 +33,7 @@ public class ChasmController : TileController {
 
   public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     // I'm lazy and don't want to create a new controller
-    if (tile.floor is HomeFloor && tile is Mist) {
+    if (/*tile.floor is HomeFloor && */tile is Mist) {
       if (tile.visibility != TileVisiblity.Unexplored) {
         return new SetTasksPlayerInteraction(
           new MoveNextToTargetTask(GameModel.main.player, tile.pos),

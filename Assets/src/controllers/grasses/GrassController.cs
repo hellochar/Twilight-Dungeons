@@ -44,40 +44,40 @@ public class GrassController : MonoBehaviour, IEntityController, IPlayerInteract
     Vector3.zero, Vector3.zero
   };
 
-  void Update() {
-    // if (grass.readyToExpand && Mathf.Abs(transform.localScale.x - 1) < 0.01f) {
-    //   if (GetComponent<PulseAnimation>() == null && GetComponent<GrowAtStart>() == null) {
-    //     gameObject.AddComponent<PulseAnimation>().pulseScale = 0.9f;
-    //   }
-    // }
+  // void Update() {
+  //   // if (grass.readyToExpand && Mathf.Abs(transform.localScale.x - 1) < 0.01f) {
+  //   //   if (GetComponent<PulseAnimation>() == null && GetComponent<GrowAtStart>() == null) {
+  //   //     gameObject.AddComponent<PulseAnimation>().pulseScale = 0.9f;
+  //   //   }
+  //   // }
 
-    if (grass.floor is HomeFloor) {
-      // if (!grass.readyToExpand) {
-      //   Color gs = new Color(startColor.grayscale, startColor.grayscale, startColor.grayscale, startColor.a);
-      //   Color transparent = gs;
-      //   transparent.a = 0;
-      //   sr.color = Color.Lerp(gs, transparent, Mathf.Pow(Mathf.Sin(Time.time * 2), 2));
-      // } else {
-      //   sr.color = startColor;
-      // }
-      synergyLinePositive.SetPositions(zeroes);
-      if (grass.synergy.IsSatisfied(grass)) {
-        int counter = 0;
-        foreach(var offset in grass.synergy.offsets) {
-          synergyLinePositive.SetPosition(1 + counter * 2, Util.withZ(offset));
-          counter++;
-        }
-      }
-    }
-  }
+  //   if (grass.floor is HomeFloor) {
+  //     // if (!grass.readyToExpand) {
+  //     //   Color gs = new Color(startColor.grayscale, startColor.grayscale, startColor.grayscale, startColor.a);
+  //     //   Color transparent = gs;
+  //     //   transparent.a = 0;
+  //     //   sr.color = Color.Lerp(gs, transparent, Mathf.Pow(Mathf.Sin(Time.time * 2), 2));
+  //     // } else {
+  //     //   sr.color = startColor;
+  //     // }
+  //     synergyLinePositive.SetPositions(zeroes);
+  //     if (grass.synergy.IsSatisfied(grass)) {
+  //       int counter = 0;
+  //       foreach(var offset in grass.synergy.offsets) {
+  //         synergyLinePositive.SetPosition(1 + counter * 2, Util.withZ(offset));
+  //         counter++;
+  //       }
+  //     }
+  //   }
+  // }
 
   public virtual PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
-    if (grass.floor is HomeFloor) {
-      return new SetTasksPlayerInteraction(
-        new MoveNextToTargetTask(GameModel.main.player, grass.pos),
-        new ShowInteractPopupTask(GameModel.main.player, grass)
-      );
-    }
+    // if (grass.floor is HomeFloor) {
+    //   return new SetTasksPlayerInteraction(
+    //     new MoveNextToTargetTask(GameModel.main.player, grass.pos),
+    //     new ShowInteractPopupTask(GameModel.main.player, grass)
+    //   );
+    // }
     return new SetTasksPlayerInteraction(
       new MoveToTargetTask(GameModel.main.player, grass.pos)
     );

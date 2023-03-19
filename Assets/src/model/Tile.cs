@@ -39,9 +39,9 @@ public abstract class Tile : Entity {
     if (body is Actor actor) {
       GameModel.main.EnqueueEvent(() => {
         foreach (var handler in this.Of<IActorLeaveHandler>()) {
-          if (floor.depth == 0 && handler is Grass) {
-            continue;
-          }
+          // if (floor.depth == 0 && handler is Grass) {
+          //   continue;
+          // }
           handler.HandleActorLeave(actor);
         }
       });
@@ -52,9 +52,9 @@ public abstract class Tile : Entity {
     if (body is Actor actor) {
       GameModel.main.EnqueueEvent(() => {
         foreach (var handler in this.Of<IActorEnterHandler>()) {
-          if (floor.depth == 0 && handler is Grass) {
-            continue;
-          }
+          // if (floor.depth == 0 && handler is Grass) {
+          //   continue;
+          // }
           handler.HandleActorEnter(actor);
         }
       });
@@ -154,7 +154,8 @@ public class Wall : Tile {
   }
 
   public override bool ObstructsExploration() {
-    return floor.depth == 0;
+    // return floor.depth == 0;
+    return true;
   }
 
 #if experimental_actionpoints
@@ -322,11 +323,11 @@ public class Water : Tile, IActorEnterHandler {
 
   public void Collect() {
     GameModel.main.player.water += MyRandom.Range(55, 65);
-    if (floor is HomeFloor) {
-      floor.Put(new HomeGround(pos));
-    } else {
+    // if (floor is HomeFloor) {
+    //   floor.Put(new HomeGround(pos));
+    // } else {
       floor.Put(new Ground(pos));
-    }
+    // }
   }
 
   public void HandleActorEnter(Actor who) {

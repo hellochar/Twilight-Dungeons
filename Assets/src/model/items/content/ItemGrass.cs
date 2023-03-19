@@ -74,9 +74,11 @@ public class ItemGrass : Item, ITargetedAction<Ground> {
   }
 
   public void PerformTargettedAction(Player player, Entity target) {
+#if !experimental_cavenetwork
     if (!(player.floor is HomeFloor)) {
       throw new CannotPerformActionException("Plant at home!");
     }
+#endif
     player.UseResourcesOrThrow(20, 0, 0);
     player.SetTasks(
       new MoveNextToTargetTask(player, target.pos),

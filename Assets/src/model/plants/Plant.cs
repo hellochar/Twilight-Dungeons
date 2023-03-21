@@ -132,8 +132,10 @@ public abstract class Plant : Piece, IHideInSidebar, IDaySteppable {
         yield -= cost;
         // var splitItem = boughtItem.Split(1);
         var item = boughtItem.GetType().GetConstructor(new Type[0]).Invoke(new object[0]) as Item;
-        var itemOnGround = new ItemOnGround(pos, item, pos);
-        floor.Put(itemOnGround);
+        if (!player.inventory.AddItem(item)) {
+          var itemOnGround = new ItemOnGround(pos, item, pos);
+          floor.Put(itemOnGround);
+        }
         OnHarvested?.Invoke();
       }
     }

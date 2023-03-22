@@ -72,7 +72,7 @@ public class ItemPlaceableEntity : Item, ITargetedAction<Ground> {
   string ITargetedAction<Ground>.TargettedActionDescription => $"Choose where to place the {entity.displayName}.";
   IEnumerable<Ground> ITargetedAction<Ground>.Targets(Player player) {
     var entityType = entity is GrowingEntity g ? g.inner.GetType() : entity.GetType();
-    return player.GetVisibleTiles().Where(tile => CanPlaceEntityOfType(entityType, tile)).Cast<Ground>();
+    return player.GetVisibleTiles().Where(tile => CanPlaceEntityOfType(entityType, tile) && tile.CanPlaceShape(entity.shape)).Cast<Ground>();
   }
 
   public static bool StructureOccupiable(Tile t, Type type = null) {

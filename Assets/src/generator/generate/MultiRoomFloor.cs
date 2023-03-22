@@ -1,6 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+[Serializable]
+public class MultiRoomFloorParams : FloorGenerationParams {
+  private readonly EncounterGroup EncounterGroup;
+  private readonly int width;
+  private readonly int height;
+  private readonly int numSplits;
+  private readonly bool hasReward;
+  private readonly Encounter[] specialDownstairsEncounters;
+
+  public MultiRoomFloorParams(EncounterGroup EncounterGroup, int depth, int width = 60, int height = 20, int numSplits = 20, bool hasReward = false, params Encounter[] specialDownstairsEncounters)
+    : base(depth)
+  {
+    this.EncounterGroup = EncounterGroup;
+    this.width = width;
+    this.height = height;
+    this.numSplits = numSplits;
+    this.hasReward = hasReward;
+    this.specialDownstairsEncounters = specialDownstairsEncounters;
+  }
+
+  public override Floor generate() {
+    return Generate.MultiRoomFloor(EncounterGroup, depth, width, height, numSplits, hasReward, specialDownstairsEncounters);
+  }
+}
 
 public static partial class Generate {
   /// <summary>

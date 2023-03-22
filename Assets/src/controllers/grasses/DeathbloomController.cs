@@ -14,6 +14,9 @@ public class DeathbloomController : GrassController {
     large = transform.Find("Large").gameObject;
     large.SetActive(false);
     deathbloom.OnBloomed += HandleBloomed;
+    if (deathbloom.isBloomed) {
+      HandleBloomed();
+    }
   }
 
   void HandleBloomed() {

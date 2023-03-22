@@ -25,9 +25,9 @@ public class ItemSeed : Item, ITargetedAction<Ground> {
   public void MoveAndPlant(Ground soil) {
     var model = GameModel.main;
     Player player = model.player;
-    if (model.currentFloor.depth != 0) {
-      throw new CannotPerformActionException("Plant on the home floor.");
-    }
+    // if (model.currentFloor.depth != 0) {
+    //   throw new CannotPerformActionException("Plant on the home floor.");
+    // }
     player.SetTasks(
       new MoveNextToTargetTask(player, soil.pos),
       new GenericPlayerTask(player, () => {

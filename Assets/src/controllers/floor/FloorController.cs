@@ -152,13 +152,15 @@ public class FloorController : MonoBehaviour {
     var grass = tile.grass;
   
     var visibleEntities = new List<Entity>();
+    if (body != null) visibleEntities.Add(body);
     if (floor is HomeFloor f) {
       if (f.pieces[pos] != null) visibleEntities.Add(f.pieces[pos]);
-      if (f.soils[pos] != null) visibleEntities.Add(f.soils[pos]);
     }
-    if (body != null) visibleEntities.Add(body);
     if (itemOnGround != null) visibleEntities.Add(itemOnGround);
     if (grass != null) visibleEntities.Add(grass);
+    if (floor is HomeFloor ff) {
+      if (ff.soils[pos] != null) visibleEntities.Add(ff.soils[pos]);
+    }
     if (tile?.isExplored ?? false) visibleEntities.Add(tile);
 
     return visibleEntities.ToArray();

@@ -45,6 +45,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public int hunger {
     get => m_hunger;
     set {
+      var oldHunger = m_hunger;
       m_hunger = Mathf.Clamp(value, 0, HUNGER_LEVEL_STARVATION);
       if (hunger >= HUNGER_LEVEL_STARVATION) {
         statuses.Add(new StarvationStatus());
@@ -62,6 +63,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
         statuses.RemoveOfType<StarvationStatus>();
         statuses.RemoveOfType<FamishedStatus>();
         statuses.RemoveOfType<HungryStatus>();
+      }
+      if (hunger != oldHunger) {
+        OnChangeHunger?.Invoke(hunger - oldHunger);
       }
     }
   }
@@ -132,6 +136,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
 
   [field:NonSerialized] /// controller only, int delta
   public event Action<int> OnChangeOrganicMatter;
+
+  [field:NonSerialized] /// controller only, int delta
+  public event Action<int> OnChangeHunger;
 
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;

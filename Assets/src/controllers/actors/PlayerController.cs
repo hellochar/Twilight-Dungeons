@@ -24,8 +24,16 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
     player.equipment.OnItemDestroyed += HandleEquipmentDestroyed;
     player.OnChangeWater += HandleChangeWater;
     player.OnChangeOrganicMatter += HandleChangeOrganicMatter;
+    player.OnChangeHunger += HandleChangeHunger;
     player.OnMaxHPAdded += HandleMaxHPAdded;
     this.sfxAudio = GetComponent<AudioSource>();
+  }
+
+  private void HandleChangeHunger(int delta) {
+    if (delta < 0) {
+      var worldText = PrefabCache.UI.Instantiate("WorldText", transform);
+      worldText.GetComponent<TMPro.TMP_Text>().text = $"{delta} Hunger";
+    }
   }
 
   private void HandleChangeWater(int delta) {

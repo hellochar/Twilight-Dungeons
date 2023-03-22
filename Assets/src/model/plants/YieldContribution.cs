@@ -22,11 +22,11 @@ public class YieldContribution {
   // "+4 - Soil has {4} nutrients.";
   // "+3 - Next to {3} Grasses.";
 
-  public static YieldContribution AgeYieldContribution(Piece p) => new YieldContribution {
-    active = true,
-    bonus = 3 + ((Plant)p).dayAge,
-    description = $"Age {((Plant)p).dayAge}.",
-  };
+  // public static YieldContribution AgeYieldContribution(Piece p) => new YieldContribution {
+  //   active = true,
+  //   bonus = 3 + ((Plant)p).dayAge,
+  //   description = $"Age {((Plant)p).dayAge}.",
+  // };
 
   public static YieldContribution NearGrassYieldContribution(Piece p) {
     var nearbyGrasses = p.floor.GetAdjacentTiles(p.pos).Select(t => t.grass).Where(t => t != null);

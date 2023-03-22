@@ -6,8 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class PlantController : PieceController, IPopupOverride {
-  public Plant plant => (Plant) piece;
+public class PlantController : BodyController, IPopupOverride {
+  public Plant plant => (Plant) body;
   public GameObject particles;
   public GameObject seed;
   public GameObject young;
@@ -25,9 +25,9 @@ public class PlantController : PieceController, IPopupOverride {
         var plantUIController = plantUI.GetComponentInChildren<PlantUIController>();
         plantUIController.plantController = this;
         CameraController.main.SetCameraOverride(plantUIController);
-      } else {
+      } else if (popup != null) {
         // closing popup
-        Destroy(popup);
+        Destroy(popup.gameObject);
         popup = null;
       }
     }
@@ -63,7 +63,7 @@ public class PlantController : PieceController, IPopupOverride {
 
   private void HandleHarvested() {
     AudioClipStore.main.plantHarvest.Play(0.1f);
-    // popupOpen = false;
+    popupOpen = false;
 
     var particles = PrefabCache.Effects.Instantiate("Harvest Particles", transform.parent);
     particles.transform.localPosition = transform.localPosition;

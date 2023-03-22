@@ -436,7 +436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6927577746179315202
 RectTransform:
   m_ObjectHideFlags: 0
@@ -662,7 +662,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiName: {fileID: 362008383429150510}
   uiInfo: {fileID: 5376805925594493693}
-  contributions: {fileID: 6753181123373547852}
   harvests: {fileID: 1365159450764283852}
   image: {fileID: 986219076665158127}
   tutorialExtras: {fileID: 0}

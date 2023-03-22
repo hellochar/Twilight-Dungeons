@@ -4,6 +4,9 @@ using System.Linq;
 [Serializable]
 class ItemWildwoodLeaf : Item, IEdible {
   public static int yieldCost = 2;
+
+  public ItemWildwoodLeaf(int stacks) : base(stacks) { }
+
   public override int stacksMax => int.MaxValue;
 
   public void Eat(Actor a) {

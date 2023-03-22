@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 1090504782704060601, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
       propertyPath: m_Name
-      value: Broodpuff
+      value: Chloropuff
       objectReference: {fileID: 0}
     - target: {fileID: 1769799323776536715, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
@@ -77,27 +77,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5745128887423588196, guid: da91ef38d5aabdc489fdd4740e26fadf,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.pivot.y
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 5745128887423588196, guid: da91ef38d5aabdc489fdd4740e26fadf,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5745128887423588196, guid: da91ef38d5aabdc489fdd4740e26fadf,
-        type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6212608536644541733, guid: da91ef38d5aabdc489fdd4740e26fadf,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: cfc35b2f84883474b9ffa4816e841fa5,
-        type: 3}
     - target: {fileID: 8844925212396796699, guid: da91ef38d5aabdc489fdd4740e26fadf,
         type: 3}
       propertyPath: m_Sprite

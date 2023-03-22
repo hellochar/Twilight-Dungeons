@@ -5,6 +5,9 @@ using UnityEngine;
 [Serializable]
 public class ItemWildwoodWreath : EquippableItem, IBodyMoveHandler {
   public static int yieldCost = 2;
+
+  public ItemWildwoodWreath(int stacks) : base(stacks) {}
+
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
   public override int stacksMax => int.MaxValue;
   // public override bool disjoint => true;

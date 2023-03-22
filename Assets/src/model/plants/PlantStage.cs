@@ -29,7 +29,7 @@ public abstract class PlantStage {
     this.plant = plant;
   }
 
-  internal void GrowTowardsNextStage() {
+  internal void StepDay() {
     daysGrown++;
     if (daysGrown >= daysToGrow) {
       GoNextStage();
@@ -37,8 +37,6 @@ public abstract class PlantStage {
   }
 
   internal void GoNextStage() => plant.GoNextStage();
-
-  internal virtual void RestockHarvests(int yield) {}
 }
 
 [Serializable]

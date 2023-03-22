@@ -368,7 +368,7 @@ public static class TileExtensions {
       if (!floor.InBounds(newPos)) {
         return false;
       }
-      if (!floor.tiles[newPos].CanBeOccupied()) {
+      if (!floor.tiles[newPos].CanBeOccupied() || (floor.tiles[newPos].GetType() != tile.GetType())) {
         return false;
       }
     }

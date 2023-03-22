@@ -99,9 +99,9 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
       throw new CannotPerformActionException($"Need {actionPoints} Action Points!");
     }
 #endif
-    if (actionPoints > 0 && floor.depth != 0) {
-      throw new CannotPerformActionException("Go home first!");
-    }
+    // if (actionPoints > 0 && floor.depth != 0) {
+    //   throw new CannotPerformActionException("Go home first!");
+    // }
     this.water -= water;
     this.organicMatter -= organicMatter;
 #if experimental_actionpoints

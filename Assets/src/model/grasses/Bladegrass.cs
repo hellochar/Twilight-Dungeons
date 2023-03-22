@@ -34,7 +34,7 @@ public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
 }
 
 [Serializable]
-[ObjectInfo("bladegrass")]
+[ObjectInfo("bladegrass-knife")]
 internal class ItemBladegrassBlade : EquippableItem, IWeapon {
   public (int, int) AttackSpread => (2, 2);
   public override EquipmentSlot slot => EquipmentSlot.Weapon;

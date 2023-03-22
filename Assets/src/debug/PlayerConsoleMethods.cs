@@ -7,14 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class PlayerConsoleMethods {
 
-  [ConsoleMethod("CheatAddItemGrass", "Add an ItemGrass to player inventory")]
+  [ConsoleMethod("CAddItemGrass", "Add an ItemGrass to player inventory")]
   public static void CheatAddItemGrass(string grassTypeStr, int stacks = 1) {
     Type grassType = Assembly.GetExecutingAssembly().GetType(grassTypeStr);
-    ItemGrass itemGrass = new ItemGrass(grassType, stacks);
+    ItemGrass itemGrass = new ItemGrass(grassType);
     GameModel.main.player.inventory.AddItem(itemGrass);
   }
 
-  [ConsoleMethod("CheatAddItem", "Add an Item to player inventory")]
+  [ConsoleMethod("CAddItem", "Add an Item to player inventory")]
   public static void CheatAddItem(string itemTypeStr) {
     Type itemType = Assembly.GetExecutingAssembly().GetType(itemTypeStr);
     var constructor = itemType.GetConstructor(new Type[0]);
@@ -22,7 +22,7 @@ public class PlayerConsoleMethods {
     GameModel.main.player.inventory.AddItem(item);
   }
 
-  [ConsoleMethod("CheatAddItemPlaceableEntity", "Add an ItemPlaceableEntity to player inventory")]
+  [ConsoleMethod("CAddItemPlaceableEntity", "Add an ItemPlaceableEntity to player inventory")]
   public static void CheatAddItemPlaceableEntity(string entityTypeStr, int stacks = 1) {
     // Type grassType = Assembly.GetExecutingAssembly().GetType(grassTypeStr);
     Type entityType = Assembly.GetExecutingAssembly().GetType(entityTypeStr);
@@ -38,59 +38,64 @@ public class PlayerConsoleMethods {
     GameModel.main.player.inventory.AddItem(item);
   }
 
-  [ConsoleMethod("CheatTriggerCaptureAction", "Trigger capture action")]
+  [ConsoleMethod("CTriggerCaptureAction", "Trigger capture action")]
   public static void CheatTriggerCaptureAction() {
     new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
   }
 
-  [ConsoleMethod("CheatGetReward", "Show reward UI")]
+  [ConsoleMethod("CGetReward", "Show reward UI")]
   public static void CheatGetRewardAsync() {
     // new CaptureAction().ShowTargetingUIThenPerform(GameModel.main.player);
     var _ = GameModel.main.currentFloor.CreateRewards().ShowRewardUIAndWaitForChoice();
   }
 
 
-  [ConsoleMethod("CheatAddVisibility", "Force add visibility")]
+  [ConsoleMethod("CAddVisibility", "Force add visibility")]
   public static void CheatAddVisibility() {
     GameModel.main.player.floor.ForceAddVisibility();
   }
 
-  [ConsoleMethod("CheatNewGameTutorial", "")]
+  [ConsoleMethod("CNewGameTutorial", "")]
   public static void CheatNewGameTutorial() {
     GameModel.GenerateTutorialAndSetMain();
     SceneManager.LoadSceneAsync("Scenes/Game");
   }
 
-  [ConsoleMethod("CheatAddWater", "")]
+  [ConsoleMethod("CAddWater", "")]
   public static void CheatAddWater(int water = 100) {
     GameModel.main.player.water += water;
   }
 
 #if experimental_actionpoints
-  [ConsoleMethod("CheatAddActionPoint", "")]
+  [ConsoleMethod("CAddActionPoint", "")]
   public static void CheatAddActionPoint() {
     GameModel.main.player.actionPoints++;
   }
 #endif
 
-  [ConsoleMethod("CheatMaturePlants", "")]
+  [ConsoleMethod("CMaturePlants", "")]
   public static void CheatMaturePlants() {
     foreach(var plant in GameModel.main.home.plants.ToList()) {
       plant.GoNextStage();
     }
   }
 
-  [ConsoleMethod("CheatGoNextDay", "")]
+  [ConsoleMethod("CGoNextDay", "")]
   public static void CheatGoNextDay() {
     GameModel.main.GoNextDay();
   }
 
   private static GameObject canvas;
-  [ConsoleMethod("ToggleHUD", "")]
+  [ConsoleMethod("CToggleHUD", "")]
   public static void ToggleHUD() {
     if (canvas == null) {
       canvas = GameObject.Find("Canvas");
     }
     canvas.SetActive(!canvas.activeSelf);
+  }
+
+  [ConsoleMethod("CDoEncounter", "")]
+  public static void DoEncounter(string name) {
+    new Encounter(name).Apply(GameModel.main.player.floor, GameModel.main.player.floor.root);
   }
 }

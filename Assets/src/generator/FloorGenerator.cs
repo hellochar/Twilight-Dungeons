@@ -63,6 +63,12 @@ public abstract class FloorGenerator {
   protected abstract EncounterGroup GetEncounterGroup(int depth);
 
   public Floor generateFloor(FloorGenerationParams parameters) {
+    EncounterGroup = GetEncounterGroup(parameters.depth);
+
+    /// set the seed
+    var seed = parameters.seed;
+    Debug.Log("Depth " + parameters.depth + " seed " + seed.ToString("x"));
+    MyRandom.SetSeed(seed);
     Floor f = parameters.generate();
     PostProcessFloor(f);
     return f;
@@ -110,7 +116,7 @@ public abstract class FloorGenerator {
   // }
 
   public void PostProcessFloor(Floor floor) {
-#if experimental_chainfloors
+#if experimental_chainfloors || experimental_cavenetwork
     PostProcessPushEnemiesBack(floor);
 #endif
 

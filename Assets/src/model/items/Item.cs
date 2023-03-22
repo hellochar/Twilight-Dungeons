@@ -48,7 +48,7 @@ public class Item : IModifierProvider {
   }
 
   // must take a parameter so ItemController can invoke this without erroring
-  public void Destroy(object unused = null) {
+  public virtual void Destroy(object unused = null) {
     OnDestroyed?.Invoke();
     if (inventory != null) {
       inventory.OnItemDestroyed?.Invoke(this);
@@ -56,11 +56,11 @@ public class Item : IModifierProvider {
     }
   }
 
-  // public void Drop(Actor a) {
-  //   if (inventory != null) {
-  //     inventory.TryDropItem(a.floor, a.pos, this);
-  //   }
-  // }
+  public void Drop(Actor a) {
+    if (inventory != null) {
+      inventory.TryDropItem(a.floor, a.pos, this);
+    }
+  }
 
   internal virtual string GetStats() {
     return ObjectInfo.GetDescriptionFor(this);
@@ -69,7 +69,7 @@ public class Item : IModifierProvider {
   public virtual List<MethodInfo> GetAvailableMethods(Player player) {
     var methods = new List<MethodInfo>() {
       // GetType().GetMethod("Destroy"),
-      // GetType().GetMethod("Drop")
+      GetType().GetMethod("Drop")
     };
     if (this is IEdible edible) {
       methods.Add(GetType().GetMethod("Eat"));

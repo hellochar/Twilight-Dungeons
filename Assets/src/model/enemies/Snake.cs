@@ -6,12 +6,9 @@ using UnityEngine;
 [ObjectInfo(description: "Chases you.\nAttacks deal no damage but apply poison.")]
 public class Snake : AIActor, IDealAttackDamageHandler {
   public static Item HomeItem => new ItemSnakeVenom(3);
-  // attack shortly after the player - this lets the player set up an attack on another target
-  // and then get out of the way
-  public override float turnPriority => task is AttackGroundTask ? 20 : base.turnPriority;
   public Snake(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 3;
+    hp = baseMaxHp = 4;
   }
 
   protected override ActorTask GetNextTask() {

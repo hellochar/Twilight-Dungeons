@@ -93,7 +93,7 @@ public class Encounters {
 
   public static Encounter AddWallflowers = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room).Where(Wallflower.CanOccupy);
-    var num = 1;
+    var num = 3;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Wallflower(tile.pos));
     }
@@ -101,7 +101,10 @@ public class Encounters {
 
   public static Encounter AddBird = new Encounter((Floor floor, Room room) => {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
-    floor.Put(new Bird(tile.pos));
+    var num = 2;
+    for (int i = 0; i < num; i++) {
+      floor.Put(new Bird(tile.pos));
+    }
   });
 
   public static Encounter AddSnake = new Encounter((Floor floor, Room room) => {
@@ -112,7 +115,7 @@ public class Encounters {
   public static Encounter AddChillers = new Encounter((Floor floor, Room room) => {
     var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
     var startTile = Util.RandomPick(tiles);
-    var num = 1;
+    var num = 5;
     foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => tiles.Contains(t)).Take(num)) {
       floor.Put(new ChillerGrass(tile.pos));
     }
@@ -125,13 +128,13 @@ public class Encounters {
 
   public static Encounter AddSkullys = new Encounter((Floor floor, Room room) => {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
-    // var num = RandomRangeBasedOnIndex(floor.depth / 2,
-    //   (1, 2),
-    //   (2, 2),
-    //   (2, 3),
-    //   (2, 4)
-    // );
-    var num = 1;
+    var num = RandomRangeBasedOnIndex(floor.depth / 2,
+      (2, 2),
+      (2, 2),
+      (2, 3),
+      (2, 4)
+    );
+    // var num = 1;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Skully(tile.pos));
     }

@@ -7,6 +7,22 @@ internal class PlayerActionAttribute : Attribute {
 
 [Serializable]
 public abstract class Station : Body {
+
+  public static Vector2Int[] StationShape = new Vector2Int[] {
+    // new Vector2Int(-1, -1),
+    // new Vector2Int(-1,  0),
+    // new Vector2Int(-1, +1),
+
+    // new Vector2Int(0, -1),
+    new Vector2Int(0,  0),
+    new Vector2Int(0, +1),
+
+    // new Vector2Int(+1, -1),
+    new Vector2Int(+1,  0),
+    new Vector2Int(+1, +1),
+  };
+  public override Vector2Int[] shape => StationShape;
+
   public Inventory inventory { get; }
   public Station(Vector2Int pos) : base(pos) {
     durability = maxDurability;

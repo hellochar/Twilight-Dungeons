@@ -77,14 +77,14 @@ public class ItemSlime : Item {
 
   public override int stacksMax => 1;
 
-  [PlayerAction]
-  public void PurifyAll() {
-    var player = GameModel.main.player;
-    player.UseActionPointOrThrow();
-    foreach(var slime in player.inventory.ItemsNonNull().OfType<ItemSlime>()) {
-      slime.PurifyFree(player);
-    }
-  }
+  // [PlayerAction]
+  // public void PurifyAll() {
+  //   var player = GameModel.main.player;
+  //   player.UseActionPointOrThrow();
+  //   foreach(var slime in player.inventory.ItemsNonNull().OfType<ItemSlime>()) {
+  //     slime.PurifyFree(player);
+  //   }
+  // }
 
   public void PurifyFree(Player player) {
     var water = 0;
@@ -95,15 +95,15 @@ public class ItemSlime : Item {
     Destroy();
   }
 
-  public override List<MethodInfo> GetAvailableMethods(Player player) {
-    // disallow dropping or destroying
-    return new List<MethodInfo>();
-    // var methods = base.GetAvailableMethods(player);
-    // if (player.floor.depth == 0) {
-    //   methods.Add(GetType().GetMethod("Purify"));
-    // }
-    // return methods;
-  }
+  // public override List<MethodInfo> GetAvailableMethods(Player player) {
+  //   // disallow dropping or destroying
+  //   return new List<MethodInfo>();
+  //   // var methods = base.GetAvailableMethods(player);
+  //   // if (player.floor.depth == 0) {
+  //   //   methods.Add(GetType().GetMethod("Purify"));
+  //   // }
+  //   // return methods;
+  // }
 }
 
 [Serializable]

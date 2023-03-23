@@ -56,6 +56,7 @@ public class Processor : Station, IInteractableInventory {
       throw new CannotPerformActionException("Inventory full!");
     }
     itemGrass.stacks--;
+    ReduceDurability();
     // settings stacks to 0 will Destroy() the item, removing it from the inventory
     // and making itemGrass null.
     if (itemGrass != null) {

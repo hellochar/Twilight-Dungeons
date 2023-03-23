@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo("station", description: "Build more items here.")]
 public class CraftingStation : Station, IDaySteppable {
-  public override int maxDurability => 1;
+  public override int maxDurability => 5;
   public override string popupPrefab => "CraftingStationPopupContent";
   private Item crafting {
     get => inventory[0];
@@ -32,85 +32,91 @@ public class CraftingStation : Station, IDaySteppable {
 
   public CraftingStation(Vector2Int pos) : base(pos) {}
 
-  // [PlayerAction]
-  // public void Crafting() => Craft(new ItemPlaceableEntity(
-  //   new GrowingEntity(new Vector2Int(),
-  //     new CraftingStation(new Vector2Int())
-  //   )
-  // ));
+  [PlayerAction]
+  public void Crafting() => Craft(new ItemPlaceableEntity(
+    // new GrowingEntity(new Vector2Int(),
+      new CraftingStation(new Vector2Int())
+    // )
+  ));
 
   // [PlayerAction]
-  public void Shovel() => Craft(new ItemShovel(1));
+  // public void Shovel() => Craft(new ItemShovel(1));
 
-  // [PlayerAction]
+  [PlayerAction]
   public void CreatureFood() => Craft(new ItemCreatureFood());
 
-  public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
-    methods.Add(GetType().GetMethod("Shovel"));
-    methods.Add(GetType().GetMethod("CreatureFood"));
-  }
+  // public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
+  //   methods.Add(GetType().GetMethod("Shovel"));
+  //   methods.Add(GetType().GetMethod("CreatureFood"));
+  // }
 
-  // [PlayerAction]
-  // public void Processor() => Craft(new ItemPlaceableEntity(
-  //   new Processor(new Vector2Int())
-  // ));
+  [PlayerAction]
+  public void Processor() => Craft(new ItemPlaceableEntity(
+    new Processor(new Vector2Int())
+  ));
 
   // [PlayerAction]
   // public void Campfire() => Craft(new ItemPlaceableEntity(
   //   new Campfire(new Vector2Int())
   // ));
 
-  // [PlayerAction]
-  // public void Composter() => Craft(new ItemPlaceableEntity(
-  //   new Composter(new Vector2Int())
-  // ));
+  [PlayerAction]
+  public void Desalinator() => Craft(new ItemPlaceableEntity(
+      new Desalinator(new Vector2Int())
+  ));
 
-  // [PlayerAction]
-  // public void SoilMixer() => Craft(new ItemPlaceableEntity(
-  //   new SoilMixer(new Vector2Int())
-  // ));
 
-  // [PlayerAction]
-  // public void Cloner() => Craft(new ItemPlaceableEntity(
-  //   new GrowingEntity(new Vector2Int(),
-  //     new Cloner(new Vector2Int())
-  //     )
-  // ));
+  [PlayerAction]
+  public void Composter() => Craft(new ItemPlaceableEntity(
+    new Composter(new Vector2Int())
+  ));
 
-  // [PlayerAction]
-  // public void Modder() => Craft(new ItemPlaceableEntity(
-  //   new GrowingEntity(new Vector2Int(),
-  //     new Modder(new Vector2Int())
-  //   )
-  // ));
+  [PlayerAction]
+  public void SoilMixer() => Craft(new ItemPlaceableEntity(
+    new SoilMixer(new Vector2Int())
+  ));
 
-  // [PlayerAction]
-  // public void Driller() => Craft(new ItemPlaceableEntity(
-  //   new GrowingEntity(new Vector2Int(),
-  //     new Driller(new Vector2Int())
-  //   )
-  // ));
+  [PlayerAction]
+  public void Cloner() => Craft(new ItemPlaceableEntity(
+    // new GrowingEntity(new Vector2Int(),
+      new Cloner(new Vector2Int())
+      // )
+  ));
+
+  [PlayerAction]
+  public void Modder() => Craft(new ItemPlaceableEntity(
+    // new GrowingEntity(new Vector2Int(),
+      new Modder(new Vector2Int())
+    // )
+  ));
+
+  [PlayerAction]
+  public void Driller() => Craft(new ItemPlaceableEntity(
+    // new GrowingEntity(new Vector2Int(),
+      new Driller(new Vector2Int())
+    // )
+  ));
 
   public void Craft(Item item) {
-    // crafting = item;
     Player player = GameModel.main.player;
     // player.UseActionPointOrThrow();
-    player.UseResourcesOrThrow(0, 5, 0);
-    bool success = player.inventory.AddItem(item, this);
-    if (!success) {
-      player.floor.Put(new ItemOnGround(player.pos, item, player.pos));
-    }
+    // player.UseResourcesOrThrow(0, 5, 1);
+    crafting = item;
+    // bool success = player.inventory.AddItem(item, this);
+    // if (!success) {
+    //   player.floor.Put(new ItemOnGround(player.pos, item, player.pos));
+    // }
     // this.ReduceDurability();
   }
 
   public void StepDay() {
-    // if (crafting != null) {
-    //   // poop the item out
-    //   var item = crafting;
-    //   crafting.inventory.RemoveItem(crafting);
-    //   floor.Put(new ItemOnGround(pos, item, pos));
-    //   this.ReduceDurability();
-    // }
-    // crafting = null;
+    if (crafting != null) {
+      // poop the item out
+      var item = crafting;
+      crafting.inventory.RemoveItem(crafting);
+      floor.Put(new ItemOnGround(pos, item, pos));
+      this.ReduceDurability();
+    }
+    crafting = null;
   }
 }

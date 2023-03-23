@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static partial class Generate {
   public static HomeFloor CaveNetworkHomeFloor(EncounterGroup EncounterGroup) {
-    HomeFloor floor = new HomeFloor(9, 7);
+    HomeFloor floor = new HomeFloor(12, 8);
 
     // fill with floor tiles by default
     FloorUtils.CarveGround(floor);
@@ -34,10 +34,10 @@ public static partial class Generate {
 
     EncounterGroup.Plants.GetRandomAndDiscount(1f).Apply(floor, room0);
 
-    Encounters.AddWater.Apply(floor, room0);
-    Encounters.ThreeAstoriasInCorner.Apply(floor, room0);
+    // Encounters.AddWater.Apply(floor, room0);
+    // Encounters.ThreeAstoriasInCorner.Apply(floor, room0);
 
-    floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
+    // floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

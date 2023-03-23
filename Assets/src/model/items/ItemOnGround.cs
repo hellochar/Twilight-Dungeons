@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [ObjectInfo(description: "Tap to pick up this item and see what it does.")]
-public class ItemOnGround : Entity {
+public class ItemOnGround : Entity, IDaySteppable {
   public static bool CanOccupy(Tile tile) => tile is Ground && tile.item == null && (tile.CanBeOccupied() || tile.body is Player);
   public static void PlacementBehavior(Floor floor, ItemOnGround i) {
     var newPosition = floor.BreadthFirstSearch(i.pos, (_) => true)
@@ -61,13 +61,8 @@ public class ItemOnGround : Entity {
   }
 
   public virtual void StepDay() {
-    if (age > 0) {
-      var floor = this.floor;
-      KillSelf();
-      int numOrganicMatters = YieldContributionUtils.GetCost(item) / 2;
-      for (int i = 0; i < numOrganicMatters; i++) {
-        floor.Put(new OrganicMatterOnGround(pos));
-      }
+    if (item is ItemGrass g && floor.soils[pos] != null) {
+      g.PlaceGrass(tile);
     }
   }
 

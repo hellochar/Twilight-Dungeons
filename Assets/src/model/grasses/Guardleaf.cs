@@ -30,6 +30,12 @@ public class Guardleaf : Grass, IActorEnterHandler {
       GameModel.main.EnqueueEvent(KillSelf);
     }
   }
+
+  // public override void StepDay() {
+  //   floor.Put(new ItemOnGround(pos, new ItemGuardleafCutting(MyRandom.Range(1, 3))));
+  //   KillSelf();
+  //   // base.StepDay();
+  // }
 }
 
 [Serializable]

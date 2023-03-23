@@ -31,6 +31,10 @@ public class Bladegrass : Grass, IActorEnterHandler, IActorLeaveHandler {
       actor.TakeDamage(2, this);
     }
   }
+
+  // public override void StepDay() {
+  //   base.StepDay();
+  // }
 }
 
 [Serializable]

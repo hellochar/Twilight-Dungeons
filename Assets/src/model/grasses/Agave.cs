@@ -18,6 +18,8 @@ public class Agave : Grass {
     }
   }
 
+  public override void StepDay() {
+    SpreadAutomatically();
   }
 }
 

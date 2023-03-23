@@ -29,4 +29,8 @@ public class Mushroom : Grass, IActorEnterHandler {
     
     return isHuggingWall && isGround && isNotOccupied;
   }
+
+  public override void StepDay() {
+    SpreadAutomatically();
+  }
 }

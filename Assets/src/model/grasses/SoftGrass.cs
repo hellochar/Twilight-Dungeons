@@ -14,6 +14,10 @@ public class SoftGrass : Grass, IActorEnterHandler {
       OnNoteworthyAction();
     }
   }
+
+  public override void StepDay() {
+    SpreadAutomatically();
+  }
 }
 
 [Serializable]

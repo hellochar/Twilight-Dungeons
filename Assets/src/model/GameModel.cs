@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -111,22 +111,11 @@ public class GameModel {
     }
   }
 
-  internal IEnumerator StepDay(Action<Entity> OnEntityTurn, Action then) {
-    yield return new WaitForSeconds(2f);
+  public IEnumerable<Entity> StepDay() {
     day++;
-    foreach (var p in home.entities.ToList()) {
-      if (p is IDaySteppable s && p.isVisible) {
-        try {
-          OnEntityTurn(p);
-          s.StepDay();
-        } catch (Exception e) {
-          Debug.LogError(e);
-          turnManager.latestException = e;
-        }
-        yield return new WaitForSeconds(0.75f);
-      }
-    }
-    then();
+    // steps through the Day for all CaveNodes.
+    // CAREFUL - this lazy evaluates so that the caller can iterate through it async!
+    return caveNetwork.nodes.SelectMany(node => node.StepDay());
   }
 
   public void GoNextDay() {

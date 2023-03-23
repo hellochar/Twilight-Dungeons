@@ -82,15 +82,22 @@ public class GameModelController : MonoBehaviour {
   public bool isSteppingDay = false;
   public void GoNextDay() {
     isSteppingDay = true;
+    gameLoop = StartCoroutine(StepDayCoroutine(() => {
+      isSteppingDay = false;
+      gameLoop = null;
+    }));
+  }
+
+  public IEnumerator StepDayCoroutine(Action then = null) {
     // CameraFocuser focuser = new CameraFocuser(GameModel.main.player);
-    CameraFocuser focuser = new CameraFocuser(
-#if experimental_expandinghome
-      GameModel.main.home.entities.OfType<Pit>().First()
-#else
-      GameModel.main.player
-#endif
-    );
-    CameraController.main.SetCameraOverride(focuser);
+//     CameraFocuser focuser = new CameraFocuser(
+// #if experimental_expandinghome
+//       GameModel.main.home.entities.OfType<Pit>().First()
+// #else
+//       GameModel.main.player
+// #endif
+//     );
+//     CameraController.main.SetCameraOverride(focuser);
 
     var messageGameObject = PrefabCache.UI.Instantiate("Map Selector Message");
     messageGameObject.transform.SetParent(GameObject.Find("Canvas").transform, false);
@@ -100,9 +107,9 @@ public class GameModelController : MonoBehaviour {
 
     // Messages.Create($"Day {GameModel.main.day + 1}");
 
-    gameLoop = StartCoroutine(model.StepDay(
-      // handle entity turn
-      (Entity e) => {
+    yield return new WaitForSeconds(1f);
+    foreach(var e in model.StepDay()) {
+      if (e.floor == GameModel.main.currentFloor) {
         // textComponent.text = $"{e.displayName}'s Turn";
         var gameObject = CurrentFloorController.GameObjectFor(e);
         // gameObject might be null if we're loading the game from scratch and the Floor GameObjects haven't been created yet
@@ -110,17 +117,15 @@ public class GameModelController : MonoBehaviour {
         if (pulse != null) {
           pulse.pulseScale = 0.75f;
         }
-        focuser.target = e;
-      },
-
-      // on StepDay finished
-      () => {
-        gameLoop = null;
-        isSteppingDay = false;
-        CameraController.main.SetCameraOverride(null);
-        Destroy(messageGameObject);
+        // focuser.target = e;
+        yield return new WaitForSeconds(0.05f);
       }
-    ));
+    }
+
+    CameraController.main.SetCameraOverride(null);
+    Destroy(messageGameObject);
+
+    then?.Invoke();
   }
 
   private void HandlePlayersChoice() {

@@ -17,6 +17,7 @@ public class EncounterGroup {
   public EncounterBag Spice;
   /// <summary>The core grass spawns.</summary>
   public EncounterBag Grasses;
+  public EncounterBag DayChange = new EncounterBag();
 
   ///<summary>Walls, blockades, tile modifications.</summary>
   public EncounterBag Walls;
@@ -48,6 +49,7 @@ public class EncounterGroup {
 Mobs: {Mobs}
 Spice: {Spice}
 Grasses: {Grasses}
+DayChange: {DayChange}
 Walls: {Walls}
 Chasms: {Chasms}
 Rewards: {Rewards}

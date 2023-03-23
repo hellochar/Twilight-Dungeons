@@ -565,6 +565,23 @@ public partial class Floor {
       }
     }
   }
+
+  public IEnumerable<Entity> StepDay() {
+    // step all entities
+    foreach (var p in entities.ToList()) {
+      if (p is IDaySteppable s) {
+        try {
+          if (p.age > 0) {
+            s.StepDay();
+          }
+        } catch (Exception e) {
+          Debug.LogError(e);
+          GameModel.main.turnManager.latestException = e;
+        }
+        yield return p;
+      }
+    }
+  }
 }
 
 // just a special marker - turn music off

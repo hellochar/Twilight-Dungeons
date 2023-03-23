@@ -70,6 +70,23 @@ public class CaveNode {
     children.Add(other);
     other.parents.Add(this);
   }
+
+  public IEnumerable<Entity> StepDay() {
+    if (Floor != null) {
+      var steppedEntities = Floor.StepDay();
+
+      if (Floor.depth != 0) {
+        // we've stepped a day; add a random encounter
+        var group = GameModel.main.generator.EncounterGroup;
+        var dayChangeEncounter = group.DayChange.GetRandomAndDiscount();
+        if (dayChangeEncounter != null) {
+          dayChangeEncounter.Apply(Floor, Floor.root);
+        }
+      }
+      return steppedEntities;
+    }
+    return Enumerable.Empty<Entity>();
+  }
 }
 
 // represents a DAG of floors.

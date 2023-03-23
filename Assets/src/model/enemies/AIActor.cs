@@ -6,7 +6,7 @@ using static YieldContribution;
 
 /// An actor whose actions are controlled by some sort of AI.
 [Serializable]
-public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractableInventory {
+public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractableInventory, IBodyTakeAttackDamageHandler {
   public Inventory inventory = new Inventory(2);
   private AI aiOverride;
 
@@ -82,6 +82,22 @@ public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractab
     return base.Step();
   }
 
+  protected ActorTask GetNextIdleTask() {
+    switch (MyRandom.Range(0, 4)) {
+      case 0:
+        return new MoveRandomlyTask(this);
+      case 1:
+        return new SleepTask(this, 10, true);
+      case 2:
+        return new MoveToTargetTask(this,
+          Util.RandomPick(floor.EnumerateFloor().Where(p => floor.tiles[p].CanBeOccupied()))
+        );
+      case 3:
+        default:
+        return new WaitTask(this, 5);
+    }
+  }
+
   [PlayerAction]
   public void PickUp() {
     var player = GameModel.main.player;
@@ -130,5 +146,16 @@ public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractab
     //   item.stacks = stacks;
     //   floor.Put(new ItemOnGround(pos, item));
     // }
+  }
+
+  public void HandleTakeAttackDamage(int damage, int hp, Actor source) {
+    if (source is Player && faction == Faction.Neutral) {
+      faction = Faction.Enemy;
+      ClearTasks();
+    }
+  }
+
+  public bool IsNeutral() {
+    return faction == Faction.Neutral;
   }
 }

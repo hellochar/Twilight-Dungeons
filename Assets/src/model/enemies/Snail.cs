@@ -24,6 +24,9 @@ public class Snail : AIActor, IActionPerformedHandler, ITakeAnyDamageHandler {
   }
 
   protected override ActorTask GetNextTask() {
+    if (IsNeutral()) {
+      return GetNextIdleTask();
+    }
     var player = GameModel.main.player;
     if (CanTargetPlayer()) {
       if (IsNextTo(player)) {

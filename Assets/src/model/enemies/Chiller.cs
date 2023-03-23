@@ -46,14 +46,21 @@ public class Chiller : AIActor {
 
 [Serializable]
 [ObjectInfo("chiller-grass", description: "A creature lies in wait here. Anything that walks over it will become targeted.")]
-public class ChillerGrass : Grass, IActorLeaveHandler {
+public class ChillerGrass : Grass, IActorEnterHandler {
   internal static bool CanOccupy(Tile tile) => tile.CanBeOccupied() && tile is Ground;
 
   public static Item HomeItem => new ItemChillerGrassCutting();
   public ChillerGrass(Vector2Int pos) : base(pos) {
   }
 
-  public void HandleActorLeave(Actor who) {
+  // public void HandleActorLeave(Actor who) {
+  //   if (!(who is Chiller)) {
+  //     floor.Put(new Chiller(pos).Targetting(who));
+  //     Kill(who);
+  //   }
+  // }
+
+  public void HandleActorEnter(Actor who) {
     if (!(who is Chiller)) {
       floor.Put(new Chiller(pos).Targetting(who));
       Kill(who);

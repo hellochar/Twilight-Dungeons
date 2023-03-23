@@ -10,7 +10,7 @@ public class MapSelectorController : MonoBehaviour {
   public GameObject selectHighlightPrefab;
   public event Action<Entity> OnSelected;
   public event Action OnCancelled;
-  public IEnumerable<Entity> entities;
+  public List<Entity> entities;
   public string message;
   private GameObject hud;
   private GameObject messageGameObject;

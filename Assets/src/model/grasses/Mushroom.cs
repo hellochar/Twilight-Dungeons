@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Walk over it to harvest.")]
+[ObjectInfo(description: "Walk over it to Eat and reduce hunger by 5.")]
 public class Mushroom : Grass, IActorEnterHandler {
   public static Item HomeItem => new ItemMushroom(4);
   public Mushroom(Vector2Int pos) : base(pos) {
@@ -14,7 +14,8 @@ public class Mushroom : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     var player = GameModel.main.player;
     if (actor == player) {
-      BecomeItemInInventory(new ItemMushroom(1), player);
+      player.hunger -= 5;
+      Kill(player);
     }
   }
 

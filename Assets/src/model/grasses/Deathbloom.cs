@@ -38,26 +38,26 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
   }
 
   public void HandleActorEnter(Actor actor) {
-    // if (isBloomed) {
-    //   if (actor is Player p) {
-    //     var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
-    //     noGrassTiles.Shuffle();
-    //     foreach (var tile in noGrassTiles.Take(1)) {
-    //       var newDeathbloom = new Deathbloom(tile.pos);
-    //       floor.Put(newDeathbloom);
-    //     }
-    //     Kill(p);
-    //   }
-    // }
+    if (isBloomed) {
+      if (actor is Player p) {
+        var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
+        noGrassTiles.Shuffle();
+        foreach (var tile in noGrassTiles.Take(1)) {
+          var newDeathbloom = new Deathbloom(tile.pos);
+          floor.Put(newDeathbloom);
+        }
+        Kill(p);
+      }
+    }
   }
 
   public void HandleDeath(Entity source) {
-    // if (isBloomed) {
-    //   var player = GameModel.main.player;
-    //   if (player.pos == pos) {
-    //     BecomeItemInInventory(new ItemDeathbloomFlower(), player);
-    //   }
-    // }
+    if (isBloomed) {
+      var player = GameModel.main.player;
+      if (player.pos == pos) {
+        BecomeItemInInventory(new ItemDeathbloomFlower(), player);
+      }
+    }
   }
 }
 

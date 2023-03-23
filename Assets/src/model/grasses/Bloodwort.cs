@@ -6,6 +6,11 @@ using UnityEngine;
 [ObjectInfo("bloodwort", description: "Eat to gain 1 strength. If any Creature dies, a Bloodwort will spawn on its corpse.")]
 public class Bloodwort : Grass {
   public static Item HomeItem => new ItemBloodwortTunic();
+  public static new void Eat(Player p) {
+    p.hunger -= 25;
+    p.statuses.Add(new StrengthStatus(1));
+  }
+
   public Bloodwort(Vector2Int pos) : base(pos) {
     BodyModifier = this;
   }
@@ -23,17 +28,6 @@ public class Bloodwort : Grass {
     if (entity is AIActor) {
       floor.Put(new Bloodwort(entity.pos));
     }
-  }
-
-  public void Eat() {
-    GameModel.main.player.SetTasks(
-      new GenericPlayerTask(GameModel.main.player, EatImpl)
-    );
-  }
-
-  public void EatImpl() {
-    GameModel.main.player.statuses.Add(new StrengthStatus(1));
-    Kill(GameModel.main.player);
   }
 
   public void HandleTakeAttackDamage(int damage, int hp, Actor source) {

@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Blocks up to 5 attack damage dealt to the creature standing on the Guardleaf.", flavorText: "Huge leaves, sprouting out from the ground, gently twist themselves around you in a protective cover.")]
 public class Guardleaf : Grass, IActorEnterHandler {
-  public static Item HomeItem => new ItemGuardleafCutting();
+  public static Item HomeItem => new ItemGuardleafCutting(2);
   public static bool CanOccupy(Tile tile) => tile is Ground;
   public int guardLeft;
   public Guardleaf(Vector2Int pos) : base(pos) {
@@ -35,6 +35,8 @@ public class Guardleaf : Grass, IActorEnterHandler {
 [Serializable]
 [ObjectInfo("guardroot-seed", description: "Use to grow a Guardleaf at your position.")]
 public class ItemGuardleafCutting : EquippableItem, IUsable {
+  public ItemGuardleafCutting(int stacks) : base(stacks) { }
+
   public override int stacksMax => int.MaxValue;
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
 

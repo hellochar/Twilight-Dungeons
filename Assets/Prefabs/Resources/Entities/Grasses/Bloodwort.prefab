@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &2878098093628617643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3082355556491833133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4da08f45d60174644993ea095044de6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pulses: 0
-  synergyLinePositive: {fileID: 9201601955136908871}
 --- !u!1001 &6080153389836000145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -153,18 +139,5 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6522990853209237999, guid: 24aa84cb97063fb44ae466e268ea266b, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24aa84cb97063fb44ae466e268ea266b, type: 3}
---- !u!1 &3082355556491833133 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9126458090356110524, guid: 24aa84cb97063fb44ae466e268ea266b,
-    type: 3}
-  m_PrefabInstance: {fileID: 6080153389836000145}
-  m_PrefabAsset: {fileID: 0}
---- !u!120 &9201601955136908871 stripped
-LineRenderer:
-  m_CorrespondingSourceObject: {fileID: 3158047476313126358, guid: 24aa84cb97063fb44ae466e268ea266b,
-    type: 3}
-  m_PrefabInstance: {fileID: 6080153389836000145}
-  m_PrefabAsset: {fileID: 0}

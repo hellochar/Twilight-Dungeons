@@ -44,6 +44,10 @@ Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValu
     return description;
   }
 
+  public static void Eat(Player p) {
+    p.hunger -= 25;
+  }
+
   public Grass(Vector2Int pos) : base() {
     this._pos = pos;
   }
@@ -74,17 +78,42 @@ Synergies: {string.Join(", ", synergy.offsets.Select(o => directionNames.GetValu
     // justPlanted = false;
     // readyToExpand = true;
     // var num = synergy.IsSatisfied(this) ? 2 : 1;
-    var hasSynergy = synergy.IsSatisfied(this);
-    if (hasSynergy) {
-      floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
+    // var hasSynergy = synergy.IsSatisfied(this);
+    // if (hasSynergy) {
+    //   floor.Put(new ItemOnGround(pos, new ItemGrass(GetType(), 1), pos));
+    // }
+    // if (justPlanted == false) {
+    //  SpreadAutomatically();
+    // }
+  }
+
+  protected void SpreadAutomatically() {
+    var canOccupyMethod = GetType().GetMethod("CanOccupy");
+    bool canOccupy(Tile t) {
+      if (canOccupyMethod != null) {
+        return (bool) canOccupyMethod.Invoke(null, new object[] { t });
+      }
+      return t is Ground;
+    }
+    var openSpot = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => canOccupy(t) && t.grass == null && t.CanBeOccupied()));
+    if (openSpot != null) {
+      var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+      var newGrass = (Grass)constructor.Invoke(new object[] { openSpot.pos });
+      grass.floor.Put(newGrass);
     }
   }
 
-  public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
-    // if (readyToExpand) {
-      // methods.Add(GetType().GetMethod("Harvest"));
-      // methods.Add(GetType().GetMethod("Duplicate"));
-    // }
+  // public override void GetAvailablePlayerActions(List<MethodInfo> methods) {
+  //   // if (readyToExpand) {
+  //     // methods.Add(GetType().GetMethod("Harvest"));
+  //     // methods.Add(GetType().GetMethod("Duplicate"));
+  //   // }
+  // }
+
+  public virtual void Harvest(Player player) {
+    if (GameModel.main.player.inventory.AddItem(new ItemGrass(GetType()), this)) {
+      KillSelf();
+    }
   }
 
   // [PlayerAction]

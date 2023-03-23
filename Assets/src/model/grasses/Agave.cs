@@ -6,22 +6,24 @@ using UnityEngine;
 
 [System.Serializable]
 [ObjectInfo(description: "Walk over it to harvest.")]
-public class Agave : Grass, IActorEnterHandler {
-  public static Item HomeItem => new ItemAgave();
+public class Agave : Grass {
+  public static Item HomeItem => new ItemAgaveLeaf();
   public static bool CanOccupy(Tile tile) => Mushroom.CanOccupy(tile);
   public Agave(Vector2Int pos) : base(pos) {}
 
-  public void HandleActorEnter(Actor actor) {
-    var player = GameModel.main.player;
-    if (actor == player) {
-      BecomeItemInInventory(new ItemAgave(), player);
+  public override void Harvest(Player player) {
+    base.Harvest(player);
+    if (GameModel.main.player.inventory.AddItem(new ItemAgaveLeaf(), this)) {
+      KillSelf();
     }
+  }
+
   }
 }
 
 [Serializable]
 [ObjectInfo("agave", flavorText: "An unassuming and earthy succulent with thick, nutrient bearing leaves.")]
-class ItemAgave : Item {
+class ItemAgaveLeaf : Item {
   public override int stacksMax => 4;
   public void Refine(Player player) {
     player.SetTasks(new GenericPlayerTask(player, () => RefineImpl(player)));
@@ -33,6 +35,11 @@ class ItemAgave : Item {
     }
     player.floor.Put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
     Destroy();
+  }
+
+  [PlayerAction]
+  public void Eat() {
+    GameModel.main.player.hunger -= 12;
   }
 
   public override List<MethodInfo> GetAvailableMethods(Player player) {

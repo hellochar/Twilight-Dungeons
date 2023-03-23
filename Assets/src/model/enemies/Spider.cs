@@ -10,13 +10,13 @@ using UnityEngine;
 public class Spider : AIActor {
   // mark it as being capturable, but doesn't spawn a HomeItem
   public static Item HomeItem => null;
-  public override void StepDay() {
-    // create a nearby web
-    var tile = Util.RandomPick(floor.GetDiagonalAdjacentTiles(pos).Where(Web.CanOccupy));
-    if (tile != null) {
-      floor.Put(new Web(tile.pos));
-    }
-  }
+  // public override void StepDay() {
+  //   // create a nearby web
+  //   var tile = Util.RandomPick(floor.GetDiagonalAdjacentTiles(pos).Where(Web.CanOccupy));
+  //   if (tile != null) {
+  //     floor.Put(new Web(tile.pos));
+  //   }
+  // }
 
   public Spider(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
@@ -84,6 +84,10 @@ internal class Web : Grass, IActorEnterHandler {
       // back-compat
       BodyModifier = null;
     }
+  }
+
+  public override void Harvest(Player player) {
+    base.Harvest(player);
   }
 
   protected override void HandleEnterFloor() {

@@ -17,17 +17,19 @@ public class Encounter : ISerializable {
     this.fn = fn;
   }
 
-  public Encounter(SerializationInfo info, StreamingContext context) : base() {
-    var encounterName = info.GetString("name");
-    var existingEncounterField = typeof(Encounters).GetField(encounterName);
+  public Encounter(SerializationInfo info, StreamingContext context) : this(info.GetString("name")) {
+  }
+
+  public Encounter(string name) {
+    var existingEncounterField = typeof(Encounters).GetField(name);
     if (existingEncounterField != null) {
       var existingEncounter = existingEncounterField.GetValue(null) as Encounter;
       // TODO it'd be nice if we could serialize directly to the Existing Encounter but I don't know
       // how so copy it instead
       this.fn = existingEncounter.fn;
-      this.Name = encounterName;
+      this.Name = name;
     } else {
-      Debug.LogWarning($"Couldn't find Encounter {encounterName}.");
+      Debug.LogWarning($"Couldn't find Encounter {name}.");
     }
   }
 

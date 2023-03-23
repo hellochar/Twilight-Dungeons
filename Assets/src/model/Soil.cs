@@ -44,7 +44,7 @@ public class Soil : Entity, IDaySteppable {
     if (nutrient >= 5) {
       throw new CannotPerformActionException("Already at max nutrients!");
     }
-    player.UseResourcesOrThrow(organicMatter: 1);
+    player.UseResourcesOrThrow(organicMatter: 5);
     nutrient++;
   }
 
@@ -59,34 +59,38 @@ public class Soil : Entity, IDaySteppable {
 
 [Serializable]
 [ObjectInfo("soil", description: "Place in your home floor.")]
-public class ItemSoil : Item, ITargetedAction<Ground> {
-  public string TargettedActionName => "Sow";
-  public string TargettedActionDescription => "Choose where to place Soil.";
-  Soil s = new Soil(new Vector2Int());
+public class ItemSoil : Item/*, ITargetedAction<Ground> */ {
+  [PlayerAction]
+  public void Sow() {
+    if (GameModel.main.player.tile.CanPlaceShape(Soil.SoilShape)) {
+      SowPos(GameModel.main.player.pos);
+    } else {
+      throw new CannotPerformActionException("Stand on a 3x3 empty patch of ground!");
+    }
+  }
 
-  public void PerformTargettedAction(Player player, Entity target) {
-    player.UseResourcesOrThrow(0, 0, 1);
-    // foreach (var tile in player.floor.GetAdjacentTiles(target.pos).ToList()) {
-    //   if (tile.GetType() == typeof(Ground)) {
-    //     player.floor.Put(new Soil(tile.pos));
-    //     // player.floor.Put(new GrowingEntity(tile.pos, new Soil(tile.pos)));
-    //   }
-    // }
-    s.pos = target.pos;
-    player.floor.Put(s);
+  public void SowPos(Vector2Int pos) {
+    GameModel.main.player.floor.Put(new Soil(pos));
     Destroy();
   }
 
-  public IEnumerable<Ground> Targets(Player player) {
-    HomeFloor h = GameModel.main.home;
-    if (player.floor != h) {
-      return null;
-    }
+  // public string TargettedActionName => "Sow";
+  // public string TargettedActionDescription => "Choose where to place Soil.";
+  // public void PerformTargettedAction(Player player, Entity target) {
+  //   player.UseResourcesOrThrow(0, 0, 1);
+  //   // foreach (var tile in player.floor.GetAdjacentTiles(target.pos).ToList()) {
+  //   //   if (tile.GetType() == typeof(Ground)) {
+  //   //     player.floor.Put(new Soil(tile.pos));
+  //   //     // player.floor.Put(new GrowingEntity(tile.pos, new Soil(tile.pos)));
+  //   //   }
+  //   // }
+  //   Sow(target.pos);
+  // }
 
-    return player.GetVisibleTiles().Where(tile =>
-      tile is Ground &&
-      // h.CanPlacePiece(s, tile.pos)
-      tile.CanPlaceShape(Soil.SoilShape)
-    ).Cast<Ground>();
-  }
+  // public IEnumerable<Ground> Targets(Player player) {
+  //   return player.GetVisibleTiles().Where(tile =>
+  //     tile is Ground &&
+  //     tile.CanPlaceShape(Soil.SoilShape)
+  //   ).Cast<Ground>();
+  // }
 }

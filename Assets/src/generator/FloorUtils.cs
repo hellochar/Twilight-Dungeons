@@ -90,6 +90,29 @@ public static class FloorUtils {
     }
   }
 
+  public static void AddWallsOutside(Floor floor, Room excluded = null) {
+    var rootInset = new Room(excluded.min + Vector2Int.one, excluded.max - Vector2Int.one);
+    foreach(var pos in floor.EnumerateFloor()) {
+      if (!rootInset.Contains(pos) && floor.tiles[pos].CanBeOccupied()) {
+        floor.Put(new Wall(pos));
+      }
+    }
+  }
+
+  public static void AddThickBrushOutside(Floor floor, Room excluded = null) {
+    // var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
+    foreach(var pos in floor.EnumerateFloor()) {
+      bool isExcluded = excluded != null && excluded.Contains(pos);
+      if (isExcluded) {
+        continue;
+      }
+
+      if (floor.tiles[pos].CanBeOccupied() && floor.tiles[pos] is Ground && floor.tiles[pos].item == null) {
+        floor.Put(new ThickBrush(pos));
+      }
+    }
+  }
+
   ///<summary>Apply a natural look across the floor by smoothing both wall corners and space corners</summary>
   public static void NaturalizeEdges(Floor floor) {
     SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);

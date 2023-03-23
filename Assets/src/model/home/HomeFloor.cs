@@ -6,31 +6,8 @@ using UnityEngine;
 
 [Serializable]
 public class HomeFloor : Floor {
-  public StaticEntityGrid<Soil> soils;
-  public StaticEntityGrid<Piece> pieces;
-  public IEnumerable<Plant> plants => pieces.Where(b => b is Plant).Cast<Plant>();
 
   public HomeFloor(int width, int height) : base(0, width, height) {
-    soils = new StaticEntityGrid<Soil>(this);
-    pieces = new StaticEntityGrid<Piece>(this);
-  }
-
-  public override void Put(Entity entity) {
-    if (entity is Soil s) {
-      soils.Put(s);
-    } else if (entity is Piece p) {
-      pieces.Put(p);
-    }
-    base.Put(entity);
-  }
-
-  public override void Remove(Entity entity) {
-    if (entity is Soil s) {
-      soils.Remove(s);
-    } else if (entity is Piece p) {
-      pieces.Remove(p);
-    }
-    base.Remove(entity);
   }
 
   public override void RecomputeVisibility() {
@@ -51,46 +28,12 @@ public class HomeFloor : Floor {
 #endif
   }
 
+#if !experimental_cavenetwork
   protected override TileVisiblity RecomputeVisibilityFor(Tile t) {
     if (root.Contains(t.pos)) {
       return base.RecomputeVisibilityFor(t);
     }
     return t.visibility;
   }
-
-  public void AddWallsOutsideRoot() {
-    var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
-    foreach(var pos in this.EnumerateFloor()) {
-      if (!rootInset.Contains(pos) && tiles[pos].CanBeOccupied()) {
-        Put(new Wall(pos));
-      }
-    }
-  }
-
-  public void AddThickBrush(Room excluded = null) {
-    // var rootInset = new Room(root.min + Vector2Int.one, root.max - Vector2Int.one);
-    foreach(var pos in this.EnumerateFloor()) {
-      bool isExcluded = excluded != null && excluded.Contains(pos);
-      if (isExcluded) {
-        continue;
-      }
-
-      if (tiles[pos].CanBeOccupied() && tiles[pos] is Ground && tiles[pos].item == null) {
-        Put(new ThickBrush(pos));
-      }
-    }
-  }
-
-  public bool CanPlacePiece(Entity e, Tile tile) {
-    foreach (Vector2Int offset in e.shape) {
-      var newPos = tile.pos + offset;
-      if (!InBounds(newPos)) {
-        return false;
-      }
-      if (!tiles[newPos].CanBeOccupied()) {
-        return false;
-      }
-    }
-    return true;
-  }
+#endif
 }

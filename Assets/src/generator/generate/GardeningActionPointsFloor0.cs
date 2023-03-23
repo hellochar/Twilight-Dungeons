@@ -64,8 +64,8 @@ public static partial class Generate {
       // shared.Rewards.GetRandom()(floor, r);
     }
 
-    // floor.AddWallsOutsideRoot();
-    floor.AddThickBrush(floor.root);
+    // FloorUtils.AddWallsOutside(floor, floor.root);
+    FloorUtils.AddThickBrushOutside(floor, floor.root);
 
     floor.startPos = new Vector2Int(root.min.x + 1, root.center.y);
     floor.PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));

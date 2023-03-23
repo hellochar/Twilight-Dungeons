@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -22,11 +23,14 @@ public partial class Floor {
   public StaticEntityGrid<ItemOnGround> items;
   public StaticEntityGrid<Trigger> triggers;
   public MovingEntityList<Body> bodies;
+  public StaticEntityGrid<Soil> soils;
+  public StaticEntityGrid<Piece> pieces;
   public HashSet<Entity> entities;
   public List<Boss> bosses;
   public IEnumerable<Boss> seenBosses => bosses.Where(b => b.isSeen);
   public List<ISteppable> steppableEntities;
   public List<Downstairs> downstairses;
+  public IEnumerable<Plant> plants => bodies.OfType<Plant>();
 
   [field:NonSerialized] /// controller only (for now)
   public event Action<Entity> OnEntityAdded;
@@ -75,6 +79,8 @@ public partial class Floor {
     this.items = new StaticEntityGrid<ItemOnGround>(this, ItemPlacementBehavior);
     this.triggers = new StaticEntityGrid<Trigger>(this);
     this.bodies = new MovingEntityList<Body>(this, BodyPlacementBehavior);
+    this.soils = new StaticEntityGrid<Soil>(this);
+    this.pieces = new StaticEntityGrid<Piece>(this);
     this.entities = new HashSet<Entity>();
     this.bosses = new List<Boss>();
     this.steppableEntities = new List<ISteppable>();
@@ -205,6 +211,10 @@ public partial class Floor {
         items.Put(item);
       } else if (entity is Trigger t) {
         triggers.Put(t);
+      } else if (entity is Soil soil) {
+        soils.Put(soil);
+      } else if (entity is Piece p) {
+        pieces.Put(p);
       }
 
       /// HACK
@@ -247,6 +257,10 @@ public partial class Floor {
       items.Remove(item);
     } else if (entity is Trigger t) {
       triggers.Remove(t);
+    } else if (entity is Soil soil) {
+      soils.Remove(soil);
+    } else if (entity is Piece p) {
+      pieces.Remove(p);
     }
 
     /// HACK

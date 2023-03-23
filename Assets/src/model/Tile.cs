@@ -368,7 +368,12 @@ public static class TileExtensions {
       if (!floor.InBounds(newPos)) {
         return false;
       }
-      if (!floor.tiles[newPos].CanBeOccupied() || (floor.tiles[newPos].GetType() != tile.GetType())) {
+      var newTile = floor.tiles[newPos];
+      if (newTile.GetType() != tile.GetType()) {
+        return false;
+      }
+      // make an exception for the Player
+      if (!newTile.CanBeOccupied() && newTile.body != GameModel.main.player) {
         return false;
       }
     }

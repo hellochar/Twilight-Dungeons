@@ -62,6 +62,10 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     return item;
   }
 
+  public T GetRandomAndRemove() {
+    return GetRandomAndDiscount(1);
+  }
+
   public void Discount(T item, float reduceChanceBy = 0.3f) {
     var getWeight = GetWeight(item);
     if (!getWeight.HasValue) {

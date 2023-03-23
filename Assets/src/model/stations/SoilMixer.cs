@@ -14,13 +14,13 @@ public class SoilMixer : Station {
   public void Mix() {
     var player = GameModel.main.player;
     player.UseResourcesOrThrow(25, 1, 1);
-    // var soil = new ItemSoil();
-    // if (!player.inventory.AddItem(soil)) {
-    //   player.floor.Put(new ItemOnGround(pos, soil));
-    // }
-    var homeGround = new ItemPlaceableTile(typeof(HomeGround), 1);
-    if (!player.inventory.AddItem(homeGround)) {
-      player.floor.Put(new ItemOnGround(pos, homeGround));
+    var soil = new ItemSoil();
+    if (!player.inventory.AddItem(soil)) {
+      player.floor.Put(new ItemOnGround(pos, soil));
     }
+    // var homeGround = new ItemPlaceableTile(typeof(HomeGround), 1);
+    // if (!player.inventory.AddItem(homeGround)) {
+    //   player.floor.Put(new ItemOnGround(pos, homeGround));
+    // }
   }
 }

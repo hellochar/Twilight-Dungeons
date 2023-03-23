@@ -38,7 +38,12 @@ PrefabInstance:
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 6870171582872785316, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
@@ -93,7 +98,7 @@ PrefabInstance:
     - target: {fileID: 6870171582872785322, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_Name
-      value: Slime
+      value: SlimeSource
       objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
@@ -101,6 +106,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 3c3cf210ca4c9344fac5f56eb3c57f5e,
         type: 3}
+    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.09588221
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.9528302
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.15989265
+      objectReference: {fileID: 0}
     - target: {fileID: 7637720094113599787, guid: 67481c8900921ad45b4da8aed5f1cb43,
         type: 3}
       propertyPath: m_WasSpriteAssigned

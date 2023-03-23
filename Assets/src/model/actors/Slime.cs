@@ -39,6 +39,36 @@ public class Slime : Destructible, IDeathHandler {
 }
 
 [Serializable]
+public class SlimeSource : Body, IAnyDamageTakenModifier, IDaySteppable {
+  public SlimeSource(Vector2Int pos) : base(pos) {
+    this.hp = this.baseMaxHp = 1;
+  }
+
+  public int Modify(int input) {
+    return 0;
+  }
+
+  public void StepDay() {
+    floor.Put(new Slime(pos));
+  }
+}
+
+[Serializable]
+public class MatterSource : Body, IAnyDamageTakenModifier, IDaySteppable {
+  public MatterSource(Vector2Int pos) : base(pos) {
+    this.hp = this.baseMaxHp = 1;
+  }
+
+  public int Modify(int input) {
+    return 0;
+  }
+
+  public void StepDay() {
+    floor.Put(new OrganicMatterOnGround(pos));
+  }
+}
+
+[Serializable]
 [ObjectInfo("slimed", description: "Purify at home to turn into Water!")]
 public class ItemSlime : Item {
   public ItemSlime(int stacks) : base(stacks) {}

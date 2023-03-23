@@ -982,6 +982,33 @@ public class Encounters {
     floor.PutAll(tiles.Take(num).Select(tile => new Slime(tile.pos)));
   });
 
+  public static Encounter AddOrganicMatters = new Encounter((Floor floor, Room room) => {
+    var num = MyRandom.Range(3, 7) + floor.depth;
+    var tiles = 
+      // FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile.grass == null).Take(num);
+      FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => tile.grass == null).ToList();
+    tiles.Shuffle();
+    floor.PutAll(tiles.Take(num).Select(tile => new OrganicMatterOnGround(tile.pos)));
+  });
+
+  public static Encounter AddSlimeSource = new Encounter((Floor floor, Room room) => {
+    var num = 1;
+    var tiles = 
+      // FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile.grass == null).Take(num);
+      FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => tile.grass == null).ToList();
+    tiles.Shuffle();
+    floor.PutAll(tiles.Take(num).Select(tile => new SlimeSource(tile.pos)));
+  });
+
+  public static Encounter AddMatterSource = new Encounter((Floor floor, Room room) => {
+    var num = 1;
+    var tiles = 
+      // FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile.grass == null).Take(num);
+      FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => tile.grass == null).ToList();
+    tiles.Shuffle();
+    floor.PutAll(tiles.Take(num).Select(tile => new MatterSource(tile.pos)));
+  });
+
   public static Encounter AddCrafting = new Encounter((Floor floor, Room room) => {
     floor.Put(new CraftingStation(FloorUtils.TilesFromCenter(floor, room).First().pos));
   });
@@ -999,6 +1026,17 @@ public class Encounters {
     floor.Put(new Composter(FloorUtils.TilesFromCenter(floor, room).First().pos));
   });
 
+  public static Encounter AddDesalinator = new Encounter((Floor floor, Room room) => {
+    floor.Put(new Composter(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  });
+
+  public static Encounter AddSoilMixer = new Encounter((Floor floor, Room room) => {
+    floor.Put(new Composter(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  });
+
+  public static Encounter AddCloner = new Encounter((Floor floor, Room room) => {
+    floor.Put(new Composter(FloorUtils.TilesFromCenter(floor, room).First().pos));
+  });
   // public static Encounter RandomTrade = new Encounter((Floor floor, Room room) => {
   //   floor.Put(new Processor(room.center));
   // });

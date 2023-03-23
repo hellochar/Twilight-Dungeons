@@ -88,17 +88,34 @@ public class CaveNetwork {
      *         F
      */
 
+    // EncounterBag stations = new EncounterBag {
+    //   { 1, Encounters.AddProcessor },
+    //   { 1, Encounters.AddComposter },
+    //   { 1, Encounters.AddDesalinator },
+    //   { 1, Encounters.AddSoilMixer },
+    //   { 1, Encounters.AddCloner },
+    // };
+
     var home = new CaveNode("home", new HomeFloorParams());
 
-    var oneA = new CaveNode("1A", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 3, 2));
-    var oneB = new CaveNode("1B", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 3, 2));
+    var oneA = new CaveNode("1A", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 1, 1, extraEncounters: Encounters.AddSlimeSource));
+    var oneB = new CaveNode("1B", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 1, 1, extraEncounters: Encounters.AddMatterSource));
 
     home.Connect(oneA);
     home.Connect(oneB);
 
-    var twoA = new CaveNode("2A", new SingleRoomFloorParams(generator.earlyGame, 2, 9, 7, 3, 2));
-    var twoB = new CaveNode("2B", new SingleRoomFloorParams(generator.earlyGame, 2, 9, 7, 3, 2, extraEncounters: Encounters.OneAstoria));
-    var twoC = new CaveNode("2C", new SingleRoomFloorParams(generator.earlyGame, 2, 9, 7, 3, 2));
+    var twoA = new CaveNode("2A", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 2, 1, false, null,
+      Encounters.AddSlimeSource
+    // , stations.GetRandomAndRemove()
+    ));
+    var twoB = new CaveNode("2B", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 3, 1, false, null,
+      Encounters.OneAstoria
+    // , stations.GetRandomAndRemove()
+    ));
+    var twoC = new CaveNode("2C", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 2, 1, false, null,
+      Encounters.AddMatterSource
+    // , stations.GetRandomAndRemove()
+    ));
 
     oneA.Connect(twoA);
     oneA.Connect(twoB);
@@ -106,8 +123,21 @@ public class CaveNetwork {
     oneB.Connect(twoB);
     oneB.Connect(twoC);
 
-    var threeA = new CaveNode("3A", new SingleRoomFloorParams(generator.earlyGame, 3, 9, 7, 3, 3));
-    twoB.Connect(threeA);
+    var threeA = new CaveNode("3A", new SingleRoomFloorParams(generator.earlyGame, 6, 11, 8, 4, 2, false, null, 
+      Encounters.AddSlime
+      //, stations.GetRandomAndRemove()
+    ));
+    twoA.Connect(threeA);
+
+    // var threeB = new CaveNode("3A", new SingleRoomFloorParams(generator.earlyGame, 3, 9, 7, 3, 3));
+    var threeB = new CaveNode("3B", new MultiRoomFloorParams(generator.earlyGame, 6, 12, 10, 6));
+    twoB.Connect(threeB);
+
+    var threeC = new CaveNode("3C", new SingleRoomFloorParams(generator.earlyGame, 6, 11, 8, 4, 2, false, null, 
+      Encounters.AddOrganicMatters
+      // , stations.GetRandomAndRemove()
+    ));
+    twoC.Connect(threeC);
 
     CaveNetwork network = new CaveNetwork(home);
     return network;

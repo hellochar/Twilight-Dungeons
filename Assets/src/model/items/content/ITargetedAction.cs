@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public interface ITargetedAction<out T> where T : Entity {
   string TargettedActionName { get; }
@@ -8,10 +9,14 @@ public interface ITargetedAction<out T> where T : Entity {
 }
 
 public static class ITargetedActionExtensions {
-  public static async void ShowTargetingUIThenPerform<T>(this ITargetedAction<T> action, Player player) where T : Entity {
+  public static async void ShowTargetingUIThenPerform(this ITargetedAction<Entity> action, Player player) {
     var floor = player.floor;
     try {
-      var target = await MapSelector.SelectUI(action.Targets(player), action.TargettedActionDescription);
+      var targets = action.Targets(player);
+      if (targets == null || !targets.Any()) {
+        throw new CannotPerformActionException("No valid targets!");
+      }
+      var target = await MapSelector.SelectUI(targets.ToList(), action.TargettedActionDescription);
       action.PerformTargettedAction(player, target);
       GameModel.main.DrainEventQueue();
     } catch (PlayerSelectCanceledException) {

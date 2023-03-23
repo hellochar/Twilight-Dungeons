@@ -66,15 +66,15 @@ public class Mist : Chasm {
 
     var choice = await cavesFloor.CreateRewards().ShowRewardUIAndWaitForChoice();
     var item = choice[0];
-    Clear();
     switch(item) {
       case ItemGrass g:
-        g.PlaceGrass(pos);
+        g.PlaceGrass(this);
         break;
       case ItemPlaceableEntity e:
         e.PlaceEntity(pos);
         break;
     }
+    Clear();
   }
 
   public void Clear() {

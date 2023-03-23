@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -84,7 +82,7 @@ IEdible {
   //   // }
 
   //   return true;
-    // }
+  // }
 
   // public string TargettedActionName => "Plant";
   // public string TargettedActionDescription => $"Choose where to plant {displayName}.";
@@ -97,19 +95,13 @@ IEdible {
   //     // player.UseResourcesOrThrow(20, 0, 0);
   //     player.SetTasks(
   //       new MoveNextToTargetTask(player, target.pos),
-  //       new GenericOneArgTask<Vector2Int>(player, PlaceGrass, target.pos)
+  //       new GenericOneArgTask<Vector2Int>(player, PlaceGrass, target as Tile)
   //     );
   //   }
 
-  public void PlaceGrass(Vector2Int pos) {
-    var player = GameModel.main.player;
-    if (player.pos == pos) {
-      // move them off the target
-      player.floor.BodyPlacementBehavior(player);
-    }
-    var floor = player.floor;
+  public void PlaceGrass(Tile tile) {
     var constructorInfo = grassType.GetConstructor(new Type[1] { typeof(Vector2Int) });
-    floor.Put((Entity)constructorInfo.Invoke(new object[] { pos }));
+    tile.floor.Put((Entity)constructorInfo.Invoke(new object[] { tile.pos }));
     stacks--;
   }
 

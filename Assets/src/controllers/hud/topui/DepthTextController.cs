@@ -19,6 +19,10 @@ public class DepthTextController : MonoBehaviour {
       // text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.currentFloor.age;
     // }
     text.text = GameModel.main.currentFloor.name +"\nTurn " + GameModel.main.time;
+    text.text = @$"
+{GameModel.main.currentFloor.name}
+Day {GameModel.main.day} Turn {(GameModel.main.time - (GameModel.main.turnManager.timeNextDay - 100)).ToString(".#")}
+".Trim();
   }
 
 #if experimental_retryondemand

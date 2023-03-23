@@ -21,8 +21,12 @@ public class TurnManager {
   public bool forceStaggerThisTurn = false;
   [NonSerialized]
   public Exception latestException;
+
+  public float timeNextDay;
+  public const float TURNS_PER_DAY = 100f;
   public TurnManager(GameModel model) {
     this.model = model;
+    timeNextDay = model.time + TURNS_PER_DAY;
   }
 
   /// The actor whose turn it is
@@ -105,6 +109,14 @@ public class TurnManager {
             yield return new WaitForSeconds((entity.timeUntilTurn()) * GAME_TIME_TO_SECONDS_WAIT_SCALE);
           }
         }
+
+        if (timeNextDay <= entity.timeNextAction) {
+          // step the day
+          model.time = timeNextDay;
+          yield return GameModelController.main.StepDayCoroutine();
+          timeNextDay = model.time + TURNS_PER_DAY;
+        }
+        
         // move game time up to now
         model.time = entity.timeNextAction;
         OnTimePassed?.Invoke();

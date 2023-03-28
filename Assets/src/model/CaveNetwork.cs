@@ -113,7 +113,8 @@ public class CaveNetwork {
     //   { 1, Encounters.AddCloner },
     // };
 
-    var home = new CaveNode("home", new HomeFloorParams());
+    // var home = new CaveNode("home", new HomeFloorParams());
+    var home = new CaveNode("home", new SingleRoomFloorParams(generator.earlyGame, 0, 12, 8, 0, 1, extraEncounters: Encounters.AddSlimeSource));
 
     var oneA = new CaveNode("1A", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 1, 1, extraEncounters: Encounters.AddSlimeSource));
     var oneB = new CaveNode("1B", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 1, 1, extraEncounters: Encounters.AddMatterSource));
@@ -122,7 +123,8 @@ public class CaveNetwork {
     home.Connect(oneB);
 
     var twoA = new CaveNode("2A", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 2, 1, false, null,
-      Encounters.AddSlimeSource
+      Encounters.AddSlimeSource,
+      generator.EncounterGroup.Plants.GetRandomAndDiscount(1f)
     // , stations.GetRandomAndRemove()
     ));
     var twoB = new CaveNode("2B", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 3, 1, false, null,

@@ -23,7 +23,7 @@ public class GameModel {
   public bool permadeath = true;
   public CaveNetwork caveNetwork;
   public Floor cave => currentFloor;
-  public HomeFloor home => caveNetwork.root.Floor as HomeFloor;
+  public Floor home => caveNetwork.root.Floor;
 
   private TurnManager _turnManager;
   public TurnManager turnManager {

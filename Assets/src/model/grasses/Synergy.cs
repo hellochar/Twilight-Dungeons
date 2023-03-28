@@ -71,7 +71,7 @@ public class Synergy {
       return false;
     }
 
-    var floor = entity.floor as HomeFloor;
+    var floor = entity.floor;
     foreach (var offset in offsets) {
       var targetPos = entity.pos + offset;
       if (!floor.InBounds(targetPos)) {

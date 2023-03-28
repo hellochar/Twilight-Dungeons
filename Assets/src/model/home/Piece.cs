@@ -11,8 +11,7 @@ public class Piece : Entity {
     /// do not allow moving Pieces
     // set { }
   }
-  public HomeFloor home => floor as HomeFloor;
-  public Soil soil => home?.soils[pos];
+  public Soil soil => floor.soils[pos];
   public int dayCreated { get; }
   public int dayAge => GameModel.main.day - dayCreated;
   public Piece(Vector2Int pos) : base() {

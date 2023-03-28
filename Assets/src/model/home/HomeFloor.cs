@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using UnityEngine;
 
+// A HomeFloor has a slightly different visibility computation.
 [Serializable]
 public class HomeFloor : Floor {
 

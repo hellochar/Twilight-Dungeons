@@ -708,10 +708,13 @@ public class Encounters {
   });
 
   public static Encounter AddFruitingBodies = new Encounter((Floor floor, Room room) => {
-    var positions = FloorUtils.EmptyTilesInRoom(floor, room);
+    var positions = floor
+      .EnumerateRoomTiles(room)
+      .Where(t => t.CanBeOccupied() && !(t is Downstairs) && t.grass == null)
+      .ToList();
     positions.Shuffle();
-    // var num = Random.Range(3, (positions.Count + 1) / 4);
-    var num = 1;
+    var num = Random.Range(3, (positions.Count + 1) / 4);
+    // var num = 1;
     foreach (var tile in positions.Take(num)) {
       if (!floor.GetDiagonalAdjacentTiles(tile.pos).Any((t) => t.actor is FruitingBody)) {
         floor.Put(new FruitingBody(tile.pos));
@@ -884,6 +887,21 @@ public class Encounters {
     foreach (var tile in livableTiles) {
 #endif
       floor.Put(new Mushroom(tile.pos));
+    }
+  });
+  
+  public static Encounter AddOvergrowth = new Encounter((Floor floor, Room room) => {
+    var tiles = floor
+      .EnumerateRoomTiles(room)
+      .Where(tile => tile.CanBeOccupied() && tile.grass == null)
+      .ToList();
+    if (!tiles.Any()) {
+      Debug.LogError("Couldn't find a location for overgrowth!");
+    }
+    tiles.Shuffle();
+    tiles.Remove(floor.tiles[floor.startPos]);
+    foreach (var tile in tiles.Take(7)) {
+      floor.Put(new Overgrowth(tile.pos));
     }
   });
 

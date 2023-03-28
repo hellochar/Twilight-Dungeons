@@ -47,22 +47,31 @@ public class CaveNode {
     if (Floor == null) {
       Floor = GameModel.main.generator.generateFloor(parameters);
       Floor.name = name;
-      foreach(var child in children) {
-        AddCavePathToNode(this, child);
-      }
+      PostProcessCaveNodeFloor(Floor);
     }
     return Floor;
+  }
+
+  private void PostProcessCaveNodeFloor(Floor floor) {
+    foreach(var child in children) {
+      AddCavePathToNode(this, child);
+    }
+    Encounters.AddOvergrowth.Apply(floor, floor.root);
   }
 
   public static void AddCavePathToNode(CaveNode source, CaveNode destination) {
     var floor = source.Floor;
     // find a free tile and put a downstairs there
     var tile = Util.RandomPick(
-      floor.EnumerateFloor().OrderByDescending(pos => pos.x).Select(pos => floor.tiles[pos])
-      .Where(t => t.CanBeOccupied() && t.grass == null && !(t is Downstairs)).Skip(2).Take(3)
+      floor
+        .EnumerateRoomTiles(floor.root)
+        .Where(t => t.CanBeOccupied() && t.grass == null && t is Ground && t.pos != floor.startPos)
+        // .Skip(2)
+        // .Take(3)
     );
     var cavePath = new CavePath(tile.pos, source, destination);
     floor.Put(cavePath);
+    floor.Put(new Overgrowth(cavePath.pos));
   }
 
 
@@ -114,7 +123,7 @@ public class CaveNetwork {
     // };
 
     // var home = new CaveNode("home", new HomeFloorParams());
-    var home = new CaveNode("home", new SingleRoomFloorParams(generator.earlyGame, 0, 12, 8, 0, 1, extraEncounters: Encounters.AddSlimeSource));
+    var home = new CaveNode("home", new SingleRoomFloorParams(generator.earlyGame, 0, 9, 7, 0, 0, extraEncounters: Encounters.AddSlimeSource));
 
     var oneA = new CaveNode("1A", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 1, 1, extraEncounters: Encounters.AddSlimeSource));
     var oneB = new CaveNode("1B", new SingleRoomFloorParams(generator.earlyGame, 1, 9, 7, 1, 1, extraEncounters: Encounters.AddMatterSource));
@@ -124,7 +133,7 @@ public class CaveNetwork {
 
     var twoA = new CaveNode("2A", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 2, 1, false, null,
       Encounters.AddSlimeSource,
-      generator.EncounterGroup.Plants.GetRandomAndDiscount(1f)
+      generator.shared.Plants.GetRandomAndDiscount(1f)
     // , stations.GetRandomAndRemove()
     ));
     var twoB = new CaveNode("2B", new SingleRoomFloorParams(generator.earlyGame, 3, 10, 8, 3, 1, false, null,

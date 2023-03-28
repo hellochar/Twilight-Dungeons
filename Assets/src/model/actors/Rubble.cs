@@ -82,6 +82,24 @@ public class Stalk : Destructible, IBlocksVision, IDeathHandler {
   }
 }
 
+[System.Serializable]
+[ObjectInfo("z-bush", description: "Blocks vision.")]
+public class Overgrowth : Destructible, IBlocksVision, IDeathHandler {
+  public Overgrowth(Vector2Int pos) : base(pos, 3) {}
+  static PseudoRandomDistribution prng = new PseudoRandomDistribution(0.1f);
+
+  public void HandleDeath(Entity source) {
+    var floor = this.floor;
+    var pos = this.pos;
+    if (prng.Test()) {
+      GameModel.main.EnqueueEvent(() => {
+        var iMatter = new OrganicMatterOnGround(pos);
+        floor.Put(iMatter);
+      });
+    }
+  }
+}
+
 /// Note - not implemented on moving entities yet
 public interface IBlocksVision { }
 public interface IBlocksExploration : IBlocksVision { }

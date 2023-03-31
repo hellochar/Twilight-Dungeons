@@ -8,20 +8,20 @@ using UnityEngine;
 public class Soil : Entity, IDaySteppable {
   private Vector2Int _pos;
   public override Vector2Int pos { get => _pos; set {} }
-  public static Vector2Int[] SoilShape = new Vector2Int[] {
-    new Vector2Int(-1, -1),
-    new Vector2Int(-1,  0),
-    new Vector2Int(-1, +1),
+  // public static Vector2Int[] SoilShape = new Vector2Int[] {
+  //   new Vector2Int(-1, -1),
+  //   new Vector2Int(-1,  0),
+  //   new Vector2Int(-1, +1),
 
-    new Vector2Int(0, -1),
-    new Vector2Int(0,  0),
-    new Vector2Int(0, +1),
+  //   new Vector2Int(0, -1),
+  //   new Vector2Int(0,  0),
+  //   new Vector2Int(0, +1),
 
-    new Vector2Int(+1, -1),
-    new Vector2Int(+1,  0),
-    new Vector2Int(+1, +1),
-  };
-  public override Vector2Int[] shape => SoilShape;
+  //   new Vector2Int(+1, -1),
+  //   new Vector2Int(+1,  0),
+  //   new Vector2Int(+1, +1),
+  // };
+  // public override Vector2Int[] shape => SoilShape;
   public Soil(Vector2Int pos) {
     _pos = pos;
   }
@@ -62,11 +62,11 @@ public class Soil : Entity, IDaySteppable {
 public class ItemSoil : Item/*, ITargetedAction<Ground> */ {
   [PlayerAction]
   public void Sow() {
-    if (GameModel.main.player.tile.CanPlaceShape(Soil.SoilShape)) {
+    // if (GameModel.main.player.tile.CanPlaceShape(Soil.SoilShape)) {
       SowPos(GameModel.main.player.pos);
-    } else {
-      throw new CannotPerformActionException("Stand on a 3x3 empty patch of ground!");
-    }
+    // } else {
+    //   throw new CannotPerformActionException("Stand on a 3x3 empty patch of ground!");
+    // }
   }
 
   public void SowPos(Vector2Int pos) {

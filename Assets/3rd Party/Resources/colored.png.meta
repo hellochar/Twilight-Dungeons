@@ -13,16 +13,16 @@ TextureImporter:
     second: colored_2
   - first:
       213: -4243486345048582621
-    second: colored_3
+    second: stream_straight
   - first:
       213: 6999863376498358602
-    second: colored_4
+    second: stream_angled
   - first:
       213: 8589081340543278931
     second: colored_5
   - first:
       213: 5456346904356936295
-    second: colored_6
+    second: stream_end
   - first:
       213: -9132187631368183279
     second: colored_7
@@ -4047,7 +4047,70 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: stream_straight
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 272
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3269822f6ab1c15c0800000000000000
+      internalID: -4243486345048582621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stream_angled
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 272
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a49737077a2842160800000000000000
+      internalID: 6999863376498358602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stream_end
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 272
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76a5f7db996d8bb40800000000000000
+      internalID: 5456346904356936295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000

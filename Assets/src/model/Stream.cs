@@ -15,4 +15,11 @@ public class Stream : Tile {
     this.poses = poses;
     this.index = index;
   }
+
+  public void AddSoilsToNeighboringGrounds() {
+    var neighbors = floor.GetDiagonalAdjacentTiles(pos).Where(t => t is Ground);
+    foreach (var neighbor in neighbors) {
+      floor.Put(new Soil(neighbor.pos));
+    }
+  }
 }

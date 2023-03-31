@@ -1363,5 +1363,6 @@ public class Encounters {
       stream.Add(new Stream(positions, i));
     }
     floor.PutAll(stream);
+    stream.ForEach(s => s.AddSoilsToNeighboringGrounds());
   });
 }

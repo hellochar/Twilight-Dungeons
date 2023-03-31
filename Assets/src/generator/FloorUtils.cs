@@ -50,7 +50,7 @@ public static class FloorUtils {
   }
 
   internal static List<Tile> EmptyTilesInRoom(Floor floor, Room room) {
-    return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs)).ToList();
+    return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && t is Ground).ToList();
   }
 
   internal static List<Tile> TilesFromCenter(Floor floor, Room room) {

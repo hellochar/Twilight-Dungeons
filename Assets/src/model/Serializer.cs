@@ -93,7 +93,7 @@ public static class Serializer {
     return bf;
   }
 
-  public static Stream GenerateStreamFromString(string s) {
+  public static System.IO.Stream GenerateStreamFromString(string s) {
     var stream = new MemoryStream();
     var writer = new StreamWriter(stream);
     writer.Write(s);

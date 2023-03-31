@@ -423,7 +423,7 @@ public class Encounters {
     var x = room.center.x;
     var line = floor
       .EnumerateLine(new Vector2Int(x, 0), new Vector2Int(x, floor.height - 1))
-      .Where(pos => floor.tiles[pos].CanBeOccupied());
+      .Where(pos => floor.tiles[pos].CanBeOccupied() && floor.tiles[pos] is Ground);
     floor.PutAll(line.Select(pos => new Stalk(pos)));
   });
 
@@ -893,7 +893,7 @@ public class Encounters {
   public static Encounter AddOvergrowth = new Encounter((Floor floor, Room room) => {
     var tiles = floor
       .EnumerateRoomTiles(room)
-      .Where(tile => tile.CanBeOccupied() && tile.grass == null)
+      .Where(tile => tile.CanBeOccupied() && tile is Ground && tile.grass == null)
       .ToList();
     if (!tiles.Any()) {
       Debug.LogError("Couldn't find a location for overgrowth!");
@@ -1320,5 +1320,48 @@ public class Encounters {
       var num = (int)(numTiles / 3);
       floor.PutAll(floor.BreadthFirstSearch(pos).Take(num).Select(t => new Chasm(t.pos)).ToList());
     // }
+  });
+
+  public static Encounter AddStream = new Encounter((Floor floor, Room room) => {
+    var perimeter = floor.EnumeratePerimeter(0).Where(pos => floor.tiles[pos] is Wall).ToList();
+    // remove the four corners
+    perimeter.Remove(Vector2Int.zero);
+    perimeter.Remove(floor.boundsMax - Vector2Int.one);
+    perimeter.Remove(new Vector2Int(floor.boundsMax.x - 1, 0));
+    perimeter.Remove(new Vector2Int(0, floor.boundsMax.y - 1));
+    var start = Util.RandomPick(perimeter);
+    // if start is at 0,0, end should be boundsMax - 1.
+    // if start is at boundsMax - 1, end should be 0,0
+    var end = floor.boundsMax - Vector2Int.one - start;
+    var tiles = new List<Tile>();
+    
+    var cache = new Dictionary<Tile, float>();
+    Func<Tile, float> weightFn = (Tile tile) => {
+      if (!cache.ContainsKey(tile)) {
+        var weight = MyRandom.value * 100;
+
+        // if we're at the perimeter or on a wall, push away (make the weight higher)
+        if (tile.pos.x == 0 || tile.pos.y == 0 || tile.pos.x == floor.width - 1 || tile.pos.y == floor.height - 1) {
+          weight += 100;
+        }
+        if (tile is Wall) {
+          weight += 50;
+        }
+        cache[tile] = weight;
+      }
+      return cache[tile];
+    };
+    var positions = floor.FindPath(start, end, true, weightFn);
+    var stream = new List<Stream>();
+
+    for (var i = 0; i < positions.Count; i++) {
+      if (floor.tiles[positions[i]] is Chasm) {
+        // the moment we hit a chasm, call that the End
+        positions.RemoveRange(i, positions.Count - i);
+        break;
+      }
+      stream.Add(new Stream(positions, i));
+    }
+    floor.PutAll(stream);
   });
 }

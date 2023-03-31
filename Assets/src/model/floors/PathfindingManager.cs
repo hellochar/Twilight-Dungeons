@@ -30,8 +30,8 @@ class PathfindingManager {
     parents = new Dictionary<Tile, Tile>();
   }
 
-  public List<Vector2Int> FindPathDynamic(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty) {
-    var path = FindPathImpl(pos, target, pretendTargetEmpty);
+  public List<Vector2Int> FindPathDynamic(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty = false, Func<Tile, float> weightFn = null) {
+    var path = FindPathImpl(pos, target, pretendTargetEmpty, weightFn);
     if (path != null) {
       return path.Select(x => x.pos).ToList();
     }
@@ -43,9 +43,17 @@ class PathfindingManager {
   private Tile parent(Tile t) => parents.GetValueOrDefault(t);
   private int fCost(Tile t) => +gCost(t) + hCost(t);
 
+  private static readonly Func<Tile, float> DEFAULT_WEIGHT_FN = (Tile t) => t.GetPathfindingWeight();
+
   // adapted from https://github.com/RonenNess/Unity-2d-pathfinding
   /// pretendTargetEmpty - if true, the targetPos will be treated as walkable, even if it's not
-  private List<Tile> FindPathImpl(Vector2Int startPos, Vector2Int targetPos, bool pretendTargetEmpty) {
+  private List<Tile> FindPathImpl(Vector2Int startPos, Vector2Int targetPos, bool pretendTargetEmpty, Func<Tile, float> weightFn = null) {
+    if (weightFn == null) {
+      weightFn = DEFAULT_WEIGHT_FN;
+    }
+    if (!floor.InBounds(startPos) || !floor.InBounds(targetPos)) {
+      throw new Exception("start or end out of bounds");
+    }
     Tile startNode = floor.tiles[startPos];
     Tile targetNode = floor.tiles[targetPos];
 
@@ -75,11 +83,18 @@ class PathfindingManager {
       }
 
       foreach (Tile neighbour in floor.GetAdjacentTiles(currentNode.pos)) {
-        if (!(isAtEmptyTarget(neighbour) ? true : neighbour.CanBeOccupied()) || closedSet.Contains(neighbour)) {
+        if (closedSet.Contains(neighbour)) {
           continue;
         }
 
-        var neighbourWeight = (int)(10.0f * (isAtEmptyTarget(neighbour) ? 1 : neighbour.GetPathfindingWeight()));
+        // make walking to the empty target tile cost 1
+        var weight = isAtEmptyTarget(neighbour) ? 1 : weightFn.Invoke(neighbour);
+        var canBeOccupied = weight != 0;
+        if (!canBeOccupied) {
+          continue;
+        }
+
+        var neighbourWeight = (int)(10.0f * weight);
         int newMovementCostToNeighbour = gCost(currentNode) + GetDistance(currentNode, neighbour) * neighbourWeight;
         if (newMovementCostToNeighbour < gCost(neighbour) || !openSet.Contains(neighbour)) {
           gCosts[neighbour] = newMovementCostToNeighbour;

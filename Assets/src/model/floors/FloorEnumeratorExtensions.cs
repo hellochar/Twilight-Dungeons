@@ -89,6 +89,39 @@ public static class FloorEnumeratorExtensions {
     }
   }
 
+  public static IEnumerable<Vector2Int> EnumerateRoomPerimeter(this Floor floor, Room room, int inset = 0) {
+    // top edge, including top-left, excluding top-right
+    var min = room.min + new Vector2Int(inset, inset);
+    var max = room.max - new Vector2Int(inset, inset);
+    for (int x = min.x; x <= max.x - 1; x++) {
+      yield return new Vector2Int(x, max.y);
+    }
+    // right edge, excluding bottom-right
+    for (int y = max.y; y >= min.y + 1; y--) {
+      yield return new Vector2Int(max.x, y);
+    }
+    // bottom edge, now going right-to-left, now excluding bottom-left
+    for (int x = max.x; x >= min.x + 1; x--) {
+      yield return new Vector2Int(x, min.y);
+    }
+    // left edge
+    for (int y = min.y; y <= max.y - 1; y++) {
+      yield return new Vector2Int(min.x, y);
+    }
+  }
+
+  public static IEnumerable<Wall> EnumerateWallPerimeter(this Floor floor) {
+    return BreadthFirstSearch(
+      floor,
+      EnumeratePerimeter(floor),
+      tile => tile is Wall
+    ).Where(wall => floor.GetAdjacentTiles(wall.pos).Any(t => t.CanBeOccupied())).OfType<Wall>();
+  }
+
+  public static IEnumerable<Tile> EnumerateGroundPerimeter(this Floor floor) {
+    return EnumerateWallPerimeter(floor).SelectMany(wall => floor.GetAdjacentTiles(wall.pos)).Distinct().Where(tile => !(tile is Wall));
+  }
+
   public static IEnumerable<Tile> EnumerateRoomTiles(this Floor floor, Room room, int extrude = 0) {
     return floor.EnumerateRoom(room, extrude).Select(x => floor.tiles[x]);
   }

@@ -110,6 +110,18 @@ public static class FloorEnumeratorExtensions {
     }
   }
 
+  public static IEnumerable<Wall> EnumerateWallPerimeter(this Floor floor) {
+    return BreadthFirstSearch(
+      floor,
+      EnumeratePerimeter(floor),
+      tile => tile is Wall
+    ).Where(wall => floor.GetAdjacentTiles(wall.pos).Any(t => t.CanBeOccupied())).OfType<Wall>();
+  }
+
+  public static IEnumerable<Tile> EnumerateGroundPerimeter(this Floor floor) {
+    return EnumerateWallPerimeter(floor).SelectMany(wall => floor.GetDiagonalAdjacentTiles(wall.pos)).Distinct().Where(tile => !(tile is Wall));
+  }
+
   public static IEnumerable<Tile> EnumerateRoomTiles(this Floor floor, Room room, int extrude = 0) {
     return floor.EnumerateRoom(room, extrude).Select(x => floor.tiles[x]);
   }

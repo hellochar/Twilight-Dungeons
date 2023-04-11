@@ -1333,7 +1333,6 @@ public class Encounters {
     // if start is at 0,0, end should be boundsMax - 1.
     // if start is at boundsMax - 1, end should be 0,0
     var end = floor.boundsMax - Vector2Int.one - start;
-    var tiles = new List<Tile>();
     
     var cache = new Dictionary<Tile, float>();
     Func<Tile, float> weightFn = (Tile tile) => {
@@ -1352,6 +1351,9 @@ public class Encounters {
       return cache[tile];
     };
     var positions = floor.FindPath(start, end, true, weightFn);
+    // remove the first two and last two so they're not up against the edge
+    positions.RemoveRange(0, 2);
+    positions.RemoveRange(positions.Count - 2, 2);
     var stream = new List<Stream>();
 
     for (var i = 0; i < positions.Count; i++) {
@@ -1363,6 +1365,6 @@ public class Encounters {
       stream.Add(new Stream(positions, i));
     }
     floor.PutAll(stream);
-    stream.ForEach(s => s.AddSoilsToNeighboringGrounds());
+    // stream.ForEach(s => s.AddSoilsToNeighboringGrounds());
   });
 }

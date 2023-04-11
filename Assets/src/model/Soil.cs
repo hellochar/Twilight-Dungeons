@@ -62,6 +62,10 @@ public class Soil : Entity, IDaySteppable {
 public class ItemSoil : Item/*, ITargetedAction<Ground> */ {
   [PlayerAction]
   public void Sow() {
+    var nearbySoils = GameModel.main.player.floor.soils.Where(soil => soil.IsDiagonallyNextTo(GameModel.main.player));
+    if (nearbySoils.Any()) {
+      throw new CannotPerformActionException("There is already soil nearby!");
+    }
     // if (GameModel.main.player.tile.CanPlaceShape(Soil.SoilShape)) {
       SowPos(GameModel.main.player.pos);
     // } else {

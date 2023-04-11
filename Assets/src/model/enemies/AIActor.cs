@@ -53,8 +53,10 @@ public abstract class AIActor : Actor, IDeathHandler, IDaySteppable, IInteractab
       // var iMatter = new OrganicMatterOnGround(pos);
       // floor.Put(iMatter);
 
+#if experimental_corpses
       var corpse = new Corpse(pos, this);
       floor.Put(corpse);
+#endif
     });
     // }
   }

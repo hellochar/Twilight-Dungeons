@@ -26,4 +26,10 @@ public class ItemCorpse : Item {
   }
 
   public override int stacksMax => 1;
+
+  [PlayerAction]
+  public void Eat() {
+    GameModel.main.player.hunger -= 15;
+    stacks--;
+  }
 }

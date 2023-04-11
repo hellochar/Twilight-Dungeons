@@ -117,10 +117,19 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
 
       // if (player.floor.depth == 0) {
         var playerActions = item.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
-        foreach(var action in playerActions) {
-          buttons.Add((Util.WithSpaces(action.Name), () => {
-            action.Invoke(item, new object[0]);
-          }));
+        foreach(var method in playerActions) {
+          Action action = () => {
+            try {
+              method.Invoke(item, new object[0]);
+              GameModel.main.DrainEventQueue();
+            } catch (TargetInvocationException outer) {
+              if (outer.InnerException is CannotPerformActionException e) {
+                GameModel.main.turnManager.OnPlayerCannotPerform(e);
+              }
+              throw outer;
+            }
+          };
+          buttons.Add((Util.WithSpaces(method.Name), action));
         }
       // }
     }

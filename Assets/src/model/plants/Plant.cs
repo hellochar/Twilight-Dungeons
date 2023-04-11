@@ -86,8 +86,20 @@ public abstract class Plant : Body, IHideInSidebar, IDaySteppable {
       player.UseActionPointOrThrow();
     }
 #endif
-    stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
+    var floor = this.floor;
+    var harvest = stage.harvestOptions[choiceIndex];
     OnHarvested?.Invoke();
     Kill(player);
+    // autoplant seed
+    var itemSeed = harvest.ItemsNonNull().OfType<ItemSeed>().FirstOrDefault();
+    if (itemSeed != null) {
+      var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+      var plant = (Plant) constructor.Invoke(new object[] { pos });
+      floor.Put(plant);
+      harvest.TryDropAllItems(floor, pos);
+      itemSeed.stacks--;
+    } else {
+      harvest.TryDropAllItems(floor, pos);
+    }
   }
 }

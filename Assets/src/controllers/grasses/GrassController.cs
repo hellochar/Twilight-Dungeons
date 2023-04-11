@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public enum PulseType { Smaller, Larger }
 
-public class GrassController : MonoBehaviour, IEntityController, IPlayerInteractHandler, IOnTopActionHandler {
+public class GrassController : MonoBehaviour, IEntityController, IPlayerInteractHandler/*, IOnTopActionHandler*/ {
   [NonSerialized]
   public Grass grass;
   public PulseType pulses = PulseType.Smaller;
@@ -83,9 +83,9 @@ public class GrassController : MonoBehaviour, IEntityController, IPlayerInteract
     );
   }
 
-  public string OnTopActionName => "Harvest";
+  // public string OnTopActionName => "Harvest";
 
-  public void HandleOnTopAction() {
-    grass.Harvest(GameModel.main.player);
-  }
+  // public void HandleOnTopAction() {
+  //   grass.Harvest(GameModel.main.player);
+  // }
 }

@@ -28,14 +28,18 @@ public static partial class Generate {
     // }
     // floor.PutAll(soils);
 
+    // floor.Put(new Soil(new Vector2Int(3, floor.height / 2 - 1)));
+
     var room0 = new Room(Vector2Int.zero, floor.boundsMax);
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
     EncounterGroup.Plants.GetRandomAndDiscount(1f).Apply(floor, room0);
 
-    // Encounters.AddWater.Apply(floor, room0);
+    Encounters.AddWater.Apply(floor, room0);
+    Encounters.AddSoil.Apply(floor, floor.root);
     // Encounters.ThreeAstoriasInCorner.Apply(floor, room0);
+    // Encounters.AddStream.Apply(floor, room0);
 
     // floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
 

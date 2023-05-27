@@ -539,15 +539,6 @@ public class FloorGenerator {
     return floor;
   }
 
-    floor.root = room0;
-    floor.rooms = new List<Room>();
-    floor.upstairsRoom = room0;
-    floor.downstairsRoom = room0;
-
-    FloorUtils.TidyUpAroundStairs(floor);
-    return floor;
-  }
-
   /// <summary>
   /// Generate a floor broken up into X smaller rooms, based on a number of "splits". Each room contains:
   /// one mob, one grass, one random encounter.

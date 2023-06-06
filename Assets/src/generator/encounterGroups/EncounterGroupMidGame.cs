@@ -26,7 +26,7 @@ public static class EncounterGroupMidGame {
         { 0.75f, AddGoldGrass },
         { 0.75f, AddRedcaps },
         { 0.75f, AddIronJelly },
-        { 0.75f, AddCheshireWeeds },
+        // { 0.75f, AddCheshireWeeds },
 
         { 0.5f, AddVibrantIvy },
         { 0.5f, AddHangingVines2x },

@@ -72,13 +72,13 @@ internal class ItemVilePotion : Item, IStackable, IUsable {
     }
   }
 
-  internal override string GetStats() => "Spawns Vile Growths in lines towards every visible enemy.\nVile Growth does 1 damage per turn to any creature standing over it. Lasts 12 turns.";
+  internal override string GetStats() => "Spawns Vile Growths in lines towards every visible enemy.\nVile Growth does 1 damage per turn to any creature standing over it. Lasts 9 turns.";
 }
 
 [Serializable]
 [ObjectInfo("vile-growth", description: "Deals 1 damage per turn to any creature standing over it.", flavorText: "Toxic tentacles erupt from the floor!")]
 internal class VileGrowth : Grass, ISteppable, INoTurnDelay {
-  int turns = 12;
+  int turns = 9;
   public VileGrowth(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated;
   }

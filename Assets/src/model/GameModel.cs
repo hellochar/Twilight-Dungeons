@@ -20,7 +20,7 @@ public class GameModel {
   public List<int> floorSeeds;
   public FloorGenerator generator;
   public PlayStats stats;
-  public bool permadeath = true;
+  public bool permadeath = false;
 
   private TurnManager _turnManager;
   public TurnManager turnManager {

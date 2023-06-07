@@ -7,16 +7,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class AltarController : BodyController, ILongTapHandler {
-  // public TeleportStone stone => (TeleportStone)actor;
-  public new ParticleSystem particleSystem;
-
   public void HandleLongTap() {
-    throw new NotImplementedException();
-  }
-
-  void Update() {
-    var model = GameModel.main;
-    particleSystem.gameObject.SetActive(model.permadeath);
+    ShowAltarDialog();
   }
 
   public override void HandleInteracted(PointerEventData pointerEventData) {
@@ -40,16 +32,10 @@ public class AltarController : BodyController, ILongTapHandler {
 
   void ShowAltarDialog() {
     List<(string, Action)> buttons = new List<(string, Action)>();
-    if (GameModel.main.permadeath) {
-      buttons.Add(("Disable Permadeath", () => {
-        GameModel.main.permadeath = false;
-      }));
-    } else {
-      buttons.Add(("Enable Permadeath", () => {
-        GameModel.main.permadeath = true;
-      }));
-    }
-    buttons.Add(("Back", () => {}));
+    buttons.Add(("Destroy (Enable Permadeath)", () => {
+      GameModel.main.permadeath = true;
+      body.KillSelf();
+    }));
 
     var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
     var spriteGameObject = Instantiate(spritePrefab);
@@ -59,7 +45,7 @@ public class AltarController : BodyController, ILongTapHandler {
     Popups.Create(
       "Altar",
       null,
-      "Provides you immortality, if you choose it.",
+      "Provides you immortality.\nIf you're looking for a challenge, destroy it.",
       null,
       spriteGameObject,
       buttons: buttons

@@ -352,7 +352,11 @@ public class FloorGenerator {
     floor.depth = 0;
     #endif
 
-    floor.Put(new Altar(new Vector2Int(floor.width/2, floor.height - 2)));
+    if (!GameModel.main.permadeath) {
+      var altarPos = floor.downstairs.pos + Vector2Int.up;
+      floor.Put(new Ground(altarPos));
+      floor.Put(new Altar(altarPos));
+    }
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

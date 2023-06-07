@@ -3,10 +3,10 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo("fungal-colony", description: "Blocks 1 attack damage.\nSpawns a Fungal Sentinel when attacked.\nCan be damaged by Fungal Sentinel explosions.\nEvery 12 turns, summons a Fungal Breeder and moves itself to a random Fungal Wall.\nDoes not move or attack.")]
+[ObjectInfo("fungal-colony", description: "Blocks 1 attack damage.\nSpawns a Fungal Sentinel when attacked.\nCan be damaged by Fungal Sentinel explosions.\nEvery 13 turns, summons a Fungal Breeder and moves itself to a random Fungal Wall.\nDoes not move or attack.")]
 public class FungalColony : Boss, IAttackDamageTakenModifier {
   public FungalColony(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 54;
+    hp = baseMaxHp = 48;
     faction = Faction.Enemy;
   }
 
@@ -23,7 +23,7 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
   protected override ActorTask GetNextTask() {
     if (needsWait) {
       needsWait = false;
-      return new WaitTask(this, 12);
+      return new WaitTask(this, 13);
     } else {
       return new GenericTask(this, SummonFungalBreeder);
     }
@@ -56,7 +56,7 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
 [ObjectInfo("fungal-breeder", description: "Summons a Fungal Sentinel every 7 turns.\nDoes not move or attack.")]
 public class FungalBreeder : AIActor {
   public FungalBreeder(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 10;
+    hp = baseMaxHp = 8;
     faction = Faction.Enemy;
   }
 

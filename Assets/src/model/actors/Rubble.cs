@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 /// signals that attacking this doesn't use item durability
@@ -28,10 +29,20 @@ public class Stump : Destructible, IBlocksVision {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Blocks vision.")]
-public class Stalk : Destructible, IBlocksVision {
-
+[ObjectInfo(description: "Blocks vision. Destroying one destroys all Stalks.")]
+public class Stalk : Destructible, IBlocksVision, IDeathHandler {
   public Stalk(Vector2Int pos) : base(pos) {}
+
+  // kill all stalks on the map
+  public void HandleDeath(Entity source) {
+    if (!(source is Stalk)) {
+      foreach(var stalk in floor.bodies.OfType<Stalk>().ToArray()) {
+        if (stalk != this) {
+          stalk.Kill(this);
+        }
+      }
+    }
+  }
 }
 
 /// Note - not implemented on moving entities yet

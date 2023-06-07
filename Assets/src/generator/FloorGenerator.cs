@@ -287,7 +287,7 @@ public class FloorGenerator {
   }
 
   public Floor generateFloor0(int depth) {
-    Floor floor = new Floor(depth, 15, 11);
+    Floor floor = new Floor(depth, 14, 9);
 
     // fill with floor tiles by default
     FloorUtils.CarveGround(floor);
@@ -299,7 +299,7 @@ public class FloorGenerator {
     floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     var soils = new List<Soil>();
-    for (int x = 3; x < floor.width - 2; x += 2) {
+    for (int x = 2; x < floor.width - 2; x += 2) {
       int y = floor.height / 2 - 1;
       if (floor.tiles[x, y] is Ground) {
         soils.Add(new Soil(new Vector2Int(x, y)));
@@ -318,7 +318,7 @@ public class FloorGenerator {
     EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
 
     Encounters.AddWater(floor, room0);
-    Encounters.ThreeAstoriasInCorner(floor, room0);
+    // Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
     // Encounters.MatureStoutShrub(floor, room0);

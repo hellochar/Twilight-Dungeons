@@ -302,10 +302,10 @@ public class Encounters {
 
   private static void AddPlantToRoom(Floor floor, Room room, System.Type type) {
     // Add to random soil, or center of room
-    // Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t is Ground && t.CanBeOccupied()));
-    // if (tile == null) {
-      Tile tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
-    // }
+    Tile tile = Util.RandomPick(floor.EnumerateRoomTiles(room).Where(t => t is Soil && t.CanBeOccupied()));
+    if (tile == null) {
+      tile = FloorUtils.TilesFromCenter(floor, room).Where(t => t.CanBeOccupied()).FirstOrDefault();
+    }
     if (tile != null) {
       var constructor = type.GetConstructor(new Type[] { typeof(Vector2Int) });
       var plant = (Plant)constructor.Invoke(new object[1] { tile.pos });

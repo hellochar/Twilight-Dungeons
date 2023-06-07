@@ -25,14 +25,11 @@ public class GameOverHandler : MonoBehaviour {
         Serializer.DeleteSave0();
         Serializer.DeleteCheckpoint();
         #endif
-        // player died
-        InteractionController.isInputAllowed = false;
-        dPad.SetActive(false);
-        SceneManager.LoadSceneAsync("Scenes/GameOver", LoadSceneMode.Additive);
-      } else {
-        GameModel.main = Serializer.LoadCheckpoint();
-        StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
       }
+      // player died
+      InteractionController.isInputAllowed = false;
+      dPad.SetActive(false);
+      SceneManager.LoadSceneAsync("Scenes/GameOver", LoadSceneMode.Additive);
     }
   }
 

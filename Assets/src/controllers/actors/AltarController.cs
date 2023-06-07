@@ -45,7 +45,7 @@ public class AltarController : BodyController, ILongTapHandler {
     Popups.Create(
       "Altar",
       null,
-      "Provides you immortality.\nIf you're looking for a challenge, destroy it.",
+      "Provides you immortality. If you would die, instead restart at the last cleared floor.\n\nIf you're looking for a challenge, destroy the Altar.",
       null,
       spriteGameObject,
       buttons: buttons

@@ -28,8 +28,11 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     entry.weight = weight;
   }
 
-  public float GetWeight(T item) {
+  public float? GetWeight(T item) {
     var entry = entries.Find(e => e.item.Equals(item));
+    if (entry == null) {
+      return null;
+    }
     return entry.weight;
   }
 
@@ -51,10 +54,24 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
   private float GetAccumulatedWeight() => entries.Select(e => e.weight).Sum();
 
   /// Get an item and then mutate this bag such that the item has v% less weight
-  internal T GetRandomAndDiscount(float reduceChanceBy = 0.3f) {
+  public T GetRandomAndDiscount(float reduceChanceBy = 0.3f) {
     var item = GetRandom();
+    if (item != null) {
+      Discount(item);
+    }
+    return item;
+  }
 
-    var currentWeight = GetWeight(item);
+  public T GetRandomAndRemove() {
+    return GetRandomAndDiscount(1);
+  }
+
+  public void Discount(T item, float reduceChanceBy = 0.3f) {
+    var getWeight = GetWeight(item);
+    if (!getWeight.HasValue) {
+      return;
+    }
+    var currentWeight = getWeight.Value;
     var accumulatedWeight = GetAccumulatedWeight();
 
     var currentChance = currentWeight / GetAccumulatedWeight();
@@ -75,15 +92,28 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
       newWeight = currentWeight;
     }
     SetWeight(item, newWeight);
-    return item;
   }
 
-  public T GetRandomWithout(params T[] encounters) {
+  public T GetRandomWithout(IEnumerable<T> encounters) {
     T pick;
     do {
       pick = GetRandom();
+      if (pick == null) {
+        return pick;
+      }
     } while (encounters.Contains(pick));
     return pick;
+  }
+
+  public T GetRandomWithoutAndDiscount(IEnumerable<T> encounters, float reduceChanceBy = 0.3f) {
+    var pick = GetRandomWithout(encounters);
+    Discount(pick, reduceChanceBy);
+    return pick;
+  }
+
+
+  public void Clear() {
+    entries.Clear();
   }
 
   public WeightedRandomBag<T> Clone() {
@@ -92,6 +122,18 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
       newBag.Add(e.weight, e.item);
     }
     return newBag;
+  }
+
+  public WeightedRandomBag<T> Merge(WeightedRandomBag<T> other) {
+    foreach (Entry entry in other.entries) {
+      var thisEntry = entries.Find(e => e.item.Equals(entry.item));
+      if (thisEntry != null) {
+        thisEntry.weight += entry.weight;
+      } else {
+        entries.Add(entry);
+      }
+    }
+    return this;
   }
 
   object ICloneable.Clone() => this.Clone();

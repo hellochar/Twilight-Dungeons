@@ -40,7 +40,7 @@ public abstract class Entity : IModifierProvider {
   }
 
   public Entity() {
-    this.timeCreated = GameModel.main.time;
+    this.timeCreated = GameModel.main == null ? 0 : GameModel.main.time;
   }
 
   /// <summary>Only call this from Floor to internally update this Entity's floor pointer.</summary>

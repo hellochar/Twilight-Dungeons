@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -63,6 +63,11 @@ public class GameModel {
     main.generateTutorial();
   }
 
+  internal static void GenerateFromPrebuiltAndSetMain(Prebuilt prebuilt) {
+    main = new GameModel();
+    main.initFromPrebuilt(prebuilt);
+  }
+
   public GameModel() {
     seed = new System.Random().Next();
     stats = new PlayStats();
@@ -118,6 +123,27 @@ public class GameModel {
     home = new TutorialFloor();
     home.Put(player);
   }
+
+  // the only purpose of this is in-editor testing so don't worry too much about it
+  private void initFromPrebuilt(Prebuilt prebuilt) {
+    player = prebuilt.player;
+    MyRandom.SetSeed(seed);
+    floorSeeds = new List<int>();
+    /// generate floor seeds first
+    for (int i = 0; i < 37; i++) {
+      floorSeeds.Add(MyRandom.Next());
+    }
+    generator = new FloorGenerator(floorSeeds);
+
+    // HACK
+    home = new Floor(0, 0, 0);
+
+    var floor = prebuilt.createRepresentativeFloor();
+    PutPlayerAt(floor, player.pos);
+    // depth = cave.depth;
+    // cave.Put(player);
+  }
+
 
   public void GameOver(bool won, Entity deathSource = null) {
     FinalizeStats(won, deathSource?.displayName);

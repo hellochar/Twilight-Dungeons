@@ -74,6 +74,15 @@ public class GameModel {
     #if UNITY_EDITOR
     // this.seed = 0xf380d57;
     #endif
+
+    Debug.Log("new GameModel() - generating from seed " + seed.ToString("x"));
+    MyRandom.SetSeed(seed);
+    floorSeeds = new List<int>();
+    /// generate floor seeds first
+    for (int i = 0; i < 37; i++) {
+      floorSeeds.Add(MyRandom.Next());
+    }
+    generator = new FloorGenerator(floorSeeds);
   }
 
   #if UNITY_EDITOR
@@ -96,14 +105,6 @@ public class GameModel {
   }
 
   private void generate() {
-    Debug.Log("generating from seed " + seed.ToString("x"));
-    MyRandom.SetSeed(seed);
-    floorSeeds = new List<int>();
-    /// generate floor seeds first
-    for (int i = 0; i < 37; i++) {
-      floorSeeds.Add(MyRandom.Next());
-    }
-    generator = new FloorGenerator(floorSeeds);
     home = generator.generateCaveFloor(0);
     cave = generator.generateCaveFloor(1);
     player = new Player(new Vector2Int(2, home.height/2));
@@ -112,36 +113,17 @@ public class GameModel {
 
   private void generateTutorial() {
     player = new Player(new Vector2Int(2, 4));
-    // player = new Player(new Vector2Int(50, 4));
-    MyRandom.SetSeed(seed);
-    floorSeeds = new List<int>();
-    /// generate floor seeds first
-    for (int i = 0; i < 37; i++) {
-      floorSeeds.Add(MyRandom.Next());
-    }
-    generator = new FloorGenerator(floorSeeds);
-    home = new TutorialFloor();
+    home = TutorialFloor1.CreateFromTutorialRoom1Scene();
     home.Put(player);
   }
 
   // the only purpose of this is in-editor testing so don't worry too much about it
   private void initFromPrebuilt(Prebuilt prebuilt) {
     player = prebuilt.player;
-    MyRandom.SetSeed(seed);
-    floorSeeds = new List<int>();
-    /// generate floor seeds first
-    for (int i = 0; i < 37; i++) {
-      floorSeeds.Add(MyRandom.Next());
-    }
-    generator = new FloorGenerator(floorSeeds);
-
+    cave = prebuilt.createRepresentativeFloor();
     // HACK
-    home = new Floor(0, 0, 0);
-
-    var floor = prebuilt.createRepresentativeFloor();
-    PutPlayerAt(floor, player.pos);
-    // depth = cave.depth;
-    // cave.Put(player);
+    home = cave;
+    PutPlayerAt(cave, player.pos);
   }
 
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -165,30 +165,32 @@ public class GameModel {
     return turnManager.StepUntilPlayersChoice();
   }
 
-  /// depth should be either 0, cave.depth, or cave.depth + 1
-  internal void PutPlayerAt(int depth, Vector2Int? pos = null) {
-    Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
+  public void PutPlayerAt(Floor newFloor, Vector2Int? pos = null) {
     Floor oldFloor = player.floor;
-
-    this.depth = depth;
-    // this could take a while
-    var newFloor = depth == 0 ? home : depth == cave.depth ? cave : generator.generateCaveFloor(depth);
 
     // going home
     if (pos == null) {
       if (depth == 0) {
         pos = newFloor.downstairs.landing;
       } else {
-        pos = newFloor.upstairs?.landing ?? new Vector2Int(newFloor.width / 2, newFloor.height / 2);
+        pos = newFloor.upstairs?.landing ?? new Vector2Int(2, newFloor.height / 2);
       }
     }
-    oldFloor.RecordLastStepTime(this.time);
     newFloor.CatchUpStep(this.time);
+    this.depth = newFloor.depth;
     player.ChangeFloors(newFloor, pos.Value);
-    if (newFloor.depth == cave.depth + 1) {
+    if (depth != 0) {
       cave = newFloor;
     }
     OnPlayerChangeFloor?.Invoke(oldFloor, newFloor);
+  }
+
+  /// depth should be either 0, cave.depth, or cave.depth + 1
+  public void PutPlayerAt(int depth, Vector2Int? pos = null) {
+    Debug.Assert(depth == 0 || depth == cave.depth || depth == cave.depth + 1, "PutPlayerAt depth check");
+    // this could take a while
+    var newFloor = depth == 0 ? home : depth == cave.depth ? cave : generator.generateCaveFloor(depth);
+    PutPlayerAt(newFloor, pos);
   }
 
   internal void PutActorAt(Actor actor, Floor floor, Vector2Int pos) {

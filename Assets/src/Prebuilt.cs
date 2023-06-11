@@ -107,6 +107,15 @@ public class Prebuilt {
   }
 
   public Floor createRepresentativeFloor(int depth = -1) {
+    var max = GetEntityBounds();
+
+    var floor = new Floor(depth, max.x, max.y);
+    floor.root = new Room(floor);
+    floor.PutAll(entitiesWithoutPlayer);
+    return floor;
+  }
+
+  internal Vector2Int GetEntityBounds() {
     // find bounding box
     Vector2Int max = Vector2Int.zero;
     foreach(var e in entitiesWithoutPlayer) {
@@ -114,9 +123,6 @@ public class Prebuilt {
     }
     max += Vector2Int.one;
 
-    var floor = new Floor(depth, max.x, max.y);
-    floor.root = new Room(floor);
-    floor.PutAll(entitiesWithoutPlayer);
-    return floor;
+    return max;
   }
 }

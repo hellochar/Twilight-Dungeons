@@ -33,9 +33,8 @@ public static class Serializer {
 
   private static GameModel Load(string path) {
     Debug.Log("Loading save from " + path);
-    var bf = GetBinaryFormatter();
     using (FileStream file = File.Open(path, FileMode.Open)) {
-      var model = (GameModel) bf.Deserialize(file);
+      var model = (GameModel) Deserialize(file);
       file.Close();
       SaveUpgrader.Upgrade(model);
       return model;
@@ -68,9 +67,8 @@ public static class Serializer {
       // don't save the tutorial, don't save if player is dead
       return true;
     }
-    var bf = GetBinaryFormatter();
     using(FileStream file = File.Create(path)) {
-      bf.Serialize(file, model);
+      Serialize(file, model);
       Debug.Log($"Saved {path}");
       file.Close();
       return true;
@@ -84,6 +82,18 @@ public static class Serializer {
     surrogateSelector.AddSurrogate(typeof(Vector2Int), new StreamingContext(StreamingContextStates.All), vector2ISS);
     bf.SurrogateSelector = surrogateSelector;
     return bf;
+  }
+
+  /// Serialize using our better BinaryFormatter
+  public static void Serialize(Stream serializationStream, object graph) {
+    var bf = GetBinaryFormatter();
+    bf.Serialize(serializationStream, graph);
+  }
+
+  /// Deserialize using our better BinaryFormatter
+  public static object Deserialize(Stream serializationStream) {
+    var bf = GetBinaryFormatter();
+    return bf.Deserialize(serializationStream);
   }
 
   public static Stream GenerateStreamFromString(string s) {

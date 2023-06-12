@@ -112,8 +112,10 @@ public class GameModel {
   }
 
   private void generateTutorial() {
-    player = new Player(new Vector2Int(2, 4));
-    home = TutorialFloor1.CreateFromTutorialRoom1Scene();
+    Prebuilt pb = Prebuilt.LoadBaked("TutorialRoom1");
+
+    player = pb.player;
+    home = TutorialFloor1.CreateFromPrebuilt(pb);
     home.Put(player);
   }
 

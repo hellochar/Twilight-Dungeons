@@ -90,7 +90,7 @@ public class GameModelController : MonoBehaviour {
     if (!floorControllers.ContainsKey(floor)) {
       GameObject instance = Instantiate(floorPrefab);
       FloorController controller;
-      if (floor is TutorialFloor) {
+      if (floor is TutorialFloor1) {
         controller = instance.AddComponent<TutorialFloorController>();
       } else {
         controller = instance.AddComponent<FloorController>();

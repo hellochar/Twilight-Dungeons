@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 class TutorialFloor : Floor {
   public BerryBush berryBush;
@@ -101,5 +103,35 @@ class TutorialFloor : Floor {
   internal override void PlayerGoDownstairs() {
     PlayerPrefs.SetInt("hasSeenPrologue", 1);
     GameModel.main.turnManager.OnPlayersChoice += () => OnTutorialEnded?.Invoke();
+  }
+}
+
+[Serializable]
+public class TutorialFloor1 : Floor {
+  public TutorialFloor1(int depth, int width, int height) : base(depth, width, height) {}
+
+  public static Floor CreateFromPrebuilt(Prebuilt pb) {
+    var bounds = pb.GetEntityBounds();
+
+    var floor = new TutorialFloor1(-1, bounds.x, bounds.y);
+    floor.root = new Room(floor);
+    floor.PutAll(pb.entitiesWithoutPlayer);
+
+    return floor;
+  }
+
+  internal override void PlayerGoDownstairs() {
+    Serializer.SaveMainToCheckpoint();
+    GameModel.main.PutPlayerAt(new TutorialFloor2());
+  }
+}
+
+[Serializable]
+public class TutorialFloor2 : Floor {
+  public TutorialFloor2() : base(-1, 9, 7) {
+    PutAll(this.EnumerateFloor().Select(pos => new Ground(pos)));
+    PutAll(this.EnumeratePerimeter().Select(pos => new Wall(pos)));
+    this.root = new Room(this);
+    PlaceDownstairs(new Vector2Int(root.max.x, root.center.y));
   }
 }

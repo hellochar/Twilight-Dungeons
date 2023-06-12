@@ -4,7 +4,9 @@ using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
+[Serializable]
 public class Prebuilt {
   // this is the opposite of FloorController.EntityPrefabs, plus constructor info, and not lazy loaded
   static Dictionary<string, System.Reflection.ConstructorInfo> AllEntityTypeConstructors = null;
@@ -34,6 +36,15 @@ public class Prebuilt {
         }
       }
     }
+  }
+
+  public static string BakedPrebuiltsFolderName = "Baked/Prebuilts";
+  public static Prebuilt LoadBaked(string name) {
+    var textAsset = Resources.Load<TextAsset>($"{BakedPrebuiltsFolderName}/{name}");
+    MemoryStream stream = new MemoryStream(textAsset.bytes);
+
+    Prebuilt pb = (Prebuilt) Serializer.Deserialize(stream);
+    return pb;
   }
 
   public static Prebuilt ConvertSceneIntoPrebuilt(Scene scene) {

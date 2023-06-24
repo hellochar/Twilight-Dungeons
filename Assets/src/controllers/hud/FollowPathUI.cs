@@ -10,7 +10,6 @@ public class FollowPathUI : MonoBehaviour {
   [NonSerialized]
   private Player player;
   public List<GameObject> pathDots = new List<GameObject>();
-  public InteractionController interactionController;
   private FollowPathTask _task;
   public FollowPathTask task {
     get { return _task; }

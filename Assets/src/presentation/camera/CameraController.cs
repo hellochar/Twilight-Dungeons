@@ -68,24 +68,10 @@ public class CameraController : MonoBehaviour {
     var fitsOnOneScreen = floor.width <= 18 && floor.height <= 11;
     if (fitsOnOneScreen) {
       centerCameraOnFloor();
-      // boundCameraToFloor();
-      // cameraFollowEntity();
-      // cameraZoom();
     } else {
-#if experimental_chainfloors
-      var isHome = floor == GameModel.main.home;
-      if (isHome) {
-        cameraFollowEntity();
-        cameraZoom();
-        // boundCameraToFloor();
-      } else {
-        centerCameraOnActiveRoom();
-      }
-#else
       cameraFollowEntity();
       cameraZoom();
       // boundCameraToFloor();
-#endif
     }
   }
 
@@ -199,24 +185,20 @@ public class CameraController : MonoBehaviour {
   }
 
   private readonly static Vector2 half = new Vector2(0.5f, 0.5f);
-  private void centerCameraOnActiveRoom() {
-    var activeRoom = GameModel.main.player.room;
+  private void centerCameraOnRoom(Room room) {
+    Bounds bounds = new Bounds();
+    bounds.min = Util.withZ(room.min - half) + new Vector3(-paddingLeft, -paddingBottom, 0);
+    bounds.max = Util.withZ(room.max + half) + new Vector3(paddingRight, paddingTop, 0);
 
-    if (activeRoom != null) {
-      Bounds bounds = new Bounds();
-      bounds.min = Util.withZ(activeRoom.min - half) + new Vector3(-paddingLeft, -paddingBottom, 0);
-      bounds.max = Util.withZ(activeRoom.max + half) + new Vector3(paddingRight, paddingTop, 0);
-
-      // this.transform.position = new Vector3(bounds.center.x, bounds.center.y - 0.5f, this.transform.position.z);
-      transform.position = LerpTowardsPosition(
-        transform.position,
-        new Vector3(bounds.center.x, bounds.center.y - 0.5f, this.transform.position.z),
-        followSpeed,
-        jumpThreshold
-      );
-      var zoom = Mathf.Max(minZoom, bounds.extents.y);
-      ZoomLerp(camera, zoom, zoomLerpSpeed);
-    }
+    // this.transform.position = new Vector3(bounds.center.x, bounds.center.y - 0.5f, this.transform.position.z);
+    transform.position = LerpTowardsPosition(
+      transform.position,
+      new Vector3(bounds.center.x, bounds.center.y - 0.5f, this.transform.position.z),
+      followSpeed,
+      jumpThreshold
+    );
+    var zoom = Mathf.Max(minZoom, bounds.extents.y);
+    ZoomLerp(camera, zoom, zoomLerpSpeed);
   }
 
   private void centerCameraOnFloor() {
@@ -271,9 +253,7 @@ public class CameraState {
     get {
       if (m_extents == null) {
         m_extents = new Room(Vector2Int.zero, Vector2Int.zero);
-        foreach(var offset in target.shape) {
-          m_extents.ExtendToEncompass(new Room(offset, offset));
-        }
+        m_extents.ExtendToEncompass(new Room(target.pos, target.pos));
       }
       return m_extents;
     }

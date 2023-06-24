@@ -24,13 +24,12 @@ public static class Transitions {
   }
 
   public static IEnumerator ZoomAndPanCamera(float targetSize, Nullable<Vector2> targetCenter = null, float duration = 1f, Func<float, float, float, float> easing = null) {
-    var camera = Camera.main.GetComponent<Camera>();
+    // TODO integrate this with CameraController
+    var cameraController = CameraController.main;
+    var camera = cameraController.camera;
 
     // disable camera state controllers
-    var cameraFollowEntity = camera.GetComponent<CameraFollowEntity>();
-    var cameraZoom = camera.GetComponent<CameraZoom>();
-    cameraFollowEntity.enabled = false;
-    cameraZoom.enabled = false;
+    cameraController.enabled = false;
 
     var startSize = camera.orthographicSize;
     var startPosition = camera.transform.position;
@@ -41,8 +40,7 @@ public static class Transitions {
         camera.transform.position = Vector3.Lerp(startPosition, targetPosition3, t);
       },
       post: () => {
-        cameraFollowEntity.enabled = true;
-        cameraZoom.enabled = true;
+        cameraController.enabled = true;
       },
       easing: easing ?? EasingFunctions.EaseOutCubic
     );

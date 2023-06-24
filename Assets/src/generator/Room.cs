@@ -1,9 +1,11 @@
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = MyRandom;
 
 /// Represents a room in a floor; internally implements a BSP tree
+[System.Serializable]
 public class Room {
   /// rooms are at least 3x3
   public readonly static int MIN_ROOM_SIZE = 3;
@@ -21,6 +23,12 @@ public class Room {
 
   public Vector2Int center => (min + max) / 2;
   public Vector2 centerFloat => new Vector2((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f);
+  public Rect rect => new Rect(min, new Vector2(width, height));
+  public string name;
+
+  public override string ToString() {
+    return name ?? $"{min} to {max}";
+  }
 
   public Room(Room parent, Vector2Int min, Vector2Int max) {
     this.parent = parent;
@@ -56,6 +64,9 @@ public class Room {
     // 5
     int roomWidth = Random.Range(Room.MIN_ROOM_SIZE, width + 1);
     int roomHeight = Random.Range(Room.MIN_ROOM_SIZE, height + 1);
+    // // shrink at least 1 in each dimension
+    // int roomWidth = Random.Range(Room.MIN_ROOM_SIZE, width - 1);
+    // int roomHeight = Random.Range(Room.MIN_ROOM_SIZE, height - 1);
 
     // min.x = 1, max.x = 5, 5 - 5 + 1 = 1
     int startX = Random.Range(min.x, max.x - roomWidth + 1);
@@ -65,6 +76,11 @@ public class Room {
 
     // subtract 1 from width/height since max is inclusive
     this.max = new Vector2Int(startX + roomWidth - 1, startY + roomHeight - 1);
+  }
+
+  internal void Shrink(int amount) {
+    this.min += Vector2Int.one * amount;
+    this.max -= Vector2Int.one * amount;
   }
 
   public bool randomlySplit() {
@@ -124,7 +140,10 @@ public class Room {
       return true;
     } else {
       // last case - both are possible
-      if (Random.value < 0.5) {
+      // split the larger dimension
+      var chanceToBeHorizontal = (float) width / (width + height);
+      if (Random.value < chanceToBeHorizontal) {
+      // if (Random.value < 0.5) {
         doSplitHorizontal();
       } else {
         doSplitVertical();
@@ -138,7 +157,9 @@ public class Room {
     int splitMax = max.x - MIN_ROOM_SIZE;
     int splitMin = min.x + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
+    // int splitPoint = (splitMax + splitMin) / 2;
     Room a = new Room(this, this.min, new Vector2Int(splitPoint - 1, this.max.y));
+    // add one tile of space between rooms
     Room b = new Room(this, new Vector2Int(splitPoint + 1, this.min.y), this.max);
     this.split = new RoomSplit(a, b, SplitDirection.Horizontal, splitPoint);
   }
@@ -147,6 +168,7 @@ public class Room {
     int splitMax = max.y - MIN_ROOM_SIZE;
     int splitMin = min.y + MIN_ROOM_SIZE;
     int splitPoint = Random.Range(splitMin, splitMax);
+    // int splitPoint = (splitMax + splitMin) / 2;
     Room a = new Room(this, this.min, new Vector2Int(this.max.x, splitPoint - 1));
     Room b = new Room(this, new Vector2Int(this.min.x, splitPoint + 1), this.max);
     this.split = new RoomSplit(a, b, SplitDirection.Vertical, splitPoint);
@@ -171,8 +193,30 @@ public class Room {
   internal Vector2Int getTopLeft() {
     return new Vector2Int(this.min.x, this.max.y);
   }
+
+  public bool Contains(Vector2Int pos) {
+    return pos.x >= min.x && pos.x <= max.x &&
+           pos.y >= min.y && pos.y <= max.y;
+  }
+
+  internal void ExtendToEncompass(Room room) {
+    min = Vector2Int.Min(min, room.min);
+    max = Vector2Int.Max(max, room.max);
+  }
+
+  // how far away is the point to the closest point in this room?
+  public int DistanceTo(Vector2Int pos) {
+    if (Contains(pos)) {
+      return 0;
+    }
+    // one will be negative, one will be positive - take the positive one
+    int distanceX = Math.Max(-(pos.x - min.x), pos.x - max.x);
+    int distanceY = Math.Max(-(pos.y - min.y), pos.y - max.y);
+    return Math.Max(distanceX, distanceY);
+  }
 }
 
+[System.Serializable]
 public struct RoomSplit {
 
   public RoomSplit(Room a, Room b, SplitDirection direction, int coordinate) {
@@ -187,5 +231,6 @@ public struct RoomSplit {
   public int coordinate { get; }
 }
 
+[System.Serializable]
 public enum SplitDirection { Vertical, Horizontal }
 

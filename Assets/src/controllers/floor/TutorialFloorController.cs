@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TutorialFloorController : FloorController, IStatusAddedHandler {
   // private TutorialFloor tutFloor => (TutorialFloor) floor;
-  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, depth, enemiesLeft;
+  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, depth, enemiesLeft, waitButton;
   List<GameObject> allUI;
 
   // Start is called before the first frame update
@@ -23,10 +23,11 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     inventoryContainer = GameObject.Find("Inventory Container");
     depth = GameObject.Find("Depth");
     enemiesLeft = GameObject.Find("Enemies Left");
-    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, enemiesLeft };
+    waitButton = GameObject.Find("Wait Button");
+    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, enemiesLeft, waitButton };
 
     foreach (var ui in allUI) {
-      ui.SetActive(false);
+      ui?.SetActive(false);
     }
 
     // AddHighlights();

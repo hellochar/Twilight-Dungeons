@@ -3107,7 +3107,7 @@ MonoBehaviour:
   paddingLeft: 0
   paddingRight: 0
   paddingTop: -0.5
-  paddingBottom: 1.5
+  paddingBottom: -0.5
   wantedZoom: 4
   minZoom: 2
   maxZoom: 6
@@ -11864,7 +11864,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

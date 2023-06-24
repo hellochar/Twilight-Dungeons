@@ -112,7 +112,7 @@ public class GameModel {
   }
 
   private void generateTutorial() {
-    Prebuilt pb = Prebuilt.LoadBaked("TutorialRoom1");
+    Prebuilt pb = Prebuilt.LoadBaked("TutorialRoom1_v2");
 
     player = pb.player;
     home = TutorialFloor1.CreateFromPrebuilt(pb);

@@ -76,7 +76,7 @@ public class TurnManager {
     bool isFirstIteration = true;
     int guard = 0;
     bool playerTookATurn = false;
-    bool nonPlayerTookATurn = false;
+    bool enemyTookATurn = false;
     do {
       if (guard++ > 1000 && !model.player.IsDead) {
         Debug.Log("Stopping step because it's been 1000 turns since player had a turn");
@@ -125,12 +125,12 @@ public class TurnManager {
 
       if (entity == model.player) {
         var noMoreTasks = model.player.task == null;
-        var worldHasChanged = playerTookATurn && nonPlayerTookATurn;
+        var worldHasChanged = playerTookATurn && enemyTookATurn;
         if (noMoreTasks || worldHasChanged) {
           break;
         }
-      } else {
-        nonPlayerTookATurn = true;
+      } else if (entity is AIActor a && a.faction == Faction.Enemy) {
+        enemyTookATurn = true;
       }
 
       try {

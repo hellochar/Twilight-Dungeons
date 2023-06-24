@@ -69,6 +69,10 @@ public class FollowPathUI : MonoBehaviour {
       var pos = task.path[i];
       var dot = pathDots[i];
       dot.transform.position = Util.withZ(pos, 0);
+      var sr = dot.GetComponent<SpriteRenderer>();
+      var color = sr.color;
+      color.a = Mathf.Pow(0.5f, i);
+      sr.color = color;
     }
   }
 

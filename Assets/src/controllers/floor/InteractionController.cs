@@ -119,6 +119,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   private void InteractSimulatingLevel(IPlayerInteractHandler handler, Entity entity, PlayerInteraction interaction) {
     if (entity.IsNextTo(GameModel.main.player)) {
       interaction.Perform();
+      return;
     }
     // if we're setting tasks, first show the interaction "proposed"
     if (interaction is SetTasksPlayerInteraction s) {

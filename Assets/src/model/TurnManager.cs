@@ -27,7 +27,7 @@ public class TurnManager {
 
   /// The actor whose turn it is
   private ISteppable FindActiveEntity() {
-    var allActorsInPlay = model.GetAllEntitiesInPlay();
+    var allActorsInPlay = model.GetAllEntitiesInPlay().ToList();
     return allActorsInPlay.Aggregate((a1, a2) => {
       if (a1.timeNextAction == a2.timeNextAction) {
         return a1.turnPriority < a2.turnPriority ? a1 : a2;

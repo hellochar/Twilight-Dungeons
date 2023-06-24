@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class OldDudeController : ActorController {
   public OldDude oldDude => (OldDude) actor;
-  public override void HandleInteracted(PointerEventData pointerEventData) {
-    // oldDude.RevealFloor();
-    Popups.Create("Old Dude", "", oldDude.TestQuestStatus(), "", null);
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+    return new ArbitraryPlayerInteraction(() => {
+      Popups.Create("Old Dude", "", oldDude.TestQuestStatus(), "", null);
+    });
   }
 }

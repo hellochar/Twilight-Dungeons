@@ -189,10 +189,10 @@ public class ActorController : BodyController,
     GameObject attackSprite = Instantiate(attackSpritePrefab, Util.withZ(pos), Quaternion.identity);
   }
 
-  public override void HandleInteracted(PointerEventData pointerEventData) {
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (actor.IsDead) {
-      return; // don't do anything to dead actors
+      return null; // don't do anything to dead actors
     }
     // depending on the faction:
     // (1) ally or neutral - walk to
@@ -200,19 +200,18 @@ public class ActorController : BodyController,
     switch (actor.faction) {
       case Faction.Ally:
         if (player.IsNextTo(actor)) {
-          player.task = new SwapPositionsTask(player, actor);
+          return new SetTasksPlayerInteraction(new SwapPositionsTask(player, actor));
         } else {
-          player.task = new MoveNextToTargetTask(player, actor.pos);
+          return new SetTasksPlayerInteraction(new MoveNextToTargetTask(player, actor.pos));
         }
-        break;
       case Faction.Neutral:
       case Faction.Enemy:
-        player.SetTasks(
+        return new SetTasksPlayerInteraction(
           new ChaseTargetTask(player, actor),
           new AttackTask(player, actor)
         );
-        break;
     }
+    return null;
   }
 }
 

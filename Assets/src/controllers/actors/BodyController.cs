@@ -41,12 +41,12 @@ public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractH
     healEffect.transform.localPosition = new Vector3(0, 0, 0);
   }
 
-  public virtual void HandleInteracted(PointerEventData pointerEventData) {
+  public virtual PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     Player player = GameModel.main.player;
     if (body.IsDead) {
-      return; // don't do anything to dead actors
+      return null; // don't do anything to dead actors
     }
-    player.SetTasks(
+    return new SetTasksPlayerInteraction(
       new ChaseTargetTask(player, body),
       new AttackTask(player, body)
     );

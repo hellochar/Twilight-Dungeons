@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class MossManController : ActorController {
   public MossMan mossMan => (MossMan) actor;
-  public override void HandleInteracted(PointerEventData pointerEventData) {
-    // oldDude.RevealFloor();
-    Popups.Create("MossMan", "", mossMan.TestQuestStatus(), "", null);
+  public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
+    return new ArbitraryPlayerInteraction(() => {
+      Popups.Create("MossMan", "", mossMan.TestQuestStatus(), "", null);
+    });
   }
 }

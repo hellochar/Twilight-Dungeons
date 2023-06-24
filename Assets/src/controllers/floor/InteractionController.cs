@@ -140,7 +140,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     }
   }
 
-  public void ShowPopupFor(Entity entity) {
+  public static void ShowPopupFor(Entity entity) {
+    var floorController = FloorController.current;
     GameObject entityGameObject = floorController.GameObjectFor(entity);
     string description = entity.description + "\n\n";
     if (entity is Body b) {

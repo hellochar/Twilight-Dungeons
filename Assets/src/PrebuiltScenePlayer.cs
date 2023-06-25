@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PrebuiltSceneController : MonoBehaviour {
+public class PrebuiltScenePlayer : MonoBehaviour {
 
   void Awake() {
     // scan through all objects in the scene and convert them to gameobjects

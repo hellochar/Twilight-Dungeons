@@ -187,6 +187,22 @@ public class Floor {
 
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
+    if (entity is AIActor a && a.faction == Faction.Enemy) {
+      MaybeAddDownstairs();
+    }
+  }
+
+  public void MaybeAddDownstairs() {
+    GameModel.main.EnqueueEvent(() => {
+      if (EnemiesLeft() == 0 && downstairs == null) {
+        // create a Downstairs
+        var freeSpot = this.BreadthFirstSearch(new Vector2Int(width - 1, height / 2)).Where(t => t.CanBeOccupied()).FirstOrDefault();
+        if (freeSpot == null) {
+          freeSpot = GameModel.main.player.tile;
+        }
+        Put(new Downstairs(freeSpot.pos));
+      }
+    });
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {

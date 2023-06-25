@@ -58,6 +58,9 @@ public class Prebuilt {
     scene.GetRootGameObjects(gameObjects);
 
     foreach(var gameObject in gameObjects) {
+      if (!gameObject.activeInHierarchy) {
+        continue;
+      }
       Entity e = ConvertGameObjectToEntity(gameObject);
       if (e != null) {
         if (e is Player p) {

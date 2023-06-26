@@ -162,6 +162,11 @@ public class Body : Entity {
     }
   }
 
+  public void SetHPDirect(int hp) {
+    // avoid doing this if possible.
+    this.hp = hp;
+  }
+
   protected virtual void OnMoveFailed(Vector2Int wantedPos) {}
 
   private void OnMove(Vector2Int newPos, Vector2Int oldPos) {

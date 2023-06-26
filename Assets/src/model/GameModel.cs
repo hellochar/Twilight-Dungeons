@@ -61,6 +61,7 @@ public class GameModel {
   public static void GenerateTutorialAndSetMain() {
     main = new GameModel();
     main.generateTutorial();
+    Serializer.SaveMainToCheckpoint();
   }
 
   internal static void GenerateFromPrebuiltAndSetMain(Prebuilt prebuilt) {
@@ -115,6 +116,7 @@ public class GameModel {
     Prebuilt pb = Prebuilt.LoadBaked("TutorialRoom1_v2");
 
     player = pb.player;
+    player.SetHPDirect(1);
     home = TutorialFloor1.CreateFromPrebuilt(pb);
     home.Put(player);
   }
@@ -139,7 +141,7 @@ public class GameModel {
     stats.won = won;
     stats.killedBy = killedBy;
     stats.timeTaken = GameModel.main.time;
-    stats.floorsCleared = GameModel.main.cave.depth;
+    stats.floorsCleared = GameModel.main.cave?.depth ?? 0;
   }
 
   public void EnqueueEvent(Action cb) {

@@ -6,14 +6,18 @@ public class StatsController : MonoBehaviour {
   void Start() {
     var stats = GameModel.main.stats;
     var tmp = GetComponent<TMPro.TMP_Text>();
-    tmp.text = $@"
-Turns Taken: {stats.timeTaken}
-Water Collected: {stats.waterCollected}
-Floors Cleared: {stats.floorsCleared}
-Damage Dealt: {stats.damageDealt}
-Damage Taken: {stats.damageTaken}
-Enemies Defeated: {stats.enemiesDefeated}
-Plants Planted: {stats.plantsPlanted}
-    ".Trim();
+    if (GameModel.main.currentFloor is TutorialFloor1) {
+      tmp.enabled = false;
+    } else {
+      tmp.text = $@"
+  Turns Taken: {stats.timeTaken}
+  Water Collected: {stats.waterCollected}
+  Floors Cleared: {stats.floorsCleared}
+  Damage Dealt: {stats.damageDealt}
+  Damage Taken: {stats.damageTaken}
+  Enemies Defeated: {stats.enemiesDefeated}
+  Plants Planted: {stats.plantsPlanted}
+      ".Trim();
+    }
   }
 }

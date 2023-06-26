@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -119,6 +119,7 @@ public class GameModel {
     player.SetHPDirect(1);
     home = TutorialFloor1.CreateFromPrebuilt(pb);
     home.Put(player);
+    DrainEventQueue();
   }
 
   // the only purpose of this is in-editor testing so don't worry too much about it

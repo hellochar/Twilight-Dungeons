@@ -51,7 +51,7 @@ public class Prebuilt {
     if (AllEntityTypeConstructors == null) {
       InitEntityTypeConstructors();
     }
-    Prebuilt prebuilt = new Prebuilt();
+    Prebuilt prebuilt = new Prebuilt(scene.name);
     prebuilt.entitiesWithoutPlayer = new List<Entity>();
 
     List<GameObject> gameObjects = new List<GameObject>();
@@ -116,8 +116,10 @@ public class Prebuilt {
 
   public Player player = null;
   public List<Entity> entitiesWithoutPlayer = null;
+  public string name { get; }
 
-  public Prebuilt() {
+  public Prebuilt(string name) {
+    this.name = name;
   }
 
   public Floor createRepresentativeFloor(int depth = -1) {

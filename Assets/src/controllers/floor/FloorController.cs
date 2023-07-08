@@ -178,10 +178,12 @@ public class FloorController : MonoBehaviour {
   }
 
   void OnDrawGizmos() {
-    foreach(var room in floor.rooms) {
-      Gizmos.color = new Color(1, 1, 1, 0.25f);
-      // Gizmos.DrawCube(room.centerFloat, new Vector3(room.width, room.height, 1));
-      Gizmos.DrawWireCube(room.centerFloat, new Vector3(room.width, room.height, 1));
+    if (floor.rooms != null) {
+      foreach(var room in floor.rooms) {
+        Gizmos.color = new Color(1, 1, 1, 0.25f);
+        // Gizmos.DrawCube(room.centerFloat, new Vector3(room.width, room.height, 1));
+        Gizmos.DrawWireCube(room.centerFloat, new Vector3(room.width, room.height, 1));
+      }
     }
   }
 }

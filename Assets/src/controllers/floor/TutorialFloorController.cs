@@ -11,6 +11,8 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, depth, enemiesLeft, waitButton;
   List<GameObject> allUI;
 
+  TutorialFloor tutFloor => (TutorialFloor) floor;
+
   // Start is called before the first frame update
   public override void Start() {
     base.Start();
@@ -44,7 +46,7 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     // player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
     // player.OnChangeWater += HandleChangeWater;                        // after getting water
     // GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
-    // tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
+    tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
 
   // void AddHighlights() {
@@ -143,17 +145,17 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   //   Messages.Create("Bats attack other creatures!");
   // }
 
-  // private void HandleTutorialEnded() {
-  //   var blackOverlay = GameObject.Find("BlackOverlay");
-  //   if (Serializer.HasSave()) {
-  //     /// quit the tutorial.
-  //     StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
-  //   } else {
-  //     GameModel.GenerateNewGameAndSetMain();
-  //     /// if there's no save, go straight to the real game
-  //     StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
-  //   }
-  // }
+  private void HandleTutorialEnded() {
+    var blackOverlay = GameObject.Find("BlackOverlay");
+    if (Serializer.HasSave0()) {
+      /// quit the tutorial.
+      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+    } else {
+      GameModel.GenerateNewGameAndSetMain();
+      /// if there's no save, go straight to the real game
+      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+    }
+  }
 
   void AnimateHorizontally(GameObject gameObject, float startX, float duration = 2) {
     gameObject.SetActive(true);

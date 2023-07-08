@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -112,14 +112,33 @@ public class GameModel {
     home.Put(player);
   }
 
+  private static string[] tutorialFloorNames = { "TutorialRoom1_v2", "TutorialRoomTwoBlobs", "TutorialRoomJackals" };
   private void generateTutorial() {
-    Prebuilt pb = Prebuilt.LoadBaked("TutorialRoom1_v2");
+    Prebuilt pb = Prebuilt.LoadBaked(tutorialFloorNames[0]);
 
     player = pb.player;
     player.SetHPDirect(1);
-    home = TutorialFloor1.CreateFromPrebuilt(pb);
+    home = TutorialFloor.CreateFromPrebuilt(pb);
     home.Put(player);
     DrainEventQueue();
+  }
+
+  internal bool TutorialPlayerWentDownstairs(TutorialFloor floor) {
+    var floorIndex = Array.IndexOf(tutorialFloorNames, floor.name);
+    if (floorIndex == tutorialFloorNames.Length - 1) {
+      // we're at the end, go to normal game
+      return true;
+    } else if (floorIndex == -1) {
+      // error, go to normal game
+      return true;
+    } else {
+      var nextFloorName = tutorialFloorNames[floorIndex + 1];
+      Prebuilt pb = Prebuilt.LoadBaked(nextFloorName);
+
+      Serializer.SaveMainToCheckpoint();
+      GameModel.main.PutPlayerAt(TutorialFloor.CreateFromPrebuilt(pb), pb.player?.pos);
+      return false;
+    }
   }
 
   // the only purpose of this is in-editor testing so don't worry too much about it
@@ -219,5 +238,10 @@ public class GameModel {
   internal IEnumerable<ISteppable> GetAllEntitiesInPlay() {
     var enumerable = home.bodies.Where((a) => a is Plant).Cast<ISteppable>().Concat(currentFloor.steppableEntities);
     return enumerable;
+  }
+
+  // whether the current state is in a "transition" state and therefore shouldn't be saved
+  public bool IsTransient() {
+    return currentFloor is TutorialFloor || player.IsDead;
   }
 }

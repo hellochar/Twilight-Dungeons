@@ -41,7 +41,8 @@ public static class Serializer {
     }
   }
 
-  public static bool HasSave() => File.Exists(SAVE_PATH) || File.Exists(CHECKPOINT_PATH);
+  public static bool HasSave0() => File.Exists(SAVE_PATH);
+  public static bool HasSaveOrCheckpoint() => File.Exists(SAVE_PATH) || File.Exists(CHECKPOINT_PATH);
 
   public static void DeleteSave0() {
     File.Delete(SAVE_PATH);
@@ -51,22 +52,24 @@ public static class Serializer {
     File.Delete(CHECKPOINT_PATH);
   }
 
-  public static bool SaveMainToFile() => Save(GameModel.main, SAVE_PATH);
+  public static bool SaveMainToFile() {
+    if (GameModel.main.IsTransient()) {
+      // don't save the tutorial, don't save if player is dead
+      return false;
+    }
+    return Save(GameModel.main, SAVE_PATH);
+  }
 
   public static bool SaveMainToCheckpoint() {
-    var checkpoint = Save(GameModel.main, CHECKPOINT_PATH);
-    if (checkpoint) {
+    var saved = Save(GameModel.main, CHECKPOINT_PATH);
+    if (saved && !GameModel.main.IsTransient()) {
       // propagate the checkpoint to save0
       File.Copy(CHECKPOINT_PATH, SAVE_PATH, true);
     }
-    return checkpoint;
+    return saved;
   }
 
   private static bool Save(GameModel model, string path) {
-    if (model.home is TutorialFloor || model.player.IsDead) {
-      // don't save the tutorial, don't save if player is dead
-      return true;
-    }
     using(FileStream file = File.Create(path)) {
       Serialize(file, model);
       Debug.Log($"Saved {path}");

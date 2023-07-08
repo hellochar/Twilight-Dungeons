@@ -20,7 +20,7 @@ public class Intro : MonoBehaviour {
   }
 
   void Start() {
-    if (!Serializer.HasSave()) {
+    if (!Serializer.HasSaveOrCheckpoint()) {
       transform.Find("Continue").gameObject.SetActive(false);
     }
   }

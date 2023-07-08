@@ -6,7 +6,7 @@ public class StatsController : MonoBehaviour {
   void Start() {
     var stats = GameModel.main.stats;
     var tmp = GetComponent<TMPro.TMP_Text>();
-    if (GameModel.main.currentFloor is TutorialFloor1) {
+    if (GameModel.main.currentFloor is TutorialFloor) {
       tmp.enabled = false;
     } else {
       tmp.text = $@"

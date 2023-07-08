@@ -115,12 +115,6 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       clip.Play(3f);
     }
     base.HandleTakeAnyDamage(dmg);
-    /// treat tutorial specially
-    if (player.floor is TutorialFloor && dmg >= player.hp) {
-      player.Heal(8);
-      player.pos = new Vector2Int(3, 4);
-      Messages.Create("There is permadeath in the real game.");
-    }
   }
 
   private void HandleEquipmentItemRemoved(Item obj) {

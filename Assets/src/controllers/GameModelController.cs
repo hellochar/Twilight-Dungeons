@@ -24,7 +24,7 @@ public class GameModelController : MonoBehaviour {
     #if UNITY_EDITOR
     // GameModel.GenerateTutorialAndSetMain();
     if (GameModel.main == null) {
-      if (Serializer.HasSave()) {
+      if (Serializer.HasSaveOrCheckpoint()) {
         GameModel.main = Serializer.LoadSave0();
       } else {
         GameModel.GenerateNewGameAndSetMain();
@@ -90,7 +90,7 @@ public class GameModelController : MonoBehaviour {
     if (!floorControllers.ContainsKey(floor)) {
       GameObject instance = Instantiate(floorPrefab);
       FloorController controller;
-      if (floor is TutorialFloor1) {
+      if (floor is TutorialFloor) {
         controller = instance.AddComponent<TutorialFloorController>();
       } else {
         controller = instance.AddComponent<FloorController>();

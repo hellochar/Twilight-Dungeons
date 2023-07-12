@@ -15,7 +15,7 @@ public abstract class Entity : IModifierProvider {
   public readonly HashSet<TimedEvent> timedEvents = new HashSet<TimedEvent>();
   public bool IsDead { get; private set; }
   public Floor floor { get; private set; }
-  public float timeCreated { get; }
+  public float timeCreated { get; private set; }
   public abstract Vector2Int pos { get; set; }
 
   public float age => GameModel.main.time - timeCreated;
@@ -111,6 +111,10 @@ public abstract class Entity : IModifierProvider {
     foreach (var handler in source.Of<IKillEntityHandler>()) {
       handler.OnKill(this);
     }
+  }
+
+  internal void ForceSetTimeCreated(float time) {
+    timeCreated = time;
   }
 }
 

@@ -48,6 +48,10 @@ public class Prebuilt {
   }
 
   public static Prebuilt ConvertSceneIntoPrebuilt(Scene scene) {
+    if (GameModel.main != null) {
+      Debug.LogWarning("Non-null GameModel.main! Clearing it.");
+      GameModel.main = null;
+    }
     if (AllEntityTypeConstructors == null) {
       InitEntityTypeConstructors();
     }

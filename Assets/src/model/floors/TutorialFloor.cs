@@ -19,7 +19,14 @@ public class TutorialFloor : Floor {
 
     var floor = new TutorialFloor(-1, bounds.x, bounds.y);
     floor.root = new Room(floor);
-    floor.PutAll(pb.entitiesWithoutPlayer);
+    // SO hacky
+    foreach(var entity in pb.entitiesWithoutPlayer) {
+      entity.ForceSetTimeCreated(GameModel.main.time);
+      if (entity is Actor a) {
+        a.timeNextAction = entity.timeCreated;
+      }
+      floor.Put(entity);
+    }
     floor.name = pb.name;
 
     if (floor.name == "T_Healing") {

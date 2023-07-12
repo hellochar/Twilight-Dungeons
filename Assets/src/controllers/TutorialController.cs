@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,14 +33,13 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
 
     Player player = GameModel.main.player;
 
-    // the order of these statements follows the order in which the player will hit them in the tutorial
     if (GameModel.main.currentFloor is TutorialFloor tf && tf.name == "T_Room1") {
-      StartTutorial();
+      ShowMessage("Tap to move.");
     }
+    player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
     player.nonserializedModifiers.Add(this);                          // getting a status and healing
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     // GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
-    player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
     // player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
     // player.OnChangeWater += HandleChangeWater;                        // after getting water
     // GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
@@ -56,11 +55,11 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
   // }
 
-  void StartTutorial() {
+  void ShowMessage(string text) {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
       yield return new WaitForSeconds(1f);
-      Messages.Create("Tap to move.", 5);
+      Messages.Create(text, 5);
     }
   }
 
@@ -101,13 +100,8 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
       return;
     }
     GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
-    GameModel.main.player.ClearTasks();
 
-    StartCoroutine(DelayedMessage());
-    IEnumerator DelayedMessage() {
-      yield return new WaitForSeconds(0.25f);
-      Messages.Create("Jackals move fast. Use the Guardleaf!", 5);
-    }
+    ShowMessage("Jackals move fast but get scared!");
   }
 
   // private void DetectEnteredBerryBushRoom(ISteppable obj) {

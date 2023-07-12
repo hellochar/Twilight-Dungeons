@@ -112,7 +112,7 @@ public class GameModel {
     home.Put(player);
   }
 
-  private static string[] tutorialFloorNames = { "TutorialRoom1_v2", "TutorialRoomTwoBlobs", "TutorialRoomJackals" };
+  private static string[] tutorialFloorNames = { "T_Room1", "T_TwoBlobs", "T_Jackals" };
   private void generateTutorial() {
     Prebuilt pb = Prebuilt.LoadBaked(tutorialFloorNames[0]);
 

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 [Serializable]
 public class TutorialFloor : Floor {
   [field:NonSerialized]
-  public event Action OnTutorialEnded;
+  public static event Action OnTutorialEnded;
 
   public string name;
   public TutorialFloor(int depth, int width, int height) : base(depth, width, height) {}
@@ -29,8 +29,11 @@ public class TutorialFloor : Floor {
     bool tutorialEnded = GameModel.main.TutorialPlayerWentDownstairs(this);
     if (tutorialEnded) {
       PlayerPrefs.SetInt("hasSeenPrologue", 1);
-      // OnTutorialEnded?.Invoke();
-      GameModel.main.turnManager.OnPlayersChoice += () => OnTutorialEnded?.Invoke();
+      // Causes some weird error with TutorialController#HandleTutorialEnded's StartCoroutine call
+      // having a Unity error
+      OnTutorialEnded?.Invoke();
+
+      // GameModel.main.turnManager.OnPlayersChoice += () => OnTutorialEnded?.Invoke();
     }
   }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +33,10 @@ public class GameModelController : MonoBehaviour {
     this.model = GameModel.main;
     this.floorPrefab = Resources.Load<GameObject>("Floor");
     main = this;
+
+    if (model.currentFloor is TutorialFloor) {
+      gameObject.AddComponent<TutorialController>();
+    }
   }
 
   // Start is called before the first frame update
@@ -88,12 +92,7 @@ public class GameModelController : MonoBehaviour {
   private FloorController GetOrCreateFloorController(Floor floor) {
     if (!floorControllers.ContainsKey(floor)) {
       GameObject instance = Instantiate(floorPrefab);
-      FloorController controller;
-      if (floor is TutorialFloor) {
-        controller = instance.AddComponent<TutorialFloorController>();
-      } else {
-        controller = instance.AddComponent<FloorController>();
-      }
+      FloorController controller = instance.AddComponent<FloorController>();
       controller.floor = floor;
       floorControllers.Add(floor, controller);
       /// hack - play floor animation

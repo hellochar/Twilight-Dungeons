@@ -6,31 +6,27 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TutorialFloorController : FloorController, IStatusAddedHandler {
-  // private TutorialFloor tutFloor => (TutorialFloor) floor;
-  GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, depth, enemiesLeft, waitButton;
-  List<GameObject> allUI;
-
-  TutorialFloor tutFloor => (TutorialFloor) floor;
-
+public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandler {
   // Start is called before the first frame update
-  public override void Start() {
-    base.Start();
-
+  public void Start() {
     // hide all the UI by default
-    hpBar = GameObject.Find("Hearts");
-    statuses = GameObject.Find("Statuses");
-    waterIndicator = GameObject.Find("Water Indicator");
-    inventoryToggle = GameObject.Find("Inventory Toggle");
-    inventoryContainer = GameObject.Find("Inventory Container");
-    depth = GameObject.Find("Depth");
-    enemiesLeft = GameObject.Find("Enemies Left");
-    waitButton = GameObject.Find("Wait Button");
-    allUI = new List<GameObject>() { hpBar, statuses, waterIndicator, inventoryToggle, inventoryContainer, depth, enemiesLeft, waitButton };
-
-    foreach (var ui in allUI) {
-      ui?.SetActive(false);
-    }
+    // hpBar = canvas.transform.Find("HUD/Hearts");
+    // statuses = canvas.transform.Find("HUD/Statuses");
+    // waterIndicator = GameObject.Find("Water Indicator");
+    // inventoryToggle = GameObject.Find("Inventory Toggle");
+    // inventoryContainer = GameObject.Find("Inventory Container");
+    // depth = GameObject.Find("Depth");
+    // enemiesLeft = GameObject.Find("Enemies Left");
+    // waitButton = GameObject.Find("Wait Button");
+    var HUD = HUDController.main;
+    HUD.hpBar?.SetActive(false);
+    HUD.statuses?.SetActive(false);
+    HUD.waterIndicator?.SetActive(false);
+    HUD.inventoryToggle?.SetActive(false);
+    HUD.inventoryContainer?.SetActive(false);
+    HUD.depth?.SetActive(false);
+    HUD.enemiesLeft?.SetActive(false);
+    HUD.waitButton?.SetActive(false);
 
     // AddHighlights();
 
@@ -38,15 +34,14 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
 
     // the order of these statements follows the order in which the player will hit them in the tutorial
     StartTutorial();
-    // GameModel.main.turnManager.OnStep += DetectBlobVisible;           // blob room
-    // player.nonserializedModifiers.Add(this);                          // guardleaf status
-    // GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
+    player.nonserializedModifiers.Add(this);                          // getting a status and healing
+    GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     // GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
     // player.inventory.OnItemAdded += HandleFirstItemAdded;             // after harvesting and picking up the first item
     // player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
     // player.OnChangeWater += HandleChangeWater;                        // after getting water
     // GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
-    tutFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
+    TutorialFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
 
   // void AddHighlights() {
@@ -66,6 +61,13 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
     }
   }
 
+  public void HandleHeal(int amount) {
+    if (!HUDController.main.hpBar.activeSelf) {
+      AnimateHorizontally(HUDController.main.hpBar, 900);
+      // GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
+    }
+  }
+
   // /// show HP, and explain "tap hold"
   // void DetectBlobVisible(ISteppable _) {
   //   if (!tutFloor.blob.isVisible) {
@@ -76,7 +78,6 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   //   GameModel.main.player.ClearTasks();
 
   //   // 900px is Canvas's canvas scalar reference resolution
-  //   GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
   //   StartCoroutine(DelayedMessage());
   //   IEnumerator DelayedMessage() {
   //     yield return new WaitForSeconds(0.25f);
@@ -85,25 +86,26 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   // }
 
   public void HandleStatusAdded(Status status) {
-    if (!statuses.activeSelf) {
-      AnimateHorizontally(statuses, 900);
+    if (!HUDController.main.statuses.activeSelf) {
+      AnimateHorizontally(HUDController.main.statuses, 900);
     }
   }
 
-  // /// purpose - have a challenge fighting jackals; learn about the importance of Grasses.
-  // void DetectJackalsVisible(ISteppable _) {
-  //   if (!tutFloor.jackals.Any(j => j.isVisible)) {
-  //     return;
-  //   }
-  //   GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
-  //   GameModel.main.player.ClearTasks();
+  /// purpose - have a challenge fighting jackals; learn about the importance of Grasses.
+  void DetectJackalsVisible(ISteppable _) {
+    var jackals = GameModel.main.currentFloor.bodies.OfType<Jackal>();
+    if (!jackals.Any(j => j.isVisible)) {
+      return;
+    }
+    GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
+    GameModel.main.player.ClearTasks();
 
-  //   StartCoroutine(DelayedMessage());
-  //   IEnumerator DelayedMessage() {
-  //     yield return new WaitForSeconds(0.25f);
-  //     Messages.Create("Jackals move fast. Use the Guardleaf!", 5);
-  //   }
-  // }
+    StartCoroutine(DelayedMessage());
+    IEnumerator DelayedMessage() {
+      yield return new WaitForSeconds(0.25f);
+      Messages.Create("Jackals move fast. Use the Guardleaf!", 5);
+    }
+  }
 
   // private void DetectEnteredBerryBushRoom(ISteppable obj) {
   //   if (!tutFloor.berryBush.isVisible) {
@@ -146,14 +148,14 @@ public class TutorialFloorController : FloorController, IStatusAddedHandler {
   // }
 
   private void HandleTutorialEnded() {
-    var blackOverlay = GameObject.Find("BlackOverlay");
+    var blackOverlay = HUDController.main.blackOverlay;
     if (Serializer.HasSave0()) {
       /// quit the tutorial.
-      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Intro"));
+      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Intro"));
     } else {
       GameModel.GenerateNewGameAndSetMain();
       /// if there's no save, go straight to the real game
-      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay.GetComponent<Image>(), "Scenes/Game"));
+      GameModelController.main.StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
     }
   }
 

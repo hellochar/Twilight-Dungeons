@@ -645,6 +645,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 89522110}
+  - component: {fileID: 89522111}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -680,6 +681,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -16, y: -16}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &89522111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89522109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee5a4a210ecf53419a0051409f49af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBar: {fileID: 1846882200}
+  waterIndicator: {fileID: 122529677}
+  inventoryToggle: {fileID: 1103177067}
+  inventoryContainer: {fileID: 1340450868}
+  statuses: {fileID: 932137656}
+  depth: {fileID: 1866156384}
+  enemiesLeft: {fileID: 888473353}
+  waitButton: {fileID: 1213151032}
+  settings: {fileID: 2095802972}
 --- !u!1 &116707266
 GameObject:
   m_ObjectHideFlags: 0

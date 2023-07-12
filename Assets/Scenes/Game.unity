@@ -701,7 +701,7 @@ MonoBehaviour:
   depth: {fileID: 1866156384}
   enemiesLeft: {fileID: 888473353}
   waitButton: {fileID: 1213151032}
-  settings: {fileID: 2095802972}
+  settings: {fileID: 774951094}
   blackOverlay: {fileID: 356309593}
 --- !u!1 &116707266
 GameObject:
@@ -3130,7 +3130,7 @@ MonoBehaviour:
   paddingLeft: 0
   paddingRight: 0
   paddingTop: -0.5
-  paddingBottom: -0.5
+  paddingBottom: 0.5
   wantedZoom: 4
   minZoom: 2
   maxZoom: 6

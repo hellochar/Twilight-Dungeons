@@ -24,9 +24,10 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     HUD.waterIndicator?.SetActive(false);
     HUD.inventoryToggle?.SetActive(false);
     HUD.inventoryContainer?.SetActive(false);
-    HUD.depth?.SetActive(false);
+    // HUD.depth?.SetActive(false);
     HUD.enemiesLeft?.SetActive(false);
     HUD.waitButton?.SetActive(false);
+    HUD.settings?.SetActive(false);
 
     // AddHighlights();
 

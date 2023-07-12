@@ -13,7 +13,11 @@ public class DepthTextController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time;
+    if (GameModel.main.IsTransient()) {
+      text.text = "Turn " + GameModel.main.time;
+    } else {
+      text.text = "Depth " + (GameModel.main.currentFloor.depth) + "\nTurn " + GameModel.main.time;
+    }
   }
 
   public void ShowPopup() {

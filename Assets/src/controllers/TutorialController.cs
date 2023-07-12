@@ -33,7 +33,9 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     Player player = GameModel.main.player;
 
     // the order of these statements follows the order in which the player will hit them in the tutorial
-    StartTutorial();
+    if (GameModel.main.currentFloor is TutorialFloor tf && tf.name == "T_Room1") {
+      StartTutorial();
+    }
     player.nonserializedModifiers.Add(this);                          // getting a status and healing
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     // GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush

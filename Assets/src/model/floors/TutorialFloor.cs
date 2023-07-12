@@ -22,6 +22,10 @@ public class TutorialFloor : Floor {
     floor.PutAll(pb.entitiesWithoutPlayer);
     floor.name = pb.name;
 
+    if (floor.name == "T_Healing") {
+      floor.Put(new ItemOnGround(new Vector2Int(7, 2), new ItemRedberry(2)));
+    }
+
     return floor;
   }
 

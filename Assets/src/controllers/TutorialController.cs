@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     player.nonserializedModifiers.Add(this);                          // getting a status and healing
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     // GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
-    // player.inventory.OnItemAdded += HandleFirstItemAdded;             // after harvesting and picking up the first item
+    player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
     // player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
     // player.OnChangeWater += HandleChangeWater;                        // after getting water
     // GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
@@ -119,12 +119,12 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   //   Messages.Create("Harvest the Berry Bush!");
   // }
 
-  // private void HandleFirstItemAdded(Item arg1, Entity arg2) {
-  //   GameModel.main.player.inventory.OnItemAdded -= HandleFirstItemAdded;
+  private void HandleFirstItemAdded(Item arg1, Entity arg2) {
+    GameModel.main.player.inventory.OnItemAdded -= HandleFirstItemAdded;
 
-  //   AnimateHorizontally(inventoryToggle, 900);
-  //   AnimateHorizontally(inventoryContainer, 900);
-  // }
+    AnimateHorizontally(HUDController.main.inventoryToggle, 900);
+    AnimateHorizontally(HUDController.main.inventoryContainer, 900);
+  }
 
   // private void HandleSeedPickup(Item item, Entity arg2) {
   //   if (item is ItemSeed) {

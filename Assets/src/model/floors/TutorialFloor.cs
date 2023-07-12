@@ -12,7 +12,8 @@ public class TutorialFloor : Floor {
     "T_TwoBlobs",
     "T_Healing",
     "T_Jackals",
-    "T_Guardleaf"
+    "T_Guardleaf",
+    "T_Battle"
   };
 
   [field:NonSerialized]
@@ -36,9 +37,18 @@ public class TutorialFloor : Floor {
       floor.Put(entity);
     }
     floor.name = pb.name;
+    foreach(var pos in floor.EnumerateFloor()) {
+      if (floor.tiles[pos] == null) {
+        Debug.LogError($"{floor.name}: no Tile for {pos}, using Ground!");
+        floor.Put(new Ground(pos));
+      }
+    }
 
     if (floor.name == "T_Healing") {
-      floor.Put(new ItemOnGround(new Vector2Int(7, 2), new ItemRedberry(2)));
+      floor.Put(new ItemOnGround(new Vector2Int(7, 2), new ItemStick()));
+    } else if (floor.name == "T_Battle") {
+      floor.Put(new ItemOnGround(new Vector2Int(1, 3), new ItemStick()));
+      floor.Put(new ItemOnGround(new Vector2Int(2, 2), new ItemBarkShield()));
     }
 
     return floor;

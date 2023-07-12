@@ -702,6 +702,7 @@ MonoBehaviour:
   enemiesLeft: {fileID: 888473353}
   waitButton: {fileID: 1213151032}
   settings: {fileID: 2095802972}
+  blackOverlay: {fileID: 356309593}
 --- !u!1 &116707266
 GameObject:
   m_ObjectHideFlags: 0
@@ -14933,7 +14934,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea5f5cf5d303297448165116907fcb11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overlay: {fileID: 356309593}
 --- !u!4 &1948086390
 Transform:
   m_ObjectHideFlags: 0

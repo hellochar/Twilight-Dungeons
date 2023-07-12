@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameModelController : MonoBehaviour {
-  public Image overlay;
   public static GameModelController main;
   [NonSerialized]
   GameModel model;
@@ -135,12 +134,12 @@ public class GameModelController : MonoBehaviour {
     // add black overlay
     var player = GameObject.Find("Player");
     player.SetActive(false);
-    yield return StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black, 0.5f));
+    yield return StartCoroutine(Transitions.FadeImage(HUDController.main.blackOverlay, Color.clear, Color.black, 0.5f));
     yield return new WaitForSeconds(0.5f);
     ActivateNewFloor(model.currentFloor);
     player.SetActive(true);
     isTransitioningBetweenHome = false;
     // don't block
-    StartCoroutine(Transitions.FadeImage(overlay, Color.black, Color.clear, 0.5f));
+    StartCoroutine(Transitions.FadeImage(HUDController.main.blackOverlay, Color.black, Color.clear, 0.5f));
   }
 }

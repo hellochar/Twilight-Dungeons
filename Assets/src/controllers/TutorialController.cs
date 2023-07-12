@@ -26,7 +26,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     HUD.inventoryContainer?.SetActive(false);
     // HUD.depth?.SetActive(false);
     HUD.enemiesLeft?.SetActive(false);
-    HUD.waitButton?.SetActive(false);
+    // HUD.waitButton?.SetActive(false);
     HUD.settings?.SetActive(false);
 
     // AddHighlights();
@@ -39,6 +39,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
     player.nonserializedModifiers.Add(this);                          // getting a status and healing
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
+    GameModel.main.turnManager.OnStep += DetectGuardleafVisible;      // guardleaf room
     // GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
     // player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
     // player.OnChangeWater += HandleChangeWater;                        // after getting water
@@ -55,10 +56,11 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
   // }
 
-  void ShowMessage(string text) {
+  void ShowMessage(string text, Action also = null) {
     StartCoroutine(DelayedMessage());
     IEnumerator DelayedMessage() {
-      yield return new WaitForSeconds(1f);
+      yield return new WaitForSeconds(0.5f);
+      also?.Invoke();
       Messages.Create(text, 5);
     }
   }
@@ -93,15 +95,25 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     }
   }
 
-  /// purpose - have a challenge fighting jackals; learn about the importance of Grasses.
   void DetectJackalsVisible(ISteppable _) {
     var jackals = GameModel.main.currentFloor.bodies.OfType<Jackal>();
-    if (!jackals.Any(j => j.isVisible)) {
+    if (!jackals.Any()) {
       return;
     }
     GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
 
     ShowMessage("Jackals move fast but get scared!");
+  }
+
+  void DetectGuardleafVisible(ISteppable _) {
+    var guardleaf = GameModel.main.currentFloor.grasses.OfType<Guardleaf>();
+    if (!guardleaf.Any()) {
+      return;
+    }
+    GameModel.main.turnManager.OnStep -= DetectGuardleafVisible;
+
+    ShowMessage("Protect yourself in the Guardleaf!", () => {
+    });
   }
 
   // private void DetectEnteredBerryBushRoom(ISteppable obj) {
@@ -148,7 +160,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     var blackOverlay = HUDController.main.blackOverlay;
     if (Serializer.HasSave0()) {
       /// quit the tutorial.
-      StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Intro"));
+      GameModelController.main.StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Intro"));
     } else {
       GameModel.GenerateNewGameAndSetMain();
       /// if there's no save, go straight to the real game

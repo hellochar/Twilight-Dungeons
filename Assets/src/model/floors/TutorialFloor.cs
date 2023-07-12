@@ -7,6 +7,14 @@ using UnityEngine.SceneManagement;
 
 [Serializable]
 public class TutorialFloor : Floor {
+  public static string[] PREBUILT_NAMES = {
+    "T_Room1",
+    "T_TwoBlobs",
+    "T_Healing",
+    "T_Jackals",
+    "T_Guardleaf"
+  };
+
   [field:NonSerialized]
   public static event Action OnTutorialEnded;
 
@@ -37,14 +45,18 @@ public class TutorialFloor : Floor {
   }
 
   internal override void PlayerGoDownstairs() {
-    bool tutorialEnded = GameModel.main.TutorialPlayerWentDownstairs(this);
-    if (tutorialEnded) {
-      PlayerPrefs.SetInt("hasSeenPrologue", 1);
-      // Causes some weird error with TutorialController#HandleTutorialEnded's StartCoroutine call
-      // having a Unity error
-      OnTutorialEnded?.Invoke();
+    var floorIndex = Array.IndexOf(PREBUILT_NAMES, name);
 
-      // GameModel.main.turnManager.OnPlayersChoice += () => OnTutorialEnded?.Invoke();
+    if (floorIndex == PREBUILT_NAMES.Length - 1 || floorIndex == -1) {
+      PlayerPrefs.SetInt("hasSeenPrologue", 1);
+      OnTutorialEnded?.Invoke();
+    } else {
+      // go onto next floor
+      var nextFloorName = PREBUILT_NAMES[floorIndex + 1];
+      Prebuilt pb = Prebuilt.LoadBaked(nextFloorName);
+
+      Serializer.SaveMainToCheckpoint();
+      GameModel.main.PutPlayerAt(CreateFromPrebuilt(pb), pb.player?.pos);
     }
   }
 }

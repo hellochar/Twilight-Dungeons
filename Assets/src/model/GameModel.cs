@@ -112,33 +112,14 @@ public class GameModel {
     home.Put(player);
   }
 
-  private static string[] tutorialFloorNames = { "T_Room1", "T_TwoBlobs", "T_Healing", "T_Jackals" };
   private void generateTutorial() {
-    Prebuilt pb = Prebuilt.LoadBaked(tutorialFloorNames[0]);
+    Prebuilt pb = Prebuilt.LoadBaked(TutorialFloor.PREBUILT_NAMES[0]);
 
     player = pb.player;
     player.SetHPDirect(1);
     home = TutorialFloor.CreateFromPrebuilt(pb);
     home.Put(player);
     DrainEventQueue();
-  }
-
-  internal bool TutorialPlayerWentDownstairs(TutorialFloor floor) {
-    var floorIndex = Array.IndexOf(tutorialFloorNames, floor.name);
-    if (floorIndex == tutorialFloorNames.Length - 1) {
-      // we're at the end, go to normal game
-      return true;
-    } else if (floorIndex == -1) {
-      // error, go to normal game
-      return true;
-    } else {
-      var nextFloorName = tutorialFloorNames[floorIndex + 1];
-      Prebuilt pb = Prebuilt.LoadBaked(nextFloorName);
-
-      Serializer.SaveMainToCheckpoint();
-      GameModel.main.PutPlayerAt(TutorialFloor.CreateFromPrebuilt(pb), pb.player?.pos);
-      return false;
-    }
   }
 
   // the only purpose of this is in-editor testing so don't worry too much about it

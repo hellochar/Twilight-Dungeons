@@ -17,6 +17,18 @@ public class InventoryController : MonoBehaviour {
     MatchNumberOfSlots();
   }
 
+  public InventorySlotController GetSlot(Item item) {
+    var index = inventory.IndexOf(item);
+    if (index != -1) {
+      return GetSlot(index);
+    }
+    return null;
+  }
+
+  public InventorySlotController GetSlot(int index) {
+    return transform.GetChild(index)?.GetComponent<InventorySlotController>();
+  }
+
   void MatchNumberOfSlots() {
     var capacity = trimExcess ? inventory.ItemsNonNull().Count() : inventory.capacity;
     // e.g. 5 children, 4 hearts

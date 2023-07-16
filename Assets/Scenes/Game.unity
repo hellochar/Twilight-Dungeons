@@ -702,6 +702,7 @@ MonoBehaviour:
   enemiesLeft: {fileID: 888473353}
   waitButton: {fileID: 1213151032}
   settings: {fileID: 774951094}
+  playerInventory: {fileID: 2089429199}
   blackOverlay: {fileID: 356309593}
 --- !u!1 &116707266
 GameObject:
@@ -15745,6 +15746,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 779655324}
+--- !u!114 &2089429199 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1966910036891293959, guid: f7266160ad650084cafedde9ebb22139,
+    type: 3}
+  m_PrefabInstance: {fileID: 7416147006714224665}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089429197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8fa2706937049346942d9e44ca0c150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2095802970
 PrefabInstance:
   m_ObjectHideFlags: 0

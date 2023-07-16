@@ -53,7 +53,12 @@ public class SpriteFlyAnimation : MonoBehaviour {
     do {
       yield return new WaitForEndOfFrame();
       t = (Time.time - start) / 1.25f;
-      transform.position = Vector3.Lerp(startPos, hudTarget.transform.position, EasingFunctions.EaseInExpo(0, 1, t));
+      transform.position = Vector3.Lerp(
+        startPos,
+        hudTarget.transform.position,
+        EasingFunctions.EaseInOutCubic(0, 1, t)
+        // EasingFunctions.EaseInExpo(0, 1, t)
+      );
       var color = image.color;
       // color.a = Mathf.SmoothStep(1f, 0f, t);
       color.a = alpha.Evaluate(t);

@@ -150,4 +150,8 @@ public class Inventory : IEnumerable<Item> {
   internal bool HasItem(Item item) {
     return items.Any((i) => i == item);
   }
+
+  public int IndexOf(Item item) {
+    return Array.IndexOf(items, item);
+  }
 }

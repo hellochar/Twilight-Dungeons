@@ -13,7 +13,7 @@ public class Mushroom : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     var player = GameModel.main.player;
     if (actor == player) {
-      BecomeItemInInventory(new ItemMushroom(1), player);
+      this.BecomeItemInInventory(new ItemMushroom(1));
     }
   }
 

@@ -13,7 +13,7 @@ public class Agave : Grass, IActorEnterHandler {
   public void HandleActorEnter(Actor actor) {
     var player = GameModel.main.player;
     if (actor == player) {
-      BecomeItemInInventory(new ItemAgave(1), player);
+      this.BecomeItemInInventory(new ItemAgave(1));
     }
   }
 }

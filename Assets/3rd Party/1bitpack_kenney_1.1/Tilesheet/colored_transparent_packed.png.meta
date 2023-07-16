@@ -25,7 +25,7 @@ TextureImporter:
     second: shovel
   - first:
       213: -5040763472861491273
-    second: colored_transparent_packed_7
+    second: arrow-upleft
   - first:
       213: 5857714989856248041
     second: colored_transparent_packed_8
@@ -3190,7 +3190,7 @@ TextureImporter:
     second: shovel
   - first:
       213: 3410340242098203718
-    second: colored_transparent_packed_7
+    second: arrow-upleft
   - first:
       213: 3609686081412378643
     second: colored_transparent_packed_8
@@ -7050,7 +7050,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -7058,6 +7058,27 @@ TextureImporter:
       bones: []
       spriteID: 6464a3ca2c1653ef0800000000000000
       internalID: -129089525569141178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: arrow-upleft
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 176
+        width: 16
+        height: 16
+      alignment: 9
+      pivot: {x: 0.0625, y: 0.9375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7bf835b145c9b0ab0800000000000000
+      internalID: -5040763472861491273
       vertices: []
       indices: 
       edges: []

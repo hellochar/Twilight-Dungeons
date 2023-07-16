@@ -34,7 +34,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     Player player = GameModel.main.player;
 
     if (GameModel.main.currentFloor is TutorialFloor tf && tf.name == "T_Room1") {
-      ShowMessage("Tap to move.");
+      _ = Messages.CreateDelayed("Tap to move.", 1, 5);
     }
     player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
     player.nonserializedModifiers.Add(this);                          // getting a status and healing
@@ -55,15 +55,6 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.astoria).transform);
   //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
   // }
-
-  void ShowMessage(string text, Action also = null) {
-    StartCoroutine(DelayedMessage());
-    IEnumerator DelayedMessage() {
-      yield return new WaitForSeconds(0.5f);
-      also?.Invoke();
-      Messages.Create(text, 5);
-    }
-  }
 
   public void HandleHeal(int amount) {
     if (!HUDController.main.hpBar.activeSelf) {
@@ -95,25 +86,24 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     }
   }
 
-  void DetectJackalsVisible(ISteppable _) {
+  void DetectJackalsVisible(ISteppable s) {
     var jackals = GameModel.main.currentFloor.bodies.OfType<Jackal>();
     if (!jackals.Any()) {
       return;
     }
     GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
 
-    ShowMessage("Jackals move fast but get scared!");
+    _ = Messages.CreateDelayed("Jackals move fast but get scared!", 1, 5);
   }
 
-  void DetectGuardleafVisible(ISteppable _) {
+  void DetectGuardleafVisible(ISteppable s) {
     var guardleaf = GameModel.main.currentFloor.grasses.OfType<Guardleaf>();
     if (!guardleaf.Any()) {
       return;
     }
     GameModel.main.turnManager.OnStep -= DetectGuardleafVisible;
 
-    ShowMessage("Protect yourself in the Guardleaf!", () => {
-    });
+    _ = Messages.CreateDelayed("Protect yourself in the Guardleaf!", 1, 5);
   }
 
   // private void DetectEnteredBerryBushRoom(ISteppable obj) {

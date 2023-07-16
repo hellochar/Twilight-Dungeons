@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,5 +22,10 @@ public static class Messages {
     }
 
     return message;
+  }
+
+  public async static Task<GameObject> CreateDelayed(string text, float delay, float duration = 2.8f) {
+    await Task.Delay((int)(delay * 1000));
+    return Create(text, duration);
   }
 }

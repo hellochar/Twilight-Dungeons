@@ -78,4 +78,21 @@ public static class Transitions {
     callback(1);
     post?.Invoke();
   }
+
+  public static void AnimateUIHorizontally(GameObject gameObject, float startX, float duration = 2) {
+    gameObject.SetActive(true);
+    /// temporarily disable d pad to prevent accidentally tapping the buttons while it's flying in
+    var dpad = gameObject.GetComponent<DPadController>();
+    if (dpad != null) {
+      dpad.enabled = false;
+    }
+    var rt = gameObject.GetComponent<RectTransform>();
+    var target = rt.anchoredPosition;
+    GameModelController.main.StartCoroutine(Animate(duration, (t) => {
+      rt.anchoredPosition = Vector2.Lerp(new Vector2(startX, target.y), target, EasingFunctions.EaseOutCubic(0, 1, t));
+      if (t == 1 && dpad != null) {
+        dpad.enabled = true;
+      }
+    }));
+  }
 }

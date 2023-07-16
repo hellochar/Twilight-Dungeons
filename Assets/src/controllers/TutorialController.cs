@@ -58,7 +58,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
 
   public void HandleHeal(int amount) {
     if (!HUDController.main.hpBar.activeSelf) {
-      AnimateHorizontally(HUDController.main.hpBar, 900);
+      Transitions.AnimateUIHorizontally(HUDController.main.hpBar, 900);
       // GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
     }
   }
@@ -82,7 +82,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
 
   public void HandleStatusAdded(Status status) {
     if (!HUDController.main.statuses.activeSelf) {
-      AnimateHorizontally(HUDController.main.statuses, 900);
+      Transitions.AnimateUIHorizontally(HUDController.main.statuses, 900);
     }
   }
 
@@ -119,8 +119,8 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   private void HandleFirstItemAdded(Item arg1, Entity arg2) {
     GameModel.main.player.inventory.OnItemAdded -= HandleFirstItemAdded;
 
-    AnimateHorizontally(HUDController.main.inventoryToggle, 900);
-    AnimateHorizontally(HUDController.main.inventoryContainer, 900);
+    Transitions.AnimateUIHorizontally(HUDController.main.inventoryToggle, 900);
+    Transitions.AnimateUIHorizontally(HUDController.main.inventoryContainer, 900);
   }
 
   // private void HandleSeedPickup(Item item, Entity arg2) {
@@ -156,22 +156,5 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
       /// if there's no save, go straight to the real game
       GameModelController.main.StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
     }
-  }
-
-  void AnimateHorizontally(GameObject gameObject, float startX, float duration = 2) {
-    gameObject.SetActive(true);
-    /// temporarily disable d pad to prevent accidentally tapping the buttons while it's flying in
-    var dpad = gameObject.GetComponent<DPadController>();
-    if (dpad != null) {
-      dpad.enabled = false;
-    }
-    var rt = gameObject.GetComponent<RectTransform>();
-    var target = rt.anchoredPosition;
-    StartCoroutine(Transitions.Animate(duration, (t) => {
-      rt.anchoredPosition = Vector2.Lerp(new Vector2(startX, target.y), target, EasingFunctions.EaseOutCubic(0, 1, t));
-      if (t == 1 && dpad != null) {
-        dpad.enabled = true;
-      }
-    }));
   }
 }

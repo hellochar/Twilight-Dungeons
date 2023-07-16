@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SpriteFlyAnimation : MonoBehaviour {
+  public AnimationCurve alpha;
   public static GameObject Create(Sprite sprite, Vector3 worldPos, GameObject hudTarget) {
     if (hudTarget != null) {
       var controller = PrefabCache.UI.Instantiate("Sprite Fly", GameObject.Find("Canvas").transform).GetComponent<SpriteFlyAnimation>();
@@ -40,19 +41,22 @@ public class SpriteFlyAnimation : MonoBehaviour {
     image = GetComponent<Image>();
     image.sprite = sprite;
 
-    StartCoroutine(Animation());
+    gameObject.AddComponent<PulseAnimation>().pulseScale = 1.5f;
+
+    StartCoroutine(Animation(alpha));
   }
 
-  IEnumerator Animation() {
+  IEnumerator Animation(AnimationCurve alpha) {
     float start = Time.time;
     var t = 0f;
     Vector3 startPos = transform.position;
     do {
       yield return new WaitForEndOfFrame();
-      t = (Time.time - start) / 1f;
-      transform.position = Vector3.Lerp(startPos, hudTarget.transform.position, EasingFunctions.EaseOutExpo(0, 1, t));
+      t = (Time.time - start) / 1.25f;
+      transform.position = Vector3.Lerp(startPos, hudTarget.transform.position, EasingFunctions.EaseInExpo(0, 1, t));
       var color = image.color;
-      color.a = Mathf.SmoothStep(1f, 0f, t);
+      // color.a = Mathf.SmoothStep(1f, 0f, t);
+      color.a = alpha.Evaluate(t);
       image.color = color;
     } while (t < 1);
     Destroy(gameObject);

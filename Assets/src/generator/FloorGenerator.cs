@@ -296,7 +296,6 @@ public class FloorGenerator {
     FloorUtils.NaturalizeEdges(floor);
 
     // floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     var soils = new List<Soil>();
     for (int x = 2; x < floor.width - 2; x += 2) {
@@ -315,7 +314,17 @@ public class FloorGenerator {
     floor.rooms = new List<Room> { room0 };
     floor.root = room0;
 
-    EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
+    if (GardenTutorialController.ShouldShow) {
+      Encounters.MatureBerryBush(floor, room0);
+      EncounterGroup.Plants.Remove(Encounters.MatureBerryBush);
+      // in tutorial mode, the downstairs will be placed once the tutorial finishes
+    } else {
+      EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
+      floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
+      var altarPos = floor.downstairs.pos + Vector2Int.up;
+      floor.Put(new Ground(altarPos));
+      floor.Put(new Altar(altarPos));
+    }
 
     Encounters.AddWater(floor, room0);
     // Encounters.ThreeAstoriasInCorner(floor, room0);
@@ -351,12 +360,6 @@ public class FloorGenerator {
     // Encounters.AFewBlobs(floor, room0);
     floor.depth = 0;
     #endif
-
-    if (!GameModel.main.permadeath) {
-      var altarPos = floor.downstairs.pos + Vector2Int.up;
-      floor.Put(new Ground(altarPos));
-      floor.Put(new Altar(altarPos));
-    }
 
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;

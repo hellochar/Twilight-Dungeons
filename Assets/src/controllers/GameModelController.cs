@@ -36,6 +36,8 @@ public class GameModelController : MonoBehaviour {
 
     if (model.currentFloor is TutorialFloor) {
       gameObject.AddComponent<TutorialController>();
+    } else if (model.depth == 0 && GardenTutorialController.ShouldShow) {
+      gameObject.AddComponent<GardenTutorialController>();
     }
   }
 

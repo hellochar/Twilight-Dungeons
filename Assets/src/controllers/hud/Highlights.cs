@@ -1,16 +1,19 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class Highlights {
+  public static List<GameObject> all = new List<GameObject>();
   public static GameObject CreateUI(GameObject go, Func<bool> destroyWhen = null) {
     var highlight = PrefabCache.UI.Instantiate("HighlightUI", go.transform);
+    all.Add(highlight);
 
     GameModelController.main.StartCoroutine(CheckDestroy());
 
     IEnumerator CheckDestroy() {
       while (true) {
-        if (go == null) {
+        if (go == null || highlight == null) {
           // don't FadeThenDestroy highlight; highlight is already gone
           yield break;
         }
@@ -20,28 +23,42 @@ public static class Highlights {
         yield return new WaitForSeconds(0.1f);
       }
 
-      highlight.AddComponent<FadeThenDestroy>().fadeTime = 0.2f;
+      if (highlight) {
+        all.Remove(highlight);
+        highlight.AddComponent<FadeThenDestroy>().fadeTime = 0.2f;
+      }
     }
     return highlight;
   }
 
   public static GameObject Create(Entity e, Func<bool> destroyWhen = null) {
     var highlight = PrefabCache.UI.Instantiate("Highlight");
+    all.Add(highlight);
 
     GameModelController.main.StartCoroutine(CheckDestroy());
 
     IEnumerator CheckDestroy() {
       while (true) {
-        highlight.transform.position = Util.withZ(e.pos);
         if (highlight == null || e.IsDead || (destroyWhen?.Invoke() ?? false)) {
           break;
         }
+        highlight.transform.position = Util.withZ(e.pos);
         yield return new WaitForSeconds(0.1f);
       }
 
-      highlight.AddComponent<FadeThenDestroy>().fadeTime = 0.2f;
+      if (highlight) {
+        all.Remove(highlight);
+        highlight.AddComponent<FadeThenDestroy>().fadeTime = 0.2f;
+      }
     }
 
     return highlight;
+  }
+
+  internal static void RemoveAll() {
+    foreach (var highlight in all) {
+      highlight.AddComponent<FadeThenDestroy>();
+    }
+    all.Clear();
   }
 }

@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlantUIController : MonoBehaviour, IPointerClickHandler {
+  public static PlantUIController active;
   public TMP_Text uiName;
   public TMP_Text uiInfo;
   public GameObject harvests;
@@ -18,6 +19,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   public GameObject tutorialExtras;
 
   void Start() {
+    active = this;
     AudioClipStore.main.popupOpen.Play(0.2f);
 
     var options = plant.stage.harvestOptions;
@@ -50,7 +52,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       uiInfo.rectTransform.anchoredPosition = new Vector2();
     }
 
-    if (plant.floor is TutorialFloor && plant.stage.NextStage == null) {
+    if (GardenTutorialController.ShouldShow && plant.stage.NextStage == null) {
       tutorialExtras.SetActive(true);
     }
 
@@ -60,7 +62,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   private void SetupHarvestOption(Transform transform, Inventory inventory, int index) {
     transform.Find("Inventory").GetComponent<InventoryController>().inventory = inventory;
     Button button = transform.Find("HarvestButton").GetComponent<Button>();
-    if (plant.floor is TutorialFloor && index > 0) {
+    if (GardenTutorialController.ShouldShow && index > 0) {
       // disable past index 0
       button.interactable = false;
     } else {
@@ -90,6 +92,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   }
 
   void OnDestroy() {
+    active = null;
     AudioClipStore.main.popupClose.Play(0.2f);
   }
 }

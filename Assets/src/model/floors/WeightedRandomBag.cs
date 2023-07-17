@@ -23,6 +23,10 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     entries.Add(new Entry { item = item, weight = weight });
   }
 
+  public void Remove(T entry) {
+    entries.RemoveAll((Entry e) => e.item.Equals(entry));
+  }
+
   public void SetWeight(T item, float weight) {
     var entry = entries.Find(e => e.item.Equals(item));
     entry.weight = weight;

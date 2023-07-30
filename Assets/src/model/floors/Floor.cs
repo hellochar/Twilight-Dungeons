@@ -196,7 +196,7 @@ public class Floor {
     GameModel.main.EnqueueEvent(() => {
       if (EnemiesLeft() == 0 && downstairs == null) {
         // create a Downstairs
-        var freeSpot = this.BreadthFirstSearch(new Vector2Int(width - 1, height / 2)).Where(t => t.CanBeOccupied()).FirstOrDefault();
+        var freeSpot = this.BreadthFirstSearch(new Vector2Int(width - 1, height / 2)).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
         if (freeSpot == null) {
           freeSpot = GameModel.main.player.tile;
         }

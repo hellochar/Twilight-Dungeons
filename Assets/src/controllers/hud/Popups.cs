@@ -73,6 +73,7 @@ public static class Popups {
 
   private static GameObject MakeButton(string name, Action onClicked, Transform parent, GameObject popup) {
     var button = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Action Button"), new Vector3(), Quaternion.identity, parent);
+    button.name = name;
     button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
     button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));

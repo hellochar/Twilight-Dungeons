@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -199,5 +200,24 @@ public static class Util {
   public static async Task<T> WaitUntilNotNull<T>(Func<T> getter) {
     await WaitUntil(() => getter() != null);
     return getter();
+  }
+
+#nullable enable
+  public static void WheneverChanged<T>(MonoBehaviour owner, Func<T> getter, Action<T> then) {
+    IEnumerator Coroutine() {
+      T value = getter();
+      while (true) {
+        yield return new WaitForSeconds(0.1f);
+        T newValue = getter();
+        var isChangedToNull = newValue == null && value != null;
+        var isChangedNotNull = newValue != null && !newValue.Equals(value);
+        var isChanged = isChangedToNull || isChangedNotNull;
+        if (isChanged) {
+          then(newValue);
+          value = newValue;
+        }
+      }
+    }
+    owner.StartCoroutine(Coroutine());
   }
 }

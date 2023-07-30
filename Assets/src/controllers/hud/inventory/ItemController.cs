@@ -15,6 +15,9 @@ public class ItemController : MonoBehaviour {
   public GameObject maturePlantBackground;
   public Image itemImage;
   private TMPro.TMP_Text stacksText;
+  
+  [NonSerialized]
+  public GameObject popup = null;
 
   void Start() {
     /// on click - toggle the popup for this item
@@ -43,11 +46,10 @@ public class ItemController : MonoBehaviour {
   }
 
   private void HandleItemClicked() {
-    ShowItemPopup(item, itemImage.gameObject);
+    popup = ShowItemPopup(item, itemImage.gameObject);
   }
 
-  public static void ShowItemPopup(Item item, GameObject image) {
-    GameObject popup = null;
+  public static GameObject ShowItemPopup(Item item, GameObject image) {
     List<(string, Action)> buttons = null;
 
     Player player = GameModel.main.player;
@@ -78,7 +80,7 @@ public class ItemController : MonoBehaviour {
       }
     }
 
-    popup = Popups.Create(
+    var popup = Popups.Create(
       title: item.displayName,
       category: GetCategoryForItem(item),
       info: item.GetStatsFull(),
@@ -88,6 +90,7 @@ public class ItemController : MonoBehaviour {
     ).gameObject;
     var popupMatchItem = popup.AddComponent<ItemPopupController>();
     popupMatchItem.item = item;
+    return popup;
   }
 
   private static string GetCategoryForItem(Item item) {

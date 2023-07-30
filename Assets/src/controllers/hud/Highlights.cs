@@ -32,6 +32,9 @@ public static class Highlights {
   }
 
   public static GameObject Create(Entity e, Func<bool> destroyWhen = null) {
+    if (e == null) {
+      return null;
+    }
     var highlight = PrefabCache.UI.Instantiate("Highlight");
     all.Add(highlight);
 
@@ -57,7 +60,9 @@ public static class Highlights {
 
   internal static void RemoveAll() {
     foreach (var highlight in all) {
-      highlight.AddComponent<FadeThenDestroy>();
+      if (highlight != null) {
+        highlight.AddComponent<FadeThenDestroy>();
+      }
     }
     all.Clear();
   }

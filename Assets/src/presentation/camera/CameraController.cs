@@ -47,7 +47,7 @@ public class CameraController : MonoBehaviour {
     if (cameraOverride != null) {
       var state = cameraOverride.overrideState;
       if (state != null) {
-        // ZoomLerp(camera, state.targetZoom, zoomLerpSpeed);
+        ZoomLerp(camera, 2, zoomLerpSpeed);
         // camera.orthographicSize = state.targetZoom;
 
         var targetPos = state.targetPos;
@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour {
           var leanOffset = new Vector2(cameraWidth / 4, 0);
           targetPos += leanOffset;
         }
-        camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed, jumpThreshold);
+        camera.transform.position = LerpTowardsPosition(camera.transform.position, targetPos, followSpeed, 99999);
         return;
       }
     }
@@ -119,11 +119,10 @@ public class CameraController : MonoBehaviour {
   }
 
   public static Bounds OrthographicBounds(Camera camera) {
-    float screenAspect = (float)Screen.width / (float)Screen.height;
     float cameraHeight = camera.orthographicSize * 2;
     Bounds bounds = new Bounds(
         new Vector3(camera.transform.position.x, camera.transform.position.y, 0),
-        new Vector3(cameraHeight * screenAspect, cameraHeight, 0));
+        new Vector3(cameraHeight * camera.aspect, cameraHeight, 0));
     return bounds;
   }
 
@@ -209,8 +208,11 @@ public class CameraController : MonoBehaviour {
     var ySizeToEncompassHeight = bounds.extents.y;
     var ySizeToEncompassWidth = bounds.extents.x / camera.aspect;
 
-    this.transform.position = new Vector3(bounds.center.x - 0.5f, bounds.center.y - 0.5f, this.transform.position.z);
-    camera.orthographicSize = Mathf.Max(minZoom, ySizeToEncompassHeight, ySizeToEncompassWidth);
+    var wantedPosition = new Vector3(bounds.center.x - 0.5f, bounds.center.y - 0.5f, this.transform.position.z);
+    this.transform.position = LerpTowardsPosition(this.transform.position, wantedPosition, followSpeed, 99999);
+    var wantedZoom = Mathf.Max(minZoom, ySizeToEncompassHeight, ySizeToEncompassWidth);
+    // camera.orthographicSize = wantedZoom;
+    ZoomLerp(camera, wantedZoom, zoomLerpSpeed);
   }
 
   public void SetCameraOverride(ICameraOverride overrider) {

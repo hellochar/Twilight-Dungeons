@@ -39,19 +39,11 @@ public static class EntityPopup {
     Inventory inventory = null;
 
     var player = GameModel.main.player;
-    if (player.floor.depth == 0) {
-      var playerActions = entity.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
-      foreach(var action in playerActions) {
-        buttons.Add((Util.WithSpaces(action.Name), () => {
-          action.Invoke(entity, new object[0]);
-        }));
-      }
-      // if (entity is IDaySteppable d) {
-      //   buttons.Add(("Activate", () => {
-      //     player.UseActionPointOrThrow();
-      //     d.StepDay();
-      //   }));
-      // }
+    var playerActions = entity.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
+    foreach(var action in playerActions) {
+      buttons.Add((Util.WithSpaces(action.Name), () => {
+        action.Invoke(entity, new object[0]);
+      }));
     }
     if (entity is IInteractableInventory i) {
       inventory = i.inventory;

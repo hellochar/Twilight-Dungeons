@@ -9,6 +9,7 @@ public class InventoryController : MonoBehaviour {
   [NonSerialized]
   public Inventory inventory;
   public bool trimExcess = false;
+  public bool allowDragAndDrop = true;
 
   public virtual void Start() {
     if (inventory == null) {
@@ -37,7 +38,8 @@ public class InventoryController : MonoBehaviour {
     }
 
     for (int i = transform.childCount; i < capacity; i++) {
-      Instantiate(PrefabCache.UI.GetPrefabFor("Slot"), transform);
+      var slot = Instantiate(PrefabCache.UI.GetPrefabFor("Slot"), transform);
+      slot.GetComponent<InventorySlotController>().inventoryController = this;
     }
   }
 }

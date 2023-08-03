@@ -7,6 +7,8 @@ public static class Highlights {
   public static List<GameObject> all = new List<GameObject>();
   public static GameObject CreateUI(GameObject go, Func<bool> destroyWhen = null) {
     var highlight = PrefabCache.UI.Instantiate("HighlightUI", go.transform);
+    var rtt = highlight.GetComponent<RectTransform>();
+    rtt.anchoredPosition = Vector2Int.zero;
     all.Add(highlight);
 
     GameModelController.main.StartCoroutine(CheckDestroy());
@@ -20,6 +22,7 @@ public static class Highlights {
         if (destroyWhen != null && destroyWhen()) {
           break;
         }
+        rtt.anchoredPosition = Vector2Int.zero;
         yield return new WaitForSeconds(0.1f);
       }
 

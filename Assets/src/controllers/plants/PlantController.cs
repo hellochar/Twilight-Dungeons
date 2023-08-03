@@ -95,4 +95,8 @@ public class PlantController : BodyController, ILongTapHandler {
     popupOpen = false;
     plant.Harvest(choiceIndex);
   }
+
+  public GameObject GetUI() {
+    return ui;
+  }
 }

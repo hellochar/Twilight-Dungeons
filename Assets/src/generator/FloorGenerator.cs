@@ -287,13 +287,13 @@ public class FloorGenerator {
   }
 
   public Floor generateFloor0(int depth) {
-    Floor floor = new Floor(depth, 14, 9);
+    Floor floor = new Floor(depth, 12, 7);
 
     // fill with floor tiles by default
     FloorUtils.CarveGround(floor);
 
     FloorUtils.SurroundWithWalls(floor);
-    FloorUtils.NaturalizeEdges(floor);
+    // FloorUtils.NaturalizeEdges(floor);
 
     // floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
 

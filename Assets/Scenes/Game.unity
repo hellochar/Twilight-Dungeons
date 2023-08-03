@@ -3128,8 +3128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eadfb0d03039ef4688e8eb202db81ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paddingLeft: 0
-  paddingRight: 0
+  paddingLeft: 1
+  paddingRight: 1
   paddingTop: -0.5
   paddingBottom: 0.5
   wantedZoom: 4
@@ -11888,7 +11888,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 255262985}
   m_HandleRect: {fileID: 255262984}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

@@ -206,8 +206,11 @@ public class CameraController : MonoBehaviour {
     bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-paddingLeft, -paddingBottom, 0);
     bounds.max = Util.withZ(GameModel.main.currentFloor.boundsMax) + new Vector3(paddingRight, paddingTop, 0);
 
-    this.transform.position = new Vector3(bounds.center.x, bounds.center.y - 0.5f, this.transform.position.z);
-    camera.orthographicSize = Mathf.Max(minZoom, bounds.extents.y);
+    var ySizeToEncompassHeight = bounds.extents.y;
+    var ySizeToEncompassWidth = bounds.extents.x / camera.aspect;
+
+    this.transform.position = new Vector3(bounds.center.x - 0.5f, bounds.center.y - 0.5f, this.transform.position.z);
+    camera.orthographicSize = Mathf.Max(minZoom, ySizeToEncompassHeight, ySizeToEncompassWidth);
   }
 
   public void SetCameraOverride(ICameraOverride overrider) {

@@ -22,7 +22,7 @@ public class InventorySlotController : ItemSlotController, IDropHandler {
   [NonSerialized]
   protected Inventory inventory;
   public InventoryController inventoryController;
-  public bool allowDragAndDrop => inventoryController?.allowDragAndDrop ?? false;
+  public bool allowDragAndDrop => inventory?.allowDragAndDrop ?? false;
   public override Item item => inventory[slotIndex];
 
   public virtual void Start() {

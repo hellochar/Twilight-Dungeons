@@ -9,7 +9,6 @@ public class InventoryController : MonoBehaviour {
   [NonSerialized]
   public Inventory inventory;
   public bool trimExcess = false;
-  public bool allowDragAndDrop = true;
 
   public virtual void Start() {
     if (inventory == null) {

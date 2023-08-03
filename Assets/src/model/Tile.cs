@@ -98,7 +98,7 @@ public class Signpost : Ground {
   }
 
   public void ShowSignpost() {
-    Popups.Create(
+    Popups.CreateStandard(
       title: "Tip",
       category: "",
       /// hack - add a linebreak before to put some space

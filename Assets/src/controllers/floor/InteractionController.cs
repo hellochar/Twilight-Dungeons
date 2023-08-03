@@ -87,9 +87,6 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     if (player.task != null && !player.task.IsPlayerOverridable) {
       return;
     }
-    if (GameModelController.main.isSteppingDay) {
-      return;
-    }
 
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
 

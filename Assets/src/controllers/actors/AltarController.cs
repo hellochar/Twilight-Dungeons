@@ -30,7 +30,7 @@ public class AltarController : BodyController, IPopupOverride {
     var image = spriteGameObject.GetComponentInChildren<Image>();
     image.sprite = sprite.GetComponent<SpriteRenderer>().sprite;
 
-    Popups.Create(
+    Popups.CreateStandard(
       "Altar",
       null,
       "Provides you immortality. If you would die, instead restart at the last cleared floor.\n\nIf you're looking for a challenge, destroy the Altar.",

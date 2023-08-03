@@ -7,7 +7,7 @@ public class OldDudeController : ActorController {
   public OldDude oldDude => (OldDude) actor;
   public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     return new ArbitraryPlayerInteraction(() => {
-      Popups.Create("Old Dude", "", oldDude.TestQuestStatus(), "", null);
+      Popups.CreateStandard("Old Dude", "", oldDude.TestQuestStatus(), "", null);
     });
   }
 }

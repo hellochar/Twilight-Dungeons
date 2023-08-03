@@ -47,11 +47,6 @@ public class PlantController : BodyController, IPopupOverride {
       mature;
     activePlantStageObject.SetActive(true);
 
-    if (plant is SingleItemPlant.SingleItemPlant sip) {
-      var sr = mature.GetComponent<SpriteRenderer>();
-      sr.sprite = ObjectInfo.GetSpriteFor(sip.ItemType);
-    }
-
     particles.SetActive(plant.stage.name == "Seed");
     plant.OnHarvested += HandleHarvested;
     base.Start();
@@ -113,5 +108,9 @@ public class PlantController : BodyController, IPopupOverride {
       popupOpen = false;
       GameModel.main.turnManager.OnPlayerCannotPerform(e);
     }
+  }
+
+  public GameObject GetUI() {
+    return popup.gameObject;
   }
 }

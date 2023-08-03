@@ -38,7 +38,7 @@ public class StatusIconController : MonoBehaviour {
   }
 
   public void OpenPopup() {
-    Popups.Create(
+    Popups.CreateStandard(
       title: status.displayName,
       category: status.isDebuff ? "Debuff" : "Status",
       info: status.Info(),

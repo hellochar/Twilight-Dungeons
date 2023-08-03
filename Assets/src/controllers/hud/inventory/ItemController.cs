@@ -80,7 +80,7 @@ public class ItemController : MonoBehaviour {
       }
     }
 
-    var popup = Popups.Create(
+    var popup = Popups.CreateStandard(
       title: item.displayName,
       category: GetCategoryForItem(item),
       info: item.GetStatsFull(),

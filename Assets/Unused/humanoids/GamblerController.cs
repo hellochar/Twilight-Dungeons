@@ -11,7 +11,7 @@ public class GamblerController : ActorController {
     return new ArbitraryPlayerInteraction(() => {
       var buttons = new List<(string, Action)>();
       buttons.Add(("Gamble (50 water)", gambler.Gamble));
-      Popups.Create("Gambler", "", "The Gambler reveals lots of water.\n\"I can make you rich! Won't you take the plunge?\"", "", null, null, buttons);
+      Popups.CreateStandard("Gambler", "", "The Gambler reveals lots of water.\n\"I can make you rich! Won't you take the plunge?\"", "", null, buttons);
     });
   }
 }

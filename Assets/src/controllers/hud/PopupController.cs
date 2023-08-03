@@ -93,16 +93,16 @@ public class PopupController : MonoBehaviour, ICameraOverride, IPointerClickHand
   }
 
   public void OnPointerClick(PointerEventData eventData) {
-    var infoText = container.transform.Find("Content/Stats")?.GetComponent<TMPro.TMP_Text>();
-		var linkIndex = TMP_TextUtilities.FindIntersectingLink(infoText, Input.mousePosition, null);
-    if (linkIndex != -1) {
-      var linkId = infoText.textInfo.linkInfo[linkIndex].GetLinkID();
+    // var infoText = container.transform.Find("Content/Stats")?.GetComponent<TMPro.TMP_Text>();
+		// var linkIndex = TMP_TextUtilities.FindIntersectingLink(infoText, Input.mousePosition, null);
+    // if (linkIndex != -1) {
+    //   var linkId = infoText.textInfo.linkInfo[linkIndex].GetLinkID();
 
-      if (linkId == "test") {
-        var snake = target as Snake;
-        var homeItem = snake.GetHomeItem();
-        ItemController.ShowItemPopup(homeItem, null);
-      }
-    }
+    //   if (linkId == "test") {
+    //     var snake = target as Snake;
+    //     var homeItem = snake.GetHomeItem();
+    //     ItemController.ShowItemPopup(homeItem, null);
+    //   }
+    // }
   }
 }

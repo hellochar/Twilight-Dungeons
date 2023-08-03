@@ -17,6 +17,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   FloorController floorController;
   Floor floor => floorController.floor;
 
+  public static InteractionController current => FloorController.current?.GetComponent<InteractionController>();
+
   /// Represents a single hold interaction. This stores:
   ///   The time the hold started
   ///   The pointerEventData that started iot
@@ -69,7 +71,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   public void LongTap(Vector2Int pos) {
     var entity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
     if (entity != null) {
-      ShowPopupFor(entity);
+      EntityPopup.Show(entity);
     }
   }
 
@@ -81,7 +83,16 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     if (!isInputAllowed) {
       return;
     }
+    var player = GameModel.main.player;
+    if (player.task != null && !player.task.IsPlayerOverridable) {
+      return;
+    }
+    if (GameModelController.main.isSteppingDay) {
+      return;
+    }
+
     var entities = floorController.GetVisibleEntitiesInLayerOrder(worldPos);
+
     if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out var entity)) {
       var interaction = handler.GetPlayerInteraction(eventData);
       if (interaction == null) {
@@ -92,7 +103,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         return;
       }
 
-      var isLevelSimulating = floor.depth != 0 && GameModel.main.GetAllEntitiesInPlay().Count() > 1;
+      var isLevelSimulating = floor.depth > 0 && GameModel.main.GetAllEntitiesInPlay().Count() > 1;
       if (isLevelSimulating) {
         InteractSimulatingLevel(handler, entity, interaction);
       } else {
@@ -135,70 +146,11 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     }
   }
 
-  public static void ShowPopupFor(Entity entity) {
-    var floorController = FloorController.current;
-    GameObject entityGameObject = floorController.GameObjectFor(entity);
-    if (entityGameObject.TryGetComponent<IPopupOverride>(out var popupOverride)) {
-      popupOverride.HandleShowPopup();
-      return;
-    }
-
-    string description = entity.description + "\n\n";
-    if (entity is Body b) {
-      if (b is Actor a && a.BaseAttackDamage() != (0, 0)) {
-        description += "Deals " + Util.DescribeDamageSpread(a.BaseAttackDamage());
-      }
-      description += $"Max HP: {b.maxHp}\n";
-    }
-
-    var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
-    var spriteGameObject = Instantiate(spritePrefab);
-    var image = spriteGameObject.GetComponentInChildren<Image>();
-    var sprite = ObjectInfo.GetSpriteFor(entity) ?? entityGameObject.GetComponentInChildren<SpriteRenderer>()?.sprite;
-    image.sprite = sprite;
-    image.color = entityGameObject.GetComponentInChildren<SpriteRenderer>().color;
-    List<(string, Action)> buttons = null;
-    if (entity is Soil soil && soil.body == null) {
-      buttons = new List<(string, Action)>();
-      var player = GameModel.main.player;
-      var seeds = player.inventory.Where((i) => i is ItemSeed).Cast<ItemSeed>();
-      foreach (ItemSeed seed in seeds) {
-        Action action = () => seed.MoveAndPlant(soil);
-        buttons.Add(("Plant " + Util.WithSpaces(seed.plantType.Name), action));
-      }
-    }
-
-    Popups.Create(
-      title: entity.displayName,
-      category: GetCategoryForEntity(entity),
-      info: description.Trim(),
-      flavor: ObjectInfo.GetFlavorTextFor(entity),
-      sprite: spriteGameObject,
-      buttons: buttons
-    );
-    Destroy(spriteGameObject);
-  }
-
   /// get the *first* handler out of a list of entities
   private static Vector2Int RaycastToTilePos(RaycastResult raycast) {
     var worldPos = raycast.worldPosition;
     var pos = new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     return pos;
-  }
-
-  private static string GetCategoryForEntity(Entity entity) {
-    switch (entity) {
-      case Tile t:
-        return "Tile";
-      case Actor a:
-        return "Creature";
-      case Grass g:
-        return "Grass";
-      case Destructible d:
-        return "Destructible";
-      default:
-        return "Other";
-    }
   }
 }
 

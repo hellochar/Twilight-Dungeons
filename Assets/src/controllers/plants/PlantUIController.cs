@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlantUIController : MonoBehaviour, IPointerClickHandler {
-  public static PlantUIController active;
+public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOverride {
   public TMP_Text uiName;
   public TMP_Text uiInfo;
   public GameObject harvests;
@@ -16,10 +15,14 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   [System.NonSerialized]
   public PlantController plantController;
   private Plant plant => plantController.plant;
+  public CameraState overrideState => new CameraState {
+    target = plant,
+    lean = ViewportLean.Left
+  };
+
   public GameObject tutorialExtras;
 
   void Start() {
-    active = this;
     AudioClipStore.main.popupOpen.Play(0.2f);
 
     var options = plant.stage.harvestOptions;
@@ -49,10 +52,10 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
       var p = image.rectTransform.anchoredPosition;
       p.x = 0;
       image.rectTransform.anchoredPosition = p;
-      uiInfo.rectTransform.anchoredPosition = new Vector2();
+      // uiInfo.rectTransform.anchoredPosition -= new Vector2(0, 50);
     }
 
-    if (GardenTutorialController.ShouldShow && plant.stage.NextStage == null) {
+    if (plant.floor is TutorialFloor && plant.stage.NextStage == null) {
       tutorialExtras.SetActive(true);
     }
 
@@ -62,7 +65,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   private void SetupHarvestOption(Transform transform, Inventory inventory, int index) {
     transform.Find("Inventory").GetComponent<InventoryController>().inventory = inventory;
     Button button = transform.Find("HarvestButton").GetComponent<Button>();
-    if (GardenTutorialController.ShouldShow && index > 0) {
+    if (plant.floor is TutorialFloor && index > 0) {
       // disable past index 0
       button.interactable = false;
     } else {
@@ -77,7 +80,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
     // uiInfo.text = plant.GetUIText();
     uiInfo.text = plant.percentGrown == 1 ?
       "Choose one Harvest! Tap items to learn about them." :
-      $"Clear {plant.stage.xpNeeded - plant.stage.xp} more floors to grow!";
+      $"{plant.percentGrown.ToString("0.0%")} grown. Come back later.";
     if (plant.percentGrown < 1) {
       // uiInfo.GetComponent<RectTransform>().anchoredPosition = new Vector2();
     }
@@ -92,7 +95,6 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler {
   }
 
   void OnDestroy() {
-    active = null;
     AudioClipStore.main.popupClose.Play(0.2f);
   }
 }

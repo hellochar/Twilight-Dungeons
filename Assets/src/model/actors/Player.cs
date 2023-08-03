@@ -50,6 +50,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(10);
+    inventory.allowDragAndDrop = true;
 
     equipment = new Equipment(this);
     Hands = new ItemHands(this);

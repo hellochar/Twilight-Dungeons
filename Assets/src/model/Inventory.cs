@@ -8,6 +8,7 @@ using UnityEngine;
 public class Inventory : IEnumerable<Item> {
   private Item[] items;
   public int capacity => items.Length;
+  public bool allowDragAndDrop = false;
 
   public virtual Item this[int i] => items[i];
   [field:NonSerialized] /// Controller only

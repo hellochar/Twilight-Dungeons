@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,6 +123,9 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
   }
 
   void IDragHandler.OnDrag(PointerEventData eventData) {
+    if (!item.inventory.allowDragAndDrop) {
+      return;
+    }
     // doesn't fully work; doesn't account for scaling of parents
     // Vector2 offset = eventData.position - eventData.pressPosition;
 
@@ -135,20 +138,27 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
 
   int dragStartLayer;
   void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
+    if (!item.inventory.allowDragAndDrop) {
+      eventData.pointerDrag = null;
+      return;
+    }
     button.enabled = false;
     InventorySlotController.BeginDragging(item);
     dragStartLayer = gameObject.layer;
     gameObject.layer = Physics.IgnoreRaycastLayer;
     GetComponentInChildren<Graphic>().raycastTarget = false;
-    Debug.Log("OnBeginDrag");
+    // Debug.Log("OnBeginDrag");
   }
 
   void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
+    if (!item.inventory.allowDragAndDrop) {
+      return;
+    }
     GetComponentInChildren<Graphic>().raycastTarget = true;
     InventorySlotController.EndDragging(item);
     gameObject.layer = dragStartLayer;
     (transform as RectTransform).anchoredPosition = new Vector2();
     button.enabled = true;
-    Debug.Log("OnEndDrag");
+    // Debug.Log("OnEndDrag");
   }
 }

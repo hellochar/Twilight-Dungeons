@@ -248,17 +248,18 @@ public enum ViewportLean { None, Left, Right }
 public class CameraState {
   public Entity target;
   public ViewportLean lean = ViewportLean.None;
-  public float targetZoom => Mathf.Max((extents.height + 1) / 2.0f, 2);
-  public Vector2 targetPos => extents.centerFloat + target.pos;
+  // public float targetZoom => Mathf.Max((extents.height + 1) / 2.0f, 2);
+  public Vector2 targetPos => // extents.centerFloat +
+    target.pos;
 
-  private Room m_extents;
-  private Room extents {
-    get {
-      if (m_extents == null) {
-        m_extents = new Room(Vector2Int.zero, Vector2Int.zero);
-        m_extents.ExtendToEncompass(new Room(target.pos, target.pos));
-      }
-      return m_extents;
-    }
-  }
+  // private Room m_extents;
+  // private Room extents {
+  //   get {
+  //     if (m_extents == null) {
+  //       m_extents = new Room(Vector2Int.zero, Vector2Int.zero);
+  //       // m_extents.ExtendToEncompass(new Room(target.pos, target.pos));
+  //     }
+  //     return m_extents;
+  //   }
+  // }
 }

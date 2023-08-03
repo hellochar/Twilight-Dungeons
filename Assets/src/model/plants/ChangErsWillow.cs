@@ -7,10 +7,7 @@ using UnityEngine;
 public class ChangErsWillow : Plant {
   public override string displayName => "Chang-Er's Willow";
   [Serializable]
-  class Mature : PlantStage {
-    public override float StepTime => 99999;
-    public override void Step() { }
-
+  class Mature : MaturePlantStage {
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(

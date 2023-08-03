@@ -287,7 +287,7 @@ public class FloorGenerator {
   }
 
   public Floor generateFloor0(int depth) {
-    Floor floor = new Floor(depth, 12, 7);
+    Floor floor = new Floor(depth, 12, 7).StartCleared();
 
     // fill with floor tiles by default
     FloorUtils.CarveGround(floor);

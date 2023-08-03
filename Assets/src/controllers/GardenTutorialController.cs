@@ -79,7 +79,7 @@ public class GardenTutorialController : MonoBehaviour {
     if (FloorController.current.TryGetControllerComponent<PlantController>(berryBush, out var plantController)) {
       Util.WheneverChanged(this,
         () => plantController.GetUI(),
-        async (GameObject ui) => {
+        (GameObject ui) => {
           if (ui == null) {
             return;
           }
@@ -155,7 +155,7 @@ public class GardenTutorialController : MonoBehaviour {
     }
     if (queueCompleteLogic) {
       PlayerPrefs.SetInt(KEY_HAS_COMPLETED_GARDEN_TUTORIAL, 1);
-      GameModel.main.currentFloor.MaybeAddDownstairs();
+      GameModel.main.currentFloor.AddDownstairs();
       GameModel.main.DrainEventQueue();
       Highlights.RemoveAll();
       _ = Messages.CreateDelayed("Have fun!", 1, 3);

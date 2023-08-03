@@ -9,6 +9,7 @@ public class Floor {
   public readonly int width;
   public readonly int height;
   public int depth;
+  public bool isCleared { get; protected set; }
   private PathfindingManager pathfindingManager;
   private float lastStepTime = 0;
 
@@ -69,6 +70,7 @@ public class Floor {
     this.depth = depth;
     this.width = width;
     this.height = height;
+    this.isCleared = false;
     this.lastStepTime = GameModel.main.time;
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Grass>(this);
@@ -95,6 +97,12 @@ public class Floor {
   private void ItemPlacementBehavior(ItemOnGround item) => ItemOnGround.PlacementBehavior(this, item);
 
   public void BodyMoved() => bodies.ScheduleRecompute();
+
+  public Floor StartCleared() {
+    // set isCleared without triggering any events
+    isCleared = true;
+    return this;
+  }
 
   /// what should happen when the player goes downstairs
   internal virtual void PlayerGoDownstairs() {
@@ -188,21 +196,41 @@ public class Floor {
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
     if (entity is AIActor a && a.faction == Faction.Enemy) {
-      MaybeAddDownstairs();
+      CheckCleared();
     }
   }
 
-  public void MaybeAddDownstairs() {
+  private void CheckCleared() {
+    if (isCleared) {
+      return;
+    }
+
     GameModel.main.EnqueueEvent(() => {
-      if (EnemiesLeft() == 0 && downstairs == null) {
-        // create a Downstairs
-        var freeSpot = this.BreadthFirstSearch(new Vector2Int(width - 1, height / 2)).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
-        if (freeSpot == null) {
-          freeSpot = GameModel.main.player.tile;
-        }
-        Put(new Downstairs(freeSpot.pos));
+      bool shouldCountAsCleared = EnemiesLeft() == 0;
+      // check isCleared again if it's changed in the event queue
+      if (shouldCountAsCleared && !isCleared) {
+        ClearFloor();
       }
     });
+  }
+
+  public void ClearFloor() {
+    AddDownstairs();
+    GameModel.main.FloorCleared(this);
+  }
+
+  public void AddDownstairs(Vector2Int? pos = null) {
+    if (pos == null) {
+      pos = new Vector2Int(width - 1, height / 2);
+    }
+    if (downstairs == null) {
+      // create a Downstairs
+      var freeSpot = this.BreadthFirstSearch(pos.Value).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
+      if (freeSpot == null) {
+        freeSpot = GameModel.main.player.tile;
+      }
+      Put(new Downstairs(freeSpot.pos));
+    }
   }
 
   internal void PutAll(IEnumerable<Entity> entities) {

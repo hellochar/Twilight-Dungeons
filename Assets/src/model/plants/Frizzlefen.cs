@@ -14,9 +14,7 @@ using UnityEngine;
 /// Stompin Boots - when you walk onto any Grass, kill it. Gain a status that blocks the next 1 damage.
 public class Frizzlefen : Plant {
   [Serializable]
-  class Mature : PlantStage {
-    public override float StepTime => 99999;
-    public override void Step() { }
+  class Mature : MaturePlantStage {
     public override void BindTo(Plant plant) {
       base.BindTo(plant);
       harvestOptions.Add(new Inventory(
@@ -35,7 +33,7 @@ public class Frizzlefen : Plant {
     }
   }
 
-  public Frizzlefen(Vector2Int pos) : base(pos, new Seed(400)) {
+  public Frizzlefen(Vector2Int pos) : base(pos, new Seed(4)) {
     stage.NextStage = new Mature();
   }
 }

@@ -3,10 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Plant : Body, ISteppable, IHideInSidebar {
-  public float timeNextAction { get; set; }
-  /// put earlier than the player so they can act early
-  public float turnPriority => 0;
+public abstract class Plant : Body, IHideInSidebar {
   [field:NonSerialized] /// controller only
   public event Action OnHarvested;
 
@@ -15,7 +12,7 @@ public abstract class Plant : Body, ISteppable, IHideInSidebar {
       if (stage.NextStage == null) {
         return 1;
       } else {
-        return stage.age / stage.StepTime;
+        return stage.percentGrown;
       }
     }
   }
@@ -26,7 +23,6 @@ public abstract class Plant : Body, ISteppable, IHideInSidebar {
     set {
       _stage = value;
       _stage.BindTo(this);
-      timeNextAction = GameModel.main.time + _stage.StepTime;
     }
   }
   public override string displayName => $"{base.displayName}{ (stage.NextStage == null ? "" : " (" + stage.name + ")") }";
@@ -35,18 +31,6 @@ public abstract class Plant : Body, ISteppable, IHideInSidebar {
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     this.stage = stage;
     this.hp = this.baseMaxHp = 1;
-    this.timeNextAction = this.timeCreated + stage.StepTime;
-  }
-
-  public float Step() {
-    var stageBefore = stage;
-    stage.Step();
-    if (stageBefore == stage) {
-      return stage.StepTime;
-    } else {
-      // stage has changed; timeNextAction was already set by setting the stage.
-      return 0;
-    }
   }
 
   public void GoNextStage() {
@@ -59,5 +43,9 @@ public abstract class Plant : Body, ISteppable, IHideInSidebar {
     stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
     OnHarvested?.Invoke();
     Kill(GameModel.main.player);
+  }
+
+  internal void OnFloorCleared(Floor floor) {
+    stage.xp++;
   }
 }

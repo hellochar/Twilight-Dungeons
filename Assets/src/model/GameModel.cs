@@ -217,12 +217,17 @@ public class GameModel {
   /// SteppableEntity's on the current floor, and
   /// Plants on any floor
   internal IEnumerable<ISteppable> GetAllEntitiesInPlay() {
-    var enumerable = home.bodies.Where((a) => a is Plant).Cast<ISteppable>().Concat(currentFloor.steppableEntities);
-    return enumerable;
+    return currentFloor.steppableEntities;
   }
 
   // whether the current state is in a "transition" state and therefore shouldn't be saved
   public bool IsTransient() {
     return currentFloor is TutorialFloor || player.IsDead;
+  }
+
+  public void FloorCleared(Floor floor) {
+    foreach(var plant in home?.bodies.OfType<Plant>()) {
+      plant.OnFloorCleared(floor);
+    }
   }
 }

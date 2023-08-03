@@ -70,7 +70,7 @@ public class SidePanelController : MonoBehaviour {
         button.onClick.AddListener(() => {
           var firstEntityOfType = entities[name];
           // Create popup for entity
-          InteractionController.ShowPopupFor(firstEntityOfType);
+          EntityPopup.Show(firstEntityOfType);
         });
         buttonObject.GetComponentInChildren<TMPro.TMP_Text>().text = name;
       }

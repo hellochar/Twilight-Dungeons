@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// expects this GameObject to have one child for each of this plant's state with matching names.
-public class PlantController : BodyController, ILongTapHandler {
+public class PlantController : BodyController, IPopupOverride {
   public Plant plant => (Plant) body;
   public GameObject particles;
   public GameObject seed;
@@ -67,7 +67,7 @@ public class PlantController : BodyController, ILongTapHandler {
     }
   }
 
-  public void HandleLongTap() {
+  public void HandleShowPopup() {
     GetPlayerInteraction(null);
   }
 

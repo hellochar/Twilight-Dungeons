@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Connects an ItemOnGround GameObject (this.gameObject) to an ItemOnGround entity.
 /// </summary>
-public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ILongTapHandler {
+public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerInteractHandler, IPopupOverride, IOnTopActionHandler {
   [NonSerialized]
   public ItemOnGround itemOnGround;
   private SpriteRenderer spriteRenderer;
@@ -49,11 +49,16 @@ public class ItemOnGroundController : MonoBehaviour, IEntityController, IPlayerI
     return null;
   }
 
-  public void HandleLongTap() {
+  public void HandleShowPopup() {
     var spritePrefab = PrefabCache.UI.GetPrefabFor("Entity Image");
     var spriteGameObject = Instantiate(spritePrefab);
     var image = spriteGameObject.GetComponentInChildren<Image>();
     image.sprite = spriteRenderer.sprite;
     ItemController.ShowItemPopup(itemOnGround.item, spriteGameObject);
+  }
+
+  public string OnTopActionName => "Pick Up";
+  public void HandleOnTopAction() {
+    itemOnGround.PickUp();
   }
 }

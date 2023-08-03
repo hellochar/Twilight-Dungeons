@@ -6,8 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AltarController : BodyController, ILongTapHandler {
-  public void HandleLongTap() {
+public class AltarController : BodyController, IPopupOverride {
+  public void HandleShowPopup() {
     ShowAltarDialog();
   }
 

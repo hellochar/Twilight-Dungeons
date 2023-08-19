@@ -41,7 +41,7 @@ public class SpriteFlyAnimation : MonoBehaviour {
     image = GetComponent<Image>();
     image.sprite = sprite;
 
-    gameObject.AddComponent<PulseAnimation>().pulseScale = 1.5f;
+    gameObject.AddComponent<PulseAnimation>().pulseScale = 1.1f;
 
     StartCoroutine(Animation(alpha));
   }

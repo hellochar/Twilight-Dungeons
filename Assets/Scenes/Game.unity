@@ -1055,16 +1055,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: Collect
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: da3d4f5b7f892d7498f8d6aa917cac50, type: 2}
-  m_sharedMaterial: {fileID: 2218378521326946172, guid: da3d4f5b7f892d7498f8d6aa917cac50,
+  m_fontAsset: {fileID: 11400000, guid: 762a019b23b379749a11bbe83cf0ec1c, type: 2}
+  m_sharedMaterial: {fileID: 4285048069238282656, guid: 762a019b23b379749a11bbe83cf0ec1c,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
+  m_fontSize: 15.1
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1325,7 +1325,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
-  allowDragAndDrop: 1
 --- !u!114 &177890845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2193,7 +2192,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
-  allowDragAndDrop: 1
 --- !u!114 &364606511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4599,7 +4597,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &834678587
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10620,7 +10618,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1082314158
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10911,7 +10909,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 308}
+  m_AnchoredPosition: {x: 0, y: 172}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1104545487
@@ -12242,14 +12240,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4392157, g: 0.4745098, b: 0.5294118, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -430232906884186649, guid: 59a4a8eada9da7c4299d17c07cb14daf,
+  m_Sprite: {fileID: -791707607476371628, guid: 59a4a8eada9da7c4299d17c07cb14daf,
     type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -13208,7 +13206,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 308}
+  m_AnchoredPosition: {x: 0, y: 172}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1693223499
@@ -16372,7 +16370,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
-  allowDragAndDrop: 1
 --- !u!222 &1315002733549702259
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -17169,7 +17166,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trimExcess: 0
-  allowDragAndDrop: 0
 --- !u!114 &1380929830914351947
 MonoBehaviour:
   m_ObjectHideFlags: 0

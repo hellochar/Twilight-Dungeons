@@ -5,8 +5,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DownstairsController : TileController {
+public class DownstairsController : TileController, IOnTopActionHandler {
   public Downstairs downstairs => (Downstairs) tile;
+
+  public string OnTopActionName => downstairs.OnTopActionName;
+  public void HandleOnTopAction() {
+    downstairs.HandleOnTopAction();
+  }
 
   public override void Start() {
     base.Start();

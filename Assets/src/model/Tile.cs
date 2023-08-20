@@ -171,10 +171,20 @@ public class Chasm : Tile {
 
 [Serializable]
 [ObjectInfo(description: "Go back home.")]
-public class Upstairs : Tile, IActorEnterHandler {
+public class Upstairs : Tile, IOnTopActionHandler {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.right;
-  public Upstairs(Vector2Int pos) : base(pos) {}
+
+  public string OnTopActionName => "Go Home";
+
+  public void HandleOnTopAction() {
+    GameModel.main.player.task = new GenericPlayerTask(
+      GameModel.main.player,
+      TryGoHome
+    );
+  }
+
+  public Upstairs(Vector2Int pos) : base(pos) { }
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
@@ -185,23 +195,24 @@ public class Upstairs : Tile, IActorEnterHandler {
     if (floor.EnemiesLeft() == 0) {
       Serializer.SaveMainToCheckpoint();
       GameModel.main.PutPlayerAt(0);
-    } else {
-      GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
-    }
-  }
-
-  public void HandleActorEnter(Actor who) {
-    if (who is Player) {
-      GameModel.main.EnqueueEvent(TryGoHome);
     }
   }
 }
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class Downstairs : Tile, IActorEnterHandler {
+public class Downstairs : Tile, IOnTopActionHandler {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.left;
+
+  public string OnTopActionName => "Descend";
+  public void HandleOnTopAction() {
+    GameModel.main.player.task = new GenericPlayerTask(
+      GameModel.main.player,
+      TryGoDownstairs
+    );
+  }
+
   public Downstairs(Vector2Int pos) : base(pos) {}
 
   protected override void HandleEnterFloor() {
@@ -210,17 +221,7 @@ public class Downstairs : Tile, IActorEnterHandler {
   }
 
   public void TryGoDownstairs() {
-    if (floor.EnemiesLeft() == 0) {
-      floor.PlayerGoDownstairs();
-    } else {
-      GameObject.Find("Enemies Left")?.AddComponent<PulseAnimation>()?.Larger();
-    }
-  }
-
-  public void HandleActorEnter(Actor who) {
-    if (who is Player) {
-      GameModel.main.EnqueueEvent(TryGoDownstairs);
-    }
+    floor.PlayerGoDownstairs();
   }
 }
 

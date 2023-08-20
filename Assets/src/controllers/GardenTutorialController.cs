@@ -78,13 +78,13 @@ public class GardenTutorialController : MonoBehaviour {
 
     if (FloorController.current.TryGetControllerComponent<PlantController>(berryBush, out var plantController)) {
       Util.WheneverChanged(this,
-        () => plantController.GetUI(),
-        (GameObject ui) => {
+        () => plantController.GetPopupPlantUIController(),
+        (ui) => {
           if (ui == null) {
             return;
           }
 
-          var harvest0Button = ui.transform.Find("Frame/Harvests").GetChild(0).Find("HarvestButton").gameObject;
+          var harvest0Button = ui.harvests.transform.GetChild(0).Find("HarvestButton").gameObject;
           // // need to let plant UI layout
           // await Task.Delay(100);
           Highlights.CreateUI(harvest0Button);

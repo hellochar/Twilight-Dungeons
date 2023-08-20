@@ -26,8 +26,7 @@ public class PlantController : BodyController, IPopupOverride {
         plantUIController.plantController = this;
         CameraController.main.SetCameraOverride(plantUIController);
       } else if (popup != null) {
-        // closing popup
-        Destroy(popup.gameObject);
+        popup.Close();
         popup = null;
       }
     }
@@ -110,7 +109,7 @@ public class PlantController : BodyController, IPopupOverride {
     }
   }
 
-  public GameObject GetUI() {
-    return popup.gameObject;
+  public PlantUIController GetPopupPlantUIController() {
+    return popup?.container?.GetComponentInChildren<PlantUIController>();
   }
 }

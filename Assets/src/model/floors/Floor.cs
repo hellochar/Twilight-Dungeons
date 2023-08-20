@@ -122,8 +122,10 @@ public class Floor {
     return Enemies().Count();
   }
 
-  public IEnumerable<AIActor> Enemies() {
-    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Cast<AIActor>();
+  public IEnumerable<Entity> Enemies() {
+    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Cast<Entity>().Concat(
+      grasses.Where(g => g is IEnemyEntity)
+    );
   }
 
   public virtual void Put(Entity entity) {
@@ -195,7 +197,7 @@ public class Floor {
 
     entity.SetFloor(null);
     this.OnEntityRemoved?.Invoke(entity);
-    if (entity is AIActor a && a.faction == Faction.Enemy) {
+    if (entity is AIActor a && a.faction == Faction.Enemy || entity is IEnemyEntity) {
       CheckCleared();
     }
   }

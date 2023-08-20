@@ -123,7 +123,7 @@ public class FloorGenerator {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
 
-    var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
+    var enemies = floor.Enemies().OfType<AIActor>().Where(a => !(a is Boss)).ToList();
     foreach(var enemy in enemies) {
       var x = enemy.pos.x;
       var pushBackChance = Util.MapLinear(x, 1, floor.width - 1, 0.9f, 0.0f);
@@ -453,7 +453,7 @@ public class FloorGenerator {
     }
 
     floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
-    floor.PlaceDownstairs(new Vector2Int(width - 1, floor.height / 2));
+    // floor.PlaceDownstairs(new Vector2Int(width - 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -484,7 +484,7 @@ public class FloorGenerator {
     floor.Put(new Wall(room0.center + new Vector2Int(-2, 2)));
 
     floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
+    // floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();
@@ -492,7 +492,7 @@ public class FloorGenerator {
     floor.downstairsRoom = room0;
 
     // add boss
-    floor.Put(new Blobmother(floor.downstairs.pos));
+    floor.Put(new Blobmother(new Vector2Int(floor.width - 2, floor.height / 2)));
 
 
     FloorUtils.TidyUpAroundStairs(floor);
@@ -535,7 +535,7 @@ public class FloorGenerator {
     // block entrance
     // floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
     floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
-    floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
+    // floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
 
     floor.root = room0;
     floor.rooms = new List<Room>();

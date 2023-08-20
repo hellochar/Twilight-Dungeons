@@ -10,11 +10,9 @@ public class Healer : SimpleStatusApplicationEnemy {
   }
 
   public override void DoTask() {
-    var hurtEnemies = floor.Enemies().Where(e => e != this && e.hp < e.maxHp);
+    var hurtEnemies = floor.Enemies().OfType<AIActor>().Where(e => e != this && e.hp < e.maxHp);
     var choice = Util.RandomPick(hurtEnemies);
-    if (choice != null) {
-      choice.Heal(1);
-    }
+    choice?.Heal(1);
   }
 }
 

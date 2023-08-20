@@ -38,9 +38,11 @@ public class Skully : AIActor, IActorKilledHandler {
   internal override (int, int) BaseAttackDamage() => (1, 1);
 }
 
+public interface IEnemyEntity {}
+
 [System.Serializable]
 [ObjectInfo(description: "Regenerates into a Skully after three turns.\nStep on the Muck to remove it.")]
-public class Muck : Grass, ISteppable, IActorEnterHandler {
+public class Muck : Grass, ISteppable, IActorEnterHandler, IEnemyEntity {
   public Muck(Vector2Int pos) : base(pos) {
     timeNextAction = timeCreated + 1;
   }

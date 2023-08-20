@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,21 +33,11 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     player.nonserializedModifiers.Add(this);                          // getting a status and healing
     GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     GameModel.main.turnManager.OnStep += DetectGuardleafVisible;      // guardleaf room
-    // GameModel.main.turnManager.OnStep += DetectEnteredBerryBushRoom;  // berry bush
-    // player.inventory.OnItemAdded += HandleSeedPickup;       // after picking up all 4 items
-    // player.OnChangeWater += HandleChangeWater;                        // after getting water
-    // GameModel.main.turnManager.OnStep += DetectEnteredFinalRoom;      // final room
+
+
+
     TutorialFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
-
-  // void AddHighlights() {
-  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.blob).transform);
-  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.guardleaf).transform);
-  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.jackals[0]).transform);
-  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.berryBush).transform);
-  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.astoria).transform);
-  //   PrefabCache.Effects.Instantiate("Highlight", GameObjectFor(tutFloor.bat).transform);
-  // }
 
   public void HandleHeal(int amount) {
     if (!HUDController.main.hpBar.activeSelf) {
@@ -99,45 +89,12 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     _ = Messages.CreateDelayed("Protect yourself in the Guardleaf!", 1, 5);
   }
 
-  // private void DetectEnteredBerryBushRoom(ISteppable obj) {
-  //   if (!tutFloor.berryBush.isVisible) {
-  //     return;
-  //   }
-  //   GameModel.main.turnManager.OnStep -= DetectEnteredBerryBushRoom;
-  //   GameModel.main.player.ClearTasks();
-
-  //   Messages.Create("Harvest the Berry Bush!");
-  // }
-
   private void HandleFirstItemAdded(Item arg1, Entity arg2) {
     GameModel.main.player.inventory.OnItemAdded -= HandleFirstItemAdded;
 
     Transitions.AnimateUIHorizontally(HUDController.main.inventoryToggle, 900);
     Transitions.AnimateUIHorizontally(HUDController.main.inventoryContainer, 900);
   }
-
-  // private void HandleSeedPickup(Item item, Entity arg2) {
-  //   if (item is ItemSeed) {
-  //     GameModel.main.player.inventory.OnItemAdded -= HandleSeedPickup;
-  //     Messages.Create("Plant the Seed!");
-  //   }
-  // }
-
-  // private void HandleChangeWater(int delta) {
-  //   AnimateHorizontally(waterIndicator, -900);
-  //   GameModel.main.player.OnChangeWater -= HandleChangeWater;
-  // }
-
-  // private void DetectEnteredFinalRoom(ISteppable obj) {
-  //   if (GameModel.main.player.pos.x < tutFloor.endRoom.min.x - 1) {
-  //     return;
-  //   }
-  //   GameModel.main.turnManager.OnStep -= DetectEnteredFinalRoom;
-  //   GameModel.main.player.ClearTasks();
-  //   AnimateHorizontally(enemiesLeft, 900);
-
-  //   Messages.Create("Bats attack other creatures!");
-  // }
 
   private void HandleTutorialEnded() {
     var blackOverlay = HUDController.main.blackOverlay;

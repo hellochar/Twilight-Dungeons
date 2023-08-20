@@ -9,7 +9,7 @@ public abstract class Plant : Body, IHideInSidebar {
 
   public float percentGrown {
     get {
-      if (stage.NextStage == null) {
+      if (IsMature) {
         return 1;
       } else {
         return stage.percentGrown;
@@ -27,6 +27,7 @@ public abstract class Plant : Body, IHideInSidebar {
   }
   public override string displayName => $"{base.displayName}";
 
+  public bool IsMature => stage.NextStage == null;
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     this.stage = stage;
@@ -34,7 +35,7 @@ public abstract class Plant : Body, IHideInSidebar {
   }
 
   public void GoNextStage() {
-    if (stage.NextStage != null) {
+    if (!IsMature) {
       stage = stage.NextStage;
     }
   }

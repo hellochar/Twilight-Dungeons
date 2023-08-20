@@ -4,7 +4,18 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour {
   public static HUDController main;
-  public GameObject hpBar, waterIndicator, inventoryToggle, inventoryContainer, statuses, depth, enemiesLeft, waitButton, settings;
+  public GameObject
+    hpBar,
+    waterIndicator,
+    inventoryToggle,
+    inventoryContainer,
+    statuses,
+    depth,
+    enemiesLeft,
+    waitButton,
+    settings,
+    damageFlash
+  ;
   public InventoryController playerInventory;
   public Image blackOverlay;
 

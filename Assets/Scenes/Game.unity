@@ -702,6 +702,7 @@ MonoBehaviour:
   enemiesLeft: {fileID: 888473353}
   waitButton: {fileID: 1213151032}
   settings: {fileID: 774951094}
+  damageFlash: {fileID: 1850681289}
   playerInventory: {fileID: 2089429199}
   blackOverlay: {fileID: 356309593}
 --- !u!1 &116707266
@@ -4597,7 +4598,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &834678587
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12240,14 +12241,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.98919725, b: 0.08176094, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -791707607476371628, guid: 59a4a8eada9da7c4299d17c07cb14daf,
+  m_Sprite: {fileID: -430232906884186649, guid: 59a4a8eada9da7c4299d17c07cb14daf,
     type: 3}
   m_Type: 1
   m_PreserveAspect: 0

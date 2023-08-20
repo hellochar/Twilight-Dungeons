@@ -9,15 +9,7 @@ using UnityEngine.UI;
 public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandler {
   // Start is called before the first frame update
   public void Start() {
-    // hide all the UI by default
-    // hpBar = canvas.transform.Find("HUD/Hearts");
-    // statuses = canvas.transform.Find("HUD/Statuses");
-    // waterIndicator = GameObject.Find("Water Indicator");
-    // inventoryToggle = GameObject.Find("Inventory Toggle");
-    // inventoryContainer = GameObject.Find("Inventory Container");
-    // depth = GameObject.Find("Depth");
-    // enemiesLeft = GameObject.Find("Enemies Left");
-    // waitButton = GameObject.Find("Wait Button");
+    // hide most of the UI by default
     var HUD = HUDController.main;
     HUD.hpBar?.SetActive(false);
     HUD.statuses?.SetActive(false);
@@ -28,6 +20,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     HUD.enemiesLeft?.SetActive(false);
     // HUD.waitButton?.SetActive(false);
     HUD.settings?.SetActive(false);
+    HUD.damageFlash.SetActive(false);
 
     // AddHighlights();
 

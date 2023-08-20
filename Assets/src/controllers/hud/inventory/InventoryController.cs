@@ -18,6 +18,9 @@ public class InventoryController : MonoBehaviour {
   }
 
   public InventorySlotController GetSlot(Item item) {
+    if (inventory == null) {
+      return null;
+    }
     var index = inventory.IndexOf(item);
     if (index != -1) {
       return GetSlot(index);

@@ -18,8 +18,8 @@ public class WaitButtonController : MonoBehaviour {
   }
 
   public void HandleWaitPressed() {
-    var interactionController = GameModelController.main.CurrentFloorController.GetComponent<InteractionController>();
-    var pos = GameModel.main.player.pos;
-    interactionController.Interact(pos, null);
+    if (InteractionController.isInputAllowed) {
+      GameModel.main.player.SetTasks(new WaitTask(GameModel.main.player, 1));
+    }
   }
 }

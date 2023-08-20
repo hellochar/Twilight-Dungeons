@@ -225,11 +225,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       return new ArbitraryPlayerInteraction(() => {
         player.ClearTasks();
       });
-    } else {
-      return new SetTasksPlayerInteraction(
-        new WaitTask(player, 1)
-      );
     }
+    return null;
   }
 
   public void HandleDealAttackDamage(int damage, Body target) {

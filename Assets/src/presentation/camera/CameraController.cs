@@ -35,6 +35,8 @@ public class CameraController : MonoBehaviour {
 
   void Start() {
     wantedZoom = PlayerPrefs.GetFloat("zoom", this.wantedZoom);
+    // initialize to player position
+    centerCameraOnFloor(false);
     Update();
   }
 
@@ -200,7 +202,7 @@ public class CameraController : MonoBehaviour {
     ZoomLerp(camera, zoom, zoomLerpSpeed);
   }
 
-  private void centerCameraOnFloor() {
+  private void centerCameraOnFloor(bool smooth = true) {
     Bounds bounds = new Bounds();
     bounds.min = Util.withZ(GameModel.main.currentFloor.boundsMin) + new Vector3(-paddingLeft, -paddingBottom, 0);
     bounds.max = Util.withZ(GameModel.main.currentFloor.boundsMax) + new Vector3(paddingRight, paddingTop, 0);
@@ -209,18 +211,18 @@ public class CameraController : MonoBehaviour {
     var ySizeToEncompassWidth = bounds.extents.x / camera.aspect;
 
     var wantedPosition = new Vector3(bounds.center.x - 0.5f, bounds.center.y - 0.5f, this.transform.position.z);
-    this.transform.position = LerpTowardsPosition(this.transform.position, wantedPosition, followSpeed, 99999);
+    this.transform.position = LerpTowardsPosition(this.transform.position, wantedPosition, followSpeed, smooth ? 99999 : 0);
     var wantedZoom = Mathf.Max(minZoom, ySizeToEncompassHeight, ySizeToEncompassWidth);
     // camera.orthographicSize = wantedZoom;
-    ZoomLerp(camera, wantedZoom, zoomLerpSpeed);
+    ZoomLerp(camera, wantedZoom, zoomLerpSpeed, smooth ? 0.01f : 99999f);
   }
 
   public void SetCameraOverride(ICameraOverride overrider) {
     this.cameraOverride = overrider;
   }
 
-  public static void ZoomLerp(Camera camera, float wantedZoom, float lerpSpeed) {
-    if (Mathf.Abs(camera.orthographicSize - wantedZoom) < 0.01) {
+  public static void ZoomLerp(Camera camera, float wantedZoom, float lerpSpeed, float jumpThreshold = 0.01f) {
+    if (Mathf.Abs(camera.orthographicSize - wantedZoom) < jumpThreshold) {
       camera.orthographicSize = wantedZoom;
     } else {
       camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, wantedZoom, lerpSpeed * Time.deltaTime);

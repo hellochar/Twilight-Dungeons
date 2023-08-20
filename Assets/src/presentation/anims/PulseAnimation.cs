@@ -4,7 +4,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 public class PulseAnimation : MonoBehaviour {
-  static float FADE_TIME = 0.33f;
+  public float FADE_TIME = 0.33f;
   public float pulseScale = 0.75f;
   private Vector3 currentScale;
   private float startTime;

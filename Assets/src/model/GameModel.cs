@@ -183,7 +183,7 @@ public class GameModel {
 
     // going home
     if (pos == null) {
-      if (depth == 0) {
+      if (newFloor.depth == 0) {
         pos = newFloor.downstairs.landing;
       } else {
         pos = newFloor.upstairs?.landing ?? new Vector2Int(2, newFloor.height / 2);

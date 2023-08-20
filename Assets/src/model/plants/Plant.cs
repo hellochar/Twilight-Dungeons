@@ -25,7 +25,7 @@ public abstract class Plant : Body, IHideInSidebar {
       _stage.BindTo(this);
     }
   }
-  public override string displayName => $"{base.displayName}{ (stage.NextStage == null ? "" : " (" + stage.name + ")") }";
+  public override string displayName => $"{base.displayName}";
 
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {

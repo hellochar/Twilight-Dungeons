@@ -41,6 +41,10 @@ public class PlantController : BodyController, IPopupOverride {
     young.transform.localPosition = new Vector3(0, young.transform.localPosition.y, young.transform.localPosition.z);
     mature.transform.localPosition = new Vector3(0, mature.transform.localPosition.y, mature.transform.localPosition.z);
 
+    if (young.GetComponent<SpriteRenderer>().sprite == null) {
+      young.GetComponent<SpriteRenderer>().sprite = mature.GetComponent<SpriteRenderer>().sprite;
+    }
+
     activePlantStageObject = plant.stage.name == "Seed" ?
       (plant.percentGrown == 0 ? seed : young) :
       mature;
@@ -76,6 +80,10 @@ public class PlantController : BodyController, IPopupOverride {
       desiredStageObject.SetActive(true);
       activePlantStageObject = desiredStageObject;
       particles.SetActive(plant.stage.name == "Seed");
+    }
+    if (desiredStageObject == young) {
+      // set young size to scale with percentDone
+      young.transform.localScale = new Vector3(plant.percentGrown, plant.percentGrown, 1);
     }
   }
 

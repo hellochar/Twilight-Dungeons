@@ -398,9 +398,9 @@ public class FloorGenerator {
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
     ensureConnectedness(floor);
-    floor.PutAll(
-      floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
-    );
+    // floor.PutAll(
+    //   floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
+    // );
     var room0 = floor.root;
     if (preMobEncounters != null) {
       foreach (var encounter in preMobEncounters) {
@@ -434,6 +434,7 @@ public class FloorGenerator {
 
   private Floor tryGenerateSingleRoomFloor(int depth, int width, int height, bool defaultEncounters = true) {
     Floor floor = new Floor(depth, width, height);
+    floor.startPos = new Vector2Int(1, floor.height / 2);
 
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
@@ -452,7 +453,10 @@ public class FloorGenerator {
       EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
     }
 
-    floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
+    floor.Put(new Ground(floor.startPos));
+    floor.Put(new Ground(new Vector2Int(floor.width - 2, floor.height / 2)));
+
+    // floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
     // floor.PlaceDownstairs(new Vector2Int(width - 1, floor.height / 2));
 
     floor.root = room0;
@@ -613,7 +617,8 @@ public class FloorGenerator {
       .Where(t => t.BasePathfindingWeight() != 0)
     );
     
-    var mainland = makeGroup(floor.upstairs, ref walkableTiles);
+    // var mainland = makeGroup(floor.upstairs, ref walkableTiles);
+    var mainland = makeGroup(floor.tiles[floor.startPos], ref walkableTiles);
     int guard = 0;
     while (walkableTiles.Any() && (guard++ < 99)) {
       var island = makeGroup(walkableTiles.First(), ref walkableTiles);

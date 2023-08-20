@@ -45,7 +45,9 @@ public class Floor {
   [NonSerialized] /// not used beyond generator
   internal Room downstairsRoom;
 
-  public Upstairs upstairs {
+  internal Vector2Int startPos;
+
+    public Upstairs upstairs {
     get {
       foreach (Tile t in this.tiles) {
         if (t is Upstairs) {
@@ -70,6 +72,7 @@ public class Floor {
     this.depth = depth;
     this.width = width;
     this.height = height;
+    startPos = new Vector2Int(1, height / 2);
     this.isCleared = false;
     this.lastStepTime = GameModel.main.time;
     this.tiles = new StaticEntityGrid<Tile>(this);
@@ -217,8 +220,20 @@ public class Floor {
   }
 
   public void ClearFloor() {
+    AddUpstairs();
     AddDownstairs();
     GameModel.main.FloorCleared(this);
+  }
+
+  public void AddUpstairs() {
+    if (upstairs == null) {
+      // create an Upstairs
+      // var freeSpot = this.BreadthFirstSearch(startPos + Vector2Int.left).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
+      // if (freeSpot == null) {
+      //   freeSpot = GameModel.main.player.tile;
+      // }
+      Put(new Upstairs(startPos + Vector2Int.left));
+    }
   }
 
   public void AddDownstairs(Vector2Int? pos = null) {
@@ -227,11 +242,12 @@ public class Floor {
     }
     if (downstairs == null) {
       // create a Downstairs
-      var freeSpot = this.BreadthFirstSearch(pos.Value).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
-      if (freeSpot == null) {
-        freeSpot = GameModel.main.player.tile;
-      }
-      Put(new Downstairs(freeSpot.pos));
+      // var freeSpot = this.BreadthFirstSearch(pos.Value).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
+      // if (freeSpot == null) {
+      //   freeSpot = GameModel.main.player.tile;
+      // }
+      // Put(new Downstairs(freeSpot.pos));
+      Put(new Downstairs(pos.Value));
     }
   }
 

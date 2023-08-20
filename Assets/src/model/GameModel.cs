@@ -190,7 +190,7 @@ public class GameModel {
       if (newFloor.depth == 0) {
         pos = newFloor.downstairs.landing;
       } else {
-        pos = newFloor.upstairs?.landing ?? new Vector2Int(2, newFloor.height / 2);
+        pos = newFloor.upstairs?.landing ?? newFloor.startPos;
       }
     }
     newFloor.CatchUpStep(this.time);

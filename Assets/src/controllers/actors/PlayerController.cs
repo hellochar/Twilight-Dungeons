@@ -225,6 +225,15 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       return new ArbitraryPlayerInteraction(() => {
         player.ClearTasks();
       });
+    } else {
+      // if we're over an IOnTopActionHandler, use that
+      var floorController = FloorController.current;
+
+      var entities = floorController.GetVisibleEntitiesInLayerOrder(player.pos);
+
+      if (FloorController.current.TryGetFirstControllerComponent<IOnTopActionHandler>(entities, out var handler, out var entity)) {
+        handler.HandleOnTopAction();
+      }
     }
     return null;
   }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,41 +9,31 @@ using UnityEngine.UI;
 public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandler {
   // Start is called before the first frame update
   public void Start() {
-    // hide most of the UI by default
-    var HUD = HUDController.main;
-    HUD.hpBar?.SetActive(false);
-    HUD.statuses?.SetActive(false);
-    HUD.waterIndicator?.SetActive(false);
-    HUD.inventoryToggle?.SetActive(false);
-    HUD.inventoryContainer?.SetActive(false);
-    // HUD.depth?.SetActive(false);
-    HUD.enemiesLeft?.SetActive(false);
-    // HUD.waitButton?.SetActive(false);
-    HUD.settings?.SetActive(false);
-    HUD.damageFlash.SetActive(false);
+    var model = GameModel.main.tutorialModel;
+    if (model == null) {
+      Destroy(this);
+      throw new Exception("TutorialController requires a TutorialModel");
+    }
 
-    // AddHighlights();
+    foreach (var element in model.HUD.Values) {
+      HUDController.main.GetHUDGameObject(element.name).SetActive(element.active);
+    }
 
     Player player = GameModel.main.player;
 
     if (GameModel.main.currentFloor is TutorialFloor tf && tf.name == "T_Room1") {
       _ = Messages.CreateDelayed("Tap to move.", 1, 5);
     }
-    player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
-    player.nonserializedModifiers.Add(this);                          // getting a status and healing
-    GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
-    GameModel.main.turnManager.OnStep += DetectGuardleafVisible;      // guardleaf room
-
-
+    player.inventory.OnItemAdded += HandleFirstItemAdded;             // stick in T_Healing
+    player.nonserializedModifiers.Add(this);                          // HandleStatusAdded (T_Guardleaf) and HandleHeal (T_Healing)
+    GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // starting T_Jackals
+    GameModel.main.turnManager.OnStep += DetectGuardleafVisible;      // starting T_Guardleaf
 
     TutorialFloor.OnTutorialEnded += HandleTutorialEnded;                  // end!
   }
 
   public void HandleHeal(int amount) {
-    if (!HUDController.main.hpBar.activeSelf) {
-      Transitions.AnimateUIHorizontally(HUDController.main.hpBar, 900);
-      // GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
-    }
+    ShowHUDElement(HUDController.main.hpBar);
   }
 
   // /// show HP, and explain "tap hold"
@@ -64,9 +54,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   // }
 
   public void HandleStatusAdded(Status status) {
-    if (!HUDController.main.statuses.activeSelf) {
-      Transitions.AnimateUIHorizontally(HUDController.main.statuses, 900);
-    }
+    ShowHUDElement(HUDController.main.statuses);
   }
 
   void DetectJackalsVisible(ISteppable s) {
@@ -92,8 +80,8 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   private void HandleFirstItemAdded(Item arg1, Entity arg2) {
     GameModel.main.player.inventory.OnItemAdded -= HandleFirstItemAdded;
 
-    Transitions.AnimateUIHorizontally(HUDController.main.inventoryToggle, 900);
-    Transitions.AnimateUIHorizontally(HUDController.main.inventoryContainer, 900);
+    ShowHUDElement(HUDController.main.inventoryToggle);
+    ShowHUDElement(HUDController.main.inventoryContainer);
   }
 
   private void HandleTutorialEnded() {
@@ -105,6 +93,14 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
       GameModel.GenerateNewGameAndSetMain();
       /// if there's no save, go straight to the real game
       GameModelController.main.StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
+    }
+  }
+
+  private void ShowHUDElement(GameObject hudElement, int startX = 900) {
+    if (!hudElement.activeSelf) {
+      Transitions.AnimateUIHorizontally(hudElement, startX);
+      // GameModel.main.player.AddTimedEvent(2, () => AnimateHorizontally(hpBar, 900));
+      GameModel.main.tutorialModel.FindHUDElement(hudElement).active = true;
     }
   }
 }

@@ -47,6 +47,9 @@ public class GameModel {
   public Action<PlayStats> OnGameOver;
 
   public TimedEventManager timedEvents = new TimedEventManager();
+
+  public TutorialModel? tutorialModel;
+
   public static GameModel main;
 
   /// Also sets GameModel.main.
@@ -113,7 +116,8 @@ public class GameModel {
   }
 
   private void generateTutorial() {
-    Prebuilt pb = Prebuilt.LoadBaked(TutorialFloor.PREBUILT_NAMES[0]);
+    tutorialModel = TutorialModel.createDefault();
+    Prebuilt pb = Prebuilt.LoadBaked(TutorialFloor.TUTORIAL_FLOORS[0].name);
 
     player = pb.player;
     player.SetHPDirect(1);
@@ -226,8 +230,52 @@ public class GameModel {
   }
 
   public void FloorCleared(Floor floor) {
-    foreach(var plant in home?.bodies.OfType<Plant>()) {
+    foreach (var plant in home?.bodies.OfType<Plant>()) {
       plant.OnFloorCleared(floor);
     }
+  }
+}
+
+[Serializable]
+public class HUDElement {
+  public string name;
+  public bool active;
+  public GameObject Get => HUDController.main.GetHUDGameObject(name);
+}
+
+[Serializable]
+public class TutorialModel {
+
+  public static TutorialModel createDefault() {
+    var model = new TutorialModel();
+
+    model.HUD["depth"].active = true;
+    model.HUD["waitButton"].active = true;
+
+    return model;
+  }
+
+  private TutorialModel() {}
+
+  public Dictionary<string, HUDElement> HUD = new Dictionary<string, HUDElement>() {
+    ["depth"] = new HUDElement { name = "depth" },
+    ["waitButton"] = new HUDElement { name = "waitButton" },
+    ["hpBar"] = new HUDElement { name = "hpBar" },
+    ["waterIndicator"] = new HUDElement { name = "waterIndicator" },
+    ["inventoryToggle"] = new HUDElement { name = "inventoryToggle" },
+    ["inventoryContainer"] = new HUDElement { name = "inventoryContainer" },
+    ["statuses"] = new HUDElement { name = "statuses" },
+    ["enemiesLeft"] = new HUDElement { name = "enemiesLeft" },
+    ["settings"] = new HUDElement { name = "settings" },
+    ["damageFlash"] = new HUDElement { name = "damageFlash" }
+  };
+
+  public HUDElement FindHUDElement(GameObject go) {
+    foreach (var kvp in HUD) {
+      if (kvp.Value.Get == go) {
+        return kvp.Value;
+      }
+    }
+    return null;
   }
 }

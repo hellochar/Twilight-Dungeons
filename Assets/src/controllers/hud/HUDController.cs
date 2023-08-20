@@ -22,4 +22,9 @@ public class HUDController : MonoBehaviour {
   public void Awake() {
     main = this;
   }
+
+  public GameObject GetHUDGameObject(string name) {
+    // use reflection to get gameObject matching name
+    return (GameObject)GetType().GetField(name).GetValue(this);
+  }
 }

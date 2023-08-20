@@ -5,15 +5,54 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public struct TutorialFloorInfo {
+  public string name;
+
+  public readonly int index {
+    get {
+      for(int i = 0; i < TutorialFloor.TUTORIAL_FLOORS.Length; i++)
+      {
+        if (TutorialFloor.TUTORIAL_FLOORS[i].name == name) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  }
+
+  // what new HUD elements this floor introduces
+  public Func<GameObject[]> newHUDObjects;
+}
+
 [Serializable]
 public class TutorialFloor : Floor {
-  public static string[] PREBUILT_NAMES = {
-    "T_Room1",
-    "T_TwoBlobs",
-    "T_Healing",
-    "T_Jackals",
-    "T_Guardleaf",
-    "T_Battle"
+  public static GameObject[] STARTING_HUD => new GameObject[] { HUDController.main.depth, HUDController.main.waitButton };
+
+  public static TutorialFloorInfo[] TUTORIAL_FLOORS = {
+    new TutorialFloorInfo {
+      name = "T_Room1",
+      newHUDObjects = () => new GameObject[] {},
+    },
+    new TutorialFloorInfo {
+      name = "T_TwoBlobs",
+      newHUDObjects = () => new GameObject[] {},
+    },
+    new TutorialFloorInfo {
+      name = "T_Healing",
+      newHUDObjects = () => new GameObject[] { HUDController.main.hpBar, HUDController.main.damageFlash, HUDController.main.inventoryToggle, HUDController.main.inventoryContainer },
+    },
+    new TutorialFloorInfo {
+      name = "T_Jackals",
+      newHUDObjects = () => new GameObject[] {},
+    },
+    new TutorialFloorInfo {
+      name = "T_Guardleaf",
+      newHUDObjects = () => new GameObject[] { HUDController.main.statuses },
+    },
+    new TutorialFloorInfo {
+      name = "T_Battle",
+      newHUDObjects = () => new GameObject[] {},
+    },
   };
 
   [field:NonSerialized]
@@ -22,6 +61,7 @@ public class TutorialFloor : Floor {
   public string name;
   public TutorialFloor(int depth, int width, int height) : base(depth, width, height) {}
 
+  public TutorialFloorInfo GetInfo() => TUTORIAL_FLOORS.First(f => f.name == this.name);
 
   public static Floor CreateFromPrebuilt(Prebuilt pb) {
     var bounds = pb.GetEntityBounds();
@@ -55,14 +95,14 @@ public class TutorialFloor : Floor {
   }
 
   internal override void PlayerGoDownstairs() {
-    var floorIndex = Array.IndexOf(PREBUILT_NAMES, name);
+    var floorIndex = GetInfo().index;
 
-    if (floorIndex == PREBUILT_NAMES.Length - 1 || floorIndex == -1) {
+    if (floorIndex == TUTORIAL_FLOORS.Length - 1 || floorIndex == -1) {
       PlayerPrefs.SetInt("hasSeenPrologue", 1);
       OnTutorialEnded?.Invoke();
     } else {
       // go onto next floor
-      var nextFloorName = PREBUILT_NAMES[floorIndex + 1];
+      var nextFloorName = TUTORIAL_FLOORS[floorIndex + 1].name;
       Prebuilt pb = Prebuilt.LoadBaked(nextFloorName);
 
       Serializer.SaveMainToCheckpoint();

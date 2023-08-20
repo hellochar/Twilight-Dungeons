@@ -55,7 +55,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOve
       // uiInfo.rectTransform.anchoredPosition -= new Vector2(0, 50);
     }
 
-    if (plant.floor is TutorialFloor && plant.stage.NextStage == null) {
+    if (GardenTutorialController.ShouldShow && plant.stage.NextStage == null) {
       tutorialExtras.SetActive(true);
     }
 
@@ -65,7 +65,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOve
   private void SetupHarvestOption(Transform transform, Inventory inventory, int index) {
     transform.Find("Inventory").GetComponent<InventoryController>().inventory = inventory;
     Button button = transform.Find("HarvestButton").GetComponent<Button>();
-    if (plant.floor is TutorialFloor && index > 0) {
+    if (GardenTutorialController.ShouldShow && index > 0) {
       // disable past index 0
       button.interactable = false;
     } else {

@@ -68,7 +68,7 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(25, 12, 8, 2, 2),
       () => generateSingleRoomFloor(26, 12, 8, 2, 2),
       () => generateSingleRoomFloor(27, 13, 9, 3, 3, false, null, Encounters.AddWater),
-      () => generateSingleRoomFloor(28, 13, 9, 4, 3, false, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls2 }),
+      () => generateSingleRoomFloor(28, 13, 9, 4, 3, false, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls1 }),
       () => generateSingleRoomFloor(29, 13, 9, 4, 2),
       () => generateSingleRoomFloor(30, 13, 9, 5, 3, extraEncounters: Encounters.AddWater),
       () => generateSingleRoomFloor(31, 14, 9, 6, 4),

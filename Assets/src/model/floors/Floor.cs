@@ -45,7 +45,8 @@ public class Floor {
   [NonSerialized] /// not used beyond generator
   internal Room downstairsRoom;
 
-  internal Vector2Int startPos;
+  public Vector2Int startPos;
+  public Vector2Int downstairsPos;
 
     public Upstairs upstairs {
     get {
@@ -73,6 +74,7 @@ public class Floor {
     this.width = width;
     this.height = height;
     startPos = new Vector2Int(1, height / 2);
+    downstairsPos = new Vector2Int(width - 1, height / 2);
     this.isCleared = false;
     this.lastStepTime = GameModel.main.time;
     this.tiles = new StaticEntityGrid<Tile>(this);
@@ -236,10 +238,7 @@ public class Floor {
     }
   }
 
-  public void AddDownstairs(Vector2Int? pos = null) {
-    if (pos == null) {
-      pos = new Vector2Int(width - 1, height / 2);
-    }
+  public void AddDownstairs() {
     if (downstairs == null) {
       // create a Downstairs
       // var freeSpot = this.BreadthFirstSearch(pos.Value).Where(t => t is Ground && t.CanBeOccupied()).FirstOrDefault();
@@ -247,7 +246,7 @@ public class Floor {
       //   freeSpot = GameModel.main.player.tile;
       // }
       // Put(new Downstairs(freeSpot.pos));
-      Put(new Downstairs(pos.Value));
+      Put(new Downstairs(downstairsPos));
     }
   }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerBackpackController : MonoBehaviour {
@@ -24,5 +25,24 @@ public class PlayerBackpackController : MonoBehaviour {
 
   public void ToggleInventory() {
     inventoryContainer.SetActive(!inventoryContainer.activeSelf);
+  }
+
+  public void Inspect() {
+    new InspectAction().ShowTargetingUIThenPerform(GameModel.main.player);
+  }
+
+  class InspectAction : ITargetedAction<Entity> {
+    public string TargettedActionName => "Inspect";
+
+    public string TargettedActionDescription => "Choose a creature to Inspect.";
+
+    public void PerformTargettedAction(Player player, Entity target) {
+      EntityPopup.Show(target);
+    }
+
+    public IEnumerable<Entity> Targets(Player player) {
+      var floor = player.floor;
+      return floor.bodies.Cast<Entity>().Concat(floor.grasses);
+    }
   }
 }

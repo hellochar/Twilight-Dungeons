@@ -48,7 +48,7 @@ public abstract class PlantStage {
 
 [Serializable]
 class Seed : PlantStage {
-  public Seed(int xpNeeded = 3) : base(xpNeeded) {}
+  public Seed(int xpNeeded = 4) : base(xpNeeded) {}
 }
 
 [Serializable]

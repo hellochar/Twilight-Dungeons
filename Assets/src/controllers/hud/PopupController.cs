@@ -62,10 +62,10 @@ public class PopupController : MonoBehaviour, ICameraOverride, IPointerClickHand
         Close();
         return;
       }
-      var infoText = container.transform.Find("Content/Stats")?.GetComponent<TMPro.TMP_Text>();
-      if (infoText) {
-        infoText.text = target.description;
-      }
+      // var infoText = container.transform.Find("Content/Stats")?.GetComponent<TMPro.TMP_Text>();
+      // if (infoText) {
+      //   infoText.text = target.description;
+      // }
     }
   }
 

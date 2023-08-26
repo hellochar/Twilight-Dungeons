@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Moving five times on Soft Grass gives the Player one Free Move.", flavorText: "Feels nice on your feet.")]
+[ObjectInfo(description: "Moving twice on Soft Grass gives the Player one Free Move.", flavorText: "Feels nice on your feet.")]
 public class SoftGrass : Grass, IActorEnterHandler {
   public SoftGrass(Vector2Int pos) : base(pos) {
   }
@@ -56,9 +56,9 @@ public class SoftGrassStatus : StackingStatus, IBodyMoveHandler {
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
     if (newPos != oldPos && actor.floor.grasses[newPos] is SoftGrass) {
       stacks++;
-      if (stacks == 5) {
+      if (stacks == 2) {
         GameModel.main.EnqueueEvent(() => actor.statuses.Add(new FreeMoveStatus()));
-      } else if (stacks > 5) {
+      } else if (stacks > 2) {
         stacks = 1;
       }
     }

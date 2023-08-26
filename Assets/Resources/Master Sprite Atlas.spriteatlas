@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 105661
+    totalSpriteSurfaceArea: 109727
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -81,6 +81,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b72444a1a06d5b84f823895a9959900e, type: 3}
   - {fileID: 21300000, guid: 030e17b16452e7045a7008c895d58160, type: 3}
   - {fileID: 21300000, guid: 08508fb1398e67849aee030fc1035f23, type: 3}
+  - {fileID: 21300000, guid: fc3404d176bb1bf4699a62ddc7edd579, type: 3}
   - {fileID: 21300000, guid: c9f63cd16bff60342a3b6ff774adea1d, type: 3}
   - {fileID: 21300000, guid: 09d11de1b13732f4f98b4b0bbe12845d, type: 3}
   - {fileID: 21300000, guid: 82d92de1db2a0a24e8fccf6d2ae448f4, type: 3}
@@ -111,6 +112,7 @@ SpriteAtlas:
   - {fileID: 4711116328407865328, guid: 4443dce27e6f0314c86a2a169085b91a, type: 3}
   - {fileID: 21300000, guid: 8bd456237d101f44680f91bd37f10a74, type: 3}
   - {fileID: 21300000, guid: 5a2701337c157f44286d94428619f62d, type: 3}
+  - {fileID: 21300000, guid: 7d429363cacadcd4f9b3dc1d0e7df0da, type: 3}
   - {fileID: 21300000, guid: ddbd78635f7b7384c98615feb994332e, type: 3}
   - {fileID: 3143728222543322427, guid: 59211b93663c38b449b0f3862f7ffb07, type: 3}
   - {fileID: -7890111727951115715, guid: 59211b93663c38b449b0f3862f7ffb07, type: 3}
@@ -179,6 +181,7 @@ SpriteAtlas:
   - {fileID: 4397024048997671812, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: 1192398356205429106, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
   - {fileID: 900136251804514652, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
+  - {fileID: 21300000, guid: 757c2bf7857192441a1fd02cfd925e35, type: 3}
   - {fileID: -6514523729103863605, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 7946346345253772639, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -7933666623468162846, guid: af4df3188a01af048a678513709d8278, type: 3}
@@ -206,6 +209,7 @@ SpriteAtlas:
   - {fileID: -161697261141184651, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 713072234296389581, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -8459985283990868690, guid: af4df3188a01af048a678513709d8278, type: 3}
+  - {fileID: -5040763472861491273, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -6627539744543059532, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: 3807160773484928076, guid: af4df3188a01af048a678513709d8278, type: 3}
   - {fileID: -129089525569141178, guid: af4df3188a01af048a678513709d8278, type: 3}
@@ -297,6 +301,7 @@ SpriteAtlas:
   - {fileID: -6675388002913187193, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
   - {fileID: -8793395224846324876, guid: 1f948f5cab1373e40bd98a3677f31a86, type: 3}
   - {fileID: 21300000, guid: 8926176ceab301e44b030ac8737a19ab, type: 3}
+  - {fileID: 21300000, guid: b12b686c1433f7840b4700976f2f9f01, type: 3}
   - {fileID: 21300000, guid: fadf3a9ce9109c44da6acdbbe5a84309, type: 3}
   - {fileID: 4910237036403418163, guid: 4fd135ac8956129448fa07f9054eb8c7, type: 3}
   - {fileID: -1064348352501586448, guid: 4fd135ac8956129448fa07f9054eb8c7, type: 3}
@@ -384,6 +389,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 4c795eafbe0b47f4ba29ac7c9d34ee6c, type: 3}
   - {fileID: 21300000, guid: 412ebcbf536e16f429a709567bf38f2a, type: 3}
   - {fileID: 21300000, guid: f93893df1edf6bb42ab322c678a28447, type: 3}
+  - {fileID: 21300000, guid: c509c5efa6286cb4a8a95fca4ffaa034, type: 3}
   m_PackedSpriteNamesToIndex:
   - slimed
   - background-pattern-leaves
@@ -413,6 +419,7 @@ SpriteAtlas:
   - poisonmoss
   - redcap
   - Path Dot
+  - star16x16
   - butterfly
   - spider-silk-shoes
   - weakness
@@ -443,6 +450,7 @@ SpriteAtlas:
   - blood_3
   - Sleep
   - slime
+  - diamond5x5
   - third-eye
   - hopper
   - hopper-damaged
@@ -511,6 +519,7 @@ SpriteAtlas:
   - upstairs24
   - ground24
   - downstairs24
+  - gradient-left64-taper8
   - colored_transparent_packed_974
   - colored_transparent_packed_134
   - skull
@@ -538,6 +547,7 @@ SpriteAtlas:
   - colored_transparent_packed_228
   - colored_transparent_packed_238
   - mouse
+  - arrow-upleft
   - colored_transparent_packed_263
   - moss-man
   - shovel
@@ -629,6 +639,7 @@ SpriteAtlas:
   - necroroot-body_0
   - necroroot-body_1
   - reticle-hit-target
+  - star3x3
   - bloodstone
   - speech_0
   - speech_1
@@ -716,6 +727,7 @@ SpriteAtlas:
   - Square
   - infected
   - redberry
+  - ninetails
   m_RenderDataMap: {}
   m_Tag: Master Sprite Atlas
   m_IsVariant: 0

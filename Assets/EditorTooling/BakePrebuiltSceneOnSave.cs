@@ -1,4 +1,4 @@
-
+#if UNITY_EDITOR
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,3 +29,4 @@ static class BakePrebuiltSceneOnSave {
     }
   }
 }
+#endif

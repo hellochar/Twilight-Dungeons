@@ -123,89 +123,119 @@ public class FloorGenerator {
       throw new Exception("floorGenerator depth " + depth + " is marked as depth " + floor.depth);
     }
 
-    var enemies = floor.Enemies().OfType<AIActor>().Where(a => !(a is Boss)).ToList();
-    foreach(var enemy in enemies) {
-      var x = enemy.pos.x;
-      var pushBackChance = Util.MapLinear(x, 1, floor.width - 1, 0.9f, 0.0f);
-      if (MyRandom.value < pushBackChance) {
-        List<Tile> possibleLaterTiles = new List<Tile>();
-        for(int y = 0; y < floor.height; y++) {
-          var x1 = x + 1;
-          if (floor.tiles[x1, y].CanBeOccupied()) {
-            possibleLaterTiles.Add(floor.tiles[x1, y]);
-          }
-        }
-        var newTile = Util.RandomPick(possibleLaterTiles);
-        if (newTile != null) {
-          // enemy.ForceSet(newTile.pos);
-          enemy.pos = newTile.pos;
-        }
-      }
-    }
+    PostProcessFloor(floor);
 
-    // var amountScalar = 0.67f;
+    return floor;
+  }
 
-    // // shrinking hack; reduce number of bodies and grasses
-    // var originalEnemyNum = enemies.Count();
-    // var newEnemyNum = Mathf.Max(1, Mathf.RoundToInt(enemies.Count() * amountScalar));
-    // while(enemies.Count > newEnemyNum) {
-    //   var choice = Util.RandomPick(enemies);
-    //   enemies.Remove(choice);
-    //   floor.Remove(choice);
-    // }
+  public void PostProcessFloor(Floor floor) {
+    PostProcessPushEnemiesBack(floor);
 
-    // var nonEnemyBodies = floor.bodies.Except(enemies).ToList();
-    // var originalNonEnemyBodyNum = nonEnemyBodies.Count();
-    // var newNonEnemyBodyNum = Mathf.Max(1, Mathf.RoundToInt(nonEnemyBodies.Count() * amountScalar));
-    // while (nonEnemyBodies.Count > newNonEnemyBodyNum) {
-    //   var choice = Util.RandomPick(nonEnemyBodies);
-    //   nonEnemyBodies.Remove(choice);
-    //   floor.Remove(choice);
-    // }
+    // PostProcessReduceEnemyAndGrassCount(floor);
 
-    // var grasses = floor.grasses.ToList();
-    // var originalGrassesNum = grasses.Count();
-    // var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * 0.5f));
-    // while(grasses.Count > newGrassNum) {
-    //   var choice = Util.RandomPick(grasses);
-    //   grasses.Remove(choice);
-    //   floor.Remove(choice);
-    // }
+#if UNITY_EDITOR
+    var depth = floor.depth;
+    floor.depth = 20;
+    // put stuff here
+    // Encounters.OneButterfly(floor, floor.root);
+    // Encounters.AddSoftMoss(floor, floor.root);
+    floor.depth = depth;
+#endif
 
-    // Debug.LogFormat("Enemies {0} -> {1}, non-enemy bodies {2} -> {3}, grasses {4} -> {5}",
-    // originalEnemyNum, newEnemyNum,
-    // originalNonEnemyBodyNum, newNonEnemyBodyNum,
-    // originalGrassesNum, newGrassNum
-    // );
+    PostProcessAddSignpost(floor);
+  }
 
-    #if UNITY_EDITOR
-    // Encounters.AddCheshireWeeds(floor, floor.root);
-    // Encounters.AddWebs2x(floor, floor.root);
-    // Encounters.AddLlaora(floor, floor.root);
-    // Encounters.AddBloodstone(floor, floor.root);
-    // Encounters.AddStalk(floor, floor.root);
-    // Encounters.AddClumpshroom(floor, floor.root);
-
-    // Encounters.AddFruitingBodies(floor, floor.root);
-    // Encounters.AddNecroroot(floor, floor.root);
-    // Encounters.AddPoisonmoss(floor, floor.root);
-    // Encounters.FillWithFerns(floor, floor.root);
-    // Encounters.AddFakeWall(floor, floor.root);
-    #endif
-
+  private static void PostProcessAddSignpost(Floor floor) {
     /// add a signpost onto the floor
     if (Tips.tipMap.ContainsKey(floor.depth)) {
       /// put it near the upstairs
-      var signpostSearchStartPos = floor.upstairs?.landing ?? new Vector2Int(3, floor.height / 2);
+      var signpostSearchStartPos = floor.startPos;
       var signpostPos = floor.BreadthFirstSearch(signpostSearchStartPos, (tile) => true).Skip(5).Where(t => t is Ground && t.CanBeOccupied() && t.grass == null).FirstOrDefault();
       if (signpostPos != null) {
         floor.Put(new Signpost(signpostPos.pos, Tips.tipMap[floor.depth]));
       }
     }
-    return floor;
   }
 
-  public Floor generateEndFloor(int depth) {
+  public void PostProcessReduceEnemyAndGrassCount(Floor floor, float amountScalar = 0.67f) {
+    // shrinking hack; reduce number of bodies and grasses
+    var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
+    var originalEnemyNum = enemies.Count();
+    var newEnemyNum = Mathf.Max(1, Mathf.RoundToInt(enemies.Count() * amountScalar));
+    while(enemies.Count > newEnemyNum) {
+      var choice = Util.RandomPick(enemies);
+      enemies.Remove(choice);
+      floor.Remove(choice);
+    }
+
+    var nonEnemyBodies = floor.bodies.Except(enemies).ToList();
+    var originalNonEnemyBodyNum = nonEnemyBodies.Count();
+    var newNonEnemyBodyNum = Mathf.Max(1, Mathf.RoundToInt(nonEnemyBodies.Count() * amountScalar));
+    while (nonEnemyBodies.Count > newNonEnemyBodyNum) {
+      var choice = Util.RandomPick(nonEnemyBodies);
+      nonEnemyBodies.Remove(choice);
+      floor.Remove(choice);
+    }
+
+    var grasses = floor.grasses.ToList();
+    var originalGrassesNum = grasses.Count();
+    var newGrassNum = Mathf.Max(1, Mathf.RoundToInt(grasses.Count() * 0.5f));
+    while(grasses.Count > newGrassNum) {
+      var choice = Util.RandomPick(grasses);
+      grasses.Remove(choice);
+      floor.Remove(choice);
+    }
+
+    Debug.LogFormat("Enemies {0} -> {1}, non-enemy bodies {2} -> {3}, grasses {4} -> {5}",
+    originalEnemyNum, newEnemyNum,
+    originalNonEnemyBodyNum, newNonEnemyBodyNum,
+    originalGrassesNum, newGrassNum
+    );
+  }
+
+  void PostProcessPushEnemiesBack(Floor floor) {
+    // push all enemies back so the player has a few turns to "prepare"
+    var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
+    foreach(var enemy in enemies) {
+      var canOccupyMethod = enemy.GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy);
+      bool canOccupy(Tile t) {
+        if (!t.CanBeOccupied()) {
+          return false;
+        }
+        if (canOccupyMethod != null) {
+          return (bool) canOccupyMethod.Invoke(null, new object[] { t });
+        }
+        return true;
+      }
+      var newTile = floor
+        .EnumerateFloor()
+        .Select(pos => floor.tiles[pos])
+        .Where(canOccupy)
+        .OrderByDescending(t => t.pos.x)
+        .Skip(MyRandom.Range(0, 10))
+        .FirstOrDefault();
+      // var xRel = enemy.pos.x - enemyRoom.min.x;
+      // // var pushBackChance = Util.MapLinear(xRel, 1, enemyRoom.width - 1, 0.9f, 0.0f);
+      // var pushBackChance = 1;
+      // if (MyRandom.value < pushBackChance) {
+      //   List<Tile> possibleLaterTiles = new List<Tile>();
+      //   var xPlusOneRel = xRel + 1;
+      //   var x1 = xPlusOneRel + enemyRoom.min.x;
+      //   for(int y = 0; y < floor.height; y++) {
+      //     if (floor.tiles[x1, y].CanBeOccupied()) {
+      //       possibleLaterTiles.Add(floor.tiles[x1, y]);
+      //     }
+      //   }
+      //   var newTile = Util.RandomPick(possibleLaterTiles);
+        if (newTile != null) {
+          // enemy.ForceSet(newTile.pos);
+          enemy.pos = newTile.pos;
+        }
+      // }
+    }
+  }
+
+    public Floor generateEndFloor(int depth) {
     // use bossfloor to get rid of the sound
     Floor floor = new BossFloor(depth, 14, 42);
 

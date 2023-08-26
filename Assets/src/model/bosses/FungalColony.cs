@@ -8,6 +8,7 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
   public FungalColony(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 48;
     faction = Faction.Enemy;
+    ClearTasks();
   }
 
   public override void HandleDeath(Entity source) {

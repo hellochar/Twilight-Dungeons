@@ -468,7 +468,7 @@ public class FloorGenerator {
   }
 
   public Floor generateBlobBossFloor(int depth) {
-    Floor floor = new BossFloor(depth, 12, 9);
+    Floor floor = new BossFloor(depth, 14, 9);
     // fill with wall
     foreach (var p in floor.EnumerateFloor()) {
       floor.Put(new Ground(p));
@@ -477,9 +477,9 @@ public class FloorGenerator {
       floor.Put(new Wall(p));
     }
     floor.Put(new Wall(new Vector2Int(1, 1)));
-    floor.Put(new Wall(new Vector2Int(floor.width - 1, 1)));
-    floor.Put(new Wall(new Vector2Int(floor.width - 1, floor.height - 1)));
-    floor.Put(new Wall(new Vector2Int(1, floor.height - 1)));
+    floor.Put(new Wall(new Vector2Int(floor.width - 2, 1)));
+    floor.Put(new Wall(new Vector2Int(floor.width - 2, floor.height - 2)));
+    floor.Put(new Wall(new Vector2Int(1, floor.height - 2)));
 
     Room room0 = new Room(floor);
     floor.Put(new Wall(room0.center + new Vector2Int(2, 2)));
@@ -487,7 +487,7 @@ public class FloorGenerator {
     floor.Put(new Wall(room0.center + new Vector2Int(-2, -2)));
     floor.Put(new Wall(room0.center + new Vector2Int(-2, 2)));
 
-    floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
+    // floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     // floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
     floor.root = room0;
@@ -538,7 +538,7 @@ public class FloorGenerator {
 
     // block entrance
     // floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
-    floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
+    // floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
     // floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
 
     floor.root = room0;

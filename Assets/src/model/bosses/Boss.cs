@@ -7,7 +7,6 @@ public abstract class Boss : AIActor, IActionPerformedHandler {
 
   protected Boss(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    ClearTasks();
    }
 
   protected virtual void OnSeen() {}

@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Spawns a Blob upon taking damage.\nLeaves a trail of Blob Slime.\nRemoves Blobs and Blob Slime on death.")]
+[ObjectInfo(description: "Spawns a Blob upon taking damage.\n\nLeaves a trail of Blob Slime.")]
 public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   // moves slightly slower than other blobs so the small blobs get hit first
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority + 1;

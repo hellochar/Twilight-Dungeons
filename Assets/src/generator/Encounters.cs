@@ -82,12 +82,33 @@ public class Encounters {
   public static void AFewBlobs(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var numBlobs = RandomRangeBasedOnIndex(floor.depth / 4,
-      (1, 1),
-      (1, 2),
-      (2, 3)
-    );
-    foreach (var tile in tiles.Take(numBlobs)) {
+    var budget = 1 + Mathf.Pow(floor.depth, 0.9f) / 3.6f;
+    var numMini = 0;
+    var numNormal = 0;
+    while (budget > 0) {
+      bool isMini = Random.value < 0.5f;
+      var cost = isMini ? 0.75f : 1;
+      if (cost > budget) {
+        // so if our budget is 0.4 but the cost is 1,
+        // we have a 40% chance of still creating the creature,
+        // aka a 60% chance of exiting now
+        bool exitNow = Random.value * cost > budget;
+        if (exitNow) {
+          break;
+        }
+      }
+
+      if (isMini) {
+        numMini++;
+      } else {
+        numNormal++;
+      }
+      budget -= cost;
+    }
+    foreach (var tile in tiles.Take(numMini)) {
+      floor.Put(new MiniBlob(tile.pos));
+    }
+    foreach (var tile in tiles.Skip(numMini).Take(numNormal)) {
       floor.Put(new Blob(tile.pos));
     }
   }

@@ -94,7 +94,14 @@ public class TutorialFloor : Floor {
     return floor;
   }
 
-  internal override void PlayerGoDownstairs() {
+    public override void ClearFloor() {
+      // don't add upstairs
+      // AddUpstairs();
+      AddDownstairs();
+      GameModel.main.FloorCleared(this);
+    }
+
+    internal override void PlayerGoDownstairs() {
     var floorIndex = GetInfo().index;
 
     if (floorIndex == TUTORIAL_FLOORS.Length - 1 || floorIndex == -1) {

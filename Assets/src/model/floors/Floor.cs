@@ -221,7 +221,7 @@ public class Floor {
     });
   }
 
-  public void ClearFloor() {
+  public virtual void ClearFloor() {
     AddUpstairs();
     AddDownstairs();
     GameModel.main.FloorCleared(this);

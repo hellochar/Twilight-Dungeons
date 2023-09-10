@@ -428,9 +428,12 @@ public class FloorGenerator {
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
     ensureConnectedness(floor);
-    // floor.PutAll(
-    //   floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
-    // );
+    floor.PutAll(
+      floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
+    );
+    floor.Put(new Ground(floor.startPos + Vector2Int.left));
+    floor.Put(new Ground(new Vector2Int(floor.width - 2, floor.height / 2)));
+
     var room0 = floor.root;
     if (preMobEncounters != null) {
       foreach (var encounter in preMobEncounters) {
@@ -482,9 +485,6 @@ public class FloorGenerator {
       // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
       EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
     }
-
-    floor.Put(new Ground(floor.startPos));
-    floor.Put(new Ground(new Vector2Int(floor.width - 2, floor.height / 2)));
 
     // floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
     // floor.PlaceDownstairs(new Vector2Int(width - 1, floor.height / 2));

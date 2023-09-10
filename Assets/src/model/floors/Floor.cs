@@ -318,6 +318,10 @@ public class Floor {
 
     foreach (var pos in this.EnumerateFloor()) {
       Tile t = tiles[pos.x, pos.y];
+      if (t is IAlwaysVisibleTile) {
+        t.visibility = TileVisiblity.Visible;
+        continue;
+      }
       var isEnclosedByWalls = GetAdjacentTiles(pos).All(t => t is Wall);
       if (isEnclosedByWalls) {
         // looks better when we skip fully enclosed Walls

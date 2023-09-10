@@ -169,9 +169,11 @@ public class Chasm : Tile {
   }
 }
 
+interface IAlwaysVisibleTile {}
+
 [Serializable]
 [ObjectInfo(description: "Go back home.")]
-public class Upstairs : Tile, IOnTopActionHandler {
+public class Upstairs : Tile, IOnTopActionHandler, IAlwaysVisibleTile {
   /// <summary>Where the player will be after taking the Downstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.right;
 
@@ -184,7 +186,9 @@ public class Upstairs : Tile, IOnTopActionHandler {
     );
   }
 
-  public Upstairs(Vector2Int pos) : base(pos) { }
+  public Upstairs(Vector2Int pos) : base(pos) {
+    visibility = TileVisiblity.Visible;
+   }
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
@@ -201,7 +205,7 @@ public class Upstairs : Tile, IOnTopActionHandler {
 
 [Serializable]
 [ObjectInfo(description: "Go deeper into the dungeon.")]
-public class Downstairs : Tile, IOnTopActionHandler {
+public class Downstairs : Tile, IOnTopActionHandler, IAlwaysVisibleTile {
   /// <summary>Where the player will be after taking the Upstairs connected to this tile.</summary>
   public Vector2Int landing => pos + Vector2Int.left;
 
@@ -213,7 +217,9 @@ public class Downstairs : Tile, IOnTopActionHandler {
     );
   }
 
-  public Downstairs(Vector2Int pos) : base(pos) {}
+  public Downstairs(Vector2Int pos) : base(pos) {
+    visibility = TileVisiblity.Visible;
+  }
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();

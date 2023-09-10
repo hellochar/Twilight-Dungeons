@@ -431,8 +431,9 @@ public class FloorGenerator {
     floor.PutAll(
       floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
     );
-    floor.Put(new Ground(floor.startPos + Vector2Int.left));
-    floor.Put(new Ground(new Vector2Int(floor.width - 2, floor.height / 2)));
+    floor.Put(new HardGround(floor.startPos));
+    floor.Put(new HardGround(floor.startPos + Vector2Int.left));
+    floor.Put(new HardGround(new Vector2Int(floor.width - 2, floor.height / 2)));
 
     var room0 = floor.root;
     if (preMobEncounters != null) {

@@ -72,7 +72,7 @@ MonoBehaviour:
   m_FillMethod: 0
   m_FillAmount: 0.664
   m_FillClockwise: 1
-  m_FillOrigin: 1
+  m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!1 &6118054069312475059

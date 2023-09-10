@@ -9,7 +9,6 @@ public struct Settings {
   public bool showSidePanel;
   public bool music;
   public bool sfx;
-  public bool rightHanded;
   public bool useDPad;
   public bool swipeToMove;
 
@@ -37,7 +36,7 @@ public struct Settings {
       showSidePanel = true,
       music = true,
       sfx = true,
-      rightHanded = true,
+      // rightHanded = true,
       useDPad = true,
       swipeToMove = false
     };

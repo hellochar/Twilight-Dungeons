@@ -40,26 +40,26 @@ public class MatchRighthandSettings : MonoBehaviour {
   private StoredRectTransform righthand;
 
 
-  void Awake() {
-    rectTransform = GetComponent<RectTransform>();
-    lefthand = new StoredRectTransform(rectTransform);
-    righthand = new StoredRectTransform(target);
-    Settings.OnChanged += HandleSettingsChanged;
-  }
+  // void Awake() {
+  //   rectTransform = GetComponent<RectTransform>();
+  //   lefthand = new StoredRectTransform(rectTransform);
+  //   righthand = new StoredRectTransform(target);
+  //   Settings.OnChanged += HandleSettingsChanged;
+  // }
 
-  void Start() {
-    HandleSettingsChanged();
-  }
+  // void Start() {
+  //   HandleSettingsChanged();
+  // }
 
-  void OnDestroy() {
-    Settings.OnChanged -= HandleSettingsChanged;
-  }
+  // void OnDestroy() {
+  //   Settings.OnChanged -= HandleSettingsChanged;
+  // }
 
-  private void HandleSettingsChanged() {
-    if (Settings.main.rightHanded) {
-      righthand.Apply(rectTransform);
-    } else {
-      lefthand.Apply(rectTransform);
-    }
-  }
+  // private void HandleSettingsChanged() {
+  //   if (Settings.main.rightHanded) {
+  //     righthand.Apply(rectTransform);
+  //   } else {
+  //     lefthand.Apply(rectTransform);
+  //   }
+  // }
 }

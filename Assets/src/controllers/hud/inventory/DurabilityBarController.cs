@@ -48,7 +48,7 @@ public class DurabilityBarController : MonoBehaviour {
     UpdatePulse();
     UpdateTextAndBarFillAmount();
     UpdateWidth();
-    UpdateFillOrigin();
+    // UpdateFillOrigin();
   }
 
   void UpdatePulse() {
@@ -83,11 +83,11 @@ public class DurabilityBarController : MonoBehaviour {
     }
   }
 
-  void UpdateFillOrigin() {
-    // right-hand mode
-    var wantedFillMode = Settings.main.rightHanded ? (int) Image.OriginHorizontal.Left : (int) Image.OriginHorizontal.Right;
-    bar.fillOrigin = wantedFillMode;
-  }
+  // void UpdateFillOrigin() {
+  //   // right-hand mode
+  //   var wantedFillMode = Settings.main.rightHanded ? (int) Image.OriginHorizontal.Left : (int) Image.OriginHorizontal.Right;
+  //   bar.fillOrigin = wantedFillMode;
+  // }
 
   private int GetItemDurability() {
     if (item is IDurable durable) {

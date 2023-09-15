@@ -129,9 +129,25 @@ public class Encounters {
   public static void AddBats(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = 1;
+    var num = floor.depth < 13 ? 1 : 2;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Bat(tile.pos));
+    }
+  }
+  
+  public static void AddFungalSentinel(Floor floor, Room room) {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    tiles.Shuffle();
+    var num = 3;
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new FungalSentinel(tile.pos));
+    }
+  }
+
+  public static void AddFungalBreeder(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    if (tile != null) {
+      floor.Put(new FungalBreeder(tile.pos));
     }
   }
 
@@ -139,7 +155,7 @@ public class Encounters {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
     var num = RandomRangeBasedOnIndex(floor.depth / 4,
-      (2, 2), // 0 - 3
+      (1, 1), // 0 - 3
       (2, 2), // 4 - 7
       (3, 3), // 8 - 11
       (3, 3), // 12 - 15
@@ -154,11 +170,10 @@ public class Encounters {
   public static void AddScorpions(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = RandomRangeBasedOnIndex((floor.depth - 12) / 4,
-      (1, 1), // 12 - 15
-      (1, 1), // 16 - 19
-      (1, 1), // 20 - 23
-      (2, 2) // 24+
+    var num = RandomRangeBasedOnIndex((floor.depth - 10) / 4,
+      (1, 1), // 10 - 13
+      (1, 2), // 14 - 18
+      (2, 2) // 19+
     );
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Scorpion(tile.pos));
@@ -168,7 +183,7 @@ public class Encounters {
   public static void AddGolems(Floor floor, Room room) {
     var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
     tiles.Shuffle();
-    var num = floor.depth < 24 ? 1 : MyRandom.Range(2, 2);
+    var num = floor.depth < 16 ? 1 : 2;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new Golem(tile.pos));
     }

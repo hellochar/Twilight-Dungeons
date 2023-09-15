@@ -4,6 +4,8 @@ public static class EncounterGroupEverything {
   public static EncounterGroup Everything() {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
+        { 1f, AddFungalBreeder },
+        { 1f, AddFungalSentinel },
         { 1f, AddBats },
         { 1f, AddSpiders },
         { 1f, AddScorpions },
@@ -12,7 +14,7 @@ public static class EncounterGroupEverything {
         { 0.5f, AddClumpshroom },
         { 0.5f, AddGrasper },
         { 0.5f, AddParasite },
-        { 0.5f, AddHydra },
+        { 0.2f, AddHydra },
       },
 
       Grasses = new EncounterBag {

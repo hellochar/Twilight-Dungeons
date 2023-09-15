@@ -40,13 +40,15 @@ public static class EncounterGroupEarlyGame {
 
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },
+        { 0.2f, ScatteredBoombugs },
 
         // { 0.2f, AFewBlobs },
         // { 0.2f, AFewSnails },
         // { 0.2f, JackalPile },
+        { 0.1f, AddFungalBreeder },
+        { 0.1f, AddFungalSentinel },
         { 0.1f, AddSpiders },
         { 0.2f, AddWater },
-        { 0.2f, ScatteredBoombugs },
 
         // { 0.1f, AddCoralmoss },
         { 0.1f, AddDeathbloom },

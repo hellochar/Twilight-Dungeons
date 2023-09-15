@@ -609,7 +609,7 @@ public class Encounters {
         var center = tile.pos;
         floor.Put(new Stump(center));
         floor.PutAll(floor
-          .GetCardinalNeighbors(center)
+          .GetAdjacentTiles(center)
           .Where(EveningBells.CanOccupy)
           .Select((t) => {
             var angle = Vector2.SignedAngle(new Vector2(0, -1), t.pos - center);

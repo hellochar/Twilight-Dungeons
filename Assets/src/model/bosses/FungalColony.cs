@@ -96,6 +96,8 @@ public class FungalWall : Wall {
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
+    // remove grasses underneath
+    grass?.Kill(this);
     var floor = this.floor;
     if (GameModel.main.player.floor == floor) {
       GameModel.main.EnqueueEvent(() => floor.RecomputeVisibility());

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo("bloodstone", flavorText: "", description: "You deal and take +1 attack damage.")]
+[ObjectInfo("bloodstone", flavorText: "", description: "You deal +1 attack damage.\nYou take +1 attack damage.\n\nDestroy the Bloodstone to remove.")]
 public class Bloodstone : Body {
   public Bloodstone(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;

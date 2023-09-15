@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public abstract class Plant : Body, IHideInSidebar {
+public abstract class Plant : Body, IHideInSidebar, IAnyDamageTakenModifier {
   [field:NonSerialized] /// controller only
   public event Action OnHarvested;
 
@@ -31,7 +31,7 @@ public abstract class Plant : Body, IHideInSidebar {
 
   public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
     this.stage = stage;
-    this.hp = this.baseMaxHp = 1;
+    this.hp = this.baseMaxHp = 999;
   }
 
   public void GoNextStage() {
@@ -48,5 +48,9 @@ public abstract class Plant : Body, IHideInSidebar {
 
   internal void OnFloorCleared(Floor floor) {
     stage.xp++;
+  }
+
+  public int Modify(int input) {
+    return 0;
   }
 }

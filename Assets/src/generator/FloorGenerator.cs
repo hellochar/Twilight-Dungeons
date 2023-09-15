@@ -48,18 +48,18 @@ public class FloorGenerator {
       () => generateBlobBossFloor(9),
 
       // midgame
-      () => generateSingleRoomFloor(10, 11, 8, 2, 1),
-      () => generateSingleRoomFloor(11, 11, 8, 2, 1, extraEncounters: Encounters.AddOneWater),
-      () => generateSingleRoomFloor(12, 11, 8, 3, 1),
-      () => generateSingleRoomFloor(13, 12, 8, 3, 2, true, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(14, 12, 8, 4, 2),
+      () => generateSingleRoomFloor(10, 9, 7, 2, 1),
+      () => generateSingleRoomFloor(11, 9, 7, 2, 1, extraEncounters: Encounters.AddOneWater),
+      () => generateSingleRoomFloor(12, 10, 8, 3, 1),
+      () => generateSingleRoomFloor(13, 10, 8, 3, 2, true, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(14, 11, 8, 4, 2),
       () => generateSingleRoomFloor(15, 12, 8, 4, 3),
-      () => generateSingleRoomFloor(16, 13, 9, 5, 4),
+      () => generateSingleRoomFloor(16, 12, 8, 5, 5),
       () => generateRewardFloor(17, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
       () => generateFungalColonyBossFloor(18),
 
       // endgame
-      () => generateSingleRoomFloor(19, 12, 8, 2, 2),
+      () => generateSingleRoomFloor(19, 10, 8, 2, 2),
       () => generateSingleRoomFloor(20, 12, 8, 3, 2),
       () => generateSingleRoomFloor(21, 14, 9, 4, 3, true, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls1 }),
       () => generateSingleRoomFloor(22, 13, 9, 5, 2),
@@ -341,8 +341,8 @@ public class FloorGenerator {
       // in tutorial mode, the downstairs will be placed once the tutorial finishes
     } else {
       EncounterGroup.Plants.GetRandomAndDiscount(1f)(floor, room0);
-      floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
-      var altarPos = floor.downstairs.pos + Vector2Int.up;
+      floor.PlaceDownstairs(new Vector2Int(floor.width - 1, floor.height / 2));
+      var altarPos = floor.downstairsPos + new Vector2Int(-1, 1);
       floor.Put(new Ground(altarPos));
       floor.Put(new Altar(altarPos));
     }
@@ -424,9 +424,6 @@ public class FloorGenerator {
     floor.PutAll(
       floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
     );
-    floor.Put(new HardGround(floor.startPos));
-    floor.Put(new HardGround(floor.startPos + Vector2Int.left));
-    floor.Put(new HardGround(new Vector2Int(floor.width - 2, floor.height / 2)));
 
     var room0 = floor.root;
     if (preMobEncounters != null) {

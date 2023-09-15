@@ -811,7 +811,7 @@ public class Encounters {
   public static void AddOneWater(Floor floor, Room room) {
     var numWaters = 1;
     var startPos = room.center;
-    foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
+    foreach (var tile in FloorUtils.TilesAwayFrom(floor, room, floor.downstairsPos).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
       floor.Put(new Water(tile.pos));
     }
   }
@@ -871,7 +871,8 @@ public class Encounters {
       floor.Put(new Wall(downstairs.pos));
     }
 
-    var center = new Vector2Int(room.max.x - 1, room.center.y);
+    var posX = floor.depth < 9 ? room.max.x - 1 : room.max.x - 2;
+    var center = new Vector2Int(posX, room.center.y);
     // clear radius one
     foreach (var pos in floor.GetAdjacentTiles(center).Select(t => t.pos).ToList()) {
       floor.Put(new HardGround(pos));
@@ -1020,7 +1021,7 @@ public class Encounters {
   }
 
   public static void ChasmBridge(Floor floor, Room room) {
-    switch(MyRandom.Range(0, 3)) {
+    switch(MyRandom.Range(0, 4)) {
       case 0:
         // top-right cutoff
         ChasmBridgeImpl(floor, room, 1, 1);
@@ -1030,15 +1031,19 @@ public class Encounters {
         ChasmBridgeImpl(floor, room, 1, -1);
         break;
       case 2:
+        // both sides are cut off, and it's thin
+        ChasmBridgeImpl(floor, room, 2, 0);
+        break;
+      case 3:
       default:
         // both sides are cut off
         ChasmBridgeImpl(floor, room, 3, 0);
         break;
     }
   }
-  private static void ChasmBridgeImpl(Floor floor, Room room, int thickness, int crossScalar) {
+  private static void ChasmBridgeImpl(Floor floor, Room room, float thickness, int crossScalar) {
     // ignore room. Connect the stairs
-    var origin = /*floor.upstairs?.pos ??*/ new Vector2Int(1, floor.boundsMax.y - 1);
+    var origin = /*floor.upstairs?.pos ??*/ new Vector2Int(1, floor.boundsMax.y - 2);
     var end = /*floor.downstairs?.pos ??*/ new Vector2Int(floor.boundsMax.x - 1, 1);
     var offset = new Vector2(end.x - origin.x, end.y - origin.y);
     var direction = offset.normalized;
@@ -1054,6 +1059,9 @@ public class Encounters {
         floor.Put(new Chasm(pos));
       }
     }
+    // adjust start and end positions
+    floor.startPos = origin;
+    floor.downstairsPos = end;
   }
 
   /// experimental; unused

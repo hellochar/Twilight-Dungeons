@@ -46,6 +46,7 @@ public class Floor {
   internal Room downstairsRoom;
 
   public Vector2Int startPos;
+  public Vector2Int upstairsPos => upstairs?.pos ?? startPos + Vector2Int.left;
   public Vector2Int downstairsPos;
 
     public Upstairs upstairs {
@@ -440,6 +441,7 @@ public class Floor {
   }
 
   public void PlaceDownstairs(Vector2Int pos) {
+    downstairsPos = pos;
     Put(new Downstairs(pos));
     // surround with Hard Ground
     var adjacentGrounds = GetAdjacentTiles(pos).Where(t => t is Ground).ToList();

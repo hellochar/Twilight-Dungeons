@@ -33,6 +33,17 @@ public static class FloorUtils {
       }
     }
 
+    // ensure that the player can't spawn on top of a wall
+    if (floor.tiles[floor.upstairsPos] is Chasm) {
+      floor.Put(new HardGround(floor.upstairsPos));
+    }
+    floor.Put(new HardGround(floor.startPos));
+
+    if (floor.tiles[floor.downstairsPos] is Chasm) {
+      floor.Put(new HardGround(floor.downstairsPos));
+    }
+    floor.Put(new HardGround(floor.downstairsPos + Vector2Int.left));
+
     /// HACK I've decided that grass shouldn't *initially spawn* right next to the stairs,
     /// but that post-generation, grass should still be able. So we'll now only use HardGround
     /// during generation, and then replace it with normal ground
@@ -53,11 +64,21 @@ public static class FloorUtils {
     return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs || t is Upstairs)).ToList();
   }
 
-  internal static List<Tile> TilesFromCenter(Floor floor, Room room) {
+  internal static List<Tile> TilesFrom(Floor floor, Room room, Vector2 pos) {
     return FloorUtils
       .EmptyTilesInRoom(floor, room)
-      .OrderBy((t) => Vector2.Distance(t.pos, room.centerFloat))
+      .OrderBy((t) => Vector2.Distance(t.pos, pos))
       .ToList();
+  }
+
+  public static List<Tile> TilesAwayFrom(Floor floor, Room room, Vector2 pos) {
+    var tiles = TilesFrom(floor, room, pos);
+    tiles.Reverse();
+    return tiles;
+  }
+
+  internal static List<Tile> TilesFromCenter(Floor floor, Room room) {
+    return TilesFrom(floor, room, room.centerFloat);
   }
 
   public static List<Tile> TilesAwayFromCenter(Floor floor, Room room) {

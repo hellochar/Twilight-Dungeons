@@ -10,6 +10,7 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   public Blobmother(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 24;
     faction = Faction.Enemy;
+    ClearTasks();
   }
 
   public override void HandleDeath(Entity source) {

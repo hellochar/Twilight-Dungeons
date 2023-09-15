@@ -4,15 +4,15 @@ public static class EncounterGroupEverything {
   public static EncounterGroup Everything() {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
-        { 1, AddClumpshroom },
+        { 1f, AddBats },
+        { 1f, AddSpiders },
+        { 1f, AddScorpions },
+        { 1f, AddThistlebog },
+        { 1f, AddGolems },
+        { 0.5f, AddClumpshroom },
         { 0.5f, AddGrasper },
-        { 0.4f, AddBats },
-        { 0.35f, AddSpiders },
-        { 0.2f, AddScorpions },
-        { 0.2f, AddParasite },
-        { 0.2f, AddThistlebog },
-        { 0.2f, AddGolems },
-        { 0.1f, AddHydra },
+        { 0.5f, AddParasite },
+        { 0.5f, AddHydra },
       },
 
       Grasses = new EncounterBag {
@@ -22,7 +22,7 @@ public static class EncounterGroupEverything {
         { 0.75f, AddBladegrass },
         // { 0.75f, AddCheshireWeeds },
 
-        { 0.5f, AddMushroom },
+        // { 0.5f, AddMushroom },
 
         { 0.5f, AddSoftGrass },
         { 0.5f, ScatteredBoombugs },

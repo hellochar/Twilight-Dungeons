@@ -850,7 +850,10 @@ public class Encounters {
 
   public static void AddDownstairsInRoomCenter(Floor floor, Room room) {
     // remove current downstairs
-    // floor.Put(new Wall(floor.downstairs.pos));
+    var downstairs = floor.downstairs;
+    if (downstairs != null) {
+      floor.Put(new Wall(downstairs.pos));
+    }
 
     var center = new Vector2Int(room.max.x - 1, room.center.y);
     // clear radius one

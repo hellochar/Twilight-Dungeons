@@ -37,46 +37,37 @@ public class FloorGenerator {
     floorGenerators = new List<Func<Floor>>() {
       // early game
       () => generateFloor0(0),
-      () => generateSingleRoomFloor(1, 9, 7, 1, 1),
-      () => generateSingleRoomFloor(2, 9, 7, 1, 1, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(3, 9, 7, 1, 1, extraEncounters: Encounters.AddOneWater),
+      () => generateSingleRoomFloor(1, 9, 6, 1, 1),
+      () => generateSingleRoomFloor(2, 9, 6, 1, 1, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(3, 9, 7, 2, 1, extraEncounters: Encounters.AddOneWater),
       () => generateSingleRoomFloor(4, 9, 7, 2, 1, true, extraEncounters: Encounters.OneAstoria),
-      () => generateSingleRoomFloor(5, 9, 7, 2, 1),
-      () => generateSingleRoomFloor(6, 9, 7, 2, 1, extraEncounters: Encounters.AddOneWater),
-      () => generateSingleRoomFloor(7, 9, 7, 2, 1),
-      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
-      () => generateSingleRoomFloor(9, 10, 7, 3, 2),
-      () => generateSingleRoomFloor(10, 10, 7, 3, 2),
-      () => generateSingleRoomFloor(11, 10, 7, 3, 2, true, null, Encounters.AddDownstairsInRoomCenter, Encounters.AddOneWater),
-      () => generateBlobBossFloor(12),
+      () => generateSingleRoomFloor(5, 10, 8, 3, 2),
+      () => generateSingleRoomFloor(6, 10, 8, 3, 2, extraEncounters: Encounters.AddOneWater),
+      () => generateSingleRoomFloor(7, 10, 8, 3, 3),
+      () => generateRewardFloor(8, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddDownstairsInRoomCenter),
+      () => generateBlobBossFloor(9),
 
       // midgame
-      () => generateSingleRoomFloor(13, 11, 8, 2, 1),
-      () => generateSingleRoomFloor(14, 11, 8, 2, 1, extraEncounters: Encounters.AddOneWater),
-      () => generateSingleRoomFloor(15, 11, 8, 2, 1),
-      () => generateRewardFloor(16, shared.Plants.GetRandomAndDiscount(1f), Encounters.OneAstoria),
-      () => generateSingleRoomFloor(17, 12, 8, 3, 2),
-      () => generateSingleRoomFloor(18, 12, 8, 3, 2),
-      () => generateSingleRoomFloor(19, 12, 8, 4, 3, true, extraEncounters: Encounters.AddOneWater),
-      () => generateSingleRoomFloor(20, 12, 8, 4, 2),
-      () => generateSingleRoomFloor(21, 12, 8, 5, 3),
-      () => generateSingleRoomFloor(22, 12, 8, 5, 2, false, null, Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
-      () => generateFungalColonyBossFloor(23),
-      () => generateRewardFloor(24, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater),
+      () => generateSingleRoomFloor(10, 11, 8, 2, 1),
+      () => generateSingleRoomFloor(11, 11, 8, 2, 1, extraEncounters: Encounters.AddOneWater),
+      () => generateSingleRoomFloor(12, 11, 8, 3, 1),
+      () => generateSingleRoomFloor(13, 12, 8, 3, 2, true, extraEncounters: Encounters.OneAstoria),
+      () => generateSingleRoomFloor(14, 12, 8, 4, 2),
+      () => generateSingleRoomFloor(15, 12, 8, 4, 3),
+      () => generateSingleRoomFloor(16, 13, 9, 5, 4),
+      () => generateRewardFloor(17, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
+      () => generateFungalColonyBossFloor(18),
 
       // endgame
-      () => generateSingleRoomFloor(25, 12, 8, 2, 2),
-      () => generateSingleRoomFloor(26, 12, 8, 2, 2),
-      () => generateSingleRoomFloor(27, 13, 9, 3, 3, false, null, Encounters.AddWater),
-      () => generateSingleRoomFloor(28, 13, 9, 4, 3, false, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls1 }),
-      () => generateSingleRoomFloor(29, 13, 9, 4, 2),
-      () => generateSingleRoomFloor(30, 13, 9, 5, 3, extraEncounters: Encounters.AddWater),
-      () => generateSingleRoomFloor(31, 14, 9, 6, 4),
-      () => generateRewardFloor(32, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddWater, Encounters.ThreeAstoriasInCorner),
-      () => generateSingleRoomFloor(33, 14, 9, 7, 4),
-      () => generateSingleRoomFloor(34, 14, 9, 8, 5),
-      () => generateSingleRoomFloor(35, 14, 9, 9, 6),
-      () => generateEndFloor(36),
+      () => generateSingleRoomFloor(19, 12, 8, 2, 2),
+      () => generateSingleRoomFloor(20, 12, 8, 3, 2),
+      () => generateSingleRoomFloor(21, 14, 9, 4, 3, true, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls1 }),
+      () => generateSingleRoomFloor(22, 13, 9, 5, 2),
+      () => generateSingleRoomFloor(23, 14, 9, 6, 4),
+      () => generateSingleRoomFloor(24, 14, 9, 7, 4, extraEncounters: Encounters.AddWater),
+      () => generateSingleRoomFloor(25, 14, 9, 8, 5),
+      () => generateSingleRoomFloor(26, 14, 9, 9, 6),
+      () => generateEndFloor(27),
     };
   }
 
@@ -86,9 +77,9 @@ public class FloorGenerator {
     /// (2) MyRandom seed
 
     /// configure the EncounterGroup
-    if (depth <= 12) {
+    if (depth <= 9) {
       EncounterGroup = earlyGame;
-    } else if (depth <= 24) {
+    } else if (depth <= 18) {
       EncounterGroup = everything;
     } else {
       EncounterGroup = midGame;
@@ -129,7 +120,7 @@ public class FloorGenerator {
   }
 
   public void PostProcessFloor(Floor floor) {
-    PostProcessPushEnemiesBack(floor);
+    // PostProcessPushEnemiesBack(floor);
 
     // PostProcessReduceEnemyAndGrassCount(floor);
 
@@ -404,7 +395,7 @@ public class FloorGenerator {
     var room0 = new Room(floor);
 
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
-    floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
+    // floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
     // Encounters.PlaceFancyGround(floor, room0);
     // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
@@ -414,6 +405,8 @@ public class FloorGenerator {
     foreach (var encounter in extraEncounters) {
       encounter(floor, room0);
     }
+
+    floor.PlaceDownstairs(floor.downstairsPos);
 
     FloorUtils.TidyUpAroundStairs(floor);
     floor.root = room0;
@@ -445,6 +438,8 @@ public class FloorGenerator {
     for (var i = 0; i < numMobs; i++) {
       EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
     }
+    EncounterGroup.Spice.GetRandom()(floor, room0);
+    PostProcessPushEnemiesBack(floor);
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
@@ -461,7 +456,6 @@ public class FloorGenerator {
       EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
     }
 
-    EncounterGroup.Spice.GetRandom()(floor, room0);
     FloorUtils.TidyUpAroundStairs(floor);
     return floor;
   }
@@ -518,6 +512,8 @@ public class FloorGenerator {
     floor.Put(new Wall(room0.center + new Vector2Int(-2, -2)));
     floor.Put(new Wall(room0.center + new Vector2Int(-2, 2)));
 
+    EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
+
     // floor.PlaceUpstairs(new Vector2Int(1, floor.height / 2));
     // floor.PlaceDownstairs(new Vector2Int(floor.width - 2, floor.height / 2));
 
@@ -566,6 +562,8 @@ public class FloorGenerator {
 
     // re-apply normal Wall to outer perimeter
     floor.PutAll(floor.EnumeratePerimeter().Select(pos => new Wall(pos)));
+
+    EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
 
     // block entrance
     // floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));

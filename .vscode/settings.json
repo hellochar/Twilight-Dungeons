@@ -8,6 +8,9 @@
     "**/.DS_Store": true,
     "**/*.meta": true
   },
+  "vim.handleKeys": {
+    "<C-p>": false,
+  },
   "editor.acceptSuggestionOnCommitCharacter": false,
   "editor.acceptSuggestionOnEnter": "smart"
 }

@@ -15,9 +15,9 @@ public class DownstairsController : TileController, IOnTopActionHandler {
 
   public override void Start() {
     base.Start();
-    if (downstairs.floor.depth == 11) {
-      PrefabCache.Effects.Instantiate("Stairs Before Blobmother", transform);
-    } else if (downstairs.floor.depth == 22) {
+    if (downstairs.floor.depth == 9 - 1) {
+        PrefabCache.Effects.Instantiate("Stairs Before Blobmother", transform);
+    } else if (downstairs.floor.depth == 18 - 1) {
       PrefabCache.Effects.Instantiate("Stairs Before Fungal Colony", transform);
     }
   }

@@ -9,32 +9,47 @@ public class BossController : ActorController, IEntityControllerRemoveOverride {
 
   public override void Start() {
     base.Start();
-    GameModel.main.OnBossSeen += HandleBossSeen;
     // cache it for the death animation since at that point the boss has already left the floor
     floor = boss.floor;
+
+    if (!boss.isSeen) {
+      boss.isSeen = true;
+      HandleBossSeen(boss);
+    }
+    // GameModel.main.OnBossSeen += HandleBossSeen;
   }
 
-  void OnDestroy() {
-    GameModel.main.OnBossSeen -= HandleBossSeen;
-  }
+  // void OnDestroy() {
+  //   GameModel.main.OnBossSeen -= HandleBossSeen;
+  // }
 
   private void HandleBossSeen(Boss boss) {
     StartCoroutine(AnimateBossSeen(boss));
   }
 
-  IEnumerator AnimateBossSeen(Boss b) {
+  IEnumerator AnimateBossSeen(Boss boss) {
     InteractionController.isInputAllowed = false;
+
+    yield return new WaitForSeconds(0.5f);
+
+    GameModel.main.OnBossSeen(boss);
     var tiles = floor.EnumerateCircle(boss.pos, 4).Select(p => floor.tiles[p]);
     foreach (var t in tiles) {
       t.visibility = TileVisiblity.Visible;
     }
-    yield return Transitions.ZoomAndPanCamera(4, b.pos, 0.5f);
-    yield return Transitions.ZoomAndPanCamera(4, b.pos, 3);
+    
+    // CameraController.main.SetCameraOverride(new CameraFocuser(boss));
+    // yield return new WaitForSeconds(5);
+    // CameraController.main.SetCameraOverride(null);
+    yield return Transitions.ZoomAndPanCamera(2.5f, boss.pos, 1f);
+    // hold for 3s
+    yield return Transitions.ZoomAndPanCamera(3f, boss.pos, 3);
+
     foreach (var t in tiles) {
       t.visibility = TileVisiblity.Explored;
     }
-    b.floor.RecomputeVisibility();
-    yield return Transitions.ZoomAndPanCamera(4, GameModel.main.player.pos, 0.5f);
+    boss.floor.RecomputeVisibility();
+    // yield return Transitions.ZoomAndPanCamera(4, GameModel.main.player.pos, 0.5f);
     InteractionController.isInputAllowed = true;
   }
 

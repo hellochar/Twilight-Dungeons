@@ -75,7 +75,10 @@ public class FungalBreeder : AIActor {
   void SummonFungalSentinel() {
     var tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => t.CanBeOccupied()));
     if (tile != null) {
-      floor.Put(new FungalSentinel(tile.pos));
+      var sentinel = new FungalSentinel(tile.pos);
+      sentinel.statuses.Add(new SurprisedStatus());
+      sentinel.timeNextAction += 1;
+      floor.Put(sentinel);
     }
   }
 }
@@ -116,8 +119,6 @@ public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INo
     hp = baseMaxHp = 3;
     faction = Faction.Enemy;
     ClearTasks();
-    timeNextAction += 1;
-    statuses.Add(new SurprisedStatus());
   }
 
   public void Explode() {

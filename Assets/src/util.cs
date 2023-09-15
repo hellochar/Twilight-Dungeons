@@ -69,6 +69,13 @@ public static class Util {
     return items.ElementAt(MyRandom.Range(0, items.Count()));
   }
 
+  public static IEnumerable<T> RandomRange<T>(IEnumerable<T> items, int length) {
+    int lastValidStartingIndex = items.Count() - length;
+    // convert to exclusive max
+    int startIndex = MyRandom.Range(0, lastValidStartingIndex + 1);
+    return items.Skip(startIndex).Take(length);
+  }
+
   /// TODO move to MyRandom
   public static void Shuffle<T>(this IList<T> list) {
     int n = list.Count;

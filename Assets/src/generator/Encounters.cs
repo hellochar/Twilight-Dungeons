@@ -359,7 +359,7 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var numSoftGrass = Random.Range(numTiles / 2, numTiles + 1) * mult;
+      var numSoftGrass = Mathf.RoundToInt(Random.Range(numTiles / 4, numTiles / 2 + 1) * mult);
       foreach (var tile in bfs.Take(numSoftGrass)) {
         var grass = new SoftGrass(tile.pos);
         floor.Put(grass);
@@ -421,7 +421,8 @@ public class Encounters {
   }
 
   public static void FillWithFerns(Floor floor, Room room) {
-    var occupiableTiles = floor.EnumerateRoomTiles(room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null);
+    var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null);
+    occupiableTiles = occupiableTiles.Take(MyRandom.Range(5, 10));
     var ferns = occupiableTiles.Select(tile => new Fern(tile.pos)).ToArray();
     // var hasGoldenFern = Random.Range(0, 100) < ferns.Length;
     // if (hasGoldenFern) {
@@ -440,7 +441,7 @@ public class Encounters {
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
       var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var num = Random.Range(Mathf.CeilToInt(numTiles * 0.25f), Mathf.FloorToInt(numTiles * 0.44f)) * mult;
+      var num = MyRandom.Range(numTiles / 10, numTiles / 5) * mult;
       foreach (var tile in bfs.Take(num)) {
         var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
@@ -452,7 +453,7 @@ public class Encounters {
     var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where(tile => Violets.CanOccupy(tile) && tile.grass == null).ToList();
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
-      var num = Random.Range(numTiles / 3, (int)(numTiles * 2f / 3));
+      var num = Random.Range(numTiles / 9, numTiles / 5);
       if (Random.value < 0.2f) {
         /// fill up every square
         num = numTiles;
@@ -545,7 +546,7 @@ public class Encounters {
   public static void AddWebs(Floor floor, Room room) {
     var tiles = FloorUtils.TilesSortedByCorners(floor, room).Where((tile) => tile.grass == null && tile is Ground).ToList();
     tiles.Reverse();
-    var num = Random.Range(tiles.Count / 8, tiles.Count / 2);
+    var num = Random.Range(tiles.Count / 12, tiles.Count / 8);
     foreach (var tile in tiles.Take(num)) {
       // about 50% chance that out of 5 open squares, one will have a space.
       // this optimizes the ability for the player to squeeze into "holes" in
@@ -562,7 +563,7 @@ public class Encounters {
       // don't spawn under creatures since it will cause room collapse
       .Where(t => Brambles.CanOccupy(t) && t.grass == null && t.CanBeOccupied())
       .ToList();
-    var num = Random.Range(tiles.Count / 6, tiles.Count / 2);
+    var num = Random.Range(tiles.Count / 12, tiles.Count / 6);
     while (num >= 2) {
       var tile = tiles[tiles.Count - 1];
       floor.Put(new Brambles(tile.pos));
@@ -655,7 +656,7 @@ public class Encounters {
         floor.grasses[tile.pos + Vector2Int.right] == null
       )
       .Select((tile) => tile.pos));
-    var num = Random.Range(3, 8);
+    var num = Random.Range(2, 5);
     for (int i = 0; i < num && wallsWithGroundBelow.Any(); i++) {
       var pos = Util.RandomPick(wallsWithGroundBelow);
       floor.Put(new HangingVines(pos));
@@ -671,7 +672,7 @@ public class Encounters {
   public static void AddAgave(Floor floor, Room room) {
     var livableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where(Agave.CanOccupy));
     var start = Util.RandomPick(livableTiles);
-    var num = Random.Range(3, 9);
+    var num = Random.Range(3, 7);
     if (start != null) {
       foreach (var tile in floor.BreadthFirstSearch(start.pos, livableTiles.Contains).Take(num)) {
         floor.Put(new Agave(tile.pos));
@@ -704,7 +705,7 @@ public class Encounters {
     if (!livableTiles.Any()) {
       Debug.LogError("Couldn't find a location for mushrooms!");
     }
-    foreach (var tile in livableTiles) {
+    foreach (var tile in Util.RandomRange(livableTiles, MyRandom.Range(5, 12))) {
       floor.Put(new Mushroom(tile.pos));
     }
   }

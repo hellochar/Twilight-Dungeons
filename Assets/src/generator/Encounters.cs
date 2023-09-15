@@ -57,14 +57,14 @@ public class Encounters {
     floor.Put(new Snake(tile.pos));
   });
 
-  public static Encounter AddChillers4x = Twice(Twice(AddChillers));
+  public static Encounter AddScuttlers4x = Twice(Twice(AddScuttlers));
 
-  public static Encounter AddChillers = new Encounter((Floor floor, Room room) => {
+  public static Encounter AddScuttlers = new Encounter((Floor floor, Room room) => {
     var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
     var startTile = Util.RandomPick(tiles);
-    var num = 5;
+    var num = 3;
     foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => tiles.Contains(t)).Take(num)) {
-      floor.Put(new ChillerGrass(tile.pos));
+      floor.Put(new ScuttlerUnderground(tile.pos));
     }
   });
 

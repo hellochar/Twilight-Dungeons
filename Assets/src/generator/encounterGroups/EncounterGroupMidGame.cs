@@ -55,7 +55,7 @@ public static class EncounterGroupMidGame {
         { 0.25f, AddTunnelroot4x },
         { 0.25f, AddBloodstone },
 
-        { 0.5f, AddChillers4x },
+        { 0.5f, AddScuttlers4x },
 
         { 0.2f, AddHoppers },
         { 0.2f, AddIronJelly },

@@ -40,7 +40,7 @@ public static class EncounterGroupEarlyGame {
         { 5f, Empty },
 
         { 0.5f, AddFruitingBodies },
-        { 0.5f, AddChillers },
+        { 0.5f, AddScuttlers },
 
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },

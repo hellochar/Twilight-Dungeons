@@ -52,8 +52,9 @@ Rests: {Rests}".TrimStart();
 public class EncounterGroupShared : EncounterGroup {
   public EncounterGroupShared() {
     Walls = new EncounterBag {
-      { 7.5f, Empty },
+      { 8.5f, Empty },
       { 1, WallPillars },
+      { 1, Concavity },
       { 1, ChunkInMiddle },
       { 1, LineWithOpening },
       { 1, InsetLayerWithOpening },

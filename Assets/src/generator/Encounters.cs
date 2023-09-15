@@ -930,6 +930,14 @@ public class Encounters {
       }
     }
   }
+  public static void Concavity(Floor floor, Room room) {
+    var pos = floor.center;
+
+    var section = Util.RandomPick(TileSectionConcavity.Sections);
+    // TODO support 4x4's being aligned left or right
+    var topLeft = pos + new Vector2Int(-section.width / 2, section.height / 2);
+    section.Blit(floor, topLeft);
+  }
 
   public static void ChunkInMiddle(Floor floor, Room room) {
     var chunkSize = Random.Range(1, 6);

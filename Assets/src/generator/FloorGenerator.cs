@@ -55,7 +55,7 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(14, 11, 8, 4, 2),
       () => generateSingleRoomFloor(15, 12, 8, 4, 3),
       () => generateSingleRoomFloor(16, 12, 8, 5, 5),
-      () => generateRewardFloor(17, shared.Plants.GetRandomAndDiscount(1f), Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation),
+      () => generateRewardFloor(17, Encounters.AddDownstairsInRoomCenter, Encounters.FungalColonyAnticipation, shared.Plants.GetRandomAndDiscount(1f)),
       () => generateFungalColonyBossFloor(18),
 
       // endgame
@@ -420,7 +420,6 @@ public class FloorGenerator {
   /// </summary>
   public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
-    ensureConnectedness(floor);
     floor.PutAll(
       floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
     );
@@ -436,7 +435,7 @@ public class FloorGenerator {
       EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
     }
     EncounterGroup.Spice.GetRandom()(floor, room0);
-    PostProcessPushEnemiesBack(floor);
+    // PostProcessPushEnemiesBack(floor);
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
@@ -477,6 +476,8 @@ public class FloorGenerator {
       // chasms (bridge levels) should be relatively rare so only discount by 10% each time (this is still exponential decrease for the Empty case)
       EncounterGroup.Chasms.GetRandomAndDiscount(0.04f)(floor, room0);
     }
+
+    ensureConnectedness(floor);
 
     // floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));
     // floor.PlaceDownstairs(new Vector2Int(width - 1, floor.height / 2));

@@ -73,11 +73,29 @@ public class Snake : AIActor, IDealAttackDamageHandler {
 
 [Serializable]
 [ObjectInfo("snake-venom", description: "While equipped, your attacks apply poison.")]
-public class ItemSnakeVenom : EquippableItem, IAttackHandler {
-  public ItemSnakeVenom(int stacks) : base(stacks) { }
+public class ItemSnakeVenom : EquippableItem, IAttackHandler, IStackable {
+  public ItemSnakeVenom(int stacks) : base() {
+    this.stacks = stacks;
+  }
+
+  public int stacksMax => 100;
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
+
 
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
-  public override int stacksMax => int.MaxValue;
 
   public void OnAttack(int damage, Body target) {
     if (target is Actor a) {

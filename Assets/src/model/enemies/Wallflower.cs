@@ -11,12 +11,12 @@ public class Wallflower : AIActor {
     hp = baseMaxHp = 2;
   }
 
-  public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetDiagonalAdjacentTiles(t.pos).Any(n => n is Wall);
+  public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t.floor.GetAdjacentTiles(t.pos).Any(n => n is Wall);
 
   protected override ActorTask GetNextTask() {
-    var touchingWalls = floor.GetDiagonalAdjacentTiles(pos).Where(t => t is Wall).ToList();
+    var tethers = floor.GetCardinalNeighbors(pos).OfType<Wall>().ToList();
 
-    if (!touchingWalls.Any()) {
+    if (!tethers.Any()) {
       // oh god! walk randomly until you are touching
       return new MoveRandomlyTask(this);
     }
@@ -28,17 +28,17 @@ public class Wallflower : AIActor {
       }
     }
 
-    // var wallNeighborWalls = touchingWalls
-    //   .SelectMany(touchingWall => floor.GetCardinalNeighbors(touchingWall.pos, true).Where(t => t is Wall)).Distinct().ToList();
-    // var wallNeighborWallNeighbors = wallNeighborWalls
-    //   .SelectMany(w => floor.GetDiagonalAdjacentTiles(w.pos)).Distinct().ToList();
-    // var occupiableWallNeighborWallNeighbors = wallNeighborWallNeighbors
-    //   .Where(t => CanOccupy(t) || t == this.tile).ToList();
+    var nextTethers = tethers
+      .SelectMany(touchingWall => floor.GetCardinalNeighbors(touchingWall.pos, true).OfType<Wall>()).Distinct().ToList();
+    var nextTetherOccupiableTiles = nextTethers
+      .SelectMany(w => floor.GetAdjacentTiles(w.pos))
+      .Distinct()
+      .Where(t => CanOccupy(t) || t == this.tile).ToList();
     
-    // var adjacent = floor.GetDiagonalAdjacentTiles(pos).ToList();
-    // var candidateTiles = occupiableWallNeighborWallNeighbors.Intersect(adjacent).ToList();
+    var adjacent = floor.GetAdjacentTiles(pos).ToList();
+    var candidateTiles = nextTetherOccupiableTiles.Intersect(adjacent).ToList();
 
-    var candidateTiles = floor.GetAdjacentTiles(pos).Where(CanOccupy).ToList();
+    // var candidateTiles = floor.GetAdjacentTiles(pos).Where(CanOccupy).ToList();
 
     var nextTile = candidateTiles.OrderBy((t) => t.DistanceTo(GameModel.main.player)).FirstOrDefault();
 

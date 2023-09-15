@@ -4,6 +4,9 @@ public static class EncounterGroupEarlyGame {
   public static EncounterGroup EarlyGame() {
     return new EncounterGroup() {
       Mobs = new EncounterBag {
+        { 1.0f, AddWallflowers },
+        { 1.0f, AddBird },
+        { 1.0f, AddSnake },
         { 1.0f, AFewBlobs },
         { 1.0f, JackalPile },
         { 1.0f, AddSkullys },
@@ -37,6 +40,7 @@ public static class EncounterGroupEarlyGame {
         { 5f, Empty },
 
         { 0.5f, AddFruitingBodies },
+        { 0.5f, AddChillers },
 
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },

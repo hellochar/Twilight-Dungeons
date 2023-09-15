@@ -34,7 +34,7 @@ public class Shielder : AIActor {
 
   void LinkWithClosestTarget() {
     var closestTarget = floor.bodies.Where(b =>
-      b is Actor a && !(b is Shielder) && floor.TestVisibility(pos, b.pos) == TileVisiblity.Visible
+      b is Actor a && !(b is Shielder) && floor.TestVisibility(pos, b.pos)
     ).Cast<Actor>().OrderBy(DistanceTo).FirstOrDefault();
     if (closestTarget != null) {
       status = new ShieldLinkStatus(this);
@@ -44,8 +44,8 @@ public class Shielder : AIActor {
 
   void MaintainLink() {
     // if visibility is lost, break status
-    var visibility = floor.TestVisibility(pos, status.actor.pos);
-    if (visibility != TileVisiblity.Visible || status.actor.IsDead) {
+    var seesActor = floor.TestVisibility(pos, status.actor.pos);
+    if (!seesActor || status.actor.IsDead) {
       status.Remove();
     }
   }
@@ -59,13 +59,12 @@ public class Shielder : AIActor {
 [ObjectInfo("shielder", description: "Use to spawn a Shielder next to you.")]
 internal class ItemShielderSpore : EquippableItem, ITargetedAction<Tile> {
   public override EquipmentSlot slot => EquipmentSlot.Offhand;
-  public override int stacksMax => int.MaxValue;
 
   string ITargetedAction<Tile>.TargettedActionName => "Spawn";
   string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to spawn the Shielder.";
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
     player.floor.Put(new Shielder(target.pos));
-    stacks--;
+    Destroy();
   }
 
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {
@@ -90,7 +89,7 @@ public class ShieldLinkStatus : Status, IAnyDamageTakenModifier {
   }
 
   public override void Step() {
-    if (shielder.floor.TestVisibility(shielder.pos, actor.pos) != TileVisiblity.Visible) {
+    if (shielder.floor != actor.floor || !shielder.floor.TestVisibility(shielder.pos, actor.pos)) {
       Remove();
     }
   }

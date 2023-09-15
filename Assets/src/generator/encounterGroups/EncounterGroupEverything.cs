@@ -53,6 +53,8 @@ public static class EncounterGroupEverything {
         { 0.25f, JackalPile },
         { 0.25f, AFewSnails },
 
+        { 0.25f, AddChillers },
+
         { 0.25f, AddSoftGrass },
         { 0.25f, AddBladegrass },
         { 0.25f, AddFruitingBodies },

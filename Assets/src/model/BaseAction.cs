@@ -44,14 +44,16 @@ public sealed class MoveBaseAction : BaseAction {
 public sealed class AttackBaseAction : BaseAction {
   public override ActionType Type => ActionType.ATTACK;
   public readonly Body target;
+  public readonly bool allowReach;
 
-  public AttackBaseAction(Actor actor, Body target) : base(actor) {
+  public AttackBaseAction(Actor actor, Body target, bool allowReach = false) : base(actor) {
     Debug.Assert(target != null, "attacking a null target");
     this.target = target;
+    this.allowReach = allowReach;
   }
 
   public override void Perform() {
-    if (actor.IsNextTo(target)) {
+    if (actor.IsNextTo(target) || allowReach) {
       actor.Attack(target);
     } else {
       throw new CannotPerformActionException("Cannot reach target!");

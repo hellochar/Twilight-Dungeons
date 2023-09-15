@@ -16,7 +16,9 @@ public class Chiller : AIActor {
 
   void BecomeGrass() {
     floor.Put(new ChillerGrass(pos));
-    KillSelf();
+    // don't KILL, just remove
+    floor.Remove(this);
+    // KillSelf();
   }
 
   protected override ActorTask GetNextTask() {
@@ -71,13 +73,11 @@ public class ChillerGrass : Grass, IActorEnterHandler {
 [Serializable]
 [ObjectInfo("chiller-grass")]
 internal class ItemChillerGrassCutting : Item, ITargetedAction<Tile> {
-  public override int stacksMax => int.MaxValue;
-
   string ITargetedAction<Tile>.TargettedActionName => "Place";
   string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to place the Chiller.";
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
     player.floor.Put(new ChillerGrass(target.pos));
-    stacks--;
+    Destroy();
   }
 
   IEnumerable<Tile> ITargetedAction<Tile>.Targets(Player player) {

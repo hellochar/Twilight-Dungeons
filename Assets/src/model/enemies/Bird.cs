@@ -31,9 +31,6 @@ public class Bird : AIActor, IActionPerformedHandler {
   }
 
   protected override ActorTask GetNextTask() {
-    if (IsNeutral()) {
-      return GetNextIdleTask();
-    }
     var player = GameModel.main.player;
     if (CanTargetPlayer()) {
       if (IsNextTo(player)) {
@@ -58,13 +55,28 @@ public class Bird : AIActor, IActionPerformedHandler {
 
 [Serializable]
 [ObjectInfo("bird-wings")]
-public class ItemBirdWings : EquippableItem, ITargetedAction<Tile> {
+public class ItemBirdWings : EquippableItem, ITargetedAction<Tile>, IStackable {
   public override EquipmentSlot slot => EquipmentSlot.Armor;
-  public override int stacksMax => int.MaxValue;
 
   string ITargetedAction<Tile>.TargettedActionName => "Fly";
 
   string ITargetedAction<Tile>.TargettedActionDescription => "Choose where to land.";
+
+  public int stacksMax => 100;
+
+  private int _stacks;
+  public int stacks {
+    get => _stacks;
+    set {
+      if (value < 0) {
+        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
+      }
+      _stacks = value;
+      if (_stacks == 0) {
+        Destroy();
+      }
+    }
+  }
 
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {
     player.SetTasks(new JumpToTargetTask(player, target.pos));

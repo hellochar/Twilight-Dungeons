@@ -130,6 +130,12 @@ public class FloorGenerator {
     // put stuff here
     // Encounters.OneButterfly(floor, floor.root);
     // Encounters.AddSoftMoss(floor, floor.root);
+    Encounters.AddBird(floor, floor.root);
+    Encounters.AddSnake(floor, floor.root);
+    Encounters.AddChillers(floor, floor.root);
+    Encounters.AddBloodwort(floor, floor.root);
+    Encounters.AddShielders(floor, floor.root);
+    Encounters.AddWallflowers(floor, floor.root);
     floor.depth = depth;
 #endif
 

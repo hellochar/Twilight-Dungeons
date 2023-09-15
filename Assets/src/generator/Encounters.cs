@@ -36,6 +36,43 @@ public class Encounters {
     }
   }
 
+  public static Encounter AddWallflowers = new Encounter((Floor floor, Room room) => {
+    var tiles = FloorUtils.TilesFromCenter(floor, room).Where(Wallflower.CanOccupy);
+    var num = 2;
+    foreach (var tile in tiles.Take(num)) {
+      floor.Put(new Wallflower(tile.pos));
+    }
+  });
+
+  public static Encounter AddBird = new Encounter((Floor floor, Room room) => {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    var num = 2;
+    for (int i = 0; i < num; i++) {
+      floor.Put(new Bird(tile.pos));
+    }
+  });
+
+  public static Encounter AddSnake = new Encounter((Floor floor, Room room) => {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    floor.Put(new Snake(tile.pos));
+  });
+
+  public static Encounter AddChillers4x = Twice(Twice(AddChillers));
+
+  public static Encounter AddChillers = new Encounter((Floor floor, Room room) => {
+    var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
+    var startTile = Util.RandomPick(tiles);
+    var num = 5;
+    foreach (var tile in floor.BreadthFirstSearch(startTile.pos, t => tiles.Contains(t)).Take(num)) {
+      floor.Put(new ChillerGrass(tile.pos));
+    }
+  });
+
+  public static Encounter AddShielders = new Encounter((Floor floor, Room room) => {
+    var tiles = FloorUtils.EmptyTilesInRoom(floor, room);
+    floor.Put(new Shielder(Util.RandomPick(tiles).pos));
+  });
+
   public static void AddSkullys(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room);
     // var num = RandomRangeBasedOnIndex(floor.depth / 2,
@@ -376,6 +413,16 @@ public class Encounters {
       floor.Put(new Llaora(tile.pos));
     }
   }
+
+  public static Encounter AddBloodwort = new Encounter((Floor floor, Room room) => {
+    var tile = Util.RandomPick(
+      FloorUtils.TilesFromCenter(floor, room)
+        .Where(tile => Bloodwort.CanOccupy(tile) && tile.grass == null && tile.pos.x < room.center.x)
+    );
+    if (tile != null) {
+      floor.Put(new Bloodwort(tile.pos));
+    }
+  });
 
   public static void AddBloodstone(Floor floor, Room room) {
     var tile = Util.RandomPick(

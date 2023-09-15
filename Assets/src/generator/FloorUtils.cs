@@ -111,6 +111,15 @@ public static class FloorUtils {
     }
   }
 
+  public static IEnumerable<Tile> Clusters(Floor floor, Vector2Int inset, int num) {
+    var pos = MyRandom.Range(floor.boundsMin + inset, floor.boundsMax - inset);
+    // var numTiles = (float) floor.width * floor.height;
+    // var num = MyRandom.Range(Mathf.RoundToInt(numTiles / 8), Mathf.RoundToInt(numTiles / 4));
+    // var num = (int)(numTiles / 3);
+    return floor.BreadthFirstSearch(pos).Take(num);
+  }
+
+
   ///<summary>Apply a natural look across the floor by smoothing both wall corners and space corners</summary>
   public static void NaturalizeEdges(Floor floor) {
     SMOOTH_ROOM_EDGES.ApplyWithRotations(floor);

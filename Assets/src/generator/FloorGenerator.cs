@@ -560,8 +560,6 @@ public class FloorGenerator {
     // re-apply normal Wall to outer perimeter
     floor.PutAll(floor.EnumeratePerimeter().Select(pos => new Wall(pos)));
 
-    EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
-
     // block entrance
     // floor.PutAll(new FungalWall(new Vector2Int(7, 5)), new FungalWall(new Vector2Int(7, 6)), new FungalWall(new Vector2Int(7, 7)));
     // floor.PlaceUpstairs(new Vector2Int(0, floor.height / 2));

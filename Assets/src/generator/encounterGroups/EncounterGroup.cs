@@ -58,11 +58,15 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, LineWithOpening },
       { 1, InsetLayerWithOpening },
       { 1, AddStalk },
+      { 1, RubbleCluster },
+      { 1, StalkCluster },
+      { 1, StumpCluster },
       { 0.5f, ChasmsAwayFromWalls2 }
     };
     Chasms = new EncounterBag {
       { 19, Empty },
-      { 1, ChasmBridge },
+      { 2, ChasmBridge },
+      { 1, ChasmGrowths },
     };
     Rewards = new EncounterBag {
       { 1, AddMushroom },

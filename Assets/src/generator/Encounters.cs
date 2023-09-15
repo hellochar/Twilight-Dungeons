@@ -1064,17 +1064,23 @@ public class Encounters {
     floor.downstairsPos = end;
   }
 
+  public static void RubbleCluster(Floor floor, Room room) => ObjectClusterImpl(floor, t => new Rubble(t.pos));
+  public static void StalkCluster(Floor floor, Room room) => ObjectClusterImpl(floor, t => new Stalk(t.pos));
+  public static void StumpCluster(Floor floor, Room room) => ObjectClusterImpl(floor, t => new Stump(t.pos));
+
+  private static void ObjectClusterImpl(Floor floor, Func<Tile, Entity> factory, int? num = null) {
+    if (num == null) {
+      num = MyRandom.Range(3, 6);
+    }
+    floor.PutAll(
+      FloorUtils.Clusters(floor, new Vector2Int(2, 2), num.Value).Select(t => factory(t))
+    );
+  }
+
   /// experimental; unused
   public static void ChasmGrowths(Floor floor, Room room) {
-    // var numGrowths = 3;
-    // for(var i = 0; i < numGrowths; i++) {
-      // var pos = MyRandom.Range(floor.boundsMin, floor.boundsMax);
-      // var pos = floor.boundsMax - Vector2Int.one;
-      var pos = floor.boundsMin + Vector2Int.one;
-      var numTiles = (float) floor.width * floor.height;
-      // var num = MyRandom.Range(Mathf.RoundToInt(numTiles / 8), Mathf.RoundToInt(numTiles / 4));
-      var num = (int)(numTiles / 3);
-      floor.PutAll(floor.BreadthFirstSearch(pos).Take(num).Select(t => new Chasm(t.pos)).ToList());
-    // }
+    floor.PutAll(
+      FloorUtils.Clusters(floor, new Vector2Int(0, 0), 7).Select(t => new Chasm(t.pos))
+    );
   }
 }

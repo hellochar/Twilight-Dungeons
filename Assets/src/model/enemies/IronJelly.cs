@@ -38,7 +38,7 @@ public class IronJelly : AIActor, IAnyDamageTakenModifier, IBodyTakeAttackDamage
 [Serializable]
 class AttackOrMoveDirectionTask : TelegraphedTask {
   public AttackOrMoveDirectionTask(Actor actor, Vector2Int offset, int turns) :
-    base(actor, 1, new AttackOrMoveDirectionBaseAction(actor, offset), ActionType.WAIT) {
+    base(actor, turns, new AttackOrMoveDirectionBaseAction(actor, offset), ActionType.MOVE) {
     Offset = offset;
   }
 

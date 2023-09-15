@@ -2,71 +2,95 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-// [ObjectInfo(description: "Doesn't move.\nTelegraphs an attack towards you at range when you're on the same row or column. Jumps next to the location it attacks.")]
-[ObjectInfo(description: "Chases you.\nAttacks deal no damage but apply poison.")]
+[ObjectInfo(description: "Chases you, but only moves or attacks if you're within the same row or column.\n\nAttacks anything in its way.\n\nAttacks apply Weakness.")]
+// [ObjectInfo(description: "Chases you.\nAttacks deal no damage but apply poison.")]
 public class Snake : AIActor, IDealAttackDamageHandler {
-  public static Item HomeItem => new ItemSnakeVenom(3);
+  public override float turnPriority => 20;
   public Snake(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 4;
+    hp = baseMaxHp = 3;
   }
+
+  // Vector2Int? attackDirection = null;
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    // if (CanTargetPlayer() && IsNextTo(player)) {
-    //   // if (player.pos.x == pos.x || player.pos.y == pos.y) {
-    //   //   var task = new AttackGroundTask(this, player.pos, 1);
-    //   //   var targetPos = player.pos;
-    //   //   task.then = new GenericBaseAction(this, () => AttackLine(targetPos), ActionType.ATTACK);
-    //   //   return task;
-    //   // }
-    //   return new AttackTask(this, player);
+    // if (attackDirection == null && CanTargetPlayer() && (player.pos.x == pos.x || player.pos.y == pos.y)) {
+    //   var offset = player.pos - pos;
+    //   attackDirection = new Vector2Int(Math.Sign(offset.x), Math.Sign(offset.y));
+    // }
+    if (CanTargetPlayer() && (player.pos.x == pos.x || player.pos.y == pos.y)) {
+      var offset = player.pos - pos;
+      var direction = new Vector2Int(Math.Sign(offset.x), Math.Sign(offset.y));
+      var nextPos = pos + direction;
+      var target = floor.bodies[nextPos];
+      if (floor.tiles[nextPos].CanBeOccupied()) {
+        return new MoveToTargetTask(this, nextPos);
+      } else if (target != null) {
+        return new AttackTask(this, target);
+      }
+    }
+
+    // if (attackDirection != null) {
+    //   Vector2Int direction = attackDirection.Value;
+    //   var nextPos = pos + direction;
+    //   if (floor.tiles[nextPos].CanBeOccupied()) {
+    //     return new MoveToTargetTask(this, nextPos);
+    //   } else {
+    //     attackDirection = null;
+    //     return new AttackGroundTask(this, nextPos, 1);
+    //   }
+    //   // return new AttackOrMoveDirectionTask(this, direction, 1);
+    //   // var task = new AttackGroundTask(this, player.pos, 1);
+    //   // var targetPos = player.pos;
+    //   // task.then = new GenericBaseAction(this, () => AttackLine(targetPos), ActionType.ATTACK);
+    //   // return task;
+    // } else {
+      return new WaitTask(this, 1);
+    // }
+    // if (CanTargetPlayer()) {
+    //   if (IsNextTo(player)) {
+    //     return new AttackTask(this, player);
+    //   } else {
+    //     return new ChaseTargetTask(this, player);
+    //   }
     // } else {
     //   return new WaitTask(this, 1);
     // }
-    if (CanTargetPlayer()) {
-      if (IsNextTo(player)) {
-        return new AttackTask(this, player);
-      } else {
-        return new ChaseTargetTask(this, player);
+  }
+
+  private void AttackLine(Vector2Int targetPos) {
+    // find the first obstructor 
+    var offset = targetPos - pos;
+    var direction = new Vector2Int(Math.Sign(offset.x), Math.Sign(offset.y));
+
+    // guard - max distance 15
+    for (int d = 0; d < 15; d++) {
+      var currentTile = floor.tiles[pos + direction];
+      if (currentTile == null) {
+        // we're out of bounds
+        return;
       }
-    } else {
-      return new WaitTask(this, 1);
+      if (currentTile.CanBeOccupied()) {
+        // move there!
+        Perform(new MoveBaseAction(this, currentTile.pos));
+        // we might have taken damage or any other number of things by triggering the tiles
+        if (IsDead) {
+          return;
+        }
+      } else {
+        // ok, the current tile is occupied. If it's a creature, attack it
+        Perform(new AttackGroundBaseAction(this, currentTile.pos));
+        return;
+      }
     }
   }
 
-  // private void AttackLine(Vector2Int targetPos) {
-  //   // find the first obstructor 
-  //   var offset = targetPos - pos;
-  //   var direction = new Vector2Int(Math.Sign(offset.x), Math.Sign(offset.y));
-
-  //   // guard - max distance 10
-  //   for (int d = 0; d < 10; d++) {
-  //     var currentTile = floor.tiles[pos + direction];
-  //     if (currentTile == null) {
-  //       // we're out of bounds
-  //       return;
-  //     }
-  //     if (currentTile.CanBeOccupied()) {
-  //       // move there!
-  //       Perform(new MoveBaseAction(this, currentTile.pos));
-  //       // we might have taken damage or any other number of things by triggering the tiles
-  //       if (IsDead) {
-  //         return;
-  //       }
-  //     } else {
-  //       // ok, the current tile is occupied. If it's a creature, attack it
-  //       Perform(new AttackGroundBaseAction(this, currentTile.pos));
-  //       return;
-  //     }
-  //   }
-  // }
-
-  internal override (int, int) BaseAttackDamage() => (0, 0);
+  internal override (int, int) BaseAttackDamage() => (1, 1);
 
   public void HandleDealAttackDamage(int damage, Body target) {
     if (target is Actor a) {
-      a.statuses.Add(new PoisonedStatus(1));
+      a.statuses.Add(new WeaknessStatus(1));
     }
   }
 }

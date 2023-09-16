@@ -4,30 +4,50 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class Shielder : AIActor {
+[ObjectInfo("If the floor is cleared and there are over 12 shielders on the map, ")]
+public class Shielder : AIActor, IDeathHandler {
   public static Item HomeItem => new ItemShielderSpore();
   public Shielder(Vector2Int pos) : base(pos) {
     faction = Faction.Neutral;
-    hp = baseMaxHp = 3;
+    hp = baseMaxHp = 1;
+    ClearTasks();
   }
 
   ShieldLinkStatus status;
 
-  protected override ActorTask GetNextTask() {
-    if (floor.EnemiesLeft() == 0) {
-      return new WaitTask(this, 1);
-    }
-    if (status == null) {
-      return new TelegraphedTask(this, 1, new GenericBaseAction(this, LinkWithClosestTarget));
+  public bool bDuplicated = false;
+  private void Duplicate() {
+    bDuplicated = true;
+    var freeAdjacentSpot = floor.GetAdjacentTiles(pos).Where(t => t.CanBeOccupied()).OrderBy(this.DistanceTo).FirstOrDefault();
+    if (freeAdjacentSpot != null) {
+      floor.Put(new Shielder(freeAdjacentSpot.pos));
     } else {
-      return new GenericTask(this, MaintainLink);
+      this.statuses.Add(new DeathlyStatus());
     }
+  }
+
+  protected override ActorTask GetNextTask() {
+    if (bDuplicated) {
+      return new WaitTask(this, 9999);
+    }
+    return new TelegraphedTask(this, 1, new GenericBaseAction(this, Duplicate));
+    // if (floor.EnemiesLeft() == 0) {
+    //   return new WaitTask(this, 1);
+    // }
+    // if (status == null) {
+    //   return new TelegraphedTask(this, 1, new GenericBaseAction(this, LinkWithClosestTarget));
+    // } else {
+    //   return new GenericTask(this, MaintainLink);
+    // }
     // return new WaitTask(this, 1);
   }
 
   public override void HandleDeath(Entity source) {
     if (status != null) {
       status.Remove();
+    }
+    foreach(var actor in floor.AdjacentBodies(pos).OfType<Actor>()) {
+      actor.statuses.Add(new EaterStatus());
     }
     base.HandleDeath(source);
   }
@@ -52,6 +72,47 @@ public class Shielder : AIActor {
 
   internal void StatusLost() {
     status = null;
+  }
+}
+
+internal class DeathlyStatus : Status {
+    public DeathlyStatus() {
+    }
+
+    public override bool Consume(Status other) {
+      return true;
+    }
+
+    public override string Info() {
+      return "Kill...";
+    }
+
+    public override void Step() {
+      // spread to to other Shielders
+      foreach (var shielder in actor.floor.AdjacentActors(actor.pos).OfType<Shielder>()) {
+        shielder.statuses.Add(new DeathlyStatus());
+      }
+      actor.TakeDamage(1, actor);
+    }
+}
+
+[Serializable]
+[ObjectInfo("shielder")]
+internal class EaterStatus : Status {
+  public override string Info() => "Out pops a Shielder at a random time. It will give you an Armored status.";
+  public EaterStatus() {
+  }
+
+  public override bool Consume(Status other) {
+    return false;
+  }
+
+  public override void Step() {
+    if (MyRandom.value < 0.05f) {
+      actor.statuses.Add(new ArmoredStatus());
+      actor.floor.Put(new Shielder(actor.pos));
+      Remove();
+    }
   }
 }
 

@@ -6,7 +6,6 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Jumps two tiles per turn and waits after every jump.")]
 public class Bird : AIActor, IActionPerformedHandler {
-  public static Item HomeItem => new ItemBirdWings();
   // public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
   //   [ActionType.MOVE] = 2,
   // };
@@ -76,6 +75,10 @@ public class ItemBirdWings : EquippableItem, ITargetedAction<Tile>, IStackable {
         Destroy();
       }
     }
+  }
+
+  public ItemBirdWings(int stacks) : base() {
+    this.stacks = stacks;
   }
 
   void ITargetedAction<Tile>.PerformTargettedAction(Player player, Entity target) {

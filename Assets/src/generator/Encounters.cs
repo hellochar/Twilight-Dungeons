@@ -372,6 +372,7 @@ public class Encounters {
   public static void MatureChangErsWillow(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(ChangErsWillow));
   public static void MatureStoutShrub(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(StoutShrub));
   public static void MatureBroodpuff(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Broodpuff));
+  public static void MatureFaeleaf(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Faeleaf));
 
   private static void AddPlantToRoom(Floor floor, Room room, System.Type type) {
     // Add to random soil, or center of room

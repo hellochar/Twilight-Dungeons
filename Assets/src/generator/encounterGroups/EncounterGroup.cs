@@ -90,6 +90,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, MatureChangErsWillow },
       { 1, MatureStoutShrub },
       { 1, MatureBroodpuff },
+      // { 1, MatureFaeleaf }
     };
     Rests = new EncounterBag {
       // { 1, Campfire },

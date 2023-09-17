@@ -56,11 +56,19 @@ public class Wallflower : AIActor {
 
 [System.Serializable]
 [ObjectInfo("wallflower-tendril", description: "Also makes a free attack on the creature directionally behind the one you attack.")]
-public class ItemWallflowerTendril : EquippableItem, IWeapon, IActionPerformedHandler {
+public class ItemWallflowerTendril : EquippableItem, IWeapon, IActionPerformedHandler, IDurable {
   public (int, int) AttackSpread => (1, 1);
   public override EquipmentSlot slot => EquipmentSlot.Weapon;
 
-  public void HandleActionPerformed(BaseAction final, BaseAction initial) {
+    public int durability { get; set; }
+
+    public int maxDurability => 24;
+
+    public ItemWallflowerTendril() : base() {
+      durability = maxDurability;
+    }
+
+    public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final is AttackBaseAction attack) {
       var target = attack.target;
       var attacker = attack.actor;

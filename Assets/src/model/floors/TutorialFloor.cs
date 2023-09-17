@@ -95,6 +95,7 @@ public class TutorialFloor : Floor {
   }
 
     public override void ClearFloor() {
+      isCleared = true;
       // don't add upstairs
       // AddUpstairs();
       AddDownstairs();

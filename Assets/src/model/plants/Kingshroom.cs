@@ -158,7 +158,7 @@ internal class ItemGerm : Item, IDurable, IUsable {
 class ThickMushroom : Actor {
   public ThickMushroom(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
-    hp = baseMaxHp = 3;
+    hp = baseMaxHp = 1;
     timeNextAction += 999999;
     statuses.Add(new SporedStatus(20));
   }

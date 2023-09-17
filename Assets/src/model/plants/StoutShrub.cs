@@ -31,7 +31,7 @@ public class StoutShrub : Plant {
     }
   }
 
-  public StoutShrub(Vector2Int pos) : base(pos, new Seed()) {
+  public StoutShrub(Vector2Int pos) : base(pos, new Seed(3)) {
     stage.NextStage = new Mature();
   }
 

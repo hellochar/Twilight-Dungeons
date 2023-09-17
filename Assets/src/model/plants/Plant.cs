@@ -41,9 +41,22 @@ public abstract class Plant : Body, IHideInSidebar, IAnyDamageTakenModifier {
   }
 
   internal void Harvest(int choiceIndex) {
-    stage.harvestOptions[choiceIndex].TryDropAllItems(floor, pos);
-    OnHarvested?.Invoke();
+    var floor = this.floor;
+    var harvest = stage.harvestOptions[choiceIndex];
     Kill(GameModel.main.player);
+    // // autoplant seed
+    // var itemSeed = harvest.ItemsNonNull().OfType<ItemSeed>().FirstOrDefault();
+    // if (itemSeed != null) {
+    //   var constructor = GetType().GetConstructor(new Type[1] { typeof(Vector2Int) });
+    //   var plant = (Plant) constructor.Invoke(new object[] { pos });
+    //   floor.Put(plant);
+    //   itemSeed.stacks--;
+    //   if (itemSeed.stacks == 0) {
+    //     harvest.RemoveItem(itemSeed);
+    //   }
+    // }
+    harvest.TryDropAllItems(floor, pos);
+    OnHarvested?.Invoke();
   }
 
   internal void OnFloorCleared(Floor floor) {

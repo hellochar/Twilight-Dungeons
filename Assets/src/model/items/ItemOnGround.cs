@@ -33,8 +33,13 @@ public class ItemOnGround : Entity, IActorEnterHandler {
 
   internal void PickUp() {
     var player = GameModel.main.player;
-    if (IsNextTo(player) && player.inventory.AddItem(item, this)) {
+    if (!IsNextTo(player)) {
+      return;
+    }
+    if (player.inventory.AddItem(item, this)) {
       Kill(player);
+    } else {
+      GameModel.main.turnManager.OnPlayerCannotPerform(new CannotPerformActionException("Inventory is full!"));
     }
   }
 

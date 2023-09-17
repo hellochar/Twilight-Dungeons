@@ -208,7 +208,7 @@ public class Floor {
     }
   }
 
-  private void CheckCleared() {
+  public void CheckCleared() {
     if (isCleared) {
       return;
     }
@@ -223,6 +223,7 @@ public class Floor {
   }
 
   public virtual void ClearFloor() {
+    isCleared = true;
     AddUpstairs();
     AddDownstairs();
     GameModel.main.FloorCleared(this);

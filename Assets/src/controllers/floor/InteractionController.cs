@@ -100,8 +100,8 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         return;
       }
 
-      var isLevelSimulating = floor.depth > 0 && GameModel.main.GetAllEntitiesInPlay().Count() > 1;
-      if (isLevelSimulating) {
+      var isInCombat = floor.depth > 0 && !floor.isCleared;
+      if (isInCombat) {
         InteractSimulatingLevel(handler, entity, interaction);
       } else {
         // not in combat, perform immediately

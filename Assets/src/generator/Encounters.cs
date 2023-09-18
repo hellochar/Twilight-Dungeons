@@ -513,6 +513,26 @@ public class Encounters {
     }
   }
 
+  public static void AddFaegrass(Floor floor, Room room) => AddFaegrassImpl(floor, Random.Range(5, 8));
+  public static void AddFaegrassImpl(Floor floor, int num) {
+    if (num == 0) {
+      return;
+    }
+
+    var tiles = floor.tiles.Where(Faegrass.CanOccupy).ToList();
+    tiles.Shuffle();
+    int numPlaced = 0;
+    foreach (var tile in tiles) {
+      if (!floor.GetAdjacentTiles(tile.pos).Any((t) => t.grass is Faegrass)) {
+        floor.Put(new Faegrass(tile.pos));
+        numPlaced++;
+        if (numPlaced >= num) {
+          break;
+        }
+      }
+    }
+  }
+
   public static void AddGuardleaf(Floor floor, Room room) => AddGuardleafImpl(floor, room, 1);
   public static void AddGuardleaf2x(Floor floor, Room room) => AddGuardleafImpl(floor, room, 2);
   public static void AddGuardleaf4x(Floor floor, Room room) => AddGuardleafImpl(floor, room, 4);

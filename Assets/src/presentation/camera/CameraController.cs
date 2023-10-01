@@ -72,7 +72,7 @@ public class CameraController : MonoBehaviour {
       centerCameraOnFloor();
     } else {
       cameraFollowEntity();
-      cameraZoom();
+      // cameraZoom();
       // boundCameraToFloor();
     }
   }

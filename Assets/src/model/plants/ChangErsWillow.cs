@@ -25,7 +25,7 @@ public class ChangErsWillow : Plant {
     }
   }
 
-  public ChangErsWillow(Vector2Int pos) : base(pos, new Seed()) {
+  public ChangErsWillow(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

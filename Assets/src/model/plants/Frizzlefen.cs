@@ -12,6 +12,7 @@ using UnityEngine;
 /// Plated armor - blocks 6 damage, then 5, then 4, then 3, then 2, then 1
 /// Barkmeal - Eat to obtain a buff that heals 4 and gives 4 max HP for 100 turns.
 /// Stompin Boots - when you walk onto any Grass, kill it. Gain a status that blocks the next 1 damage.
+[PlantConfig(FloorsToMature = 4, WaterCost = 125)]
 public class Frizzlefen : Plant {
   [Serializable]
   class Mature : MaturePlantStage {
@@ -33,7 +34,7 @@ public class Frizzlefen : Plant {
     }
   }
 
-  public Frizzlefen(Vector2Int pos) : base(pos, new Seed(4)) {
+  public Frizzlefen(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

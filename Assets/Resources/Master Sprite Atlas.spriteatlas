@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 113071
+    totalSpriteSurfaceArea: 113455
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -78,7 +78,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 63aa1441b050666429e8b695d76f0f20, type: 3}
   - {fileID: 21300000, guid: 5120d641aadce704293cef3aded872ad, type: 3}
   - {fileID: 21300000, guid: bab8bb41f981cd649a1e50040d3b29da, type: 3}
-  - {fileID: 21300000, guid: 4e51a651b5f89bf4088e19b1355bd2b8, type: 3}
   - {fileID: 21300000, guid: 89882f71cb7576848931d1fc509bd862, type: 3}
   - {fileID: 21300000, guid: 328524a1f9c496047a7e4d34ad95c8bc, type: 3}
   - {fileID: 21300000, guid: b72444a1a06d5b84f823895a9959900e, type: 3}
@@ -178,6 +177,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1d975f27123b43e4a9b8e060a86afb2d, type: 3}
   - {fileID: 21300000, guid: 7dbe3c37bf041e749855018c07b7d3fd, type: 3}
   - {fileID: 21300000, guid: 41b11f57ca3ffce438e92953855967b7, type: 3}
+  - {fileID: 21300000, guid: 06a5ee671de8a3348b662b7b47de9dfa, type: 3}
   - {fileID: 21300000, guid: b6c6bb7768fd8a9469338ddbfb3c7fe0, type: 3}
   - {fileID: 21300000, guid: 15090c87344335c428cc783a3ed766f8, type: 3}
   - {fileID: -4053755205593523716, guid: 316a90b7aaca01a4392eb34b1eb0f876, type: 3}
@@ -391,6 +391,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: dda943de372e2264298b7e188c80830b, type: 3}
   - {fileID: 21300000, guid: 0bd9eeee31e21fe489be4f2d82911a11, type: 3}
   - {fileID: 21300000, guid: a3c0dc0f71809ab4f8d5d6b064a6ea27, type: 3}
+  - {fileID: 21300000, guid: 3a92ec1fbe1ec484686db80a04e5041b, type: 3}
   - {fileID: -6237171270670925116, guid: b6ee113f63e6bdc4f8ad62c219a78f33, type: 3}
   - {fileID: 21300000, guid: a7e7706fcac3a254eb1e05fd2e935fc5, type: 3}
   - {fileID: 3728489959530280563, guid: c719566f43030ae42a0b2c26e31490b5, type: 3}
@@ -429,7 +430,6 @@ SpriteAtlas:
   - flower-buds
   - goldgrass
   - poisoned-status
-  - chiller-grass
   - strength
   - hydra-head
   - poisonmoss
@@ -529,6 +529,7 @@ SpriteAtlas:
   - blue-spore-explosion
   - Astoria
   - hearty-veggie
+  - faeleaf
   - snail-shell
   - Transparent1x1
   - fancy-ground24
@@ -742,6 +743,7 @@ SpriteAtlas:
   - charmberry
   - growing-fungus
   - bulbous-skin
+  - faegrass
   - iron-jelly_0
   - vulnera
   - scuttler

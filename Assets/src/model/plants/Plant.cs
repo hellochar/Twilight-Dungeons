@@ -1,9 +1,21 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
+[System.AttributeUsage(System.AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+sealed public class PlantConfigAttribute : System.Attribute {
+  public PlantConfigAttribute() {}
+  
+  public int WaterCost { get; set; }
+  public int FloorsToMature { get; set; }
+}
+
 [Serializable]
+[PlantConfig(FloorsToMature = 4, WaterCost = 100)]
 public abstract class Plant : Body, IHideInSidebar, IAnyDamageTakenModifier {
+  public PlantConfigAttribute Config => GetType().GetCustomAttribute<PlantConfigAttribute>();
+
   [field:NonSerialized] /// controller only
   public event Action OnHarvested;
 
@@ -29,8 +41,8 @@ public abstract class Plant : Body, IHideInSidebar, IAnyDamageTakenModifier {
 
   public bool IsMature => stage.NextStage == null;
 
-  public Plant(Vector2Int pos, PlantStage stage) : base(pos) {
-    this.stage = stage;
+  public Plant(Vector2Int pos) : base(pos) {
+    this.stage = new Seed(Config.FloorsToMature);
     this.hp = this.baseMaxHp = 999;
   }
 
@@ -43,7 +55,6 @@ public abstract class Plant : Body, IHideInSidebar, IAnyDamageTakenModifier {
   internal void Harvest(int choiceIndex) {
     var floor = this.floor;
     var harvest = stage.harvestOptions[choiceIndex];
-    Kill(GameModel.main.player);
     // // autoplant seed
     // var itemSeed = harvest.ItemsNonNull().OfType<ItemSeed>().FirstOrDefault();
     // if (itemSeed != null) {
@@ -57,6 +68,7 @@ public abstract class Plant : Body, IHideInSidebar, IAnyDamageTakenModifier {
     // }
     harvest.TryDropAllItems(floor, pos);
     OnHarvested?.Invoke();
+    Kill(GameModel.main.player);
   }
 
   internal void OnFloorCleared(Floor floor) {

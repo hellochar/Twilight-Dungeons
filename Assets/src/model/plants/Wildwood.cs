@@ -23,7 +23,7 @@ public class Wildwood : Plant {
     }
   }
 
-  public Wildwood(Vector2Int pos) : base(pos, new Seed()) {
+  public Wildwood(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

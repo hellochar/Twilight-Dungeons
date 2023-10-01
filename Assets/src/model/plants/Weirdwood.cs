@@ -25,7 +25,7 @@ public class Weirdwood : Plant {
     }
   }
 
-  public Weirdwood(Vector2Int pos) : base(pos, new Seed()) {
+  public Weirdwood(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

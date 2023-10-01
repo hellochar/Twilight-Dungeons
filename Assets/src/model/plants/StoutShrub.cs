@@ -7,8 +7,8 @@ using UnityEngine;
 // not elegant but it gets it done
 // getting many stacks of an item
 [Serializable]
+[PlantConfig(FloorsToMature = 3, WaterCost = 70)]
 public class StoutShrub : Plant {
-  public static int waterCost => 70;
   [Serializable]
   class Mature : MaturePlantStage {
     public readonly bool growChild;
@@ -31,11 +31,13 @@ public class StoutShrub : Plant {
     }
   }
 
-  public StoutShrub(Vector2Int pos) : base(pos, new Seed(3)) {
+  public StoutShrub(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 
-  private StoutShrub(Vector2Int pos, PlantStage stage) : base(pos, stage) {}
+  private StoutShrub(Vector2Int pos, PlantStage stage) : base(pos) {
+    this.stage = stage;
+  }
 
   protected override void HandleEnterFloor() {
     if (stage is Mature m && m.growChild) {

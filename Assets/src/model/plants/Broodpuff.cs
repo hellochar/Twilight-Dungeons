@@ -27,7 +27,7 @@ public class Broodpuff : Plant {
     }
   }
 
-  public Broodpuff(Vector2Int pos) : base(pos, new Seed()) {
+  public Broodpuff(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }
@@ -127,7 +127,7 @@ public class ItemBacillomyte : Item, IUsable, IDurable {
     foreach (var tile in a.floor.GetAdjacentTiles(a.pos).Where(Bacillomyte.CanOccupy)) {
       a.floor.Put(new Bacillomyte(tile.pos));
     }
-    durability--;
+    this.ReduceDurability();
   }
 }
 

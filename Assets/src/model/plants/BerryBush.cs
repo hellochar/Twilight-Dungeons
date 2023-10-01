@@ -25,7 +25,7 @@ public class BerryBush : Plant {
     }
   }
 
-  public BerryBush(Vector2Int pos) : base(pos, new Seed()) {
+  public BerryBush(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

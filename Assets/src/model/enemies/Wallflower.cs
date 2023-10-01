@@ -35,8 +35,12 @@ public class Wallflower : AIActor {
       .Distinct()
       .Where(t => CanOccupy(t) || t == this.tile).ToList();
     
-    var adjacent = floor.GetAdjacentTiles(pos).ToList();
-    var candidateTiles = nextTetherOccupiableTiles.Intersect(adjacent).ToList();
+
+    // adjacent tiles who are cardinally next to (walls who are cardinally next to (walls who are cardinally next to me = tethers)) = nextTethers
+    var candidateTiles = floor
+      .GetAdjacentTiles(pos)
+      .Where(CanOccupy)
+      .Where(adjacent => floor.GetCardinalNeighbors(adjacent.pos).Any(nextTethers.Contains));
 
     // var candidateTiles = floor.GetAdjacentTiles(pos).Where(CanOccupy).ToList();
 

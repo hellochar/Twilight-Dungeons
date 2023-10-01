@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 [Serializable]
@@ -25,12 +26,12 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
     }
   }
   public int stacksMax => 20;
-  public int waterCost;
+  public int waterCost => plantType.GetCustomAttribute<PlantConfigAttribute>().WaterCost;
+  public int floorsToMature => plantType.GetCustomAttribute<PlantConfigAttribute>().FloorsToMature;
 
   public ItemSeed(Type plantType, int stacks) {
     this.plantType = plantType;
     this.stacks = stacks;
-    this.waterCost = (int?) plantType.GetProperty("waterCost")?.GetValue(null) ?? 100;
   }
 
   public ItemSeed(Type plantType) : this(plantType, 1) { }
@@ -65,7 +66,7 @@ public class ItemSeed : Item, IConditionallyStackable, ITargetedAction<Soil> {
     }
   }
 
-  internal override string GetStats() => $"Plant on a Soil - costs <color=lightblue>{waterCost}</color> water.\nMatures in 320 turns.";
+  internal override string GetStats() => $"Plant on a Soil to grow into a {Util.WithSpaces(plantType.Name)} Seed.\nCosts <color=lightblue>{waterCost} water</color>.\nMatures in <color=orange>{floorsToMature} floors</color>.";
 
   public override string displayName => $"{Util.WithSpaces(plantType.Name)} Seed";
 

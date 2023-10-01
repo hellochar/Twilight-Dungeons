@@ -25,7 +25,7 @@ public class Thornleaf : Plant {
     }
   }
 
-  public Thornleaf(Vector2Int pos) : base(pos, new Seed()) {
+  public Thornleaf(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

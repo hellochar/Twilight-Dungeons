@@ -25,7 +25,7 @@ public class Kingshroom : Plant {
     }
   }
 
-  public Kingshroom(Vector2Int pos) : base(pos, new Seed()) {
+  public Kingshroom(Vector2Int pos) : base(pos) {
     stage.NextStage = new Mature();
   }
 }

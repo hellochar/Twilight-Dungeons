@@ -230,7 +230,10 @@ public class Floor {
   public virtual void ClearFloor() {
     isCleared = true;
     AddUpstairs();
-    AddDownstairs();
+    var isLastFloor = (depth + 1) == GameModel.main.generator.floorGenerators.Count();
+    if (!isLastFloor) {
+      AddDownstairs();
+    }
     GameModel.main.FloorCleared(this);
   }
 

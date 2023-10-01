@@ -48,7 +48,7 @@ public class GameOverHandler : MonoBehaviour {
     yield return StartCoroutine(Transitions.FadeImage(blackOverlay, Color.clear, Color.black, 5f));
 
     // show player and Ezra back at home
-    var homePos = GameModel.main.home.center + Vector2Int.left * 2;
+    var homePos = GameModel.main.home.downstairsPos + Vector2Int.left * 2;
     GameModel.main.PutPlayerAt(0, homePos);
     ezra.statuses.RemoveOfType<SurprisedStatus>();
     ezra.ChangeFloors(GameModel.main.home, homePos + Vector2Int.right);

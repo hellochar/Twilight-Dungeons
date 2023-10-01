@@ -3,12 +3,12 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Spawns a Blob upon taking damage.\n\nLeaves a trail of Blob Slime.")]
+[ObjectInfo(description: "Spawns a Blob or MiniBlob upon taking damage.\n\nLeaves a trail of Blob Slime.")]
 public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   // moves slightly slower than other blobs so the small blobs get hit first
   public override float turnPriority => task is AttackGroundTask ? 90 : base.turnPriority + 1;
   public Blobmother(Vector2Int pos) : base(pos) {
-    hp = baseMaxHp = 24;
+    hp = baseMaxHp = 28;
     faction = Faction.Enemy;
     ClearTasks();
   }
@@ -16,7 +16,7 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
   public override void HandleDeath(Entity source) {
     base.HandleDeath(source);
     // kill all blobs on the map
-    var blobs = floor.bodies.Where(b => b is Blob).Cast<Entity>();
+    var blobs = floor.bodies.Where(b => b is Blob || b is MiniBlob).Cast<Entity>();
     var slime = floor.grasses.Where(b => b is BlobSlime);
     foreach (var b in blobs.Concat(slime).ToArray()) {
       b.Kill(this);
@@ -25,7 +25,7 @@ public class Blobmother : Boss, ITakeAnyDamageHandler, IBodyMoveHandler {
 
   public void HandleTakeAnyDamage(int damage) {
     if (damage > 0) {
-      var blob = new Blob(pos);
+      var blob = MyRandom.value < 0.5f ? new Blob(pos) as AIActor : new MiniBlob(pos) as AIActor;
       floor.Put(blob);
     }
   }
@@ -57,7 +57,7 @@ public class BlobSlime : Grass, IActorEnterHandler {
   public BlobSlime(Vector2Int pos) : base(pos) {}
 
   public void HandleActorEnter(Actor who) {
-    if (!(who is Blob || who is Blobmother)) {
+    if (!(who is Blob || who is Blobmother || who is MiniBlob)) {
       who.TakeDamage(1, this);
       Kill(who);
     }

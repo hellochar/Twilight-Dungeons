@@ -9,7 +9,7 @@ using UnityEngine;
 public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   ITakeAnyDamageHandler, IDealAttackDamageHandler, IActionPerformedHandler,
   IKillEntityHandler, IStatusAddedHandler, IHideInSidebar, IDeathHandler {
-  private float timeLastLostWater = 0;
+  // private float timeLastLostWater = 0;
   private int m_water;
   public int water {
     get => m_water;
@@ -107,14 +107,14 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
-    GameModel.main.EnqueueEvent(() => {
-      if (GameModel.main.time - timeLastLostWater > 10) {
-        if (water > 0) {
-          water -= 1;
-        }
-        timeLastLostWater = GameModel.main.time;
-      }
-    });
+    // GameModel.main.EnqueueEvent(() => {
+    //   if (GameModel.main.time - timeLastLostWater > 10) {
+    //     if (water > 0) {
+    //       water -= 1;
+    //     }
+    //     timeLastLostWater = GameModel.main.time;
+    //   }
+    // });
     // player didn't do what they intended! We should reset and give
     // player a choice.
     if (final != initial) {

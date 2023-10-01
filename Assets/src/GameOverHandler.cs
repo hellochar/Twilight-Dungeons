@@ -10,6 +10,7 @@ public class GameOverHandler : MonoBehaviour {
   public GameObject[] uiToHide;
   public Image blackOverlay;
   public GameObject dPad;
+  public Canvas canvas;
 
   void Start() {
     GameModel.main.OnGameOver += HandleGameOver;
@@ -46,6 +47,10 @@ public class GameOverHandler : MonoBehaviour {
     yield return StartCoroutine(Transitions.ZoomAndPanCamera(11, treeCenter, 4));
     StartCoroutine(Transitions.ZoomAndPanCamera(11, treeCenter, 5));
     yield return StartCoroutine(Transitions.FadeImage(blackOverlay, Color.clear, Color.black, 5f));
+
+    // var epilogue = PrefabCache.UI.Instantiate("Epilogue", canvas.transform);
+    // var fullpageNarrativeController = epilogue.GetComponentInChildren<FullpageNarrativeController>();
+    // yield return StartCoroutine(fullpageNarrativeController.PlayNarrative());
 
     // show player and Ezra back at home
     var homePos = GameModel.main.home.downstairsPos + Vector2Int.left * 2;

@@ -12,26 +12,12 @@ public class FullpageNarrativeController : MonoBehaviour, IPointerClickHandler {
 
   private string copyFull;
 
-  public Action then;
-
-  public void Show(Action then) {
-    this.then = then;
-    gameObject.SetActive(true);
-  }
-
-  void Awake() {
+  public IEnumerator PlayNarrative(Action then = null) {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
     copyFull = textComponent.text;
-  }
 
-  void Start() {
-    // GetComponentInChildren<TMPro.TMP_Text>().color = Color.white;
-    StartCoroutine(PlayNarrativeAsync());
-  }
-
-  IEnumerator PlayNarrativeAsync() {
-    var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
     textComponent.text = "";
+    gameObject.SetActive(true);
     yield return new WaitForSeconds(0.1f);
     var prologuePages = copyFull.Split(new string[] { "---" }, System.StringSplitOptions.RemoveEmptyEntries);
     foreach (var page in prologuePages) {

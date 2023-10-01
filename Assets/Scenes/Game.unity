@@ -12037,8 +12037,10 @@ MonoBehaviour:
   uiToHide:
   - {fileID: 89522109}
   - {fileID: 774951094}
+  - {fileID: 1850681289}
   blackOverlay: {fileID: 356309593}
   dPad: {fileID: 1082314157}
+  canvas: {fileID: 273105571}
 --- !u!1 &1612004399
 GameObject:
   m_ObjectHideFlags: 0

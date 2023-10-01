@@ -25,10 +25,10 @@ public class Intro : MonoBehaviour {
 
       // maybe jump into tutorial immediately
       if (!TutorialController.HasFinishedTutorial()) {
-        prologue.Show(() => {
+        StartCoroutine(prologue.PlayNarrative(() => {
           GameModel.GenerateTutorialAndSetMain();
           GoToGameScene();
-        });
+        }));
       }
     }
   }

@@ -230,7 +230,7 @@ public class GameModel {
   }
 
   public void FloorCleared(Floor floor) {
-    foreach (var plant in home?.bodies.OfType<Plant>()) {
+    foreach (var plant in home?.bodies.OfType<Plant>().ToList()) {
       plant.OnFloorCleared(floor);
     }
   }

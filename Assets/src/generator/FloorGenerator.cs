@@ -210,7 +210,7 @@ public class FloorGenerator {
         .Select(pos => floor.tiles[pos])
         .Where(canOccupy)
         .OrderByDescending(t => t.pos.x)
-        .Skip(MyRandom.Range(0, 10))
+        .Skip(MyRandom.Range(0, 8))
         .FirstOrDefault();
       // var xRel = enemy.pos.x - enemyRoom.min.x;
       // // var pushBackChance = Util.MapLinear(xRel, 1, enemyRoom.width - 1, 0.9f, 0.0f);
@@ -439,7 +439,7 @@ public class FloorGenerator {
       EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
     }
     EncounterGroup.Spice.GetRandom()(floor, room0);
-    // PostProcessPushEnemiesBack(floor);
+    PostProcessPushEnemiesBack(floor);
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
@@ -450,7 +450,8 @@ public class FloorGenerator {
       encounter(floor, room0);
     }
 
-    // a reward (optional)
+    // always add one
+    Encounters.AddOneWater(floor, room0);
     if (addWater) {
       Encounters.AddWater(floor, room0);
     }

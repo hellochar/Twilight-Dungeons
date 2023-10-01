@@ -129,7 +129,7 @@ public class Floor {
   }
 
   public IEnumerable<Entity> Enemies() {
-    return bodies.Where(b => b is AIActor a && a.faction == Faction.Enemy).Cast<Entity>().Concat(
+    return bodies.Where(b => (b is AIActor a && a.faction == Faction.Enemy) || b is IEnemyEntity).Cast<Entity>().Concat(
       grasses.Where(g => g is IEnemyEntity)
     );
   }
@@ -213,12 +213,17 @@ public class Floor {
       return;
     }
 
+    // MEGA hack do three level nesting so we make sure any entity creation things have happened first
     GameModel.main.EnqueueEvent(() => {
-      bool shouldCountAsCleared = EnemiesLeft() == 0;
-      // check isCleared again if it's changed in the event queue
-      if (shouldCountAsCleared && !isCleared) {
-        ClearFloor();
-      }
+      GameModel.main.EnqueueEvent(() => {
+        GameModel.main.EnqueueEvent(() => {
+          bool shouldCountAsCleared = EnemiesLeft() == 0;
+          // check isCleared again if it's changed in the event queue
+          if (shouldCountAsCleared && !isCleared) {
+            ClearFloor();
+          }
+        });
+      });
     });
   }
 

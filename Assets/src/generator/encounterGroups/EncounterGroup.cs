@@ -61,7 +61,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, AddStalk },
       { 1, RubbleCluster },
       { 1, StalkCluster },
-      { 1, StumpCluster },
+      // { 1, StumpCluster },
       { 0.5f, ChasmsAwayFromWalls2 }
     };
     Chasms = new EncounterBag {

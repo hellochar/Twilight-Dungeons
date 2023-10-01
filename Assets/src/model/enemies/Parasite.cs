@@ -46,11 +46,11 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
 }
 
 [System.Serializable]
-[ObjectInfo(description: "Hatches into two Parasites after 5 turns.")]
+[ObjectInfo(description: "Hatches into two Parasites after 3 turns.")]
 public class ParasiteEgg : Body, IEnemyEntity {
   public ParasiteEgg(Vector2Int pos) : base(pos) {
-    AddTimedEvent(5, Hatch);
-    hp = baseMaxHp = 5;
+    AddTimedEvent(3, Hatch);
+    hp = baseMaxHp = 3;
   }
 
   void Hatch() {

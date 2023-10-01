@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class Intro : MonoBehaviour {
   public Image blackOverlay;
   public AudioClip playerMove;
-  public PrologueController prologue;
+  public FullpageNarrativeController prologue;
 
   void Awake() {
     // unset current game.
@@ -22,14 +22,18 @@ public class Intro : MonoBehaviour {
   void Start() {
     if (!Serializer.HasSaveOrCheckpoint()) {
       transform.Find("Continue").gameObject.SetActive(false);
+
+      // maybe jump into tutorial immediately
+      if (!TutorialController.HasFinishedTutorial()) {
+        prologue.Show(() => {
+          GameModel.GenerateTutorialAndSetMain();
+          GoToGameScene();
+        });
+      }
     }
   }
 
   public void NewGame() {
-    if (!PrologueController.HasFinishedTutorial()) {
-      prologue.StartPrologueAndTutorial();
-      return;
-    }
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
     try {

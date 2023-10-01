@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -5,36 +6,34 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PrologueController : MonoBehaviour, IPointerClickHandler {
+public class FullpageNarrativeController : MonoBehaviour, IPointerClickHandler {
   public GameObject tapPrompt;
   public AudioSource source;
 
-  private string prologueCopyFull;
+  private string copyFull;
+
+  public Action then;
+
+  public void Show(Action then) {
+    this.then = then;
+    gameObject.SetActive(true);
+  }
 
   void Awake() {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
-    prologueCopyFull = textComponent.text;
+    copyFull = textComponent.text;
   }
 
   void Start() {
-    if (HasFinishedTutorial()) {
-      gameObject.SetActive(false);
-    } else {
-      StartPrologueAndTutorial();
-    }
+    // GetComponentInChildren<TMPro.TMP_Text>().color = Color.white;
+    StartCoroutine(PlayNarrativeAsync());
   }
 
-  public void StartPrologueAndTutorial() {
-    gameObject.SetActive(true);
-    GetComponentInChildren<TMPro.TMP_Text>().color = Color.white;
-    StartCoroutine(PlayPrologueAsync());
-  }
-
-  IEnumerator PlayPrologueAsync() {
+  IEnumerator PlayNarrativeAsync() {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
     textComponent.text = "";
     yield return new WaitForSeconds(0.1f);
-    var prologuePages = prologueCopyFull.Split(new string[] { "---" }, System.StringSplitOptions.RemoveEmptyEntries);
+    var prologuePages = copyFull.Split(new string[] { "---" }, System.StringSplitOptions.RemoveEmptyEntries);
     foreach (var page in prologuePages) {
       yield return StartCoroutine(ShowPage(textComponent, page.Trim()));
       /// Pause for a bit after the page stops.
@@ -44,9 +43,9 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
     // Turn text to black.
     yield return StartCoroutine(FadeText());
 
-    GameModel.GenerateTutorialAndSetMain();
-    var intro = GameObject.Find("Canvas").GetComponent<Intro>();
-    intro.GoToGameScene();
+    if (then != null) {
+      then.Invoke();
+    }
   }
 
   IEnumerator FadeText() {
@@ -106,12 +105,6 @@ public class PrologueController : MonoBehaviour, IPointerClickHandler {
       }
       yield return new WaitForEndOfFrame();
     } while (t < 1);
-  }
-
-  public static bool HasFinishedTutorial() {
-    // HACK HACK
-    return true;
-    // return PlayerPrefs.HasKey("hasSeenPrologue");
   }
 
   private bool hasClicked = false;

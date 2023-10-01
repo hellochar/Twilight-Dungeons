@@ -7,6 +7,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandler {
+  public static bool HasFinishedTutorial() {
+    return PlayerPrefs.HasKey("hasSeenPrologue");
+  }
+
+  internal static void SetFinishedTutorial() {
+    PlayerPrefs.SetInt("hasSeenPrologue", 1);
+  }
+
   // Start is called before the first frame update
   public void Start() {
     var model = GameModel.main.tutorialModel;
@@ -85,6 +93,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
   }
 
   private void HandleTutorialEnded() {
+    SetFinishedTutorial();
     var blackOverlay = HUDController.main.blackOverlay;
     if (Serializer.HasSave0()) {
       /// quit the tutorial.

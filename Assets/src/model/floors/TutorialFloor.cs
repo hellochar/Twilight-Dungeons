@@ -94,19 +94,18 @@ public class TutorialFloor : Floor {
     return floor;
   }
 
-    public override void ClearFloor() {
-      isCleared = true;
-      // don't add upstairs
-      // AddUpstairs();
-      AddDownstairs();
-      GameModel.main.FloorCleared(this);
-    }
+  public override void ClearFloor() {
+    isCleared = true;
+    // don't add upstairs
+    // AddUpstairs();
+    AddDownstairs();
+    GameModel.main.FloorCleared(this);
+  }
 
-    internal override void PlayerGoDownstairs() {
+  internal override void PlayerGoDownstairs() {
     var floorIndex = GetInfo().index;
 
     if (floorIndex == TUTORIAL_FLOORS.Length - 1 || floorIndex == -1) {
-      PlayerPrefs.SetInt("hasSeenPrologue", 1);
       OnTutorialEnded?.Invoke();
     } else {
       // go onto next floor

@@ -17,10 +17,10 @@ public class Thornleaf : Plant {
       harvestOptions.Add(new Inventory(
         new ItemSeed(typeof(Thornleaf)),
         new ItemThornShield(),
-        new ItemThornmail()
+        new ItemCrownOfThorns()
       ));
       harvestOptions.Add(new Inventory(
-        new ItemHeartOfThorns()
+        new ItemBlademail()
       ));
     }
   }
@@ -31,15 +31,16 @@ public class Thornleaf : Plant {
 }
 
 [Serializable]
-[ObjectInfo("thornmail", "A layer of spiky leaves is fashioned on top of a comfortable inner mesh.")]
-internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTakeAttackDamageHandler {
-  public override EquipmentSlot slot => EquipmentSlot.Armor;
+[ObjectInfo("crown-of-thorns", "Layers of spiky leaves protrude in all directions.")]
+internal class ItemCrownOfThorns : EquippableItem, IDurable, IBodyTakeAttackDamageHandler {
+  public override EquipmentSlot slot => EquipmentSlot.Headwear;
+  public override string displayName => "Crown of Thorns";
 
   public int durability { get; set; }
 
   public int maxDurability => 14;
 
-  public ItemThornmail() {
+  public ItemCrownOfThorns() {
     durability = maxDurability;
   }
 
@@ -52,11 +53,7 @@ internal class ItemThornmail : EquippableItem, IDurable, IMaxHPModifier, IBodyTa
     }
   }
 
-  public int Modify(int input) {
-    return input + 4;
-  }
-
-  internal override string GetStats() => "Max HP +4.\nDeal 2 damage when an enemy hits you.";
+  internal override string GetStats() => "When an enemy attacks you, deal 2 damage back to the attacker.";
 }
 
 [Serializable]
@@ -109,14 +106,14 @@ internal class ItemThornShield : EquippableItem, IDurable, IModifierProvider {
 
 [Serializable]
 [ObjectInfo("heart-of-thorns", "Espheus died when her son no longer recognized her; her heart grew cold, then hard, then sharp.")]
-internal class ItemHeartOfThorns : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
+internal class ItemBlademail : EquippableItem, IDurable, IAnyDamageTakenModifier, ITakeAnyDamageHandler {
   internal override string GetStats() => "Take 2 less damage from all sources.\nWhen you would take damage from any source, grow, sharpen, or trigger Bladegrass on all adjacent tiles.";
 
-  public override EquipmentSlot slot => EquipmentSlot.Headwear;
+  public override EquipmentSlot slot => EquipmentSlot.Armor;
   public int durability { get; set; }
   public int maxDurability => 29;
 
-  public ItemHeartOfThorns() {
+  public ItemBlademail() {
     durability = maxDurability;
   }
 

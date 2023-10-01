@@ -5,10 +5,17 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public static class Transitions {
-  public static IEnumerator GoToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad) {
+  public static IEnumerator GoToNewSceneSlow(MonoBehaviour b, Image overlay, string sceneToLoad, float duration = 0.5f) {
+    // wait for overlay to finish
+    yield return b.StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black, duration));
+
+    SceneManager.LoadSceneAsync(sceneToLoad);
+  }
+
+  public static IEnumerator GoToNewScene(MonoBehaviour b, Image overlay, string sceneToLoad, float duration = 0.5f) {
     SceneManager.LoadSceneAsync(sceneToLoad);
     if (overlay != null) {
-      yield return b.StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black));
+      yield return b.StartCoroutine(Transitions.FadeImage(overlay, Color.clear, Color.black, duration));
     }
   }
 

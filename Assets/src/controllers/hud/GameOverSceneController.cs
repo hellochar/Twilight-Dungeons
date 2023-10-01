@@ -49,6 +49,6 @@ public class GameOverSceneController : MonoBehaviour {
   }
 
   private void TheEnd() {
-    StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Intro"));
+    StartCoroutine(Transitions.GoToNewSceneSlow(this, blackOverlay, "Scenes/Intro", 5));
   }
 }

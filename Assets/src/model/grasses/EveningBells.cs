@@ -5,7 +5,7 @@ using UnityEngine;
 public class EveningBells : Grass, IActorEnterHandler {
   public readonly float angle;
 
-  public static bool CanOccupy(Tile tile) => tile is Ground;
+  public static bool CanOccupy(Tile tile) => tile is Ground && tile.CanBeOccupied();
   public EveningBells(Vector2Int pos, float angle) : base(pos) {
     this.angle = angle;
   }

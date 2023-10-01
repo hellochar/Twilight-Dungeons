@@ -669,23 +669,31 @@ public class Encounters {
   }
 
   public static void AddEveningBells(Floor floor, Room room) {
-    var locations = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where((tile) => !Mushroom.CanOccupy(tile)));
-    var num = 1;
-    for (var i = 0; i < num; i++) {
-      var tile = Util.RandomPick(locations);
-      if (tile != null) {
-        var center = tile.pos;
-        floor.Put(new Stump(center));
-        floor.PutAll(floor
-          .GetAdjacentTiles(center)
-          .Where(EveningBells.CanOccupy)
-          .Select((t) => {
-            var angle = Vector2.SignedAngle(new Vector2(0, -1), t.pos - center);
-            return new EveningBells(t.pos, angle);
-          })
-        );
-        locations.ExceptWith(floor.GetAdjacentTiles(tile.pos));
-      }
+    int Score(Tile t) {
+      return floor
+        .GetAdjacentTiles(t.pos)
+        .Where(t2 => EveningBells.CanOccupy(t2) && t2.grass == null)
+        .Count();
+    }
+    var tilesOrderedByScore =
+      FloorUtils.EmptyTilesInRoom(floor, room)
+      .OrderByDescending(Score);
+    var highestScore = Score(tilesOrderedByScore.First());
+
+    var tilesWithBestScore = tilesOrderedByScore.TakeWhile(t => Score(t) == highestScore);
+
+    var tile = Util.RandomPick(tilesWithBestScore);
+    if (tile != null) {
+      var center = tile.pos;
+      floor.Put(new Stump(center));
+      floor.PutAll(floor
+        .GetAdjacentTiles(center)
+        .Where(EveningBells.CanOccupy)
+        .Select((t) => {
+          var angle = Vector2.SignedAngle(new Vector2(0, -1), t.pos - center);
+          return new EveningBells(t.pos, angle);
+        })
+      );
     }
   }
 

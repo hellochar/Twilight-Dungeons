@@ -358,7 +358,7 @@ public class FloorGenerator {
     // Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR
-    Encounters.MatureFaeleaf(floor, room0);
+    // Encounters.MatureFaeleaf(floor, room0);
     floor.depth = 20;
     // Encounters.AddOctopus(floor, room0);
     // Encounters.AddSkulls(floor, room0);

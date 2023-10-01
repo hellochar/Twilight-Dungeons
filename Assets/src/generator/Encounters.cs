@@ -363,6 +363,11 @@ public class Encounters {
     floor.PutAll(line.Select(pos => new Stalk(pos)));
   }
 
+  public static void AddPumpkin(Floor floor, Room room) {
+    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
+    floor.Put(new Pumpkin(tile.pos));
+  }
+
   public static void MatureBerryBush(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(BerryBush));
   public static void MatureWildWood(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Wildwood));
   public static void MatureThornleaf(Floor floor, Room room) => AddPlantToRoom(floor, room, typeof(Thornleaf));
@@ -903,13 +908,6 @@ public class Encounters {
     var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
     if (tile != null) {
       floor.Put(new ItemOnGround(tile.pos, new ItemGloopShoes()));
-    }
-  }
-
-  public static void AddPumpkin(Floor floor, Room room) {
-    var tile = Util.RandomPick(FloorUtils.EmptyTilesInRoom(floor, room));
-    if (tile != null) {
-      floor.Put(new ItemOnGround(tile.pos, new ItemPumpkin()));
     }
   }
 

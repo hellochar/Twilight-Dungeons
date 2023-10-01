@@ -69,15 +69,17 @@ public class EncounterGroupShared : EncounterGroup {
       { 2, ChasmBridge },
       { 1, ChasmGrowths },
     };
+    // spice for reward rooms
     Rewards = new EncounterBag {
+      { 20, Empty },
       { 1, AddMushroom },
       { 1, AddPumpkin },
-      { 1, AddThickBranch },
-      { 1, AddBatTooth },
-      { 1, AddSnailShell },
+      // { 1, AddThickBranch },
+      // { 1, AddBatTooth },
+      // { 1, AddSnailShell },
       { 1, AddSpiderSandals },
-      { 1, AddJackalHide },
-      { 1, AddGloopShoes },
+      // { 1, AddJackalHide },
+      // { 1, AddGloopShoes },
       { 1, OneButterfly },
     };
     Plants = new EncounterBag {

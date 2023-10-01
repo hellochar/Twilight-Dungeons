@@ -21,7 +21,6 @@ public static class EncounterGroupEarlyGame {
         { 0.6f, AddLlaora },
         { 0.6f, AddGuardleaf },
         { 0.6f, AddBladegrass },
-        { 0.5f, AddMushroom },
 
         { 0.5f, ScatteredBoombugs },
         { 0.5f, AddEveningBells },

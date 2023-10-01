@@ -66,6 +66,14 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     return item;
   }
 
+  public T GetRandomAndSubtractWeight(float subtract) {
+    var item = GetRandom();
+    if (item != null) {
+      SubtractWeight(item, subtract);
+    }
+    return item;
+  }
+
   public T GetRandomAndRemove() {
     return GetRandomAndDiscount(1);
   }
@@ -95,6 +103,21 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
     if (newWeight == 0 && entries.Count() == 1) {
       newWeight = currentWeight;
     }
+    SetWeight(item, newWeight);
+  }
+
+  public void SubtractWeight(T item, float subtractWeightBy) {
+    var getWeight = GetWeight(item);
+    if (!getWeight.HasValue) {
+      return;
+    }
+
+    if (entries.Count() == 1) {
+      return;
+    }
+
+    var currentWeight = getWeight.Value;
+    var newWeight = Math.Max(currentWeight - subtractWeightBy, 0f);
     SetWeight(item, newWeight);
   }
 

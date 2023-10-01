@@ -402,16 +402,13 @@ public class FloorGenerator {
     var room0 = new Room(floor);
 
     floor.PlaceUpstairs(new Vector2Int(room0.min.x, room0.max.y));
-    // floor.PlaceDownstairs(new Vector2Int(room0.max.x, room0.min.y));
 
-    // Encounters.PlaceFancyGround(floor, room0);
-    // Encounters.CavesRewards.GetRandomAndDiscount()(floor, room0);
-    // EncounterGroup.Plants.GetRandomAndDiscount(0.9f)(floor, room0);
-    // Encounters.AddTeleportStone(floor, room0);
     Encounters.AddOneWater(floor, room0);
     foreach (var encounter in extraEncounters) {
       encounter(floor, room0);
     }
+
+    EncounterGroup.Rewards.GetRandomAndSubtractWeight(1)(floor, room0);
 
     floor.PlaceDownstairs(floor.downstairsPos);
 
@@ -425,7 +422,7 @@ public class FloorGenerator {
   /// Generates one single room with one wall variation, X mob encounters, Y grass encounters, an optional reward.
   /// Good for a contained experience.
   /// </summary>
-  public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs, int numGrasses, bool reward = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
+  public Floor generateSingleRoomFloor(int depth, int width, int height, int numMobs, int numGrasses, bool addWater = false, Encounter[] preMobEncounters = null, params Encounter[] extraEncounters) {
     Floor floor = tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
     floor.PutAll(
       floor.EnumeratePerimeter().Where(pos => floor.tiles[pos] is Ground).Select(pos => new Wall(pos))
@@ -454,9 +451,8 @@ public class FloorGenerator {
     }
 
     // a reward (optional)
-    if (reward) {
+    if (addWater) {
       Encounters.AddWater(floor, room0);
-      EncounterGroup.Rewards.GetRandomAndDiscount()(floor, room0);
     }
 
     FloorUtils.TidyUpAroundStairs(floor);

@@ -966,16 +966,20 @@ public class Encounters {
     // }
 
     // surround with fungal walls
-    var distance2Walls = floor
+    var posesWithinDistance2 = floor
       .EnumerateRectangle(downstairsPos - new Vector2Int(2, 2), downstairsPos + new Vector2Int(3, 3))
-      .Where(p => Util.DiamondMagnitude(p - downstairsPos) > 1).ToList();
-    floor.PutAll(distance2Walls.Select(p => new FungalWall(p)));
-
-    // put a fungal breeder
-    var breederTile = Util.RandomPick(floor.GetAdjacentTiles(downstairsPos).Where(t => t.CanBeOccupied() && t.pos != downstairsPos));
-    if (breederTile != null) {
-      floor.Put(new FungalBreeder(breederTile.pos));
+      .Where(p => p != downstairsPos).ToList();
+    foreach (var pos in posesWithinDistance2) {
+      if (MyRandom.value < 0.75f) {
+        floor.Put(new FungalWall(pos));
+      }
     }
+
+    // // put a fungal breeder
+    // var breederTile = Util.RandomPick(floor.GetAdjacentTiles(downstairsPos).Where(t => t.CanBeOccupied() && t.pos != downstairsPos));
+    // if (breederTile != null) {
+    //   floor.Put(new FungalBreeder(breederTile.pos));
+    // }
   }
 
   public static void WallPillars(Floor floor, Room room) {

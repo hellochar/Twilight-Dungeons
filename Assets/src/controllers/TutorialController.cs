@@ -72,7 +72,7 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     }
     GameModel.main.turnManager.OnStep -= DetectJackalsVisible;
 
-    _ = Messages.CreateDelayed("Jackals move fast but get scared!", 1, 5);
+    _ = Messages.CreateDelayed("Equip your stick!", 1, 5);
   }
 
   void DetectGuardleafVisible(ISteppable s) {

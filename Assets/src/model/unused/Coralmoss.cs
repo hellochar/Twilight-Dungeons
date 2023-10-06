@@ -37,7 +37,7 @@ class Coralmoss : Grass, ISteppable {
 }
 
 [System.Serializable]
-internal class Coral : Destructible {
+internal class Coral : Destructible, IBlocksVision {
   public Coral(Vector2Int pos) : base(pos, 1) {
   }
 }

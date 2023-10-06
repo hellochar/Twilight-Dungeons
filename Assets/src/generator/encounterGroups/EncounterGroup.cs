@@ -60,7 +60,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 1, InsetLayerWithOpening },
       { 1, AddStalk },
       { 1, RubbleCluster },
-      { 1, StalkCluster },
+      // { 1, StalkCluster },
       // { 1, StumpCluster },
       { 0.5f, ChasmsAwayFromWalls2 }
     };

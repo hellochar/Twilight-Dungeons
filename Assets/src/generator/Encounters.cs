@@ -885,4 +885,9 @@ public partial class Encounters {
       FloorUtils.Clusters(floor, new Vector2Int(0, 0), 7).Select(t => new Chasm(t.pos))
     );
   }
+
+  public static void AddOldDude(Floor floor, Room room) => HumanoidEncounters.AddOldDude(floor, room);
+  public static void AddMossMan(Floor floor, Room room) => HumanoidEncounters.AddMossMan(floor, room);
+  public static void AddMercenary(Floor floor, Room room) => HumanoidEncounters.AddMercenary(floor, room);
+  public static void AddGambler(Floor floor, Room room) => HumanoidEncounters.AddGambler(floor, room);
 }

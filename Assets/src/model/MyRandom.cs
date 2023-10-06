@@ -25,4 +25,22 @@ public static class MyRandom {
   internal static int Next() {
     return generator.Next();
   }
+
+  public static int RandRound(float v) {
+    // for 3.7, we want a 70% chance for 4, 30% chance for 3
+    // for 3.2, we want a 20% chance for 4, 80% chance for 3
+
+    float mod = v % 1;
+    int floor = Mathf.FloorToInt(v);
+    int ceil = Mathf.CeilToInt(v);
+    if (mod == 0) {
+      return floor;
+    }
+    
+    if (value < mod) {
+      return ceil;
+    } else {
+      return floor;
+    }
+  }
 }

@@ -175,25 +175,16 @@ public partial class Encounters {
     }
   }
 
-  public static void FillWithSoftGrass(Floor floor, Room room) {
+  public static void FillWithSoftGrass(Floor floor, Room room) => FillWithGrass(floor, room, t => new SoftGrass(t.pos));
+  public static void FillWithBladegrass(Floor floor, Room room) => FillWithGrass(floor, room, t => new Bladegrass(t.pos));
+  public static void FillWithFerns(Floor floor, Room room) => FillWithGrass(floor, room, t => new Fern(t.pos));
+  public static void FillWithViolets(Floor floor, Room room) => FillWithGrass(floor, room, t => new Violets(t.pos));
+  public static void FillWithGuardleaf(Floor floor, Room room) => FillWithGrass(floor, room, t => new Guardleaf(t.pos));
+  public static void FillWithGrass(Floor floor, Room room, Func<Tile, Entity> func) {
     var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
     foreach (var tile in occupiableTiles) {
-      var grass = new SoftGrass(tile.pos);
-      floor.Put(grass);
+      floor.Put(func(tile));
     }
-  }
-
-  public static void FillWithFerns(Floor floor, Room room) {
-    var occupiableTiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => Fern.CanOccupy(tile) && tile.grass == null);
-    occupiableTiles = occupiableTiles.Take(MyRandom.Range(5, 10));
-    var ferns = occupiableTiles.Select(tile => new Fern(tile.pos)).ToArray();
-    // var hasGoldenFern = Random.Range(0, 100) < ferns.Length;
-    // if (hasGoldenFern) {
-    //   // replace a fern with a GoldenFern
-    //   var indexToReplace = Random.Range(0, ferns.Length);
-    //   ferns[indexToReplace] = new GoldenFern(ferns[indexToReplace].pos);
-    // }
-    floor.PutAll(ferns);
   }
 
   public static void AddBladegrass(Floor floor, Room room) => AddBladegrassImpl(floor, room, 1);
@@ -203,8 +194,8 @@ public partial class Encounters {
     var numTiles = occupiableTiles.Count;
     if (numTiles > 0) {
       var start = Util.RandomPick(occupiableTiles);
-      var bfs = floor.BreadthFirstSearch(start.pos, (tile) => occupiableTiles.Contains(tile));
-      var num = MyRandom.Range(numTiles / 10, numTiles / 5) * mult;
+      var bfs = floor.BreadthFirstSearch(start.pos, occupiableTiles.Contains);
+      var num = Mathf.Max(3, MyRandom.Range(numTiles / 10, numTiles / 5) * mult);
       foreach (var tile in bfs.Take(num)) {
         var grass = new Bladegrass(tile.pos);
         floor.Put(grass);
@@ -370,11 +361,11 @@ public partial class Encounters {
     }
   }
 
+  public static Encounter AddSpore8x = Twice(Twice(Twice(AddSpore)));
   public static void AddSpore(Floor floor, Room room) {
-    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
-    var numTiles = occupiableTiles.Count;
-    if (numTiles > 0) {
-      var start = Util.RandomPick(occupiableTiles);
+    var tiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null);
+    var start = tiles.FirstOrDefault();
+    if (start != null) {
       var grass = new Spores(start.pos);
       floor.Put(grass);
     }

@@ -62,9 +62,9 @@ public class FloorGenerator {
       () => generateSingleRoomFloor(19, 10, 8, 2, 2),
       () => generateSingleRoomFloor(20, 12, 8, 3, 2),
       () => generateSingleRoomFloor(21, 14, 9, 4, 3, true, new Encounter[] { Encounters.LineWithOpening, Encounters.ChasmsAwayFromWalls1 }),
-      () => generateSingleRoomFloor(22, 13, 9, 5, 2),
+      () => generateSingleRoomFloor(22, 13, 9, 5, 2, extraEncounters: Encounters.AddWater),
       () => generateSingleRoomFloor(23, 14, 9, 6, 4),
-      () => generateSingleRoomFloor(24, 14, 9, 7, 4, extraEncounters: Encounters.AddWater),
+      () => generateSingleRoomFloor(24, 14, 9, 7, 4),
       () => generateSingleRoomFloor(25, 14, 9, 8, 5),
       () => generateSingleRoomFloor(26, 14, 9, 9, 6),
       () => generateEndFloor(27),
@@ -129,6 +129,14 @@ public class FloorGenerator {
     var depth = floor.depth;
     floor.depth = 20;
     // put stuff here
+
+    // Encounters.AddOldDude(floor, floor.root);
+    // Encounters.AddMossMan(floor, floor.root);
+    // Encounters.AddMercenary(floor, floor.root);
+    // Encounters.AddGambler(floor, floor.root);
+
+    Encounters.AddFaegrass(floor, floor.root);
+
     // Encounters.OneButterfly(floor, floor.root);
     // Encounters.AddSoftMoss(floor, floor.root);
     // Encounters.AddBird(floor, floor.root);
@@ -194,7 +202,16 @@ public class FloorGenerator {
   void PostProcessPushEnemiesBack(Floor floor) {
     // push all enemies back so the player has a few turns to "prepare"
     var enemies = floor.Enemies().Where(a => !(a is Boss)).ToList();
+    var enemyPosTiles = floor
+        .EnumerateFloor()
+        .Select(pos => floor.tiles[pos])
+        .Where(t => t.CanBeOccupied())
+        .OrderByDescending(t => t.pos.x).ToList();
     foreach(var enemy in enemies) {
+      // skip enemies caught in webs, constricted, etc.
+      if (enemy is AIActor a && a.statuses.list.Any()) {
+        continue;
+      }
       var canOccupyMethod = enemy.GetType().GetMethod("CanOccupy", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy);
       bool canOccupy(Tile t) {
         if (!t.CanBeOccupied()) {
@@ -205,13 +222,8 @@ public class FloorGenerator {
         }
         return true;
       }
-      var newTile = floor
-        .EnumerateFloor()
-        .Select(pos => floor.tiles[pos])
-        .Where(canOccupy)
-        .OrderByDescending(t => t.pos.x)
-        .Skip(MyRandom.Range(0, 8))
-        .FirstOrDefault();
+      enemyPosTiles = enemyPosTiles.Skip(MyRandom.Range(0, 8)).ToList();
+      var newTile = enemyPosTiles.Where(canOccupy).FirstOrDefault();
       // var xRel = enemy.pos.x - enemyRoom.min.x;
       // // var pushBackChance = Util.MapLinear(xRel, 1, enemyRoom.width - 1, 0.9f, 0.0f);
       // var pushBackChance = 1;
@@ -438,13 +450,14 @@ public class FloorGenerator {
     for (var i = 0; i < numMobs; i++) {
       EncounterGroup.Mobs.GetRandomAndDiscount()(floor, room0);
     }
-    EncounterGroup.Spice.GetRandom()(floor, room0);
-    PostProcessPushEnemiesBack(floor);
+    // PostProcessPushEnemiesBack(floor);
 
     // Y grasses
     for (var i = 0; i < numGrasses; i++) {
       EncounterGroup.Grasses.GetRandomAndDiscount()(floor, room0);
     }
+
+    EncounterGroup.Spice.GetRandom()(floor, room0);
 
     foreach (var encounter in extraEncounters) {
       encounter(floor, room0);
@@ -647,10 +660,10 @@ public class FloorGenerator {
     );
     
     // var mainland = makeGroup(floor.upstairs, ref walkableTiles);
-    var mainland = makeGroup(floor.tiles[floor.startPos], ref walkableTiles);
+    var mainland = TileGroup.makeGroupAndRemove(floor.tiles[floor.startPos], ref walkableTiles);
     int guard = 0;
     while (walkableTiles.Any() && (guard++ < 99)) {
-      var island = makeGroup(walkableTiles.First(), ref walkableTiles);
+      var island = TileGroup.makeGroupAndRemove(walkableTiles.First(), ref walkableTiles);
       // connect island to mainland
       var entitiesToAdd = connectGroups(mainland, island);
       floor.PutAll(entitiesToAdd);
@@ -659,12 +672,6 @@ public class FloorGenerator {
     }
 
     // mutates walkableTiles
-    HashSet<Tile> makeGroup(Tile start, ref HashSet<Tile> allTiles) {
-      var set = new HashSet<Tile>(floor.BreadthFirstSearch(start.pos, allTiles.Contains));
-      allTiles.ExceptWith(set);
-      return set;
-    }
-
     // How to "connect" two groups? Two groups will be separated by at least one unwalkable
     // tile. There's many ways to connect two groups. We want to choose the least invasive.
     // 

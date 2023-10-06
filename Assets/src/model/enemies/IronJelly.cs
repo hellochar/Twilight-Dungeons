@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Cannot take damage.\nWhen attacked, Iron Jelly gets pushed away, or attacks the Creature standing in its way.")]
+[ObjectInfo(description: "Invulnerable.\nAttacking the Iron Jelly pushes it away, first attacking any Creature in its way.")]
 public class IronJelly : AIActor, IAnyDamageTakenModifier, IBodyTakeAttackDamageHandler {
   public IronJelly(Vector2Int pos) : base(pos) {
     faction = Faction.Neutral;
@@ -16,10 +16,12 @@ public class IronJelly : AIActor, IAnyDamageTakenModifier, IBodyTakeAttackDamage
     var newPos = pos - offset;
     if (isAdjacent && offset != Vector2Int.zero && floor.InBounds(newPos)) {
       var pushedTile = floor.tiles[newPos];
-      if (pushedTile.body == null) {
+      if (pushedTile.body != null) {
+        Attack(pushedTile.body);
+      }
+      if (pushedTile.CanBeOccupied()) {
+        pos = pushedTile.pos;
         Perform(new MoveBaseAction(this, pushedTile.pos));
-      } else {
-        Perform(new AttackBaseAction(this, pushedTile.body));
       }
     }
   }

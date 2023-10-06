@@ -98,12 +98,11 @@ public class WeightedRandomBag<T> : IEnumerable<KeyValuePair<float, T>>, IClonea
 
     var restWeight = accumulatedWeight - currentWeight;
     var newWeight = newChance * restWeight / (1f - newChance);
-
-    // avoid degenerate case if there's only 1 item in the bag and it's trying to discount itself
-    if (newWeight == 0 && entries.Count() == 1) {
-      newWeight = currentWeight;
+    if (newWeight == 0) {
+      Remove(item);
+    } else {
+      SetWeight(item, newWeight);
     }
-    SetWeight(item, newWeight);
   }
 
   public void SubtractWeight(T item, float subtractWeightBy) {

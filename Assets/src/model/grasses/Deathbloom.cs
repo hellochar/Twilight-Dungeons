@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Blooms when an adjacent creature dies.\nOnce bloomed, walk over it to obtain a Deathbloom Flower and spawn a new Deathbloom.")]
+[ObjectInfo(description: "Blooms when an adjacent creature dies.\n\nOnce bloomed, walk over it to obtain a Deathbloom Flower.")]
 public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
   public bool isBloomed = false;
   [field:NonSerialized] /// controller only
@@ -32,12 +32,12 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
   public void HandleActorEnter(Actor actor) {
     if (isBloomed) {
       if (actor is Player p) {
-        var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
-        noGrassTiles.Shuffle();
-        foreach (var tile in noGrassTiles.Take(1)) {
-          var newDeathbloom = new Deathbloom(tile.pos);
-          floor.Put(newDeathbloom);
-        }
+        // var noGrassTiles = floor.GetAdjacentTiles(pos).Where((tile) => tile is Ground && tile.grass == null).ToList();
+        // noGrassTiles.Shuffle();
+        // foreach (var tile in noGrassTiles.Take(1)) {
+        //   var newDeathbloom = new Deathbloom(tile.pos);
+        //   floor.Put(newDeathbloom);
+        // }
         Kill(p);
       }
     }
@@ -48,7 +48,7 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
       var player = GameModel.main.player;
       if (player.pos == pos) {
         // player is over the deathbloom; try putting it into player inventory
-        var item = new ItemDeathbloomFlower(1);
+        var item = new ItemDeathbloomFlower();
         if (!player.inventory.AddItem(item, this)) {
           floor.Put(new ItemOnGround(pos, item, pos));
         }
@@ -58,30 +58,13 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
 }
 
 [Serializable]
-internal class ItemDeathbloomFlower : Item, IStackable, IEdible {
-  public ItemDeathbloomFlower(int stacks) {
-    this.stacks = stacks;
-  }
-  public int stacksMax => 10;
-
-  private int _stacks;
-  public int stacks {
-    get => _stacks;
-    set {
-      if (value < 0) {
-        throw new ArgumentException("Setting negative stack!" + this + " to " + value);
-      }
-      _stacks = value;
-      if (_stacks == 0) {
-        Destroy();
-      }
-    }
-  }
+internal class ItemDeathbloomFlower : Item, IEdible {
+  public ItemDeathbloomFlower() {}
 
   public void Eat(Actor a) {
     a.statuses.RemoveOfType<WeaknessStatus>();
     a.statuses.Add(new FrenziedStatus(3));
-    stacks--;
+    Destroy();
   }
 
   internal override string GetStats() => "Eat to become Frenzied, providing +2 attack damage for 3 turns. Afterwards, gain 3 stacks of Weakness.\nEating Deathbloom also removes Weakness.";

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Chases you, but only moves or attacks if you're within the same row or column.\n\nAttacks anything in its way.\n\nAttacks apply Weakness.")]
+[ObjectInfo(description: "Only moves or attacks if you're in the same row or column.\n\nAttacks anything in its way.\n\nAttacks apply Weakness.")]
 // [ObjectInfo(description: "Chases you.\nAttacks deal no damage but apply poison.")]
 public class Snake : AIActor, IDealAttackDamageHandler {
   public override float turnPriority => 20;

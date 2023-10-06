@@ -30,7 +30,7 @@ public abstract class Entity : IModifierProvider {
   public virtual string displayName => Util.WithSpaces(GetType().Name);
   public virtual string description => ObjectInfo.GetDescriptionFor(this);
   /// <summary>Entity is visible if the tile they're standin on is visible.</summary>
-  public virtual bool isVisible => !IsDead && tile.visibility == TileVisiblity.Visible;
+  public virtual bool isVisible => !IsDead && floor != null && tile.visibility == TileVisiblity.Visible;
   public virtual IEnumerable<object> MyModifiers => nonserializedModifiers.Append(this).Append(trigger);
   [NonSerialized] /// nonserialized by design
   public List<object> nonserializedModifiers = new List<object>();

@@ -29,7 +29,7 @@ class ItemMushroom : Item, IStackable, IEdible {
     stacks = 0;
   }
 
-  internal override string GetStats() => $"Get {stacks} stacks of the Pumped Up status.";
+  internal override string GetStats() => $"Eat all to make your next {stacks} attacks twice as fast.";
 }
 
 [System.Serializable]

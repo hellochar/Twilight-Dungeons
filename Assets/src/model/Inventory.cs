@@ -37,7 +37,7 @@ public class Inventory : IEnumerable<Item> {
         }
         if (isConsumed) {
           item.Destroy();
-          HandleItemAdded(item, source);
+          HandleItemAdded(i as Item, source);
           return true;
         }
       }

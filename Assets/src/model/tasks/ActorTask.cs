@@ -34,6 +34,9 @@ public abstract class ActorTask {
   public string Name { get; set; }
   public Actor actor { get; }
   public bool forceOnlyCheckBefore = false;
+  // all actions in free tasks should take 0 time
+  public bool isFreeTask { get; private set; }
+
   /// when to check whether this task is "done":
   public virtual TaskStage WhenToCheckIsDone => TaskStage.Before;
   public virtual bool IsPlayerOverridable => true;
@@ -66,6 +69,11 @@ public abstract class ActorTask {
 
   public ActorTask OnlyCheckBefore() {
     forceOnlyCheckBefore = true;
+    return this;
+  }
+
+  public ActorTask Free() {
+    isFreeTask = true;
     return this;
   }
 }

@@ -164,6 +164,8 @@ public class Actor : Body, ISteppable {
         task.PreStep();
       }
     }
+
+    var isFree = task.isFreeTask;
     // at this point, we know task is not null and it is not done
     var action = task.GetNextAction();
     BaseAction finalAction = Perform(action);
@@ -176,6 +178,10 @@ public class Actor : Body, ISteppable {
     // handle close-ended actions
     while (task != null && (task.WhenToCheckIsDone.HasFlag(TaskStage.After) && !task.forceOnlyCheckBefore) && task.IsDone()) {
       GoToNextTask();
+    }
+
+    if (isFree) {
+      return 0;
     }
     return GetActionCost(finalAction);
   }

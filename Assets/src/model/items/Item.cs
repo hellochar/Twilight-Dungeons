@@ -30,7 +30,7 @@ public class Item {
     }
   }
 
-  internal virtual string GetStats() => "";
+  internal virtual string GetStats() => ObjectInfo.GetDescriptionFor(this);
 
   public virtual List<MethodInfo> GetAvailableMethods(Player player) {
     var methods = new List<MethodInfo>() {

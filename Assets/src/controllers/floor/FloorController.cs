@@ -187,8 +187,13 @@ public class FloorController : MonoBehaviour {
     }
   }
 
-  internal void PlayVFX(string v, Actor a) {
+  public void PlayVFX(string name, Actor a) {
     var go = GameObjectFor(a);
-    PrefabCache.Effects.Instantiate(v, go.transform);
+    PrefabCache.Effects.Instantiate(name, go.transform);
+  }
+
+  public void PlayVFX(string name, Vector2Int pos) {
+    var effect = PrefabCache.Effects.Instantiate(name);
+    effect.transform.position = new Vector3(pos.x, pos.y, effect.transform.position.z);
   }
 }

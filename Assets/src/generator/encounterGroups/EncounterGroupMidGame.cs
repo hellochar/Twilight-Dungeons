@@ -80,6 +80,7 @@ public static class EncounterGroupMidGame {
 
         { 0.05f, AddParasite8x },
 
+        { 0.02f, AddFaegrass },
         { 0.02f, AddNecroroot },
       },
     };

@@ -20,12 +20,12 @@ public static class EncounterGroupEverything {
       Grasses = new EncounterBag {
         { 1f, AddVibrantIvy },
         { 1f, AddSpore },
+        { 1f, AddBloodwort },
 
         { 0.75f, AddBladegrass },
         // { 0.75f, AddCheshireWeeds },
 
-        // { 0.5f, AddMushroom },
-
+        { 0.5f, AddBrambles },
         { 0.5f, AddSoftGrass },
         { 0.5f, ScatteredBoombugs },
 
@@ -39,7 +39,6 @@ public static class EncounterGroupEverything {
         { 0.3f, AddGuardleaf },
 
         { 0.2f, AddTunnelroot },
-        { 0.2f, AddBrambles },
         { 0.2f, AddAgave },
         { 0.2f, AddDeathbloom },
 
@@ -75,6 +74,7 @@ public static class EncounterGroupEverything {
         { 0.05f, AddViolets },
         { 0.05f, AddBrambles },
 
+        { 0.02f, AddFaegrass },
         { 0.02f, AddNecroroot },
         { 0.02f, AddScorpions },
         { 0.02f, AddParasite },

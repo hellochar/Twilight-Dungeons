@@ -63,6 +63,7 @@ public static class EncounterGroupEarlyGame {
         { 0.05f, FillWithFerns },
 
         { 0.01f, AddNecroroot },
+        { 0.01f, AddFaegrass },
       },
     };
   }

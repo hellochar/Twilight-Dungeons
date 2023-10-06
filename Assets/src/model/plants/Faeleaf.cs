@@ -63,7 +63,7 @@ public class ItemFaegrass : Item, IStackable, IUsable {
 }
 
 [Serializable]
-[ObjectInfo("faegrass", description: "When a creature standing the Faegrass takes damage, it will get teleported to a random location and consume the Faegrass.")]
+[ObjectInfo("faegrass", description: "When a creature standing over the Faegrass takes damage, it will get teleported to a random other unoccupied Faegrass and consume the original.")]
 class Faegrass : Grass, ITakeAnyDamageHandler {
   public static bool CanOccupy(Tile t) => t.CanBeOccupied() && t is Ground;
   public Faegrass(Vector2Int pos) : base(pos) {
@@ -72,9 +72,17 @@ class Faegrass : Grass, ITakeAnyDamageHandler {
 
   public void HandleTakeAnyDamage(int damage) {
     if (body is Actor a) {
-      var randomPos = Util.RandomPick(floor.tiles.Where(t => t.CanBeOccupied())).pos;
-      a.pos = randomPos;
-      FloorController.current.PlayVFX("FaeTeleport", a);
+      FloorController.current.PlayVFX("FaeTeleport", a.pos);
+
+      var nextFaegrass = Util.RandomPick(
+        floor.grasses
+        .OfType<Faegrass>()
+        .Where(faegrass => faegrass != this && faegrass.tile.CanBeOccupied())
+      );
+
+      if (nextFaegrass != null) {
+        a.pos = nextFaegrass.pos;
+      }
       Kill(a);
       if (a is AIActor) {
         a.statuses.Add(new SurprisedStatus());

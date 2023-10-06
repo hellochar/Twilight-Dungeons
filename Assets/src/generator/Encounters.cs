@@ -352,6 +352,7 @@ public partial class Encounters {
       // don't spawn under creatures since it will cause room collapse
       .Where(t => Brambles.CanOccupy(t) && t.grass == null && t.CanBeOccupied())
       .ToList();
+    // essentially each brambles takes up its tile and an adjacent tile, which creates diagonals 
     var num = Random.Range(tiles.Count / 12, tiles.Count / 6);
     while (num >= 2) {
       var tile = tiles[tiles.Count - 1];

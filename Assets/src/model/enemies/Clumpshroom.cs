@@ -64,7 +64,9 @@ public class ClumpedLungStatus : StackingStatus, IFloorChangeHandler {
   public override bool Consume(Status otherParam) {
     var baseRetVal = base.Consume(otherParam);
     if (stacks >= 20) {
-      actor.KillSelf();
+      // just make a temp one for the name
+      var clumpshroom = new Clumpshroom(new Vector2Int());
+      actor.Kill(clumpshroom);
     }
     return baseRetVal;
   }

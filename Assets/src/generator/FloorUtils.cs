@@ -9,27 +9,16 @@ public static class FloorUtils {
   /// constricted by a HangingVines, or just surrounded by enemies.
   /// Prevent these negative gameplay experiences.
   public static void TidyUpAroundStairs(Floor floor) {
-    /// sometimes the Wall generators may put Walls right in the landing spot. Prevent that.
-    if (floor.upstairs != null && !floor.tiles[floor.upstairs.landing].CanBeOccupied()) {
-      floor.Put(new HardGround(floor.upstairs.landing));
-    }
-    if (floor.downstairs != null && !floor.tiles[floor.downstairs.landing].CanBeOccupied()) {
-      floor.Put(new HardGround(floor.downstairs.landing));
-    }
-
     // Clear hanging vines and move immediately adjacent enemies
-    if (floor.upstairs != null) {
-      foreach (var tile in floor.GetAdjacentTiles(floor.upstairs.pos)) {
-        if (tile.grass is HangingVines) {
-          // do NOT call Kill(); we don't want the vine whip to drop.
-          floor.Remove(tile.grass);
-        }
-        if (tile.actor != null) {
-          // TODO pick a spot that graspers can inhabit
-          var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((x) => x.CanBeOccupied()));
-          // move the actor to a different spot in the map
-          tile.actor.pos = newSpot.pos;
-        }
+    foreach (var tile in floor.GetAdjacentTiles(floor.startPos)) {
+      if (tile.grass is HangingVines) {
+        // do NOT call Kill(); we don't want the vine whip to drop.
+        floor.Remove(tile.grass);
+      }
+      if (tile.actor != null) {
+        var newSpot = Util.RandomPick(floor.EnumerateRoomTiles(floor.root).Where((x) => x.CanBeOccupied()));
+        // move the actor to a different spot in the map
+        tile.actor.pos = newSpot.pos;
       }
     }
 
@@ -54,11 +43,7 @@ public static class FloorUtils {
     }
   }
 
-  public static List<Tile> TilesSortedByCorners(Floor floor, Room room) {
-    var tiles = floor.EnumerateRoomTiles(room).ToList();
-    tiles.Sort((x, y) => (int)Mathf.Sign(Vector2.Distance(y.pos, room.centerFloat) - Vector2.Distance(x.pos, room.centerFloat)));
-    return tiles;
-  }
+  public static List<Tile> TilesSortedByCorners(Floor floor, Room room) => TilesAwayFromCenter(floor, room);
 
   internal static List<Tile> EmptyTilesInRoom(Floor floor, Room room) {
     return floor.EnumerateRoomTiles(room).Where(t => t.CanBeOccupied() && !(t is Downstairs || t is Upstairs)).ToList();

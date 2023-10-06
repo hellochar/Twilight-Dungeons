@@ -7,10 +7,14 @@ public class ItemJackalHide : EquippableItem, IDurable, IAttackDamageTakenModifi
 
   public int maxDurability => 4;
 
-  public ItemJackalHide() {}
+  public ItemJackalHide() {
+    durability = maxDurability;
+  }
 
   public int Modify(int input) {
-    return input - 1;
+    var reduction = input - 1;
+    this.ReduceDurability();
+    return reduction;
   }
 
   internal override string GetStats() => "Blocks 1 damage.";

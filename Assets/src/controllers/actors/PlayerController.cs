@@ -142,6 +142,19 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       sfxAudio.PlayOneShot(clip, volume);
     }
   }
+  
+  public void PerformPlayerAction(Action action) {
+    try {
+      action();
+      GameModel.main.DrainEventQueue();
+    } catch (System.Reflection.TargetInvocationException outer) {
+      if (outer.InnerException is CannotPerformActionException e) {
+        GameModel.main.turnManager.OnPlayerCannotPerform(e);
+      }
+    } catch (CannotPerformActionException e) {
+      GameModel.main.turnManager.OnPlayerCannotPerform(e);
+    }
+  }
 
   public override void Update() {
     #if UNITY_EDITOR

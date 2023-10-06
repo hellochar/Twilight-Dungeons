@@ -64,15 +64,8 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
 
       buttons = methods.Select((method) => {
         Action action = () => {
-          try {
-            method.Invoke(item, new object[] { player });
-            GameModel.main.DrainEventQueue();
-          } catch (TargetInvocationException outer) {
-            if (outer.InnerException is CannotPerformActionException e) {
-              GameModel.main.turnManager.OnPlayerCannotPerform(e);
-            }
-          }
-        }; 
+          method.Invoke(item, new object[] { player });
+        };
         return (method.Name, action);
       }).ToList();
 

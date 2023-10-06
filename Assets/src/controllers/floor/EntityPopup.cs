@@ -38,15 +38,26 @@ public static class EntityPopup {
     List<(string, Action)> buttons = new List<(string, Action)>();
     Inventory inventory = null;
 
-    var player = GameModel.main.player;
-    var playerActions = entity.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(PlayerActionAttribute), true).Any());
-    foreach(var action in playerActions) {
-      buttons.Add((Util.WithSpaces(action.Name), () => {
-        action.Invoke(entity, new object[0]);
-      }));
-    }
-    if (entity is IInteractableInventory i) {
-      inventory = i.inventory;
+    if (entity.IsNextTo(GameModel.main.player)) {
+      foreach(var action in entity.GetPlayerActions()) {
+        buttons.Add((Util.WithSpaces(action.Name), () => {
+          action.Invoke(entity, new object[0]);
+        }));
+      }
+
+      foreach(var method in entity.GetType().GetMethods()) {
+        var attributes = method.GetCustomAttributes(typeof(PlayerActionAttribute), true);
+        if (attributes.Length > 0) {
+          var attr = attributes[0] as PlayerActionAttribute;
+          var name = string.IsNullOrEmpty(attr.Name) ? Util.WithSpaces(method.Name) : attr.Name;
+          buttons.Add((name, () => {
+            method.Invoke(entity, new object[0]);
+          }));
+        }
+      }
+      if (entity is IInteractableInventory i) {
+        inventory = i.inventory;
+      }
     }
 
     var controller = Popups.CreateStandard(

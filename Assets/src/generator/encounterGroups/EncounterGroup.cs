@@ -74,6 +74,7 @@ public class EncounterGroupShared : EncounterGroup {
       { 20, Empty },
       { 1, AddMushroom },
       { 1, AddPumpkin },
+      { 1, AddGambler },
       // { 1, AddThickBranch },
       // { 1, AddBatTooth },
       // { 1, AddSnailShell },

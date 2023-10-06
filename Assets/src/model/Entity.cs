@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -54,6 +55,10 @@ public abstract class Entity : IModifierProvider {
     if (this.floor != null) {
       HandleEnterFloor();
     }
+  }
+
+  public virtual List<MethodInfo> GetPlayerActions() {
+    return new List<MethodInfo>();
   }
 
   protected virtual void HandleEnterFloor() {}

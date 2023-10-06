@@ -93,12 +93,13 @@ public static class Popups {
   private static GameObject MakeButton(string name, Action onClicked, Transform parent, GameObject popup) {
     var button = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Action Button"), new Vector3(), Quaternion.identity, parent);
     button.GetComponentInChildren<TMPro.TMP_Text>().text = name;
-    button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(onClicked));
+    button.GetComponent<Button>().onClick.AddListener(
+      new UnityEngine.Events.UnityAction(() => {
+        PlayerController.current.PerformPlayerAction(onClicked);
+        UnityEngine.Object.Destroy(popup);
+      })
+    );
 
-    // lol we should really make this better
-    if (name != "Compost" && name != "Process") {
-      button.GetComponent<Button>().onClick.AddListener(new UnityEngine.Events.UnityAction(() => UnityEngine.Object.Destroy(popup)));
-    }
     button.name = name;
     return button;
   }

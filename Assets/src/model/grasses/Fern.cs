@@ -29,13 +29,17 @@ public class GoldenFern : Fern, IDeathHandler {
 }
 
 [Serializable]
-[ObjectInfo("golden-fern")]
-class ItemGoldenFern : EquippableItem, IPlayerCamouflage, IBodyMoveHandler {
+[ObjectInfo("golden-fern", description: "Leaves a trail of Ferns as you walk. Lasts one floor. Cannot be unequipped.")]
+class ItemGoldenFern : EquippableItem, IBodyMoveHandler, IFloorChangeHandler, ISticky {
   public override EquipmentSlot slot => EquipmentSlot.Headwear;
 
+  public void HandleFloorChanged(Floor newFloor, Floor oldFloor) {
+    Destroy();
+  }
+
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    if (IsEquipped && !(player.grass is Fern)) {
-      Destroy();
+    if (!(player.floor.grasses[oldPos] is Fern)) {
+      player.floor.Put(new Fern(oldPos));
     }
   }
 }

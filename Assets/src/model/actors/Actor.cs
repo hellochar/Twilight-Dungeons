@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -227,6 +228,18 @@ public class Actor : Body, ISteppable {
 
   public bool CanTargetPlayer() {
     return isVisible;
+  }
+
+  public void SwapPositions() {
+    GameModel.main.player.SetTasks(new SwapPositionsTask(GameModel.main.player, this));
+  }
+
+  public override List<MethodInfo> GetPlayerActions() {
+    var actions = base.GetPlayerActions();
+    if (faction == Faction.Ally) {
+      actions.Add(GetType().GetMethod("SwapPositions", new Type[0]));
+    }
+    return actions;
   }
 }
 

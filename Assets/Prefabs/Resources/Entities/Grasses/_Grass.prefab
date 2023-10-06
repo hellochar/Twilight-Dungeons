@@ -110,7 +110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d4b406973a8bbf419e52d4be37e671a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ANIMATION_TIME: 0.25
+  ANIMATION_TIME: 3
+  delay: 0
 --- !u!1001 &9177665969310209909
 PrefabInstance:
   m_ObjectHideFlags: 0

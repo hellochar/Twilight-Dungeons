@@ -36,7 +36,7 @@ public class Broodpuff : Plant {
 [ObjectInfo(spriteName: "leecher")]
 public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 
-  internal override string GetStats() => "Summon a stationary Leecher within vision. It will attack enemies for 1 damage per turn (this uses Durability).\nYou may pickup the Leecher by tapping it.\nWhen the Leecher runs out of Durability, it drops a Broodpuff Seed.";
+  internal override string GetStats() => "Summon a stationary ally. It attacks enemies for 1 damage (this uses Durability).\n\nYou may pickup the Leecher by tapping it.\n\nAt zero Durability, it becomes a Broodpuff Seed.";
 
   public int durability { get; set; }
 

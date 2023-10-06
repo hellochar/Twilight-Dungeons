@@ -72,7 +72,7 @@ public class CameraController : MonoBehaviour {
       centerCameraOnFloor();
     } else {
       cameraFollowEntity();
-      // cameraZoom();
+      cameraZoom();
       // boundCameraToFloor();
     }
   }
@@ -130,7 +130,7 @@ public class CameraController : MonoBehaviour {
 
   public static float lastZoomTime;
   public static bool IsZoomGuardActive => Time.time - lastZoomTime < 0.5f;
-  bool acceptUserInput = true;
+  bool acceptUserInput = false;
   private void cameraZoom() {
     if (zoomAnimation == null) {
       ZoomLerp(camera, wantedZoom, zoomLerpSpeed);

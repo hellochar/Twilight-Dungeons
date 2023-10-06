@@ -272,7 +272,7 @@ public partial class Encounters {
 
   public static void AddTunnelroot(Floor floor, Room room) {
     var start = FloorUtils.TilesAwayFromCenter(floor, room)
-      .Where((tile) => Tunnelroot.CanOccupy(tile) && tile.grass == null)
+      .Where(Tunnelroot.CanOccupy)
       .Skip(MyRandom.Range(0, 4)).FirstOrDefault();
     if (start == null) {
       return;
@@ -283,10 +283,10 @@ public partial class Encounters {
         .Where((tile) =>
           tile != start &&
           Tunnelroot.CanOccupy(tile) &&
-          tile.grass == null &&
+          tile.CanBeOccupied() &&
           !floor.GetAdjacentTiles(tile.pos).Any(t2 => t2.grass is Tunnelroot || t2 is Downstairs))
         .OrderByDescending(start.DistanceTo)
-        .Take(20)
+        .Take(8)
     );
     if (partner == null) {
       return;

@@ -228,7 +228,22 @@ public partial class Encounters {
     }
   }
 
-  public static void AddFaegrass(Floor floor, Room room) => AddFaegrassImpl(floor, Random.Range(5, 8));
+  public static void AddDeathlyCreeper(Floor floor, Room room) {
+    var allTiles = floor.tiles.Where(DeathlyCreeper.CanOccupy);
+    if (!allTiles.Any()) {
+      return;
+    }
+
+    var groups =
+      TileGroup.partitionIntoDisjointGroups(new HashSet<Tile>(allTiles))
+      .OrderByDescending(group => group.Count());
+    
+    var biggestGroup = groups.First();
+    var startTile = TileGroup.getCenterTile(biggestGroup);
+    floor.Put(new DeathlyCreeper(startTile.pos));
+  }
+
+  public static void AddFaegrass(Floor floor, Room room) => AddFaegrassImpl(floor, Random.Range(10, 20));
   public static void AddFaegrassImpl(Floor floor, int num) {
     if (num == 0) {
       return;

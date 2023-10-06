@@ -502,7 +502,7 @@ public partial class Encounters {
     if (!livableTiles.Any()) {
       Debug.LogError("Couldn't find a location for mushrooms!");
     }
-    foreach (var tile in Util.RandomRange(livableTiles, MyRandom.Range(5, 12))) {
+    foreach (var tile in Util.RandomRange(livableTiles, MyRandom.Range(6, 12))) {
       floor.Put(new Mushroom(tile.pos));
     }
   }

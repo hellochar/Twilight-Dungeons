@@ -6,14 +6,17 @@ using UnityEngine;
 [Serializable]
 [ObjectInfo("bloodstone", flavorText: "", description: "You deal +1 attack damage.\nYou take +1 attack damage.\n\nDestroy the Bloodstone to remove.")]
 public class Bloodstone : Body {
+  BloodstoneStatus status;
+
   public Bloodstone(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 1;
+    status = new BloodstoneStatus(this);
   }
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();
     if (floor == GameModel.main.player?.floor) {
-      GameModel.main.player.statuses.Add(new BloodstoneStatus());
+      GameModel.main.player.statuses.Add(status);
     }
     RegisterEntityAddedListener();
   }
@@ -26,32 +29,35 @@ public class Bloodstone : Body {
   protected override void HandleLeaveFloor() {
     floor.OnEntityAdded -= HandleEntityAdded;
     base.HandleLeaveFloor();
-    var status = GameModel.main.player.statuses.FindOfType<BloodstoneStatus>();
-    if (status != null) {
-      status.Refresh();
-    }
+    status.Refresh();
   }
 
   private void HandleEntityAdded(Entity entity) {
     if (entity is Player p) {
-      p.statuses.Add(new BloodstoneStatus());
+      p.statuses.Add(status);
     }
   }
 }
 
 [Serializable]
 [ObjectInfo("bloodstone")]
-public class BloodstoneStatus : StackingStatus, IAttackDamageModifier, IAttackDamageTakenModifier, IFloorChangeHandler {
-  public BloodstoneStatus() {}
+public class BloodstoneStatus : Status, IAttackDamageModifier, IAttackDamageTakenModifier, IFloorChangeHandler {
+  private Bloodstone owner;
+
+  public BloodstoneStatus(Bloodstone owner) {
+    this.owner = owner;
+  }
 
   public override bool Consume(Status otherParam) {
-    Refresh();
-    return true;
+    return false;
   }
 
   public void Refresh() {
-    var numBloodstones = actor.floor.bodies.Where(b => b is Bloodstone).Count();
-    stacks = numBloodstones;
+    var isOwnerOnDifferentFloor = actor.floor != owner.floor;
+    var isOwnerDead = owner.IsDead;
+    if (isOwnerOnDifferentFloor || isOwnerDead) {
+      Remove();
+    }
   }
 
   public override void HandleFloorChanged(Floor newFloor, Floor oldFloor) {
@@ -60,12 +66,10 @@ public class BloodstoneStatus : StackingStatus, IAttackDamageModifier, IAttackDa
     }
   }
 
-  public override string Info() {
-    return $"Deal and take +{stacks} damage.";
-  }
+  public override string Info() => ObjectInfo.GetDescriptionFor(owner);
 
   // this is super hacky but this implementation is executed for both IAttackDamage and IAttackDamageTaken
   public int Modify(int input) {
-    return input + stacks;
+    return input + 1;
   }
 }

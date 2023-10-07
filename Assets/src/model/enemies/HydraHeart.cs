@@ -4,9 +4,10 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Every four turns, spawns a Hydra Head (max 12) within range 4.\nOn death, all Hydra Heads die as well.\nDoes not move or attack.", flavorText: "Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.")]
+[ObjectInfo(description: "Every four turns, spawns a Hydra Head (max 6) within range 3.\nOn death, all Hydra Heads die as well.\nDoes not move or attack.", flavorText: "Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.")]
 public class HydraHeart : AIActor, IBaseActionModifier {
-  public static int spawnRange = 4;
+  public static int spawnRange = 3;
+
   public static bool IsTarget(Body b) {
     if (b is Player p && p.isCamouflaged) {
       return false;
@@ -16,8 +17,22 @@ public class HydraHeart : AIActor, IBaseActionModifier {
   private List<HydraHead> heads = new List<HydraHead>();
   public HydraHeart(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 9;
+    hp = baseMaxHp = 11;
     // inventory.AddItem(new ItemHydraPearl());
+  }
+
+  public override void SetAI(AI ai) {
+    if (ai is CharmAI) {
+      // keep our current AI; we'll spawn charmed heads because our faction is now Allied
+      ai.Start();
+      ClearTasks();
+
+      foreach (var head in heads) {
+        head.SetAI(new CharmAI(head));
+      }
+    } else {
+      base.SetAI(ai);
+    }
   }
 
   private bool needsWait = true;
@@ -28,7 +43,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
     } else {
       // update head count
       heads.RemoveAll(h => h.IsDead);
-      if (heads.Count() < 12) {
+      if (heads.Count() < 6) {
         needsWait = true;
         return new TelegraphedTask(this, 1, new GenericBaseAction(this, SpawnHydraHead));
       } else {
@@ -52,6 +67,7 @@ public class HydraHeart : AIActor, IBaseActionModifier {
     if (spawnTile != null) {
       var head = new HydraHead(spawnTile.pos);
       head.ClearTasks();
+      head.statuses.Add(new SurprisedStatus());
       if (this.faction == Faction.Ally) {
         head.SetAI(new CharmAI(head));
       }

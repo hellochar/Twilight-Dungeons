@@ -25,12 +25,19 @@ public class Intro : MonoBehaviour {
 
       // maybe jump into tutorial immediately
       if (!TutorialController.HasFinishedTutorial()) {
-        StartCoroutine(prologue.PlayNarrative(() => {
-          GameModel.GenerateTutorialAndSetMain();
-          GoToGameScene();
-        }));
+        StartIntroAndTutorial();
       }
     }
+  }
+
+  // hooked up to settings button
+  public void ReplayIntroAndTutorial() => StartIntroAndTutorial();
+
+  private void StartIntroAndTutorial() {
+    StartCoroutine(prologue.PlayNarrative(() => {
+      GameModel.GenerateTutorialAndSetMain();
+      GoToGameScene();
+    }));
   }
 
   public void NewGame() {

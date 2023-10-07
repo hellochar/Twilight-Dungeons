@@ -34,6 +34,8 @@ public class FullpageNarrativeController : MonoBehaviour, IPointerClickHandler {
     }
   }
 
+  public 
+
   IEnumerator FadeText() {
     var textComponent = GetComponentInChildren<TMPro.TMP_Text>();
     return Transitions.Animate(2, (t) => {

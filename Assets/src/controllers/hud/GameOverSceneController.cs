@@ -27,6 +27,7 @@ public class GameOverSceneController : MonoBehaviour {
   }
 
   public void HandleButtonPressed() {
+    button.SetActive(false);
     if (GameModel.main.stats.won) {
       TheEnd();
     } else {

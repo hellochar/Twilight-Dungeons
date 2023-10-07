@@ -164,7 +164,7 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
   }
 
   void UpdateDebug() {
-    if (IngameDebugConsole.DebugLogManager.Instance.IsLogWindowVisible) {
+    if (IngameDebugConsole.DebugLogManager.Instance?.IsLogWindowVisible ?? false) {
       return;
     }
     if (Input.GetKeyDown(KeyCode.V)) {

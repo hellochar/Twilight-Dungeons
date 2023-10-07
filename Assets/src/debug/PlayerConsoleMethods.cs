@@ -15,11 +15,23 @@ public class PlayerConsoleMethods {
   // }
 
   [ConsoleMethod("CheatAddItem", "Add an Item to player inventory")]
-  public static void CheatAddItem(string itemTypeStr) {
+  public static void CheatAddItem(string itemTypeStr, int num = 1) {
     Type itemType = Assembly.GetExecutingAssembly().GetType(itemTypeStr);
-    var constructor = itemType.GetConstructor(new Type[0]);
-    var item = (Item)constructor.Invoke(new object[0]);
-    GameModel.main.player.inventory.AddItem(item);
+    var constructor0 = itemType.GetConstructor(new Type[0]);
+    if (constructor0 != null) {
+      for (int i = 0; i < num; i++) {
+        var item = (Item)constructor0.Invoke(new object[0]);
+        GameModel.main.player.inventory.AddItem(item);
+      }
+      return;
+    }
+
+    var constructor1 = itemType.GetConstructor(new Type[] { typeof(int) });
+    if (constructor1 != null) {
+      var item = (Item)constructor1.Invoke(new object[] { num });
+      GameModel.main.player.inventory.AddItem(item);
+      return;
+    }
   }
 
   // [ConsoleMethod("CAddItemPlaceableEntity", "Add an ItemPlaceableEntity to player inventory")]

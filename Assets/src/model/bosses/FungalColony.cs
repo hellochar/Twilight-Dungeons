@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo("fungal-colony", description: "Blocks 1 attack damage.\nSpawns a Fungal Sentinel when attacked.\nCan be damaged by Fungal Sentinel explosions.\nEvery 13 turns, summons a Fungal Breeder and moves itself to a random Fungal Wall.\nDoes not move or attack.")]
+[ObjectInfo("fungal-colony", description: "Blocks 1 attack damage.\nSpawns a Fungal Sentinel when attacked.\nCan be damaged by Fungal Sentinel explosions.\nEvery 12 turns, summons a Fungal Breeder and moves itself to a random Fungal Wall.\nDoes not move or attack.")]
 public class FungalColony : Boss, IAttackDamageTakenModifier {
   public FungalColony(Vector2Int pos) : base(pos) {
     hp = baseMaxHp = 48;
@@ -24,7 +24,7 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
   protected override ActorTask GetNextTask() {
     if (needsWait) {
       needsWait = false;
-      return new WaitTask(this, 13);
+      return new WaitTask(this, 12);
     } else {
       return new GenericTask(this, SummonFungalBreeder);
     }
@@ -36,7 +36,12 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
       needsWait = true;
       return;
     }
-    var nextTile = Util.RandomPick(floor.tiles.Where(t => t is FungalWall));
+    var fungalWalls = floor.tiles.Where(t => t is FungalWall);
+
+    // prefer walls greater than distance 3
+    var farWalls = fungalWalls.Where(t => t.DistanceTo(player) > 3).ToList();
+
+    var nextTile = Util.RandomPick(farWalls.Any() ? farWalls : fungalWalls);
     if (nextTile != null) {
       needsWait = true;
       var oldPos = pos;
@@ -73,13 +78,10 @@ public class FungalBreeder : AIActor {
   }
 
   void SummonFungalSentinel() {
-    var tile = Util.RandomPick(floor.GetAdjacentTiles(pos).Where(t => t.CanBeOccupied()));
-    if (tile != null) {
-      var sentinel = new FungalSentinel(tile.pos);
-      sentinel.statuses.Add(new SurprisedStatus());
-      sentinel.timeNextAction += 1;
-      floor.Put(sentinel);
-    }
+    var sentinel = new FungalSentinel(pos);
+    sentinel.statuses.Add(new SurprisedStatus());
+    sentinel.timeNextAction += 1;
+    floor.Put(sentinel);
   }
 }
 
@@ -112,7 +114,7 @@ public class FungalWall : Wall {
 }
 
 [System.Serializable]
-[ObjectInfo("fungal-sentinel", description: "Chases you, then explodes, dealing 2 damage to adjacent Creatures and leaving a Fungal Wall. This can trigger other Sentinels.\nKilling the Sentinel will prevent its explosion.")]
+[ObjectInfo("fungal-sentinel", description: "Explodes at melee range, dealing 2 damage to adjacent Creatures. This can trigger other Sentinels.\n\nKilling the Sentinel will prevent its explosion.\n\nLeaves a Fungal Wall on death.")]
 public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INoTurnDelay {
   public override float turnPriority => task is ExplodeTask ? 49 : 50;
   [field:NonSerialized]
@@ -123,12 +125,16 @@ public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INo
     ClearTasks();
   }
 
+  public override void HandleDeath(Entity source) {
+    if (tile is Ground) {
+      floor.Put(new FungalWall(pos));
+    }
+    base.HandleDeath(source);
+  }
+
   public void Explode() {
     foreach (var actor in floor.AdjacentActors(pos).Where(actor => actor != this)) {
       actor.TakeDamage(2, this);
-    }
-    if (tile is Ground) {
-      floor.Put(new FungalWall(pos));
     }
     OnExploded?.Invoke();
     KillSelf();
@@ -137,6 +143,10 @@ public class FungalSentinel : AIActor, ITakeAnyDamageHandler, IDeathHandler, INo
   private bool shouldExplode = false;
 
   protected override ActorTask GetNextTask() {
+    if (!CanTargetPlayer()) {
+      return new MoveRandomlyTask(this);
+    }
+
     if (shouldExplode) {
       return new GenericTask(this, Explode);
     }

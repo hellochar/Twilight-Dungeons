@@ -23,7 +23,11 @@ public class Grasper : AIActor, IBaseActionModifier {
       }
       return new GenericTask(this, DamagePlayer);
     }
-    return new GenericTask(this, SpawnTendril);
+    if (GetNextTendrilTile() == null) {
+      return new WaitTask(this, 1);
+    } else {
+      return new GenericTask(this, SpawnTendril);
+    }
   }
 
   private void DamagePlayer() {
@@ -31,22 +35,19 @@ public class Grasper : AIActor, IBaseActionModifier {
     player.TakeAttackDamage(3, this);
   }
 
-  private void SpawnTendril() {
+  Tile GetNextTendrilTile() {
     var lastNodePos = tendrils.LastOrDefault()?.pos ?? pos;
     var target = GameModel.main.player.pos;
-    // var path = floor.FindPath(lastNodePos, target, true);
-    // if (path == null || path.Count == 0) {
-    //   // find a new path
-    //   SetNewTarget();
-    //   return;
-    // }
-    var nextTile = floor
-      .GetCardinalNeighbors(lastNodePos)
+
+    return floor.GetCardinalNeighbors(lastNodePos)
       .Where((t) => t.CanBeOccupied())
       .OrderBy(t => t.DistanceTo(target))
       .FirstOrDefault();
-    if (nextTile != null) {
-      var tendril = new Tendril(nextTile.pos, this);
+  }
+
+  private void SpawnTendril() {
+    if (GetNextTendrilTile() != null) {
+      var tendril = new Tendril(GetNextTendrilTile().pos, this);
       tendrils.Add(tendril);
       floor.Put(tendril);
       tendril.ClearTasks();

@@ -10,13 +10,13 @@ public class Grasper : AIActor, IBaseActionModifier {
 
   public Grasper(Vector2Int pos) : base(pos) {
     faction = Faction.Enemy;
-    hp = baseMaxHp = 7;
+    hp = baseMaxHp = 6;
   }
 
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
     var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where(tendrils.Contains).Cast<Tendril>();
-    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 4;
+    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 3;
     if (isPlayerSurrounded) {
       foreach (var t in tendrilsSurroundingPlayer) {
         t.OnPulse();
@@ -86,7 +86,7 @@ public class Grasper : AIActor, IBaseActionModifier {
 }
 
 [Serializable]
-[ObjectInfo(description: "If you next to 4 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.")]
+[ObjectInfo(description: "If you next to 3 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.")]
 public class Tendril : Actor, IDeathHandler, IBaseActionModifier, INoTurnDelay {
   [field:NonSerialized] /// controller only
   public Action OnPulse = delegate {};
@@ -96,7 +96,7 @@ public class Tendril : Actor, IDeathHandler, IBaseActionModifier, INoTurnDelay {
   public Tendril(Vector2Int pos, Grasper owner) : base(pos) {
     this.owner = owner;
     faction = Faction.Neutral;
-    hp = baseMaxHp = 5;
+    hp = baseMaxHp = 3;
     timeNextAction += 999999;
   }
 

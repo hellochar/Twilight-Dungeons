@@ -42,11 +42,14 @@ public class OldDude : NPC {
   ItemDeathbloomFlower playersDeathbloom => GameModel.main.player.inventory.OfType<ItemDeathbloomFlower>().FirstOrDefault();
 
   public void Trade() {
-    if (playersDeathbloom == null) {
+    var deathbloom = playersDeathbloom;
+    if (deathbloom == null) {
       throw new CannotPerformActionException("You have no Deathbloom Flower to show.");
     }
 
-    playersDeathbloom.stacks--;
+    GameModel.main.player.inventory.RemoveItem(deathbloom);
+    inventory.AddItem(deathbloom);
+    // playersDeathbloom.Destroy();
     GameModel.main.player.water += 100;
     // Popups.CreateStandard("Old Dude", "", "Thanks!", "", null);
     questCompleted = true;

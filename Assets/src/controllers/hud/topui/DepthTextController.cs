@@ -23,11 +23,15 @@ public class DepthTextController : MonoBehaviour {
   public void ShowPopup() {
     var playTime = TimeSpan.FromSeconds(Time.timeSinceLevelLoad).ToString(@"hh\:mm\:ss");
     var info = $"Playtime {playTime}\nSeed " + GameModel.main.seed.ToString("x");
+    var buttons = new List<(string, Action)>() {
+      ("Retry", () => GameOverSceneController.Retry(this))
+    };
     Popups.CreateStandard(
       title: null,
       category: "",
       info: info,
       flavor: "",
+      buttons: buttons,
       errorText: GameModel.main.turnManager.latestException?.ToString()
     );
   }

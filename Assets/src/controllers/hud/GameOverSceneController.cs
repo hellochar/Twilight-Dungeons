@@ -33,14 +33,14 @@ public class GameOverSceneController : MonoBehaviour {
       if (GameModel.main.permadeath) {
         NewGame();
       } else {
-        Retry();
+        Retry(this);
       }
     }
   }
 
-  private void Retry() {
+  public static void Retry(MonoBehaviour owner) {
     GameModel.main = Serializer.LoadCheckpoint();
-    StartCoroutine(Transitions.GoToNewScene(this, null, "Scenes/Game"));
+    owner.StartCoroutine(Transitions.GoToNewScene(owner, null, "Scenes/Game"));
   }
 
   private void NewGame() {

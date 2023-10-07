@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public abstract class AIActor : Actor, IDeathHandler {
   public Inventory inventory = new Inventory(3);
-  private AI aiOverride;
+  protected AI aiOverride { get; private set; }
   public AIActor(Vector2Int pos) : base(pos) {
     SetTasks(new SleepTask(this));
   }
@@ -21,6 +21,7 @@ public abstract class AIActor : Actor, IDeathHandler {
 
   public void SetAI(AI ai) {
     this.aiOverride = ai;
+    ai.Start();
     ClearTasks();
   }
 

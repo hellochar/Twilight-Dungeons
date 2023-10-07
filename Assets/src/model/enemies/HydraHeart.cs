@@ -51,6 +51,10 @@ public class HydraHeart : AIActor, IBaseActionModifier {
 
     if (spawnTile != null) {
       var head = new HydraHead(spawnTile.pos);
+      head.ClearTasks();
+      if (this.faction == Faction.Ally) {
+        head.SetAI(new CharmAI(head));
+      }
       floor.Put(head);
       heads.Add(head);
     }

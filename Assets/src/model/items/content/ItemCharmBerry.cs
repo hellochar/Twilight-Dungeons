@@ -29,8 +29,6 @@ public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
 
   private void Charm(AIActor actor) {
     actor.SetAI(new CharmAI(actor));
-    actor.statuses.Add(new CharmedStatus());
-    actor.faction = Faction.Ally;
     stacks--;
   }
 
@@ -51,6 +49,8 @@ public class ItemCharmBerry : Item, IStackable, ITargetedAction<AIActor> {
 [Serializable]
 public abstract class AI {
   public abstract ActorTask GetNextTask();
+
+  internal virtual void Start() {}
 }
 
 [Serializable]
@@ -59,6 +59,12 @@ public class CharmAI : AI {
 
   public CharmAI(AIActor actor) {
     this.actor = actor;
+  }
+
+  internal override void Start() {
+    base.Start();
+    actor.statuses.Add(new CharmedStatus());
+    actor.faction = Faction.Ally;
   }
 
   public override ActorTask GetNextTask() {

@@ -76,6 +76,22 @@ public static class EntityPopup {
   }
 
   private static string GetCategoryForEntity(Entity entity) {
+    string type = GetTypeForEntity(entity);
+    string faction = GetFactionForEntity(entity);
+    return string.IsNullOrEmpty(faction) ? type : $"{faction} {type}";
+  }
+
+  private static string GetFactionForEntity(Entity entity) {
+    if (entity is IEnemyEntity) {
+      return "Enemy";
+    }
+    if (entity is Actor a) {
+      return a.faction.ToString();
+    }
+    return "";
+  }
+
+  private static string GetTypeForEntity(Entity entity) {
     switch (entity) {
       case Tile t:
         return "Tile";

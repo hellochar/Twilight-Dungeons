@@ -15,6 +15,7 @@ public class Llaora : Grass {
     OnNoteworthyAction();
     foreach (var body in floor.EnumerateCircle(pos, radius).Select(t => floor.bodies[t])) {
       if (body is Actor actor && actor.faction == Faction.Enemy) {
+        actor.ClearTasks();
         actor.statuses.Add(new ConfusedStatus(10));
       }
     }

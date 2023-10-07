@@ -72,21 +72,27 @@ class Faegrass : Grass, ITakeAnyDamageHandler {
 
   public void HandleTakeAnyDamage(int damage) {
     if (body is Actor a) {
-      FloorController.current.PlayVFX("FaeTeleport", a.pos);
+      GameModel.main.EnqueueEvent(() => {
+        if (a.IsDead) {
+          return;
+        }
 
-      var nextFaegrass = Util.RandomPick(
-        floor.grasses
-        .OfType<Faegrass>()
-        .Where(faegrass => faegrass != this && faegrass.tile.CanBeOccupied())
-      );
+        FloorController.current.PlayVFX("FaeTeleport", a.pos);
 
-      if (nextFaegrass != null) {
-        a.pos = nextFaegrass.pos;
-      }
-      Kill(a);
-      if (a is AIActor) {
-        a.statuses.Add(new SurprisedStatus());
-      }
+        var nextFaegrass = Util.RandomPick(
+          floor.grasses
+          .OfType<Faegrass>()
+          .Where(faegrass => faegrass != this && faegrass.tile.CanBeOccupied())
+        );
+
+        if (nextFaegrass != null) {
+          a.pos = nextFaegrass.pos;
+        }
+        Kill(a);
+        if (a is AIActor) {
+          a.statuses.Add(new SurprisedStatus());
+        }
+      });
     }
   }
 }

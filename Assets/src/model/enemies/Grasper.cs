@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[ObjectInfo(description: "Shoots out a long, snaking Tendril that chases and surrounds you.\nIf you are next to 4 or more Tendrils, Grasper deals 3 attack damage per turn.")]
+[ObjectInfo(description: "Shoots out a long, snaking Tendril that surrounds you.\nIf you are next to three or more Tendrils, Grasper deals 3 attack damage.")]
 public class Grasper : AIActor, IBaseActionModifier {
   public readonly List<Tendril> tendrils = new List<Tendril>();
 
@@ -13,11 +13,11 @@ public class Grasper : AIActor, IBaseActionModifier {
     hp = baseMaxHp = 6;
   }
 
+#nullable enable
   protected override ActorTask GetNextTask() {
     var player = GameModel.main.player;
-    var tendrilsSurroundingPlayer = floor.AdjacentActors(player.pos).Where(tendrils.Contains).Cast<Tendril>();
-    var isPlayerSurrounded = tendrilsSurroundingPlayer.Count() >= 3;
-    if (isPlayerSurrounded) {
+    var tendrilsSurroundingPlayer = GetContiguousTendrilsSurroundingPlayer(3);
+    if (tendrilsSurroundingPlayer != null) {
       foreach (var t in tendrilsSurroundingPlayer) {
         t.OnPulse();
       }
@@ -28,6 +28,27 @@ public class Grasper : AIActor, IBaseActionModifier {
     } else {
       return new GenericTask(this, SpawnTendril);
     }
+  }
+
+  private List<Tendril>? GetContiguousTendrilsSurroundingPlayer(int minLength) {
+    for (int i = 0; i < tendrils.Count; i++) {
+      var run = FindContiguousRunSurroundingPlayer(i);
+      if (run.Count >= minLength) {
+        return run;
+      }
+    }
+    return null;
+  }
+
+  private List<Tendril> FindContiguousRunSurroundingPlayer(int startIndex) {
+    List<Tendril> list = new List<Tendril>();
+
+    int index = startIndex;
+    while (index < tendrils.Count && tendrils[index].IsNextTo(GameModel.main.player)) {
+      list.Add(tendrils[index]);
+      index++;
+    }
+    return list;
   }
 
   private void DamagePlayer() {

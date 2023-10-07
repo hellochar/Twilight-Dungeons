@@ -155,7 +155,7 @@ public partial class Encounters {
   }
   
   public static void AddFungalSentinel(Floor floor, Room room) {
-    var tiles = SpectrumPos(floor, 0.3f);
+    var tiles = SpectrumPos(floor, 0.45f);
     var num = 3;
     foreach (var tile in tiles.Take(num)) {
       floor.Put(new FungalSentinel(tile.pos));

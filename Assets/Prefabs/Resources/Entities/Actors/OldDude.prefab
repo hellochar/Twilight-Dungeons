@@ -80,7 +80,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!114 &5211391864610955038
 MonoBehaviour:
@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adabce2a56d672744b87120a53fab0d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 0}
   showDamageMarks: 1
   bloodColor: {r: 0.75, g: 0, b: 0, a: 0.5}
   hideWaitTask: 0

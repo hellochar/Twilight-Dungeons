@@ -34,7 +34,7 @@ public class Item {
 
   public virtual List<MethodInfo> GetAvailableMethods(Player player) {
     var methods = new List<MethodInfo>() {
-      GetType().GetMethod("Destroy"),
+      // GetType().GetMethod("Destroy"),
       GetType().GetMethod("Drop")
     };
     if (this is IEdible edible) {

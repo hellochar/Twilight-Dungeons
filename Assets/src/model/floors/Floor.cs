@@ -35,12 +35,12 @@ public class Floor {
   public Vector2Int center => new Vector2Int(width / 2, height / 2);
 
   /// abstract bsp root
-  [NonSerialized] /// not used beyond generator
+  // [NonSerialized] /// not used beyond generator
   internal Room root;
   /// all rooms (terminal bsp nodes). Sorted by 
-  [NonSerialized] /// not used beyond generator
+  // [NonSerialized] /// not used beyond generator
   internal List<Room> rooms;
-  [NonSerialized] /// not used beyond generator
+  // [NonSerialized] /// not used beyond generator
   internal Room upstairsRoom;
   [NonSerialized] /// not used beyond generator
   internal Room downstairsRoom;

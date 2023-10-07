@@ -158,6 +158,15 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
 
   public override void Update() {
     #if UNITY_EDITOR
+    UpdateDebug();
+    #endif
+    base.Update();
+  }
+
+  void UpdateDebug() {
+    if (IngameDebugConsole.DebugLogManager.Instance.IsLogWindowVisible) {
+      return;
+    }
     if (Input.GetKeyDown(KeyCode.V)) {
       player.SetTasks(new SleepTask(player, 100, true));
     }
@@ -217,9 +226,8 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       }
       canvas.SetActive(!canvas.activeSelf);
     }
-    #endif
-    base.Update();
   }
+
   private GameObject canvas;
 
   public override void HandleActionPerformed(BaseAction action, BaseAction initial) {

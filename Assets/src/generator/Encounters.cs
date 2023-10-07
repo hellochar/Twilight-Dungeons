@@ -8,6 +8,21 @@ public delegate void Encounter(Floor floor, Room room);
 
 /// Specific Encounters are static, but bags of encounters are not; picking out of a bag will discount it.
 public partial class Encounters {
+  public static Encounter GetByName(string name) {
+    var field = typeof(Encounters).GetField(name);
+    if (field != null) {
+      return field.GetValue(null) as Encounter;
+    }
+
+    var method = typeof(Encounters).GetMethod(name);
+    if (method != null) {
+      return new Encounter((Floor floor, Room room) => method.Invoke(null, new object[] { floor, room }));
+    }
+    
+    Debug.LogWarning($"Couldn't find Encounter {name}.");
+    return null;
+  }
+
   private static Encounter Twice(Encounter input) {
     Encounter result = (floor, room) => {
       input(floor, room);

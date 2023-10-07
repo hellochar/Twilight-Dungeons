@@ -22,7 +22,6 @@ public static class EncounterGroupMidGame {
       Grasses = new EncounterBag {
         { 0.75f, AddCrabs },
         { 0.75f, AddViolets },
-        { 0.75f, AddTunnelroot },
         { 0.75f, AddGoldGrass },
         { 0.75f, AddRedcaps },
 
@@ -34,6 +33,7 @@ public static class EncounterGroupMidGame {
 
         { 0.3f, AddEveningBells },
 
+        { 0.2f, AddTunnelroot },
         { 0.2f, ScatteredBoombugs4x },
         { 0.2f, AddGuardleaf4x },
         { 0.2f, AddBrambles },

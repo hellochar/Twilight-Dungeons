@@ -25,9 +25,12 @@ public static class EncounterGroupEverything {
         { 0.75f, AddBladegrass },
         // { 0.75f, AddCheshireWeeds },
 
+        { 0.5f, AddTunnelroot },
         { 0.5f, AddBrambles },
         { 0.5f, AddSoftGrass },
         { 0.5f, ScatteredBoombugs },
+        { 0.5f, AddDeathbloom },
+        { 0.5f, AddGuardleaf },
 
         { 0.4f, AddPoisonmoss },
         { 0.4f, AddWebs },
@@ -36,11 +39,8 @@ public static class EncounterGroupEverything {
 
         { 0.35f, AddEveningBells },
 
-        { 0.3f, AddGuardleaf },
 
-        { 0.2f, AddTunnelroot },
         { 0.2f, AddAgave },
-        { 0.2f, AddDeathbloom },
 
         { 0.05f, FillWithFerns }
       },
@@ -54,34 +54,20 @@ public static class EncounterGroupEverything {
 
         { 0.25f, AddScuttlers },
 
-        { 0.25f, AddSoftGrass },
-        { 0.25f, AddBladegrass },
         { 0.25f, AddFruitingBodies },
         { 0.25f, AddBloodstone },
 
-        { 0.2f, ScatteredBoombugs },
-
         // { 0.1f, AddCoralmoss },
-        { 0.1f, AddDeathbloom },
-        { 0.1f, AddSpiders },
-        { 0.1f, AddGuardleaf },
-        { 0.1f, AddSpore },
         { 0.1f, AddWater },
 
         { 0.05f, AddEveningBells },
         { 0.05f, AddPoisonmoss },
         { 0.05f, AddTunnelroot },
-        { 0.05f, AddViolets },
-        { 0.05f, AddBrambles },
 
         { 0.02f, AddFaegrass },
         { 0.02f, AddNecroroot },
-        { 0.02f, AddScorpions },
-        { 0.02f, AddParasite },
-        { 0.02f, AddGolems },
 
         { 0.01f, AddHydra },
-        { 0.01f, AddGrasper },
       },
     };
   }

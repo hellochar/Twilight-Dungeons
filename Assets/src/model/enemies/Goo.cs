@@ -48,6 +48,7 @@ public class Goo : AIActor, IBodyTakeAttackDamageHandler {
     goo2.statuses.Add(new SurprisedStatus());
 
     floor.PutAll(goo1, goo2);
-    KillSelf();
+    // don't die
+    floor.Remove(this);
   }
 }

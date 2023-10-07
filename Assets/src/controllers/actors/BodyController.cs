@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 public class BodyController : MonoBehaviour, IEntityController, IPlayerInteractHandler, ITakeAnyDamageHandler, IHealHandler {
   [NonSerialized]
   public Body body;
-  protected GameObject sprite;
+  [HideInInspector]
+  public GameObject sprite;
   public bool showDamageMarks = true;
 
   public virtual void Start() {

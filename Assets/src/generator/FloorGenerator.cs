@@ -129,22 +129,6 @@ public class FloorGenerator {
     var depth = floor.depth;
     floor.depth = 20;
     // put stuff here
-
-    // Encounters.AddOldDude(floor, floor.root);
-    // Encounters.AddMossMan(floor, floor.root);
-    // Encounters.AddMercenary(floor, floor.root);
-    // Encounters.AddGambler(floor, floor.root);
-
-    Encounters.AddFaegrass(floor, floor.root);
-
-    // Encounters.OneButterfly(floor, floor.root);
-    // Encounters.AddSoftMoss(floor, floor.root);
-    // Encounters.AddBird(floor, floor.root);
-    // Encounters.AddSnake(floor, floor.root);
-    // Encounters.AddScuttlers(floor, floor.root);
-    // Encounters.AddBloodwort(floor, floor.root);
-    // Encounters.AddShielders(floor, floor.root);
-    // Encounters.AddWallflowers(floor, floor.root);
     floor.depth = depth;
 #endif
 

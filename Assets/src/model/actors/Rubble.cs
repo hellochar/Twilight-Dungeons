@@ -24,8 +24,8 @@ public class Rubble : Destructible, IBlocksVision {
 
 [System.Serializable]
 [ObjectInfo(description: "Destructible.")]
-public class Stump : Destructible, IBlocksVision {
-  public Stump(Vector2Int pos) : base(pos, 3) {}
+public class Stump : Destructible {
+  public Stump(Vector2Int pos) : base(pos, 1) {}
 }
 
 [System.Serializable]

@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 113711
+    totalSpriteSurfaceArea: 113967
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -143,6 +143,7 @@ SpriteAtlas:
   - {fileID: 8509550459451208454, guid: ff64a074359db7640bceb3339bafac95, type: 3}
   - {fileID: -7064220622572970029, guid: ff64a074359db7640bceb3339bafac95, type: 3}
   - {fileID: -4124057691748712743, guid: ff64a074359db7640bceb3339bafac95, type: 3}
+  - {fileID: 21300000, guid: c6de44749c5c9594ead826d34b09c3e7, type: 3}
   - {fileID: 21300000, guid: 22ffbca4cb774274cb72bcce63c5c489, type: 3}
   - {fileID: -4533687649513996969, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
   - {fileID: -398975762361691103, guid: 52bef1c470df3184bb0347fab064b179, type: 3}
@@ -496,6 +497,7 @@ SpriteAtlas:
   - water_0
   - water_3
   - water_2
+  - deathly-creeper
   - fungal-sentinel
   - sprite-line-diagonal-dotted
   - pixel-line-diagonal

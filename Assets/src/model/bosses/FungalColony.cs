@@ -48,7 +48,10 @@ public class FungalColony : Boss, IAttackDamageTakenModifier {
       // remove the tile so it's occupiable
       floor.Put(new Ground(nextTile.pos));
       pos = nextTile.pos;
-      floor.Put(new FungalBreeder(oldPos));
+      var breeder = new FungalBreeder(oldPos);
+      floor.Put(breeder);
+      breeder.ClearTasks();
+      breeder.statuses.Add(new SurprisedStatus());
     }
   }
 

@@ -1,17 +1,25 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
 class MoveRandomlyTask : DoOnceTask {
-  public MoveRandomlyTask(Actor actor) : base(actor) { }
+  private Func<Tile, bool>? predicate;
 
-  protected override BaseAction GetNextActionImpl() {
-    return GetRandomMove(actor);
+  public MoveRandomlyTask(Actor actor, Func<Tile, bool>? predicate = null) : base(actor) {
+    this.predicate = predicate;
   }
 
-  public static BaseAction GetRandomMove(Actor actor) {
+  protected override BaseAction GetNextActionImpl() {
+    return GetRandomMove(actor, predicate);
+  }
+
+  public static BaseAction GetRandomMove(Actor actor, Func<Tile, bool>? predicate) {
     var adjacentTiles = actor.floor?.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
+    if (predicate != null) {
+      adjacentTiles = adjacentTiles.Where(predicate);
+    }
     if (adjacentTiles?.Any() ?? false) {
       Vector2Int pos = Util.RandomPick(adjacentTiles).pos;
       return new MoveBaseAction(actor, pos);

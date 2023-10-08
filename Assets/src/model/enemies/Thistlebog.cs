@@ -35,16 +35,24 @@ public class Thistlebog : AIActor, ITakeAnyDamageHandler {
   }
 
   protected override ActorTask GetNextTask() {
-    if (CanTargetPlayer() && cooldown <= 0) {
-      if (Util.DiamondDistanceToPlayer(this) <= 2) {
-        return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
-      } else {
-        return new ChaseTargetTask(this, GameModel.main.player, 1);
-      }
+    if (!CanTargetPlayer()) {
+      return new MoveRandomlyTask(this, AvoidBrambles);
+    }
+    var player = GameModel.main.player;
+    if (IsNextTo(player)) {
+      return new RunAwayTask(this, player.pos, 1, false);
+    }
+    if (cooldown > 0) {
+      return new MoveRandomlyTask(this, AvoidBrambles);
+    }
+    if (Util.DiamondDistanceToPlayer(this) <= 2) {
+      return new TelegraphedTask(this, 1, new GenericBaseAction(this, SummonBramblesAroundPlayer));
     } else {
-      return new MoveRandomlyTask(this);
+      return new ChaseTargetTask(this, GameModel.main.player, 1).MaxMoves(1);
     }
   }
+
+  public static bool AvoidBrambles(Tile t) => !(t.grass is Brambles);
 
   private void SummonBramblesAroundPlayer() {
     if (CanTargetPlayer() && cooldown <= 0) {

@@ -13,7 +13,7 @@ public class ItemWildwoodWreath : EquippableItem, IDurable, IBodyMoveHandler {
   public int maxDurability => 10;
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    var target = Util.RandomPick(player.floor.AdjacentActors(player.pos).Where(a => a.faction != Faction.Ally && !a.statuses.Has<ConfusedStatus>()));
+    var target = Util.RandomPick(player.floor.AdjacentActors(player.pos).Where(a => a.faction == Faction.Enemy && !a.statuses.Has<ConfusedStatus>()));
     if (target != null) {
       target.statuses.Add(new ConfusedStatus(5));
       this.ReduceDurability();

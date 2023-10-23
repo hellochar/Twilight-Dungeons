@@ -8,6 +8,7 @@ using UnityEngine;
 /// Broodpuff - ideas are:
 // puffs, poofs, color, photosynthesis, cute, leech seed/sucking life, happy
 // once you use it - you get another seed
+[PlantConfig(FloorsToMature = 3, WaterCost = 100)]
 public class Broodpuff : Plant {
   [Serializable]
   class Mature : MaturePlantStage {
@@ -18,7 +19,7 @@ public class Broodpuff : Plant {
         new ItemLeecher()
       ));
       harvestOptions.Add(new Inventory(
-        new ItemLeecher(4),
+        new ItemLeecher(3),
         new ItemBacillomyte()
       ));
       harvestOptions.Add(new Inventory(
@@ -40,9 +41,9 @@ public class ItemLeecher : Item, IDurable, ITargetedAction<Tile> {
 
   public int durability { get; set; }
 
-  public int maxDurability => 7;
+  public int maxDurability => 6;
 
-  public ItemLeecher(int durability = 7) {
+  public ItemLeecher(int durability = 6) {
     this.durability = durability;
   }
 
@@ -72,7 +73,7 @@ public class Leecher : AIActor, IAttackHandler {
   public int durability;
   public Leecher(Vector2Int pos, int durability) : base(pos) {
     this.durability = durability;
-    hp = baseMaxHp = 5;
+    hp = baseMaxHp = 1;
     faction = Faction.Ally;
     ClearTasks();
   }

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Once Parasite deals attack damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves quickly but randomly.", flavorText: "Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.")]
+[ObjectInfo(description: "Once Parasite deals attack damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves twice, but randomly.", flavorText: "Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.")]
 public class Parasite : AIActor, IDealAttackDamageHandler {
   public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
     [ActionType.MOVE] = 0.5f,
@@ -18,7 +18,7 @@ public class Parasite : AIActor, IDealAttackDamageHandler {
 
   public void HandleDealAttackDamage(int dmg, Body target) {
     if (dmg > 0 && target is Actor actor && !(actor is Parasite)) {
-      actor.statuses.Add(new ParasiteStatus(100));
+      actor.statuses.Add(new ParasiteStatus());
       KillSelf();
     }
   }
@@ -73,6 +73,11 @@ public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler, IFloo
   [field:NonSerialized] /// controller only
   public event System.Action OnAttack;
 
+  public override string Info() => "A parasite is inside you! Take 1 attack damage per 10 turns.\nHealing or clearing the floor cures immediately.\nIf you die, a Parasite Egg spawns over your corpse.";
+
+  public ParasiteStatus() : base(1) {
+  }
+
   public void HandleFloorCleared(Floor floor) {
     Remove();
   }
@@ -91,14 +96,13 @@ public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler, IFloo
   }
 
   public override void Step() {
-    if (stacks % 10 == 0 && stacks != 100) {
+    stacks++;
+    if (stacks > 10) {
       GameModel.main.EnqueueEvent(() => {
         actor?.TakeAttackDamage(1, actor);
       });
       OnAttack?.Invoke();
+      stacks = 1;
     }
-    stacks--;
   }
-
-  public override string Info() => "A parasite is inside you! Take 1 attack damage per 10 turns.\nHealing cures immediately.\nIf you die, a Parasite Egg spawns over your corpse.";
 }

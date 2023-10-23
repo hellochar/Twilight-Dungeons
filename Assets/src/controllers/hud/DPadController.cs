@@ -20,17 +20,17 @@ public class DPadController : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
   void Start() {
     GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
-    Settings.OnChanged += MatchSettings;
+    // Settings.OnChanged += MatchSettings;
     MatchSettings();
   }
 
   void OnDestroy() {
     GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
-    Settings.OnChanged -= MatchSettings;
+    // Settings.OnChanged -= MatchSettings;
   }
 
   private void MatchSettings() {
-    gameObject?.SetActive(Settings.main.useDPad);
+    // gameObject?.SetActive(Settings.main.useDPad);
   }
 
   void HandlePlayersChoice() {

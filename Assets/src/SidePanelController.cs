@@ -16,20 +16,20 @@ public class SidePanelController : MonoBehaviour {
 
   void Start() {
     GameModel.main.turnManager.OnPlayersChoice += HandlePlayersChoice;
-    Settings.OnChanged += MatchSettings;
+    // Settings.OnChanged += MatchSettings;
     buttonPrefab.SetActive(false);
-    MatchSettings();
+    // MatchSettings();
     UpdateItems();
   }
 
   void OnDestroy() {
     GameModel.main.turnManager.OnPlayersChoice -= HandlePlayersChoice;
-    Settings.OnChanged -= MatchSettings;
+    // Settings.OnChanged -= MatchSettings;
   }
 
-  private void MatchSettings() {
-    gameObject?.SetActive(Settings.main.showSidePanel);
-  }
+  // private void MatchSettings() {
+  //   gameObject?.SetActive(Settings.main.showSidePanel);
+  // }
 
   private void HandlePlayersChoice() {
     UpdateItems();

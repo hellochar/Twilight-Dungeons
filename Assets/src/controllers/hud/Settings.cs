@@ -6,11 +6,14 @@ public delegate void SettingsModifier(ref Settings s);
 
 [Serializable]
 public struct Settings {
-  public bool showSidePanel;
+  // deprecated
+  private bool showSidePanel;
   public bool music;
   public bool sfx;
-  public bool useDPad;
-  public bool swipeToMove;
+  // deprecated
+  private bool useDPad;
+  // deprecated
+  private bool swipeToMove;
 
   public static event Action OnChanged;
 
@@ -33,12 +36,12 @@ public struct Settings {
 
   public static Settings Default() {
     return new Settings {
-      showSidePanel = true,
+      // showSidePanel = true,
       music = true,
       sfx = true,
       // rightHanded = true,
-      useDPad = true,
-      swipeToMove = false
+      // useDPad = true,
+      // swipeToMove = false
     };
   }
 

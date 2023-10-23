@@ -6,16 +6,16 @@ using UnityEngine.EventSystems;
 public class ReticleInputController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
   public ReticleJoystickController reticleJoystick;
   void Start() {
-    Settings.OnChanged += MatchSettings;
-    MatchSettings();
+    // Settings.OnChanged += MatchSettings;
+    // MatchSettings();
   }
 
   void OnDestroy() {
-    Settings.OnChanged -= MatchSettings;
+    // Settings.OnChanged -= MatchSettings;
   }
 
   private void MatchSettings() {
-    gameObject?.SetActive(Settings.main.swipeToMove);
+    // gameObject?.SetActive(Settings.main.swipeToMove);
   }
 
   public void OnPointerDown(PointerEventData eventData) {

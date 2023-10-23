@@ -8,7 +8,8 @@ using System.Runtime.Serialization;
 
 [Serializable]
 public class GameModel {
-  public static string VERSION = "1.11.0";
+  public static int MAX_ATTEMPTS = 7;
+  public static string VERSION = "2.0.0";
   [OptionalField] /// added 1.10.0
   public string version = VERSION;
   public int seed;
@@ -21,6 +22,7 @@ public class GameModel {
   public FloorGenerator generator;
   public PlayStats stats;
   public bool permadeath = false;
+  public int attempt = 1;
 
   private TurnManager _turnManager;
   public TurnManager turnManager {
@@ -51,19 +53,20 @@ public class GameModel {
   public TutorialModel? tutorialModel;
 
   public static GameModel main;
+  public bool canRetry => !permadeath || hasMoreAttempts;
+  public bool hasMoreAttempts => attempt < MAX_ATTEMPTS;
 
   /// Also sets GameModel.main.
   public static void GenerateNewGameAndSetMain() {
     main = new GameModel();
     main.generate();
-    var step = main.StepUntilPlayerChoice();
-    // execute them all immediately
-    do { } while (step.MoveNext());
+    main.StepUntilPlayerChoiceImmediate();
   }
 
   public static void GenerateTutorialAndSetMain() {
     main = new GameModel();
     main.generateTutorial();
+    main.StepUntilPlayerChoiceImmediate();
     Serializer.SaveMainToCheckpoint();
   }
 
@@ -111,7 +114,7 @@ public class GameModel {
   private void generate() {
     home = generator.generateCaveFloor(0);
     cave = generator.generateCaveFloor(1);
-    player = new Player(new Vector2Int(2, home.height/2));
+    player = new Player(home.startPos);
     home.Put(player);
   }
 
@@ -123,6 +126,10 @@ public class GameModel {
     player.SetHPDirect(1);
     home = TutorialFloor.CreateFromPrebuilt(pb);
     home.Put(player);
+    // hack to start the floor off on turn 1
+    foreach (var entity in home.steppableEntities) {
+      entity.timeNextAction += 1;
+    }
     DrainEventQueue();
   }
 
@@ -176,6 +183,12 @@ public class GameModel {
       }
     }
     throw new System.Exception("Reached max event queue generations!");
+  }
+
+  public void StepUntilPlayerChoiceImmediate() {
+    var step = StepUntilPlayerChoice();
+    // execute them all immediately
+    do { } while (step.MoveNext());
   }
 
   public IEnumerator StepUntilPlayerChoice() {
@@ -233,6 +246,23 @@ public class GameModel {
     foreach (var plant in home?.bodies.OfType<Plant>().ToList()) {
       plant.OnFloorCleared(floor);
     }
+    ResetAttempts();
+    foreach (var handler in player.Of<IFloorClearedHandler>()) {
+      handler.HandleFloorCleared(floor);
+    }
+  }
+
+  private void ResetAttempts() {
+    if (!hasMoreAttempts) {
+      Messages.Create("Great job!");
+    }
+    attempt = 1;
+  }
+
+  internal static void Retry() {
+    main = Serializer.LoadCheckpoint();
+    main.attempt++;
+    Serializer.SaveMainToCheckpoint();
   }
 }
 

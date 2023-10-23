@@ -48,8 +48,12 @@ public class Floor {
   public Vector2Int startPos;
   public Vector2Int upstairsPos => upstairs?.pos ?? startPos + Vector2Int.left;
   public Vector2Int downstairsPos;
+  public float timePlayerEntered = 0;
+  public bool isActive => GameModel.main.currentFloor == this;
 
-    public Upstairs upstairs {
+  public float age => GameModel.main.time - timePlayerEntered;
+
+  public Upstairs upstairs {
     get {
       foreach (Tile t in this.tiles) {
         if (t is Upstairs) {

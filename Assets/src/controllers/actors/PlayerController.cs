@@ -194,9 +194,10 @@ public class PlayerController : ActorController, IBodyMoveHandler, ITakeAnyDamag
       GameModel.main.PutPlayerAt(0);
     }
     if (Input.GetKeyDown(KeyCode.Equals)) {
-      var e = GameModel.main.StepUntilPlayerChoice();
-      while(e.MoveNext()) { }
+      GameModel.main.StepUntilPlayerChoiceImmediate();
       GameModel.main.currentFloor.PlayerGoDownstairs();
+      GameModel.main.player.timeNextAction++;
+      GameModel.main.StepUntilPlayerChoiceImmediate();
       // GameModel.main.PutPlayerAt(GameModel.main.cave.depth + 1);
     }
     if (Input.GetKeyDown(KeyCode.W)) {

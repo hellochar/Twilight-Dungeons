@@ -132,6 +132,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   protected override void HandleEnterFloor() {
     floor.RecomputeVisibility();
     UpdateVisibleEnemies();
+    floor.timePlayerEntered = GameModel.main.time;
   }
 
   public void OnAttack(int damage, Body target) {

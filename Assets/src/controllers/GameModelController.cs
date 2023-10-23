@@ -48,6 +48,10 @@ public class GameModelController : MonoBehaviour {
     player.OnSetTask += HandleSetPlayerTask;
     model.turnManager.OnPlayersChoice += HandlePlayersChoice;
     model.turnManager.OnPlayerCannotPerform += HandlePlayerCannotPerform;
+
+    if (!model.permadeath && !model.hasMoreAttempts) {
+      Messages.CreateDelayed("Last Try!", 0.5f);
+    }
   }
 
 

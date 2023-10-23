@@ -67,13 +67,14 @@ public class ParasiteEgg : Body, IEnemyEntity {
 
 [System.Serializable]
 [ObjectInfo("parasite", flavorText: "You can feel something crawling under your skin.")]
-public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler {
+public class ParasiteStatus : StackingStatus, IDeathHandler, IHealHandler, IFloorClearedHandler {
   public override StackingMode stackingMode => StackingMode.Independent;
   public override bool isDebuff => true;
   [field:NonSerialized] /// controller only
   public event System.Action OnAttack;
 
-  public ParasiteStatus(int stacks) : base(stacks) {
+  public void HandleFloorCleared(Floor floor) {
+    Remove();
   }
 
   // remove immediately

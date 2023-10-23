@@ -19,6 +19,10 @@ public interface IFloorChangeHandler {
   void HandleFloorChanged(Floor newFloor, Floor oldFloor);
 }
 
+public interface IFloorClearedHandler {
+  void HandleFloorCleared(Floor floor);
+}
+
 [Serializable]
 public class Body : Entity {
   private Vector2Int _pos;

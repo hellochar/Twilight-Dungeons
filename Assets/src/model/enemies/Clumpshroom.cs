@@ -54,10 +54,11 @@ public class Clumpshroom : AIActor, IBaseActionModifier, INoTurnDelay {
 }
 
 [System.Serializable]
-[ObjectInfo("clumped-lung", description: "At 20 stacks, you die.")]
-public class ClumpedLungStatus : StackingStatus, IFloorChangeHandler {
+[ObjectInfo("clumped-lung", description: "At 20 stacks, you die.\n\nResets on floor cleared.")]
+public class ClumpedLungStatus : StackingStatus, IFloorClearedHandler {
   public override bool isDebuff => true;
-  public override void HandleFloorChanged(Floor newFloor, Floor oldFloor) {
+
+  public void HandleFloorCleared(Floor newFloor) {
     Remove();
   }
 

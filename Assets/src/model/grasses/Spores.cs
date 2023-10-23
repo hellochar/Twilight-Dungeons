@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-[ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.", flavorText: "One man's dead brother is a fungi's feast.")]
+[ObjectInfo(description: "Releases three Spore Bloats when any creature steps over it.\n\nSpore Bloats explode, applying the Spored Status to nearby Creatures.\n\nCreatures with the Spored Status deal 0 damage.", flavorText: "One man's dead brother is a fungi's feast.")]
 public class Spores : Grass, IActorEnterHandler {
   public Spores(Vector2Int pos) : base(pos) {
   }
@@ -35,53 +35,50 @@ internal class SporeBloat : AIActor {
       new WaitTask(this, 1),
       new MoveRandomlyTask(this).OnlyCheckBefore(),
       new WaitTask(this, 1).OnlyCheckBefore(),
-      new TelegraphedTask(this, 1, new GenericBaseAction(this, KillSelf))
+      ExplodeTask()
     );
   }
 
+  ActorTask ExplodeTask() => new TelegraphedTask(this, 1, new GenericBaseAction(this, Explode));
+
   protected override ActorTask GetNextTask() {
-    return new GenericTask(this, KillSelf);
+    return ExplodeTask();
   }
 
-  public override void HandleDeath(Entity source) {
-    base.HandleDeath(source);
+  public void Explode() {
+    var floor = this.floor;
+    KillSelf();
+
+    FloorController.current.PlayVFX("SporeBloat Explosion", pos);
     foreach (var actor in floor.AdjacentActors(pos).Where(actor => !(actor is SporeBloat))) {
-      if (!actor.statuses.Has<SporedStatus>()) {
-        actor.statuses.Add(new SporedStatus(20));
-      }
+      actor.statuses.Add(new SporedStatus());
     }
   }
 }
 
 [System.Serializable]
 [ObjectInfo("spored-status", "You inhaled the spore seeds! Your breathing is labored.")]
-internal class SporedStatus : StackingStatus, IAttackDamageModifier, IActionCostModifier, IActorKilledHandler, IActionPerformedHandler {
+internal class SporedStatus : Status, IAttackDamageModifier, IActorKilledHandler, IActionPerformedHandler {
   public override bool isDebuff => true;
-  public override StackingMode stackingMode => StackingMode.Max;
-  public SporedStatus(int stacks) : base(stacks) {}
+  public SporedStatus() : base() {}
 
-  public override string Info() => $"Deal 2 less attack damage!\nMove slowly.\nMoving removes four stacks.\nWhen you die, Spores grow at your position.\n{stacks} turns remaining.";
-
-  public override void Step() {
-    stacks--;
-  }
-
-  public int Modify(int input) {
-    return input - 2;
-  }
-
-  public ActionCosts Modify(ActionCosts input) {
-    input[ActionType.MOVE] *= 2;
-    return input;
-  }
+  public override string Info() => $"Deal 0 attack damage!\nMoving removes Spored Status.\nWhen you die, Spores grow at your position.";
 
   public void OnKilled(Actor a) {
     a.floor.Put(new Spores(a.pos));
   }
 
+  public int Modify(int input) {
+    return 0;
+  }
+
   public void HandleActionPerformed(BaseAction final, BaseAction initial) {
     if (final.Type == ActionType.MOVE) {
-      stacks -= 3;
+      Remove();
     }
+  }
+
+  public override bool Consume(Status other) {
+    return true;
   }
 }

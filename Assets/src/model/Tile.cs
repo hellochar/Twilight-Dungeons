@@ -240,16 +240,26 @@ public class Soil : Tile {
 [ObjectInfo("water_0", description: "Walk into to collect.", flavorText: "Water water everywhere...")]
 [Serializable]
 public class Water : Tile, IActorEnterHandler {
+  bool collected = false;
   public Water(Vector2Int pos) : base(pos) {
   }
 
   public void Collect() {
-    GameModel.main.player.water += MyRandom.Range(45, 56);
+    collected = true;
+    GameModel.main.player.water += MyRandom.Range(40, 52);
     floor.Put(new Ground(pos));
   }
 
   public void HandleActorEnter(Actor who) {
     if (who == GameModel.main.player) {
+      Collect();
+    }
+  }
+
+  protected override void HandleLeaveFloor() {
+    base.HandleLeaveFloor();
+    if (!collected) {
+      Debug.LogWarning("Water left the floor without being collected");
       Collect();
     }
   }

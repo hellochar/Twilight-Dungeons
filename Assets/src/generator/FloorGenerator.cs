@@ -350,7 +350,7 @@ public class FloorGenerator {
       floor.Put(new Altar(altarPos));
     }
 
-    Encounters.AddWater(floor, room0);
+    Encounters.AddHomeWater(floor, room0);
     // Encounters.ThreeAstoriasInCorner(floor, room0);
 
     #if UNITY_EDITOR

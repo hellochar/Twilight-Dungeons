@@ -31,7 +31,10 @@ public static class FloorUtils {
     if (floor.tiles[floor.downstairsPos] is Chasm) {
       floor.Put(new HardGround(floor.downstairsPos));
     }
-    floor.Put(new HardGround(floor.downstairsPos + Vector2Int.left));
+    var downstairsEntrancePos = floor.downstairsPos + Vector2Int.left;
+    if (!(floor.tiles[downstairsEntrancePos] is Water)) {
+      floor.Put(new HardGround(downstairsEntrancePos));
+    }
 
     /// HACK I've decided that grass shouldn't *initially spawn* right next to the stairs,
     /// but that post-generation, grass should still be able. So we'll now only use HardGround

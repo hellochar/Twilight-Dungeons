@@ -613,18 +613,19 @@ public partial class Encounters {
     }
   }
 
-  public static void AddWater(Floor floor, Room room) {
-    var numWaters = Random.Range(3, 6);
-    var startPos = room.center;
-    foreach (var tile in FloorUtils.TilesAwayFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
-      floor.Put(new Water(tile.pos));
-    }
-  }
+  public static void AddWater(Floor floor, Room room) => AddWaterImpl(floor, room, Random.Range(3, 6));
 
-  public static void AddOneWater(Floor floor, Room room) {
-    var numWaters = 1;
-    var startPos = room.center;
-    foreach (var tile in FloorUtils.TilesAwayFrom(floor, room, floor.downstairsPos).Where((tile) => tile is Ground && tile.grass == null).Take(numWaters)) {
+  public static void AddHomeWater(Floor floor, Room room) => AddWaterImpl(floor, room, 5, true);
+
+  public static void AddOneWater(Floor floor, Room room) => AddWaterImpl(floor, room, 1);
+
+  public static void AddWaterImpl(Floor floor, Room room, int num, bool randomize = false) {
+    var tiles = FloorUtils.TilesAwayFrom(floor, room, floor.downstairsPos)
+      .Where((tile) => tile is Ground && tile.grass == null && tile.pos != floor.startPos);
+    if (randomize) {
+      tiles = tiles.Where(t => MyRandom.value < 0.5f);
+    }
+    foreach (var tile in tiles.Take(num)) {
       floor.Put(new Water(tile.pos));
     }
   }

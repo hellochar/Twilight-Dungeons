@@ -45,7 +45,7 @@ public static class Highlights {
 
     IEnumerator CheckDestroy() {
       while (true) {
-        if (highlight == null || e.IsDead || (destroyWhen?.Invoke() ?? false)) {
+        if (highlight == null || e.IsDead || !e.floor.isActive || (destroyWhen?.Invoke() ?? false)) {
           break;
         }
         highlight.transform.position = Util.withZ(e.pos);

@@ -160,7 +160,6 @@ class ThickMushroom : Actor {
     faction = Faction.Ally;
     hp = baseMaxHp = 1;
     timeNextAction += 999999;
-    statuses.Add(new SporedStatus(20));
   }
 
   public override float Step() {

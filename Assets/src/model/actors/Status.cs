@@ -37,7 +37,7 @@ public abstract class Status : IStepModifier, IFloorChangeHandler {
   /// with the status on it!
   public virtual void End() {}
 
-  public abstract string Info();
+  public virtual string Info() => ObjectInfo.GetDescriptionFor(this);
 
   /// The parameter will be of the same type as this type.
   /// Return true if this Status has consumed the other.

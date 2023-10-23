@@ -85,7 +85,11 @@ public class TutorialFloor : Floor {
     }
 
     if (floor.name == "T_Healing") {
-      floor.Put(new ItemOnGround(new Vector2Int(7, 2), new ItemStick()));
+      var stick = new ItemOnGround(new Vector2Int(7, 2), new ItemStick());
+      floor.Put(stick);
+      Highlights.Create(stick);
+      // for the astoria
+      Highlights.Create(floor.grasses.First());
     } else if (floor.name == "T_Battle") {
       floor.Put(new ItemOnGround(new Vector2Int(1, 3), new ItemStick()));
       floor.Put(new ItemOnGround(new Vector2Int(2, 2), new ItemBarkShield()));

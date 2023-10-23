@@ -26,5 +26,12 @@ public class TelegraphedTask : ActorTask {
     return then;
   }
 
+  public override void PostStep(BaseAction action, BaseAction finalAction) {
+    if (action != finalAction) {
+      done = true;
+    }
+    base.PostStep(action, finalAction);
+  }
+
   public override bool IsDone() => done;
 }

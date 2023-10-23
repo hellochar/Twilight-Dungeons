@@ -14,7 +14,7 @@ public class MoveToTargetThenPerformTask : MoveToTargetTask {
     this.then = then;
   }
 
-  public override void PostStep() {
+  public override void PostStep(BaseAction action, BaseAction finalAction) {
     if (IsDone()) {
       then();
     }

@@ -20,7 +20,7 @@ public class AltarController : BodyController, IPopupOverride {
 
   void ShowAltarDialog() {
     List<(string, Action)> buttons = new List<(string, Action)>();
-    buttons.Add(("Destroy (Enable Permadeath)", () => {
+    buttons.Add(("Destroy", () => {
       GameModel.main.permadeath = true;
       body.KillSelf();
     }));
@@ -31,9 +31,9 @@ public class AltarController : BodyController, IPopupOverride {
     image.sprite = sprite.GetComponent<SpriteRenderer>().sprite;
 
     Popups.CreateStandard(
-      "Altar",
+      "Altar to the Seven",
       null,
-      "Provides you immortality. If you would die, instead restart at the last cleared floor.\n\nIf you're looking for a challenge, destroy the Altar.",
+      "Lets you retry each level up to seven times.\n\nIf you're looking for a challenge, destroy the Altar.",
       null,
       spriteGameObject,
       buttons: buttons

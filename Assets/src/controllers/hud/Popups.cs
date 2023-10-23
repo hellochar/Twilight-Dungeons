@@ -22,6 +22,7 @@ public static class Popups {
     string errorText = null,
     Inventory inventory = null,
     Entity entity = null,
+    Faction faction = Faction.Neutral,
     string prefab = "StandardPopupContent"
   ) {
     var controller = CreateEmpty();
@@ -41,6 +42,9 @@ public static class Popups {
 
     var categoryText = content.transform.Find("Title/Category").GetComponent<TMPro.TMP_Text>();
     categoryText.text = category;
+    if (faction != Faction.Neutral) {
+      categoryText.color = Util.GetColorForFaction(faction);
+    }
 
     var infoText = content.transform.Find("Stats").GetComponent<TMPro.TMP_Text>();
     infoText.text = info;

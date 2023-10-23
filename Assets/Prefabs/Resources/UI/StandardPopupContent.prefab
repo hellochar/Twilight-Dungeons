@@ -1441,7 +1441,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Shield
+  m_text: Enemy Creature
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 762a019b23b379749a11bbe83cf0ec1c, type: 2}
   m_sharedMaterial: {fileID: 4285048069238282656, guid: 762a019b23b379749a11bbe83cf0ec1c,
@@ -1472,12 +1472,12 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 8
   m_fontSizeMax: 14
   m_fontStyle: 0
   m_HorizontalAlignment: 4
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

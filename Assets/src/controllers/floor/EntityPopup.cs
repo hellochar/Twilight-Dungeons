@@ -60,9 +60,20 @@ public static class EntityPopup {
       }
     }
 
+    Faction faction = Faction.Neutral;
+    {
+      if (entity is Actor a) {
+        faction = a.faction;
+      }
+    }
+    if (entity is IEnemyEntity) {
+      faction = Faction.Enemy;
+    }
+
     var controller = Popups.CreateStandard(
       title: entity.displayName,
       category: GetCategoryForEntity(entity),
+      faction: faction,
       info: description.Trim(),
       flavor: ObjectInfo.GetFlavorTextFor(entity),
       sprite: spriteGameObject,

@@ -227,4 +227,16 @@ public static class Util {
     }
     owner.StartCoroutine(Coroutine());
   }
+
+  public static Color GetColorForFaction(Faction faction) {
+    switch (faction) {
+      case Faction.Ally:
+        return new Color32(92, 255, 62, 255);
+      case Faction.Enemy:
+        return new Color32(255, 92, 62, 255);
+      case Faction.Neutral:
+      default:
+        return new Color(1, 1, 1, 0.5f);
+    }
+  }
 }

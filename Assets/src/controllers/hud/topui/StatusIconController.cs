@@ -43,6 +43,7 @@ public class StatusIconController : MonoBehaviour {
       category: status.isDebuff ? "Debuff" : "Status",
       info: status.Info(),
       flavor: ObjectInfo.GetFlavorTextFor(status),
+      faction: status.isDebuff ? Faction.Enemy : Faction.Neutral,
       sprite: transform.Find("Icon").gameObject
     );
   }

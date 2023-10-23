@@ -14,6 +14,11 @@ public class FollowPathTask : ActorTask {
     this.path = path;
   }
 
+  public FollowPathTask MaxMoves(int moves) {
+    maxMoves = moves;
+    return this;
+  }
+
   protected override BaseAction GetNextActionImpl() {
     Vector2Int nextPosition = path.First();
     path.RemoveAt(0);

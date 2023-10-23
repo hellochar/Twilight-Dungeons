@@ -72,7 +72,7 @@ public class FruitingBody : AIActor, INoTurnDelay {
 class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
   // 3.5% chance per turn
   private static float prdC = (float) PseudoRandomDistribution.CfromP(0.04m);
-  internal override string GetStats() => "You're infected with Tanglefoot!\nMoving over a Tile without grass will occasionally Constrict you and grow a Guardleaf at your location.\nDoes not trigger at home.";
+  internal override string GetStats() => "You're infected with Tanglefoot!\nMoving will occasionally Constrict you and grow a Guardleaf at your location.";
   public override EquipmentSlot slot => EquipmentSlot.Footwear;
 
   public int durability { get; set; }
@@ -88,7 +88,10 @@ class ItemTanglefoot : EquippableItem, IDurable, IBodyMoveHandler, ISticky {
   }
 
   public void HandleMove(Vector2Int newPos, Vector2Int oldPos) {
-    var canTrigger = newPos != oldPos && player.grass == null && player.floor.depth != 0 && Guardleaf.CanOccupy(player.tile);
+    var didMove = newPos != oldPos;
+    var floorNotCleared = !player.floor.isCleared;
+    var guardleafCanOccupy = Guardleaf.CanOccupy(player.tile);
+    var canTrigger = didMove && floorNotCleared && guardleafCanOccupy;
     if (!canTrigger) {
       return;
     }

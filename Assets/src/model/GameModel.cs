@@ -261,8 +261,10 @@ public class GameModel {
 
   internal static void Retry() {
     main = Serializer.LoadCheckpoint();
-    main.attempt++;
-    Serializer.SaveMainToCheckpoint();
+    if (!main.IsTransient()) {
+      main.attempt++;
+      Serializer.SaveMainToCheckpoint();
+    }
   }
 }
 

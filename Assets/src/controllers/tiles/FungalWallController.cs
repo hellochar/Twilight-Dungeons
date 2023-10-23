@@ -6,7 +6,7 @@ public class FungalWallController : TileController {
 
   public override PlayerInteraction GetPlayerInteraction(PointerEventData pointerEventData) {
     return new SetTasksPlayerInteraction(
-      new MoveToTargetTask(GameModel.main.player, tile.pos),
+      new MoveNextToTargetTask(GameModel.main.player, tile.pos),
       new GenericTask(GameModel.main.player, fungalWall.Clear)
     );
   }

@@ -47,7 +47,7 @@ SpriteAtlas:
     - {fileID: 102900000, guid: 872f860046ed559468cc30a4a75094b7, type: 3}
     - {fileID: 102900000, guid: b78d96e55c4343147bb071540aee64fc, type: 3}
     - {fileID: 102900000, guid: f57ea4e9344d8f74380a40c545abc119, type: 3}
-    totalSpriteSurfaceArea: 113967
+    totalSpriteSurfaceArea: 114991
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -303,6 +303,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: aa67a1eb66e794745a9bf5412e72c38a, type: 3}
   - {fileID: 21300000, guid: 93cb4bfbf0123a5458ad10d2a85cd3bb, type: 3}
   - {fileID: 21300000, guid: 60be7e1c431b9d54c85f5de87f926665, type: 3}
+  - {fileID: -1793104044653196591, guid: 34328f1cce7efbb4f940015ace09e34b, type: 3}
+  - {fileID: -7671877405851984578, guid: 34328f1cce7efbb4f940015ace09e34b, type: 3}
+  - {fileID: 8066128649685397002, guid: 34328f1cce7efbb4f940015ace09e34b, type: 3}
+  - {fileID: -7258955049455995787, guid: 34328f1cce7efbb4f940015ace09e34b, type: 3}
   - {fileID: 21300000, guid: 2641043c9d5a829458afbc09045ba821, type: 3}
   - {fileID: 21300000, guid: f82c655c8a923ac45a1885abb88bbb50, type: 3}
   - {fileID: 21300000, guid: 11be7c5c44b483742a0d140b11df3506, type: 3}
@@ -657,6 +661,10 @@ SpriteAtlas:
   - brambles
   - evening-bell
   - fade-top
+  - goo_half
+  - goo_quarter
+  - goo_full
+  - goo_eighth
   - fungal-colony
   - parasite-egg
   - dandypuff

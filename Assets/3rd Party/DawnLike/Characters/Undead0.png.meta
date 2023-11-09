@@ -138,7 +138,7 @@ TextureImporter:
       213: 5546772758081810912
     second: Undead0_44
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -155,10 +155,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -168,8 +170,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 0
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -197,6 +199,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -208,6 +212,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -220,6 +225,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -232,6 +238,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -244,6 +251,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -1204,9 +1225,54 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      Undead0_0: 4944875675100945840
+      Undead0_1: 3292833691778728883
+      Undead0_10: -1497758212905568123
+      Undead0_11: -8811305253734297150
+      Undead0_12: -70345756604046457
+      Undead0_13: -3389368454863785477
+      Undead0_14: 2737100309885576594
+      Undead0_15: -5736403282559629378
+      Undead0_16: -8338000221923159088
+      Undead0_17: 2832388350936547077
+      Undead0_18: -4636774268776114390
+      Undead0_19: -8992576450682778570
+      Undead0_2: -4268112226977688413
+      Undead0_20: -3437649166567633612
+      Undead0_21: -1847507747606297161
+      Undead0_22: -7496040904575381587
+      Undead0_23: -8950527101174710116
+      Undead0_24: 1337413030189253722
+      Undead0_25: -7403177733752185819
+      Undead0_26: -909981295534711123
+      Undead0_27: 6708385183279267775
+      Undead0_28: 6961508252388482160
+      Undead0_29: -952229288282041577
+      Undead0_3: -1891698753462141190
+      Undead0_30: 4854508124169879920
+      Undead0_31: 8628014966836977348
+      Undead0_32: 548750863149437480
+      Undead0_33: 4976872885331580125
+      Undead0_34: -2077735768108992883
+      Undead0_35: -883680063801204195
+      Undead0_36: -8829254644118848691
+      Undead0_37: 2045925865030408248
+      Undead0_38: 2961925381701308356
+      Undead0_39: -6962075078129960164
+      Undead0_4: -2719991074376951894
+      Undead0_40: 795398615839940365
+      Undead0_41: 6976172561760575264
+      Undead0_42: 1241463534952019294
+      Undead0_43: -2421909638793834553
+      Undead0_44: 5546772758081810912
+      Undead0_5: -3099910319409782801
+      Undead0_6: -7081433560948301981
+      Undead0_7: -2122877118895374259
+      Undead0_8: 111379456438006879
+      Undead0_9: 7719484646038406711
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

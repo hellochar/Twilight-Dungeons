@@ -945,7 +945,7 @@ TextureImporter:
       213: -657974317774229541
     second: pixeland_307
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -962,9 +962,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -974,8 +977,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 0
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -996,10 +999,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -1011,6 +1019,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -1023,6 +1032,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -1035,6 +1045,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -7035,9 +7059,294 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      berry-red-1: 8507534786115207694
+      flower-blue-1: -7248730144010209670
+      flower-blue-2: 6314619994767539006
+      pixeland-258: -172070121833370261
+      pixeland_10: -4982808552860600685
+      pixeland_100: 7455126682731403900
+      pixeland_101: 5237294798644677506
+      pixeland_102: 7287056794461039092
+      pixeland_103: 1933631610973409511
+      pixeland_104: 2237433828413119594
+      pixeland_105: 8373041720823997496
+      pixeland_106: 1958820823688986787
+      pixeland_107: 941250611821230096
+      pixeland_108: 4687397625562460212
+      pixeland_109: -7527083329171201187
+      pixeland_11: 4906820882675492475
+      pixeland_110: 4966956190294710312
+      pixeland_111: 6994189654490659775
+      pixeland_112: 3178042285320522234
+      pixeland_113: 2531160247709075341
+      pixeland_114: 2783643868949657977
+      pixeland_115: -6570658801344219925
+      pixeland_116: -8095709995584611139
+      pixeland_117: 7674306570226359497
+      pixeland_118: -3391908781740869986
+      pixeland_119: 3222030973671454892
+      pixeland_12: -2900687151774431329
+      pixeland_120: -6340745754827552551
+      pixeland_121: 2260682651928937671
+      pixeland_122: 4350553657219245054
+      pixeland_123: 8027850501094061540
+      pixeland_124: -2304494947265360712
+      pixeland_125: 7851698139722705369
+      pixeland_126: -8793624187292828379
+      pixeland_127: 4319727001894820830
+      pixeland_128: -5200015455208943241
+      pixeland_129: 3947719148024918972
+      pixeland_13: 8176413516542236004
+      pixeland_130: -7835212343590288942
+      pixeland_131: -7658224288442800355
+      pixeland_132: 1106383958680489289
+      pixeland_133: 1214613254611476968
+      pixeland_134: 7432383674758736066
+      pixeland_135: -8089280514760174778
+      pixeland_136: -7293662802308388090
+      pixeland_137: -6667632823436239928
+      pixeland_138: -1176305710413084760
+      pixeland_139: 3367882660604682668
+      pixeland_14: 1400184568528570012
+      pixeland_140: 1367473959715825040
+      pixeland_141: -4721641853405615242
+      pixeland_142: 7161227348051035648
+      pixeland_143: 6534897412398496137
+      pixeland_144: 7195772242618587333
+      pixeland_145: -7983915925248571951
+      pixeland_146: 3812529968677495595
+      pixeland_147: 3465494069160007304
+      pixeland_148: -8784069221698460362
+      pixeland_149: 6680595148137319983
+      pixeland_15: -1674956992774284267
+      pixeland_150: 3409797405388177087
+      pixeland_151: 1786010173497299390
+      pixeland_152: 7715893385863779759
+      pixeland_153: -9221526890016933395
+      pixeland_154: -1143400886991767781
+      pixeland_155: 274223230837887941
+      pixeland_156: 4633886500568260832
+      pixeland_157: -3961456489801901803
+      pixeland_158: 4109208590758774889
+      pixeland_159: -3639784367025417294
+      pixeland_16: 6088692151272875559
+      pixeland_160: -950878898136911678
+      pixeland_161: -4936578704702388620
+      pixeland_162: -3119335421186505239
+      pixeland_163: 100485644785115502
+      pixeland_164: 1123546238895616638
+      pixeland_165: -9128439656174682321
+      pixeland_166: -4281434945241030948
+      pixeland_167: -5750959877437155064
+      pixeland_168: 4127840250728380860
+      pixeland_169: -4820374019531493503
+      pixeland_17: -2359293929457026235
+      pixeland_170: 2373767858836997344
+      pixeland_171: 6014617172639244061
+      pixeland_172: -9173968545712998489
+      pixeland_173: 5278096849883146496
+      pixeland_174: 5911360275100597
+      pixeland_175: 7276682372591168590
+      pixeland_176: -6923693295714417677
+      pixeland_177: 7177607612300463852
+      pixeland_178: 122829428254281088
+      pixeland_179: 450431581694096125
+      pixeland_18: 6165222349592321438
+      pixeland_180: 8180813085328335068
+      pixeland_181: 613123856038363921
+      pixeland_182: 3247419128345419116
+      pixeland_183: -6833212877851953729
+      pixeland_184: 2466163115955128282
+      pixeland_185: 1684650130421691721
+      pixeland_186: -4253055618292862827
+      pixeland_187: 4651944035847639514
+      pixeland_188: -5057936940332995773
+      pixeland_189: -133472120169458423
+      pixeland_19: 8291509302816966105
+      pixeland_190: 1405501427923534288
+      pixeland_191: -2766261493217940381
+      pixeland_192: -4412049844024889863
+      pixeland_193: -4682499297490306875
+      pixeland_194: 2071691766578793871
+      pixeland_195: 3012956712513084814
+      pixeland_196: -8395226478463403795
+      pixeland_197: -4665704195040327464
+      pixeland_198: 4957271440615997980
+      pixeland_199: 7571534318996505464
+      pixeland_20: 4833066662725845214
+      pixeland_200: -7657968731163094816
+      pixeland_201: 3634926689331534510
+      pixeland_202: -3932275975288055523
+      pixeland_203: -970542575979510778
+      pixeland_204: -5576451266257360024
+      pixeland_205: 7495551945698681299
+      pixeland_206: -4902748104809395919
+      pixeland_207: 7138072567149097509
+      pixeland_208: 8189291193632677283
+      pixeland_209: 4638693387722230746
+      pixeland_21: -4487684644813612916
+      pixeland_210: -9011833259247538785
+      pixeland_211: -521119533022998147
+      pixeland_212: 2371097986516519004
+      pixeland_213: -8194987694899257268
+      pixeland_214: 5169875964076413273
+      pixeland_215: -5208859081216728621
+      pixeland_216: 5020450293239289427
+      pixeland_217: -8445923874061413261
+      pixeland_218: 6128340417019336322
+      pixeland_219: 8465518777344093907
+      pixeland_22: -2708439641985219658
+      pixeland_220: 5348965923132758077
+      pixeland_221: -4090825347270066929
+      pixeland_222: -6841414621286739319
+      pixeland_223: 1037981472606097786
+      pixeland_224: 2726186680565107016
+      pixeland_225: 1256684718146151528
+      pixeland_226: 3926407769302870275
+      pixeland_227: -294870309306725238
+      pixeland_228: -5956938114135411281
+      pixeland_229: -3290545494187479287
+      pixeland_23: -5511796996007781440
+      pixeland_230: 4570291020306905104
+      pixeland_231: -2642053459036827184
+      pixeland_232: 7794715835281070908
+      pixeland_233: -2820137414043028212
+      pixeland_234: 3780450856238737505
+      pixeland_235: 1958074281650553335
+      pixeland_236: 6611215687570297311
+      pixeland_237: -2884003904587171087
+      pixeland_238: 1763299168189075295
+      pixeland_239: 3932204619673451310
+      pixeland_24: -12933094648396291
+      pixeland_240: -5112550371324998824
+      pixeland_241: 5113626089571486744
+      pixeland_242: -3259987694487394160
+      pixeland_243: -3825236559845226076
+      pixeland_244: -5336416973776644171
+      pixeland_245: 4231655872598335661
+      pixeland_246: -3313714725716333141
+      pixeland_247: 124124930576923951
+      pixeland_248: -5646732071121879641
+      pixeland_249: 1865219468084161444
+      pixeland_25: -3611666172848634181
+      pixeland_250: 1237283281361185857
+      pixeland_251: 4939768078667099347
+      pixeland_252: -8642465119193374640
+      pixeland_253: 6382814499118893792
+      pixeland_254: 7848878746125199907
+      pixeland_255: -6787386661590590422
+      pixeland_256: 3025550113169993480
+      pixeland_257: 2715793700120174148
+      pixeland_258: 5100180981221114600
+      pixeland_259: -7545008263246369649
+      pixeland_26: 5992345996517979567
+      pixeland_260: 3718093804446612309
+      pixeland_261: -1118919063972185717
+      pixeland_262: 1301825344944425196
+      pixeland_263: -7597752425180722091
+      pixeland_264: 8810069970124338648
+      pixeland_265: -8690964239366469162
+      pixeland_266: -1281599082520335791
+      pixeland_267: 5711572956005068560
+      pixeland_268: -2393035946896043931
+      pixeland_27: -285078151490624285
+      pixeland_270: -5428374060684685987
+      pixeland_271: -6074348889322054998
+      pixeland_272: 2615905892975235279
+      pixeland_273: 3917851609291671694
+      pixeland_274: 5102321134185325324
+      pixeland_275: 3842371443683253248
+      pixeland_276: 6601662040196110379
+      pixeland_277: -9181286025452458140
+      pixeland_278: 5245747291090607781
+      pixeland_279: 7869792840722799509
+      pixeland_28: -6784338097605921792
+      pixeland_280: 1075631115157626543
+      pixeland_281: -6096474191812929588
+      pixeland_282: -3514243951298027625
+      pixeland_283: -4587149483602735209
+      pixeland_284: 8828514498405788853
+      pixeland_29: -6113203633048943576
+      pixeland_30: 7034620531172134527
+      pixeland_31: -6429742213349989280
+      pixeland_32: -2154146490029129308
+      pixeland_33: 984483802784760277
+      pixeland_34: 7364379671360248412
+      pixeland_35: 5711215298456686915
+      pixeland_36: -5006961611073290105
+      pixeland_37: -6034660765913902976
+      pixeland_38: 8556846554245090387
+      pixeland_39: 8270445990265441657
+      pixeland_40: -4259884082278177058
+      pixeland_41: -5075541955212106383
+      pixeland_42: 5779119454782740060
+      pixeland_43: 6430112602723882452
+      pixeland_44: -8969730103280115809
+      pixeland_45: -3717025529529523336
+      pixeland_46: -2412495651694227462
+      pixeland_47: 1270956968777347434
+      pixeland_48: -5307556512897150683
+      pixeland_49: -229056644142049359
+      pixeland_50: -6327831541462694291
+      pixeland_51: 75781687986175133
+      pixeland_52: 7934875638431499061
+      pixeland_53: 7041031365980685261
+      pixeland_54: 5486631218666557174
+      pixeland_55: 1187400272663704142
+      pixeland_56: 3664034271448763620
+      pixeland_57: 1792454623841115754
+      pixeland_58: 6979619994868990910
+      pixeland_59: -5863196957837365512
+      pixeland_6: 2310339743968919712
+      pixeland_60: 5464721070951204098
+      pixeland_61: -9215014423150160233
+      pixeland_62: 1836109511790570291
+      pixeland_63: -6709926345032715102
+      pixeland_64: 6447713310691054035
+      pixeland_65: -6085124223330291193
+      pixeland_66: 5085803441023324002
+      pixeland_67: 6826125370875052811
+      pixeland_68: 5122920437585100260
+      pixeland_69: -8479821468581813799
+      pixeland_7: 9211170764539616946
+      pixeland_70: 4357203785100705162
+      pixeland_71: -6425617338593752001
+      pixeland_72: 2387957676357800688
+      pixeland_73: 1776138943414782860
+      pixeland_74: 6332652757853498166
+      pixeland_75: -6258390605616890775
+      pixeland_76: 173018442020754877
+      pixeland_77: -1452959824427635305
+      pixeland_78: 7418874713232411058
+      pixeland_79: 3176154385995218962
+      pixeland_8: -3881892694243634908
+      pixeland_80: 1590791566266478632
+      pixeland_81: 6563706456983634568
+      pixeland_82: 1258034898194779988
+      pixeland_83: 564729630312485084
+      pixeland_84: -8652944349871931713
+      pixeland_85: -5646819852111460916
+      pixeland_86: 5953901463811429212
+      pixeland_87: 8863868459154397840
+      pixeland_88: -668253385267121672
+      pixeland_89: -4342289492870576879
+      pixeland_9: 8324114554338522008
+      pixeland_90: -2072462483227072640
+      pixeland_91: 8791630207616028103
+      pixeland_92: 2145691678577119772
+      pixeland_93: -8270099744093044974
+      pixeland_94: 2085771330340131329
+      pixeland_95: -2917723889823805941
+      pixeland_96: -1782193093129093270
+      pixeland_97: 3660687443693168394
+      pixeland_98: -8248285709667853122
+      pixeland_99: 7282193610011155977
+      sprout-0: -3734293146030157136
+      sprout-1: -8105463194751074760
+      sprout-2: -2300508697561895145
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

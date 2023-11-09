@@ -141,7 +141,7 @@ TextureImporter:
       213: 1655160335578027899
     second: Pest0_45
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -158,10 +158,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -171,8 +173,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 0
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -200,6 +202,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -211,6 +215,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -223,6 +228,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -235,6 +241,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -247,6 +254,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -1228,9 +1249,55 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      Pest0_0: -5360475389782249653
+      Pest0_1: -8990662640117964054
+      Pest0_10: -3542387619180575959
+      Pest0_11: -3095022479512233356
+      Pest0_12: 1142747018685125579
+      Pest0_13: -8639972501159862337
+      Pest0_14: -3344800839914883006
+      Pest0_15: -5356547120229397854
+      Pest0_16: 4120631713342508869
+      Pest0_17: -796703908314518480
+      Pest0_18: -3317630639186129048
+      Pest0_19: 1532092163619050195
+      Pest0_2: 8742899825332352703
+      Pest0_20: -8168594075766522483
+      Pest0_21: 7990945503125535817
+      Pest0_22: 2296742096964309120
+      Pest0_23: 2048535022210700742
+      Pest0_24: -7285596715578197467
+      Pest0_25: -4721148285492386704
+      Pest0_26: -3827362465865717837
+      Pest0_27: -7729435234270706917
+      Pest0_28: 3029673972207309351
+      Pest0_29: -4822940383996903606
+      Pest0_3: -5880583661106831837
+      Pest0_30: 5286708159577924493
+      Pest0_31: -4247288880308112544
+      Pest0_32: 3101331019158360973
+      Pest0_33: 8768893368382487233
+      Pest0_34: 39256129771449617
+      Pest0_35: 1428472971771074904
+      Pest0_36: -3211696838112488357
+      Pest0_37: -5256349271592231618
+      Pest0_38: -3164422642762568041
+      Pest0_39: -4071297361228252608
+      Pest0_4: 6095769057891750951
+      Pest0_40: -6782332611164929125
+      Pest0_41: 5295879786133816275
+      Pest0_42: -2785689792164312147
+      Pest0_43: 3058836098718034901
+      Pest0_44: 8579095378716597007
+      Pest0_45: 1655160335578027899
+      Pest0_5: -8834928242413550951
+      Pest0_6: 639314636071182956
+      Pest0_7: -4491766595848497935
+      Pest0_8: -1045716500793726827
+      Pest0_9: 1044829865328064362
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

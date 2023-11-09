@@ -1569,7 +1569,7 @@ TextureImporter:
       213: 7705910748759524240
     second: roguelikeDungeon_transparent_521
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -1586,10 +1586,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -1599,8 +1601,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 0
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -1628,6 +1630,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -1639,6 +1643,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -1651,6 +1656,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -1663,6 +1669,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -12640,9 +12660,531 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      roguelikeDungeon_transparent_0: -1481060230102750202
+      roguelikeDungeon_transparent_1: 1595206185967482525
+      roguelikeDungeon_transparent_10: 3289463528516343517
+      roguelikeDungeon_transparent_100: 8360457772203587946
+      roguelikeDungeon_transparent_101: -2993021010676516751
+      roguelikeDungeon_transparent_102: 7684497576176997764
+      roguelikeDungeon_transparent_103: -3292047398293908343
+      roguelikeDungeon_transparent_104: -5221778399819802525
+      roguelikeDungeon_transparent_105: -8508110611510276993
+      roguelikeDungeon_transparent_106: -7114514857956034401
+      roguelikeDungeon_transparent_107: -5747361838547321214
+      roguelikeDungeon_transparent_108: 5865397399239798580
+      roguelikeDungeon_transparent_109: 6372696838443029772
+      roguelikeDungeon_transparent_11: -7033052691520694932
+      roguelikeDungeon_transparent_110: -8844185659108929681
+      roguelikeDungeon_transparent_111: -7312653830481131877
+      roguelikeDungeon_transparent_112: 3603972032362424390
+      roguelikeDungeon_transparent_113: 989953106449771730
+      roguelikeDungeon_transparent_114: 1566614227280712343
+      roguelikeDungeon_transparent_115: -5116091208793426120
+      roguelikeDungeon_transparent_116: 7721316832083112164
+      roguelikeDungeon_transparent_117: -7986482160887924242
+      roguelikeDungeon_transparent_118: 4965521207562135156
+      roguelikeDungeon_transparent_119: 9025100604540384901
+      roguelikeDungeon_transparent_12: 5538863219609026270
+      roguelikeDungeon_transparent_120: 4619818422030671354
+      roguelikeDungeon_transparent_121: -1673923540301214804
+      roguelikeDungeon_transparent_122: 8960851102887508662
+      roguelikeDungeon_transparent_123: 774924060484878408
+      roguelikeDungeon_transparent_124: -7463225442290131092
+      roguelikeDungeon_transparent_125: -6874287413705991746
+      roguelikeDungeon_transparent_126: -7491089270941445154
+      roguelikeDungeon_transparent_127: 5411324579994578214
+      roguelikeDungeon_transparent_128: 3231375722447888996
+      roguelikeDungeon_transparent_129: 1682537107037333520
+      roguelikeDungeon_transparent_13: -1965111051408973970
+      roguelikeDungeon_transparent_130: 6264532909224415517
+      roguelikeDungeon_transparent_131: 2865368015076413848
+      roguelikeDungeon_transparent_132: -1546123280792866378
+      roguelikeDungeon_transparent_133: 4390923751541047709
+      roguelikeDungeon_transparent_134: -1848690148737339493
+      roguelikeDungeon_transparent_135: 365180567111198494
+      roguelikeDungeon_transparent_136: -8200129090524607384
+      roguelikeDungeon_transparent_137: -3021368870865540481
+      roguelikeDungeon_transparent_138: 2858898093697611906
+      roguelikeDungeon_transparent_139: 7652680015241121004
+      roguelikeDungeon_transparent_14: 1115608421190536107
+      roguelikeDungeon_transparent_140: 5805226506015805911
+      roguelikeDungeon_transparent_141: 419338820046970520
+      roguelikeDungeon_transparent_142: 8100540911108381866
+      roguelikeDungeon_transparent_143: 8109959883718328124
+      roguelikeDungeon_transparent_144: 3960889727135870908
+      roguelikeDungeon_transparent_145: -5714370664677885903
+      roguelikeDungeon_transparent_146: 7273591427477211340
+      roguelikeDungeon_transparent_147: 206091147753869865
+      roguelikeDungeon_transparent_148: 5053848908436423259
+      roguelikeDungeon_transparent_149: -534010856603109491
+      roguelikeDungeon_transparent_15: 4766794539894605615
+      roguelikeDungeon_transparent_150: 1923820459721974147
+      roguelikeDungeon_transparent_151: -8465080710237780833
+      roguelikeDungeon_transparent_152: -4467490857492723091
+      roguelikeDungeon_transparent_153: 5220690315222253205
+      roguelikeDungeon_transparent_154: 7590276383943667534
+      roguelikeDungeon_transparent_155: 1058221725749421097
+      roguelikeDungeon_transparent_156: 8100911088643443251
+      roguelikeDungeon_transparent_157: -7634114828651549834
+      roguelikeDungeon_transparent_158: 6170158220448520638
+      roguelikeDungeon_transparent_159: -3841437093734414471
+      roguelikeDungeon_transparent_16: -1413304726049701531
+      roguelikeDungeon_transparent_160: 6975486845851883045
+      roguelikeDungeon_transparent_161: 6422908744559935291
+      roguelikeDungeon_transparent_162: 7999441359643739518
+      roguelikeDungeon_transparent_163: -7837076106504103023
+      roguelikeDungeon_transparent_164: -2910546774891705625
+      roguelikeDungeon_transparent_165: -980587350959705587
+      roguelikeDungeon_transparent_166: -2137966798222717583
+      roguelikeDungeon_transparent_167: 1861170230981629460
+      roguelikeDungeon_transparent_168: -5437327661086751068
+      roguelikeDungeon_transparent_169: 2604425862883804839
+      roguelikeDungeon_transparent_17: -100614573045350318
+      roguelikeDungeon_transparent_170: -232217280491108215
+      roguelikeDungeon_transparent_171: -9095375329265335393
+      roguelikeDungeon_transparent_172: 8071703708130086391
+      roguelikeDungeon_transparent_173: 7590982293364859083
+      roguelikeDungeon_transparent_174: 3892923736746696511
+      roguelikeDungeon_transparent_175: -7888513015272072629
+      roguelikeDungeon_transparent_176: -8201067550293548920
+      roguelikeDungeon_transparent_177: 3612695336038405092
+      roguelikeDungeon_transparent_178: 6712389115227436565
+      roguelikeDungeon_transparent_179: -7581647181875554838
+      roguelikeDungeon_transparent_18: -6550352104221177043
+      roguelikeDungeon_transparent_180: 195463431751305032
+      roguelikeDungeon_transparent_181: -4693626181486031631
+      roguelikeDungeon_transparent_182: -3164693121740830395
+      roguelikeDungeon_transparent_183: -7003653965664545336
+      roguelikeDungeon_transparent_184: 2830329685248182227
+      roguelikeDungeon_transparent_185: -7340452696016347773
+      roguelikeDungeon_transparent_186: 3130885199194986581
+      roguelikeDungeon_transparent_187: -8141920811623201259
+      roguelikeDungeon_transparent_188: -8367564191459868040
+      roguelikeDungeon_transparent_189: 2092800634065664174
+      roguelikeDungeon_transparent_19: -2416531614205829159
+      roguelikeDungeon_transparent_190: 3556977795768252358
+      roguelikeDungeon_transparent_191: -6459145572706205075
+      roguelikeDungeon_transparent_192: 8643737323583355943
+      roguelikeDungeon_transparent_193: 7059738684836049398
+      roguelikeDungeon_transparent_194: 3545521466552015392
+      roguelikeDungeon_transparent_195: 5670491187005985834
+      roguelikeDungeon_transparent_196: 5197283484873190530
+      roguelikeDungeon_transparent_197: 3843585169567707842
+      roguelikeDungeon_transparent_198: 4998435496251230996
+      roguelikeDungeon_transparent_199: 8332303859307286928
+      roguelikeDungeon_transparent_2: -4444653388694100197
+      roguelikeDungeon_transparent_20: 8650580496171623052
+      roguelikeDungeon_transparent_200: -2788345836359679848
+      roguelikeDungeon_transparent_201: 9209731692704944294
+      roguelikeDungeon_transparent_202: 7679287592967977491
+      roguelikeDungeon_transparent_203: -5858959067963526444
+      roguelikeDungeon_transparent_204: -6150509883274112965
+      roguelikeDungeon_transparent_205: 3401128458737452570
+      roguelikeDungeon_transparent_206: -3816889407499495176
+      roguelikeDungeon_transparent_207: 6097329851654839895
+      roguelikeDungeon_transparent_208: -5425075761056149380
+      roguelikeDungeon_transparent_209: -576384737166377368
+      roguelikeDungeon_transparent_21: 2583473274421713195
+      roguelikeDungeon_transparent_210: -1302164356828233479
+      roguelikeDungeon_transparent_211: -1892630161604697539
+      roguelikeDungeon_transparent_212: -2140058667534033597
+      roguelikeDungeon_transparent_213: 8407272236987501171
+      roguelikeDungeon_transparent_214: -7888179250969975617
+      roguelikeDungeon_transparent_215: -5418717165042014457
+      roguelikeDungeon_transparent_216: 6822130756822307001
+      roguelikeDungeon_transparent_217: 279509729239127962
+      roguelikeDungeon_transparent_218: -7286939630387023710
+      roguelikeDungeon_transparent_219: 2367382401513259494
+      roguelikeDungeon_transparent_22: -6057447220860961475
+      roguelikeDungeon_transparent_220: -1083390947026322759
+      roguelikeDungeon_transparent_221: 8534207529807184410
+      roguelikeDungeon_transparent_222: -4912032196995960013
+      roguelikeDungeon_transparent_223: 487232802161597382
+      roguelikeDungeon_transparent_224: -1853705519772108320
+      roguelikeDungeon_transparent_225: 7752512703735283884
+      roguelikeDungeon_transparent_226: -8685213118298077253
+      roguelikeDungeon_transparent_227: 2760718192411497075
+      roguelikeDungeon_transparent_228: 4401227040696289052
+      roguelikeDungeon_transparent_229: 9178987789954647466
+      roguelikeDungeon_transparent_23: 996936070058471317
+      roguelikeDungeon_transparent_230: -4395465405888679692
+      roguelikeDungeon_transparent_231: 6928888994267522224
+      roguelikeDungeon_transparent_232: 7241833014802674509
+      roguelikeDungeon_transparent_233: -2649837130935982277
+      roguelikeDungeon_transparent_234: -3967848903747397902
+      roguelikeDungeon_transparent_235: 2296681731976396243
+      roguelikeDungeon_transparent_236: -1526861180307206644
+      roguelikeDungeon_transparent_237: -7952030193466132244
+      roguelikeDungeon_transparent_238: 5561956244475362787
+      roguelikeDungeon_transparent_239: 6019844766822769662
+      roguelikeDungeon_transparent_24: 6668139622481092201
+      roguelikeDungeon_transparent_240: -2278194515559155409
+      roguelikeDungeon_transparent_241: -887676583066749485
+      roguelikeDungeon_transparent_242: -2354774647990914071
+      roguelikeDungeon_transparent_243: 3269463860492979619
+      roguelikeDungeon_transparent_244: 2552092888031463714
+      roguelikeDungeon_transparent_245: -4681093064144486036
+      roguelikeDungeon_transparent_246: 8129886412293671403
+      roguelikeDungeon_transparent_247: -8730878351838486788
+      roguelikeDungeon_transparent_248: 294280485125319926
+      roguelikeDungeon_transparent_249: 264997146625128022
+      roguelikeDungeon_transparent_25: 394002392118641958
+      roguelikeDungeon_transparent_250: 8019119883330729356
+      roguelikeDungeon_transparent_251: 861581374138667840
+      roguelikeDungeon_transparent_252: -1451813193099511697
+      roguelikeDungeon_transparent_253: -7269961192370386690
+      roguelikeDungeon_transparent_254: 3610130004461226271
+      roguelikeDungeon_transparent_255: 5887832766040574513
+      roguelikeDungeon_transparent_256: 2383934688475848231
+      roguelikeDungeon_transparent_257: 608626316460366662
+      roguelikeDungeon_transparent_258: 4653288589009031870
+      roguelikeDungeon_transparent_259: 1658118026175486934
+      roguelikeDungeon_transparent_26: 7063199875154260097
+      roguelikeDungeon_transparent_260: -5405794977040281496
+      roguelikeDungeon_transparent_261: -826207890913842117
+      roguelikeDungeon_transparent_262: -1776741853890125296
+      roguelikeDungeon_transparent_263: 401389788277065304
+      roguelikeDungeon_transparent_264: 2860045177405383291
+      roguelikeDungeon_transparent_265: -7662690573147081063
+      roguelikeDungeon_transparent_266: 5073342214437642406
+      roguelikeDungeon_transparent_267: -76580439031857353
+      roguelikeDungeon_transparent_268: 2246077000650934820
+      roguelikeDungeon_transparent_269: -1831654172775069049
+      roguelikeDungeon_transparent_27: -3161676255226211366
+      roguelikeDungeon_transparent_270: -7651400267638479952
+      roguelikeDungeon_transparent_271: -2649069115982698676
+      roguelikeDungeon_transparent_272: -729940493881422028
+      roguelikeDungeon_transparent_273: 9101263101514233738
+      roguelikeDungeon_transparent_274: -1294373649968143277
+      roguelikeDungeon_transparent_275: 6083162960704402353
+      roguelikeDungeon_transparent_276: 1821830760225661168
+      roguelikeDungeon_transparent_277: -9023642019097028612
+      roguelikeDungeon_transparent_278: 8960920599525997291
+      roguelikeDungeon_transparent_279: -7022301941944524049
+      roguelikeDungeon_transparent_28: -7757782391967500434
+      roguelikeDungeon_transparent_280: 2900329728055119026
+      roguelikeDungeon_transparent_281: -2473497103147620580
+      roguelikeDungeon_transparent_282: 8485191061134132099
+      roguelikeDungeon_transparent_283: 3705323511203376171
+      roguelikeDungeon_transparent_284: 1306657344225647365
+      roguelikeDungeon_transparent_285: 3148091919270175994
+      roguelikeDungeon_transparent_286: 2256109585148174889
+      roguelikeDungeon_transparent_287: -1477537727584971282
+      roguelikeDungeon_transparent_288: -5072150270727912613
+      roguelikeDungeon_transparent_289: -3788970773985881730
+      roguelikeDungeon_transparent_29: 8972141682373622046
+      roguelikeDungeon_transparent_290: -2440130073954960578
+      roguelikeDungeon_transparent_291: 3453086039898603587
+      roguelikeDungeon_transparent_292: 876432966550634634
+      roguelikeDungeon_transparent_293: -7198954679121550698
+      roguelikeDungeon_transparent_294: -5363480087681218012
+      roguelikeDungeon_transparent_295: 674568857914781941
+      roguelikeDungeon_transparent_296: -4623075773462226296
+      roguelikeDungeon_transparent_297: -3323109529585304142
+      roguelikeDungeon_transparent_298: -6498024052040128002
+      roguelikeDungeon_transparent_299: 3784030360291194049
+      roguelikeDungeon_transparent_3: -7205390469435794404
+      roguelikeDungeon_transparent_30: 6889691603174266709
+      roguelikeDungeon_transparent_300: 2755577278033081997
+      roguelikeDungeon_transparent_301: -7402796652764790948
+      roguelikeDungeon_transparent_302: 1266901255344041023
+      roguelikeDungeon_transparent_303: -4225502788261654302
+      roguelikeDungeon_transparent_304: 8997390384849158642
+      roguelikeDungeon_transparent_305: 5395127055899305315
+      roguelikeDungeon_transparent_306: -3644081313457370664
+      roguelikeDungeon_transparent_307: 201899798951847748
+      roguelikeDungeon_transparent_308: 8937080551956462414
+      roguelikeDungeon_transparent_309: 8335863461893863663
+      roguelikeDungeon_transparent_31: -3812999355732923117
+      roguelikeDungeon_transparent_310: -3923444533401674305
+      roguelikeDungeon_transparent_311: -5817821932309295168
+      roguelikeDungeon_transparent_312: -7652822134853310638
+      roguelikeDungeon_transparent_313: 816473470418475594
+      roguelikeDungeon_transparent_314: -2506944036321192268
+      roguelikeDungeon_transparent_315: 5495541343012748304
+      roguelikeDungeon_transparent_316: -4116698432838142890
+      roguelikeDungeon_transparent_317: -413122395849154213
+      roguelikeDungeon_transparent_318: -7863748370658374481
+      roguelikeDungeon_transparent_319: 9049312125849284032
+      roguelikeDungeon_transparent_32: -7677010349682579751
+      roguelikeDungeon_transparent_320: 1599481259042459757
+      roguelikeDungeon_transparent_321: -8887745366764605838
+      roguelikeDungeon_transparent_322: 1111890294304865307
+      roguelikeDungeon_transparent_323: -428713744762745099
+      roguelikeDungeon_transparent_324: 3596186474471194332
+      roguelikeDungeon_transparent_325: 471615423426727213
+      roguelikeDungeon_transparent_326: 7367360629719999207
+      roguelikeDungeon_transparent_327: -1439904683488386995
+      roguelikeDungeon_transparent_328: -8413904446506478254
+      roguelikeDungeon_transparent_329: 8493828438685961309
+      roguelikeDungeon_transparent_33: 7650600225261688430
+      roguelikeDungeon_transparent_330: -929364520015232970
+      roguelikeDungeon_transparent_331: -8126713787528186986
+      roguelikeDungeon_transparent_332: 7047748180460892802
+      roguelikeDungeon_transparent_333: -591229625354011421
+      roguelikeDungeon_transparent_334: 8423269874398060560
+      roguelikeDungeon_transparent_335: 7234107140673446894
+      roguelikeDungeon_transparent_336: 1369126622796602318
+      roguelikeDungeon_transparent_337: 7646493874226339194
+      roguelikeDungeon_transparent_338: 8008780452512282015
+      roguelikeDungeon_transparent_339: 8371157059335003080
+      roguelikeDungeon_transparent_34: 6688757284627118830
+      roguelikeDungeon_transparent_340: 5600884506721660425
+      roguelikeDungeon_transparent_341: 4934904914130301931
+      roguelikeDungeon_transparent_342: -4814672459505069397
+      roguelikeDungeon_transparent_343: -3949898390079741960
+      roguelikeDungeon_transparent_344: 7889262269344934844
+      roguelikeDungeon_transparent_345: 8696481246304804230
+      roguelikeDungeon_transparent_346: 2147648809303416892
+      roguelikeDungeon_transparent_347: 3202279455748389587
+      roguelikeDungeon_transparent_348: -5507857517057563763
+      roguelikeDungeon_transparent_349: 4155268891846674347
+      roguelikeDungeon_transparent_35: 7054989227990223105
+      roguelikeDungeon_transparent_350: -9217322951266268519
+      roguelikeDungeon_transparent_351: -7995357071580829059
+      roguelikeDungeon_transparent_352: 9021141415109886019
+      roguelikeDungeon_transparent_353: -4527465929417869698
+      roguelikeDungeon_transparent_354: -3111161621782052721
+      roguelikeDungeon_transparent_355: 2019886812205192342
+      roguelikeDungeon_transparent_356: 6808253980488005225
+      roguelikeDungeon_transparent_357: 1520906848138851674
+      roguelikeDungeon_transparent_358: 1112017253246340027
+      roguelikeDungeon_transparent_359: -2301075587595124979
+      roguelikeDungeon_transparent_36: -3729626666746964777
+      roguelikeDungeon_transparent_360: -1947602341256272939
+      roguelikeDungeon_transparent_361: 9073291584473075838
+      roguelikeDungeon_transparent_362: 8340641772065508531
+      roguelikeDungeon_transparent_363: 4467101663308457000
+      roguelikeDungeon_transparent_364: 6130402600277439826
+      roguelikeDungeon_transparent_365: -3797468947464633511
+      roguelikeDungeon_transparent_366: 2538517418139588763
+      roguelikeDungeon_transparent_367: -5223761131437518371
+      roguelikeDungeon_transparent_368: -5116970540199560940
+      roguelikeDungeon_transparent_369: 6475815611088635340
+      roguelikeDungeon_transparent_37: 7895655971635161402
+      roguelikeDungeon_transparent_370: 6234998226153463614
+      roguelikeDungeon_transparent_371: 3076774825830395612
+      roguelikeDungeon_transparent_372: 6521093786689413419
+      roguelikeDungeon_transparent_373: 1685978019155683614
+      roguelikeDungeon_transparent_374: -6047948345124203867
+      roguelikeDungeon_transparent_375: -543348448906451017
+      roguelikeDungeon_transparent_376: 7631140634265330219
+      roguelikeDungeon_transparent_377: 8676413407027067878
+      roguelikeDungeon_transparent_378: 5881946530317462102
+      roguelikeDungeon_transparent_379: 3585258431597030780
+      roguelikeDungeon_transparent_38: -2936338243187484864
+      roguelikeDungeon_transparent_380: 5549358005957511444
+      roguelikeDungeon_transparent_381: -8073165586598220813
+      roguelikeDungeon_transparent_382: 6931454414002038532
+      roguelikeDungeon_transparent_383: -4600226089711640749
+      roguelikeDungeon_transparent_384: -3175753312710754378
+      roguelikeDungeon_transparent_385: -9075886659858149760
+      roguelikeDungeon_transparent_386: 8983496623560657165
+      roguelikeDungeon_transparent_387: -5726838175626795138
+      roguelikeDungeon_transparent_388: 2229261538195453012
+      roguelikeDungeon_transparent_389: 8090956232932237961
+      roguelikeDungeon_transparent_39: -2945321088642010530
+      roguelikeDungeon_transparent_390: 3035855601057000321
+      roguelikeDungeon_transparent_391: -3419295043370831813
+      roguelikeDungeon_transparent_392: -5707205342686015116
+      roguelikeDungeon_transparent_393: 6791557308009810560
+      roguelikeDungeon_transparent_394: 8048381904128484813
+      roguelikeDungeon_transparent_395: 1242651477598561173
+      roguelikeDungeon_transparent_396: 4434931698505797159
+      roguelikeDungeon_transparent_397: -7822073170987578064
+      roguelikeDungeon_transparent_398: -2811632922301036392
+      roguelikeDungeon_transparent_399: -6759026254248448
+      roguelikeDungeon_transparent_4: 9142234866806149189
+      roguelikeDungeon_transparent_40: 4866562894503800607
+      roguelikeDungeon_transparent_400: 5530526158144920233
+      roguelikeDungeon_transparent_401: 6905001410833144620
+      roguelikeDungeon_transparent_402: 8938834715031431271
+      roguelikeDungeon_transparent_403: -8749495170844001119
+      roguelikeDungeon_transparent_404: -837048016512709439
+      roguelikeDungeon_transparent_405: 3996615867539781548
+      roguelikeDungeon_transparent_406: 7087475641508043547
+      roguelikeDungeon_transparent_407: 8590532301071510068
+      roguelikeDungeon_transparent_408: -4110085435126231334
+      roguelikeDungeon_transparent_409: 1965396103274436904
+      roguelikeDungeon_transparent_41: 3207917844786877475
+      roguelikeDungeon_transparent_410: 5789619315520172969
+      roguelikeDungeon_transparent_411: -7893191961995072419
+      roguelikeDungeon_transparent_412: 2740014542922875699
+      roguelikeDungeon_transparent_413: 338519370825754365
+      roguelikeDungeon_transparent_414: 4851594361175087833
+      roguelikeDungeon_transparent_415: -6708093069842765286
+      roguelikeDungeon_transparent_416: 8579092476881365076
+      roguelikeDungeon_transparent_417: -602148732425655300
+      roguelikeDungeon_transparent_418: 3294456657879024443
+      roguelikeDungeon_transparent_419: 7408366918336842941
+      roguelikeDungeon_transparent_42: -1598137755699104159
+      roguelikeDungeon_transparent_420: 245028875667098590
+      roguelikeDungeon_transparent_421: -6844398654088687843
+      roguelikeDungeon_transparent_422: -6188095145964176940
+      roguelikeDungeon_transparent_423: 8910435267662797358
+      roguelikeDungeon_transparent_424: -700195469486387253
+      roguelikeDungeon_transparent_425: 279404052913933962
+      roguelikeDungeon_transparent_426: 799941519526329922
+      roguelikeDungeon_transparent_427: -6491907742239655832
+      roguelikeDungeon_transparent_428: -6173854433872408547
+      roguelikeDungeon_transparent_429: 8832461493181355998
+      roguelikeDungeon_transparent_43: -3092128638764847830
+      roguelikeDungeon_transparent_430: -6962975752186852715
+      roguelikeDungeon_transparent_431: 140354908846412917
+      roguelikeDungeon_transparent_432: 5760090559460565021
+      roguelikeDungeon_transparent_433: -4697996418425643610
+      roguelikeDungeon_transparent_434: -7212889540958051642
+      roguelikeDungeon_transparent_435: -866956666060283384
+      roguelikeDungeon_transparent_436: 455239481888191128
+      roguelikeDungeon_transparent_437: -4120046048067930834
+      roguelikeDungeon_transparent_438: 4070361735023394593
+      roguelikeDungeon_transparent_439: 1619472126031384100
+      roguelikeDungeon_transparent_44: 8141785045709250685
+      roguelikeDungeon_transparent_440: 1028818734039777630
+      roguelikeDungeon_transparent_441: 3252784598543222624
+      roguelikeDungeon_transparent_442: 8617029700563980628
+      roguelikeDungeon_transparent_443: 3131449860921159767
+      roguelikeDungeon_transparent_444: -7367114509572998086
+      roguelikeDungeon_transparent_445: 5323255708929171917
+      roguelikeDungeon_transparent_446: -653672124722718634
+      roguelikeDungeon_transparent_447: -8988366851027727954
+      roguelikeDungeon_transparent_448: 8159289057410980633
+      roguelikeDungeon_transparent_449: 3103643397049938277
+      roguelikeDungeon_transparent_45: 1136636858301586503
+      roguelikeDungeon_transparent_450: -3211527107123728576
+      roguelikeDungeon_transparent_451: -8160739493774157898
+      roguelikeDungeon_transparent_452: 4366578093427049802
+      roguelikeDungeon_transparent_453: 2981011903110843174
+      roguelikeDungeon_transparent_454: -3361515256793738942
+      roguelikeDungeon_transparent_455: -8375592565447084542
+      roguelikeDungeon_transparent_456: -2756277479017115525
+      roguelikeDungeon_transparent_457: -4075683583137222646
+      roguelikeDungeon_transparent_458: -8580787252619059243
+      roguelikeDungeon_transparent_459: -5360209337488849669
+      roguelikeDungeon_transparent_46: 6973363632497244624
+      roguelikeDungeon_transparent_460: -1451193092598601542
+      roguelikeDungeon_transparent_461: -4766236973236818688
+      roguelikeDungeon_transparent_462: -7249101739437725707
+      roguelikeDungeon_transparent_463: -265608163762873082
+      roguelikeDungeon_transparent_464: -2461471272762128495
+      roguelikeDungeon_transparent_465: -5302536232027235116
+      roguelikeDungeon_transparent_466: 1585856709839430026
+      roguelikeDungeon_transparent_467: -1433274878507141176
+      roguelikeDungeon_transparent_468: 3492433175539200644
+      roguelikeDungeon_transparent_469: 1426720584593826141
+      roguelikeDungeon_transparent_47: 5600075239694350649
+      roguelikeDungeon_transparent_470: 5980934943409052105
+      roguelikeDungeon_transparent_471: -4727600883874466073
+      roguelikeDungeon_transparent_472: -4462560393643780511
+      roguelikeDungeon_transparent_473: 2533042920219827228
+      roguelikeDungeon_transparent_474: -5783710413675840684
+      roguelikeDungeon_transparent_475: -7057374569736305839
+      roguelikeDungeon_transparent_476: 7188025285170591380
+      roguelikeDungeon_transparent_477: 499941674947065270
+      roguelikeDungeon_transparent_478: 250885548223694176
+      roguelikeDungeon_transparent_479: 7986531587606259270
+      roguelikeDungeon_transparent_48: -629863077729935104
+      roguelikeDungeon_transparent_480: 4372788393840532177
+      roguelikeDungeon_transparent_481: -2266577844370637711
+      roguelikeDungeon_transparent_482: -788938235643551540
+      roguelikeDungeon_transparent_483: 3948626666758954919
+      roguelikeDungeon_transparent_484: -7100895252569842233
+      roguelikeDungeon_transparent_485: 433901199454438819
+      roguelikeDungeon_transparent_486: 8531892979544650625
+      roguelikeDungeon_transparent_487: -2779966112326508011
+      roguelikeDungeon_transparent_488: 5076683316961711810
+      roguelikeDungeon_transparent_489: 2781219965642188291
+      roguelikeDungeon_transparent_49: 2878981517009657070
+      roguelikeDungeon_transparent_490: -1687439801607252403
+      roguelikeDungeon_transparent_491: 8132803976886255406
+      roguelikeDungeon_transparent_492: 2601280692016162604
+      roguelikeDungeon_transparent_493: -6752787253169650511
+      roguelikeDungeon_transparent_494: 1203148498235810800
+      roguelikeDungeon_transparent_495: -5167450961814059799
+      roguelikeDungeon_transparent_496: -3377801413682003202
+      roguelikeDungeon_transparent_497: 7223697178947161294
+      roguelikeDungeon_transparent_498: -8626374423330145857
+      roguelikeDungeon_transparent_499: 6325366507355926562
+      roguelikeDungeon_transparent_5: -2467965557541441510
+      roguelikeDungeon_transparent_50: 5335748025047903381
+      roguelikeDungeon_transparent_500: 7078676987317385952
+      roguelikeDungeon_transparent_501: 8515115036501570940
+      roguelikeDungeon_transparent_502: 3751817508684378297
+      roguelikeDungeon_transparent_503: 5968705635635796213
+      roguelikeDungeon_transparent_504: -8023440859164150624
+      roguelikeDungeon_transparent_505: -3501925758717015677
+      roguelikeDungeon_transparent_506: 2165513756366801936
+      roguelikeDungeon_transparent_507: 1560255709784590419
+      roguelikeDungeon_transparent_508: 7691600715906673928
+      roguelikeDungeon_transparent_509: 8459306597277732397
+      roguelikeDungeon_transparent_51: 7055084446787382411
+      roguelikeDungeon_transparent_510: -4809067094456256298
+      roguelikeDungeon_transparent_511: 5853588692729510811
+      roguelikeDungeon_transparent_512: 4047403940040452729
+      roguelikeDungeon_transparent_513: 4226751866010327236
+      roguelikeDungeon_transparent_514: 7697469254169340757
+      roguelikeDungeon_transparent_515: 7799923294034232217
+      roguelikeDungeon_transparent_516: -6427865067476013059
+      roguelikeDungeon_transparent_517: -9115743153487473602
+      roguelikeDungeon_transparent_518: 3336736720549660671
+      roguelikeDungeon_transparent_519: -729858260143596003
+      roguelikeDungeon_transparent_52: 2199675451031801663
+      roguelikeDungeon_transparent_520: -4107599499902061451
+      roguelikeDungeon_transparent_521: 7705910748759524240
+      roguelikeDungeon_transparent_53: -6107315196591852263
+      roguelikeDungeon_transparent_54: -587960861379074410
+      roguelikeDungeon_transparent_55: -4662193879777218418
+      roguelikeDungeon_transparent_56: 5811867207809954726
+      roguelikeDungeon_transparent_57: -6584214621939831547
+      roguelikeDungeon_transparent_58: -5511833224161410507
+      roguelikeDungeon_transparent_59: 8065737236289121960
+      roguelikeDungeon_transparent_6: 7236237403882107785
+      roguelikeDungeon_transparent_60: 1841462637668102663
+      roguelikeDungeon_transparent_61: 5140468206933609584
+      roguelikeDungeon_transparent_62: -6172898800392616127
+      roguelikeDungeon_transparent_63: 8909153347873915652
+      roguelikeDungeon_transparent_64: 8794339829995047195
+      roguelikeDungeon_transparent_65: 8343581493411087946
+      roguelikeDungeon_transparent_66: -8469697690282429261
+      roguelikeDungeon_transparent_67: -3720351981202299588
+      roguelikeDungeon_transparent_68: 3537860896965224377
+      roguelikeDungeon_transparent_69: -2060205701972810849
+      roguelikeDungeon_transparent_7: -602690349767825268
+      roguelikeDungeon_transparent_70: -1185064487199172772
+      roguelikeDungeon_transparent_71: -2146132400834434420
+      roguelikeDungeon_transparent_72: -5518263435954150886
+      roguelikeDungeon_transparent_73: 6987344216732400164
+      roguelikeDungeon_transparent_74: -5823133131412325802
+      roguelikeDungeon_transparent_75: -5460644490871670732
+      roguelikeDungeon_transparent_76: -7273549772188018085
+      roguelikeDungeon_transparent_77: -7915611451996448911
+      roguelikeDungeon_transparent_78: -4472036002286625436
+      roguelikeDungeon_transparent_79: 2798335931437910348
+      roguelikeDungeon_transparent_8: -5251962984711148136
+      roguelikeDungeon_transparent_80: 3279409404194890802
+      roguelikeDungeon_transparent_81: -7895246887466758963
+      roguelikeDungeon_transparent_82: -3301069101644612717
+      roguelikeDungeon_transparent_83: -3744932754005303123
+      roguelikeDungeon_transparent_84: 3423656003631594247
+      roguelikeDungeon_transparent_85: -1228993856477324195
+      roguelikeDungeon_transparent_86: -1968145608817086271
+      roguelikeDungeon_transparent_87: -8821070283286049623
+      roguelikeDungeon_transparent_88: 4276232715897315079
+      roguelikeDungeon_transparent_89: 743648447233865162
+      roguelikeDungeon_transparent_9: -7791257464352952234
+      roguelikeDungeon_transparent_90: 7933941418105332535
+      roguelikeDungeon_transparent_91: 5205419953516844064
+      roguelikeDungeon_transparent_92: 7271963650066996954
+      roguelikeDungeon_transparent_93: -7772455121658584067
+      roguelikeDungeon_transparent_94: 8825183632242262941
+      roguelikeDungeon_transparent_95: -2619061329242000851
+      roguelikeDungeon_transparent_96: 1455047987337869644
+      roguelikeDungeon_transparent_97: 1220356856035610383
+      roguelikeDungeon_transparent_98: -908400615525780094
+      roguelikeDungeon_transparent_99: 8886751610192991048
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -3171,7 +3171,7 @@ TextureImporter:
       213: -3483427931420312910
     second: colored_1055
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -3188,10 +3188,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -3201,8 +3203,8 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 0
-    aniso: -1
-    mipBias: -100
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -3230,6 +3232,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -3241,6 +3245,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -3253,6 +3258,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -3265,6 +3271,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -4047,7 +4067,7 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-      outline: []
+    outline: []
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
@@ -4057,9 +4077,46 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      colored_0: -3714409817710726143
+      colored_1: 6898460269864436913
+      colored_102: 7299602737268578633
+      colored_114: -7839326050990150619
+      colored_115: -8468568442695578240
+      colored_116: -3066788070860927941
+      colored_117: -7176965711208360876
+      colored_162: -5390918220624282411
+      colored_163: 1716282648003503332
+      colored_18: 8328029711872801443
+      colored_19: 7175689106845610366
+      colored_2: 8848465696421099746
+      colored_20: -4812381688937245060
+      colored_200: 7877551864742137088
+      colored_201: -8962106857793487275
+      colored_202: -6397082192886123527
+      colored_203: -876296442542574773
+      colored_204: 3775989316744229142
+      colored_210: -2287063768754447451
+      colored_211: 6471202650565099148
+      colored_248: -4272563635693523502
+      colored_249: 7556233312227624327
+      colored_250: 2548282226465807354
+      colored_251: -6034580479786107884
+      colored_290: 7406130750607033256
+      colored_291: -1144756718241842014
+      colored_307: -3668438932853061117
+      colored_308: 5025013992263336368
+      colored_364: 6801415080348292745
+      colored_494: -8438034107959588317
+      colored_5: 8589081340543278931
+      colored_61: -5166037955536148308
+      colored_66: -8124711974475601971
+      colored_67: 3108343338731906291
+      colored_68: -7651854340189893947
+      colored_826: 6074461764350513271
+      colored_99: -3635625735869372126
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

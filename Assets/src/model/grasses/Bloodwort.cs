@@ -18,7 +18,7 @@ public class Bloodwort : Grass, IActorEnterHandler {
   }
 
   // [OnDeserialized]
-  // protected override void HandleEnterFloor() {
+  // protected override void HandleEnterFloor(StreamingContext context) {
   //   floor.OnEntityRemoved += HandleEntityRemoved;
   // }
 

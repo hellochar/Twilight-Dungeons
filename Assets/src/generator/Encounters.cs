@@ -613,7 +613,7 @@ public partial class Encounters {
     }
   }
 
-  public static void AddWater(Floor floor, Room room) => AddWaterImpl(floor, room, Random.Range(3, 6));
+  public static void AddWater(Floor floor, Room room) => AddWaterImpl(floor, room, Random.Range(2, 5));
 
   public static void AddHomeWater(Floor floor, Room room) => AddWaterImpl(floor, room, 5, true);
 

@@ -108,7 +108,7 @@ public class MovingEntityList<T> : EntityStore<T> where T : Entity {
   }
 
   [OnDeserialized]
-  void HandleDeserialized() {
+  void HandleDeserialized(StreamingContext context) {
     needsRecompute = true;
   }
 

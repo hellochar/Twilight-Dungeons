@@ -59,7 +59,7 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   }
 
   [OnSerializing]
-  private void OnSerializing(StreamingContext context) {
+  private void HandleSerializing(StreamingContext context) {
     /// clear player tasks on save
     ClearTasks();
   }

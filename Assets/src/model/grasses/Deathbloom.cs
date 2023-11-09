@@ -14,8 +14,18 @@ public class Deathbloom : Grass, IActorEnterHandler, IDeathHandler {
   public Deathbloom(Vector2Int pos) : base(pos) {}
 
   [OnDeserialized]
-  protected override void HandleEnterFloor() {
+  public override void HandleDeserialized(StreamingContext context) {
+    base.HandleDeserialized(context);
+    // re-register entity 
+    RegisterEntityRemovedHandler();
+  }
+
+  private void RegisterEntityRemovedHandler() {
     floor.OnEntityRemoved += HandleEntityRemoved;
+  }
+
+  protected override void HandleEnterFloor() {
+    RegisterEntityRemovedHandler();
   }
 
   protected override void HandleLeaveFloor() {

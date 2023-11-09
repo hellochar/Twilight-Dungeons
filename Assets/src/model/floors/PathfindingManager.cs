@@ -22,7 +22,7 @@ class PathfindingManager {
   }
 
   [OnDeserialized]
-  private void OnDeserialized() {
+  private void HandleDeserialized(StreamingContext context) {
     openSet = new List<Tile>();
     closedSet = new HashSet<Tile>();
     gCosts = new Dictionary<Tile, int>();

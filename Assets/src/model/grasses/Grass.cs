@@ -18,7 +18,8 @@ public class Grass : Entity {
   [NonSerialized] /// controller only
   public OnNoteworthyAction OnNoteworthyAction = delegate {};
   [OnDeserialized]
-  void HandleDeserialized() {
+  public override void HandleDeserialized(StreamingContext context) {
+    base.HandleDeserialized(context);
     OnNoteworthyAction = delegate {};
   }
 

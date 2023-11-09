@@ -22,6 +22,11 @@ public class Bloodstone : Body {
   }
 
   [OnDeserialized]
+  public override void HandleDeserialized(StreamingContext context) {
+    base.HandleDeserialized(context);
+    RegisterEntityAddedListener();
+  }
+
   public void RegisterEntityAddedListener() {
     floor.OnEntityAdded += HandleEntityAdded;
   }

@@ -68,7 +68,8 @@ internal class Web : Grass, IActorEnterHandler {
   public Web(Vector2Int pos) : base(pos) {}
 
   [OnDeserialized]
-  void HandleDeserialized() {
+  public override void HandleDeserialized(StreamingContext context) {
+    base.HandleDeserialized(context);
     if (BodyModifier != null) {
       // back-compat
       BodyModifier = null;

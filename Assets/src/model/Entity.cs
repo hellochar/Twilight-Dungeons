@@ -36,7 +36,7 @@ public abstract class Entity : IModifierProvider {
   public List<object> nonserializedModifiers = new List<object>();
 
   [OnDeserialized]
-  public void OnDeserialized() {
+  public virtual void HandleDeserialized(StreamingContext context) {
     nonserializedModifiers = new List<object>();
   }
 

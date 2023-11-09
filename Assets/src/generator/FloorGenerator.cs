@@ -16,7 +16,7 @@ public class FloorGenerator {
   public List<Func<Floor>> floorGenerators;
 
   [OnDeserialized]
-  void HandleDeserialized() {
+  void HandleDeserialized(StreamingContext context) {
     InitFloorGenerators();
     // 1.10.0 32 -> 36 levels
     while (floorSeeds.Count() < floorGenerators.Count()) {

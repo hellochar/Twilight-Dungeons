@@ -94,7 +94,7 @@ public class GameModel {
 
   #if UNITY_EDITOR
   [OnSerializing]
-  void HandleSerializing() {
+  void HandleSerializing(StreamingContext context) {
     if (eventQueue.Any()) {
       Debug.LogError("Serializing during not null event queue! " + eventQueue.Count);
       DrainEventQueue();
@@ -103,7 +103,7 @@ public class GameModel {
   #endif
 
   [OnDeserialized]
-  void HandleDeserialized() {
+  void HandleDeserialized(StreamingContext context) {
     eventQueue = new List<Action>();
     // 1.10.0 added PlayStats
     if (stats == null) {

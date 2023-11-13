@@ -44,12 +44,13 @@ public static class Highlights {
     GameModelController.main.StartCoroutine(CheckDestroy());
 
     IEnumerator CheckDestroy() {
+      // wait first to allow floor to become active, entity to get added to the floor, etc.
       while (true) {
+        highlight.transform.position = Util.withZ(e.pos);
+        yield return new WaitForSeconds(0.1f);
         if (highlight == null || e.IsDead || !e.floor.isActive || (destroyWhen?.Invoke() ?? false)) {
           break;
         }
-        highlight.transform.position = Util.withZ(e.pos);
-        yield return new WaitForSeconds(0.1f);
       }
 
       if (highlight) {

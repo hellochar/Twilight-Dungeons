@@ -17,21 +17,9 @@ public class GardenTutorialController : MonoBehaviour {
 
   public void Start() {
     var HUD = HUDController.main;
-    // HUD.hpBar?.SetActive(false);
-    // HUD.statuses?.SetActive(false);
     HUD.waterIndicator?.SetActive(false);
-    // HUD.inventoryToggle?.SetActive(false);
-    // HUD.inventoryContainer?.SetActive(false);
-    // // HUD.depth?.SetActive(false);
-    // HUD.enemiesLeft?.SetActive(false);
-    // // HUD.waitButton?.SetActive(false);
-    // HUD.settings?.SetActive(false);
 
     Player player = GameModel.main.player;
-
-    player.nonserializedModifiers.Add(this);                          // getting a status and healing
-    // player.inventory.OnItemAdded += HandleFirstItemAdded;             // redberries
-    // GameModel.main.turnManager.OnStep += DetectJackalsVisible;        // jackal room
     player.OnChangeWater += HandleChangeWater;                        // after getting water
   }
 
@@ -41,6 +29,8 @@ public class GardenTutorialController : MonoBehaviour {
       return;
     }
     tutorialStarted = true;
+
+    Messages.Create("Grow your garden!");
 
     Player player = GameModel.main.player;
     // while water is less than 100, get water.
@@ -164,12 +154,12 @@ public class GardenTutorialController : MonoBehaviour {
     }
   }
 
-  private void HandleSeedPickup(Item item, Entity arg2) {
-    if (item is ItemSeed) {
-      GameModel.main.player.inventory.OnItemAdded -= HandleSeedPickup;
-      Messages.Create("Plant the Seed!");
-    }
-  }
+  // private void HandleSeedPickup(Item item, Entity arg2) {
+  //   if (item is ItemSeed) {
+  //     GameModel.main.player.inventory.OnItemAdded -= HandleSeedPickup;
+  //     Messages.Create("Plant the Seed!");
+  //   }
+  // }
 
   private void HandleChangeWater(int delta) {
     Transitions.AnimateUIHorizontally(HUDController.main.waterIndicator, 900);

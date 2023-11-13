@@ -97,11 +97,11 @@ public class TutorialController : MonoBehaviour, IStatusAddedHandler, IHealHandl
     var blackOverlay = HUDController.main.blackOverlay;
     if (Serializer.HasSave0()) {
       /// quit the tutorial.
-      GameModelController.main.StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Intro"));
+      GameModelController.main.StartCoroutine(Transitions.GoToNewScene(GameModelController.main, blackOverlay, "Scenes/Intro"));
     } else {
       GameModel.GenerateNewGameAndSetMain();
       /// if there's no save, go straight to the real game
-      GameModelController.main.StartCoroutine(Transitions.GoToNewScene(this, blackOverlay, "Scenes/Game"));
+      GameModelController.main.StartCoroutine(Transitions.GoToNewScene(GameModelController.main, blackOverlay, "Scenes/Game"));
     }
   }
 

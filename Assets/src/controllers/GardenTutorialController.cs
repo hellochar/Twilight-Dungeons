@@ -172,7 +172,7 @@ public class GardenTutorialController : MonoBehaviour {
   }
 
   private void HandleChangeWater(int delta) {
-    Transitions.AnimateUIHorizontally(HUDController.main.waterIndicator, -900);
+    Transitions.AnimateUIHorizontally(HUDController.main.waterIndicator, 900);
     GameModel.main.player.OnChangeWater -= HandleChangeWater;
   }
 }

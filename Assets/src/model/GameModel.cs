@@ -250,6 +250,7 @@ public class GameModel {
     foreach (var handler in player.Of<IFloorClearedHandler>()) {
       handler.HandleFloorCleared(floor);
     }
+    AudioClipStore.main.floorCleared?.Play();
   }
 
   private void ResetAttempts() {

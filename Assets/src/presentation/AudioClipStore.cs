@@ -27,6 +27,7 @@ public class AudioClipStore : MonoBehaviour {
   public AudioClip popupClose;
   public AudioClip summon;
   public AudioClip uiError;
+  public AudioClip floorCleared;
 
   void Awake() {
     main = this;

@@ -53,7 +53,7 @@ public class GameModel {
   public TutorialModel? tutorialModel;
 
   public static GameModel main;
-  public bool canRetry => !permadeath || hasMoreAttempts;
+  public bool canRetry => !permadeath && hasMoreAttempts;
   public bool hasMoreAttempts => attempt < MAX_ATTEMPTS;
 
   /// Also sets GameModel.main.

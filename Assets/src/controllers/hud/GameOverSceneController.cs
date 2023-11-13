@@ -18,9 +18,9 @@ public class GameOverSceneController : MonoBehaviour {
       button.GetComponent<Image>().color = Color.white;
       var text = button.GetComponentInChildren<TMPro.TMP_Text>();
       if (GameModel.main.canRetry) {
-        text.text = "New Game";
-      } else {
         text.text = "Retry";
+      } else {
+        text.text = "New Game";
       }
       text.color = Color.black;
     }

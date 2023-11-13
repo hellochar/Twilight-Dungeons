@@ -7,6 +7,9 @@
 *.certSigningRequest
 build-ios/
 
+Twilight-Dungeons-unity2022-android33_BackUpThisFolder_ButDontShipItWithYourGame/
+Twilight-Dungeons-unity2022-android33_BurstDebugInformation_DoNotShip/
+
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore

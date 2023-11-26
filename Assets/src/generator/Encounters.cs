@@ -39,7 +39,9 @@ public partial class Encounters {
   // no op
   public static void Empty(Floor Floor, Room Room) { }
 
-  public static Encounter AddScuttlers4x = Twice(Twice(AddScuttlers));
+  public static void AddScuttlers4x(Floor floor, Room room) {
+    Twice(Twice(AddScuttlers))(floor, room);
+  }
 
   public static Encounter AddScuttlers = new Encounter((Floor floor, Room room) => {
     var tiles = new HashSet<Tile>(FloorUtils.EmptyTilesInRoom(floor, room).Where(t => t.grass == null && t.CanBeOccupied()));
@@ -377,7 +379,10 @@ public partial class Encounters {
     }
   }
 
-  public static Encounter AddSpore8x = Twice(Twice(Twice(AddSpore)));
+  public static void AddSpore8x(Floor floor, Room room) {
+    Twice(Twice(Twice(AddSpore)))(floor, room);
+  }
+
   public static void AddSpore(Floor floor, Room room) {
     var tiles = FloorUtils.TilesFromCenter(floor, room).Where((tile) => tile is Ground && tile.grass == null);
     var start = tiles.FirstOrDefault();

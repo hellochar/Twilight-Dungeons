@@ -299,7 +299,6 @@ public class TutorialModel {
     ["inventoryContainer"] = new HUDElement { name = "inventoryContainer" },
     ["statuses"] = new HUDElement { name = "statuses" },
     ["enemiesLeft"] = new HUDElement { name = "enemiesLeft" },
-    ["settings"] = new HUDElement { name = "settings" },
     ["damageFlash"] = new HUDElement { name = "damageFlash" }
   };
 

@@ -109,6 +109,8 @@ public class TutorialFloor : Floor {
   internal override void PlayerGoDownstairs() {
     var floorIndex = GetInfo().index;
 
+    Serializer.SaveMainToCheckpoint();
+
     if (floorIndex == TUTORIAL_FLOORS.Length - 1 || floorIndex == -1) {
       OnTutorialEnded?.Invoke();
     } else {
@@ -116,7 +118,6 @@ public class TutorialFloor : Floor {
       var nextFloorName = TUTORIAL_FLOORS[floorIndex + 1].name;
       Prebuilt pb = Prebuilt.LoadBaked(nextFloorName);
 
-      Serializer.SaveMainToCheckpoint();
       GameModel.main.PutPlayerAt(CreateFromPrebuilt(pb), pb.player?.pos);
     }
   }

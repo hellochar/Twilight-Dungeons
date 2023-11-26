@@ -20,7 +20,7 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOve
     lean = ViewportLean.Left
   };
 
-  public GameObject tutorialExtras;
+  public GameObject[] tutorialExtras;
 
   void Start() {
     AudioClipStore.main.popupOpen.Play(0.2f);
@@ -55,8 +55,9 @@ public class PlantUIController : MonoBehaviour, IPointerClickHandler, ICameraOve
       // uiInfo.rectTransform.anchoredPosition -= new Vector2(0, 50);
     }
 
-    if (GardenTutorialController.ShouldShow && plant.stage.NextStage == null) {
-      tutorialExtras.SetActive(true);
+    bool showTutorialExtras = GardenTutorialController.ShouldShow && plant.stage.NextStage == null;
+    foreach(var obj in tutorialExtras) {
+      obj.SetActive(showTutorialExtras);
     }
 
     Update();

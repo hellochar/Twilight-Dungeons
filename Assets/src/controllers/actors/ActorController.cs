@@ -40,6 +40,11 @@ public class ActorController : BodyController,
     Update();
   }
 
+  public void OnDestroy() {
+    actor.OnAttackGround -= HandleAttackGround;
+    actor.OnSetTask -= HandleSetTask;
+  }
+
   public void ShowSpeechBubble() {
     PrefabCache.Effects.Instantiate("Speech", transform);
   }

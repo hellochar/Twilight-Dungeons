@@ -1,16 +1,17 @@
 {
-  "omnisharp.enableEditorConfigSupport": true,
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "**/*.meta": true
-  },
-  "vim.handleKeys": {
-    "<C-p>": false,
-  },
-  "editor.acceptSuggestionOnCommitCharacter": false,
-  "editor.acceptSuggestionOnEnter": "smart"
+    "omnisharp.enableEditorConfigSupport": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.meta": true
+    },
+    "vim.handleKeys": {
+        "<C-p>": false
+    },
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "dotnet.defaultSolution": "Twilight-Dungeons.sln"
 }

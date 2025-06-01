@@ -18,7 +18,7 @@ public partial class Encounters {
     if (method != null) {
       return new Encounter((Floor floor, Room room) => method.Invoke(null, new object[] { floor, room }));
     }
-    
+
     Debug.LogWarning($"Couldn't find Encounter {name}.");
     return null;
   }
@@ -173,7 +173,7 @@ public partial class Encounters {
     var perimeter = roomTiles
       .Except(floor.EnumerateRoomTiles(room, -1))
       .Where(tile => tile.CanBeOccupied() && tile is Ground && tile.grass == null);
-    
+
     var start = Util.RandomPick(perimeter);
     if (start == null) {
       return;
@@ -245,7 +245,7 @@ public partial class Encounters {
     var groups =
       TileGroup.partitionIntoDisjointGroups(new HashSet<Tile>(allTiles))
       .OrderByDescending(group => group.Count());
-    
+
     var biggestGroup = groups.First();
     var startTile = TileGroup.getCenterTile(biggestGroup);
     floor.Put(new DeathlyCreeper(startTile.pos));
@@ -845,7 +845,7 @@ public partial class Encounters {
   }
 
   public static void ChasmBridge(Floor floor, Room room) {
-    switch(MyRandom.Range(0, 4)) {
+    switch (MyRandom.Range(0, 4)) {
       case 0:
         // top-right cutoff
         ChasmBridgeImpl(floor, room, 1, 1);
@@ -912,4 +912,8 @@ public partial class Encounters {
   public static void AddMossMan(Floor floor, Room room) => HumanoidEncounters.AddMossMan(floor, room);
   public static void AddMercenary(Floor floor, Room room) => HumanoidEncounters.AddMercenary(floor, room);
   public static void AddGambler(Floor floor, Room room) => HumanoidEncounters.AddGambler(floor, room);
+
+  public static void AddJackalBoss(Floor floor, Room room) {
+    floor.Put(new JackalBoss(floor.center));
+  }
 }

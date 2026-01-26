@@ -92,3 +92,15 @@ public class FreeMoveStatus : StackingStatus, IActionCostModifier, IActionPerfor
     }
   }
 }
+
+[Serializable]
+[ObjectInfo(description: "Walk over to disperse. Blocks vision.")]
+public class BonePile : Grass, IBlocksVision, IActorEnterHandler {
+  public BonePile(Vector2Int pos) : base(pos) {}
+
+  public void HandleActorEnter(Actor who) {
+    if (who is Player player) {
+      Kill(who);
+    }
+  }
+}

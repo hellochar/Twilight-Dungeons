@@ -915,5 +915,20 @@ public partial class Encounters {
 
   public static void AddJackalBoss(Floor floor, Room room) {
     floor.Put(new JackalBoss(floor.center));
+    AddBonePiles(floor, room);
+  }
+
+  public static void AddBonePiles(Floor floor, Room room) {
+    var occupiableTiles = new HashSet<Tile>(floor.EnumerateRoomTiles(room).Where((tile) => tile is Ground && tile.grass == null));
+    var numTiles = occupiableTiles.Count;
+    if (numTiles > 0) {
+      var patch = floor
+        .BreadthFirstSearch(room.center, (tile) => occupiableTiles.Contains(tile))
+        .Take(numTiles / 2 + 1).ToArray();
+      var patchMoved = patch.Select(tile => Util.RandomPick(floor.GetAdjacentTiles(tile.pos).Where(occupiableTiles.Contains)));
+      foreach (var tile in patchMoved) {
+        floor.Put(new BonePile(tile.pos));
+      }
+    }
   }
 }

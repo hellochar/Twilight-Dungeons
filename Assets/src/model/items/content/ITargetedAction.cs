@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public interface ITargetedAction<out T> where T : Entity {
   string TargettedActionName { get; }
@@ -16,7 +17,11 @@ public static class ITargetedActionExtensions {
       if (targets == null || !targets.Any()) {
         throw new CannotPerformActionException("No valid targets!");
       }
-      var target = await MapSelector.SelectUI(targets.ToList(), action.TargettedActionDescription);
+      Sprite previewSprite = null;
+      if (action is Item item) {
+        previewSprite = ObjectInfo.GetSpriteFor(item);
+      }
+      var target = await MapSelector.SelectUI(targets.ToList(), action.TargettedActionDescription, previewSprite);
       action.PerformTargettedAction(player, target);
       GameModel.main.DrainEventQueue();
     } catch (PlayerSelectCanceledException) {

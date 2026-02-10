@@ -4,8 +4,20 @@ using UnityEngine;
 
 [System.Serializable]
 public class MoveNextToTargetTask : FollowPathTask {
-  public MoveNextToTargetTask(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor.pos, target)) { }
+  public MoveNextToTargetTask(Actor actor, Vector2Int target) : base(actor, target, FindBestAdjacentPath(actor, target)) { }
 
+  public static List<Vector2Int> FindBestAdjacentPath(Body body, Vector2Int target) {
+    if (body.pos == target) {
+      return new List<Vector2Int>();
+    }
+    var path = GameModel.main.currentFloor.FindPath(body.pos, target, true, body);
+    if (path.Any()) {
+      path.RemoveAt(path.Count - 1);
+    }
+    return path;
+  }
+
+  /// Backwards-compatible overload without body (uses default walking pathfinding)
   public static List<Vector2Int> FindBestAdjacentPath(Vector2Int pos, Vector2Int target) {
     if (pos == target) {
       return new List<Vector2Int>();

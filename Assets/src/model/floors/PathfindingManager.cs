@@ -30,8 +30,8 @@ class PathfindingManager {
     parents = new Dictionary<Tile, Tile>();
   }
 
-  public List<Vector2Int> FindPathDynamic(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty) {
-    var path = FindPathImpl(pos, target, pretendTargetEmpty);
+  public List<Vector2Int> FindPathDynamic(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty, Body body = null) {
+    var path = FindPathImpl(pos, target, pretendTargetEmpty, body);
     if (path != null) {
       return path.Select(x => x.pos).ToList();
     }
@@ -45,7 +45,8 @@ class PathfindingManager {
 
   // adapted from https://github.com/RonenNess/Unity-2d-pathfinding
   /// pretendTargetEmpty - if true, the targetPos will be treated as walkable, even if it's not
-  private List<Tile> FindPathImpl(Vector2Int startPos, Vector2Int targetPos, bool pretendTargetEmpty) {
+  /// body - if provided, use body-aware collision checks (respects movement layers)
+  private List<Tile> FindPathImpl(Vector2Int startPos, Vector2Int targetPos, bool pretendTargetEmpty, Body body = null) {
     Tile startNode = floor.tiles[startPos];
     Tile targetNode = floor.tiles[targetPos];
 
@@ -58,6 +59,16 @@ class PathfindingManager {
     openSet.Add(startNode);
 
     bool isAtEmptyTarget(Tile t) => pretendTargetEmpty && t.pos == targetPos ? true : false;
+
+    bool canTraverse(Tile t) {
+      if (isAtEmptyTarget(t)) return true;
+      return body != null ? t.CanBeOccupiedBy(body) : t.CanBeOccupied();
+    }
+
+    float weight(Tile t) {
+      if (isAtEmptyTarget(t)) return 1;
+      return body != null ? t.GetPathfindingWeightFor(body) : t.GetPathfindingWeight();
+    }
 
     while (openSet.Count > 0) {
       Tile currentNode = openSet[0];
@@ -75,11 +86,11 @@ class PathfindingManager {
       }
 
       foreach (Tile neighbour in floor.GetAdjacentTiles(currentNode.pos)) {
-        if (!(isAtEmptyTarget(neighbour) ? true : neighbour.CanBeOccupied()) || closedSet.Contains(neighbour)) {
+        if (!canTraverse(neighbour) || closedSet.Contains(neighbour)) {
           continue;
         }
 
-        var neighbourWeight = (int)(10.0f * (isAtEmptyTarget(neighbour) ? 1 : neighbour.GetPathfindingWeight()));
+        var neighbourWeight = (int)(10.0f * weight(neighbour));
         int newMovementCostToNeighbour = gCost(currentNode) + GetDistance(currentNode, neighbour) * neighbourWeight;
         if (newMovementCostToNeighbour < gCost(neighbour) || !openSet.Contains(neighbour)) {
           gCosts[neighbour] = newMovementCostToNeighbour;

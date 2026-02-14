@@ -35,10 +35,8 @@ public class InventorySlotController : ItemSlotController, IDropHandler {
     }
     inventory = inventoryController?.inventory ?? GameModel.main.player.inventory;
     itemChild = transform.Find("Item")?.gameObject;
-    if (allowDragAndDrop) {
-      OnBeginDrag += HandleBeginDrag;
-      OnEndDrag += HandleEndDrag;
-    }
+    OnBeginDrag += HandleBeginDrag;
+    OnEndDrag += HandleEndDrag;
   }
 
   void OnDestroy() {
@@ -46,13 +44,41 @@ public class InventorySlotController : ItemSlotController, IDropHandler {
     OnEndDrag -= HandleEndDrag;
   }
 
-  private void HandleBeginDrag(Item obj) {
-    // image.fillCenter = true;
-    image.color = DropTargetColor;
+  /// <summary>
+  /// Returns true if this slot can accept the given item as a drop target.
+  /// </summary>
+  public virtual bool CanAcceptItem(Item draggedItem) {
+    if (draggedItem == null) return false;
+    // Don't allow dropping onto the slot the item is already in
+    if (draggedItem.inventory == inventory && inventory.IndexOf(draggedItem) == slotIndex) {
+      return false;
+    }
+
+    // If the dragged item comes from equipment and this slot has an item,
+    // the swap would try to put our item into the equipment slot.
+    // Only allow if our item is equippable for that slot.
+    var existingItem = item;
+    if (draggedItem.inventory is Equipment && existingItem != null) {
+      if (draggedItem is EquippableItem draggedEquippable &&
+          existingItem is EquippableItem eq && eq.slot == draggedEquippable.slot) {
+        return true;
+      }
+      // If existing item can't go into equipment, reject the swap
+      return false;
+    }
+
+    return true;
+  }
+
+  private void HandleBeginDrag(Item draggedItem) {
+    if (CanAcceptItem(draggedItem)) {
+      image.color = DropTargetColor;
+    } else {
+      image.color = InvalidDropTargetColor;
+    }
   }
 
   private void HandleEndDrag(Item obj) {
-    // image.fillCenter = item == null ? false : true;
     image.color = item == null ? UnusedColor : InUseColor;
   }
 
@@ -74,17 +100,19 @@ public class InventorySlotController : ItemSlotController, IDropHandler {
     return child;
   }
 
-  public void OnDrop(PointerEventData eventData) {
-    if (allowDragAndDrop) {
-      var itemController = eventData.selectedObject.GetComponent<ItemController>();
-      var item = itemController.item;
+  public virtual void OnDrop(PointerEventData eventData) {
+    if (!allowDragAndDrop) return;
+    var itemController = eventData.selectedObject.GetComponent<ItemController>();
+    if (itemController == null) return;
+    var draggedItem = itemController.item;
 
-      // Debug.Log("OnDrop " + item + " onto slot " + slotIndex, this);
-      inventory.AddItem(item, slotIndex);
-    }
+    if (!CanAcceptItem(draggedItem)) return;
+
+    inventory.AddItem(draggedItem, slotIndex);
   }
 
   public static Color UnusedColor = new Color(0.1882353f, 0.2039216f, 0.227451f, 0.2470588f);
   public static Color InUseColor = new Color(0.1882353f, 0.2039216f, 0.227451f, 1f);
   public static Color DropTargetColor = new Color(0.990566f, 0.990566f, 0.2186721f, 1f);
+  public static Color InvalidDropTargetColor = new Color(0.5f, 0.2f, 0.2f, 0.5f);
 }

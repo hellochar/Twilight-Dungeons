@@ -16,7 +16,7 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
   public GameObject maturePlantBackground;
   public Image itemImage;
   private TMPro.TMP_Text stacksText;
-  
+
   [NonSerialized]
   public GameObject popup = null;
   private Button button;
@@ -115,23 +115,24 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
     }
   }
 
+  private bool CanDragItem() {
+    if (item == null) return false;
+    if (!item.inventory.allowDragAndDrop) return false;
+    // Cannot drag the default Hands item
+    if (item is ItemHands) return false;
+    // Cannot drag sticky items out of equipment
+    if (item is ISticky && item.inventory is Equipment) return false;
+    return true;
+  }
+
   void IDragHandler.OnDrag(PointerEventData eventData) {
-    if (!item.inventory.allowDragAndDrop) {
-      return;
-    }
-    // doesn't fully work; doesn't account for scaling of parents
-    // Vector2 offset = eventData.position - eventData.pressPosition;
-
-    // Debug.Log("OnDrag " + offset);
-    // (transform as RectTransform).anchoredPosition = offset;
-
-    // works
+    if (!CanDragItem()) return;
     transform.Translate(eventData.delta);
   }
 
   int dragStartLayer;
   void IBeginDragHandler.OnBeginDrag(PointerEventData eventData) {
-    if (!item.inventory.allowDragAndDrop) {
+    if (!CanDragItem()) {
       eventData.pointerDrag = null;
       return;
     }
@@ -139,19 +140,21 @@ public class ItemController : MonoBehaviour, IDragHandler, IBeginDragHandler, IE
     InventorySlotController.BeginDragging(item);
     dragStartLayer = gameObject.layer;
     gameObject.layer = Physics.IgnoreRaycastLayer;
-    GetComponentInChildren<Graphic>().raycastTarget = false;
-    // Debug.Log("OnBeginDrag");
+    // Disable raycast on all child graphics so the dragged item doesn't block drops
+    foreach (var graphic in GetComponentsInChildren<Graphic>()) {
+      graphic.raycastTarget = false;
+    }
   }
 
   void IEndDragHandler.OnEndDrag(PointerEventData eventData) {
-    if (!item.inventory.allowDragAndDrop) {
-      return;
+    if (!CanDragItem()) return;
+    // Re-enable raycast on all child graphics
+    foreach (var graphic in GetComponentsInChildren<Graphic>()) {
+      graphic.raycastTarget = true;
     }
-    GetComponentInChildren<Graphic>().raycastTarget = true;
     InventorySlotController.EndDragging(item);
     gameObject.layer = dragStartLayer;
     (transform as RectTransform).anchoredPosition = new Vector2();
     button.enabled = true;
-    // Debug.Log("OnEndDrag");
   }
 }

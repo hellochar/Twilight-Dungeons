@@ -311,9 +311,9 @@ public class Floor {
   /// returns a list of adjacent positions that form the path, or an empty list if no path is found
   /// if pretendTargetEmpty is true, override the target tile to be walkable. You can then trim off
   /// the very end.
-  internal List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty = false) {
+  internal List<Vector2Int> FindPath(Vector2Int pos, Vector2Int target, bool pretendTargetEmpty = false, Body body = null) {
     // return pathfindingManager.FindPathStatic(pos, target);
-    return pathfindingManager.FindPathDynamic(pos, target, pretendTargetEmpty);
+    return pathfindingManager.FindPathDynamic(pos, target, pretendTargetEmpty, body);
   }
 
   internal void CatchUpStep(float time) {

@@ -16,7 +16,7 @@ class MoveRandomlyTask : DoOnceTask {
   }
 
   public static BaseAction GetRandomMove(Actor actor, Func<Tile, bool>? predicate = null) {
-    var adjacentTiles = actor.floor?.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
+    var adjacentTiles = actor.floor?.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupiedBy(actor));
     if (predicate != null) {
       adjacentTiles = adjacentTiles.Where(predicate);
     }

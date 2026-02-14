@@ -6,6 +6,8 @@ using UnityEngine;
 [System.Serializable]
 [ObjectInfo(description: "Jumps two tiles per turn and waits after every jump.")]
 public class Bird : AIActor, IActionPerformedHandler {
+  public override CollisionLayer BaseMovementLayer => CollisionLayer.Flying;
+
   // public static new ActionCosts StaticActionCosts = new ActionCosts(Actor.StaticActionCosts) {
   //   [ActionType.MOVE] = 2,
   // };
@@ -26,7 +28,7 @@ public class Bird : AIActor, IActionPerformedHandler {
     return e.floor.EnumerateCircle(e.pos, 3f)
       .Where(pos => Util.DiamondMagnitude(pos - e.pos) == 2)
       .Select(pos => e.floor.tiles[pos])
-      .Where(t => t.CanBeOccupied());
+      .Where(t => e is Body b ? t.CanBeOccupiedBy(b) : t.CanBeOccupied());
   }
 
   protected override ActorTask GetNextTask() {

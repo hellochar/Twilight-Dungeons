@@ -68,6 +68,10 @@ static class Modifiers {
   public static IEnumerable<IMaxHPModifier> MaxHPModifiers(this IModifierProvider provider) {
     return Modifiers.Of<IMaxHPModifier>(provider);
   }
+
+  public static IEnumerable<IMovementLayerModifier> MovementLayerModifiers(this IModifierProvider provider) {
+    return Modifiers.Of<IMovementLayerModifier>(provider);
+  }
 }
 
 interface IActionCostModifier : IModifier<ActionCosts> {}
@@ -78,6 +82,8 @@ interface IAttackDamageModifier : IModifier<int> {}
 /// <summary>Kind of a hack to get declarative step()-ing.</summary>
 interface IStepModifier : IModifier<object> {}
 interface IMaxHPModifier : IModifier<int> {}
+/// <summary>Modifies a body's movement layers (e.g. grants Flying).</summary>
+interface IMovementLayerModifier : IModifier<CollisionLayer> {}
 
 
 /// <summary>Called when the Actor is Killed.</summary>

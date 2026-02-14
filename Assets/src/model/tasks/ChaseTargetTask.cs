@@ -20,7 +20,7 @@ public class ChaseTargetTask : MoveNextToTargetTask {
     if (targetBody == null || targetBody is Player p && p.isCamouflaged) {
       this.path.Clear();
     } else {
-      this.path = FindBestAdjacentPath(actor.pos, target);
+      this.path = FindBestAdjacentPath(actor, target);
       if (extraMovesCutoff > 0 && this.path.Count >= extraMovesCutoff) {
         this.path.RemoveRange(this.path.Count - extraMovesCutoff, extraMovesCutoff);
       }

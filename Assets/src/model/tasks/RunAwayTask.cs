@@ -23,7 +23,7 @@ public class RunAwayTask : ActorTask {
       return new WaitBaseAction(actor);
     }
     turnsRemaining--;
-    var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupied());
+    var adjacentTiles = actor.floor.GetAdjacentTiles(actor.pos).Where((tile) => tile.CanBeOccupiedBy(actor));
     if (adjacentTiles.Any()) {
       var furthestTile = adjacentTiles.Aggregate((t1, t2) =>
         Vector2Int.Distance(fearPoint, t1.pos) > Vector2Int.Distance(fearPoint, t2.pos) ? t1 : t2);

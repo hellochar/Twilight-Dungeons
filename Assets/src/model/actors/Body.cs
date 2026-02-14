@@ -26,13 +26,27 @@ public interface IFloorClearedHandler {
 [Serializable]
 public class Body : Entity {
   private Vector2Int _pos;
+
+  /// <summary>
+  /// The collision layers this body can move through.
+  /// Computed from BaseMovementLayer plus any IMovementLayerModifier modifiers.
+  /// </summary>
+  public CollisionLayer MovementLayer {
+    get {
+      return Modifiers.Process(this.MovementLayerModifiers(), BaseMovementLayer);
+    }
+  }
+
+  /// <summary>Override in subclasses to set innate movement type (e.g. Flying for Bat).</summary>
+  public virtual CollisionLayer BaseMovementLayer => CollisionLayer.Walking;
+
   public override Vector2Int pos {
     get => _pos;
     set {
       if (floor == null) {
         _pos = value;
       } else {
-        if (floor.tiles[value.x, value.y].CanBeOccupied()) {
+        if (floor.tiles[value.x, value.y].CanBeOccupiedBy(this)) {
           var oldTile = floor.tiles[_pos];
           oldTile.BodyLeft(this);
           _pos = value;

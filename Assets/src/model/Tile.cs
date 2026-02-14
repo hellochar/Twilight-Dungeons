@@ -31,9 +31,28 @@ public abstract class Tile : Entity {
     }
   }
 
+  /// <summary>
+  /// Which collision layers this tile blocks. Bodies need at least one
+  /// movement layer NOT in this set to traverse the tile.
+  /// Default derives from BasePathfindingWeight() for backwards compat.
+  /// </summary>
+  public virtual CollisionLayer BlocksMovement {
+    get {
+      return BasePathfindingWeight() == 0 ? CollisionLayer.All : CollisionLayer.None;
+    }
+  }
+
   /// 0.0 means unwalkable.
   /// weight 1 is "normal" weight.
   public float GetPathfindingWeight() => body != null ? 0 : BasePathfindingWeight();
+
+  /// <summary>Pathfinding weight considering a specific body's movement layers.</summary>
+  public float GetPathfindingWeightFor(Body mover) {
+    if (body != null) return 0;
+    var blocked = BlocksMovement;
+    if (grass is IBlocksMovement gbm) blocked |= gbm.BlockedLayers;
+    return (mover.MovementLayer & ~blocked) != CollisionLayer.None ? 1 : 0;
+  }
 
   internal void BodyLeft(Body body) {
     if (body is Actor actor) {
@@ -64,7 +83,19 @@ public abstract class Tile : Entity {
   }
 
   internal bool CanBeOccupied() {
-    return GetPathfindingWeight() != 0;
+    if (body != null) return false;
+    var blocked = BlocksMovement;
+    if (grass is IBlocksMovement gbm) blocked |= gbm.BlockedLayers;
+    return (blocked & CollisionLayer.Walking) == 0;
+  }
+
+  /// <summary>Check if a specific body can occupy this tile, considering
+  /// its movement layers against the tile's (and grass's) blocked layers.</summary>
+  internal bool CanBeOccupiedBy(Body mover) {
+    if (body != null) return false;
+    var blocked = BlocksMovement;
+    if (grass is IBlocksMovement gbm) blocked |= gbm.BlockedLayers;
+    return (mover.MovementLayer & ~blocked) != CollisionLayer.None;
   }
 }
 
@@ -133,16 +164,20 @@ public class FancyGround : Ground {
 [Serializable]
 public class Wall : Tile {
   public Wall(Vector2Int pos) : base(pos) { }
+  public override CollisionLayer BlocksMovement => CollisionLayer.All;
   public override float BasePathfindingWeight() {
     return 0;
   }
 }
 
 [Serializable]
-[ObjectInfo(description: "Blocks movement.", flavorText: "You look down and cannot see the bottom. Be careful not to fall!")]
+[ObjectInfo(description: "Blocks walking. Flying creatures can pass.", flavorText: "You look down and cannot see the bottom. Be careful not to fall!")]
 public class Chasm : Tile {
   public Chasm(Vector2Int pos) : base(pos) {
   }
+
+  /// Chasms block walking but not flying
+  public override CollisionLayer BlocksMovement => CollisionLayer.Walking;
 
   protected override void HandleEnterFloor() {
     base.HandleEnterFloor();

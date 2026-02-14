@@ -19,6 +19,7 @@ public class Ezra : Actor, IAnyDamageTakenModifier {
 public class TreeOfLife : Tile {
   public TreeOfLife(Vector2Int pos) : base(pos) {
   }
+  public override CollisionLayer BlocksMovement => CollisionLayer.All;
   public override float BasePathfindingWeight() => 0;
   public override bool ObstructsVision() => false;
 }

@@ -255,9 +255,9 @@ public class TileActionsMenu : MonoBehaviour {
       }
     }
 
-    // Add inspect action for the top-most entity
+    // Add inspect action for the top-most entity (but not for plain tiles)
     var inspectEntity = entities.FirstOrDefault();
-    if (inspectEntity != null) {
+    if (inspectEntity != null && !(inspectEntity is Tile)) {
       AddInspectAction(actions, inspectEntity);
     }
 

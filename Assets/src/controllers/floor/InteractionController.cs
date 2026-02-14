@@ -71,7 +71,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   public void LongTap(Vector2Int pos) {
     TileActionsMenu.Hide();
     var entity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
-    if (entity != null) {
+    if (entity != null && !(entity is Tile)) {
       EntityPopup.Show(entity);
     }
   }
@@ -115,6 +115,15 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
     ClearProposed();
     player.ClearTasks();
 
+    // Check if we should auto-perform (not in combat, movement-type action)
+    var isInCombat = floor.depth > 0 && !floor.isCleared;
+    if (!isInCombat && interaction is SetTasksPlayerInteraction s && !(entity is Player)) {
+      // Not in combat: auto-move immediately, skip showing menu
+      TileActionsMenu.Hide();
+      interaction.Perform();
+      return;
+    }
+
     // Build contextual actions for the tile and show the popover
     var actions = TileActionsMenu.BuildActionsForTile(pos, floorController, eventData);
     if (actions.Count > 0) {
@@ -123,18 +132,11 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
       TileActionsMenu.Hide();
     }
 
-    // Show path preview and handle auto-move
-    var isInCombat = floor.depth > 0 && !floor.isCleared;
-    if (interaction is SetTasksPlayerInteraction s && !(entity is Player)) {
-      if (isInCombat) {
-        // In combat: show path preview via proposed tasks (no auto-move)
-        proposedInteract = handler;
-        proposedTasks = s;
-        OnProposedTasksChanged?.Invoke(proposedTasks);
-      } else {
-        // Not in combat: auto-move immediately (path shows via OnSetTask)
-        interaction.Perform();
-      }
+    // In combat: show path preview via proposed tasks (no auto-move)
+    if (isInCombat && interaction is SetTasksPlayerInteraction proposed && !(entity is Player)) {
+      proposedInteract = handler;
+      proposedTasks = proposed;
+      OnProposedTasksChanged?.Invoke(proposedTasks);
     }
   }
 

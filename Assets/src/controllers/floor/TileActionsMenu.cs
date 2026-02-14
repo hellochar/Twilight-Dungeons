@@ -23,11 +23,14 @@ public class TileActionsMenu : MonoBehaviour {
   }
 
   private GameObject panel;
-  private GameObject dismissOverlay;
   private Vector2Int targetPos;
   private CanvasGroup canvasGroup;
 
   public static bool IsShowing => _instance != null && _instance.panel != null;
+
+  public static bool IsShowingForPos(Vector2Int pos) {
+    return IsShowing && _instance.targetPos == pos;
+  }
 
   public static void Show(Vector2Int pos, List<(string name, Action action)> actions) {
     instance.ShowMenu(pos, actions);
@@ -47,19 +50,6 @@ public class TileActionsMenu : MonoBehaviour {
 
     var canvasObj = GameObject.Find("Canvas");
     if (canvasObj == null) return;
-
-    // Create dismiss overlay (catches taps outside menu to close it)
-    dismissOverlay = new GameObject("TileActionsDismiss");
-    dismissOverlay.transform.SetParent(canvasObj.transform, false);
-    var overlayRect = dismissOverlay.AddComponent<RectTransform>();
-    overlayRect.anchorMin = Vector2.zero;
-    overlayRect.anchorMax = Vector2.one;
-    overlayRect.offsetMin = Vector2.zero;
-    overlayRect.offsetMax = Vector2.zero;
-    var overlayImage = dismissOverlay.AddComponent<Image>();
-    overlayImage.color = Color.clear;
-    var overlayButton = dismissOverlay.AddComponent<Button>();
-    overlayButton.onClick.AddListener(() => HideMenu());
 
     // Create the panel container
     panel = new GameObject("TileActionsPanel");
@@ -202,10 +192,6 @@ public class TileActionsMenu : MonoBehaviour {
   }
 
   private void HideMenu() {
-    if (dismissOverlay != null) {
-      Destroy(dismissOverlay);
-      dismissOverlay = null;
-    }
     if (panel != null) {
       Destroy(panel);
       panel = null;

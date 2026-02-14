@@ -87,27 +87,61 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
 
     var eventData = hold?.pointerEventData;
 
-    // Handle ArbitraryPlayerInteraction immediately (e.g. tapping on self to cancel task)
     var entities = floorController.GetVisibleEntitiesInLayerOrder(pos);
-    if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out var entity)) {
-      var interaction = handler.GetPlayerInteraction(eventData);
+    IPlayerInteractHandler handler = null;
+    Entity entity = null;
+    PlayerInteraction interaction = null;
+
+    if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out handler, out entity)) {
+      interaction = handler.GetPlayerInteraction(eventData);
+      // Handle ArbitraryPlayerInteraction immediately (e.g. tapping on self to cancel task)
       if (interaction is ArbitraryPlayerInteraction) {
         interaction.Perform();
+        TileActionsMenu.Hide();
+        ClearProposed();
         return;
       }
     }
+
+    // Tap-again to confirm: if menu is already showing for this tile, perform the primary action
+    if (TileActionsMenu.IsShowingForPos(pos)) {
+      TileActionsMenu.Hide();
+      interaction?.Perform();
+      ClearProposed();
+      return;
+    }
+
+    // New tile selected - clear old state
+    ClearProposed();
+    player.ClearTasks();
 
     // Build contextual actions for the tile and show the popover
     var actions = TileActionsMenu.BuildActionsForTile(pos, floorController, eventData);
     if (actions.Count > 0) {
       TileActionsMenu.Show(pos, actions);
+    } else {
+      TileActionsMenu.Hide();
     }
 
-    // When not in combat, also auto-move like before (but not when tapping on player)
+    // Show path preview and handle auto-move
     var isInCombat = floor.depth > 0 && !floor.isCleared;
-    if (!isInCombat && !(entity is Player)) {
-      Interact(pos, eventData);
+    if (interaction is SetTasksPlayerInteraction s && !(entity is Player)) {
+      if (isInCombat) {
+        // In combat: show path preview via proposed tasks (no auto-move)
+        proposedInteract = handler;
+        proposedTasks = s;
+        OnProposedTasksChanged?.Invoke(proposedTasks);
+      } else {
+        // Not in combat: auto-move immediately (path shows via OnSetTask)
+        interaction.Perform();
+      }
     }
+  }
+
+  private void ClearProposed() {
+    proposedInteract = null;
+    proposedTasks = null;
+    OnProposedTasksChanged?.Invoke(null);
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {

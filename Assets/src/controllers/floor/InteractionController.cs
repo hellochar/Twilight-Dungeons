@@ -69,6 +69,7 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void LongTap(Vector2Int pos) {
+    TileActionsMenu.Hide();
     var entity = floorController.GetVisibleEntitiesInLayerOrder(pos).FirstOrDefault();
     if (entity != null) {
       EntityPopup.Show(entity);
@@ -76,7 +77,37 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
   }
 
   public void Tap(Vector2Int pos) {
-    Interact(pos, hold?.pointerEventData);
+    if (!isInputAllowed) {
+      return;
+    }
+    var player = GameModel.main.player;
+    if (player.task != null && !player.task.IsPlayerOverridable) {
+      return;
+    }
+
+    var eventData = hold?.pointerEventData;
+
+    // Handle ArbitraryPlayerInteraction immediately (e.g. tapping on self to cancel task)
+    var entities = floorController.GetVisibleEntitiesInLayerOrder(pos);
+    if (floorController.TryGetFirstControllerComponent<IPlayerInteractHandler>(entities, out var handler, out var entity)) {
+      var interaction = handler.GetPlayerInteraction(eventData);
+      if (interaction is ArbitraryPlayerInteraction) {
+        interaction.Perform();
+        return;
+      }
+    }
+
+    // Build contextual actions for the tile and show the popover
+    var actions = TileActionsMenu.BuildActionsForTile(pos, floorController, eventData);
+    if (actions.Count > 0) {
+      TileActionsMenu.Show(pos, actions);
+    }
+
+    // When not in combat, also auto-move like before (but not when tapping on player)
+    var isInCombat = floor.depth > 0 && !floor.isCleared;
+    if (!isInCombat && !(entity is Player)) {
+      Interact(pos, eventData);
+    }
   }
 
   public void Interact(Vector2Int worldPos, PointerEventData eventData) {
@@ -107,12 +138,6 @@ public class InteractionController : MonoBehaviour, IPointerDownHandler, IPointe
         // not in combat, perform immediately
         interaction.Perform();
       }
-      // var entityGameObject = floorController.GameObjectFor(handler);
-      // /// HACK destroy highlight once it's been interacted with
-      // var highlight = entityGameObject.transform.Find("Highlight(Clone)");
-      // if (highlight != null) {
-      //   highlight.gameObject.AddComponent<FadeThenDestroy>();
-      // }
     }
   }
 

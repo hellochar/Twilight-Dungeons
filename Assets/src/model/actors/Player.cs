@@ -50,10 +50,10 @@ public class Player : Actor, IBodyMoveHandler, IAttackHandler,
   public Player(Vector2Int pos) : base(pos) {
     faction = Faction.Ally;
     inventory = new Inventory(10);
-    // TODO the UX is broken
-    // inventory.allowDragAndDrop = true;
+    inventory.allowDragAndDrop = true;
 
     equipment = new Equipment(this);
+    equipment.allowDragAndDrop = true;
     Hands = new ItemHands(this);
     hp = baseMaxHp = 12;
   }

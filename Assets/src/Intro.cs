@@ -41,6 +41,49 @@ public class Intro : MonoBehaviour {
   }
 
   public void NewGame() {
+    if (Serializer.HasSaveOrCheckpoint()) {
+      ShowNewGameConfirmation();
+      return;
+    }
+    StartNewGame();
+  }
+
+  private void ShowNewGameConfirmation() {
+    var popup = Popups.CreateStandard(
+      title: "New Game",
+      category: null,
+      info: "Starting a new game will erase your current save.\n\nAre you sure?",
+      flavor: null
+    );
+
+    // The popup was created without buttons, so the frame acts as a dismiss target.
+    // Re-enable the Actions container and add our own buttons, since the standard
+    // MakeButton flow depends on PlayerController which doesn't exist in this scene.
+    var content = popup.content;
+
+    var frameButton = content.GetComponent<Button>();
+    if (frameButton != null) {
+      Destroy(frameButton);
+    }
+
+    var actionsContainer = content.transform.Find("Actions");
+    actionsContainer.gameObject.SetActive(true);
+    content.transform.Find("Space").gameObject.SetActive(true);
+
+    AddPopupButton("New Game", actionsContainer, popup.gameObject, () => StartNewGame());
+    AddPopupButton("Cancel", actionsContainer, popup.gameObject, () => { });
+  }
+
+  private void AddPopupButton(string label, Transform parent, GameObject popup, Action action) {
+    var button = Instantiate(PrefabCache.UI.GetPrefabFor("Action Button"), parent);
+    button.GetComponentInChildren<TMPro.TMP_Text>().text = label;
+    button.GetComponent<Button>().onClick.AddListener(() => {
+      action();
+      Destroy(popup);
+    });
+  }
+
+  private void StartNewGame() {
     StartCoroutine(WalkPlayer());
     FadeOutButtonsAndMusic();
     try {

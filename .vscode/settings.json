@@ -13,5 +13,5 @@
     },
     "editor.acceptSuggestionOnCommitCharacter": false,
     "editor.acceptSuggestionOnEnter": "smart",
-    "dotnet.defaultSolution": "Twilight-Dungeons.sln"
+    "dotnet.defaultSolution": "Twilight-Dungeons.slnx"
 }

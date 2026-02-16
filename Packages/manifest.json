@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.render-pipelines.universal": "17.3.0",
     "com.sabresaurus.playerprefseditor": "1.4.1",
     "com.unity.2d.animation": "13.0.4",
     "com.unity.2d.pixel-perfect": "5.1.1",

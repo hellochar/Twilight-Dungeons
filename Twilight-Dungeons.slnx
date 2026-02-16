@@ -5,4 +5,5 @@
   <Project Path="Tayx.Graphy.csproj" />
   <Project Path="Tayx.Graphy.Editor.csproj" />
   <Project Path="IngameDebugConsole.Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
 </Solution>

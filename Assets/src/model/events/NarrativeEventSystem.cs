@@ -46,13 +46,50 @@ public class NarrativeEventSystem {
   private void InitEventPool() {
     eventPool = new List<NarrativeEvent>();
     // Register all event types here. Add new events to this list.
+
+    // Category 1: Transmutation (in-world)
     eventPool.Add(new TransmutationAltarEvent());
+    // Category 2: The Bargain (between-floor)
     eventPool.Add(new VoiceInTheDarkEvent());
+    // Category 3: Body Mutation (in-world)
+    eventPool.Add(new FungalPoolEvent());
+    // Category 4: The Fork (between-floor)
+    eventPool.Add(new BranchingTunnelEvent());
+    // Category 5: Parasite/Symbiote (in-world)
+    eventPool.Add(new ClingingVineEvent());
+    // Category 6: Echo/Callback (between-floor, requires Fungal Pool)
+    eventPool.Add(new MarkedStoneEvent());
+    // Category 7: Environmental Shift (in-world)
+    eventPool.Add(new CrumblingSealEvent());
+    // Category 8: Sealed Encounter (in-world)
+    eventPool.Add(new SealedChamberEvent());
+    // Category 9: The Vendor (in-world)
+    eventPool.Add(new RootMerchantEvent());
+    // Category 10: Resonance (in-world)
+    eventPool.Add(new WhisperingMossEvent());
+    // Category 11: Companion (in-world)
+    eventPool.Add(new DormantGolemEvent());
+    // Category 12: Transformation Gauntlet (between-floor)
+    eventPool.Add(new MirrorCorridorEvent());
+    // Category 13: Curse/Gift Duality (in-world)
+    eventPool.Add(new ThornbloodPactEvent());
+    // Category 14: Resource Wellspring (in-world)
     eventPool.Add(new HealingSpringEvent());
+    // Category 15: Graveyard/Memory (in-world)
+    eventPool.Add(new FallenExplorerEvent());
+    // Category 16: The Wager (in-world)
+    eventPool.Add(new StoneDiceEvent());
+    // Category 17: Garden Ritual (in-world)
+    eventPool.Add(new FertileAshEvent());
+    // Category 18: The Toll (between-floor)
     eventPool.Add(new HungryDoorEvent());
+    // Category 19: World Scar (between-floor)
+    eventPool.Add(new BrokenWardstoneEvent());
+    // Category 20: The Stranger (between-floor, 4 encounters)
     eventPool.Add(new StrangerEvent1());
     eventPool.Add(new StrangerEvent2());
-    eventPool.Add(new FertileAshEvent());
+    eventPool.Add(new StrangerEvent3());
+    eventPool.Add(new StrangerEvent4());
   }
 
   /// <summary>

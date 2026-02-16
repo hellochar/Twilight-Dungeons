@@ -65,9 +65,17 @@ public static class EncounterGroupEarlyGame {
         { 0.01f, AddNecroroot },
         { 0.01f, AddFaegrass },
 
+        // Narrative events
         { 0.15f, AddTransmutationAltar },
         { 0.1f, AddHealingSpring },
         { 0.1f, AddFertileAsh },
+        { 0.1f, AddFallenExplorer },
+        { 0.1f, AddWhisperingMoss },
+        { 0.1f, AddStoneDice },
+        { 0.08f, AddClingingVine },
+        { 0.08f, AddRootMerchant },
+        { 0.05f, AddFungalPool },
+        { 0.05f, AddCrumblingSeal },
       },
     };
   }

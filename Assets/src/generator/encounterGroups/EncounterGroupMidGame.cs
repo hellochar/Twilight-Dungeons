@@ -65,6 +65,10 @@ public static class EncounterGroupMidGame {
 
         { 0.02f, AddFaegrass },
         { 0.02f, AddNecroroot },
+
+        { 0.15f, AddTransmutationAltar },
+        { 0.1f, AddHealingSpring },
+        { 0.1f, AddFertileAsh },
       },
     };
   }

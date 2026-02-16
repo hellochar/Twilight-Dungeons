@@ -64,6 +64,10 @@ public static class EncounterGroupEarlyGame {
 
         { 0.01f, AddNecroroot },
         { 0.01f, AddFaegrass },
+
+        { 0.15f, AddTransmutationAltar },
+        { 0.1f, AddHealingSpring },
+        { 0.1f, AddFertileAsh },
       },
     };
   }

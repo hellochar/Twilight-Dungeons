@@ -68,6 +68,10 @@ public static class EncounterGroupEverything {
         { 0.02f, AddNecroroot },
 
         { 0.01f, AddHydra },
+
+        { 0.15f, AddTransmutationAltar },
+        { 0.1f, AddHealingSpring },
+        { 0.1f, AddFertileAsh },
       },
     };
   }

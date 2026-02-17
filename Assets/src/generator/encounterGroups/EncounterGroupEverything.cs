@@ -68,6 +68,21 @@ public static class EncounterGroupEverything {
         { 0.02f, AddNecroroot },
 
         { 0.01f, AddHydra },
+
+        // Narrative events
+        { 0.15f, AddTransmutationAltar },
+        { 0.1f, AddHealingSpring },
+        { 0.1f, AddFertileAsh },
+        { 0.1f, AddFallenExplorer },
+        { 0.1f, AddStoneDice },
+        { 0.1f, AddWhisperingMoss },
+        { 0.08f, AddSealedChamber },
+        { 0.08f, AddDormantGolem },
+        { 0.08f, AddRootMerchant },
+        { 0.08f, AddClingingVine },
+        { 0.05f, AddThornbloodPact },
+        { 0.05f, AddFungalPool },
+        { 0.05f, AddCrumblingSeal },
       },
     };
   }

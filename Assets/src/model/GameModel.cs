@@ -21,6 +21,8 @@ public class GameModel {
   public List<int> floorSeeds;
   public FloorGenerator generator;
   public PlayStats stats;
+  [OptionalField] /// added for narrative events
+  public NarrativeEventSystem narrativeEvents;
   public bool permadeath = false;
   public int attempt = 1;
 
@@ -90,6 +92,7 @@ public class GameModel {
       floorSeeds.Add(MyRandom.Next());
     }
     generator = new FloorGenerator(floorSeeds);
+    narrativeEvents = new NarrativeEventSystem();
   }
 
   #if UNITY_EDITOR
@@ -108,6 +111,9 @@ public class GameModel {
     // 1.10.0 added PlayStats
     if (stats == null) {
       stats = new PlayStats();
+    }
+    if (narrativeEvents == null) {
+      narrativeEvents = new NarrativeEventSystem();
     }
   }
 

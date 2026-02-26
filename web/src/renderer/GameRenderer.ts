@@ -1,6 +1,6 @@
 import { Application, Container, Sprite, Graphics, Texture } from 'pixi.js';
 import { Floor } from '../model/Floor';
-import { Tile, Wall, Chasm, Water, Soil, FancyGround } from '../model/Tile';
+import { Tile, Wall, Chasm, Water, Soil, FancyGround, Signpost, HardGround } from '../model/Tile';
 import { Entity } from '../model/Entity';
 import { TileVisibility } from '../core/types';
 import { Vector2Int } from '../core/Vector2Int';
@@ -9,7 +9,7 @@ import { SpriteManager } from './SpriteManager';
 import { FogOverlay } from './FogOverlay';
 import { SPRITE_TINTS } from './spriteTints';
 
-/** Color constants for tile types. */
+/** Fallback colors when tilesheet sprite is missing. */
 const TILE_COLORS: Record<string, number> = {
   Ground: 0x8b7355,
   HardGround: 0x9a8866,
@@ -20,6 +20,20 @@ const TILE_COLORS: Record<string, number> = {
   Water: 0x3a6b8b,
   Signpost: 0x8b7355,
 };
+
+/**
+ * Map tile instance → tilesheet sub-sprite name.
+ * Ground/HardGround → "ground", Wall → "wall", FancyGround → "fancy-ground".
+ * Chasm, Water, Soil, Signpost use their own individual sprites instead.
+ */
+function tilesheetName(tile: Tile): string | null {
+  if (tile instanceof Wall) return 'wall';
+  if (tile instanceof FancyGround) return 'fancy-ground';
+  if (tile instanceof Chasm || tile instanceof Water ||
+      tile instanceof Soil || tile instanceof Signpost) return null;
+  // Ground, HardGround, and any other walkable tile
+  return 'ground';
+}
 
 /**
  * PixiJS-based renderer for the game floor.
@@ -58,8 +72,8 @@ export class GameRenderer {
     app.stage.addChild(this.itemLayer);
     app.stage.addChild(this.bodyLayer);
     app.stage.addChild(this.effectLayer);
-    app.stage.addChild(this.fogLayer);
     this.fogLayer.addChild(this.fog.container);
+    app.stage.addChild(this.fogLayer);
   }
 
   /** Set the floor to render and do full rebuild. */
@@ -127,6 +141,7 @@ export class GameRenderer {
   private buildTiles(): void {
     const floor = this.floor!;
     const ts = this.camera.tileSize;
+    const depth = floor.depth;
 
     for (const pos of floor.enumerateFloor()) {
       const tile = floor.tiles.get(pos);
@@ -134,23 +149,35 @@ export class GameRenderer {
 
       const px = this.camera.tileToPixel(pos);
 
-      // Tile background rectangle
-      const g = new Graphics();
-      const colorKey = tile.constructor.name;
-      const color = TILE_COLORS[colorKey] ?? 0x8b7355;
-      g.rect(0, 0, ts, ts).fill(color);
-      g.position.set(px.x, px.y);
-      this.tileLayer.addChild(g);
-      this.tileGraphics.set(Vector2Int.key(pos), g);
+      // Try tilesheet sprite first (ground, wall, fancy-ground)
+      const sheetName = tilesheetName(tile);
+      const sheetTex = sheetName ? this.sprites.getTileTexture(sheetName, depth) : null;
 
-      // Sprite overlay for special tiles (chasm, water)
-      const tex = this.sprites.getTexture(tile.displayName);
-      if (tex) {
-        const sprite = new Sprite(tex);
+      if (sheetTex) {
+        const sprite = new Sprite(sheetTex);
         sprite.width = ts;
         sprite.height = ts;
         sprite.position.set(px.x, px.y);
         this.tileLayer.addChild(sprite);
+      } else {
+        // Individual sprite (chasm, water, soil, signpost) or fallback color
+        const tex = this.sprites.getTexture(tile.displayName);
+        if (tex) {
+          const sprite = new Sprite(tex);
+          sprite.width = ts;
+          sprite.height = ts;
+          sprite.position.set(px.x, px.y);
+          this.tileLayer.addChild(sprite);
+        } else {
+          // Colored rectangle fallback
+          const g = new Graphics();
+          const colorKey = tile.constructor.name;
+          const color = TILE_COLORS[colorKey] ?? 0x8b7355;
+          g.rect(0, 0, ts, ts).fill(color);
+          g.position.set(px.x, px.y);
+          this.tileLayer.addChild(g);
+          this.tileGraphics.set(Vector2Int.key(pos), g);
+        }
       }
     }
   }
@@ -206,7 +233,6 @@ export class GameRenderer {
    */
   private syncEntities(): void {
     const floor = this.floor!;
-    const ts = this.camera.tileSize;
     const seenGuids = new Set<string>();
 
     // Sync bodies

@@ -12,6 +12,29 @@ export interface SpriteInfo {
 export type SpriteManifest = Record<string, SpriteInfo>;
 
 /**
+ * Sub-sprite layout within each tilesheet (tiles0, tiles12, tiles24).
+ * Coordinates are in PixiJS space (y-down). Each tilesheet is 48×48 with 16px tiles.
+ * Unity .meta defines: ground(0,16), wall(16,16), fancy-ground(32,16),
+ * upstairs(0,0), downstairs(16,0) — Unity y is bottom-up, so we flip:
+ *   Unity y=16 → PixiJS y = 48-16-16 = 16
+ *   Unity y=0  → PixiJS y = 48-0-16  = 32
+ */
+const TILESHEET_REGIONS: Record<string, { x: number; y: number }> = {
+  ground:        { x: 0,  y: 16 },
+  wall:          { x: 16, y: 16 },
+  'fancy-ground': { x: 32, y: 16 },
+  upstairs:      { x: 0,  y: 32 },
+  downstairs:    { x: 16, y: 32 },
+};
+
+/** Tilesheet key for a floor depth: 0-9 → tiles0, 10-18 → tiles12, 19+ → tiles24 */
+function tilesheetForDepth(depth: number): string {
+  if (depth >= 19) return 'tiles24';
+  if (depth >= 10) return 'tiles12';
+  return 'tiles0';
+}
+
+/**
  * Manages loading and caching of sprite textures.
  * Loads individual PNGs from public/sprites/ and slices multi-frame strips.
  */
@@ -20,20 +43,18 @@ export class SpriteManager {
   private textures = new Map<string, Texture>();
   private frames = new Map<string, Texture[]>();
   private loaded = false;
+  /** Sliced tile sub-sprites: key = "tiles0/ground", "tiles12/wall", etc. */
+  private tileSubSprites = new Map<string, Texture>();
 
   /** Entity displayName → sprite key overrides. */
   private static NAME_MAP: Record<string, string> = {
     'player': 'player',
     'hands': 'hands',
     'stick': 'stick',
-    'ground': 'square',
-    'wall': 'square',
     'chasm': 'chasm',
-    'hard ground': 'square',
-    'fancy ground': 'square',
-    'soil': 'square',
-    'water': 'square',
-    'signpost': 'speech',
+    'soil': 'soil',
+    'water': 'water',
+    'signpost': 'sign',
     'mini blob': 'miniblob',
     // Monochrome atlas sprites
     'blob': 'monochrome-blob',
@@ -49,6 +70,7 @@ export class SpriteManager {
     'old dude': 'colored_transparent_packed_311',
     'stump': 'colored_transparent_packed_305',
     'rubble': 'colored_transparent_packed_100',
+    'fungal wall': 'fungal-wall',
   };
 
   async load(): Promise<void> {
@@ -87,8 +109,33 @@ export class SpriteManager {
     });
 
     await Promise.all(loadPromises);
+    this.sliceTilesheets();
     this.loaded = true;
-    console.log(`SpriteManager: loaded ${this.textures.size} sprites`);
+    console.log(`SpriteManager: loaded ${this.textures.size} sprites, ${this.tileSubSprites.size} tile sub-sprites`);
+  }
+
+  /** Slice tilesheets (tiles0, tiles12, tiles24) into named sub-sprites. */
+  private sliceTilesheets(): void {
+    for (const sheet of ['tiles0', 'tiles12', 'tiles24']) {
+      const tex = this.textures.get(sheet);
+      if (!tex) continue;
+      for (const [name, region] of Object.entries(TILESHEET_REGIONS)) {
+        const sub = new Texture({
+          source: tex.source,
+          frame: new Rectangle(region.x, region.y, 16, 16),
+        });
+        this.tileSubSprites.set(`${sheet}/${name}`, sub);
+      }
+    }
+  }
+
+  /**
+   * Get the tile texture for a given tile type and floor depth.
+   * Returns the depth-appropriate sub-sprite from the correct tilesheet.
+   */
+  getTileTexture(tileType: string, depth: number): Texture | null {
+    const sheet = tilesheetForDepth(depth);
+    return this.tileSubSprites.get(`${sheet}/${tileType}`) ?? null;
   }
 
   /** Get the sprite key for a given entity display name. */

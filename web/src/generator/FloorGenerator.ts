@@ -119,7 +119,11 @@ export class FloorGenerator {
   }
 
   private postProcessFloor(floor: Floor): void {
-    floor.checkCleared();
+    // Direct cleared check — GameModel doesn't exist yet during generation,
+    // so we can't use floor.checkCleared() (which defers via event queue).
+    if (floor.enemiesLeft() === 0) {
+      floor.isCleared = true;
+    }
     this.postProcessAddSignpost(floor);
   }
 

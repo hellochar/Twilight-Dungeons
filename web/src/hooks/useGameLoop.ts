@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Application } from 'pixi.js';
+import { Application, TextureSource } from 'pixi.js';
 import { GameModel } from '../model/GameModel';
 import { Player } from '../model/Player';
 import { Floor } from '../model/Floor';
@@ -98,27 +98,34 @@ export function useGameLoop() {
     const container = containerRef.current;
     if (!container) return;
 
-    let app: Application | null = null;
     let input: InputHandler | null = null;
+    let resizeHandler: (() => void) | null = null;
     let destroyed = false;
+    // Track whether init completed so cleanup knows if app is safe to destroy
+    let appReady = false;
+    let pixiApp: Application | null = null;
 
     async function init() {
       if (destroyed) return;
 
-      app = new Application();
+      // Pixel art: nearest-neighbor filtering globally
+      TextureSource.defaultOptions.scaleMode = 'nearest';
+
+      const app = new Application();
+      pixiApp = app;
       await app.init({
         width: container!.clientWidth,
         height: container!.clientHeight,
         backgroundColor: 0x111118,
-        resizeTo: container!,
       });
-      if (destroyed) { app.destroy(true); return; }
+      if (destroyed) { app.destroy(true, { children: true }); return; }
+      appReady = true;
       container!.appendChild(app.canvas);
 
       // Load sprites
       const sprites = new SpriteManager();
       await sprites.load();
-      if (destroyed) { app.destroy(true); return; }
+      if (destroyed) { app.destroy(true, { children: true }); return; }
 
       // Create model
       const model = GameModel.createTestGame();
@@ -143,19 +150,14 @@ export function useGameLoop() {
       input.attach();
 
       // Resize handler
-      const onResize = () => {
-        renderer.resize();
-        renderer.syncToModel();
+      resizeHandler = () => {
+        camera.resize(app.screen.width, app.screen.height, model.currentFloor.width, model.currentFloor.height);
+        renderer.rebuildAll();
       };
-      window.addEventListener('resize', onResize);
+      window.addEventListener('resize', resizeHandler);
 
       setGameState(readState());
       setReady(true);
-
-      // Stash cleanup
-      (container as any).__gameCleanup = () => {
-        window.removeEventListener('resize', onResize);
-      };
     }
 
     init();
@@ -163,9 +165,10 @@ export function useGameLoop() {
     return () => {
       destroyed = true;
       input?.detach();
-      const extra = (container as any).__gameCleanup;
-      if (extra) extra();
-      if (app) app.destroy(true);
+      if (resizeHandler) window.removeEventListener('resize', resizeHandler);
+      if (pixiApp && appReady) {
+        pixiApp.destroy(true, { children: true });
+      }
       modelRef.current = null;
       rendererRef.current = null;
       animatorRef.current = null;
@@ -208,7 +211,7 @@ function resolveIntent(
         return new WaitTask(player, 1);
       }
       // Adjacent tile with enemy = attack
-      if (Vector2Int.chebyshev(player.pos, tilePos) === 1) {
+      if (Vector2Int.chebyshevDistance(player.pos, tilePos) === 1) {
         const bodyAtTarget = floor.bodies.get(tilePos);
         if (bodyAtTarget && bodyAtTarget !== player && 'hp' in bodyAtTarget) {
           return new AttackTask(player, bodyAtTarget as any);

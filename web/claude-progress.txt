@@ -1,0 +1,90 @@
+# Twilight Dungeons Web Port — Progress
+
+## Session 1 (2026-02-25): Project Scaffold + Core Types ✅
+
+### Completed Files
+- [x] Project scaffold (Vite + React + TypeScript)
+- [x] Dependencies: pixi.js@^8.16, gsap, @pixi/particle-emitter
+- [x] src/core/Vector2Int.ts — static methods, directional constants, key() for map usage
+- [x] src/core/MyRandom.ts — mulberry32 seeded PRNG, Shuffle, Pick helpers
+- [x] src/core/Modifiers.ts — symbol-tagged modifier chain (8 modifier types)
+- [x] src/core/types.ts — Faction, TileVisibility, CollisionLayer (bitflags), ActionType enums + handler interfaces
+- [x] src/core/EventEmitter.ts — typed event emitter
+- [x] src/core/index.ts — barrel export
+- [x] Directory structure: core/, model/, model/tasks/, model/enemies/, model/grasses/, model/items/, model/statuses/, generator/, daily/, renderer/, ui/, input/, hooks/, scripts/
+
+### Design Decisions
+- Vector2Int: immutable (readonly x, y), static methods for operations, `key()` for Map keys
+- MyRandom: module-level singleton (like C# static class), mulberry32 PRNG
+- Modifiers: symbol tags on interfaces (ACTION_COST_MOD, etc.), collectModifiers() recurses into sub-providers
+- CollisionLayer: numeric enum with bitwise ops (matches C# [Flags])
+- Handler interfaces (IDeathHandler, IActorEnterHandler, etc.): use `any` for forward-declared types to avoid circular deps
+
+## Session 2 (2026-02-25): Entity + Tile + Floor ✅
+
+### Completed Files
+- [x] src/model/GameModelRef.ts — singleton ref to break circular deps (Entity↔GameModel↔Floor)
+- [x] src/model/Entity.ts — abstract base: guid, floor, pos, isDead, timedEvents, modifier chain, kill/death system, TimedEvent, NoSpaceException
+- [x] src/model/Tile.ts — abstract Tile + Ground, Wall, Chasm, HardGround, FancyGround, Signpost, Soil, Water. Skipped Upstairs/Downstairs (single-floor daily puzzle)
+- [x] src/model/Floor.ts — StaticEntityGrid<T>, MovingEntityList<T>, ISteppable, Floor class with: entity stores, put/remove dispatch, A* pathfinding, Bresenham line-of-sight, BFS, all enumeration helpers (enumerateFloor/Rectangle/Line/Circle/Perimeter/Room), adjacency queries, cleared check
+
+### Design Decisions
+- GameModelRef: avoids circular imports — Entity/Floor/Tile read GameModelRef.main instead of importing GameModel directly
+- Entity stores inlined into Floor.ts — StaticEntityGrid (2D array) for tiles/grasses/items/triggers, MovingEntityList (list + lazy grid cache) for bodies
+- Entity type discrimination: uses duck-typing ('hp' in e → body, '_isGrass' in e → grass, etc.) since TS doesn't have C# `is` operator for our inheritance chain. Will refine when Body/Actor/Grass classes exist.
+- PathfindingManager inlined as Floor.findPath() — A* with adjacentTiles (8-dir Moore neighborhood), weighted by tile/body collision
+- FloorEnumeratorExtensions inlined as Floor methods — enumerateLine (Bresenham), enumerateCircle, BFS, etc.
+- No uuid dependency — Entity guids use incrementing counter (`e-0`, `e-1`, ...) since we don't need persistence
+
+## Session 3 (2026-02-25): Body + Actor + Player + Actions ✅
+
+### Completed Files
+- [x] src/model/BaseAction.ts — BaseAction + MoveBaseAction, AttackBaseAction, AttackGroundBaseAction, WaitBaseAction, GenericBaseAction, StruggleBaseAction, ActionCosts, CannotPerformActionException
+- [x] src/model/Body.ts — HP, movement (with collision/bodyLeft/bodyEntered), damage pipeline (takeAttackDamage, takeDamage, heal), modifier-driven movementLayer. Handler symbols: BODY_MOVE_HANDLER, BODY_TAKE_ATTACK_DAMAGE_HANDLER, TAKE_ANY_DAMAGE_HANDLER, HEAL_HANDLER
+- [x] src/model/Actor.ts — tasks/taskQueue, StatusList, faction, Step() (full task lifecycle), Perform() (modifier chain), attack/attackGround, getActionCost with modifiers. Handler symbols: ATTACK_HANDLER, DEAL_ATTACK_DAMAGE_HANDLER, ACTION_PERFORMED_HANDLER, ACTOR_KILLED_HANDLER
+- [x] src/model/Player.ts — 12 HP, Inventory, Equipment, visibility recompute on move, combat handlers, baseAttackDamage from weapon
+- [x] src/model/StatusList.ts — stub with add/remove/has/get
+- [x] src/model/ActorTask.ts — stub with ActorTask base + DoOnceTask + TaskStage enum
+- [x] src/model/Inventory.ts — stub with maxSize, add/remove
+- [x] src/model/Equipment.ts — stub with EquipmentSlot enum, get/set/remove
+
+### Design Decisions
+- Body._isBody = true for Floor type discrimination (duck typing)
+- Handler interfaces use Symbol.for('HandlerName') for modifier collection
+- Player implements handlers by setting symbol tags as properties + defining handler methods
+- ActionCosts extends Map<ActionType, number> (simpler than C# Dictionary subclass)
+- Actor.step() fully ported including task lifecycle, free tasks, modifier processing
+
+## Session 4 (2026-02-25): TurnManager + GameModel + All Tasks ✅
+
+### Completed Files
+- [x] src/model/ActorTask.ts — full implementation: ActorTask base + DoOnceTask, TaskStage, named/onlyCheckBefore/free fluent builders
+- [x] src/model/tasks/WaitTask.ts
+- [x] src/model/tasks/AttackTask.ts
+- [x] src/model/tasks/FollowPathTask.ts — path following with maxMoves
+- [x] src/model/tasks/MoveNextToTargetTask.ts — A* to adjacent tile, static findBestAdjacentPath
+- [x] src/model/tasks/ChaseTargetTask.ts — recomputes path each step
+- [x] src/model/tasks/ChaseDynamicTargetTask.ts — dynamic target via callback
+- [x] src/model/tasks/MoveToTargetTask.ts + MoveToTargetThenPerformTask
+- [x] src/model/tasks/MoveRandomlyTask.ts — static getRandomMove helper
+- [x] src/model/tasks/RunAwayTask.ts — move away from fear point
+- [x] src/model/tasks/SleepTask.ts + SurprisedStatus — sleep until visible, wake on damage
+- [x] src/model/tasks/GenericTask.ts + GenericPlayerTask
+- [x] src/model/tasks/TelegraphedTask.ts — countdown then perform action
+- [x] src/model/tasks/AttackGroundTask.ts — extends TelegraphedTask
+- [x] src/model/TurnManager.ts — FULLY SYNCHRONOUS step loop (no coroutines). Finds active entity by timeNextAction, handles NoActionException/CannotPerformActionException/ActorDiedException, fires timed events, drains event queue.
+- [x] src/model/GameModel.ts — simplified single-floor: player, floor, time, turnManager, timedEvents, eventQueue/drainEventQueue, createTestGame for dev testing. Implements IGameModelRef for circular dep breaking.
+
+### Stats
+- 36 TypeScript files, 3,346 total lines
+- tsc --noEmit passes clean
+
+### Design Decisions
+- TurnManager.stepUntilPlayerChoice() is fully synchronous (no yields/WaitForSeconds). Animations will be replayed separately by renderer.
+- GameModel.createTestGame() creates a simple walled room for Phase 1 testing
+- TelegraphedTask in tasks/ (not enemies/) since it's used by multiple enemy types
+- SurprisedStatus defined inline with SleepTask (matches C# pattern where it lives in SleepTask.cs)
+
+### Next: Session 5 — Rendering Layer (PixiJS)
+- SpriteManager, GameRenderer, FogOverlay, Camera, AnimationPlayer
+- Colored rectangle fallbacks for missing sprites

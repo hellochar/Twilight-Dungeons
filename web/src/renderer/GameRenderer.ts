@@ -22,6 +22,16 @@ const TILE_COLORS: Record<string, number> = {
 };
 
 /**
+ * Depth-dependent chasm border/fade tint colors, from Unity Chasm.prefab.
+ * Borders and fade overlay are tinted to match the surrounding tile palette.
+ */
+function chasmTint(depth: number): number {
+  if (depth >= 19) return 0x272C3A; // rgb(0.153, 0.173, 0.227) — dark blue
+  if (depth >= 10) return 0x212D23; // rgb(0.129, 0.176, 0.137) — dark green
+  return 0x382C33;                  // rgb(0.220, 0.173, 0.200) — dark brown
+}
+
+/**
  * Map tile instance → tilesheet sub-sprite name.
  * Ground/HardGround → "ground", Wall → "wall", FancyGround → "fancy-ground".
  * Chasm, Water, Soil, Signpost use their own individual sprites instead.
@@ -178,6 +188,69 @@ export class GameRenderer {
           this.tileLayer.addChild(g);
           this.tileGraphics.set(Vector2Int.key(pos), g);
         }
+      }
+
+      // Chasm border edges: draw on chasm tiles where neighbor is non-chasm
+      if (tile instanceof Chasm) {
+        this.addChasmBorders(floor, pos, px, ts);
+      }
+    }
+  }
+
+  /**
+   * Draw border edges and fade gradient on chasm tiles.
+   * Unity Chasm.prefab uses a single border-left sprite (1×16, pivot 0,0.5)
+   * rotated for all 4 edges, and gradient-top.png for the fade overlay.
+   */
+  private addChasmBorders(
+    floor: Floor, pos: Vector2Int, px: { x: number; y: number }, ts: number,
+  ): void {
+    const depth = floor.depth;
+    const tint = chasmTint(depth);
+    const bw = ts / 16; // 1 source pixel scaled to tile size
+
+    const borderTex = this.sprites.getBorderTexture();
+    if (borderTex) {
+      // Each edge: border-left (1×16) sized bw×ts in local space, then rotated.
+      // Left/right: no rotation (natural vertical orientation).
+      // Top/bottom: rotated ±90° to become horizontal.
+      const edges: Array<{ dir: Vector2Int; x: number; y: number; rot: number }> = [
+        { dir: Vector2Int.left,  x: px.x,            y: px.y,      rot: 0 },
+        { dir: Vector2Int.right, x: px.x + ts - bw,  y: px.y,      rot: 0 },
+        { dir: Vector2Int.up,    x: px.x + ts,        y: px.y,      rot: -Math.PI / 2 },
+        { dir: Vector2Int.down,  x: px.x,             y: px.y + ts, rot: Math.PI / 2 },
+      ];
+
+      for (const edge of edges) {
+        const neighbor = Vector2Int.add(pos, edge.dir);
+        const neighborTile = floor.inBounds(neighbor) ? floor.tiles.get(neighbor) : null;
+        if (neighborTile && !(neighborTile instanceof Chasm)) {
+          const sprite = new Sprite(borderTex);
+          sprite.anchor.set(0, 0);
+          sprite.width = bw;
+          sprite.height = ts;
+          sprite.rotation = edge.rot;
+          sprite.position.set(edge.x, edge.y);
+          sprite.tint = tint;
+          this.tileLayer.addChild(sprite);
+        }
+      }
+    }
+
+    // Fade gradient: when the tile above (game up) is not a chasm,
+    // draw gradient-top.png (white→transparent) tinted with depth color.
+    // Unity: positioned y=-0.25, scaled 1×1.5, tinted with depth color.
+    const above = Vector2Int.add(pos, Vector2Int.up);
+    const aboveTile = floor.inBounds(above) ? floor.tiles.get(above) : null;
+    if (aboveTile && !(aboveTile instanceof Chasm)) {
+      const fadeTex = this.sprites.getTexture('gradient-top');
+      if (fadeTex) {
+        const sprite = new Sprite(fadeTex);
+        sprite.position.set(px.x, px.y - ts * 0.25);
+        sprite.width = ts;
+        sprite.height = ts * 1.5;
+        sprite.tint = tint;
+        this.tileLayer.addChild(sprite);
       }
     }
   }

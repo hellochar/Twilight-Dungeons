@@ -35,6 +35,12 @@ function tilesheetForDepth(depth: number): string {
 }
 
 /**
+ * Unity Chasm.prefab uses a single border-left sub-sprite (1×16) rotated for all 4 edges.
+ * border-left rect from border.png.meta: Unity(1, 0, 1, 16) → PixiJS(1, 0, 1, 16).
+ */
+const BORDER_LEFT_RECT = { x: 1, y: 0, w: 1, h: 16 };
+
+/**
  * Manages loading and caching of sprite textures.
  * Loads individual PNGs from public/sprites/ and slices multi-frame strips.
  */
@@ -45,6 +51,8 @@ export class SpriteManager {
   private loaded = false;
   /** Sliced tile sub-sprites: key = "tiles0/ground", "tiles12/wall", etc. */
   private tileSubSprites = new Map<string, Texture>();
+  /** Single border-left sub-sprite used for all chasm edges (rotated per edge). */
+  private borderTexture: Texture | null = null;
 
   /** Entity displayName → sprite key overrides. */
   private static NAME_MAP: Record<string, string> = {
@@ -110,6 +118,7 @@ export class SpriteManager {
 
     await Promise.all(loadPromises);
     this.sliceTilesheets();
+    this.sliceBorders();
     this.loaded = true;
     console.log(`SpriteManager: loaded ${this.textures.size} sprites, ${this.tileSubSprites.size} tile sub-sprites`);
   }
@@ -127,6 +136,22 @@ export class SpriteManager {
         this.tileSubSprites.set(`${sheet}/${name}`, sub);
       }
     }
+  }
+
+  /** Slice border-left sub-sprite from border.png for chasm edge rendering. */
+  private sliceBorders(): void {
+    const tex = this.textures.get('border');
+    if (!tex) return;
+    const r = BORDER_LEFT_RECT;
+    this.borderTexture = new Texture({
+      source: tex.source,
+      frame: new Rectangle(r.x, r.y, r.w, r.h),
+    });
+  }
+
+  /** Get the border-left texture used for all chasm edges. */
+  getBorderTexture(): Texture | null {
+    return this.borderTexture;
   }
 
   /**

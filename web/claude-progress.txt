@@ -152,6 +152,48 @@
 - Snake.handleDealAttackDamage is stubbed (WeaknessStatus not yet ported)
 - turnPriority overrides: Blob→90 during AttackGroundTask, Snake→20 always
 
-### Next: Session 8+ — Floor Generator or more enemies
-- Consider moving FloorGenerator earlier for real room layouts
-- Or continue with more enemy types
+## Session 8 (2026-02-26): Floor Generator + Tile Sprites ✅
+
+### Completed Files (13 new generator files)
+- [x] src/generator/WeightedRandomBag.ts — weighted random selection with discount/subtract mechanics
+- [x] src/generator/Room.ts — BSP tree: randomlySplit, randomlyShrink, traverse, aspect-ratio-weighted splits
+- [x] src/generator/ShapeTransform.ts — 3×3 pattern matching with 4 rotations, 3 predefined transforms
+- [x] src/generator/TileGroup.ts — BFS flood-fill: makeGroupAndRemove, partitionIntoDisjointGroups, getCenterTile
+- [x] src/generator/TileSection.ts — ASCII art tile patterns: fromString, blit, rot90, withRotations
+- [x] src/generator/TileSectionConcavity.ts — 15 concavity patterns × 4 rotations
+- [x] src/generator/FloorUtils.ts — tidyUpAroundStairs, emptyTilesInRoom, tilesFrom/AwayFrom, line3x3, surroundWithWalls, carveGround, clusters, naturalizeEdges
+- [x] src/generator/entityRegistry.ts — name→constructor map, create() returns null for unregistered
+- [x] src/generator/EncounterGroup.ts — EncounterBag, EncounterGroup (8 bags), createEncounterGroups with exact C# weights for 3 difficulty tiers
+- [x] src/generator/Encounters.ts — all encounter functions (~500 lines): structural, chasm, water, enemy, grass, plant, item, NPC encounters
+- [x] src/generator/FloorGenerator.ts — 28 depth-specific generators, retry pipeline, ensureConnectedness, BSP multi-room
+- [x] src/generator/Tips.ts — depth→tip text map
+- [x] src/generator/index.ts — barrel export
+
+### Modified Files
+- [x] src/core/Vector2Int.ts — added static min/max methods
+- [x] src/model/Floor.ts — added upstairsRoom, downstairsRoom, downstairsPos properties
+- [x] src/model/GameModel.ts — added createDailyGame(seed), selectDepth(), djb2 hash
+- [x] src/model/enemies/Blob.ts, Bird.ts, Snake.ts — entityRegistry.register() calls
+- [x] src/hooks/useGameLoop.ts — switched to createDailyGame(), added R key for dev regeneration
+- [x] src/renderer/SpriteManager.ts — tilesheet slicing (tiles0/12/24 → ground/wall/fancy-ground/upstairs/downstairs sub-sprites), getTileTexture(type, depth)
+- [x] src/renderer/GameRenderer.ts — depth-aware tile rendering using tilesheet sprites, fallback to individual sprites then colored rectangles
+
+### Stats
+- ~65 TypeScript files, ~7,500 lines
+- tsc --noEmit passes clean, vite build succeeds
+
+### Design Decisions
+- entityRegistry pattern: encounters reference entities by name string, create() returns null for unported types → encounters silently no-op
+- createEncounterGroups(E) takes encounter map as parameter to break circular dependency
+- postProcessFloor does direct cleared check (not floor.checkCleared()) since GameModel doesn't exist during generation
+- selectDepth() is a standalone function, easy to swap for weekly/monthly difficulty curves
+- Tilesheet sprites sliced from Unity .meta coordinates: ground(0,16), wall(16,16), fancy-ground(32,16), upstairs(0,32), downstairs(16,32)
+- Depth → tilesheet: 0-9 → tiles0, 10-18 → tiles12, 19+ → tiles24 (matches C# DeepLevelSpriteSwap)
+- R key regeneration only in dev mode (import.meta.env.DEV)
+
+### Next: Session 9+ — More Enemies & Grasses
+- Port more enemy types to populate generated floors (Jackal, Bat, Spider, Scorpion, etc.)
+- Port grasses (SoftGrass, Bladegrass, Violets, etc.) for terrain variety
+- Port items/rewards for encounter loot
+- Each entity automatically activates in generated floors via entityRegistry
+- Consider: status effects (Weakness, Poison) needed by several enemies

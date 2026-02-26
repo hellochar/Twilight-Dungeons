@@ -7,6 +7,7 @@ import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
 import { FogOverlay } from './FogOverlay';
+import { SPRITE_TINTS } from './spriteTints';
 
 /** Color constants for tile types. */
 const TILE_COLORS: Record<string, number> = {
@@ -185,8 +186,12 @@ export class GameRenderer {
     sprite.height = ts;
     sprite.position.set(px.x, px.y);
 
-    if (!tex) {
-      // Tint white texture as fallback
+    // Apply per-entity tint from Unity prefab colors
+    const tint = SPRITE_TINTS[entity.displayName.toLowerCase()];
+    if (tint !== undefined) {
+      sprite.tint = tint;
+    } else if (!tex) {
+      // Tint white texture as fallback for unknown sprites
       sprite.tint = this.fallbackColor(entity.displayName);
     }
 

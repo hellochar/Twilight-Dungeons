@@ -1,13 +1,14 @@
 /**
- * Copies sprite PNGs from Assets/Textures/ to web/public/sprites/
+ * Copies sprite PNGs from Assets/Textures/ to web/public/sprites/,
+ * extracts sub-sprites from Unity sprite atlases,
  * and generates a manifest.json with sprite metadata.
  *
  * Run: node scripts/copy-sprites.js
  */
-import { readdir, copyFile, mkdir, writeFile, stat } from 'fs/promises';
+import { readdir, copyFile, mkdir, writeFile, readFile } from 'fs/promises';
 import { join, basename, extname, resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, '..', '..');
@@ -18,15 +19,92 @@ const SPRITE_SOURCES = [
   join(projectRoot, 'Assets', 'Textures', 'Plants'),
 ];
 
+const ATLAS_SOURCES = [
+  join(projectRoot, 'Assets', '3rd Party', '1bitpack_kenney_1.1', 'Tilesheet', 'monochrome_transparent_packed.png'),
+  join(projectRoot, 'Assets', '3rd Party', '1bitpack_kenney_1.1', 'Tilesheet', 'colored_transparent_packed.png'),
+];
+
 /** Get PNG dimensions by reading the IHDR chunk (bytes 16-23). */
 async function getPngDimensions(filePath) {
-  const { readFile } = await import('fs/promises');
   const buf = await readFile(filePath);
   // PNG IHDR starts at byte 16: 4 bytes width, 4 bytes height (big-endian)
   if (buf[0] !== 0x89 || buf[1] !== 0x50) return null;
   const width = buf.readUInt32BE(16);
   const height = buf.readUInt32BE(16 + 4);
   return { width, height };
+}
+
+/**
+ * Parse Unity .meta YAML to extract sprite name → rect mappings.
+ * Unity meta files have a consistent structure for sprite entries.
+ */
+function parseMetaSpriteRects(metaText) {
+  const sprites = [];
+  // Match each sprite entry: serializedVersion, name, rect with x, y, width, height
+  // Unity .meta format: "- serializedVersion: 2\n      name: X\n      rect:\n        serializedVersion: 2\n        x: N\n ..."
+  const regex = /- serializedVersion: \d+\r?\n\s+name: (.+)\r?\n\s+rect:\r?\n\s+serializedVersion: \d+\r?\n\s+x: ([\d.]+)\r?\n\s+y: ([\d.]+)\r?\n\s+width: ([\d.]+)\r?\n\s+height: ([\d.]+)/g;
+  let match;
+  while ((match = regex.exec(metaText)) !== null) {
+    sprites.push({
+      name: match[1].trim(),
+      x: Math.round(parseFloat(match[2])),
+      y: Math.round(parseFloat(match[3])),
+      width: Math.round(parseFloat(match[4])),
+      height: Math.round(parseFloat(match[5])),
+    });
+  }
+  return sprites;
+}
+
+/** Extract individual sprite PNGs from Unity sprite atlases. */
+async function extractAtlasSprites(manifest) {
+  let extracted = 0;
+
+  for (const atlasPng of ATLAS_SOURCES) {
+    const metaPath = atlasPng + '.meta';
+    let metaText;
+    try {
+      metaText = await readFile(metaPath, 'utf-8');
+    } catch {
+      console.warn(`Skipping atlas (no .meta): ${atlasPng}`);
+      continue;
+    }
+
+    const sprites = parseMetaSpriteRects(metaText);
+    if (sprites.length === 0) {
+      console.warn(`No sprites found in: ${metaPath}`);
+      continue;
+    }
+
+    // Get image height for Y-flip (Unity Y=0 at bottom, PNG Y=0 at top)
+    const metadata = await sharp(atlasPng).metadata();
+    const imageHeight = metadata.height;
+
+    const atlasName = basename(atlasPng, '.png');
+    console.log(`Atlas "${atlasName}": extracting ${sprites.length} sprites...`);
+
+    for (const s of sprites) {
+      const pixelY = imageHeight - s.y - s.height;
+      const spriteName = s.name.toLowerCase();
+      const destPath = join(outDir, `${spriteName}.png`);
+
+      await sharp(atlasPng)
+        .extract({ left: s.x, top: pixelY, width: s.width, height: s.height })
+        .toFile(destPath);
+
+      manifest[spriteName] = {
+        file: `${spriteName}.png`,
+        width: s.width,
+        height: s.height,
+        frameCount: 1,
+        frameWidth: s.width,
+        frameHeight: s.height,
+      };
+      extracted++;
+    }
+  }
+
+  return extracted;
 }
 
 async function main() {
@@ -71,12 +149,16 @@ async function main() {
     }
   }
 
+  // Extract sprites from Unity atlas spritesheets
+  const extracted = await extractAtlasSprites(manifest);
+
   await writeFile(
     join(outDir, 'manifest.json'),
     JSON.stringify(manifest, null, 2),
   );
 
   console.log(`Copied ${copied} sprites to public/sprites/`);
+  console.log(`Extracted ${extracted} atlas sprites`);
   console.log(`Manifest: ${Object.keys(manifest).length} entries`);
 }
 

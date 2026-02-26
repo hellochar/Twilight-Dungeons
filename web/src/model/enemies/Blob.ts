@@ -5,6 +5,7 @@ import { ChaseTargetTask } from '../tasks/ChaseTargetTask';
 import { MoveRandomlyTask } from '../tasks/MoveRandomlyTask';
 import { Vector2Int } from '../../core/Vector2Int';
 import { GameModelRef } from '../GameModelRef';
+import { entityRegistry } from '../../generator/entityRegistry';
 
 /**
  * Telegraphs attacks for 1 turn. Chases you.
@@ -66,3 +67,6 @@ export class MiniBlob extends AIActor {
     return new MoveRandomlyTask(this);
   }
 }
+
+entityRegistry.register('Blob', Blob);
+entityRegistry.register('MiniBlob', MiniBlob);

@@ -20,6 +20,14 @@ export class Vector2Int {
     return a.x === b.x && a.y === b.y;
   }
 
+  static min(a: Vector2Int, b: Vector2Int): Vector2Int {
+    return new Vector2Int(Math.min(a.x, b.x), Math.min(a.y, b.y));
+  }
+
+  static max(a: Vector2Int, b: Vector2Int): Vector2Int {
+    return new Vector2Int(Math.max(a.x, b.x), Math.max(a.y, b.y));
+  }
+
   static distance(a: Vector2Int, b: Vector2Int): number {
     const dx = a.x - b.x;
     const dy = a.y - b.y;

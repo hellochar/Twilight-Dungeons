@@ -5,6 +5,7 @@ import { WaitTask } from '../tasks/WaitTask';
 import { MoveToTargetTask } from '../tasks/MoveToTargetTask';
 import { Vector2Int } from '../../core/Vector2Int';
 import { GameModelRef } from '../GameModelRef';
+import { entityRegistry } from '../../generator/entityRegistry';
 
 /**
  * Only moves/attacks if you're in the same row or column.
@@ -50,3 +51,5 @@ export class Snake extends AIActor {
     // TODO: target.statuses.add(new WeaknessStatus(1));
   }
 }
+
+entityRegistry.register('Snake', Snake);

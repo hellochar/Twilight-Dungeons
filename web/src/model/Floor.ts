@@ -167,9 +167,12 @@ export class Floor {
   startPos: Vector2Int;
   timePlayerEntered = 0;
 
-  // BSP generator data
+  // BSP generator data (typed as any to avoid circular deps — Room imported lazily)
   root: any = null;
   rooms: any[] = [];
+  upstairsRoom: any = null;
+  downstairsRoom: any = null;
+  downstairsPos: Vector2Int | null = null;
 
   constructor(depth: number, width: number, height: number) {
     this.depth = depth;

@@ -9,6 +9,30 @@ import { TimedEvent } from './Entity';
 import { EventEmitter } from '../core/EventEmitter';
 import { GameModelRef, type IGameModelRef } from './GameModelRef';
 import { Vector2Int } from '../core/Vector2Int';
+import { MyRandom } from '../core/MyRandom';
+import { FloorGenerator } from '../generator/FloorGenerator';
+
+// ─── Depth selection ───
+
+/** djb2 hash of a string → 32-bit integer */
+function djb2(str: string): number {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash + str.charCodeAt(i)) | 0;
+  }
+  return hash >>> 0;
+}
+
+/**
+ * Select a floor depth for the daily puzzle.
+ * Easy to swap out — currently returns a seeded random depth 1-26.
+ * Future options: weekly difficulty curve, monthly progression, etc.
+ */
+export function selectDepth(seed: number): number {
+  // Use the seed to pick a depth — avoid depth 0 (tutorial) and 27 (end floor)
+  const rng = seed >>> 0;
+  return 1 + (rng % 26);
+}
 
 /**
  * Manages timed events — a priority queue of future actions.
@@ -106,6 +130,28 @@ export class GameModel implements IGameModelRef {
 
     model.stepUntilPlayerChoiceImmediate();
     return model;
+  }
+
+  /**
+   * Create a daily puzzle game from a date seed.
+   * Uses FloorGenerator to produce a procedurally generated floor.
+   */
+  static createDailyGame(dateSeed?: string): GameModel {
+    const dateStr = dateSeed ?? new Date().toISOString().slice(0, 10);
+    const seed = djb2(dateStr);
+
+    // Generate floor seeds from master seed
+    MyRandom.setSeed(seed);
+    const floorSeeds: number[] = [];
+    for (let i = 0; i < 28; i++) {
+      floorSeeds.push(MyRandom.Range(0, 0x7fffffff));
+    }
+
+    const depth = selectDepth(seed);
+    const generator = new FloorGenerator(floorSeeds);
+    const floor = generator.generateCaveFloor(depth);
+
+    return GameModel.createAndSetMain(floor, floor.startPos);
   }
 
   /** Quick test setup: small hardcoded floor with enemies */

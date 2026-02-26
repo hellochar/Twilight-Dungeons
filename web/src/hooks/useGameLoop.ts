@@ -127,8 +127,8 @@ export function useGameLoop() {
       await sprites.load();
       if (destroyed) { app.destroy(true, { children: true }); return; }
 
-      // Create model
-      const model = GameModel.createTestGame();
+      // Create model — use procedural floor generation
+      const model = GameModel.createDailyGame();
       modelRef.current = model;
 
       // Renderer

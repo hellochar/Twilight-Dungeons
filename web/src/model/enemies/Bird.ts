@@ -11,6 +11,7 @@ import { GameModelRef } from '../GameModelRef';
 import type { BaseAction } from '../BaseAction';
 import type { Tile } from '../Tile';
 import type { Entity } from '../Entity';
+import { entityRegistry } from '../../generator/entityRegistry';
 
 /**
  * Jumps two tiles per turn and waits after every jump.
@@ -75,3 +76,5 @@ export class Bird extends AIActor implements IActionPerformedHandler {
     return new MoveRandomlyTask(this);
   }
 }
+
+entityRegistry.register('Bird', Bird);

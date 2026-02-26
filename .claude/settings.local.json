@@ -9,7 +9,12 @@
       "Bash(npm view pixi.js versions --json)",
       "Bash(npm install pixi.js@^8.16.0 gsap @pixi/particle-emitter)",
       "Bash(npx tsc --noEmit)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(node scripts/copy-sprites.js)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(wc:*)",
+      "Bash(npx vite build)",
+      "Bash(git status -u)"
     ]
   }
 }

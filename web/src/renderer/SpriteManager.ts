@@ -34,6 +34,8 @@ export class SpriteManager {
     'soil': 'square',
     'water': 'square',
     'signpost': 'speech',
+    'blob': 'goo',
+    'mini blob': 'miniblob',
   };
 
   async load(): Promise<void> {

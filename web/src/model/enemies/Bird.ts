@@ -1,12 +1,14 @@
 import { AIActor } from './AIActor';
+import { ACTION_PERFORMED_HANDLER, type IActionPerformedHandler } from '../Actor';
 import { ActorTask } from '../ActorTask';
 import { AttackTask } from '../tasks/AttackTask';
 import { WaitTask } from '../tasks/WaitTask';
 import { MoveRandomlyTask } from '../tasks/MoveRandomlyTask';
 import { JumpToTargetTask } from '../tasks/JumpToTargetTask';
 import { Vector2Int } from '../../core/Vector2Int';
-import { CollisionLayer } from '../../core/types';
+import { CollisionLayer, ActionType } from '../../core/types';
 import { GameModelRef } from '../GameModelRef';
+import type { BaseAction } from '../BaseAction';
 import type { Tile } from '../Tile';
 import type { Entity } from '../Entity';
 
@@ -14,7 +16,9 @@ import type { Entity } from '../Entity';
  * Jumps two tiles per turn and waits after every jump.
  * Port of Bird.cs.
  */
-export class Bird extends AIActor {
+export class Bird extends AIActor implements IActionPerformedHandler {
+  readonly [ACTION_PERFORMED_HANDLER] = true;
+
   get baseMovementLayer(): CollisionLayer {
     return CollisionLayer.Flying;
   }
@@ -28,7 +32,14 @@ export class Bird extends AIActor {
     return [1, 2];
   }
 
-  /** Get tiles this entity can jump to (diamond distance == 2). */
+  /** After moving, insert a wait turn. */
+  handleActionPerformed(final_: BaseAction, _initial: BaseAction): void {
+    if (final_.type === ActionType.MOVE) {
+      this.insertTasks(new WaitTask(this, 1));
+    }
+  }
+
+  /** Get tiles this entity can jump to (Manhattan distance == 2). */
   static getJumpTiles(e: Entity): Tile[] {
     if (!e.floor) return [];
     const results: Tile[] = [];
@@ -62,12 +73,5 @@ export class Bird extends AIActor {
       return new WaitTask(this, 1);
     }
     return new MoveRandomlyTask(this);
-  }
-
-  /** After moving, insert a wait turn. */
-  handleActionPerformed(final_: any, _initial: any): void {
-    if (final_.type === 'move') {
-      this.insertTasks(new WaitTask(this, 1));
-    }
   }
 }

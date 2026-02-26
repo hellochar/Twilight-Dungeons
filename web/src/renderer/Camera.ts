@@ -46,11 +46,15 @@ export class Camera {
     this.offsetY = Math.floor((viewportHeight - gridH) / 2);
   }
 
-  /** Tile position → pixel position (top-left corner of tile). */
+  /**
+   * Tile position → pixel position (top-left corner of tile).
+   * Y is flipped: game Y increases upward (Unity convention),
+   * but screen Y increases downward. So game y=0 renders at bottom.
+   */
   tileToPixel(pos: Vector2Int): { x: number; y: number } {
     return {
       x: this.offsetX + pos.x * this.tileSize,
-      y: this.offsetY + pos.y * this.tileSize,
+      y: this.offsetY + (this.floorHeight - 1 - pos.y) * this.tileSize,
     };
   }
 
@@ -58,14 +62,15 @@ export class Camera {
   tileToCenterPixel(pos: Vector2Int): { x: number; y: number } {
     return {
       x: this.offsetX + pos.x * this.tileSize + this.tileSize / 2,
-      y: this.offsetY + pos.y * this.tileSize + this.tileSize / 2,
+      y: this.offsetY + (this.floorHeight - 1 - pos.y) * this.tileSize + this.tileSize / 2,
     };
   }
 
-  /** Pixel position → tile position (floor'd). */
+  /** Pixel position → tile position (floor'd), with Y flip. */
   pixelToTile(px: number, py: number): Vector2Int {
     const tx = Math.floor((px - this.offsetX) / this.tileSize);
-    const ty = Math.floor((py - this.offsetY) / this.tileSize);
+    const screenTy = Math.floor((py - this.offsetY) / this.tileSize);
+    const ty = this.floorHeight - 1 - screenTy;
     return new Vector2Int(tx, ty);
   }
 

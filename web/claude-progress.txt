@@ -112,7 +112,28 @@
 - Entity fallback: when sprite not found, white texture tinted with deterministic HSL from name hash
 - AnimationPlayer uses GSAP timeline — events queued sequentially, skip() fast-forwards
 
-### Next: Session 6 — Input + HUD + Wire-Up
-- InputHandler (keyboard + click/tap → player actions)
-- PixiCanvas.tsx React wrapper, HUD.tsx, full App.tsx wire-up
-- useGameModel hook for React state sync
+## Session 6 (2026-02-26): Input + HUD + Wire-Up ✅
+
+### Completed Files
+- [x] src/input/InputHandler.ts — keyboard (arrows, WASD, numpad, diagonals QEZC) + pointer click/tap → PlayerIntent events. Space/period/numpad5 = wait.
+- [x] src/hooks/useGameLoop.ts — full game loop orchestration: creates model + renderer + input, resolveIntent() translates intents to tasks (FollowPathTask for movement, AttackTask for adjacent enemies, MoveNextToTargetTask for ranged click, WaitTask), steps model, syncs renderer, updates React state
+- [x] src/ui/HUD.tsx — HP bar (color changes by threshold), turn counter, enemy count, dead/cleared status
+- [x] src/App.tsx — simplified to useGameLoop + HUD
+- [x] src/renderer/Camera.ts — fixed Y-axis flip (Unity Y-up → PixiJS Y-down)
+- [x] src/model/GameModel.ts — fixed require('./Tile') → ESM import for Ground/Wall
+
+### Stats
+- 46 TypeScript files, ~4,500 total lines
+- tsc --noEmit passes clean
+- Player can move (WASD/arrows/numpad), wait (space), click tiles to pathfind
+
+### Design Decisions
+- Y-axis flipped in Camera (game y=0 at bottom of screen, matching Unity convention)
+- InputHandler emits PlayerIntent union type (move/click/wait), useGameLoop resolves to tasks
+- resolveIntent: directional move checks for enemy at target (→ AttackTask), click supports pathfinding + move-next-to-enemy
+- Game loop is synchronous: set task → stepUntilPlayerChoice → syncToModel → update React state
+- No animation playback yet (instant sync) — AnimationPlayer is wired but events not collected from model
+
+### Next: Session 7 — AIActor + First Enemies
+- Port AIActor base, 3-4 starter enemies (Blob, Bird, Snake)
+- Get combat loop working with visible enemies

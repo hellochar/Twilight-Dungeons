@@ -11,3 +11,4 @@ export { SleepTask } from './SleepTask';
 export { GenericTask, GenericPlayerTask } from './GenericTask';
 export { TelegraphedTask } from './TelegraphedTask';
 export { AttackGroundTask } from './AttackGroundTask';
+export { JumpToTargetTask } from './JumpToTargetTask';

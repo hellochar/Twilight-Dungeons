@@ -1,6 +1,9 @@
 import { Player } from './Player';
 import { Floor } from './Floor';
 import { Ground, Wall } from './Tile';
+import { Blob } from './enemies/Blob';
+import { Bird } from './enemies/Bird';
+import { Snake } from './enemies/Snake';
 import { TurnManager } from './TurnManager';
 import { TimedEvent } from './Entity';
 import { EventEmitter } from '../core/EventEmitter';
@@ -105,8 +108,8 @@ export class GameModel implements IGameModelRef {
     return model;
   }
 
-  /** Quick test setup: small hardcoded floor */
-  static createTestGame(width = 10, height = 8): GameModel {
+  /** Quick test setup: small hardcoded floor with enemies */
+  static createTestGame(width = 14, height = 10): GameModel {
     const model = new GameModel();
     GameModelRef.main = model;
     GameModel.main = model;
@@ -126,9 +129,14 @@ export class GameModel implements IGameModelRef {
     }
 
     model.floor = floor;
-    const playerPos = new Vector2Int(1, Math.floor(height / 2));
+    const playerPos = new Vector2Int(2, Math.floor(height / 2));
     model.player = new Player(playerPos);
     floor.put(model.player);
+
+    // Place test enemies
+    floor.put(new Blob(new Vector2Int(8, 5)));
+    floor.put(new Bird(new Vector2Int(10, 3)));
+    floor.put(new Snake(new Vector2Int(6, 7)));
 
     model.stepUntilPlayerChoiceImmediate();
     return model;

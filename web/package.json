@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "sprites": "node scripts/copy-sprites.js",
+    "dev": "node scripts/copy-sprites.js && vite",
+    "build": "node scripts/copy-sprites.js && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

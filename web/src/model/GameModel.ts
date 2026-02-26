@@ -1,5 +1,6 @@
 import { Player } from './Player';
 import { Floor } from './Floor';
+import { Ground, Wall } from './Tile';
 import { TurnManager } from './TurnManager';
 import { TimedEvent } from './Entity';
 import { EventEmitter } from '../core/EventEmitter';
@@ -110,7 +111,6 @@ export class GameModel implements IGameModelRef {
     GameModelRef.main = model;
     GameModel.main = model;
 
-    const { Ground, Wall } = require('./Tile');
     const floor = new Floor(0, width, height);
 
     // Fill with walls, then carve ground

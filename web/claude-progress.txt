@@ -85,6 +85,34 @@
 - TelegraphedTask in tasks/ (not enemies/) since it's used by multiple enemy types
 - SurprisedStatus defined inline with SleepTask (matches C# pattern where it lives in SleepTask.cs)
 
-### Next: Session 5 — Rendering Layer (PixiJS)
-- SpriteManager, GameRenderer, FogOverlay, Camera, AnimationPlayer
-- Colored rectangle fallbacks for missing sprites
+## Session 5 (2026-02-26): Rendering Layer (PixiJS) ✅
+
+### Completed Files
+- [x] scripts/copy-sprites.js — copies ~193 PNGs from Assets/Textures/ to public/sprites/, generates manifest.json with dimensions/frame counts
+- [x] src/renderer/SpriteManager.ts — loads manifest + textures via PixiJS Assets, slices multi-frame strips, name→sprite resolution
+- [x] src/renderer/Camera.ts — tile↔pixel conversion, viewport fit/centering, pixelToTile for input
+- [x] src/renderer/GameRenderer.ts — PixiJS Application with 6 layered containers (tiles, grasses, items, bodies, effects, fog), full rebuild + incremental sync, tile color backgrounds, entity sprites with fallback tinting
+- [x] src/renderer/FogOverlay.ts — per-tile black overlay: Unexplored=opaque, Explored=60%, Visible=transparent
+- [x] src/renderer/AnimationPlayer.ts — GSAP tweens for move (slide 120ms), attack (bump), damage (flash+shake), heal (green flash), death (shrink+fade), spawn (pop in), floating damage indicators
+- [x] src/renderer/index.ts — barrel export
+- [x] src/App.tsx — wired up: creates PixiJS app, loads sprites, creates test game, renders floor
+- [x] Fixed GameModel.createTestGame() — replaced require('./Tile') with ESM import
+
+### Stats
+- 42 TypeScript files, 4,174 total lines
+- tsc --noEmit passes clean
+- npm run dev serves correctly (Vite dev server)
+
+### Design Decisions
+- Sprite PNGs copied at build time via `npm run sprites` (also runs before dev/build) — avoids committing duplicates
+- public/sprites/ in .gitignore (generated files)
+- Most sprites 16x16, some wider for animation frames (e.g., goo 80x16 = 5 frames). SpriteManager slices strips at 16px width.
+- Tile rendering: colored rectangles per tile type (Ground=#8b7355, Wall=#3a3a4a, etc.) with optional sprite overlay
+- No atlas packing yet — individual PNGs loaded directly, sufficient for ~200 small sprites
+- Entity fallback: when sprite not found, white texture tinted with deterministic HSL from name hash
+- AnimationPlayer uses GSAP timeline — events queued sequentially, skip() fast-forwards
+
+### Next: Session 6 — Input + HUD + Wire-Up
+- InputHandler (keyboard + click/tap → player actions)
+- PixiCanvas.tsx React wrapper, HUD.tsx, full App.tsx wire-up
+- useGameModel hook for React state sync

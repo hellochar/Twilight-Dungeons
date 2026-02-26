@@ -34,8 +34,21 @@ export class SpriteManager {
     'soil': 'square',
     'water': 'square',
     'signpost': 'speech',
-    'blob': 'goo',
     'mini blob': 'miniblob',
+    // Monochrome atlas sprites
+    'blob': 'monochrome-blob',
+    // Colored atlas sprites
+    'bat': 'colored_transparent_packed_409',
+    'jackal': 'colored_transparent_packed_414',
+    'jackal boss': 'jackalboss',
+    'gambler': 'gambler',
+    'mercenary': 'mercenary',
+    'octopus': 'octopus',
+    'moss man': 'moss-man',
+    'scorpion': 'colored_transparent_packed_263',
+    'old dude': 'colored_transparent_packed_311',
+    'stump': 'colored_transparent_packed_305',
+    'rubble': 'colored_transparent_packed_100',
   };
 
   async load(): Promise<void> {

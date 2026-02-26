@@ -100,6 +100,7 @@ export function useGameLoop() {
 
     let input: InputHandler | null = null;
     let resizeHandler: (() => void) | null = null;
+    let keyHandler: ((e: KeyboardEvent) => void) | null = null;
     let destroyed = false;
     // Track whether init completed so cleanup knows if app is safe to destroy
     let appReady = false;
@@ -156,6 +157,22 @@ export function useGameLoop() {
       };
       window.addEventListener('resize', resizeHandler);
 
+      // Debug: press R to regenerate floor with a random seed
+      if (import.meta.env.DEV) {
+        keyHandler = (e: KeyboardEvent) => {
+          if (e.key === 'r' || e.key === 'R') {
+            if (processingRef.current) return;
+            const newModel = GameModel.createDailyGame(String(Date.now()));
+            modelRef.current = newModel;
+            renderer.setFloor(newModel.currentFloor);
+            renderer.syncToModel();
+            camera.resize(app.screen.width, app.screen.height, newModel.currentFloor.width, newModel.currentFloor.height);
+            setGameState(readState());
+          }
+        };
+        window.addEventListener('keydown', keyHandler);
+      }
+
       setGameState(readState());
       setReady(true);
     }
@@ -166,6 +183,7 @@ export function useGameLoop() {
       destroyed = true;
       input?.detach();
       if (resizeHandler) window.removeEventListener('resize', resizeHandler);
+      if (keyHandler) window.removeEventListener('keydown', keyHandler);
       if (pixiApp && appReady) {
         pixiApp.destroy(true, { children: true });
       }

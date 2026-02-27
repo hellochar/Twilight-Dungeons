@@ -88,11 +88,17 @@ export function useGameLoop() {
 
     // Collect and play animation events
     const events = model.consumeAnimationEvents();
+    console.log('[anim]', events.length, 'events', events.map(e => `${e.type}:${e.entityGuid}`));
     if (events.length > 0) {
-      // Allow skipping animations with any key or click
-      const skipHandler = () => animator.skip();
-      window.addEventListener('keydown', skipHandler, { once: true });
-      window.addEventListener('pointerdown', skipHandler, { once: true });
+      // Allow skipping animations with any key or click.
+      // Use a short delay so the triggering key-repeat doesn't instantly skip.
+      let skipRegistered = false;
+      const skipHandler = () => { if (skipRegistered) animator.skip(); };
+      requestAnimationFrame(() => {
+        skipRegistered = true;
+        window.addEventListener('keydown', skipHandler, { once: true });
+        window.addEventListener('pointerdown', skipHandler, { once: true });
+      });
       try {
         await animator.play(events);
       } finally {
@@ -145,6 +151,7 @@ export function useGameLoop() {
 
       // Create model — use procedural floor generation
       const model = GameModel.createDailyGame();
+      model.consumeAnimationEvents(); // discard events from init (no sprites yet)
       modelRef.current = model;
 
       // Renderer

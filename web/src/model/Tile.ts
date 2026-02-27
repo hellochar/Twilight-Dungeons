@@ -66,7 +66,7 @@ export abstract class Tile extends Entity {
   }
 
   bodyLeft(body: any): void {
-    if (body.faction !== undefined) {
+    if (body.faction !== undefined && GameModelRef.mainOrNull) {
       const actor = body;
       GameModelRef.main.enqueuEvent(() => {
         for (const handler of collectModifiers<IActorLeaveHandler>(this, ACTOR_LEAVE_HANDLER)) {
@@ -77,7 +77,7 @@ export abstract class Tile extends Entity {
   }
 
   bodyEntered(body: any): void {
-    if (body.faction !== undefined) {
+    if (body.faction !== undefined && GameModelRef.mainOrNull) {
       const actor = body;
       GameModelRef.main.enqueuEvent(() => {
         for (const handler of collectModifiers<IActorEnterHandler>(this, ACTOR_ENTER_HANDLER)) {

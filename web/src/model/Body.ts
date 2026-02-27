@@ -14,6 +14,7 @@ import {
   type IMovementLayerModifier,
 } from '../core/Modifiers';
 import { EventEmitter } from '../core/EventEmitter';
+import { GameModelRef } from './GameModelRef';
 
 // ─── Handler symbols ───
 export const BODY_MOVE_HANDLER = Symbol.for('IBodyMoveHandler');
@@ -98,6 +99,7 @@ export class Body extends Entity {
       const oldPos = this._pos;
       this._pos = value;
       this.floor.bodyMoved();
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'move', entityGuid: this.guid, from: oldPos, to: value });
       this.onMove(value, oldPos);
       const newTile = this.floor.tiles.get(this._pos)!;
       newTile.bodyEntered(this);
@@ -131,6 +133,9 @@ export class Body extends Entity {
     if (amount <= 0) return 0;
     amount = Math.min(amount, this.maxHp - this._hp);
     this._hp += amount;
+    if (amount > 0) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'heal', entityGuid: this.guid, to: this._pos, amount });
+    }
     this.onHealEvent(amount);
     return amount;
   }
@@ -160,6 +165,9 @@ export class Body extends Entity {
     damage = processModifiers(mods, damage);
     damage = Math.max(damage, 0);
     this.onTakeAnyDamageEvent(damage);
+    if (damage > 0) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'damage', entityGuid: this.guid, to: this._pos, amount: damage });
+    }
     this._hp -= damage;
     if (this._hp <= 0) {
       this.kill(source);
@@ -169,6 +177,7 @@ export class Body extends Entity {
   kill(source: Entity): void {
     if (!this.isDead) {
       this._hp = Math.max(this._hp, 0);
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'death', entityGuid: this.guid, to: this._pos });
       super.kill(source);
     }
   }

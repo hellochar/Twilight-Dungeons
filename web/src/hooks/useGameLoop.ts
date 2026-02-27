@@ -86,7 +86,22 @@ export function useGameLoop() {
     player.setTasks(task);
     model.turnManager.stepUntilPlayerChoice();
 
-    // Sync visuals (no animation yet — we do instant sync for now)
+    // Collect and play animation events
+    const events = model.consumeAnimationEvents();
+    if (events.length > 0) {
+      // Allow skipping animations with any key or click
+      const skipHandler = () => animator.skip();
+      window.addEventListener('keydown', skipHandler, { once: true });
+      window.addEventListener('pointerdown', skipHandler, { once: true });
+      try {
+        await animator.play(events);
+      } finally {
+        window.removeEventListener('keydown', skipHandler);
+        window.removeEventListener('pointerdown', skipHandler);
+      }
+    }
+
+    // Snap to final model state
     renderer.syncToModel();
     setGameState(readState());
 

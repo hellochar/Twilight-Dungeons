@@ -298,7 +298,31 @@ There's also the larger context doc: `web-puzzle-port.md`.
 - **Entity registration via side-effect imports**: Each entity file calls `entityRegistry.register('Name', Class)` at module bottom. GameModel.ts imports them to trigger registration.
 - **Goo split**: Creates 2 new Goos at same position with ceil/floor(hp/2), adds SurprisedStatus, kills self via floor.remove().
 
+## Sprint 11 (2026-02-26): Combat Animations + Visual Feedback ✅
+*Plan session 9 (combat animations + status indicators)*
+
+### Modified Files (no new files)
+- [x] src/model/TurnManager.ts — removed unused GameEvent interface (conflicted with AnimationPlayer's)
+- [x] src/model/GameModelRef.ts — added emitAnimation(event) to IGameModelRef interface
+- [x] src/model/GameModel.ts — added animationEvents array, emitAnimation(), consumeAnimationEvents()
+- [x] src/model/Body.ts — emit animation events for move (set pos), takeDamage, heal, kill
+- [x] src/model/Actor.ts — emit animation events for attack (attackWithDamage), attackGround
+- [x] src/hooks/useGameLoop.ts — wire animation playback via animator.play(), skip support (any key/click)
+- [x] src/renderer/AnimationPlayer.ts — replace red circle damage numbers with Text ("-N" red, "+N" green), add heal numbers
+- [x] src/renderer/GameRenderer.ts — add status indicator dots (colored circles below entity sprites), STATUS_COLORS map
+
+### Stats
+- ~96 TypeScript files, ~10,400 lines (est)
+- tsc --noEmit passes clean, pre-existing build warnings unchanged
+
+### Design Decisions
+- **Animation event pipeline**: Model emits events → GameModel.animationEvents array → consumed by useGameLoop → AnimationPlayer.play(). Guards with GameModelRef.mainOrNull so floor generation (null ref) doesn't crash.
+- **emitAnimation(event: object)** on IGameModelRef uses `object` type to avoid model→renderer circular dep. GameModel casts to GameEvent internally.
+- **Skip support**: One-shot keydown/pointerdown listeners during animation playback call animator.skip(). Removed in finally block.
+- **Damage/heal numbers**: PixiJS Text with TextStyle (monospace, bold, 14px, black stroke). "-N" red for damage, "+N" green for heal. Float up 24px and fade over 0.6s.
+- **Status indicators**: Colored dots drawn below entity sprites using Graphics.circle(). Rebuilt each syncEntities() call. STATUS_COLORS maps constructor name → hex color (9 statuses mapped).
+- **No new files**: All changes integrated into existing renderer/model files.
+
 ### Remaining Undone Plan Sessions
-- Session 9: Combat animations + particles
 - Session 10: Inventory UI + game over detection
 - Sessions 13-16: Remaining content (enemies, grasses, items)

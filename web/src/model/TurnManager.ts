@@ -5,13 +5,6 @@ import { CannotPerformActionException } from './BaseAction';
 import type { GameModel } from './GameModel';
 import type { ISteppable } from './Floor';
 
-export interface GameEvent {
-  type: 'move' | 'attack' | 'damage' | 'death' | 'heal' | 'statusAdd' | 'statusRemove' | 'spawn' | 'pickup' | 'step';
-  entityId: string;
-  data?: any;
-  simultaneous?: boolean;
-}
-
 /**
  * Synchronous turn manager — no coroutines, no yields.
  * Runs all entities until it's the player's choice again.

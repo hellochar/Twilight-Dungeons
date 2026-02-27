@@ -9,6 +9,19 @@ import { SpriteManager } from './SpriteManager';
 import { FogOverlay } from './FogOverlay';
 import { SPRITE_TINTS } from './spriteTints';
 
+/** Status name → indicator dot color. */
+const STATUS_COLORS: Record<string, number> = {
+  PoisonedStatus: 0x33cc33,
+  WebbedStatus: 0xdddddd,
+  WeaknessStatus: 0xaa44cc,
+  InShellStatus: 0x888888,
+  SlimedStatus: 0xcccc33,
+  SurprisedStatus: 0xffcc00,
+  GuardedStatus: 0x3388ff,
+  FreeMoveStatus: 0x00cccc,
+  SoftGrassStatus: 0x66cc66,
+};
+
 /** Fallback colors when tilesheet sprite is missing. */
 const TILE_COLORS: Record<string, number> = {
   Ground: 0x8b7355,
@@ -67,6 +80,8 @@ export class GameRenderer {
   private entitySprites = new Map<string, Sprite>();
   // Tile key → Graphics for tile backgrounds
   private tileGraphics = new Map<string, Graphics>();
+  // Entity guid → status indicator dots container
+  private statusIndicators = new Map<string, Graphics>();
 
   private floor: Floor | null = null;
 
@@ -146,6 +161,7 @@ export class GameRenderer {
     this.effectLayer.removeChildren();
     this.entitySprites.clear();
     this.tileGraphics.clear();
+    this.statusIndicators.clear();
   }
 
   private buildTiles(): void {
@@ -350,6 +366,53 @@ export class GameRenderer {
       if (!seenGuids.has(guid)) {
         sprite.destroy();
         this.entitySprites.delete(guid);
+        const ind = this.statusIndicators.get(guid);
+        if (ind) { ind.destroy(); this.statusIndicators.delete(guid); }
+      }
+    }
+
+    // Sync status indicators on bodies
+    this.syncStatusIndicators(floor);
+  }
+
+  private syncStatusIndicators(floor: Floor): void {
+    const ts = this.camera.tileSize;
+    const dotSize = Math.max(2, ts * 0.1);
+    const gap = dotSize * 1.5;
+
+    for (const body of floor.bodies) {
+      if (!body.isVisible || !('statuses' in body)) {
+        // Remove indicator if hidden or not an Actor
+        const existing = this.statusIndicators.get(body.guid);
+        if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
+        continue;
+      }
+
+      const statuses = (body as any).statuses as { list: { constructor: { name: string } }[] };
+      const statusNames = statuses.list.map(s => s.constructor.name);
+
+      // Remove indicator if no statuses
+      if (statusNames.length === 0) {
+        const existing = this.statusIndicators.get(body.guid);
+        if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
+        continue;
+      }
+
+      // Rebuild indicator graphics
+      let g = this.statusIndicators.get(body.guid);
+      if (g) { g.clear(); } else {
+        g = new Graphics();
+        this.effectLayer.addChild(g);
+        this.statusIndicators.set(body.guid, g);
+      }
+
+      const px = this.camera.tileToPixel(body.pos);
+      const totalWidth = statusNames.length * gap;
+      const startX = px.x + ts / 2 - totalWidth / 2 + dotSize / 2;
+
+      for (let i = 0; i < statusNames.length; i++) {
+        const color = STATUS_COLORS[statusNames[i]] ?? 0xffffff;
+        g.circle(startX + i * gap, px.y + ts + dotSize + 1, dotSize).fill(color);
       }
     }
   }

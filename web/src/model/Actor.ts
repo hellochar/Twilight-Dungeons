@@ -21,6 +21,7 @@ import {
 import { MyRandom } from '../core/MyRandom';
 import { EventEmitter } from '../core/EventEmitter';
 import { BaseAction, ActionCosts } from './BaseAction';
+import { GameModelRef } from './GameModelRef';
 import { ActorTask, TaskStage } from './ActorTask';
 import { StatusList } from './StatusList';
 import type { ISteppable } from './Floor';
@@ -120,6 +121,7 @@ export class Actor extends Body implements ISteppable {
     if (target.isDead) {
       throw new Error('Cannot attack dead target.');
     }
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'attack', entityGuid: this.guid, from: this.pos, to: target.pos, targetGuid: target.guid });
     this.onAttackEvent(damage, target);
     target.attacked(damage, this);
   }
@@ -144,6 +146,7 @@ export class Actor extends Body implements ISteppable {
   attackGround(targetPosition: Vector2Int): void {
     const target = this.floor?.bodies.get(targetPosition);
     const grass = this.floor?.grasses.get(targetPosition);
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'attackGround', entityGuid: this.guid, to: targetPosition });
     this.onAttackGround.emit(targetPosition);
     if (target) {
       this.attack(target as Body);

@@ -22,6 +22,7 @@ import { GameModelRef, type IGameModelRef } from './GameModelRef';
 import { Vector2Int } from '../core/Vector2Int';
 import { MyRandom } from '../core/MyRandom';
 import { FloorGenerator } from '../generator/FloorGenerator';
+import type { GameEvent } from '../renderer/AnimationPlayer';
 
 // ─── Depth selection ───
 
@@ -107,6 +108,7 @@ export class GameModel implements IGameModelRef {
 
   private _turnManager: TurnManager | null = null;
   private eventQueue: (() => void)[] = [];
+  private _animationEvents: GameEvent[] = [];
 
   readonly onGameOver = new EventEmitter<[PlayStats]>();
   readonly onFloorCleared = new EventEmitter<[Floor]>();
@@ -218,6 +220,18 @@ export class GameModel implements IGameModelRef {
       if (this.eventQueue.length === 0) return;
     }
     throw new Error('Reached max event queue generations!');
+  }
+
+  // ─── Animation events ───
+
+  emitAnimation(event: object): void {
+    this._animationEvents.push(event as GameEvent);
+  }
+
+  consumeAnimationEvents(): GameEvent[] {
+    const events = this._animationEvents;
+    this._animationEvents = [];
+    return events;
   }
 
   // ─── Turn management ───

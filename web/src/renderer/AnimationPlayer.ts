@@ -1,8 +1,24 @@
 import gsap from 'gsap';
-import { Sprite, Graphics } from 'pixi.js';
+import { Sprite, Text, TextStyle } from 'pixi.js';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
+
+const DAMAGE_STYLE = new TextStyle({
+  fontFamily: 'monospace',
+  fontSize: 14,
+  fontWeight: 'bold',
+  fill: 0xff3333,
+  stroke: { color: 0x000000, width: 3 },
+});
+
+const HEAL_STYLE = new TextStyle({
+  fontFamily: 'monospace',
+  fontSize: 14,
+  fontWeight: 'bold',
+  fill: 0x33ff66,
+  stroke: { color: 0x000000, width: 3 },
+});
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
@@ -168,19 +184,24 @@ export class AnimationPlayer {
     }, label);
 
     // Spawn floating damage number
-    if (event.amount !== undefined) {
-      this.spawnDamageNumber(event, tl, label);
+    if (event.amount !== undefined && event.amount > 0) {
+      this.spawnFloatingText(`-${event.amount}`, event, tl, label, DAMAGE_STYLE);
     }
   }
 
   /** Brief green flash on heal. */
   private animateHeal(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
+    const label = `heal-${event.entityGuid}`;
     const origTint = sprite.tint;
     tl.to(sprite, {
       tint: 0x33ff66,
       duration: 0.08,
       onComplete: () => { sprite.tint = origTint; },
-    }, `heal-${event.entityGuid}`);
+    }, label);
+
+    if (event.amount !== undefined && event.amount > 0) {
+      this.spawnFloatingText(`+${event.amount}`, event, tl, label, HEAL_STYLE);
+    }
   }
 
   /** Shrink + fade out on death. */
@@ -215,30 +236,28 @@ export class AnimationPlayer {
     }, '<');
   }
 
-  /** Spawn a floating "-N" text that drifts up and fades. */
-  private spawnDamageNumber(event: GameEvent, tl: gsap.core.Timeline, label: string): void {
+  /** Spawn floating text (e.g. "-3" or "+2") that drifts up and fades. */
+  private spawnFloatingText(
+    text: string, event: GameEvent, tl: gsap.core.Timeline,
+    label: string, style: TextStyle,
+  ): void {
     if (!event.to && !event.from) return;
     const pos = event.to ?? event.from!;
     const px = this.camera.tileToCenterPixel(pos);
 
-    const g = new Graphics();
-    // Draw damage text as a simple red circle with number
-    // (PixiJS v8 text is heavy; use a simple visual indicator)
-    g.circle(0, 0, 6).fill(0xff3333);
-    g.position.set(px.x, px.y - this.camera.tileSize * 0.3);
-    g.alpha = 1;
+    const t = new Text({ text, style });
+    t.anchor.set(0.5, 1);
+    t.position.set(px.x, px.y - this.camera.tileSize * 0.1);
 
     const layer = this.renderer.getEffectLayer();
-    layer.addChild(g);
+    layer.addChild(t);
 
-    tl.to(g, {
-      y: g.y - 20,
+    tl.to(t, {
+      y: t.y - 24,
       alpha: 0,
-      duration: 0.5,
+      duration: 0.6,
       ease: 'power2.out',
-      onComplete: () => {
-        g.destroy();
-      },
+      onComplete: () => { t.destroy(); },
     }, label);
   }
 }

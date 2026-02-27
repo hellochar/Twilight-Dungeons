@@ -10,6 +10,7 @@ export interface IGameModelRef {
   timedEvents: { register(evt: any): void };
   player: any;
   enqueuEvent(action: () => void): void;
+  emitAnimation(event: object): void;
 }
 
 let _main: IGameModelRef | null = null;

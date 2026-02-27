@@ -35,12 +35,6 @@ function tilesheetForDepth(depth: number): string {
 }
 
 /**
- * Unity Chasm.prefab uses a single border-left sub-sprite (1×16) rotated for all 4 edges.
- * border-left rect from border.png.meta: Unity(1, 0, 1, 16) → PixiJS(1, 0, 1, 16).
- */
-const BORDER_LEFT_RECT = { x: 1, y: 0, w: 1, h: 16 };
-
-/**
  * Manages loading and caching of sprite textures.
  * Loads individual PNGs from public/sprites/ and slices multi-frame strips.
  */
@@ -142,10 +136,10 @@ export class SpriteManager {
   private sliceBorders(): void {
     const tex = this.textures.get('border');
     if (!tex) return;
-    const r = BORDER_LEFT_RECT;
+
     this.borderTexture = new Texture({
       source: tex.source,
-      frame: new Rectangle(r.x, r.y, r.w, r.h),
+      frame: new Rectangle(1, 0, 1, 16),
     });
   }
 

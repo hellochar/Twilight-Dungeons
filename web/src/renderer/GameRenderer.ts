@@ -211,14 +211,13 @@ export class GameRenderer {
 
     const borderTex = this.sprites.getBorderTexture();
     if (borderTex) {
-      // Each edge: border-left (1×16) sized bw×ts in local space, then rotated.
-      // Left/right: no rotation (natural vertical orientation).
-      // Top/bottom: rotated ±90° to become horizontal.
+      // Each edge: border-left (1×16) sized bw×ts, anchored at center, positioned
+      // at center of each tile edge. Rotation swings around the center point.
       const edges: Array<{ dir: Vector2Int; x: number; y: number; rot: number }> = [
-        { dir: Vector2Int.left,  x: px.x,            y: px.y,      rot: 0 },
-        { dir: Vector2Int.right, x: px.x + ts - bw,  y: px.y,      rot: 0 },
-        { dir: Vector2Int.up,    x: px.x + ts,        y: px.y,      rot: -Math.PI / 2 },
-        { dir: Vector2Int.down,  x: px.x,             y: px.y + ts, rot: Math.PI / 2 },
+        { dir: Vector2Int.left,  x: px.x + bw / 2,       y: px.y + ts / 2,       rot: 0 },
+        { dir: Vector2Int.right, x: px.x + ts - bw / 2,  y: px.y + ts / 2,       rot: Math.PI },
+        { dir: Vector2Int.up,    x: px.x + ts / 2,        y: px.y + bw / 2,       rot: -Math.PI / 2 },
+        { dir: Vector2Int.down,  x: px.x + ts / 2,        y: px.y + ts - bw / 2,  rot: Math.PI / 2 },
       ];
 
       for (const edge of edges) {
@@ -226,7 +225,7 @@ export class GameRenderer {
         const neighborTile = floor.inBounds(neighbor) ? floor.tiles.get(neighbor) : null;
         if (neighborTile && !(neighborTile instanceof Chasm)) {
           const sprite = new Sprite(borderTex);
-          sprite.anchor.set(0, 0);
+          sprite.anchor.set(0.5, 0.5);
           sprite.width = bw;
           sprite.height = ts;
           sprite.rotation = edge.rot;

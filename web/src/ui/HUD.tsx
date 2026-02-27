@@ -1,62 +1,124 @@
 import type { GameState } from '../hooks/useGameLoop';
+import { StatusBar } from './StatusBar';
 
 interface HUDProps {
   state: GameState;
 }
 
+/**
+ * Top HUD matching Unity layout:
+ * - Top-left: Hearts (4 HP per heart, 5 fill states)
+ * - Top-left below hearts: Status icons
+ * - Top-right: Depth + Turn banner
+ * - Below banner: Enemy counter text
+ */
 export function HUD({ state }: HUDProps) {
-  const hpPct = state.maxHp > 0 ? (state.hp / state.maxHp) * 100 : 0;
-  const hpColor = hpPct > 50 ? '#4a4' : hpPct > 25 ? '#aa4' : '#a44';
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, pointerEvents: 'none' }}>
+      {/* Top row: hearts left, banner right */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        padding: '6px 10px',
+      }}>
+        {/* Hearts */}
+        <Hearts hp={state.hp} maxHp={state.maxHp} />
+
+        {/* Right side: banner + enemies */}
+        <div style={{ textAlign: 'right' }}>
+          <Banner depth={state.depth} turn={state.turn} isCleared={state.isCleared} />
+          <EnemiesLeft count={state.enemyCount} isCleared={state.isCleared} />
+        </div>
+      </div>
+
+      {/* Status icons below hearts */}
+      <StatusBar statuses={state.statuses} />
+    </div>
+  );
+}
+
+// ─── Hearts ───
+// Unity: 4 HP per heart, 5 pre-baked sprite states from heart_animated_2.png
+// Sheet order: heart-0.png = empty ... heart-4.png = full
+// Unity scene reverses: sprites[0]=full, sprites[4]=empty → index as (4 - hpForThis)
+
+const HP_PER_HEART = 4;
+const HEART_SIZE = 20;
+
+function Hearts({ hp, maxHp }: { hp: number; maxHp: number }) {
+  const numHearts = Math.ceil(maxHp / HP_PER_HEART);
+  const hearts = [];
+  for (let i = 0; i < numHearts; i++) {
+    const hpForThis = Math.max(0, Math.min(HP_PER_HEART, hp - i * HP_PER_HEART));
+    hearts.push(<Heart key={i} state={hpForThis} />);
+  }
+  return <div style={{ display: 'flex', gap: 2 }}>{hearts}</div>;
+}
+
+function Heart({ state }: { state: number }) {
+  return (
+    <img
+      src={`/sprites/hearts/heart-${4 - state}.png`}
+      alt=""
+      style={{
+        width: HEART_SIZE,
+        height: HEART_SIZE,
+        imageRendering: 'pixelated',
+      }}
+    />
+  );
+}
+
+// ─── Banner ───
+// Unity: "Depth X   Turn Y" or "Depth X   Cleared!"
+
+function Banner({ depth, turn, isCleared }: { depth: number; turn: number; isCleared: boolean }) {
+  const parts: string[] = [`Depth ${depth}`];
+  if (isCleared) {
+    parts.push('Cleared!');
+  } else if (turn > 0) {
+    parts.push(`Turn ${turn}`);
+  }
 
   return (
     <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      padding: '8px 12px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 16,
       fontFamily: 'monospace',
       fontSize: 13,
       color: '#ccc',
-      pointerEvents: 'none',
-      background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%)',
+      textShadow: '1px 1px 2px #000',
     }}>
-      {/* HP bar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span>HP</span>
-        <div style={{
-          width: 100,
-          height: 10,
-          background: '#333',
-          borderRadius: 3,
-          overflow: 'hidden',
-        }}>
-          <div style={{
-            width: `${hpPct}%`,
-            height: '100%',
-            background: hpColor,
-            transition: 'width 0.2s, background 0.2s',
-          }} />
-        </div>
-        <span>{state.hp}/{state.maxHp}</span>
-      </div>
+      {parts.join('   ')}
+    </div>
+  );
+}
 
-      {/* Turn counter */}
-      <span>Turn {state.turn}</span>
+// ─── Enemies Left ───
+// Unity: "Defeat all enemies." (>3), "X enemies left." (1-3), "Cleared!" (0)
 
-      {/* Enemy count */}
-      <span>Enemies: {state.enemyCount}</span>
+function EnemiesLeft({ count, isCleared }: { count: number; isCleared: boolean }) {
+  let text = '';
+  if (isCleared) {
+    text = 'Cleared!';
+  } else if (count > 3) {
+    text = 'Defeat all enemies.';
+  } else if (count === 1) {
+    text = '1 enemy left.';
+  } else if (count > 0) {
+    text = `${count} enemies left.`;
+  }
 
-      {/* Status messages */}
-      {state.isPlayerDead && (
-        <span style={{ color: '#f44', fontWeight: 'bold' }}>DEAD</span>
-      )}
-      {state.isCleared && (
-        <span style={{ color: '#4f4', fontWeight: 'bold' }}>CLEARED!</span>
-      )}
+  if (!text) return null;
+
+  return (
+    <div style={{
+      fontFamily: 'monospace',
+      fontSize: 11,
+      color: isCleared ? '#4f4' : '#aaa',
+      textShadow: '1px 1px 2px #000',
+      marginTop: 2,
+    }}>
+      {text}
     </div>
   );
 }

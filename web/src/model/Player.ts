@@ -58,9 +58,9 @@ export class Player extends Actor {
   }
 
   /** IDeathHandler */
-  handleDeath(_source: Entity): void {
+  handleDeath(source: Entity): void {
     GameModelRef.main.enqueuEvent(() => {
-      // GameOver handled by GameModel
+      GameModelRef.main.gameOver(false, source);
     });
   }
 
@@ -70,21 +70,24 @@ export class Player extends Actor {
   }
 
   /** ITakeAnyDamageHandler */
-  handleTakeAnyDamage(_damage: number): void {
-    // Cancel path following on damage
+  handleTakeAnyDamage(damage: number): void {
     if (this.task && this.task.constructor.name === 'FollowPathTask') {
       this.clearTasks();
     }
+    const model = GameModelRef.mainOrNull;
+    if (model) model.stats.damageTaken += damage;
   }
 
   /** IDealAttackDamageHandler */
-  handleDealAttackDamage(_damage: number, _target: Body): void {
-    // stats tracking
+  handleDealAttackDamage(damage: number, _target: Body): void {
+    const model = GameModelRef.mainOrNull;
+    if (model) model.stats.damageDealt += damage;
   }
 
   /** IKillEntityHandler */
   onKill(_entity: Entity): void {
-    // stats tracking
+    const model = GameModelRef.mainOrNull;
+    if (model) model.stats.enemiesDefeated++;
   }
 
   /** IActionPerformedHandler */

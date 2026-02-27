@@ -9,8 +9,11 @@ export interface IGameModelRef {
   currentFloor: any;
   timedEvents: { register(evt: any): void };
   player: any;
+  stats: { damageDealt: number; damageTaken: number; enemiesDefeated: number };
   enqueuEvent(action: () => void): void;
   emitAnimation(event: object): void;
+  gameOver(won: boolean, deathSource?: { displayName: string }): void;
+  floorCleared(floor: any): void;
 }
 
 let _main: IGameModelRef | null = null;

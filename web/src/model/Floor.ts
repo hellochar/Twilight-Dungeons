@@ -491,7 +491,11 @@ export class Floor {
 
   clearFloor(): void {
     this.isCleared = true;
-    // In daily puzzle: game win is handled by GameModel
+    const model = GameModelRef.mainOrNull;
+    if (model) {
+      model.gameOver(true);
+      model.floorCleared(this);
+    }
   }
 
   // ─── Enumeration helpers ───

@@ -11,20 +11,85 @@ import { FollowPathTask } from '../model/tasks/FollowPathTask';
 import { AttackTask } from '../model/tasks/AttackTask';
 import { WaitTask } from '../model/tasks/WaitTask';
 import { MoveNextToTargetTask } from '../model/tasks/MoveNextToTargetTask';
+import { Item, EquippableItem, STACKABLE_TAG, DURABLE_TAG, EDIBLE_TAG, USABLE_TAG, type IStackable, type IDurable, type IEdible, type IUsable } from '../model/Item';
+import { StackingStatus } from '../model/Status';
+
+// ─── Snapshot types for React consumption ───
+
+export interface ItemSnapshot {
+  displayName: string;
+  spriteName: string;
+  category: string;
+  index: number;
+  stacks: number | null;
+  durability: number | null;
+  maxDurability: number | null;
+  methods: string[];
+  statsFull: string;
+}
+
+export interface StatusSnapshot {
+  displayName: string;
+  className: string;
+  stacks: number | null;
+  isDebuff: boolean;
+}
+
+export interface GameOverInfo {
+  won: boolean;
+  turnsTaken: number;
+  killedBy: string | null;
+  enemiesDefeated: number;
+  damageDealt: number;
+  damageTaken: number;
+}
 
 export interface GameState {
   hp: number;
   maxHp: number;
+  depth: number;
   turn: number;
   enemyCount: number;
   isPlayerDead: boolean;
   isCleared: boolean;
+  inventoryItems: (ItemSnapshot | null)[];
+  equipmentItems: (ItemSnapshot | null)[];
+  statuses: StatusSnapshot[];
+  gameOver: GameOverInfo | null;
 }
 
 const EMPTY_STATE: GameState = {
-  hp: 0, maxHp: 0, turn: 0, enemyCount: 0,
+  hp: 0, maxHp: 0, depth: 0, turn: 0, enemyCount: 0,
   isPlayerDead: false, isCleared: false,
+  inventoryItems: [], equipmentItems: [],
+  statuses: [], gameOver: null,
 };
+
+function getItemCategory(item: Item): string {
+  if (item instanceof EquippableItem) {
+    const slotNames = ['Headwear', 'Weapon', 'Armor', 'Offhand', 'Footwear'];
+    return slotNames[item.slot] ?? 'Equipment';
+  }
+  if (EDIBLE_TAG in item) return 'Food';
+  return 'Item';
+}
+
+function snapshotItem(item: Item | null, index: number): ItemSnapshot | null {
+  if (!item) return null;
+  return {
+    displayName: item.displayName,
+    spriteName: item.constructor.name.startsWith('Item')
+      ? item.constructor.name.substring(4).toLowerCase()
+      : item.constructor.name.toLowerCase(),
+    category: getItemCategory(item),
+    index,
+    stacks: STACKABLE_TAG in item ? (item as unknown as IStackable).stacks : null,
+    durability: DURABLE_TAG in item ? (item as unknown as IDurable).durability : null,
+    maxDurability: DURABLE_TAG in item ? (item as unknown as IDurable).maxDurability : null,
+    methods: item.getAvailableMethods(),
+    statsFull: item.getStatsFull(),
+  };
+}
 
 /**
  * Main game loop hook. Creates model, renderer, input; orchestrates turn cycle.
@@ -47,13 +112,45 @@ export function useGameLoop() {
     if (!model) return EMPTY_STATE;
     const player = model.player;
     const floor = model.currentFloor;
+
+    // Inventory snapshot
+    const inventoryItems: (ItemSnapshot | null)[] = [];
+    for (let i = 0; i < player.inventory.capacity; i++) {
+      inventoryItems.push(snapshotItem(player.inventory.getAt(i), i));
+    }
+
+    // Equipment snapshot (filter out ItemHands fallback)
+    const equipmentItems: (ItemSnapshot | null)[] = [];
+    for (let i = 0; i < player.equipment.capacity; i++) {
+      const raw = player.equipment.getAt(i);
+      const item = raw?.constructor.name === 'ItemHands' ? null : raw;
+      equipmentItems.push(snapshotItem(item, i));
+    }
+
+    // Status snapshot
+    const statuses: StatusSnapshot[] = player.statuses.list.map(s => ({
+      displayName: s.displayName,
+      className: s.constructor.name,
+      stacks: s instanceof StackingStatus ? s.stacks : null,
+      isDebuff: s.isDebuff,
+    }));
+
+    // Game over info
+    const isOver = player.isDead || floor.isCleared;
+    const gameOver: GameOverInfo | null = isOver ? { ...model.stats } : null;
+
     return {
       hp: player.hp,
       maxHp: player.maxHp,
+      depth: floor.depth,
       turn: Math.floor(model.time),
       enemyCount: countEnemies(floor),
       isPlayerDead: player.isDead,
       isCleared: floor.isCleared,
+      inventoryItems,
+      equipmentItems,
+      statuses,
+      gameOver,
     };
   }, []);
 
@@ -62,36 +159,21 @@ export function useGameLoop() {
     setGameState(readState());
   }, [readState]);
 
-  /** Process a player intent: assign task to player, step model, animate, sync. */
-  const processIntent = useCallback(async (intent: PlayerIntent) => {
+  /** Step model, play animations, sync renderer. */
+  const stepAndAnimate = useCallback(async () => {
     const model = modelRef.current;
     const renderer = rendererRef.current;
     const animator = animatorRef.current;
     const input = inputRef.current;
     if (!model || !renderer || !animator || !input) return;
-    if (processingRef.current) return;
-    if (model.player.isDead) return;
-
-    const player = model.player;
-    const floor = model.currentFloor;
-
-    // Translate intent to task
-    const task = resolveIntent(intent, player, floor);
-    if (!task) return;
 
     processingRef.current = true;
     input.setEnabled(false);
 
-    // Assign task and step
-    player.setTasks(task);
     model.turnManager.stepUntilPlayerChoice();
 
-    // Collect and play animation events
     const events = model.consumeAnimationEvents();
-    console.log('[anim]', events.length, 'events', events.map(e => `${e.type}:${e.entityGuid}`));
     if (events.length > 0) {
-      // Allow skipping animations with any key or click.
-      // Use a short delay so the triggering key-repeat doesn't instantly skip.
       let skipRegistered = false;
       const skipHandler = () => { if (skipRegistered) animator.skip(); };
       requestAnimationFrame(() => {
@@ -107,12 +189,93 @@ export function useGameLoop() {
       }
     }
 
-    // Snap to final model state
     renderer.syncToModel();
     setGameState(readState());
 
     processingRef.current = false;
     input.setEnabled(true);
+  }, [readState]);
+
+  /** Process a player intent: assign task to player, step model, animate, sync. */
+  const processIntent = useCallback(async (intent: PlayerIntent) => {
+    const model = modelRef.current;
+    if (!model) return;
+    if (processingRef.current) return;
+    if (model.player.isDead || model.currentFloor.isCleared) return;
+
+    const player = model.player;
+    const floor = model.currentFloor;
+
+    const task = resolveIntent(intent, player, floor);
+    if (!task) return;
+
+    player.setTasks(task);
+    await stepAndAnimate();
+  }, [stepAndAnimate]);
+
+  /** Execute an item action from the inventory/equipment UI. */
+  const executeItemAction = useCallback(async (
+    source: 'inventory' | 'equipment',
+    slotIndex: number,
+    action: string,
+  ) => {
+    const model = modelRef.current;
+    if (!model || processingRef.current || model.player.isDead || model.currentFloor.isCleared) return;
+
+    const player = model.player;
+    const container = source === 'inventory' ? player.inventory : player.equipment;
+    const item = container.getAt(slotIndex);
+    if (!item || item.constructor.name === 'ItemHands') return;
+
+    switch (action) {
+      case 'Drop':
+        item.Drop(player);
+        break;
+      case 'Eat':
+        if (EDIBLE_TAG in item) (item as unknown as IEdible).eat(player);
+        break;
+      case 'Use':
+        if (USABLE_TAG in item) (item as unknown as IUsable).use(player);
+        break;
+      case 'Equip':
+        if ('Equip' in item) (item as any).Equip(player);
+        break;
+      case 'Unequip':
+        if ('Unequip' in item) (item as any).Unequip(player);
+        break;
+      default:
+        return;
+    }
+
+    // Drop/Eat/Use cost a turn — step the model
+    const costsTurn = ['Drop', 'Eat', 'Use'].includes(action);
+    if (costsTurn) {
+      player.setTasks(new WaitTask(player, 1));
+      await stepAndAnimate();
+    } else {
+      rendererRef.current?.syncToModel();
+      setGameState(readState());
+    }
+  }, [readState, stepAndAnimate]);
+
+  /** Reset game (play again). */
+  const resetGame = useCallback(() => {
+    const renderer = rendererRef.current;
+    if (!renderer) return;
+
+    const newModel = GameModel.createDailyGame();
+    newModel.consumeAnimationEvents();
+    modelRef.current = newModel;
+
+    renderer.setFloor(newModel.currentFloor);
+    renderer.syncToModel();
+    renderer.camera.resize(
+      renderer.app.screen.width,
+      renderer.app.screen.height,
+      newModel.currentFloor.width,
+      newModel.currentFloor.height,
+    );
+    setGameState(readState());
   }, [readState]);
 
   useEffect(() => {
@@ -123,14 +286,12 @@ export function useGameLoop() {
     let resizeHandler: (() => void) | null = null;
     let keyHandler: ((e: KeyboardEvent) => void) | null = null;
     let destroyed = false;
-    // Track whether init completed so cleanup knows if app is safe to destroy
     let appReady = false;
     let pixiApp: Application | null = null;
 
     async function init() {
       if (destroyed) return;
 
-      // Pixel art: nearest-neighbor filtering globally
       TextureSource.defaultOptions.scaleMode = 'nearest';
 
       const app = new Application();
@@ -144,17 +305,14 @@ export function useGameLoop() {
       appReady = true;
       container!.appendChild(app.canvas);
 
-      // Load sprites
       const sprites = new SpriteManager();
       await sprites.load();
       if (destroyed) { app.destroy(true, { children: true }); return; }
 
-      // Create model — use procedural floor generation
       const model = GameModel.createDailyGame();
-      model.consumeAnimationEvents(); // discard events from init (no sprites yet)
+      model.consumeAnimationEvents();
       modelRef.current = model;
 
-      // Renderer
       const camera = new Camera();
       const renderer = new GameRenderer(app, camera, sprites);
       rendererRef.current = renderer;
@@ -162,29 +320,26 @@ export function useGameLoop() {
       const animator = new AnimationPlayer(renderer, camera);
       animatorRef.current = animator;
 
-      // Initial render
       renderer.setFloor(model.currentFloor);
       renderer.syncToModel();
 
-      // Input
       input = new InputHandler(camera, app.canvas);
       inputRef.current = input;
       input.onIntent.on(processIntent);
       input.attach();
 
-      // Resize handler
       resizeHandler = () => {
         camera.resize(app.screen.width, app.screen.height, model.currentFloor.width, model.currentFloor.height);
         renderer.rebuildAll();
       };
       window.addEventListener('resize', resizeHandler);
 
-      // Debug: press R to regenerate floor with a random seed
       if (import.meta.env.DEV) {
         keyHandler = (e: KeyboardEvent) => {
           if (e.key === 'r' || e.key === 'R') {
             if (processingRef.current) return;
             const newModel = GameModel.createDailyGame(String(Date.now()));
+            newModel.consumeAnimationEvents();
             modelRef.current = newModel;
             renderer.setFloor(newModel.currentFloor);
             renderer.syncToModel();
@@ -216,7 +371,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState]);
 
-  return { containerRef, gameState, ready };
+  return { containerRef, gameState, ready, executeItemAction, resetGame };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */
@@ -231,38 +386,32 @@ function resolveIntent(
 
     case 'move': {
       const target = Vector2Int.add(player.pos, intent.direction);
-      // If there's an enemy body at target, attack it
       const bodyAtTarget = floor.bodies.get(target);
       if (bodyAtTarget && bodyAtTarget !== player && 'hp' in bodyAtTarget) {
         return new AttackTask(player, bodyAtTarget as any);
       }
-      // Otherwise try to move there
       const tile = floor.tiles.get(target);
       if (tile && tile.canBeOccupiedBy(player)) {
         return new FollowPathTask(player, target, [target]);
       }
-      return null; // Can't move there
+      return null;
     }
 
     case 'click': {
       const { tilePos } = intent;
-      // Same tile = wait
       if (Vector2Int.equals(tilePos, player.pos)) {
         return new WaitTask(player, 1);
       }
-      // Adjacent tile with enemy = attack
       if (Vector2Int.chebyshevDistance(player.pos, tilePos) === 1) {
         const bodyAtTarget = floor.bodies.get(tilePos);
         if (bodyAtTarget && bodyAtTarget !== player && 'hp' in bodyAtTarget) {
           return new AttackTask(player, bodyAtTarget as any);
         }
       }
-      // Non-adjacent enemy = move next to then attack
       const bodyAtTarget = floor.bodies.get(tilePos);
       if (bodyAtTarget && bodyAtTarget !== player && 'hp' in bodyAtTarget) {
         return new MoveNextToTargetTask(player, bodyAtTarget.pos);
       }
-      // Pathfind to tile
       const path = floor.findPath(player.pos, tilePos, false, player);
       if (path.length > 0) {
         return new FollowPathTask(player, tilePos, path);

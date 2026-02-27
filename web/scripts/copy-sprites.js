@@ -152,6 +152,42 @@ async function main() {
   // Extract sprites from Unity atlas spritesheets
   const extracted = await extractAtlasSprites(manifest);
 
+  // Extract heart sub-sprites from animated spritesheet (5 × 17×17 horizontal strip)
+  const heartsDir = join(outDir, 'hearts');
+  await mkdir(heartsDir, { recursive: true });
+  const heartSheet = join(projectRoot, 'Assets', '3rd Party', 'Hearts', 'PNG', 'animated', 'border', 'heart_animated_2.png');
+  try {
+    for (let i = 0; i < 5; i++) {
+      await sharp(heartSheet)
+        .extract({ left: i * 17, top: 0, width: 17, height: 17 })
+        .toFile(join(heartsDir, `heart-${i}.png`));
+    }
+    console.log('Extracted 5 heart sub-sprites');
+  } catch (e) {
+    console.warn('Could not extract heart sprites:', e.message);
+  }
+
+  // Extract specific UI sprites from roguelikeSheet atlas
+  const roguelikeSheet = join(projectRoot, 'Assets', '3rd Party', 'Resources', 'roguelikeSheet_transparent.png');
+  const roguelikeMeta = roguelikeSheet + '.meta';
+  try {
+    const rlMeta = await readFile(roguelikeMeta, 'utf-8');
+    const rlSprites = parseMetaSpriteRects(rlMeta);
+    const rlDims = await sharp(roguelikeSheet).metadata();
+    const wantedUI = ['panel-grey', 'panel-grey-inset'];
+    for (const name of wantedUI) {
+      const s = rlSprites.find(sp => sp.name === name);
+      if (!s) { console.warn(`roguelikeSheet: sprite "${name}" not found`); continue; }
+      const pixelY = rlDims.height - s.y - s.height;
+      await sharp(roguelikeSheet)
+        .extract({ left: s.x, top: pixelY, width: s.width, height: s.height })
+        .toFile(join(outDir, `${s.name}.png`));
+      console.log(`Extracted roguelikeSheet sprite: ${name}`);
+    }
+  } catch (e) {
+    console.warn('Could not extract roguelikeSheet sprites:', e.message);
+  }
+
   await writeFile(
     join(outDir, 'manifest.json'),
     JSON.stringify(manifest, null, 2),

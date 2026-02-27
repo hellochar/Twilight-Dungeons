@@ -2,6 +2,7 @@
 
 Always begin by reading the top-level implementation plan `web\web-port-implementation-plan.md`.
 There's also the larger context doc: `web-puzzle-port.md`.
+Stay as close as possible to the Unity version. Always refer back to it for sprites, colors, behavior, look and feel, logic, sizing and layout, and all aspects of the game.
 
 **Terminology:** "Sprints" here are actual work sittings (one conversation).
 "Sessions" in the implementation plan are logical milestones. They diverged after sprint 6.
@@ -323,6 +324,34 @@ There's also the larger context doc: `web-puzzle-port.md`.
 - **Status indicators**: Colored dots drawn below entity sprites using Graphics.circle(). Rebuilt each syncEntities() call. STATUS_COLORS maps constructor name → hex color (9 statuses mapped).
 - **No new files**: All changes integrated into existing renderer/model files.
 
+## Sprint 12 (2026-02-27): Inventory UI + Game Over Detection ✅
+*Plan session 10 (Phase 2 gate)*
+
+### New Files (3)
+- [x] src/ui/StatusBar.tsx — horizontal row of status pills (colored left-border + name + stacks), STATUS_COLORS map
+- [x] src/ui/InventoryPanel.tsx — bottom-anchored panel: 5 equipment slots (labeled Head/Weapon/Armor/Off/Feet) + 10 inventory slots. Click slot → action popup with item stats + method buttons (Drop/Eat/Use/Equip/Unequip). Internal selected-slot state.
+- [x] src/ui/GameOverOverlay.tsx — fullscreen semi-transparent overlay: win ("Floor Cleared!") or loss ("You perished to {killedBy}") + stats table (turns, enemies, damage dealt/taken) + Play Again button
+
+### Modified Files
+- [x] src/model/GameModelRef.ts — added gameOver(), floorCleared(), stats to IGameModelRef interface
+- [x] src/model/Player.ts — handleDeath now calls gameOver(false, source); handleTakeAnyDamage tracks damageTaken; handleDealAttackDamage tracks damageDealt; onKill tracks enemiesDefeated
+- [x] src/model/Floor.ts — clearFloor() calls gameOver(true) + floorCleared(), guarded by mainOrNull for gen-time safety
+- [x] src/hooks/useGameLoop.ts — expanded GameState with ItemSnapshot[], StatusSnapshot[], GameOverInfo. Added snapshotItem helper, stepAndAnimate extracted from processIntent. New callbacks: executeItemAction (dispatches Drop/Eat/Use/Equip/Unequip, costs turn for Drop/Eat/Use), resetGame (daily seed). processIntent now blocks on isCleared too.
+- [x] src/ui/HUD.tsx — integrated StatusBar, removed inline DEAD/CLEARED spans (GameOverOverlay handles those)
+- [x] src/App.tsx — composes InventoryPanel + GameOverOverlay
+
+### Stats
+- ~99 TypeScript files, ~10,800 lines (est)
+- tsc --noEmit passes clean, vite build succeeds
+
+### Design Decisions
+- **Snapshot-based state**: GameState contains plain serializable snapshots (ItemSnapshot, StatusSnapshot, GameOverInfo) — no model refs leak into React. readState() creates fresh snapshots after every step.
+- **ItemHands filtered**: Equipment.getAt(Weapon) falls back to Player.hands; snapshot code filters this out by constructor name check to avoid showing "Hands" in UI.
+- **Turn-costing actions**: Drop/Eat/Use cost a turn (player gets a WaitTask + step). Equip/Unequip are free (just sync renderer).
+- **clearFloor guarded**: Uses GameModelRef.mainOrNull since clearFloor() can be called during generation when main is null.
+- **No drag-and-drop**: Simplified from C# version. Click slot → popup → click action button.
+
 ### Remaining Undone Plan Sessions
-- Session 10: Inventory UI + game over detection
 - Sessions 13-16: Remaining content (enemies, grasses, items)
+- Session 17: Daily Puzzle UI + Scoring
+- Session 18: Deployment + Final Polish

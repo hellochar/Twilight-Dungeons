@@ -1,5 +1,5 @@
 import gsap from 'gsap';
-import { Sprite, Text, TextStyle } from 'pixi.js';
+import { Container, Sprite, Text, TextStyle } from 'pixi.js';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
@@ -78,43 +78,43 @@ export class AnimationPlayer {
   }
 
   private addEventToTimeline(event: GameEvent, tl: gsap.core.Timeline): void {
-    const sprite = this.renderer.getEntitySprite(event.entityGuid);
-    if (!sprite) return;
+    const node = this.renderer.getEntitySprite(event.entityGuid);
+    if (!node) return;
+    const visual = this.renderer.getEntityVisual(event.entityGuid);
 
     switch (event.type) {
       case 'move':
-        this.animateMove(sprite, event, tl);
+        this.animateMove(node, event, tl);
         break;
       case 'attack':
-        this.animateAttack(sprite, event, tl);
+        this.animateAttack(node, event, tl);
         break;
       case 'attackGround':
-        this.animateAttackGround(sprite, event, tl);
+        this.animateAttackGround(node, event, tl);
         break;
       case 'damage':
-        this.animateDamage(sprite, event, tl);
+        this.animateDamage(node, visual, event, tl);
         break;
       case 'heal':
-        this.animateHeal(sprite, event, tl);
+        this.animateHeal(visual, event, tl);
         break;
       case 'death':
-        this.animateDeath(sprite, event, tl);
+        this.animateDeath(node, event, tl);
         break;
       case 'spawn':
-        this.animateSpawn(sprite, event, tl);
+        this.animateSpawn(node, event, tl);
         break;
     }
   }
 
   /** Slide from old position to new position. */
-  private animateMove(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateMove(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
     if (!event.from || !event.to) return;
     const fromPx = this.camera.tileToPixel(event.from);
     const toPx = this.camera.tileToPixel(event.to);
 
-    // Set to old position, tween to new
-    sprite.position.set(fromPx.x, fromPx.y);
-    tl.to(sprite.position, {
+    node.position.set(fromPx.x, fromPx.y);
+    tl.to(node.position, {
       x: toPx.x,
       y: toPx.y,
       duration: 0.12,
@@ -123,23 +123,22 @@ export class AnimationPlayer {
   }
 
   /** Bump toward target then return (melee attack feel). */
-  private animateAttack(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateAttack(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
     if (!event.from || !event.to) return;
     const fromPx = this.camera.tileToPixel(event.from);
     const toPx = this.camera.tileToPixel(event.to);
 
-    // Bump halfway toward target
     const midX = fromPx.x + (toPx.x - fromPx.x) * 0.4;
     const midY = fromPx.y + (toPx.y - fromPx.y) * 0.4;
 
     const label = `attack-${event.entityGuid}`;
-    tl.to(sprite.position, {
+    tl.to(node.position, {
       x: midX,
       y: midY,
       duration: 0.06,
       ease: 'power2.in',
     }, label);
-    tl.to(sprite.position, {
+    tl.to(node.position, {
       x: fromPx.x,
       y: fromPx.y,
       duration: 0.06,
@@ -148,15 +147,15 @@ export class AnimationPlayer {
   }
 
   /** Quick scale pulse for ground attack. */
-  private animateAttackGround(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateAttackGround(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
     const label = `atkground-${event.entityGuid}`;
-    tl.to(sprite.scale, {
+    tl.to(node.scale, {
       x: 1.3,
       y: 1.3,
       duration: 0.06,
       ease: 'power2.in',
     }, label);
-    tl.to(sprite.scale, {
+    tl.to(node.scale, {
       x: 1,
       y: 1,
       duration: 0.06,
@@ -164,39 +163,47 @@ export class AnimationPlayer {
     }, '>');
   }
 
-  /** Flash red on damage. */
-  private animateDamage(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
-    const origTint = sprite.tint;
+  /** Flash red on damage — tint targets the visual Sprite, shake targets the node. */
+  private animateDamage(
+    node: Container, visual: Sprite | undefined,
+    event: GameEvent, tl: gsap.core.Timeline,
+  ): void {
     const label = `dmg-${event.entityGuid}`;
-    tl.to(sprite, {
-      tint: 0xff3333,
-      duration: 0.05,
-      onComplete: () => { sprite.tint = origTint; },
-    }, label);
 
-    // Shake
-    const startX = sprite.position.x;
-    tl.to(sprite.position, {
+    if (visual) {
+      const origTint = visual.tint;
+      tl.to(visual, {
+        tint: 0xff3333,
+        duration: 0.05,
+        onComplete: () => { visual.tint = origTint; },
+      }, label);
+    }
+
+    // Shake the whole node
+    const startX = node.position.x;
+    tl.to(node.position, {
       x: startX + 3,
       duration: 0.03,
       yoyo: true,
       repeat: 2,
     }, label);
 
-    // Spawn floating damage number
     if (event.amount !== undefined && event.amount > 0) {
       this.spawnFloatingText(`-${event.amount}`, event, tl, label, DAMAGE_STYLE);
     }
   }
 
-  /** Brief green flash on heal. */
-  private animateHeal(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
+  /** Brief green flash on heal — tint targets the visual Sprite only. */
+  private animateHeal(
+    visual: Sprite | undefined, event: GameEvent, tl: gsap.core.Timeline,
+  ): void {
+    if (!visual) return;
     const label = `heal-${event.entityGuid}`;
-    const origTint = sprite.tint;
-    tl.to(sprite, {
+    const origTint = visual.tint;
+    tl.to(visual, {
       tint: 0x33ff66,
       duration: 0.08,
-      onComplete: () => { sprite.tint = origTint; },
+      onComplete: () => { visual.tint = origTint; },
     }, label);
 
     if (event.amount !== undefined && event.amount > 0) {
@@ -204,15 +211,15 @@ export class AnimationPlayer {
     }
   }
 
-  /** Shrink + fade out on death. */
-  private animateDeath(sprite: Sprite, event: GameEvent, tl: gsap.core.Timeline): void {
+  /** Shrink + fade out on death — targets the whole node. */
+  private animateDeath(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
     const label = `death-${event.entityGuid}`;
-    tl.to(sprite, {
+    tl.to(node, {
       alpha: 0,
       duration: 0.25,
       ease: 'power2.in',
     }, label);
-    tl.to(sprite.scale, {
+    tl.to(node.scale, {
       x: 0,
       y: 0,
       duration: 0.25,
@@ -220,17 +227,17 @@ export class AnimationPlayer {
     }, label);
   }
 
-  /** Pop in from zero scale on spawn. */
-  private animateSpawn(sprite: Sprite, _event: GameEvent, tl: gsap.core.Timeline): void {
-    sprite.scale.set(0, 0);
-    sprite.alpha = 0;
-    tl.to(sprite.scale, {
+  /** Pop in from zero scale on spawn — targets the whole node. */
+  private animateSpawn(node: Container, _event: GameEvent, tl: gsap.core.Timeline): void {
+    node.scale.set(0, 0);
+    node.alpha = 0;
+    tl.to(node.scale, {
       x: 1,
       y: 1,
       duration: 0.2,
       ease: 'back.out(1.7)',
     }, '<');
-    tl.to(sprite, {
+    tl.to(node, {
       alpha: 1,
       duration: 0.15,
     }, '<');

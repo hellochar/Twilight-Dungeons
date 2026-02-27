@@ -9,17 +9,20 @@ import { SpriteManager } from './SpriteManager';
 import { FogOverlay } from './FogOverlay';
 import { SPRITE_TINTS } from './spriteTints';
 
-/** Status name → indicator dot color. */
-const STATUS_COLORS: Record<string, number> = {
-  PoisonedStatus: 0x33cc33,
-  WebbedStatus: 0xdddddd,
-  WeaknessStatus: 0xaa44cc,
-  InShellStatus: 0x888888,
-  SlimedStatus: 0xcccc33,
-  SurprisedStatus: 0xffcc00,
-  GuardedStatus: 0x3388ff,
-  FreeMoveStatus: 0x00cccc,
-  SoftGrassStatus: 0x66cc66,
+/** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
+const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
+
+/** Status constructor name → sprite key used by SpriteManager. */
+const STATUS_SPRITES: Record<string, string> = {
+  PoisonedStatus: 'poisoned-status',
+  WebbedStatus: 'web',
+  WeaknessStatus: 'weakness',
+  InShellStatus: 'snail-shell',
+  SlimedStatus: 'slimed',
+  SurprisedStatus: 'colored_transparent_packed_658',
+  GuardedStatus: 'guardroot',
+  FreeMoveStatus: 'free-move',
+  SoftGrassStatus: 'colored_transparent_packed_95',
 };
 
 /** Fallback colors when tilesheet sprite is missing. */
@@ -76,12 +79,14 @@ export class GameRenderer {
   private effectLayer = new Container();
   private fogLayer = new Container();
 
-  // Entity guid → Sprite mapping for updates/animations
-  private entitySprites = new Map<string, Sprite>();
+  // Entity guid → Container node (position/scale/alpha target for animations)
+  private entityNodes = new Map<string, Container>();
+  // Entity guid → visual Sprite child (tint target for animations)
+  private entityVisuals = new Map<string, Sprite>();
   // Tile key → Graphics for tile backgrounds
   private tileGraphics = new Map<string, Graphics>();
-  // Entity guid → status indicator dots container
-  private statusIndicators = new Map<string, Graphics>();
+  // Entity guid → status indicator sprite container (child of entityNode)
+  private statusIndicators = new Map<string, Container>();
 
   private floor: Floor | null = null;
 
@@ -141,9 +146,14 @@ export class GameRenderer {
     this.fog.sync(this.floor);
   }
 
-  /** Get the sprite for an entity (for animation). */
-  getEntitySprite(guid: string): Sprite | undefined {
-    return this.entitySprites.get(guid);
+  /** Get the entity node Container (for position/scale/alpha animations). */
+  getEntitySprite(guid: string): Container | undefined {
+    return this.entityNodes.get(guid);
+  }
+
+  /** Get the visual Sprite child (for tint animations). */
+  getEntityVisual(guid: string): Sprite | undefined {
+    return this.entityVisuals.get(guid);
   }
 
   /** Get the effect layer container (for animation overlays). */
@@ -159,7 +169,8 @@ export class GameRenderer {
     this.itemLayer.removeChildren();
     this.bodyLayer.removeChildren();
     this.effectLayer.removeChildren();
-    this.entitySprites.clear();
+    this.entityNodes.clear();
+    this.entityVisuals.clear();
     this.tileGraphics.clear();
     this.statusIndicators.clear();
   }
@@ -291,28 +302,36 @@ export class GameRenderer {
     }
   }
 
-  private addEntitySprite(entity: Entity, layer: Container): Sprite {
+  /**
+   * Create a Container node with a visual Sprite child (mirrors Unity's
+   * Actor GameObject → SpriteRenderer child). Tint goes on the Sprite so
+   * sibling children (status indicators) don't inherit it.
+   */
+  private addEntitySprite(entity: Entity, layer: Container): Container {
     const tex = this.sprites.getTexture(entity.displayName);
     const ts = this.camera.tileSize;
     const px = this.camera.tileToPixel(entity.pos);
 
+    const node = new Container();
+    node.position.set(px.x, px.y);
+
     const sprite = new Sprite(tex ?? Texture.WHITE);
     sprite.width = ts;
     sprite.height = ts;
-    sprite.position.set(px.x, px.y);
 
-    // Apply per-entity tint from Unity prefab colors
+    // Tint on sprite only — siblings (status indicators) won't inherit
     const tint = SPRITE_TINTS[entity.displayName.toLowerCase()];
     if (tint !== undefined) {
       sprite.tint = tint;
     } else if (!tex) {
-      // Tint white texture as fallback for unknown sprites
       sprite.tint = this.fallbackColor(entity.displayName);
     }
 
-    layer.addChild(sprite);
-    this.entitySprites.set(entity.guid, sprite);
-    return sprite;
+    node.addChild(sprite);
+    layer.addChild(node);
+    this.entityNodes.set(entity.guid, node);
+    this.entityVisuals.set(entity.guid, sprite);
+    return node;
   }
 
   /**
@@ -326,13 +345,13 @@ export class GameRenderer {
     // Sync bodies
     for (const body of floor.bodies) {
       seenGuids.add(body.guid);
-      let sprite = this.entitySprites.get(body.guid);
-      if (!sprite) {
-        sprite = this.addEntitySprite(body, this.bodyLayer);
+      let node = this.entityNodes.get(body.guid);
+      if (!node) {
+        node = this.addEntitySprite(body, this.bodyLayer);
       }
       const px = this.camera.tileToPixel(body.pos);
-      sprite.position.set(px.x, px.y);
-      sprite.visible = body.isVisible;
+      node.position.set(px.x, px.y);
+      node.visible = body.isVisible;
     }
 
     // Sync grasses
@@ -340,11 +359,11 @@ export class GameRenderer {
       const grass = floor.grasses.get(pos);
       if (grass) {
         seenGuids.add(grass.guid);
-        let sprite = this.entitySprites.get(grass.guid);
-        if (!sprite) {
-          sprite = this.addEntitySprite(grass, this.grassLayer);
+        let node = this.entityNodes.get(grass.guid);
+        if (!node) {
+          node = this.addEntitySprite(grass, this.grassLayer);
         }
-        sprite.visible = grass.isVisible;
+        node.visible = grass.isVisible;
       }
     }
 
@@ -353,21 +372,21 @@ export class GameRenderer {
       const item = floor.items.get(pos);
       if (item) {
         seenGuids.add(item.guid);
-        let sprite = this.entitySprites.get(item.guid);
-        if (!sprite) {
-          sprite = this.addEntitySprite(item, this.itemLayer);
+        let node = this.entityNodes.get(item.guid);
+        if (!node) {
+          node = this.addEntitySprite(item, this.itemLayer);
         }
-        sprite.visible = item.isVisible;
+        node.visible = item.isVisible;
       }
     }
 
-    // Remove sprites for dead/removed entities
-    for (const [guid, sprite] of this.entitySprites) {
+    // Remove nodes for dead/removed entities
+    for (const [guid, node] of this.entityNodes) {
       if (!seenGuids.has(guid)) {
-        sprite.destroy();
-        this.entitySprites.delete(guid);
-        const ind = this.statusIndicators.get(guid);
-        if (ind) { ind.destroy(); this.statusIndicators.delete(guid); }
+        node.destroy({ children: true });
+        this.entityNodes.delete(guid);
+        this.entityVisuals.delete(guid);
+        this.statusIndicators.delete(guid);
       }
     }
 
@@ -375,44 +394,93 @@ export class GameRenderer {
     this.syncStatusIndicators(floor);
   }
 
+  /**
+   * Sync status/task indicators as siblings of the visual sprite inside the
+   * entity's Container node (mirrors Unity's Actor → Statuses child).
+   * Since indicators are NOT children of the Sprite, they don't inherit its tint.
+   * Since they ARE children of the Container node, they follow animations.
+   */
   private syncStatusIndicators(floor: Floor): void {
     const ts = this.camera.tileSize;
-    const dotSize = Math.max(2, ts * 0.1);
-    const gap = dotSize * 1.5;
+    // Unity: 0.75× actor size, positioned 0.65 tiles above center
+    const iconSize = ts * 0.75;
+    const gap = iconSize * 0.55;
 
     for (const body of floor.bodies) {
       if (!body.isVisible || !('statuses' in body)) {
-        // Remove indicator if hidden or not an Actor
         const existing = this.statusIndicators.get(body.guid);
         if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
         continue;
       }
 
-      const statuses = (body as any).statuses as { list: { constructor: { name: string } }[] };
-      const statusNames = statuses.list.map(s => s.constructor.name);
+      const spriteKeys: string[] = [];
+      const tints: (number | null)[] = []; // per-icon tint override
 
-      // Remove indicator if no statuses
-      if (statusNames.length === 0) {
+      const actor = body as any;
+      const isSleeping = actor.task?.constructor?.name === 'SleepTask';
+      if (isSleeping) {
+        spriteKeys.push('sleep');
+        // Deep sleep tints the ZZ icon blue (Unity SleepTaskController)
+        tints.push(actor.task.isDeepSleep ? DEEP_SLEEP_TINT : null);
+      }
+
+      const statuses = actor.statuses as { list: { constructor: { name: string } }[] };
+      for (const s of statuses.list) {
+        const key = STATUS_SPRITES[s.constructor.name];
+        if (key) spriteKeys.push(key);
+        else spriteKeys.push('__unknown__');
+        tints.push(null);
+      }
+
+      if (spriteKeys.length === 0) {
         const existing = this.statusIndicators.get(body.guid);
         if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
         continue;
       }
 
-      // Rebuild indicator graphics
-      let g = this.statusIndicators.get(body.guid);
-      if (g) { g.clear(); } else {
-        g = new Graphics();
-        this.effectLayer.addChild(g);
-        this.statusIndicators.set(body.guid, g);
+      const node = this.entityNodes.get(body.guid);
+      if (!node) continue;
+
+      let container = this.statusIndicators.get(body.guid);
+      if (container) {
+        container.removeChildren();
+        if (container.parent !== node) {
+          container.removeFromParent();
+          node.addChild(container);
+        }
+      } else {
+        container = new Container();
+        node.addChild(container);
+        this.statusIndicators.set(body.guid, container);
       }
 
-      const px = this.camera.tileToPixel(body.pos);
-      const totalWidth = statusNames.length * gap;
-      const startX = px.x + ts / 2 - totalWidth / 2 + dotSize / 2;
+      // Node-local coords are world pixels (node is unscaled Container).
+      // Center of tile = (ts/2, ts/2). Unity offset = 0.65 tiles above center.
+      const cx = ts / 2;
+      const cy = ts / 2 - ts * 0.65;
+      const totalW = spriteKeys.length > 1
+        ? (spriteKeys.length - 1) * gap + iconSize
+        : iconSize;
 
-      for (let i = 0; i < statusNames.length; i++) {
-        const color = STATUS_COLORS[statusNames[i]] ?? 0xffffff;
-        g.circle(startX + i * gap, px.y + ts + dotSize + 1, dotSize).fill(color);
+      for (let i = 0; i < spriteKeys.length; i++) {
+        const tex = spriteKeys[i] !== '__unknown__'
+          ? this.sprites.getTexture(spriteKeys[i])
+          : null;
+        const x = cx - totalW / 2 + i * gap;
+        const y = cy - iconSize / 2;
+        if (tex) {
+          const icon = new Sprite(tex);
+          icon.width = iconSize;
+          icon.height = iconSize;
+          icon.position.set(x, y);
+          if (tints[i] != null) icon.tint = tints[i]!;
+          container.addChild(icon);
+        } else {
+          const g = new Graphics();
+          g.rect(0, 0, iconSize, iconSize).fill(0xffffff);
+          g.position.set(x, y);
+          container.addChild(g);
+        }
       }
     }
   }

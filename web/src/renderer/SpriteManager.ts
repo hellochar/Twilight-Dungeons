@@ -73,6 +73,13 @@ export class SpriteManager {
     'stump': 'colored_transparent_packed_305',
     'rubble': 'colored_transparent_packed_100',
     'fungal wall': 'fungal-wall',
+    // Grasses
+    'soft grass': 'softgrass',
+    'guardleaf': 'guardroot',
+    // Items
+    'bat tooth': 'bat-tooth',
+    'spider sandals': 'spider-silk-shoes',
+    'snail shell': 'snail-shell',
   };
 
   async load(): Promise<void> {

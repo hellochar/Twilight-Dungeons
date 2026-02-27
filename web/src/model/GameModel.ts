@@ -4,6 +4,17 @@ import { Ground, Wall } from './Tile';
 import { Blob } from './enemies/Blob';
 import { Bird } from './enemies/Bird';
 import { Snake } from './enemies/Snake';
+// Side-effect imports: register new entities in entityRegistry
+import './enemies/Scorpion';
+import './enemies/Crab';
+import './enemies/Bat';
+import './enemies/Goo';
+import './enemies/Snail';
+import './enemies/Spider';
+import './grasses/Web';
+import './grasses/Bladegrass';
+import './grasses/SoftGrass';
+import './grasses/Guardleaf';
 import { TurnManager } from './TurnManager';
 import { TimedEvent } from './Entity';
 import { EventEmitter } from '../core/EventEmitter';

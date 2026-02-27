@@ -1,15 +1,12 @@
 import { Entity } from './Entity';
 import { Vector2Int } from '../core/Vector2Int';
-import { TileVisibility, CollisionLayer, type IBlocksMovement, type IActorEnterHandler } from '../core/types';
+import { TileVisibility, CollisionLayer, type IBlocksMovement, type IActorEnterHandler, type IActorLeaveHandler, ACTOR_ENTER_HANDLER, ACTOR_LEAVE_HANDLER } from '../core/types';
+import { collectModifiers } from '../core/Modifiers';
 import { GameModelRef } from './GameModelRef';
 
 /** Implement on Body or Grass to block line-of-sight */
 export interface IBlocksVision {
   readonly blocksVision: true;
-}
-
-export interface IActorLeaveHandler {
-  handleActorLeave(actor: any): void;
 }
 
 /**
@@ -70,18 +67,22 @@ export abstract class Tile extends Entity {
 
   bodyLeft(body: any): void {
     if (body.faction !== undefined) {
-      // body is an Actor
+      const actor = body;
       GameModelRef.main.enqueuEvent(() => {
-        // TODO: collect IActorLeaveHandler modifiers
+        for (const handler of collectModifiers<IActorLeaveHandler>(this, ACTOR_LEAVE_HANDLER)) {
+          handler.handleActorLeave(actor);
+        }
       });
     }
   }
 
   bodyEntered(body: any): void {
     if (body.faction !== undefined) {
-      // body is an Actor
+      const actor = body;
       GameModelRef.main.enqueuEvent(() => {
-        // TODO: collect IActorEnterHandler modifiers
+        for (const handler of collectModifiers<IActorEnterHandler>(this, ACTOR_ENTER_HANDLER)) {
+          handler.handleActorEnter(actor);
+        }
       });
     }
   }
@@ -206,6 +207,7 @@ export class Soil extends Tile {
 }
 
 export class Water extends Tile implements IActorEnterHandler {
+  readonly [ACTOR_ENTER_HANDLER] = true as const;
   private collected = false;
 
   constructor(pos: Vector2Int) {

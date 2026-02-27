@@ -1,3 +1,9 @@
-// Status effects will be added here as they're ported.
 // SurprisedStatus lives in tasks/SleepTask.ts (matches C# pattern).
-export {};
+export { WeaknessStatus } from './WeaknessStatus';
+export { PoisonedStatus } from './PoisonedStatus';
+export { WebbedStatus } from './WebbedStatus';
+export { InShellStatus } from './InShellStatus';
+export { SlimedStatus } from './SlimedStatus';
+export { SoftGrassStatus } from './SoftGrassStatus';
+export { FreeMoveStatus } from './FreeMoveStatus';
+export { GuardedStatus } from './GuardedStatus';

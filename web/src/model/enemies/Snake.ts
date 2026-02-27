@@ -3,16 +3,21 @@ import { ActorTask } from '../ActorTask';
 import { AttackTask } from '../tasks/AttackTask';
 import { WaitTask } from '../tasks/WaitTask';
 import { MoveToTargetTask } from '../tasks/MoveToTargetTask';
+import { WeaknessStatus } from '../statuses/WeaknessStatus';
+import { DEAL_ATTACK_DAMAGE_HANDLER, type IDealAttackDamageHandler } from '../Actor';
 import { Vector2Int } from '../../core/Vector2Int';
 import { GameModelRef } from '../GameModelRef';
 import { entityRegistry } from '../../generator/entityRegistry';
+import type { Body } from '../Body';
 
 /**
  * Only moves/attacks if you're in the same row or column.
  * Attacks apply Weakness.
  * Port of Snake.cs.
  */
-export class Snake extends AIActor {
+export class Snake extends AIActor implements IDealAttackDamageHandler {
+  readonly [DEAL_ATTACK_DAMAGE_HANDLER] = true as const;
+
   get turnPriority(): number {
     return 20;
   }
@@ -46,9 +51,10 @@ export class Snake extends AIActor {
     return new WaitTask(this, 1);
   }
 
-  /** Apply weakness on attack (stub — WeaknessStatus not yet ported). */
-  handleDealAttackDamage(_damage: number, _target: any): void {
-    // TODO: target.statuses.add(new WeaknessStatus(1));
+  handleDealAttackDamage(_damage: number, target: Body): void {
+    if ((target as any).statuses) {
+      (target as any).statuses.add(new WeaknessStatus(1));
+    }
   }
 }
 

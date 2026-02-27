@@ -40,9 +40,22 @@ export interface IKillEntityHandler {
   onKill(entity: any): void;
 }
 
+/** Symbol for collecting IActorEnterHandler via collectModifiers. */
+export const ACTOR_ENTER_HANDLER = Symbol.for('IActorEnterHandler');
+
+/** Symbol for collecting IActorLeaveHandler via collectModifiers. */
+export const ACTOR_LEAVE_HANDLER = Symbol.for('IActorLeaveHandler');
+
 /** Called when an actor enters a tile with this entity. */
 export interface IActorEnterHandler {
+  readonly [ACTOR_ENTER_HANDLER]: true;
   handleActorEnter(actor: any): void;
+}
+
+/** Called when an actor leaves a tile with this entity. */
+export interface IActorLeaveHandler {
+  readonly [ACTOR_LEAVE_HANDLER]: true;
+  handleActorLeave(actor: any): void;
 }
 
 /** Called when a body moves. */

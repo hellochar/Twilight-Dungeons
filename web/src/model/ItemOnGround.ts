@@ -3,10 +3,9 @@ import { Item } from './Item';
 import { GameModelRef } from './GameModelRef';
 import { Vector2Int } from '../core/Vector2Int';
 import { CannotPerformActionException } from './BaseAction';
+import { ACTOR_ENTER_HANDLER } from '../core/types';
 import type { Floor } from './Floor';
 import type { Tile } from './Tile';
-
-const ACTOR_ENTER_HANDLER = Symbol.for('IActorEnterHandler');
 
 /**
  * Wraps an Item as a floor Entity so it can be placed on the ground.

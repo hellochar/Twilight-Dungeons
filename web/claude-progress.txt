@@ -240,8 +240,65 @@ There's also the larger context doc: `web-puzzle-port.md`.
 - Circular dep Item↔Equipment broken by `import type { EquipmentSlot }` in Item.ts
 - ItemOnGround._isItem marker for Floor duck typing (matches _isGrass, _isBody pattern)
 
+## Sprint 10 (2026-02-26): Remaining Session 8 — Enemies + Statuses + Grasses + Items ✅
+*Plan session 8 (remainder — 6 enemies, 8 statuses, 4 grasses, 3 items)*
+
+### Prerequisite Fix
+- [x] Tile.bodyEntered()/bodyLeft() — replaced TODO stubs with collectModifiers dispatch using centralized ACTOR_ENTER_HANDLER/ACTOR_LEAVE_HANDLER symbols (moved from local defs to types.ts)
+
+### New Statuses (8 files in `src/model/statuses/`)
+- [x] WeaknessStatus.ts — StackingStatus + IAttackDamageModifier. Reduces attack damage by 1/stack.
+- [x] PoisonedStatus.ts — StackingStatus, Independent stacking. Timed event ticks: 3+ stacks → 3 damage + remove 3; else lose 1 stack per 5 turns.
+- [x] WebbedStatus.ts — Status + ATTACK_DAMAGE_TAKEN_MOD + BASE_ACTION_MOD + DEATH_HANDLER. Blocks movement (→ StruggleBaseAction), +1 damage taken. Duck-typed Web check via `_isWeb` marker.
+- [x] InShellStatus.ts — StackingStatus, Max mode, 4 stacks. Forces WAIT action, reduces damage by 1.
+- [x] SlimedStatus.ts — Status + ACTION_COST_MOD + BASE_ACTION_MOD. Doubles MOVE cost, removes on MOVE.
+- [x] SoftGrassStatus.ts — StackingStatus, Ignore mode + BODY_MOVE_HANDLER. Tracks consecutive SoftGrass moves, grants FreeMoveStatus at 2.
+- [x] FreeMoveStatus.ts — StackingStatus + ACTION_COST_MOD + ACTION_PERFORMED_HANDLER. Sets MOVE cost to 0, consumed on MOVE.
+- [x] GuardedStatus.ts — StackingStatus + ATTACK_DAMAGE_TAKEN_MOD. Delegates stacks to Guardleaf.guardLeft, absorbs damage.
+
+### New Grasses (4 files in `src/model/grasses/`)
+- [x] Web.ts — Grass + IActorEnterHandler. Applies WebbedStatus. `_isWeb` marker for duck typing. Static `canOccupy`, `isActorNice`.
+- [x] Bladegrass.ts — Grass + IActorEnterHandler + IActorLeaveHandler. Sharpens on leave, deals 2 damage on enter when sharp. Self-destructs after 10 turns once sharpened.
+- [x] SoftGrass.ts — Grass + IActorEnterHandler. Adds SoftGrassStatus to player on enter.
+- [x] Guardleaf.ts — Grass + IActorEnterHandler. guardLeft=5. Adds/removes GuardedStatus. removeGuard() decrements pool, self-kills at 0.
+
+### New Items (3 files in `src/model/items/`)
+- [x] ItemBatTooth.ts — EquippableItem + IWeapon + IDealAttackDamageHandler. Weapon slot, [1,1]. Heals player by damage dealt, self-destructs.
+- [x] ItemSpiderSandals.ts — EquippableItem + IStackable + IBodyMoveHandler. Footwear slot, stacksMax 999. Leaves Web trail on move.
+- [x] ItemSnailShell.ts — Item + IStackable. stacksMax 3. Throw mechanic deferred (needs targeting UI).
+
+### New Enemies (6 files in `src/model/enemies/`)
+- [x] Scorpion.ts — 4 HP, [1,1]. MOVE=0.5, ATTACK=0.5 (acts twice per turn). Chase+attack or moveRandomly.
+- [x] Crab.ts — 5 HP, [2,2], Neutral faction, turnPriority=40. Horizontal-only movement, flips direction on block.
+- [x] Bat.ts — 5 HP, [1,1], Flying. Heals 1 on damage dealt, deep sleep after 5 turns awake.
+- [x] Goo.ts — 12 HP, [1,1], turnPriority=50. Splits into 2 goos (ceil/floor HP) when damaged.
+- [x] Snail.ts — 3 HP, [2,2]. Pauses after each action (WaitTask). InShellStatus on damage.
+- [x] Spider.ts — 4 HP, [0,0]. Applies PoisonedStatus on hit. AI: place webs, then attack, else move to non-webbed tile.
+
+### Modified Files
+- [x] src/core/types.ts — added ACTOR_ENTER_HANDLER, ACTOR_LEAVE_HANDLER symbols + IActorLeaveHandler interface
+- [x] src/core/index.ts — barrel exports for new symbols
+- [x] src/model/Tile.ts — bodyEntered/bodyLeft now dispatch via collectModifiers
+- [x] src/model/ItemOnGround.ts — uses centralized ACTOR_ENTER_HANDLER from types.ts
+- [x] src/model/enemies/Snake.ts — replaced WeaknessStatus stub with real import + implementation
+- [x] src/model/enemies/index.ts — added all 6 new enemy exports
+- [x] src/model/statuses/index.ts — added all 8 new status exports
+- [x] src/model/items/index.ts — added 3 new item exports
+- [x] src/model/grasses/index.ts — added 4 new grass exports
+- [x] src/model/GameModel.ts — side-effect imports for all new entity registrations
+- [x] src/renderer/SpriteManager.ts — NAME_MAP entries for soft grass, guardleaf, bat tooth, spider sandals, snail shell
+
+### Stats
+- ~96 TypeScript files, ~10,300 lines (est)
+- tsc --noEmit passes clean, vite dev server runs
+
+### Design Decisions
+- **Multi-modifier modify() pattern**: Statuses implementing STEP_MOD (inherited) + another modifier use `modify(input: any): any` with runtime type checking: `typeof input === 'number'` for damage mods, `input instanceof BaseAction` for action mods, default → `super.modify(input)` for STEP_MOD chain.
+- **Duck typing for circular deps**: WebbedStatus ↔ Web circular dep broken via `_isWeb` property marker. `isActorWebNice()` checks constructor names instead of instanceof.
+- **Entity registration via side-effect imports**: Each entity file calls `entityRegistry.register('Name', Class)` at module bottom. GameModel.ts imports them to trigger registration.
+- **Goo split**: Creates 2 new Goos at same position with ceil/floor(hp/2), adds SurprisedStatus, kills self via floor.remove().
+
 ### Remaining Undone Plan Sessions
-- Session 8 (partial): 3 more enemies (Bat, Goo, Spider+Web+PoisonedStatus+WebbedStatus, Scorpion, Snail, Crab)
 - Session 9: Combat animations + particles
 - Session 10: Inventory UI + game over detection
 - Sessions 13-16: Remaining content (enemies, grasses, items)

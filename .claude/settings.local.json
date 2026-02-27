@@ -14,7 +14,9 @@
       "Bash(pkill -f \"vite\")",
       "Bash(wc:*)",
       "Bash(npx vite build)",
-      "Bash(git status -u)"
+      "Bash(git status -u)",
+      "Bash(grep:*)",
+      "Bash(xargs grep \"^public class\")"
     ]
   }
 }

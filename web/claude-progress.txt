@@ -1,6 +1,13 @@
 # Twilight Dungeons Web Port — Progress
 
-## Session 1 (2026-02-25): Project Scaffold + Core Types ✅
+Always begin by reading the top-level implementation plan `.claude/plans/sorted-juggling-spring.md`.
+There's also the larger context doc: `web-puzzle-port.md`.
+
+**Terminology:** "Sprints" here are actual work sittings (one conversation).
+"Sessions" in the implementation plan are logical milestones. They diverged after sprint 6.
+
+## Sprint 1 (2026-02-25): Project Scaffold + Core Types ✅
+*Plan sessions 1*
 
 ### Completed Files
 - [x] Project scaffold (Vite + React + TypeScript)
@@ -20,7 +27,8 @@
 - CollisionLayer: numeric enum with bitwise ops (matches C# [Flags])
 - Handler interfaces (IDeathHandler, IActorEnterHandler, etc.): use `any` for forward-declared types to avoid circular deps
 
-## Session 2 (2026-02-25): Entity + Tile + Floor ✅
+## Sprint 2 (2026-02-25): Entity + Tile + Floor ✅
+*Plan session 2*
 
 ### Completed Files
 - [x] src/model/GameModelRef.ts — singleton ref to break circular deps (Entity↔GameModel↔Floor)
@@ -36,7 +44,8 @@
 - FloorEnumeratorExtensions inlined as Floor methods — enumerateLine (Bresenham), enumerateCircle, BFS, etc.
 - No uuid dependency — Entity guids use incrementing counter (`e-0`, `e-1`, ...) since we don't need persistence
 
-## Session 3 (2026-02-25): Body + Actor + Player + Actions ✅
+## Sprint 3 (2026-02-25): Body + Actor + Player + Actions ✅
+*Plan session 3*
 
 ### Completed Files
 - [x] src/model/BaseAction.ts — BaseAction + MoveBaseAction, AttackBaseAction, AttackGroundBaseAction, WaitBaseAction, GenericBaseAction, StruggleBaseAction, ActionCosts, CannotPerformActionException
@@ -55,7 +64,8 @@
 - ActionCosts extends Map<ActionType, number> (simpler than C# Dictionary subclass)
 - Actor.step() fully ported including task lifecycle, free tasks, modifier processing
 
-## Session 4 (2026-02-25): TurnManager + GameModel + All Tasks ✅
+## Sprint 4 (2026-02-25): TurnManager + GameModel + All Tasks ✅
+*Plan session 4*
 
 ### Completed Files
 - [x] src/model/ActorTask.ts — full implementation: ActorTask base + DoOnceTask, TaskStage, named/onlyCheckBefore/free fluent builders
@@ -85,7 +95,8 @@
 - TelegraphedTask in tasks/ (not enemies/) since it's used by multiple enemy types
 - SurprisedStatus defined inline with SleepTask (matches C# pattern where it lives in SleepTask.cs)
 
-## Session 5 (2026-02-26): Rendering Layer (PixiJS) ✅
+## Sprint 5 (2026-02-26): Rendering Layer (PixiJS) ✅
+*Plan session 5*
 
 ### Completed Files
 - [x] scripts/copy-sprites.js — copies ~193 PNGs from Assets/Textures/ to public/sprites/, generates manifest.json with dimensions/frame counts
@@ -112,7 +123,8 @@
 - Entity fallback: when sprite not found, white texture tinted with deterministic HSL from name hash
 - AnimationPlayer uses GSAP timeline — events queued sequentially, skip() fast-forwards
 
-## Session 6 (2026-02-26): Input + HUD + Wire-Up ✅
+## Sprint 6 (2026-02-26): Input + HUD + Wire-Up ✅
+*Plan session 6*
 
 ### Completed Files
 - [x] src/input/InputHandler.ts — keyboard (arrows, WASD, numpad, diagonals QEZC) + pointer click/tap → PlayerIntent events. Space/period/numpad5 = wait.
@@ -134,7 +146,8 @@
 - Game loop is synchronous: set task → stepUntilPlayerChoice → syncToModel → update React state
 - No animation playback yet (instant sync) — AnimationPlayer is wired but events not collected from model
 
-## Session 7 (2026-02-26): AIActor + First Enemies ✅
+## Sprint 7 (2026-02-26): AIActor + First Enemies ✅
+*Plan session 8 (partial — 3 of 6 enemies, skipped session 7 statuses/items)*
 
 ### Completed Files
 - [x] src/model/enemies/AIActor.ts — base class: retry loop on NoActionException, death handler, sleep-on-spawn
@@ -152,7 +165,8 @@
 - Snake.handleDealAttackDamage is stubbed (WeaknessStatus not yet ported)
 - turnPriority overrides: Blob→90 during AttackGroundTask, Snake→20 always
 
-## Session 8 (2026-02-26): Floor Generator + Tile Sprites ✅
+## Sprint 8 (2026-02-26): Floor Generator + Tile Sprites ✅
+*Plan sessions 11+12 (jumped ahead — floor gen + encounters in one sprint)*
 
 ### Completed Files (13 new generator files)
 - [x] src/generator/WeightedRandomBag.ts — weighted random selection with discount/subtract mechanics
@@ -190,10 +204,3 @@
 - Tilesheet sprites sliced from Unity .meta coordinates: ground(0,16), wall(16,16), fancy-ground(32,16), upstairs(0,32), downstairs(16,32)
 - Depth → tilesheet: 0-9 → tiles0, 10-18 → tiles12, 19+ → tiles24 (matches C# DeepLevelSpriteSwap)
 - R key regeneration only in dev mode (import.meta.env.DEV)
-
-### Next: Session 9+ — More Enemies & Grasses
-- Port more enemy types to populate generated floors (Jackal, Bat, Spider, Scorpion, etc.)
-- Port grasses (SoftGrass, Bladegrass, Violets, etc.) for terrain variety
-- Port items/rewards for encounter loot
-- Each entity automatically activates in generated floors via entityRegistry
-- Consider: status effects (Weakness, Poison) needed by several enemies

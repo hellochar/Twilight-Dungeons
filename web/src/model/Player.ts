@@ -6,6 +6,8 @@ import { collectModifiers } from '../core/Modifiers';
 import { GameModelRef } from './GameModelRef';
 import { Inventory } from './Inventory';
 import { Equipment, EquipmentSlot } from './Equipment';
+import { WEAPON_TAG, DURABLE_TAG, type IWeapon, type IDurable, reduceDurability } from './Item';
+import { ItemHands } from './items/ItemHands';
 import { EventEmitter } from '../core/EventEmitter';
 import type { BaseAction } from './BaseAction';
 import type { Entity } from './Entity';
@@ -21,6 +23,7 @@ const CAMOUFLAGE = Symbol.for('IPlayerCamouflage');
 export class Player extends Actor {
   readonly inventory: Inventory;
   readonly equipment: Equipment;
+  readonly hands: ItemHands;
   readonly onChangeWater = new EventEmitter<[number]>();
 
   get turnPriority(): number {
@@ -50,6 +53,7 @@ export class Player extends Actor {
     this.faction = Faction.Ally;
     this.inventory = new Inventory(10);
     this.equipment = new Equipment(this);
+    this.hands = new ItemHands(this);
     this._hp = this._baseMaxHp = 12;
   }
 
@@ -93,8 +97,8 @@ export class Player extends Actor {
   /** IAttackHandler */
   onAttack(_damage: number, _target: Body): void {
     const item = this.equipment.get(EquipmentSlot.Weapon);
-    if (item && 'reduceDurability' in item) {
-      GameModelRef.main.enqueuEvent(() => (item as any).reduceDurability());
+    if (item && DURABLE_TAG in item) {
+      GameModelRef.main.enqueuEvent(() => reduceDurability(item as unknown as IDurable));
     }
     if (this.task && this.task.constructor.name === 'FollowPathTask') {
       this.task = null;
@@ -103,8 +107,8 @@ export class Player extends Actor {
 
   baseAttackDamage(): [number, number] {
     const item = this.equipment.get(EquipmentSlot.Weapon);
-    if (item && 'attackSpread' in item) {
-      return (item as any).attackSpread;
+    if (item && WEAPON_TAG in item) {
+      return (item as unknown as IWeapon).attackSpread;
     }
     return [1, 1];
   }

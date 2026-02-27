@@ -1,6 +1,6 @@
 import { ActorTask, TaskStage } from '../ActorTask';
-import { WaitBaseAction, StruggleBaseAction, type BaseAction } from '../BaseAction';
-import { Status } from '../StatusList';
+import { BaseAction, WaitBaseAction, StruggleBaseAction } from '../BaseAction';
+import { Status } from '../Status';
 import { GameModelRef } from '../GameModelRef';
 import {
   ATTACK_DAMAGE_TAKEN_MOD,
@@ -77,34 +77,27 @@ export class SurprisedStatus extends Status {
     return true;
   }
 
-  modify(input: BaseAction): BaseAction {
+  /** Handles both STEP_MOD (inherited) and BASE_ACTION_MOD calls. */
+  modify(input: any): any {
+    if (!(input instanceof BaseAction)) {
+      // STEP_MOD call — delegate to super (calls Step())
+      return super.modify(input);
+    }
+    // BASE_ACTION_MOD call
     if (this.removeNext) {
-      this.remove();
+      this.Remove();
       return input;
     }
     const player = GameModelRef.mainOrNull?.player;
     if (this.actor === player) {
-      this.remove();
+      this.Remove();
       return new StruggleBaseAction(input.actor);
     }
     this.removeNext = true;
     return new WaitBaseAction(input.actor);
   }
 
-  consume(_other: Status): boolean {
+  Consume(_other: Status): boolean {
     return true;
-  }
-
-  private actor: any;
-  private removeFn: (() => void) | null = null;
-
-  start(actor: any): void {
-    this.actor = actor;
-  }
-
-  remove(): void {
-    if (this.actor) {
-      this.actor.statuses?.remove(this);
-    }
   }
 }

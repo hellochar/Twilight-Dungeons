@@ -1,6 +1,6 @@
 # Twilight Dungeons Web Port — Progress
 
-Always begin by reading the top-level implementation plan `.claude/plans/sorted-juggling-spring.md`.
+Always begin by reading the top-level implementation plan `web\web-port-implementation-plan.md`.
 There's also the larger context doc: `web-puzzle-port.md`.
 
 **Terminology:** "Sprints" here are actual work sittings (one conversation).
@@ -204,3 +204,44 @@ There's also the larger context doc: `web-puzzle-port.md`.
 - Tilesheet sprites sliced from Unity .meta coordinates: ground(0,16), wall(16,16), fancy-ground(32,16), upstairs(0,32), downstairs(16,32)
 - Depth → tilesheet: 0-9 → tiles0, 10-18 → tiles12, 19+ → tiles24 (matches C# DeepLevelSpriteSwap)
 - R key regeneration only in dev mode (import.meta.env.DEV)
+
+## Sprint 9 (2026-02-26): Status System + Items + Equipment + Grass Base ✅
+*Plan session 7 (was skipped — sprints 7-8 jumped ahead to enemies + floor gen)*
+
+### Completed Files (new)
+- [x] src/model/Status.ts — Status abstract base + StackingStatus + StackingMode enum. Implements IStepModifier (STEP_MOD). Remove() via GameModelRef.enqueuEvent for safe iteration.
+- [x] src/model/Item.ts — Item base class (NOT Entity), EquippableItem abstract, all interfaces: IWeapon, IDurable, IStackable, IConditionallyStackable, IUsable, IEdible, IPlantable, ISticky + symbol tags + helper functions (reduceDurability, increaseDurability, mergeStacks)
+- [x] src/model/ItemOnGround.ts — Entity wrapper for floor-placed items, IActorEnterHandler for auto-pickup, PlacementBehavior BFS
+- [x] src/model/grasses/Grass.ts — Entity subclass, immobile pos, bodyModifier, onNoteworthyAction callback, _isGrass marker
+- [x] src/model/items/ItemHands.ts — EquippableItem + IWeapon, attackSpread [1,1], inventory getter returns player.equipment
+- [x] src/model/items/ItemStick.ts — EquippableItem + IDurable + IWeapon, durability 3, attackSpread [2,2]
+- [x] src/model/items/ItemRedberry.ts — Item + IStackable + IUsable, stacksMax 10, heals 2 HP, self-destroys at 0 stacks
+- [x] src/model/items/index.ts — barrel export
+- [x] src/model/grasses/index.ts — barrel export
+- [x] src/model/statuses/index.ts — placeholder barrel export
+
+### Modified Files
+- [x] src/model/StatusList.ts — replaced stub: imports Status from Status.ts, add fires IStatusAddedHandler/IStatusRemovedHandler via collectModifiers, status.list lifecycle (Start/End), removeOfType(), findOfType()
+- [x] src/model/Inventory.ts — replaced stub: fixed-size Item[] array, IStackable merging, slot swapping, tryDropItem creates ItemOnGround, EventEmitter events (onItemAdded/Removed/Destroyed), hasItem, indexOf, itemsNonNull iterator
+- [x] src/model/Equipment.ts — replaced stub: fixed EquipmentSlot enum (Headwear=0, Weapon=1, Armor=2, Offhand=3, Footwear=4 matching C#), extends Inventory, addItem only accepts EquippableItem, ISticky check, weapon slot returns Player.hands if empty, OnEquipped/OnUnequipped callbacks
+- [x] src/model/Player.ts — added ItemHands import, hands field, typed IWeapon/IDurable usage in onAttack/baseAttackDamage
+- [x] src/model/tasks/SleepTask.ts — SurprisedStatus updated to extend new Status base class, uses Status.Remove() and Consume(), handles dual STEP_MOD+BASE_ACTION_MOD via instanceof check
+
+### Stats
+- 75 TypeScript files, ~8,600 lines
+- tsc --noEmit passes clean, vite build succeeds
+
+### Design Decisions
+- Item is NOT an Entity (matches C#). ItemOnGround wraps Item as Entity for floor placement.
+- EquipmentSlot enum fixed to match C# ordering (was wrong in stub)
+- Status.modify() handles STEP_MOD (calls Step(), returns input). Subclasses needing other modifier tags (like SurprisedStatus with BASE_ACTION_MOD) use instanceof BaseAction to distinguish calls.
+- Symbol tags for all item interfaces (WEAPON_TAG, DURABLE_TAG, etc.) following established pattern
+- Equipment extends Inventory (C# pattern) — shared addItem/removeItem with specialized slot logic
+- Circular dep Item↔Equipment broken by `import type { EquipmentSlot }` in Item.ts
+- ItemOnGround._isItem marker for Floor duck typing (matches _isGrass, _isBody pattern)
+
+### Remaining Undone Plan Sessions
+- Session 8 (partial): 3 more enemies (Bat, Goo, Spider+Web+PoisonedStatus+WebbedStatus, Scorpion, Snail, Crab)
+- Session 9: Combat animations + particles
+- Session 10: Inventory UI + game over detection
+- Sessions 13-16: Remaining content (enemies, grasses, items)

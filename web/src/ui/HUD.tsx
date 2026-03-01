@@ -1,8 +1,10 @@
-import type { GameState } from '../hooks/useGameLoop';
+import type { GameState, OnTopActionSnapshot } from '../hooks/useGameLoop';
 import { StatusBar } from './StatusBar';
 
 interface HUDProps {
   state: GameState;
+  onTopAction: OnTopActionSnapshot | null;
+  onExecuteOnTopAction: () => void;
 }
 
 /**
@@ -12,9 +14,9 @@ interface HUDProps {
  * - Top-right: Depth + Turn banner
  * - Below banner: Enemy counter text
  */
-export function HUD({ state }: HUDProps) {
+export function HUD({ state, onTopAction, onExecuteOnTopAction }: HUDProps) {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, pointerEvents: 'none' }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
       {/* Top row: hearts left, banner right */}
       <div style={{
         display: 'flex',
@@ -34,6 +36,11 @@ export function HUD({ state }: HUDProps) {
 
       {/* Status icons below hearts */}
       <StatusBar statuses={state.statuses} />
+
+      {/* On-top action button */}
+      {onTopAction && (
+        <OnTopActionButton action={onTopAction} onClick={onExecuteOnTopAction} />
+      )}
     </div>
   );
 }
@@ -119,6 +126,44 @@ function EnemiesLeft({ count, isCleared }: { count: number; isCleared: boolean }
       marginTop: 2,
     }}>
       {text}
+    </div>
+  );
+}
+
+// ─── On-Top Action Button ───
+
+function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; onClick: () => void }) {
+  return (
+    <div style={{
+      position: 'absolute',
+      bottom: 16,
+      right: 16,
+      pointerEvents: 'auto',
+    }}>
+      <button
+        onClick={onClick}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '6px 14px',
+          background: 'rgba(20, 20, 30, 0.85)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
+          borderRadius: 6,
+          color: '#eee',
+          fontFamily: 'monospace',
+          fontSize: 13,
+          cursor: 'pointer',
+        }}
+      >
+        <img
+          src={`/sprites/${action.spriteName}.png`}
+          alt=""
+          style={{ width: 20, height: 20, imageRendering: 'pixelated' }}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+        />
+        {action.name}
+      </button>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { Grass } from './Grass';
-import { Faction } from '../../core/types';
+import { Faction, ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../../core/types';
 import { Ground } from '../Tile';
 import { VulnerableStatus } from '../statuses/VulnerableStatus';
+import { GameModelRef } from '../GameModelRef';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
@@ -10,13 +11,20 @@ import type { Tile } from '../Tile';
  * You may pop the Redcap, applying Vulnerable (7 turns) to adjacent enemies.
  * Port of C# Redcap.cs.
  */
-export class Redcap extends Grass {
+export class Redcap extends Grass implements IOnTopActionHandler {
+  readonly [ON_TOP_ACTION_HANDLER] = true as const;
+  readonly onTopActionName = 'Pop';
+
   constructor(pos: Vector2Int) {
     super(pos);
   }
 
   static canOccupy(tile: Tile): boolean {
     return tile instanceof Ground;
+  }
+
+  handleOnTopAction(): void {
+    this.pop(GameModelRef.main.player);
   }
 
   pop(who: any): void {

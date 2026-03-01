@@ -61,7 +61,7 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, d
       flexDirection: 'column',
       alignItems: 'center',
       padding: '4px 4px 2px',
-      pointerEvents: 'auto',
+      pointerEvents: 'none',
     }}>
       {/* Item popup */}
       {selectedItem && (
@@ -69,7 +69,7 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, d
       )}
 
       {/* Equipment row */}
-      <div style={{ display: 'flex', gap: SLOT_GAP, marginBottom: SLOT_GAP }}>
+      <div style={{ display: 'flex', gap: SLOT_GAP, marginBottom: SLOT_GAP, pointerEvents: 'auto' }}>
         {equipmentItems.map((item, i) => (
           <Slot
             key={`eq-${i}`}
@@ -82,7 +82,7 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, d
       </div>
 
       {/* Inventory row */}
-      <div style={{ display: 'flex', gap: SLOT_GAP, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: SLOT_GAP, flexWrap: 'wrap', justifyContent: 'center', pointerEvents: 'auto' }}>
         {inventoryItems.map((item, i) => (
           <Slot
             key={`inv-${i}`}
@@ -238,6 +238,7 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
       gap: 12,
       alignItems: 'flex-start',
       maxWidth: 320,
+      pointerEvents: 'auto',
     }}>
       <div style={{
         width: 48,

@@ -3,7 +3,7 @@ import { Item } from './Item';
 import { GameModelRef } from './GameModelRef';
 import { Vector2Int } from '../core/Vector2Int';
 import { CannotPerformActionException } from './BaseAction';
-import { ACTOR_ENTER_HANDLER } from '../core/types';
+import { ACTOR_ENTER_HANDLER, ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../core/types';
 import type { Floor } from './Floor';
 import type { Tile } from './Tile';
 
@@ -15,9 +15,11 @@ import type { Tile } from './Tile';
  * Note: The wrapped item is stored as `heldItem` (not `item`) to avoid
  * conflicting with Entity's `item` getter which returns the floor item at this pos.
  */
-export class ItemOnGround extends Entity {
+export class ItemOnGround extends Entity implements IOnTopActionHandler {
   readonly _isItem = true;
   readonly [ACTOR_ENTER_HANDLER] = true;
+  readonly [ON_TOP_ACTION_HANDLER] = true as const;
+  readonly onTopActionName = 'Pick Up';
 
   private _pos: Vector2Int;
   readonly heldItem: Item;
@@ -60,7 +62,11 @@ export class ItemOnGround extends Entity {
     }
   }
 
-  private pickUp(): void {
+  handleOnTopAction(): void {
+    this.pickUp();
+  }
+
+  pickUp(): void {
     const player = GameModelRef.main.player;
     if (!this.isNextTo(player)) return;
 

@@ -1,5 +1,8 @@
 import { Grass } from './Grass';
+import { ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../../core/types';
 import { Ground, type IBlocksVision } from '../Tile';
+import { GameModelRef } from '../GameModelRef';
+import { GenericPlayerTask } from '../tasks/GenericTask';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
@@ -9,8 +12,10 @@ import type { Tile } from '../Tile';
  * You can cut it down when standing over it.
  * Port of C# Fern.cs.
  */
-export class Fern extends Grass implements IBlocksVision {
+export class Fern extends Grass implements IBlocksVision, IOnTopActionHandler {
   readonly blocksVision = true as const;
+  readonly [ON_TOP_ACTION_HANDLER] = true as const;
+  readonly onTopActionName = 'Cut';
 
   constructor(pos: Vector2Int) {
     super(pos);
@@ -18,6 +23,11 @@ export class Fern extends Grass implements IBlocksVision {
 
   static canOccupy(tile: Tile): boolean {
     return tile instanceof Ground && (tile.body == null || 'faction' in tile.body);
+  }
+
+  handleOnTopAction(): void {
+    const player = GameModelRef.main.player;
+    player.setTasks(new GenericPlayerTask(player, () => this.cutSelfAndAdjacent(player)));
   }
 
   /** Cut this fern and all adjacent ferns. */

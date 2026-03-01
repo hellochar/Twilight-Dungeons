@@ -13,6 +13,7 @@ import { WaitTask } from '../model/tasks/WaitTask';
 import { MoveNextToTargetTask } from '../model/tasks/MoveNextToTargetTask';
 import { Item, EquippableItem, STACKABLE_TAG, DURABLE_TAG, EDIBLE_TAG, USABLE_TAG, type IStackable, type IDurable, type IEdible, type IUsable } from '../model/Item';
 import { StackingStatus } from '../model/Status';
+import { ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../core/types';
 
 // ─── Snapshot types for React consumption ───
 
@@ -44,6 +45,11 @@ export interface GameOverInfo {
   damageTaken: number;
 }
 
+export interface OnTopActionSnapshot {
+  name: string;
+  spriteName: string;
+}
+
 export interface GameState {
   hp: number;
   maxHp: number;
@@ -56,13 +62,14 @@ export interface GameState {
   equipmentItems: (ItemSnapshot | null)[];
   statuses: StatusSnapshot[];
   gameOver: GameOverInfo | null;
+  onTopAction: OnTopActionSnapshot | null;
 }
 
 const EMPTY_STATE: GameState = {
   hp: 0, maxHp: 0, depth: 0, turn: 0, enemyCount: 0,
   isPlayerDead: false, isCleared: false,
   inventoryItems: [], equipmentItems: [],
-  statuses: [], gameOver: null,
+  statuses: [], gameOver: null, onTopAction: null,
 };
 
 function getItemCategory(item: Item): string {
@@ -139,6 +146,18 @@ export function useGameLoop() {
     const isOver = player.isDead || floor.isCleared;
     const gameOver: GameOverInfo | null = isOver ? { ...model.stats } : null;
 
+    // On-top action
+    let onTopAction: OnTopActionSnapshot | null = null;
+    if (!isOver) {
+      const handler = getOnTopActionHandler(floor, player.pos);
+      if (handler) {
+        onTopAction = {
+          name: handler.onTopActionName,
+          spriteName: handler.displayName.toLowerCase(),
+        };
+      }
+    }
+
     return {
       hp: player.hp,
       maxHp: player.maxHp,
@@ -151,6 +170,7 @@ export function useGameLoop() {
       equipmentItems,
       statuses,
       gameOver,
+      onTopAction,
     };
   }, []);
 
@@ -257,6 +277,24 @@ export function useGameLoop() {
       setGameState(readState());
     }
   }, [readState, stepAndAnimate]);
+
+  /** Execute the on-top action at the player's current position. */
+  const executeOnTopAction = useCallback(async () => {
+    const model = modelRef.current;
+    if (!model || processingRef.current || model.player.isDead || model.currentFloor.isCleared) return;
+
+    const handler = getOnTopActionHandler(model.currentFloor, model.player.pos);
+    if (!handler) return;
+
+    handler.handleOnTopAction();
+
+    // If the handler set a player task (e.g. Fern's Cut via GenericPlayerTask), step the model
+    if (model.player.task) {
+      await stepAndAnimate();
+    } else {
+      syncAndUpdate();
+    }
+  }, [stepAndAnimate, syncAndUpdate]);
 
   /** Reset game (play again). */
   const resetGame = useCallback(() => {
@@ -371,7 +409,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState]);
 
-  return { containerRef, gameState, ready, executeItemAction, resetGame };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */
@@ -419,6 +457,21 @@ function resolveIntent(
       return null;
     }
   }
+}
+
+/** Scan entities at pos in layer order: item → grass → tile. Returns first IOnTopActionHandler. */
+function getOnTopActionHandler(floor: Floor, pos: Vector2Int): (IOnTopActionHandler & { displayName: string }) | null {
+  const tile = floor.tiles.get(pos);
+  if (!tile) return null;
+  // Check item layer
+  const item = floor.items.get(pos);
+  if (item && ON_TOP_ACTION_HANDLER in item) return item as any;
+  // Check grass layer
+  const grass = floor.grasses.get(pos);
+  if (grass && ON_TOP_ACTION_HANDLER in grass) return grass as any;
+  // Check tile itself
+  if (ON_TOP_ACTION_HANDLER in tile) return tile as any;
+  return null;
 }
 
 function countEnemies(floor: Floor): number {

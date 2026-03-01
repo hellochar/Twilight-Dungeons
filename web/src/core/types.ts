@@ -86,3 +86,13 @@ export interface INoTurnDelay {
 export interface IDeathHandler {
   handleDeath(source: any): void;
 }
+
+/** Symbol for collecting IOnTopActionHandler via symbol tag. */
+export const ON_TOP_ACTION_HANDLER = Symbol.for('IOnTopActionHandler');
+
+/** Entity that provides an action button when the player stands on it. */
+export interface IOnTopActionHandler {
+  readonly [ON_TOP_ACTION_HANDLER]: true;
+  readonly onTopActionName: string;
+  handleOnTopAction(): void;
+}

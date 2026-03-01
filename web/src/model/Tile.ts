@@ -1,6 +1,6 @@
 import { Entity } from './Entity';
 import { Vector2Int } from '../core/Vector2Int';
-import { TileVisibility, CollisionLayer, type IBlocksMovement, type IActorEnterHandler, type IActorLeaveHandler, ACTOR_ENTER_HANDLER, ACTOR_LEAVE_HANDLER } from '../core/types';
+import { TileVisibility, CollisionLayer, ON_TOP_ACTION_HANDLER, type IBlocksMovement, type IActorEnterHandler, type IActorLeaveHandler, type IOnTopActionHandler, ACTOR_ENTER_HANDLER, ACTOR_LEAVE_HANDLER } from '../core/types';
 import { collectModifiers } from '../core/Modifiers';
 import { GameModelRef } from './GameModelRef';
 import { entityRegistry } from '../generator/entityRegistry';
@@ -128,13 +128,22 @@ export class Ground extends Tile {
   }
 }
 
-export class Signpost extends Ground {
+export class Signpost extends Ground implements IOnTopActionHandler {
+  readonly [ON_TOP_ACTION_HANDLER] = true as const;
+  readonly onTopActionName = 'Read';
   hasRead = false;
   text: string;
 
   constructor(pos: Vector2Int, text = '') {
     super(pos);
     this.text = text;
+  }
+
+  handleOnTopAction(): void {
+    this.hasRead = true;
+    if (this.text) {
+      window.alert(this.text);
+    }
   }
 }
 

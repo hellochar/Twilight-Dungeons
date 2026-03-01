@@ -1,6 +1,6 @@
 import { ATTACK_DAMAGE_TAKEN_MOD, BASE_ACTION_MOD, type IAttackDamageTakenModifier, type IBaseActionModifier } from '../../core/Modifiers';
 import { StackingMode, StackingStatus } from '../Status';
-import { WaitBaseAction, type BaseAction } from '../BaseAction';
+import { WaitBaseAction, BaseAction } from '../BaseAction';
 
 /**
  * Snail retreats into shell: forces WAIT, reduces damage taken by 1.

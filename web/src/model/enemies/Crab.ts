@@ -23,7 +23,7 @@ export class Crab extends AIActor {
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.dx = MyRandom.value() < 0.5 ? -1 : 1;
+    this.dx = MyRandom.value < 0.5 ? -1 : 1;
     this.faction = Faction.Neutral;
     this.hp = this._baseMaxHp = 5;
   }

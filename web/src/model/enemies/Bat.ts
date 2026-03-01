@@ -67,7 +67,7 @@ export class Bat extends AIActor implements IActionPerformedHandler, IDealAttack
     if (this.isNextTo(target)) {
       return new AttackTask(this, target);
     }
-    return new ChaseDynamicTargetTask(this, () => this.selectTarget());
+    return new ChaseDynamicTargetTask(this, () => this.selectTarget()!);
   }
 
   private selectTarget(): Actor | null {

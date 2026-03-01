@@ -4,3 +4,8 @@ export { ItemRedberry } from './ItemRedberry';
 export { ItemBatTooth } from './ItemBatTooth';
 export { ItemSpiderSandals } from './ItemSpiderSandals';
 export { ItemSnailShell } from './ItemSnailShell';
+export { ItemMushroom } from './ItemMushroom';
+export { ItemPumpkinHelmet } from './ItemPumpkinHelmet';
+export { ItemWildwoodLeaf } from './ItemWildwoodLeaf';
+export { ItemAstoria } from './ItemAstoria';
+export { ItemCharmBerry } from './ItemCharmBerry';

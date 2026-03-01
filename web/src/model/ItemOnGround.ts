@@ -11,13 +11,16 @@ import type { Tile } from './Tile';
  * Wraps an Item as a floor Entity so it can be placed on the ground.
  * When the player walks over it, the item is auto-picked up.
  * Port of C# ItemOnGround.cs.
+ *
+ * Note: The wrapped item is stored as `heldItem` (not `item`) to avoid
+ * conflicting with Entity's `item` getter which returns the floor item at this pos.
  */
 export class ItemOnGround extends Entity {
   readonly _isItem = true;
   readonly [ACTOR_ENTER_HANDLER] = true;
 
   private _pos: Vector2Int;
-  readonly item: Item;
+  readonly heldItem: Item;
   readonly start: Vector2Int | null;
 
   get pos(): Vector2Int {
@@ -31,14 +34,14 @@ export class ItemOnGround extends Entity {
   constructor(pos: Vector2Int, item: Item, start: Vector2Int | null = null) {
     super();
     this._pos = pos;
-    this.item = item;
+    this.heldItem = item;
     this.start = start ?? pos;
   }
 
   /** Find a valid tile for placement via BFS. */
   static placementBehavior(floor: Floor, itemOnGround: ItemOnGround): void {
     const newPos = floor
-      .BreadthFirstSearch(itemOnGround.pos, () => true)
+      .breadthFirstSearch(itemOnGround.pos, () => true)
       .find((tile: Tile) => ItemOnGround.canOccupy(tile));
     if (newPos) {
       itemOnGround._pos = newPos.pos;
@@ -61,12 +64,10 @@ export class ItemOnGround extends Entity {
     const player = GameModelRef.main.player;
     if (!this.isNextTo(player)) return;
 
-    if (player.inventory.addItem(this.item, this)) {
+    if (player.inventory.addItem(this.heldItem, this)) {
       this.kill(player);
     } else {
-      GameModelRef.main.turnManager.onPlayerCannotPerform.emit(
-        new CannotPerformActionException('Inventory is full!')
-      );
+      throw new CannotPerformActionException('Inventory is full!');
     }
   }
 }

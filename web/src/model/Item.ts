@@ -87,7 +87,15 @@ export interface ISticky {
  * Port of C# Item.cs.
  */
 export class Item {
-  inventory: Inventory | null = null;
+  private _inventory: Inventory | null = null;
+
+  get inventory(): Inventory | null {
+    return this._inventory;
+  }
+
+  set inventory(value: Inventory | null) {
+    this._inventory = value;
+  }
 
   readonly onDestroyed = new EventEmitter<[]>();
 

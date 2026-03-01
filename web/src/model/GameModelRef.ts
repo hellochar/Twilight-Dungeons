@@ -14,6 +14,7 @@ export interface IGameModelRef {
   emitAnimation(event: object): void;
   gameOver(won: boolean, deathSource?: { displayName: string }): void;
   floorCleared(floor: any): void;
+  onFloorCleared: { on(listener: (floor: any) => void): () => void };
 }
 
 let _main: IGameModelRef | null = null;

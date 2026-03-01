@@ -3,6 +3,7 @@ import { Vector2Int } from '../core/Vector2Int';
 import { TileVisibility, CollisionLayer, type IBlocksMovement, type IActorEnterHandler, type IActorLeaveHandler, ACTOR_ENTER_HANDLER, ACTOR_LEAVE_HANDLER } from '../core/types';
 import { collectModifiers } from '../core/Modifiers';
 import { GameModelRef } from './GameModelRef';
+import { entityRegistry } from '../generator/entityRegistry';
 
 /** Implement on Body or Grass to block line-of-sight */
 export interface IBlocksVision {
@@ -206,6 +207,33 @@ export class Soil extends Tile {
   }
 }
 
+/**
+ * FungalWall — wall that can be cleared to Ground when player walks into it.
+ * Port of C# FungalWall from FungalColony.cs.
+ * Clearing is triggered by player interaction (move-next-to + clear action).
+ */
+export class FungalWall extends Wall {
+  constructor(pos: Vector2Int) {
+    super(pos);
+  }
+
+  protected handleEnterFloor(): void {
+    super.handleEnterFloor();
+    if (this.grass) {
+      this.grass.killSelf();
+    }
+  }
+
+  /** Clear this wall to ground, if player is adjacent. */
+  clear(): void {
+    const player = GameModelRef.mainOrNull?.player;
+    if (player && this.isNextTo(player)) {
+      this.floor!.put(new Ground(this.pos));
+      this.floor?.recomputeVisibility();
+    }
+  }
+}
+
 export class Water extends Tile implements IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
   private collected = false;
@@ -227,3 +255,5 @@ export class Water extends Tile implements IActorEnterHandler {
     this.floor!.put(new Ground(this.pos));
   }
 }
+
+entityRegistry.register('FungalWall', FungalWall);

@@ -5,7 +5,6 @@ import { SleepTask } from '../tasks/SleepTask';
 import { Inventory } from '../Inventory';
 import { Vector2Int } from '../../core/Vector2Int';
 import { Faction } from '../../core/types';
-import { GameModelRef } from '../GameModelRef';
 import type { Entity } from '../Entity';
 
 /**

@@ -36,7 +36,7 @@ export class Snail extends AIActor implements IActionPerformedHandler, ITakeAnyD
     }
   }
 
-  handleTakeAnyDamage(dmg: number): void {
+  handleTakeAnyDamage(_dmg: number): void {
     this.statuses.add(new InShellStatus());
   }
 

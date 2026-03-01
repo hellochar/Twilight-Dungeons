@@ -23,6 +23,16 @@ const STATUS_SPRITES: Record<string, string> = {
   GuardedStatus: 'guardroot',
   FreeMoveStatus: 'free-move',
   SoftGrassStatus: 'colored_transparent_packed_95',
+  VulnerableStatus: 'vulnerability',
+  ConfusedStatus: 'confused',
+  StrengthStatus: 'strength',
+  PacifiedStatus: 'peace',
+  BloodstoneStatus: 'bloodstone',
+  PumpedUpStatus: 'pumped-up',
+  CharmedStatus: 'charmed',
+  ClumpedLungStatus: 'clumped-lung',
+  ParasiteStatus: 'parasite',
+  StatusWild: 'wild',
 };
 
 /** Fallback colors when tilesheet sprite is missing. */
@@ -35,6 +45,8 @@ const TILE_COLORS: Record<string, number> = {
   Soil: 0x6b5b3a,
   Water: 0x3a6b8b,
   Signpost: 0x8b7355,
+  FungalWall: 0x4a5a3a,
+  Muck: 0x4a3a2a,
 };
 
 /**

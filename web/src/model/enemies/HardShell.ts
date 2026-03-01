@@ -3,33 +3,39 @@ import { ActorTask } from '../ActorTask';
 import { AttackTask } from '../tasks/AttackTask';
 import { ChaseTargetTask } from '../tasks/ChaseTargetTask';
 import { MoveRandomlyTask } from '../tasks/MoveRandomlyTask';
-import { ActionCosts } from '../BaseAction';
-import { ActionType } from '../../core/types';
 import { Vector2Int } from '../../core/Vector2Int';
 import { GameModelRef } from '../GameModelRef';
+import {
+  ATTACK_DAMAGE_TAKEN_MOD,
+  type IAttackDamageTakenModifier,
+} from '../../core/Modifiers';
 import { entityRegistry } from '../../generator/entityRegistry';
 
 /**
- * Fast enemy: moves and attacks at half cost (acts twice per turn).
- * Port of C# Scorpion.cs.
+ * If HardShell would take 3+ attack damage, it is reduced to 0.
+ * Port of C# HardShell.cs.
  */
-export class Scorpion extends AIActor {
-  protected get actionCosts(): ActionCosts {
-    return new ActionCosts([
-      [ActionType.MOVE, 0.5],
-      [ActionType.ATTACK, 0.5],
-      [ActionType.WAIT, 1],
-      [ActionType.GENERIC, 1],
-    ]);
+export class HardShell extends AIActor implements IAttackDamageTakenModifier {
+  readonly [ATTACK_DAMAGE_TAKEN_MOD] = true as const;
+
+  get turnPriority(): number {
+    return 50;
   }
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 4;
+    this._hp = this._baseMaxHp = 8;
   }
 
   baseAttackDamage(): [number, number] {
-    return [1, 1];
+    return [2, 2];
+  }
+
+  modify(input: number): number {
+    if (input >= 3) {
+      return 0;
+    }
+    return input;
   }
 
   protected getNextTask(): ActorTask {
@@ -44,4 +50,4 @@ export class Scorpion extends AIActor {
   }
 }
 
-entityRegistry.register('Scorpion', Scorpion);
+entityRegistry.register('HardShell', HardShell);

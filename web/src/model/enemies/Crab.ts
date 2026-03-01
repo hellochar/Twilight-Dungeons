@@ -6,8 +6,8 @@ import { WaitTask } from '../tasks/WaitTask';
 import { Vector2Int } from '../../core/Vector2Int';
 import { Faction } from '../../core/types';
 import { MyRandom } from '../../core/MyRandom';
-import { GameModelRef } from '../GameModelRef';
 import { entityRegistry } from '../../generator/entityRegistry';
+import type { Body } from '../Body';
 
 /**
  * Neutral creature. Only moves horizontally. Attacks anything in its path.
@@ -46,7 +46,7 @@ export class Crab extends AIActor {
         return new MoveToTargetTask(this, nextPos);
       } else {
         // Something's blocking the way; attack it
-        return new AttackTask(this, nextTile.body);
+        return new AttackTask(this, nextTile.body as Body);
       }
     }
   }

@@ -77,9 +77,23 @@ export class SpriteManager {
     'soft grass': 'softgrass',
     'guardleaf': 'guardroot',
     // Items
+    // Items
     'bat tooth': 'bat-tooth',
     'spider sandals': 'spider-silk-shoes',
     'snail shell': 'snail-shell',
+    'pumpkin helmet': 'pumpkin-helmet',
+    'wildwood leaf': 'wildwood-leaf',
+    'charm berry': 'charmberry',
+    'mushroom cap': 'mushroom-cap',
+    // Grasses
+    'evening bells': 'evening-bell',
+    'poison moss': 'poisonmoss',
+    // Enemies
+    'iron jelly': 'iron-jelly',
+    'golem': 'golem-head',
+    'parasite egg': 'parasite-egg',
+    'hard shell': 'hardshell',
+    'scuttler underground': 'scuttler',
   };
 
   async load(): Promise<void> {

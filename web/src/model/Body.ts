@@ -23,22 +23,18 @@ export const TAKE_ANY_DAMAGE_HANDLER = Symbol.for('ITakeAnyDamageHandler');
 export const HEAL_HANDLER = Symbol.for('IHealHandler');
 
 export interface IBodyMoveHandler {
-  [key: symbol]: true;
   handleMove(newPos: Vector2Int, oldPos: Vector2Int): void;
 }
 
 export interface IBodyTakeAttackDamageHandler {
-  [key: symbol]: true;
   handleTakeAttackDamage(damage: number, hp: number, source: any): void;
 }
 
 export interface ITakeAnyDamageHandler {
-  [key: symbol]: true;
   handleTakeAnyDamage(damage: number): void;
 }
 
 export interface IHealHandler {
-  [key: symbol]: true;
   handleHeal(amount: number): void;
 }
 

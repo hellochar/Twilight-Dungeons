@@ -5,10 +5,10 @@ import { ActionType } from '../../core/types';
 import { BaseAction, type ActionCosts } from '../BaseAction';
 
 /**
- * Free move: next movement costs 0 turns. Consumed on MOVE action.
- * Port of C# FreeMoveStatus from SoftGrass.cs.
+ * Halves attack cost for N attacks, then expires.
+ * Port of C# PumpedUpStatus from ItemMushroom.cs.
  */
-export class FreeMoveStatus extends StackingStatus implements IActionCostModifier, IActionPerformedHandler {
+export class PumpedUpStatus extends StackingStatus implements IActionCostModifier, IActionPerformedHandler {
   readonly [ACTION_COST_MOD] = true as const;
   readonly [ACTION_PERFORMED_HANDLER] = true as const;
 
@@ -16,20 +16,19 @@ export class FreeMoveStatus extends StackingStatus implements IActionCostModifie
     super(stacks);
   }
 
-  /** Handles STEP_MOD (inherited), ACTION_COST_MOD. */
+  /** Handles STEP_MOD (inherited) and ACTION_COST_MOD. */
   modify(input: any): any {
     if (input instanceof Map) {
-      // ACTION_COST_MOD: free movement
       const costs = input as ActionCosts;
-      costs.set(ActionType.MOVE, 0);
+      costs.set(ActionType.ATTACK, (costs.get(ActionType.ATTACK) ?? 1) / 2);
       return costs;
     }
     // STEP_MOD
     return super.modify(input);
   }
 
-  handleActionPerformed(_finalAction: BaseAction, initialAction: BaseAction): void {
-    if (initialAction.type === ActionType.MOVE) {
+  handleActionPerformed(finalAction: BaseAction, _initialAction: BaseAction): void {
+    if (finalAction.type === ActionType.ATTACK) {
       this.stacks--;
     }
   }

@@ -351,7 +351,96 @@ Stay as close as possible to the Unity version. Always refer back to it for spri
 - **clearFloor guarded**: Uses GameModelRef.mainOrNull since clearFloor() can be called during generation when main is null.
 - **No drag-and-drop**: Simplified from C# version. Click slot → popup → click action button.
 
+## Sprint 13 (2026-02-28): Bulk Content Porting — Batch 1 ✅
+*Plan sessions 13-15 (content porting batch 1)*
+
+### New Infrastructure Files (2)
+- [x] src/model/enemies/Destructible.ts — Destructible base (all damage forced to 1) + Rubble (IBlocksVision), Stump, Stalk (chain-kills all Stalks on death)
+- [x] src/model/enemies/SimpleStatusApplicationEnemy.ts — Abstract AIActor subclass for cooldown-based status application (used by Healer, Poisoner, Muckola)
+
+### New Enemy Files (20)
+- [x] src/model/enemies/Wallflower.ts — wall-tethered, ConfusedStatus on attack
+- [x] src/model/enemies/HardShell.ts — blocks 3+ damage
+- [x] src/model/enemies/Golem.ts — 2x action cost, leaves Rubble on death
+- [x] src/model/enemies/Dizapper.ts — applies VulnerableStatus
+- [x] src/model/enemies/Bloodstone.ts — BloodstoneStatus on all actors on floor
+- [x] src/model/enemies/Butterfly.ts — flying, flees player
+- [x] src/model/enemies/Skully.ts — basic enemy + co-located Muck grass class (circular dep: Muck↔Skully)
+- [x] src/model/enemies/Thistlebog.ts — basic enemy
+- [x] src/model/enemies/Healer.ts — heals allies, extends SimpleStatusApplicationEnemy
+- [x] src/model/enemies/Poisoner.ts — SimpleStatusApplicationEnemy, applies PoisonedStatus
+- [x] src/model/enemies/Muckola.ts — SimpleStatusApplicationEnemy, spawns Muck tile
+- [x] src/model/enemies/Hopper.ts — eats grass to heal, jumps over entities
+- [x] src/model/enemies/Clumpshroom.ts — ClumpedLungStatus on attack
+- [x] src/model/enemies/Wildekin.ts — charges player, stuns on wall collision
+- [x] src/model/enemies/Scuttler.ts — transforms to/from ScuttlerUnderground grass
+- [x] src/model/enemies/Jackal.ts — pack hunter + JackalBoss (16 HP)
+- [x] src/model/enemies/Parasite.ts — Parasite + ParasiteEgg
+- [x] src/model/enemies/Octopus.ts — ranged ink attack
+- [x] src/model/enemies/IronJelly.ts — iron shell damage reduction
+
+### New Grass Files (10)
+- [x] src/model/grasses/Brambles.ts — 1 damage on enter
+- [x] src/model/grasses/Mushroom.ts — harvest ItemMushroom
+- [x] src/model/grasses/Astoria.ts — heal 4 HP or pick up ItemAstoria
+- [x] src/model/grasses/EveningBells.ts — sleep non-player actors
+- [x] src/model/grasses/Bloodwort.ts — gain StrengthStatus
+- [x] src/model/grasses/Redcap.ts — confuse adjacent enemies
+- [x] src/model/grasses/Violets.ts — open/close cycle, PacifiedStatus
+- [x] src/model/grasses/Llaora.ts — disperse confuses enemies
+- [x] src/model/grasses/Poisonmoss.ts — applies Poison, spreads
+- [x] src/model/grasses/Fern.ts — vision blocker
+- [x] src/model/grasses/Muck.ts — re-export from Skully.ts
+
+### New Item Files (5)
+- [x] src/model/items/ItemMushroom.ts — stackable consumable, PumpedUpStatus
+- [x] src/model/items/ItemPumpkinHelmet.ts — durable headwear, blocks 1 damage
+- [x] src/model/items/ItemWildwoodLeaf.ts — stackable consumable, StatusWild
+- [x] src/model/items/ItemAstoria.ts — usable consumable, heal 4
+- [x] src/model/items/ItemCharmBerry.ts — stackable, charms enemies
+
+### New Status Files (11)
+- [x] src/model/statuses/VulnerableStatus.ts — +1 attack damage taken per stack
+- [x] src/model/statuses/BloodstoneStatus.ts — +1 dealt/taken, linked to Bloodstone enemy
+- [x] src/model/statuses/ConfusedStatus.ts — random movement for stacks turns
+- [x] src/model/statuses/StrengthStatus.ts — +1 attack per stack, consumed per attack
+- [x] src/model/statuses/PacifiedStatus.ts — can't attack, removes near open Violet
+- [x] src/model/statuses/RecoveringStatus.ts — heals after 25 turns
+- [x] src/model/statuses/CharmedStatus.ts — enemies become friendly
+- [x] src/model/statuses/PumpedUpStatus.ts — attack boost from mushroom
+- [x] src/model/statuses/StatusWild.ts — wildwood leaf effect
+- [x] src/model/statuses/ClumpedLungStatus.ts — debuff from Clumpshroom
+- [x] src/model/statuses/ParasiteStatus.ts — spawns ParasiteEgg on death
+
+### Modified Files
+- [x] src/model/Body.ts — removed [key: symbol]: true index signatures from handler interfaces
+- [x] src/model/GameModel.ts — 26 new side-effect imports for entity registration
+- [x] src/model/GameModelRef.ts — minor updates
+- [x] src/model/Item.ts — inventory field → getter/setter pair (allows subclass override)
+- [x] src/model/ItemOnGround.ts — renamed item → heldItem (avoids Entity.item clash), fixed BFS import
+- [x] src/model/Tile.ts — added FungalWall class + entityRegistry registration
+- [x] src/model/enemies/AIActor.ts — minor fixes
+- [x] src/model/enemies/Bat.ts, Crab.ts, Scorpion.ts, Snail.ts — import fixes
+- [x] src/model/enemies/index.ts — added all new enemy exports
+- [x] src/model/grasses/index.ts — added all new grass exports
+- [x] src/model/items/index.ts — added new item exports
+- [x] src/model/statuses/index.ts — added all new status exports
+- [x] src/model/statuses/FreeMoveStatus.ts, GuardedStatus.ts — minor fixes
+- [x] src/renderer/SpriteManager.ts — NAME_MAP entries for new entities
+- [x] src/renderer/GameRenderer.ts — STATUS_SPRITES + TILE_COLORS for new statuses/tiles
+
+### Stats
+- 148 TypeScript files, ~13,500 lines
+- tsc --noEmit passes clean
+- ~50 new files added this sprint
+
+### Design Decisions
+- **Muck↔Skully circular dep**: Muck co-located in Skully.ts (Muck spawns Skully on step, Skully spawns Muck on death). grasses/Muck.ts re-exports from enemies/Skully.ts.
+- **ItemOnGround.heldItem rename**: Entity base class has an `item` getter that returns the grass/trigger at the entity's position. ItemOnGround's wrapped item renamed to `heldItem` to avoid clash.
+- **Handler interface cleanup**: Removed `[key: symbol]: true` index signatures from Body.ts handler interfaces — they caused "incorrectly implements interface" errors when classes had additional symbol-tagged properties.
+- **Parallel agent strategy**: 5 worktree agents ported content simultaneously (enemies×3, grasses×1, items×1), then integrated into main branch.
+
 ### Remaining Undone Plan Sessions
-- Sessions 13-16: Remaining content (enemies, grasses, items)
+- Sessions 13-16: Remaining complex content (HydraHeart, Grasper, Shielder, FruitingBody, Plants, remaining grasses)
 - Session 17: Daily Puzzle UI + Scoring
 - Session 18: Deployment + Final Polish

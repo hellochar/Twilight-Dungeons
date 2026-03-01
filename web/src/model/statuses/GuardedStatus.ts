@@ -1,7 +1,5 @@
 import { ATTACK_DAMAGE_TAKEN_MOD, type IAttackDamageTakenModifier } from '../../core/Modifiers';
-import { StackingStatus } from '../Status';
-import { Status } from '../Status';
-import { BaseAction } from '../BaseAction';
+import { StackingStatus, Status } from '../Status';
 
 /**
  * Absorbs attack damage via Guardleaf's guardLeft pool.

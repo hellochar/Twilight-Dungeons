@@ -2,21 +2,7 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:docs.unity3d.com)",
-      "Bash(xargs wc -l)",
-      "Bash(npm create vite@latest web -- --template react-ts)",
-      "Bash(npm install)",
-      "Bash(npm install pixijs@^8 gsap @pixi/particle-emitter)",
-      "Bash(npm view pixi.js versions --json)",
-      "Bash(npm install pixi.js@^8.16.0 gsap @pixi/particle-emitter)",
-      "Bash(npx tsc --noEmit)",
-      "Bash(git commit:*)",
-      "Bash(node scripts/copy-sprites.js)",
-      "Bash(pkill -f \"vite\")",
-      "Bash(wc:*)",
-      "Bash(npx vite build)",
-      "Bash(git status -u)",
-      "Bash(grep:*)",
-      "Bash(xargs grep \"^public class\")"
+      "Bash(*)"
     ]
   }
 }

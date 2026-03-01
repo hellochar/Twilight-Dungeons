@@ -16,6 +16,7 @@ export const SPRITE_TINTS: Record<string, number> = {
   'octopus': 0x5affd1,      // rgb(0.354, 1.0, 0.818)
   'moss man': 0xe9ffe3,     // rgb(0.912, 1.0, 0.891)
   'scorpion': 0xc7605c,     // rgb(0.78, 0.375, 0.362)
+  'snail': 0xe4ff98,        // rgb(0.892, 1.0, 0.596)
 
   // Individual PNG sprites with tints
   'snake': 0x9922ec,        // rgb(0.598, 0.134, 0.925)

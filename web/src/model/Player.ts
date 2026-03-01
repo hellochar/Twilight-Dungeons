@@ -11,6 +11,7 @@ import { ItemHands } from './items/ItemHands';
 import { EventEmitter } from '../core/EventEmitter';
 import type { BaseAction } from './BaseAction';
 import type { Entity } from './Entity';
+import type { Status } from './Status';
 
 const KILL_HANDLER = Symbol.for('IKillEntityHandler');
 const DEATH_HANDLER = Symbol.for('IDeathHandler');
@@ -93,6 +94,13 @@ export class Player extends Actor {
   /** IActionPerformedHandler */
   handleActionPerformed(finalAction: BaseAction, initialAction: BaseAction): void {
     if (finalAction !== initialAction) {
+      this.clearTasks();
+    }
+  }
+
+  /** IStatusAddedHandler — cancel current pathing when debuffed. */
+  handleStatusAdded(status: Status): void {
+    if (status.isDebuff) {
       this.clearTasks();
     }
   }

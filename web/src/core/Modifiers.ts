@@ -47,7 +47,9 @@ export function collectModifiers<T>(
 ): T[] {
   if (!provider) return [];
   const result: T[] = [];
-  _collect(provider, tag, result, provider);
+  const visited = new Set<object>();
+  visited.add(provider);
+  _collect(provider, tag, result, visited);
   return result;
 }
 
@@ -55,7 +57,7 @@ function _collect(
   provider: IModifierProvider,
   tag: symbol,
   result: unknown[],
-  root: IModifierProvider,
+  visited: Set<object>,
 ): void {
   for (const obj of provider.myModifiers) {
     if (obj == null) continue;
@@ -65,14 +67,15 @@ function _collect(
       result.push(obj);
     }
 
-    // Recurse into sub-providers (but not back into root)
+    // Recurse into sub-providers (skip already-visited to prevent cycles)
     if (
-      obj !== root &&
       typeof obj === 'object' &&
+      !visited.has(obj) &&
       'myModifiers' in obj &&
       typeof (obj as IModifierProvider).myModifiers !== 'undefined'
     ) {
-      _collect(obj as IModifierProvider, tag, result, root);
+      visited.add(obj);
+      _collect(obj as IModifierProvider, tag, result, visited);
     }
   }
 }

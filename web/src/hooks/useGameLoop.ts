@@ -15,6 +15,7 @@ import { Item, EquippableItem, STACKABLE_TAG, DURABLE_TAG, EDIBLE_TAG, USABLE_TA
 import type { Entity } from '../model/Entity';
 import { StackingStatus } from '../model/Status';
 import { ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../core/types';
+import { loadDebugState } from '../debug/DebugPanel';
 
 // ─── Snapshot types for React consumption ───
 
@@ -129,6 +130,7 @@ export function useGameLoop() {
   const processingRef = useRef(false);
   const targetingRef = useRef<TargetingInfo | null>(null);
   const [targetingState, setTargetingState] = useState<TargetingState | null>(null);
+  const [debugNotice, setDebugNotice] = useState<string | null>(null);
 
   const readState = useCallback((): GameState => {
     const model = modelRef.current;
@@ -348,12 +350,19 @@ export function useGameLoop() {
       case 'Unequip':
         if ('Unequip' in item) (item as any).Unequip(player);
         break;
-      default:
+      default: {
+        // Custom action (e.g. "Germinate", "Refine") — call method by camelCase name
+        const methodName = action[0].toLowerCase() + action.slice(1);
+        if (typeof (item as any)[methodName] === 'function') {
+          (item as any)[methodName](player);
+          break;
+        }
         return;
+      }
     }
 
-    // Drop/Eat/Use cost a turn — step the model
-    const costsTurn = ['Drop', 'Eat', 'Use'].includes(action);
+    // Drop/Eat/Use/custom actions cost a turn — only Equip/Unequip are free
+    const costsTurn = !['Equip', 'Unequip'].includes(action);
     if (costsTurn) {
       player.setTasks(new WaitTask(player, 1));
       await stepAndAnimate();
@@ -386,7 +395,12 @@ export function useGameLoop() {
     const renderer = rendererRef.current;
     if (!renderer) return;
 
-    const newModel = GameModel.createDailyGame();
+    const debugState = import.meta.env.DEV ? loadDebugState() : {};
+    const customSeed = debugState.seed?.trim() || undefined;
+    const customDepth = debugState.depth ? parseInt(debugState.depth, 10) : undefined;
+    const depthArg = customDepth != null && customDepth >= 0 && customDepth <= 27 ? customDepth : undefined;
+
+    const newModel = GameModel.createDailyGame(customSeed, depthArg);
     newModel.consumeAnimationEvents();
     modelRef.current = newModel;
 
@@ -431,9 +445,22 @@ export function useGameLoop() {
       await sprites.load();
       if (destroyed) { app.destroy(true, { children: true }); return; }
 
-      const model = GameModel.createDailyGame();
+      const debugState = import.meta.env.DEV ? loadDebugState() : {};
+      const customSeed = debugState.seed?.trim() || undefined;
+      const customDepth = debugState.depth ? parseInt(debugState.depth, 10) : undefined;
+      const depthArg = customDepth != null && customDepth >= 0 && customDepth <= 27 ? customDepth : undefined;
+
+      const model = GameModel.createDailyGame(customSeed, depthArg);
       model.consumeAnimationEvents();
       modelRef.current = model;
+
+      if (import.meta.env.DEV && (customSeed || depthArg != null)) {
+        const parts: string[] = [];
+        if (customSeed) parts.push(`seed "${customSeed}"`);
+        if (depthArg != null) parts.push(`depth ${depthArg}`);
+        setDebugNotice(`Loaded with ${parts.join(', ')}`);
+        setTimeout(() => setDebugNotice(null), 4000);
+      }
 
       const camera = new Camera();
       const renderer = new GameRenderer(app, camera, sprites);
@@ -451,7 +478,10 @@ export function useGameLoop() {
       input.attach();
 
       resizeHandler = () => {
-        camera.resize(app.screen.width, app.screen.height, model.currentFloor.width, model.currentFloor.height);
+        const w = container!.clientWidth;
+        const h = container!.clientHeight;
+        app.renderer.resize(w, h);
+        camera.resize(w, h, model.currentFloor.width, model.currentFloor.height);
         renderer.rebuildAll();
       };
       window.addEventListener('resize', resizeHandler);
@@ -476,7 +506,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

@@ -1,16 +1,30 @@
+import { useCallback, useState } from 'react';
 import { useGameLoop } from './hooks/useGameLoop';
 import { HUD } from './ui/HUD';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { GameOverOverlay } from './ui/GameOverOverlay';
-import { DebugPanel } from './debug/DebugPanel';
+import { EntityInfoPopup, type EntityInfoData } from './ui/EntityInfoPopup';
+import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import './App.css';
 
 function App() {
-  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef } = useGameLoop();
+  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice } = useGameLoop();
+  const [debugOpen, setDebugOpen] = useState(false);
+  const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
+
+  const onDebugOpenChange = useCallback((open: boolean) => {
+    setDebugOpen(open);
+    // Trigger resize so PixiJS + camera adapt to new container width
+    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+  }, []);
+
+  const containerWidth = import.meta.env.DEV && debugOpen
+    ? `calc(100vw - ${PANEL_WIDTH}px)`
+    : '100vw';
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
-      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <div ref={containerRef} style={{ width: containerWidth, height: '100%' }} />
       {ready && (
         <>
           <HUD
@@ -60,6 +74,9 @@ function App() {
               </button>
             </div>
           )}
+          {entityInfo && (
+            <EntityInfoPopup data={entityInfo} onClose={() => setEntityInfo(null)} />
+          )}
           {gameState.gameOver && (
             <GameOverOverlay info={gameState.gameOver} onPlayAgain={resetGame} />
           )}
@@ -68,7 +85,27 @@ function App() {
               syncAndUpdate={syncAndUpdate}
               modelRef={modelRef}
               rendererRef={rendererRef}
+              onOpenChange={onDebugOpenChange}
             />
+          )}
+          {debugNotice && (
+            <div style={{
+              position: 'absolute',
+              top: 8,
+              right: debugOpen ? PANEL_WIDTH + 8 : 8,
+              background: 'rgba(20, 20, 32, 0.9)',
+              border: '1px solid #6cf',
+              borderRadius: 4,
+              padding: '6px 12px',
+              fontFamily: 'monospace',
+              fontSize: 11,
+              color: '#6cf',
+              pointerEvents: 'none',
+              zIndex: 15,
+              transition: 'opacity 0.3s',
+            }}>
+              {debugNotice}
+            </div>
           )}
         </>
       )}

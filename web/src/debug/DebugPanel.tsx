@@ -7,10 +7,26 @@ import { Faction, TileVisibility } from '../core/types';
 import { entityRegistry } from '../generator/entityRegistry';
 import { allEncounters } from '../generator/Encounters';
 import { StackingStatus } from '../model/Status';
-import { MyRandom } from '../core/MyRandom';
-import { FloorGenerator } from '../generator/FloorGenerator';
 import * as AllItems from '../model/items';
 import * as AllStatuses from '../model/statuses';
+
+// ─── Constants ───
+
+export const PANEL_WIDTH = 320;
+
+const STORAGE_KEY = 'debug-panel';
+
+const CAT_ORDER = ['Encounter', 'Item', 'Spawn', 'Status', 'HP', 'Floor', 'Misc'] as const;
+
+const CAT_COLORS: Record<string, string> = {
+  Spawn: '#6cf',
+  Encounter: '#f96',
+  Item: '#6f6',
+  Status: '#f6f',
+  HP: '#f66',
+  Floor: '#ff6',
+  Misc: '#aaa',
+};
 
 // ─── Types ───
 
@@ -25,19 +41,25 @@ interface DebugPanelProps {
   syncAndUpdate: () => void;
   modelRef: RefObject<GameModel | null>;
   rendererRef: RefObject<GameRenderer | null>;
+  onOpenChange: (open: boolean) => void;
 }
 
-// ─── Category colors ───
+export interface PersistedDebugState {
+  seed?: string;
+  depth?: string;
+  collapsed?: Record<string, boolean>;
+}
 
-const CAT_COLORS: Record<string, string> = {
-  Spawn: '#6cf',
-  Encounter: '#f96',
-  Item: '#6f6',
-  Status: '#f6f',
-  HP: '#f66',
-  Floor: '#ff6',
-  Misc: '#aaa',
-};
+export function loadDebugState(): PersistedDebugState {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function savePersisted(state: PersistedDebugState): void {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
 
 // ─── Build commands ───
 
@@ -121,163 +143,87 @@ function buildCommands(
 
   // ── HP commands ──
   cmds.push({
-    label: 'Heal Full',
-    category: 'HP',
-    mode: 'instant',
+    label: 'Heal Full', category: 'HP', mode: 'instant',
+    execute: () => { const p = player(); if (!p) return; p.heal(p.maxHp); syncAndUpdate(); },
+  });
+  cmds.push({
+    label: 'Heal +4', category: 'HP', mode: 'instant',
+    execute: () => { const p = player(); if (!p) return; p.heal(4); syncAndUpdate(); },
+  });
+  cmds.push({
+    label: 'Damage -4', category: 'HP', mode: 'instant',
+    execute: () => { const p = player(); if (!p) return; p.takeDamage(4, p); syncAndUpdate(); },
+  });
+  cmds.push({
+    label: 'Max HP +4', category: 'HP', mode: 'instant',
     execute: () => {
-      const p = player();
-      if (!p) return;
-      p.heal(p.maxHp);
-      syncAndUpdate();
+      const p = player(); if (!p) return;
+      (p as any)._baseMaxHp += 4; p.heal(4); syncAndUpdate();
     },
   });
   cmds.push({
-    label: 'Heal +4',
-    category: 'HP',
-    mode: 'instant',
+    label: 'Set HP to 1', category: 'HP', mode: 'instant',
     execute: () => {
-      const p = player();
-      if (!p) return;
-      p.heal(4);
-      syncAndUpdate();
-    },
-  });
-  cmds.push({
-    label: 'Damage -4',
-    category: 'HP',
-    mode: 'instant',
-    execute: () => {
-      const p = player();
-      if (!p) return;
-      p.takeDamage(4, p);
-      syncAndUpdate();
-    },
-  });
-  cmds.push({
-    label: 'Max HP +4',
-    category: 'HP',
-    mode: 'instant',
-    execute: () => {
-      const p = player();
-      if (!p) return;
-      (p as any)._baseMaxHp += 4;
-      p.heal(4);
-      syncAndUpdate();
-    },
-  });
-  cmds.push({
-    label: 'Set HP to 1',
-    category: 'HP',
-    mode: 'instant',
-    execute: () => {
-      const p = player();
-      if (!p) return;
-      const dmg = p.hp - 1;
-      if (dmg > 0) p.takeDamage(dmg, p);
-      syncAndUpdate();
+      const p = player(); if (!p) return;
+      const dmg = p.hp - 1; if (dmg > 0) p.takeDamage(dmg, p); syncAndUpdate();
     },
   });
 
   // ── Floor commands ──
   cmds.push({
-    label: 'Kill All Enemies',
-    category: 'Floor',
-    mode: 'instant',
+    label: 'Kill All Enemies', category: 'Floor', mode: 'instant',
     execute: () => {
-      const f = floor();
-      const p = player();
-      if (!f || !p) return;
-      const enemies = [...f.bodies].filter(
-        (b) => 'faction' in b && (b as any).faction === Faction.Enemy,
-      );
-      for (const e of enemies) {
-        if ('takeDamage' in e) (e as any).takeDamage(9999, p);
-      }
+      const f = floor(); const p = player(); if (!f || !p) return;
+      const enemies = [...f.bodies].filter(b => 'faction' in b && (b as any).faction === Faction.Enemy);
+      for (const e of enemies) { if ('takeDamage' in e) (e as any).takeDamage(9999, p); }
       syncAndUpdate();
     },
   });
   cmds.push({
-    label: 'Reveal Fog',
-    category: 'Floor',
-    mode: 'instant',
+    label: 'Reveal Fog', category: 'Floor', mode: 'instant',
     execute: () => {
-      const f = floor();
-      if (!f) return;
+      const f = floor(); if (!f) return;
       for (const pos of f.enumerateFloor()) {
-        const tile = f.tiles.get(pos);
-        if (tile) tile.visibility = TileVisibility.Visible;
+        const tile = f.tiles.get(pos); if (tile) tile.visibility = TileVisibility.Visible;
       }
       syncAndUpdate();
     },
   });
   cmds.push({
-    label: 'Regenerate Floor',
-    category: 'Floor',
-    mode: 'instant',
+    label: 'Regenerate Floor', category: 'Floor', mode: 'instant',
     execute: () => regenerateWithSeed(String(Date.now())),
   });
   cmds.push({
-    label: 'Clear Floor',
-    category: 'Floor',
-    mode: 'instant',
-    execute: () => {
-      const f = floor();
-      if (!f) return;
-      (f as any).isCleared = true;
-      syncAndUpdate();
-    },
+    label: 'Clear Floor', category: 'Floor', mode: 'instant',
+    execute: () => { const f = floor(); if (!f) return; (f as any).isCleared = true; syncAndUpdate(); },
   });
 
   // ── Misc commands ──
   cmds.push({
-    label: 'Teleport',
-    category: 'Misc',
-    mode: 'placement',
+    label: 'Teleport', category: 'Misc', mode: 'placement',
     execute: (pos) => {
-      const p = player();
-      const f = floor();
-      if (!p || !pos || !f) return;
-      (p as any)._pos = pos;
-      f.bodyMoved(p, pos);
-      f.recomputeVisibility();
+      const p = player(); const f = floor(); if (!p || !pos || !f) return;
+      (p as any)._pos = pos; f.bodyMoved(); f.recomputeVisibility(); syncAndUpdate();
+    },
+  });
+  cmds.push({
+    label: 'Remove All Statuses', category: 'Misc', mode: 'instant',
+    execute: () => {
+      const p = player(); if (!p) return;
+      const statuses = [...p.statuses.list]; for (const s of statuses) s.Remove(); syncAndUpdate();
+    },
+  });
+  cmds.push({
+    label: 'Empty Inventory', category: 'Misc', mode: 'instant',
+    execute: () => {
+      const p = player(); if (!p) return;
+      for (let i = 0; i < p.inventory.capacity; i++) { const item = p.inventory.getAt(i); if (item) item.Destroy(); }
       syncAndUpdate();
     },
   });
   cmds.push({
-    label: 'Remove All Statuses',
-    category: 'Misc',
-    mode: 'instant',
-    execute: () => {
-      const p = player();
-      if (!p) return;
-      const statuses = [...p.statuses.list];
-      for (const s of statuses) s.Remove();
-      syncAndUpdate();
-    },
-  });
-  cmds.push({
-    label: 'Empty Inventory',
-    category: 'Misc',
-    mode: 'instant',
-    execute: () => {
-      const p = player();
-      if (!p) return;
-      for (let i = 0; i < p.inventory.capacity; i++) {
-        const item = p.inventory.getAt(i);
-        if (item) item.Destroy();
-      }
-      syncAndUpdate();
-    },
-  });
-  cmds.push({
-    label: 'Log Model',
-    category: 'Misc',
-    mode: 'instant',
-    execute: () => {
-      console.log('GameModel:', model());
-      console.log('Player:', player());
-      console.log('Floor:', floor());
-    },
+    label: 'Log Model', category: 'Misc', mode: 'instant',
+    execute: () => { console.log('GameModel:', model()); console.log('Player:', player()); console.log('Floor:', floor()); },
   });
 
   return cmds;
@@ -285,13 +231,24 @@ function buildCommands(
 
 // ─── Component ───
 
-export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelProps) {
+export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange }: DebugPanelProps) {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState('');
   const [placement, setPlacement] = useState<DebugCommand | null>(null);
-  const [seedInput, setSeedInput] = useState('');
-  const [depthInput, setDepthInput] = useState('');
+
+  const persisted = useRef(loadDebugState());
+  const [seedInput, setSeedInput] = useState(persisted.current.seed ?? '');
+  const [depthInput, setDepthInput] = useState(persisted.current.depth ?? '');
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(persisted.current.collapsed ?? {});
   const searchRef = useRef<HTMLInputElement>(null);
+
+  // Persist seed/depth/collapsed to localStorage
+  useEffect(() => {
+    savePersisted({ seed: seedInput, depth: depthInput, collapsed });
+  }, [seedInput, depthInput, collapsed]);
+
+  // Notify parent of open state changes
+  useEffect(() => { onOpenChange(open); }, [open, onOpenChange]);
 
   const regenerateWithSeed = useCallback((seed: string) => {
     const renderer = rendererRef.current;
@@ -320,9 +277,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
     if (!filter) return commands;
     const lower = filter.toLowerCase();
     return commands.filter(
-      (c) =>
-        c.label.toLowerCase().includes(lower) ||
-        c.category.toLowerCase().includes(lower),
+      c => c.label.toLowerCase().includes(lower) || c.category.toLowerCase().includes(lower),
     );
   }, [commands, filter]);
 
@@ -331,24 +286,20 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
     const handler = (e: KeyboardEvent) => {
       if (e.key === '`' || e.key === '~') {
         e.preventDefault();
-        setOpen((prev) => {
-          if (!prev) {
-            setFilter('');
-            setPlacement(null);
-          }
+        e.stopImmediatePropagation();
+        setOpen(prev => {
+          if (!prev) { setFilter(''); setPlacement(null); }
           return !prev;
         });
+        return;
       }
       if (e.key === 'Escape' && open) {
-        if (placement) {
-          setPlacement(null);
-        } else {
-          setOpen(false);
-        }
+        if (placement) { setPlacement(null); }
+        else { setOpen(false); }
       }
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    window.addEventListener('keydown', handler, true); // capture phase to beat search input
+    return () => window.removeEventListener('keydown', handler, true);
   }, [open, placement]);
 
   // Auto-focus search when opening
@@ -356,13 +307,14 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
     if (open) searchRef.current?.focus();
   }, [open]);
 
-  // Canvas click for placement mode
+  // Canvas click for placement mode — stopImmediatePropagation prevents InputHandler from firing
   useEffect(() => {
     if (!placement) return;
     const renderer = rendererRef.current;
     if (!renderer) return;
     const canvas = renderer.app.canvas as HTMLCanvasElement;
     const handler = (e: PointerEvent) => {
+      e.stopImmediatePropagation();
       const rect = canvas.getBoundingClientRect();
       const px = e.clientX - rect.left;
       const py = e.clientY - rect.top;
@@ -370,8 +322,9 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
       placement.execute(tilePos);
       setPlacement(null);
     };
-    canvas.addEventListener('pointerdown', handler, { once: true });
-    return () => canvas.removeEventListener('pointerdown', handler);
+    // Use capture phase so we fire before InputHandler's bubble-phase listener
+    canvas.addEventListener('pointerdown', handler, { capture: true, once: true });
+    return () => canvas.removeEventListener('pointerdown', handler, true);
   }, [placement, rendererRef]);
 
   if (!open) return null;
@@ -380,18 +333,26 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
   const seed = model?.dateSeed ?? '?';
   const depth = model?.generatedDepth ?? model?.currentFloor?.depth ?? '?';
 
-  // Group by category
+  // Group by category in defined order
   const groups = new Map<string, DebugCommand[]>();
   for (const cmd of filtered) {
     const list = groups.get(cmd.category) ?? [];
     list.push(cmd);
     groups.set(cmd.category, list);
   }
+  const orderedGroups: [string, DebugCommand[]][] = [];
+  for (const cat of CAT_ORDER) {
+    const cmds = groups.get(cat);
+    if (cmds) orderedGroups.push([cat, cmds]);
+  }
+  // Any remaining categories not in CAT_ORDER
+  for (const [cat, cmds] of groups) {
+    if (!CAT_ORDER.includes(cat as any)) orderedGroups.push([cat, cmds]);
+  }
 
   const handleGenerate = () => {
     const s = seedInput.trim() || String(Date.now());
     regenerateWithSeed(s);
-    setSeedInput('');
   };
 
   const handleGoToDepth = () => {
@@ -401,21 +362,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
     if (!renderer) return;
 
     const seedStr = model?.dateSeed || new Date().toISOString().slice(0, 10);
-    const djb2Hash = (str: string) => {
-      let hash = 5381;
-      for (let i = 0; i < str.length; i++) hash = ((hash << 5) + hash + str.charCodeAt(i)) | 0;
-      return hash >>> 0;
-    };
-    const numSeed = djb2Hash(seedStr);
-    MyRandom.setSeed(numSeed);
-    const floorSeeds: number[] = [];
-    for (let i = 0; i < 28; i++) floorSeeds.push(MyRandom.Range(0, 0x7fffffff));
-
-    const generator = new FloorGenerator(floorSeeds);
-    const floor = generator.generateCaveFloor(d);
-    const newModel = GameModel.createAndSetMain(floor, floor.startPos);
-    newModel.dateSeed = seedStr;
-    newModel.generatedDepth = d;
+    const newModel = GameModel.createDailyGame(seedStr, d);
     newModel.consumeAnimationEvents();
     modelRef.current = newModel;
 
@@ -428,7 +375,10 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
       newModel.currentFloor.height,
     );
     syncAndUpdate();
-    setDepthInput('');
+  };
+
+  const toggleCollapsed = (cat: string) => {
+    setCollapsed(prev => ({ ...prev, [cat]: !prev[cat] }));
   };
 
   return (
@@ -437,7 +387,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
         position: 'absolute',
         top: 0,
         right: 0,
-        width: 320,
+        width: PANEL_WIDTH,
         height: '100%',
         background: 'rgba(20, 20, 32, 0.92)',
         borderLeft: '1px solid #444',
@@ -449,7 +399,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
         color: '#ccc',
         pointerEvents: 'auto',
       }}
-      onKeyDown={(e) => e.stopPropagation()}
+      onKeyDown={e => e.stopPropagation()}
     >
       {/* Seed info header */}
       <div style={{ padding: '8px 10px', borderBottom: '1px solid #333', flexShrink: 0 }}>
@@ -460,20 +410,20 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
         <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
           <input
             value={seedInput}
-            onChange={(e) => setSeedInput(e.target.value)}
+            onChange={e => setSeedInput(e.target.value)}
             placeholder="custom seed..."
             style={inputStyle}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleGenerate(); }}
+            onKeyDown={e => { if (e.key === 'Enter') handleGenerate(); }}
           />
           <button onClick={handleGenerate} style={btnStyle}>Gen</button>
         </div>
         <div style={{ display: 'flex', gap: 4 }}>
           <input
             value={depthInput}
-            onChange={(e) => setDepthInput(e.target.value)}
+            onChange={e => setDepthInput(e.target.value)}
             placeholder="depth 0-27..."
             style={{ ...inputStyle, width: 90 }}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleGoToDepth(); }}
+            onKeyDown={e => { if (e.key === 'Enter') handleGoToDepth(); }}
           />
           <button onClick={handleGoToDepth} style={btnStyle}>Go</button>
         </div>
@@ -500,7 +450,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
         <input
           ref={searchRef}
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={e => setFilter(e.target.value)}
           placeholder="Search commands..."
           style={{ ...inputStyle, width: '100%' }}
         />
@@ -508,27 +458,33 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
 
       {/* Command list */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 4px 8px' }}>
-        {[...groups.entries()].map(([category, cmds]) => (
+        {orderedGroups.map(([category, cmds]) => (
           <div key={category}>
-            <div style={{
-              padding: '6px 6px 2px',
-              color: CAT_COLORS[category] ?? '#aaa',
-              fontSize: 11,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              letterSpacing: 1,
-            }}>
+            <div
+              onClick={() => toggleCollapsed(category)}
+              style={{
+                padding: '6px 6px 2px',
+                color: CAT_COLORS[category] ?? '#aaa',
+                fontSize: 11,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: 1,
+                cursor: 'pointer',
+                userSelect: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <span style={{ fontSize: 9 }}>{collapsed[category] ? '\u25B6' : '\u25BC'}</span>
               {category} ({cmds.length})
             </div>
-            {cmds.map((cmd) => (
+            {!collapsed[category] && cmds.map(cmd => (
               <div
                 key={`${category}-${cmd.label}`}
                 onClick={() => {
-                  if (cmd.mode === 'placement') {
-                    setPlacement(cmd);
-                  } else {
-                    cmd.execute();
-                  }
+                  if (cmd.mode === 'placement') { setPlacement(cmd); }
+                  else { cmd.execute(); }
                 }}
                 style={{
                   padding: '3px 6px',
@@ -538,8 +494,8 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef }: DebugPanelP
                   alignItems: 'center',
                   gap: 6,
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.08)'; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.08)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
               >
                 {cmd.mode === 'placement' && (
                   <span style={{ color: '#888', fontSize: 10 }}>[P]</span>

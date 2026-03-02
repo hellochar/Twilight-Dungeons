@@ -202,7 +202,7 @@ export class GameModel implements IGameModelRef {
    * Create a daily puzzle game from a date seed.
    * Uses FloorGenerator to produce a procedurally generated floor.
    */
-  static createDailyGame(dateSeed?: string): GameModel {
+  static createDailyGame(dateSeed?: string, depthOverride?: number): GameModel {
     const dateStr = dateSeed ?? new Date().toISOString().slice(0, 10);
     const seed = djb2(dateStr);
 
@@ -213,7 +213,7 @@ export class GameModel implements IGameModelRef {
       floorSeeds.push(MyRandom.Range(0, 0x7fffffff));
     }
 
-    const depth = selectDepth(seed);
+    const depth = depthOverride ?? selectDepth(seed);
     const generator = new FloorGenerator(floorSeeds);
     const floor = generator.generateCaveFloor(depth);
 

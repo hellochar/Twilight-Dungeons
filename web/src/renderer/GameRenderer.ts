@@ -388,14 +388,17 @@ export class GameRenderer {
       shadow.width = ts;
       shadow.height = ts;
 
+      // Offset shadow up by transparent bottom padding so it aligns with visible feet
+      const bottomPad = this.sprites.getBottomPadding(entity.displayName) * ts;
+
       const isFlat = FLAT_SHADOW_ENTITIES.has(entity.displayName.toLowerCase());
       if (isFlat) {
         // Flat shadow: dark copy offset slightly right and up (Unity: 0.05, 0.05)
-        shadow.position.set(ts * 0.05, -ts * 0.05);
+        shadow.position.set(ts * 0.05, -ts * 0.05 - bottomPad);
       } else {
         // Angled shadow: skewed up-right from entity's feet
         shadow.anchor.set(0.5, 1.0);
-        shadow.position.set(ts / 2, ts);
+        shadow.position.set(ts / 2, ts - bottomPad);
         shadow.scale.y *= 0.5;
         shadow.skew.x = -0.35;
       }

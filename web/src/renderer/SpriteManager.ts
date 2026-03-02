@@ -47,6 +47,8 @@ export class SpriteManager {
   private tileSubSprites = new Map<string, Texture>();
   /** Single border-left sub-sprite used for all chasm edges (rotated per edge). */
   private borderTexture: Texture | null = null;
+  /** Cached bottom padding fraction (0–1) per sprite key. */
+  private bottomPaddingCache = new Map<string, number>();
 
   /** Entity displayName → sprite key overrides. */
   private static NAME_MAP: Record<string, string> = {
@@ -227,5 +229,58 @@ export class SpriteManager {
   has(displayName: string): boolean {
     const key = this.resolveKey(displayName);
     return this.textures.has(key);
+  }
+
+  /**
+   * Fraction of transparent rows at the bottom of a sprite (0 = none, 1 = all).
+   * Scans pixel data once per sprite key and caches the result.
+   */
+  getBottomPadding(displayName: string): number {
+    const key = this.resolveKey(displayName);
+    const cached = this.bottomPaddingCache.get(key);
+    if (cached !== undefined) return cached;
+
+    const tex = this.getTexture(displayName);
+    if (!tex || tex === Texture.WHITE) {
+      this.bottomPaddingCache.set(key, 0);
+      return 0;
+    }
+
+    // PixiJS v8 uses ImageBitmap by default; HTMLImageElement as fallback.
+    // Both are valid CanvasImageSource for drawImage().
+    const source = tex.source.resource as CanvasImageSource;
+    if (!(source instanceof HTMLImageElement || source instanceof ImageBitmap)) {
+      this.bottomPaddingCache.set(key, 0);
+      return 0;
+    }
+
+    const frame = tex.frame;
+    const canvas = document.createElement('canvas');
+    canvas.width = frame.width;
+    canvas.height = frame.height;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(
+      source,
+      frame.x, frame.y, frame.width, frame.height,
+      0, 0, frame.width, frame.height,
+    );
+    const pixels = ctx.getImageData(0, 0, frame.width, frame.height).data;
+
+    let emptyRows = 0;
+    for (let y = frame.height - 1; y >= 0; y--) {
+      let hasContent = false;
+      for (let x = 0; x < frame.width; x++) {
+        if (pixels[(y * frame.width + x) * 4 + 3] > 10) {
+          hasContent = true;
+          break;
+        }
+      }
+      if (hasContent) break;
+      emptyRows++;
+    }
+
+    const padding = emptyRows / frame.height;
+    this.bottomPaddingCache.set(key, padding);
+    return padding;
   }
 }

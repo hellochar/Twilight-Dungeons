@@ -130,6 +130,8 @@ export class GameRenderer {
   private entityVisuals = new Map<string, Sprite>();
   // Tile position key → Container wrapping all display objects for that tile
   private tileContainers = new Map<string, Container>();
+  // Tile position key → Tile object rendered in that container (for change detection)
+  private renderedTiles = new Map<string, Tile>();
   // Tile position key → Graphics dim overlay for Explored tiles
   private dimCells = new Map<string, Graphics>();
   // Entity guid → status indicator sprite container (child of entityNode)
@@ -189,6 +191,7 @@ export class GameRenderer {
   /** Sync visuals to current model state (call after each turn step). */
   syncToModel(): void {
     if (!this.floor) return;
+    this.syncTiles();
     this.syncEntities();
     this.syncTileVisibility();
   }
@@ -241,6 +244,7 @@ export class GameRenderer {
     this.entityNodes.clear();
     this.entityVisuals.clear();
     this.tileContainers.clear();
+    this.renderedTiles.clear();
     this.dimCells.clear();
     this.statusIndicators.clear();
   }
@@ -257,8 +261,10 @@ export class GameRenderer {
       const px = this.camera.tileToPixel(pos);
       const container = new Container();
       container.position.set(px.x, px.y);
+      const key = Vector2Int.key(pos);
       this.tileLayer.addChild(container);
-      this.tileContainers.set(Vector2Int.key(pos), container);
+      this.tileContainers.set(key, container);
+      this.renderedTiles.set(key, tile);
 
       // Try tilesheet sprite first (ground, wall, fancy-ground)
       const sheetName = tilesheetName(tile);
@@ -439,6 +445,60 @@ export class GameRenderer {
     this.entityNodes.set(entity.guid, node);
     this.entityVisuals.set(entity.guid, sprite);
     return node;
+  }
+
+  /**
+   * Detect tiles that changed (e.g. encounter replaced Ground with Wall)
+   * and rebuild their sprite containers.
+   */
+  private syncTiles(): void {
+    const floor = this.floor!;
+    const ts = this.camera.tileSize;
+    const depth = floor.depth;
+
+    for (const pos of floor.enumerateFloor()) {
+      const tile = floor.tiles.get(pos);
+      if (!tile) continue;
+      const key = Vector2Int.key(pos);
+      if (this.renderedTiles.get(key) === tile) continue;
+
+      // Tile object changed — destroy old container and rebuild
+      const old = this.tileContainers.get(key);
+      if (old) old.destroy({ children: true });
+
+      const px = this.camera.tileToPixel(pos);
+      const container = new Container();
+      container.position.set(px.x, px.y);
+      this.tileLayer.addChild(container);
+      this.tileContainers.set(key, container);
+      this.renderedTiles.set(key, tile);
+
+      const sheetName = tilesheetName(tile);
+      const sheetTex = sheetName ? this.sprites.getTileTexture(sheetName, depth) : null;
+      if (sheetTex) {
+        const sprite = new Sprite(sheetTex);
+        sprite.width = ts;
+        sprite.height = ts;
+        container.addChild(sprite);
+      } else {
+        const tex = this.sprites.getTexture(tile.displayName);
+        if (tex) {
+          const sprite = new Sprite(tex);
+          sprite.width = ts;
+          sprite.height = ts;
+          container.addChild(sprite);
+        } else {
+          const g = new Graphics();
+          const color = TILE_COLORS[tile.constructor.name] ?? 0x8b7355;
+          g.rect(0, 0, ts, ts).fill(color);
+          container.addChild(g);
+        }
+      }
+
+      if (tile instanceof Chasm) {
+        this.addChasmBorders(floor, pos, container, ts);
+      }
+    }
   }
 
   /**

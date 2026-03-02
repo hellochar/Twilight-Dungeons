@@ -94,6 +94,25 @@ export class SpriteManager {
     'parasite egg': 'parasite-egg',
     'hard shell': 'hardshell',
     'scuttler underground': 'scuttler',
+    // Sprint 14 — complex enemies
+    'hydra heart': 'hydra-heart',
+    'hydra head': 'hydra-head',
+    'grasper': 'grasper',
+    'boombug corpse': 'boombug',
+    'cheshire weed': 'cheshire-weed',
+    'cheshire weed sprout': 'cheshire-weed',
+    'spore bloat': 'sporebloat',
+    // Sprint 14 — grasses
+    'black creeper': 'deathly-creeper',
+    'vibrant ivy': 'vibrant-ivy',
+    'hanging vines': 'hanging-vines',
+    'deathbloom': 'deathbloom-stem',
+    // Sprint 14 — items
+    'vine whip': 'vine-whip',
+    'wildwood wreath': 'wildwood-wreath',
+    'gloop shoes': 'goop',
+    'jackal hide': 'jackal-fur',
+    'deathbloom flower': 'deathbloom-stem',
   };
 
   async load(): Promise<void> {

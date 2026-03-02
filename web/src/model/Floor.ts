@@ -568,6 +568,16 @@ export class Floor {
     }
   }
 
+  /** Get all bodies within a circle of given radius. */
+  bodiesInCircle(center: Vector2Int, radius: number): Entity[] {
+    const result: Entity[] = [];
+    for (const pos of this.enumerateCircle(center, radius)) {
+      const body = this.bodies.get(pos);
+      if (body) result.push(body);
+    }
+    return result;
+  }
+
   *enumeratePerimeter(inset = 0): IterableIterator<Vector2Int> {
     for (let x = inset; x < this.width - inset - 1; x++) yield new Vector2Int(x, inset);
     for (let y = inset; y < this.height - inset - 1; y++) yield new Vector2Int(this.width - 1 - inset, y);

@@ -47,6 +47,10 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   VulnerableStatus:{ spriteKey: 'vulnerable',       offsetX: 0, offsetY: 0,     scale: 0.5 },
   WeaknessStatus:  { spriteKey: 'weakness',         offsetX: 0, offsetY: 0.5,   scale: 1.0 },
   FreeMoveStatus:  { spriteKey: 'free-move',        offsetX: 0, offsetY: -0.415, scale: 1.0, hideWhenSleeping: true },
+  // Sprint 14
+  SporedStatus:    { spriteKey: 'spored-status',    offsetX: 0, offsetY: 0,     scale: 0.75 },
+  ConstrictedStatus: { spriteKey: 'hanging-vines',  offsetX: 0, offsetY: 0,     scale: 0.5 },
+  FrenziedStatus:  { spriteKey: 'deathbloom-stem',  offsetX: 0, offsetY: 0.65,  scale: 0.75 },
 };
 
 /** SleepTask visual (from Assets/Prefabs/Resources/Tasks/SleepTask.prefab). */

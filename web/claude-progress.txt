@@ -440,7 +440,77 @@ Stay as close as possible to the Unity version. Always refer back to it for spri
 - **Handler interface cleanup**: Removed `[key: symbol]: true` index signatures from Body.ts handler interfaces — they caused "incorrectly implements interface" errors when classes had additional symbol-tagged properties.
 - **Parallel agent strategy**: 5 worktree agents ported content simultaneously (enemies×3, grasses×1, items×1), then integrated into main branch.
 
+## Sprint 14 (2026-03-01): Remaining Non-Plant Content Port ✅
+*Plan sessions 13-16 (all non-plant content)*
+
+### New Infrastructure Files (2)
+- [x] src/model/Trigger.ts — immobile trigger entity with action callback + IActorEnterHandler
+- [x] src/model/Floor.ts — added bodiesInCircle(center, radius) helper
+
+### New Status Files (8)
+- [x] src/model/statuses/ArmoredStatus.ts — StackingStatus + ATTACK_DAMAGE_TAKEN_MOD, blocks 1 dmg/stack
+- [x] src/model/statuses/BarkmealStatus.ts — StackingStatus + MAX_HP_MOD, +stacks max HP
+- [x] src/model/statuses/ThirdEyeStatus.ts — Status (info-only, no handlers)
+- [x] src/model/statuses/HeartyVeggieStatus.ts — StackingStatus + ACTION_PERFORMED, heal 1 every 25 turns
+- [x] src/model/statuses/DandyStatus.ts — StackingStatus + BODY_TAKE_ATTACK_DAMAGE + ATTACK_HANDLER
+- [x] src/model/statuses/FrenziedStatus.ts — StackingStatus + ATTACK_DAMAGE_MOD, +2 dmg, End→WeaknessStatus(3)
+- [x] src/model/statuses/ZenStatus.ts — StackingStatus + 4 handlers (free move, removed on combat)
+- [x] src/model/statuses/ConstrictedStatus.ts — StackingStatus + BASE_ACTION_MOD + BODY_MOVE + DEATH_HANDLER
+
+### New Item Files (7)
+- [x] src/model/items/ItemPumpkin.ts — Item + IEdible, grants StrengthStatus(4) + drops ItemPumpkinHelmet
+- [x] src/model/items/ItemBarkShield.ts — EquippableItem + IDurable, Offhand, blocks 2, 6 durability
+- [x] src/model/items/ItemWildwoodWreath.ts — EquippableItem + IDurable + BODY_MOVE_HANDLER, Headwear, confuses adj enemy
+- [x] src/model/items/ItemGloopShoes.ts — EquippableItem + ISticky + IDurable + ACTION_PERFORMED, Footwear, heal 1/50 actions
+- [x] src/model/items/ItemJackalHide.ts — EquippableItem + IDurable, Armor, blocks 1, 4 durability
+- [x] src/model/items/ItemDeathbloomFlower.ts — Item + IEdible, removes WeaknessStatus + adds FrenziedStatus(3)
+- [x] src/model/items/ItemVineWhip.ts — EquippableItem + IWeapon + IStackable + ATTACK_HANDLER, damage=stacks, destroy on use
+
+### New Grass Files (10)
+- [x] src/model/grasses/Dandypuff.ts — Grass + IActorEnterHandler. Co-locates DandyStatus, Dandyslug (AIActor)
+- [x] src/model/grasses/DeathlyCreeper.ts — Grass + ISteppable, spreads to Ground every 4 turns
+- [x] src/model/grasses/Tunnelroot.ts — Grass + IActorEnterHandler, paired teleport system
+- [x] src/model/grasses/Agave.ts — Grass + IActorEnterHandler, co-locates ItemAgave + ItemAgaveHoney
+- [x] src/model/grasses/VibrantIvy.ts — Grass + 3 handlers, camouflage. Co-locates CamouflagedStatus
+- [x] src/model/grasses/Deathbloom.ts — Grass + IActorEnterHandler, blooms on adjacent death
+- [x] src/model/grasses/HangingVines.ts — Grass + IDeathHandler, creates Trigger below for ConstrictedStatus
+- [x] src/model/grasses/Necroroot.ts — Grass with bodyModifier, spawns Zombie. Co-locates Zombie AIActor
+- [x] src/model/grasses/Spores.ts — Grass + IActorEnterHandler, spawns SporeBloat. Co-locates SporeBloat + SporedStatus
+- [x] src/model/grasses/Ninetails.ts — Destructible + IDeathHandler. Co-locates HomeNinetails, ItemPlantableNinetails, ItemFloof
+
+### New Enemy Files (6)
+- [x] src/model/enemies/HydraHeart.ts — AIActor + IBaseActionModifier, 11 HP, spawns HydraHeads. Co-locates HydraHead
+- [x] src/model/enemies/Grasper.ts — AIActor + IBaseActionModifier, spawns Tendrils. Co-locates Tendril (cascade death)
+- [x] src/model/enemies/Boombug.ts — AIActor Neutral, spawns BoombugCorpse (chain-explode). Co-locates BoombugCorpse, ItemBoombugCorpse
+- [x] src/model/enemies/Shielder.ts — AIActor Neutral, duplicates then waits. Co-locates DeathlyStatus, EaterStatus
+- [x] src/model/enemies/CheshireWeed.ts — Body (not AIActor). Co-locates CheshireWeedSprout Grass
+- [x] src/model/enemies/Pumpkin.ts — Destructible + IDeathHandler, drops ItemPumpkin
+
+### Modified Files
+- [x] src/model/Floor.ts — bodiesInCircle helper
+- [x] src/model/GameModel.ts — 16 new side-effect imports
+- [x] src/model/enemies/index.ts — 6 new enemy exports
+- [x] src/model/grasses/index.ts — 10 new grass exports + co-located classes
+- [x] src/model/items/index.ts — 7 new item exports
+- [x] src/model/statuses/index.ts — 8 new status exports
+- [x] src/renderer/SpriteManager.ts — ~20 NAME_MAP entries for new entities
+- [x] src/renderer/GameRenderer.ts — 3 STATUS_VISUALS entries
+
+### Stats
+- 176 TypeScript files, ~16,500 lines
+- 32 new files, 8 modified files
+- tsc --noEmit passes clean
+
+### Design Decisions
+- **Trigger entity**: Minimal Entity subclass with action callback. No type markers → routes to Floor.triggers grid naturally.
+- **Co-location for circular deps**: Dandyslug in Dandypuff.ts, SporeBloat+SporedStatus in Spores.ts, Zombie in Necroroot.ts, HydraHead in HydraHeart.ts, Tendril in Grasper.ts, etc.
+- **ConstrictedStatus owner interface**: Uses duck-typed `{ constrictedStatusEnded(), constrictedCreatureDied() }` to avoid importing HangingVines.
+- **ItemShovel → ItemOfGrass**: Stores grass constructor directly (no reflection), matching TS patterns.
+- **No ITargetedAction**: ItemBoombugCorpse and ItemPlantableNinetails use IUsable with auto-place (BFS), matching ItemScuttler/ItemCharmBerry precedent.
+- **Pumpkin = Destructible**: Entity on floor (not just an item), drops ItemPumpkin on death. Registered as 'Pumpkin' in entityRegistry.
+
 ### Remaining Undone Plan Sessions
-- Sessions 13-16: Remaining complex content (HydraHeart, Grasper, Shielder, FruitingBody, Plants, remaining grasses)
+- FruitingBody enemy + 5 infection items (complex, deferred)
+- Plant system: 9 plants × 3-5 harvest items each (~12 base files + 30+ items)
 - Session 17: Daily Puzzle UI + Scoring
 - Session 18: Deployment + Final Polish

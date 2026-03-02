@@ -240,6 +240,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange 
   const [seedInput, setSeedInput] = useState(persisted.current.seed ?? '');
   const [depthInput, setDepthInput] = useState(persisted.current.depth ?? '');
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(persisted.current.collapsed ?? {});
+  const collapsedBeforeSearch = useRef<Record<string, boolean> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   // Persist seed/depth/collapsed to localStorage
@@ -448,7 +449,21 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange 
         <input
           ref={searchRef}
           value={filter}
-          onChange={e => setFilter(e.target.value)}
+          onChange={e => {
+            const val = e.target.value;
+            if (val && !filter) {
+              // Starting to type — snapshot current collapsed state and expand all
+              collapsedBeforeSearch.current = { ...collapsed };
+              setCollapsed({});
+            } else if (!val && filter) {
+              // Cleared search — restore previous collapsed state
+              if (collapsedBeforeSearch.current) {
+                setCollapsed(collapsedBeforeSearch.current);
+                collapsedBeforeSearch.current = null;
+              }
+            }
+            setFilter(val);
+          }}
           placeholder="Search commands..."
           style={{ ...inputStyle, width: '100%' }}
         />

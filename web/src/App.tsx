@@ -57,7 +57,7 @@ function App() {
               border: '1px solid #4f4',
               borderRadius: 4,
               padding: '6px 14px',
-              fontFamily: 'monospace',
+              fontFamily: 'CodersCrux, monospace',
               fontSize: 12,
               color: '#ccc',
               pointerEvents: 'auto',
@@ -73,7 +73,7 @@ function App() {
                   border: '1px solid #555',
                   borderRadius: 3,
                   padding: '2px 8px',
-                  fontFamily: 'monospace',
+                  fontFamily: 'CodersCrux, monospace',
                   fontSize: 11,
                   cursor: 'pointer',
                 }}
@@ -97,7 +97,7 @@ function App() {
               border: '1px solid #6cf',
               borderRadius: 4,
               padding: '6px 12px',
-              fontFamily: 'monospace',
+              fontFamily: 'CodersCrux, monospace',
               fontSize: 11,
               color: '#6cf',
               pointerEvents: 'none',
@@ -117,7 +117,7 @@ function App() {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#888',
-          fontFamily: 'monospace',
+          fontFamily: 'CodersCrux, monospace',
         }}>
           Loading...
         </div>

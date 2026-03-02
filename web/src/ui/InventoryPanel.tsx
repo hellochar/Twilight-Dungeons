@@ -173,7 +173,7 @@ function Slot({ item, label, isSelected, onClick, onContextMenu }: SlotProps) {
           justifyContent: 'center',
           fontSize: 7,
           color: 'rgba(255,255,255,0.3)',
-          fontFamily: 'monospace',
+          fontFamily: 'CodersCrux, monospace',
           textTransform: 'uppercase',
           zIndex: 1,
         }}>
@@ -226,7 +226,7 @@ const stackLabelStyle: React.CSSProperties = {
   bottom: 2,
   right: 3,
   fontSize: 9,
-  fontFamily: 'monospace',
+  fontFamily: 'CodersCrux, monospace',
   fontWeight: 'bold',
   color: '#fff',
   textShadow: '0 0 2px #000, 0 0 2px #000',
@@ -280,14 +280,14 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 14, color: '#eee' }}>
+        <div style={{ fontFamily: 'CodersCrux, monospace', fontWeight: 'bold', fontSize: 14, color: '#eee' }}>
           {item.displayName}
         </div>
-        <div style={{ fontFamily: 'monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
+        <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
           {item.category}
         </div>
         {item.statsFull && (
-          <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#aaa', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
+          <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 11, color: '#aaa', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
             {item.statsFull}
           </div>
         )}
@@ -302,7 +302,7 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
                 border: '1px solid #555',
                 borderRadius: 3,
                 padding: '4px 10px',
-                fontFamily: 'monospace',
+                fontFamily: 'CodersCrux, monospace',
                 fontSize: 11,
                 cursor: 'pointer',
               }}
@@ -318,7 +318,7 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
               border: '1px solid #333',
               borderRadius: 3,
               padding: '4px 8px',
-              fontFamily: 'monospace',
+              fontFamily: 'CodersCrux, monospace',
               fontSize: 11,
               cursor: 'pointer',
             }}

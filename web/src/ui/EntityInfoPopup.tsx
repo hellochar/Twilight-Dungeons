@@ -80,7 +80,7 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
         border: '1px solid #555',
         borderRadius: 6,
         padding: 10,
-        fontFamily: 'monospace',
+        fontFamily: 'CodersCrux, monospace',
         fontSize: 12,
         color: '#ddd',
         zIndex: 100,

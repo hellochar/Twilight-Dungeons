@@ -32,7 +32,7 @@ export function GameOverOverlay({ info, onPlayAgain }: GameOverOverlayProps) {
         display: 'flex',
         alignItems: 'center',
         gap: 20,
-        fontFamily: 'monospace',
+        fontFamily: 'CodersCrux, monospace',
         color: '#ccc',
         whiteSpace: 'nowrap',
       }}>
@@ -56,7 +56,7 @@ export function GameOverOverlay({ info, onPlayAgain }: GameOverOverlayProps) {
             border: '1px solid #556',
             borderRadius: 4,
             padding: '4px 14px',
-            fontFamily: 'monospace',
+            fontFamily: 'CodersCrux, monospace',
             fontSize: 12,
             cursor: 'pointer',
           }}

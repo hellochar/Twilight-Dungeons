@@ -90,7 +90,7 @@ function Banner({ depth, turn, isCleared }: { depth: number; turn: number; isCle
 
   return (
     <div style={{
-      fontFamily: 'monospace',
+      fontFamily: 'CodersCrux, monospace',
       fontSize: 13,
       color: '#ccc',
       textShadow: '1px 1px 2px #000',
@@ -119,7 +119,7 @@ function EnemiesLeft({ count, isCleared }: { count: number; isCleared: boolean }
 
   return (
     <div style={{
-      fontFamily: 'monospace',
+      fontFamily: 'CodersCrux, monospace',
       fontSize: 11,
       color: isCleared ? '#4f4' : '#aaa',
       textShadow: '1px 1px 2px #000',
@@ -151,7 +151,7 @@ function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; o
           border: '1px solid rgba(255, 255, 255, 0.25)',
           borderRadius: 6,
           color: '#eee',
-          fontFamily: 'monospace',
+          fontFamily: 'CodersCrux, monospace',
           fontSize: 13,
           cursor: 'pointer',
         }}

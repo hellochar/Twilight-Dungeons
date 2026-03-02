@@ -725,20 +725,30 @@ export function addFaegrass(floor: Floor, _room: Room | null): void {
 }
 
 export function addEveningBells(floor: Floor, room: Room | null): void {
-  // Complex placement — find tile with most valid adjacent tiles, place stump + bells
   const empty = FloorUtils.emptyTilesInRoom(floor, room);
   if (empty.length === 0) return;
   const score = (t: Tile) =>
-    floor.getAdjacentTiles(t.pos).filter(a => a instanceof Ground && floor.grasses.get(a.pos) == null).length;
+    floor.getAdjacentTiles(t.pos).filter(a => EveningBellsCanOccupy(a, floor)).length;
   const sorted = [...empty].sort((a, b) => score(b) - score(a));
-  const best = sorted[0];
-  if (!best) return;
-  spawn(floor, 'Stump', best.pos);
-  for (const adj of floor.getAdjacentTiles(best.pos)) {
-    if (adj instanceof Ground && floor.grasses.get(adj.pos) == null) {
-      spawn(floor, 'EveningBells', adj.pos);
+  const highestScore = score(sorted[0]);
+  const tilesWithBestScore = sorted.filter(t => score(t) === highestScore);
+  const tile = randomPick(tilesWithBestScore);
+  if (!tile) return;
+  const center = tile.pos;
+  spawn(floor, 'Stump', center);
+  for (const adj of floor.getAdjacentTiles(center)) {
+    if (EveningBellsCanOccupy(adj, floor)) {
+      // Angle from downward direction to direction from center to bell
+      const dx = adj.pos.x - center.x;
+      const dy = adj.pos.y - center.y;
+      const angle = Math.atan2(dy, -dx) * (180 / Math.PI) + 90;
+      spawn(floor, 'EveningBells', adj.pos, angle);
     }
   }
+}
+
+function EveningBellsCanOccupy(t: Tile, floor: Floor): boolean {
+  return t instanceof Ground && t.canBeOccupied() && floor.grasses.get(t.pos) == null;
 }
 
 export function addLlaora(floor: Floor, room: Room | null): void {

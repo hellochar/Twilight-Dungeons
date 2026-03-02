@@ -12,27 +12,46 @@ import { SPRITE_TINTS } from './spriteTints';
 /** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
 const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
 
-/** Status constructor name → sprite key used by SpriteManager. */
-const STATUS_SPRITES: Record<string, string> = {
-  PoisonedStatus: 'poisoned-status',
-  WebbedStatus: 'web',
-  WeaknessStatus: 'weakness',
-  InShellStatus: 'snail-shell',
-  SlimedStatus: 'slimed',
-  SurprisedStatus: 'colored_transparent_packed_658',
-  GuardedStatus: 'guardroot',
-  FreeMoveStatus: 'free-move',
-  SoftGrassStatus: 'colored_transparent_packed_95',
-  VulnerableStatus: 'vulnerability',
-  ConfusedStatus: 'confused',
-  StrengthStatus: 'strength',
-  PacifiedStatus: 'peace',
-  BloodstoneStatus: 'bloodstone',
-  PumpedUpStatus: 'pumped-up',
-  CharmedStatus: 'charmed',
-  ClumpedLungStatus: 'clumped-lung',
-  ParasiteStatus: 'parasite',
-  StatusWild: 'wild',
+/**
+ * Per-status visual config matching Unity prefab positioning.
+ * Only statuses with prefabs in Assets/Prefabs/Resources/Statuses/ get visuals.
+ */
+interface StatusVisualConfig {
+  spriteKey: string;
+  /** X offset in tile units from entity center. */
+  offsetX: number;
+  /** Y offset in tile units from entity center (Unity Y-up convention). */
+  offsetY: number;
+  /** Scale relative to 1 tile. */
+  scale: number;
+  /** Hide when actor is sleeping. */
+  hideWhenSleeping?: boolean;
+}
+
+/**
+ * Status visuals from Unity prefabs. Each status has individual positioning —
+ * some render overhead, some on body, some below. No generic row layout.
+ */
+const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
+  // Overhead sprite icons
+  PoisonedStatus:  { spriteKey: 'poisoned-status', offsetX: 0, offsetY: 0.65, scale: 0.75 },
+  CharmedStatus:   { spriteKey: 'charmed',         offsetX: 0, offsetY: 0.65, scale: 0.75 },
+  ConfusedStatus:  { spriteKey: 'confused',         offsetX: 0, offsetY: 0.65, scale: 0.75 },
+  SurprisedStatus: { spriteKey: 'colored_transparent_packed_658', offsetX: 0, offsetY: 0.65, scale: 0.75 },
+  PacifiedStatus:  { spriteKey: 'peace',            offsetX: 0, offsetY: 0.5,  scale: 0.4 },
+  // Body-level sprites
+  WebbedStatus:    { spriteKey: 'web',              offsetX: 0, offsetY: -0.25, scale: 1.0 },
+  ParasiteStatus:  { spriteKey: 'parasite',         offsetX: 0, offsetY: 0,    scale: 0.35 },
+  // Particle-based (static sprite fallback — TODO: implement PixiJS particles)
+  SlimedStatus:    { spriteKey: 'slimed',           offsetX: 0, offsetY: 0,     scale: 1.0 },
+  VulnerableStatus:{ spriteKey: 'vulnerable',       offsetX: 0, offsetY: 0,     scale: 0.5 },
+  WeaknessStatus:  { spriteKey: 'weakness',         offsetX: 0, offsetY: 0.5,   scale: 1.0 },
+  FreeMoveStatus:  { spriteKey: 'free-move',        offsetX: 0, offsetY: -0.415, scale: 1.0, hideWhenSleeping: true },
+};
+
+/** SleepTask visual (from Assets/Prefabs/Resources/Tasks/SleepTask.prefab). */
+const SLEEP_VISUAL: StatusVisualConfig = {
+  spriteKey: 'sleep', offsetX: 0, offsetY: 0.5, scale: 0.5,
 };
 
 /** Fallback colors when tilesheet sprite is missing. */
@@ -337,6 +356,14 @@ export class GameRenderer {
       sprite.tint = tint;
     } else if (!tex) {
       sprite.tint = this.fallbackColor(entity.displayName);
+    }
+
+    // Apply rotation for entities with angle property (e.g. EveningBells)
+    if ('angle' in entity && typeof (entity as any).angle === 'number') {
+      const angleDeg = (entity as any).angle as number;
+      sprite.anchor.set(0.5, 0.5);
+      sprite.position.set(ts / 2, ts / 2);
+      sprite.rotation = angleDeg * (Math.PI / 180);
     }
 
     node.addChild(sprite);

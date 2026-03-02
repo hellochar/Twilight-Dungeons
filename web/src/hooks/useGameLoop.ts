@@ -164,13 +164,12 @@ export function useGameLoop() {
       isDebuff: s.isDebuff,
     }));
 
-    // Game over info
-    const isOver = player.isDead || floor.isCleared;
-    const gameOver: GameOverInfo | null = isOver ? { ...model.stats } : null;
+    // Game over info — only set when model.gameOver() has been called
+    const gameOver: GameOverInfo | null = model.gameOverInfo ? { ...model.gameOverInfo } : null;
 
-    // On-top action
+    // On-top action (hide when player is dead)
     let onTopAction: OnTopActionSnapshot | null = null;
-    if (!isOver) {
+    if (!player.isDead) {
       const handler = getOnTopActionHandler(floor, player.pos);
       if (handler) {
         onTopAction = {
@@ -395,7 +394,7 @@ export function useGameLoop() {
     const model = modelRef.current;
     if (!model) return;
     if (processingRef.current) return;
-    if (model.player.isDead || model.currentFloor.isCleared) return;
+    if (model.player.isDead) return;
 
     // ─── Targeting mode intercept ───
     const targeting = targetingRef.current;
@@ -445,7 +444,7 @@ export function useGameLoop() {
     action: string,
   ) => {
     const model = modelRef.current;
-    if (!model || processingRef.current || model.player.isDead || model.currentFloor.isCleared) return;
+    if (!model || processingRef.current || model.player.isDead) return;
 
     const player = model.player;
     const container = source === 'inventory' ? player.inventory : player.equipment;
@@ -499,7 +498,7 @@ export function useGameLoop() {
   /** Execute the on-top action at the player's current position. */
   const executeOnTopAction = useCallback(async () => {
     const model = modelRef.current;
-    if (!model || processingRef.current || model.player.isDead || model.currentFloor.isCleared) return;
+    if (!model || processingRef.current || model.player.isDead) return;
 
     const handler = getOnTopActionHandler(model.currentFloor, model.player.pos);
     if (!handler) return;
@@ -596,9 +595,11 @@ export function useGameLoop() {
       renderer.setFloor(model.currentFloor);
       renderer.syncToModel();
 
-      // Register ticker for position lerping (runs every frame)
+      // Register ticker for per-frame updates (runs every frame)
       app.ticker.add((ticker) => {
-        renderer.lerpPositions(ticker.deltaTime / 60);
+        const dt = ticker.deltaTime / 60;
+        renderer.lerpPositions(dt);
+        renderer.updateTelegraphEffects(dt);
       });
 
       input = new InputHandler(camera, app.canvas);

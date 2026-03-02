@@ -44,7 +44,7 @@ function App() {
             equipmentItems={gameState.equipmentItems}
             onItemAction={executeItemAction}
             onItemInfo={handleItemInfo}
-            disabled={!!gameState.gameOver}
+            disabled={gameState.isPlayerDead}
             targetingActive={!!targetingState}
           />
           {targetingState && (

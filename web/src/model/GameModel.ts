@@ -163,6 +163,8 @@ export class GameModel implements IGameModelRef {
   floor!: Floor;
   time = 0;
   stats: PlayStats;
+  /** Snapshot of stats at the moment game ended (win or loss). Null until gameOver() is called. */
+  gameOverInfo: PlayStats | null = null;
   readonly timedEvents = new TimedEventManager();
 
   private _turnManager: TurnManager | null = null;
@@ -318,10 +320,12 @@ export class GameModel implements IGameModelRef {
   // ─── Game state ───
 
   gameOver(won: boolean, deathSource?: { displayName: string }): void {
+    if (this.gameOverInfo) return; // already ended
     this.stats.won = won;
     this.stats.turnsTaken = Math.floor(this.time);
     this.stats.killedBy = deathSource?.displayName ?? null;
-    this.onGameOver.emit(this.stats);
+    this.gameOverInfo = { ...this.stats };
+    this.onGameOver.emit(this.gameOverInfo);
   }
 
   floorCleared(floor: Floor): void {

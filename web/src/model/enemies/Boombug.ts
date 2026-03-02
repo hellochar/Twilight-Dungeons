@@ -1,9 +1,10 @@
 import { AIActor } from './AIActor';
 import { Actor } from '../Actor';
 import { Body } from '../Body';
-import { ActorTask, DoOnceTask, TaskStage } from '../ActorTask';
+import { ActorTask } from '../ActorTask';
 import { WaitTask } from '../tasks/WaitTask';
 import { MoveToTargetTask } from '../tasks/MoveToTargetTask';
+import { ExplodeTask } from '../tasks/ExplodeTask';
 import { WaitBaseAction, ActionCosts, type BaseAction } from '../BaseAction';
 import { ActionType, Faction } from '../../core/types';
 import type { IDeathHandler } from '../../core/types';
@@ -72,19 +73,6 @@ export class Boombug extends AIActor implements IDeathHandler {
         floor.put(new BoombugCorpse(pos));
       }
     });
-  }
-}
-
-/**
- * ExplodeTask — signals one turn before explosion. Does nothing gameplay-wise.
- */
-class ExplodeTask extends DoOnceTask {
-  get whenToCheckIsDone(): TaskStage {
-    return TaskStage.Before;
-  }
-
-  protected getNextActionImpl(): BaseAction {
-    return new WaitBaseAction(this.actor);
   }
 }
 

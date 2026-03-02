@@ -59,6 +59,9 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   SporedStatus:    { spriteKey: 'spored-status',    offsetX: 0, offsetY: 0,     scale: 0.75 },
   ConstrictedStatus: { spriteKey: 'hanging-vines',  offsetX: 0, offsetY: 0,     scale: 0.5 },
   FrenziedStatus:  { spriteKey: 'deathbloom-stem',  offsetX: 0, offsetY: 0.65,  scale: 0.75 },
+  // Sprint 15
+  InfectedStatus:  { spriteKey: 'infected',         offsetX: 0, offsetY: 0,     scale: 0.5 },
+  ThirdEyeStatus:  { spriteKey: 'third-eye',        offsetX: 0, offsetY: 0.65,  scale: 0.75 },
 };
 
 /** SleepTask visual (from Assets/Prefabs/Resources/Tasks/SleepTask.prefab). */

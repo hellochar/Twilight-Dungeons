@@ -12,11 +12,20 @@ export type PlayerIntent =
  * Captures keyboard + mouse/touch input and emits PlayerIntent events.
  * Translate raw browser events into tile-relative game actions.
  */
+/** Right-click / long-press info about a tile position + screen coords. */
+export interface TileContextEvent {
+  tilePos: Vector2Int;
+  screenX: number;
+  screenY: number;
+}
+
 export class InputHandler {
   readonly onIntent = new EventEmitter<[PlayerIntent]>();
+  readonly onContextMenu = new EventEmitter<[TileContextEvent]>();
   private camera: Camera;
   private canvas: HTMLCanvasElement;
   private enabled = true;
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Key → direction mapping (arrows, WASD, numpad)
   private static KEY_MAP: Record<string, Vector2Int> = {
@@ -57,16 +66,28 @@ export class InputHandler {
     this.canvas = canvas;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onContextMenuEvent = this.onContextMenuEvent.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
   }
 
   attach(): void {
     window.addEventListener('keydown', this.onKeyDown);
     this.canvas.addEventListener('pointerdown', this.onClick);
+    this.canvas.addEventListener('contextmenu', this.onContextMenuEvent);
+    this.canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+    this.canvas.addEventListener('touchend', this.onTouchEnd);
+    this.canvas.addEventListener('touchcancel', this.onTouchEnd);
   }
 
   detach(): void {
     window.removeEventListener('keydown', this.onKeyDown);
     this.canvas.removeEventListener('pointerdown', this.onClick);
+    this.canvas.removeEventListener('contextmenu', this.onContextMenuEvent);
+    this.canvas.removeEventListener('touchstart', this.onTouchStart);
+    this.canvas.removeEventListener('touchend', this.onTouchEnd);
+    this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
+    this.clearLongPress();
   }
 
   setEnabled(enabled: boolean): void {
@@ -105,6 +126,50 @@ export class InputHandler {
     const tilePos = this.camera.pixelToTile(px, py);
     if (this.camera.isInBounds(tilePos)) {
       this.onIntent.emit({ type: 'click', tilePos });
+    }
+  }
+
+  private onContextMenuEvent(e: MouseEvent): void {
+    e.preventDefault();
+    if (!this.enabled) return;
+
+    const rect = this.canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+
+    const tilePos = this.camera.pixelToTile(px, py);
+    if (this.camera.isInBounds(tilePos)) {
+      this.onContextMenu.emit({ tilePos, screenX: e.clientX, screenY: e.clientY });
+    }
+  }
+
+  /** Long-press on mobile (500ms) triggers context menu. */
+  private onTouchStart(e: TouchEvent): void {
+    if (!this.enabled || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const screenX = touch.clientX;
+    const screenY = touch.clientY;
+
+    this.longPressTimer = setTimeout(() => {
+      this.longPressTimer = null;
+      const rect = this.canvas.getBoundingClientRect();
+      const px = screenX - rect.left;
+      const py = screenY - rect.top;
+      const tilePos = this.camera.pixelToTile(px, py);
+      if (this.camera.isInBounds(tilePos)) {
+        this.onContextMenu.emit({ tilePos, screenX, screenY });
+      }
+    }, 500);
+  }
+
+  private onTouchEnd(): void {
+    this.clearLongPress();
+  }
+
+  private clearLongPress(): void {
+    if (this.longPressTimer != null) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
     }
   }
 }

@@ -6,7 +6,9 @@ import { Floor } from '../model/Floor';
 import { Vector2Int } from '../core/Vector2Int';
 import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer } from '../renderer';
-import { InputHandler, type PlayerIntent } from '../input/InputHandler';
+import { InputHandler, type PlayerIntent, type TileContextEvent } from '../input/InputHandler';
+import type { EntityInfoData } from '../ui/EntityInfoPopup';
+import { Body } from '../model/Body';
 import { FollowPathTask } from '../model/tasks/FollowPathTask';
 import { AttackTask } from '../model/tasks/AttackTask';
 import { WaitTask } from '../model/tasks/WaitTask';
@@ -131,6 +133,7 @@ export function useGameLoop() {
   const targetingRef = useRef<TargetingInfo | null>(null);
   const [targetingState, setTargetingState] = useState<TargetingState | null>(null);
   const [debugNotice, setDebugNotice] = useState<string | null>(null);
+  const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
 
   const readState = useCallback((): GameState => {
     const model = modelRef.current;
@@ -201,6 +204,73 @@ export function useGameLoop() {
     targetingRef.current = null;
     setTargetingState(null);
     rendererRef.current?.clearTargetHighlights();
+  }, []);
+
+  /** Build EntityInfoData from whatever entity/tile is at a given tile position. */
+  const handleContextMenu = useCallback((event: TileContextEvent) => {
+    const model = modelRef.current;
+    if (!model) return;
+    const floor = model.currentFloor;
+    const { tilePos, screenX, screenY } = event;
+
+    // Priority: body > grass > item on ground > tile
+    const body = floor.bodies.get(tilePos);
+    if (body) {
+      const b = body as any as Body;
+      setEntityInfo({
+        name: body.displayName,
+        typeName: body.constructor.name,
+        hp: b.hp,
+        maxHp: b.maxHp,
+        x: screenX,
+        y: screenY,
+      });
+      return;
+    }
+
+    const grass = floor.grasses.get(tilePos);
+    if (grass) {
+      setEntityInfo({
+        name: grass.displayName,
+        typeName: grass.constructor.name,
+        x: screenX,
+        y: screenY,
+      });
+      return;
+    }
+
+    const item = floor.items.get(tilePos);
+    if (item) {
+      // ItemOnGround wraps a held item — show that item's info
+      const heldItem = (item as any).heldItem;
+      if (heldItem) {
+        setEntityInfo({
+          name: heldItem.displayName,
+          typeName: heldItem.constructor.name,
+          stats: heldItem.getStatsFull?.() ?? '',
+          x: screenX,
+          y: screenY,
+        });
+      } else {
+        setEntityInfo({
+          name: item.displayName,
+          typeName: item.constructor.name,
+          x: screenX,
+          y: screenY,
+        });
+      }
+      return;
+    }
+
+    const tile = floor.tiles.get(tilePos);
+    if (tile) {
+      setEntityInfo({
+        name: tile.displayName,
+        typeName: tile.constructor.name,
+        x: screenX,
+        y: screenY,
+      });
+    }
   }, []);
 
   const beginTargeting = useCallback((source: 'inventory' | 'equipment', slotIndex: number) => {
@@ -475,6 +545,7 @@ export function useGameLoop() {
       input = new InputHandler(camera, app.canvas);
       inputRef.current = input;
       input.onIntent.on(processIntent);
+      input.onContextMenu.on(handleContextMenu);
       input.attach();
 
       resizeHandler = () => {
@@ -504,9 +575,9 @@ export function useGameLoop() {
       animatorRef.current = null;
       inputRef.current = null;
     };
-  }, [processIntent, readState]);
+  }, [processIntent, readState, handleContextMenu]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

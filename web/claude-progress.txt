@@ -510,7 +510,72 @@ Stay as close as possible to the Unity version. Always refer back to it for spri
 - **Pumpkin = Destructible**: Entity on floor (not just an item), drops ItemPumpkin on death. Registered as 'Pumpkin' in entityRegistry.
 
 ### Remaining Undone Plan Sessions
-- FruitingBody enemy + 5 infection items (complex, deferred)
-- Plant system: 9 plants × 3-5 harvest items each (~12 base files + 30+ items)
+- Session 17: Daily Puzzle UI + Scoring
+- Session 18: Deployment + Final Polish
+
+---
+
+## Sprint 15 (2026-03-01): FruitingBody + Bosses + Plant Items + EntityInfo ✅
+
+### Completed Blocks
+
+**Block 1: FruitingBody + PseudoRandomDistribution**
+- [x] src/core/PseudoRandomDistribution.ts — CfromP, PfromC, PRD class (61 lines)
+- [x] src/model/enemies/FruitingBody.ts — AIActor Neutral, 1 HP, spray/infect mechanic. Co-locates 5 infection items: ItemTanglefoot, ItemStiffarm, ItemBulbousSkin, ItemThirdEye, ItemScalySkin (375 lines)
+
+**Block 2: Custom Item Action Pipeline**
+- [x] Modified src/hooks/useGameLoop.ts — camelCase method dispatch in `default:` case, costsTurn blacklist
+- [x] Modified src/model/grasses/Agave.ts — getAvailableMethods override for 'Refine'
+
+**Block 3: Boss System**
+- [x] src/model/tasks/ExplodeTask.ts — shared task (extracted from Boombug)
+- [x] src/model/enemies/Boss.ts — abstract base, HeartTrigger on death
+- [x] src/model/grasses/BlobSlime.ts — IActorEnterHandler, 1 damage, self-destruct
+- [x] src/model/enemies/Blobmother.ts — Boss, 28 HP, spawn blobs on damage, slime trail
+- [x] src/model/enemies/FungalColony.ts — Boss, 48 HP. Co-locates FungalBreeder, FungalSentinel
+
+**Block 4: Plant Items (9 files, ~29 items + 7 co-located entities)**
+- [x] src/model/items/ItemBroodpuff.ts — ItemLeecher, ItemBacillomyte, ItemBroodleaf, Leecher (AIActor), Bacillomyte (Grass)
+- [x] src/model/items/ItemChangErsWillow.ts — ItemFlowerBuds, ItemCatkin, ItemHardenedSap, ItemCrescentVengeance
+- [x] src/model/items/ItemFaeleaf.ts — ItemFaegrass, Faegrass (Grass)
+- [x] src/model/items/ItemFrizzlefen.ts — ItemThickBranch, ItemPlatedArmor, ItemBarkmeal, ItemStompinBoots
+- [x] src/model/items/ItemKingshroom.ts — ItemGerm, ItemMushroomCap, ItemKingshroomPowder, ItemLivingArmor, InfectedStatus, ThickMushroom (Actor)
+- [x] src/model/items/ItemStoutShrub.ts — ItemThicket, ItemPrickler, PricklyGrowth (Grass), ItemStoutShield, ItemHeartyVeggie
+- [x] src/model/items/ItemThornleaf.ts — ItemCrownOfThorns, ItemThornShield, ItemBlademail
+- [x] src/model/items/ItemWeirdwood.ts — ItemVilePotion, VileGrowth (Grass), ItemBackstepShoes, ItemWitchsShiv
+- [x] src/model/items/ItemWildwoodRod.ts — auto-attack on move weapon
+
+**Block 5: EntityInfo Popup**
+- [x] src/model/ObjectInfo.ts — registry with ~120 entity/item descriptions
+- [x] src/ui/EntityInfoPopup.tsx — reusable popup (sprite, name, HP, description, flavor text)
+- [x] Modified src/input/InputHandler.ts — contextmenu + long-press events
+- [x] Modified src/hooks/useGameLoop.ts — handleContextMenu → entity info lookup at tile
+- [x] Modified src/App.tsx — entityInfo state from useGameLoop, InventoryPanel onItemInfo
+- [x] Modified src/ui/InventoryPanel.tsx — right-click on slots → onItemInfo callback
+
+**Wiring**
+- [x] Modified src/model/enemies/index.ts — FruitingBody, Boss, Blobmother, FungalColony exports
+- [x] Modified src/model/items/index.ts — 13 new export lines (infection items + plant items)
+- [x] Modified src/model/grasses/index.ts — BlobSlime export
+- [x] Modified src/model/GameModel.ts — 8 new side-effect imports
+- [x] Modified src/renderer/SpriteManager.ts — ~30 NAME_MAP entries
+- [x] Modified src/renderer/GameRenderer.ts — InfectedStatus + ThirdEyeStatus STATUS_VISUALS
+- [x] Modified src/ui/spriteUrl.ts — ~30 NAME_MAP entries
+
+### Stats
+- 201 TypeScript files, ~19,400 lines
+- 18 new files, ~13 modified files
+- 2,879 new lines
+- tsc --noEmit clean
+
+### Design Decisions
+- **Plant items exist but are not spawned by encounters** — designed for future "valuing" system where items can be spawned by encounters, starting inventory, or other mechanisms
+- **Co-location pattern** continues — circular deps handled by co-locating in same file (e.g. Leecher in ItemBroodpuff.ts)
+- **EntityInfo triggered by right-click (desktop) / long-press (mobile)** on canvas entities OR inventory slots
+- **handleContextMenu in useGameLoop** — uses floor.bodies/grasses/items/tiles.get(pos) with priority ordering
+- **ExplodeTask extracted to shared location** — used by both Boombug and FungalSentinel
+- **Boss base class** places HeartTrigger (Trigger entity) on death for floor-clear mechanic
+
+### Remaining Undone
 - Session 17: Daily Puzzle UI + Scoring
 - Session 18: Deployment + Final Polish

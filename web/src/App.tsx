@@ -1,16 +1,27 @@
 import { useCallback, useState } from 'react';
-import { useGameLoop } from './hooks/useGameLoop';
+import { useGameLoop, type ItemSnapshot } from './hooks/useGameLoop';
 import { HUD } from './ui/HUD';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { GameOverOverlay } from './ui/GameOverOverlay';
-import { EntityInfoPopup, type EntityInfoData } from './ui/EntityInfoPopup';
+import { EntityInfoPopup } from './ui/EntityInfoPopup';
 import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import './App.css';
 
 function App() {
-  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice } = useGameLoop();
+  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
-  const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
+
+  const handleItemInfo = useCallback((item: ItemSnapshot, screenX: number, screenY: number) => {
+    // Derive typeName from spriteName — items have constructor names like "ItemRedberry"
+    const typeName = 'Item' + item.spriteName.charAt(0).toUpperCase() + item.spriteName.slice(1);
+    setEntityInfo({
+      name: item.displayName,
+      typeName,
+      stats: item.statsFull || undefined,
+      x: screenX,
+      y: screenY,
+    });
+  }, [setEntityInfo]);
 
   const onDebugOpenChange = useCallback((open: boolean) => {
     setDebugOpen(open);
@@ -32,6 +43,7 @@ function App() {
             inventoryItems={gameState.inventoryItems}
             equipmentItems={gameState.equipmentItems}
             onItemAction={executeItemAction}
+            onItemInfo={handleItemInfo}
             disabled={!!gameState.gameOver}
             targetingActive={!!targetingState}
           />

@@ -63,6 +63,17 @@ import './grasses/HangingVines';
 import './grasses/Necroroot';
 import './grasses/Spores';
 import './grasses/Ninetails';
+import './grasses/BlobSlime';
+// Enemies — Sprint 15
+import './enemies/FruitingBody';
+import './enemies/Blobmother';
+import './enemies/FungalColony';
+// Plant items — co-located entities register themselves
+import './items/ItemBroodpuff';
+import './items/ItemFaeleaf';
+import './items/ItemKingshroom';
+import './items/ItemStoutShrub';
+import './items/ItemWeirdwood';
 import { TurnManager } from './TurnManager';
 import { TimedEvent } from './Entity';
 import { EventEmitter } from '../core/EventEmitter';

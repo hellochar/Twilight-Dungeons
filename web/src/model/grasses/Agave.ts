@@ -65,6 +65,14 @@ export class ItemAgave extends Item implements IStackable {
     this._stacks = stacks;
   }
 
+  getAvailableMethods(): string[] {
+    const methods = super.getAvailableMethods();
+    if (this.stacks >= this.stacksMax) {
+      methods.push('Refine');
+    }
+    return methods;
+  }
+
   refine(): void {
     if (this.stacks < this.stacksMax) return;
     const player = GameModelRef.main.player;

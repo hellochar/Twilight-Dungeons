@@ -115,6 +115,36 @@ export class SpriteManager {
     'gloop shoes': 'goop',
     'jackal hide': 'jackal-fur',
     'deathbloom flower': 'deathbloom-stem',
+    // Sprint 15 — Enemies
+    'fruiting body': 'fruitingbody',
+    'blobmother': 'blob-boss',
+    'fungal colony': 'fungal-colony',
+    'fungal breeder': 'fungal-breeder',
+    'fungal sentinel': 'fungal-sentinel',
+    'blob slime': 'slimed',
+    // Sprint 15 — FruitingBody infection items
+    'bulbous skin': 'bulbous-skin',
+    'third eye': 'third-eye',
+    'scaly skin': 'scaly-skin',
+    // Sprint 15 — Plant items
+    'flower buds': 'flower-buds',
+    'hardened sap': 'hardened-sap',
+    'crescent vengeance': 'crescent-vengeance',
+    'thick branch': 'thick-stick',
+    'plated armor': 'plated-armor',
+    'stompin boots': 'stompinboots',
+    'kingshroom powder': 'kingshroom',
+    'living armor': 'living-armor',
+    'stout shield': 'stout-shrub',
+    'hearty veggie': 'hearty-veggie',
+    'crown of thorns': 'crown-of-thorns',
+    'thorn shield': 'thornshield',
+    'blademail': 'thornmail',
+    'vile potion': 'vile-potion',
+    'vile growth': 'vile-growth',
+    'witchs shiv': 'witchs-shiv',
+    'wildwood rod': 'wildwood',
+    'prickly growth': 'prickly-growth',
   };
 
   async load(): Promise<void> {

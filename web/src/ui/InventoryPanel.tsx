@@ -21,6 +21,7 @@ interface InventoryPanelProps {
   inventoryItems: (ItemSnapshot | null)[];
   equipmentItems: (ItemSnapshot | null)[];
   onItemAction: (source: 'inventory' | 'equipment', slot: number, action: string) => void;
+  onItemInfo?: (item: ItemSnapshot, screenX: number, screenY: number) => void;
   disabled: boolean;
   targetingActive?: boolean;
 }
@@ -30,7 +31,7 @@ interface SelectedSlot {
   index: number;
 }
 
-export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, disabled, targetingActive }: InventoryPanelProps) {
+export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, onItemInfo, disabled, targetingActive }: InventoryPanelProps) {
   const [selected, setSelected] = useState<SelectedSlot | null>(null);
 
   // Hide panel during targeting mode so map is unobstructed
@@ -50,6 +51,13 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, d
     onItemAction(selected.source, selected.index, action);
     setSelected(null);
   }, [selected, onItemAction]);
+
+  const handleSlotContextMenu = useCallback((source: 'inventory' | 'equipment', index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    const item = source === 'inventory' ? inventoryItems[index] : equipmentItems[index];
+    if (!item || !onItemInfo) return;
+    onItemInfo(item, e.clientX, e.clientY);
+  }, [inventoryItems, equipmentItems, onItemInfo]);
 
   const selectedItem = selected
     ? (selected.source === 'inventory' ? inventoryItems[selected.index] : equipmentItems[selected.index])
@@ -81,6 +89,7 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, d
             label={EQUIP_LABELS[i]}
             isSelected={selected?.source === 'equipment' && selected.index === i}
             onClick={() => handleSlotClick('equipment', i)}
+            onContextMenu={(e) => handleSlotContextMenu('equipment', i, e)}
           />
         ))}
       </div>
@@ -93,6 +102,7 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, d
             item={item}
             isSelected={selected?.source === 'inventory' && selected.index === i}
             onClick={() => handleSlotClick('inventory', i)}
+            onContextMenu={(e) => handleSlotContextMenu('inventory', i, e)}
           />
         ))}
       </div>
@@ -107,15 +117,17 @@ interface SlotProps {
   label?: string;
   isSelected: boolean;
   onClick: () => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
 }
 
-function Slot({ item, label, isSelected, onClick }: SlotProps) {
+function Slot({ item, label, isSelected, onClick, onContextMenu }: SlotProps) {
   // Unity: unused=0.247 alpha, in-use=1.0 alpha on the slot tint color
   const opacity = item ? 1.0 : 0.35;
 
   return (
     <div
       onClick={onClick}
+      onContextMenu={onContextMenu}
       style={{
         width: SLOT_SIZE,
         height: SLOT_SIZE,

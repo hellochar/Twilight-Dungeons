@@ -6,11 +6,19 @@ import { TileVisibility } from '../core/types';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
-import { FogOverlay } from './FogOverlay';
 import { SPRITE_TINTS } from './spriteTints';
 
 /** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
 const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
+
+/**
+ * Grasses whose Unity prefab overrides Shadow rotation to (0,0,0) — flat shadow
+ * instead of the default angled (60°,20°,0°). Matched by displayName lowercase.
+ */
+const FLAT_SHADOW_ENTITIES = new Set([
+  'blob slime', 'bloodwort', 'cheshire weed sprout', 'coralmoss',
+  'dandypuff', 'necroroot', 'poisonmoss', 'vibrant ivy', 'web',
+]);
 
 /**
  * Per-status visual config matching Unity prefab positioning.
@@ -104,7 +112,6 @@ export class GameRenderer {
   readonly app: Application;
   readonly camera: Camera;
   readonly sprites: SpriteManager;
-  readonly fog: FogOverlay;
 
   // Layered containers (back to front)
   private tileLayer = new Container();
@@ -112,14 +119,13 @@ export class GameRenderer {
   private itemLayer = new Container();
   private bodyLayer = new Container();
   private effectLayer = new Container();
-  private fogLayer = new Container();
 
   // Entity guid → Container node (position/scale/alpha target for animations)
   private entityNodes = new Map<string, Container>();
   // Entity guid → visual Sprite child (tint target for animations)
   private entityVisuals = new Map<string, Sprite>();
-  // Tile key → Graphics for tile backgrounds
-  private tileGraphics = new Map<string, Graphics>();
+  // Tile position key → Container wrapping all display objects for that tile
+  private tileContainers = new Map<string, Container>();
   // Entity guid → status indicator sprite container (child of entityNode)
   private statusIndicators = new Map<string, Container>();
   // Active targeting highlights on the effect layer
@@ -131,7 +137,6 @@ export class GameRenderer {
     this.app = app;
     this.camera = camera;
     this.sprites = sprites;
-    this.fog = new FogOverlay(camera);
 
     // Add layers in draw order
     app.stage.addChild(this.tileLayer);
@@ -139,8 +144,6 @@ export class GameRenderer {
     app.stage.addChild(this.itemLayer);
     app.stage.addChild(this.bodyLayer);
     app.stage.addChild(this.effectLayer);
-    this.fogLayer.addChild(this.fog.container);
-    app.stage.addChild(this.fogLayer);
   }
 
   /** Set the floor to render and do full rebuild. */
@@ -173,14 +176,14 @@ export class GameRenderer {
     this.clearAll();
     this.buildTiles();
     this.buildEntities();
-    this.fog.rebuild(this.floor);
+    this.syncTileVisibility();
   }
 
   /** Sync visuals to current model state (call after each turn step). */
   syncToModel(): void {
     if (!this.floor) return;
     this.syncEntities();
-    this.fog.sync(this.floor);
+    this.syncTileVisibility();
   }
 
   /** Get the entity node Container (for position/scale/alpha animations). */
@@ -229,7 +232,7 @@ export class GameRenderer {
     this.effectLayer.removeChildren();
     this.entityNodes.clear();
     this.entityVisuals.clear();
-    this.tileGraphics.clear();
+    this.tileContainers.clear();
     this.statusIndicators.clear();
   }
 
@@ -243,6 +246,10 @@ export class GameRenderer {
       if (!tile) continue;
 
       const px = this.camera.tileToPixel(pos);
+      const container = new Container();
+      container.position.set(px.x, px.y);
+      this.tileLayer.addChild(container);
+      this.tileContainers.set(Vector2Int.key(pos), container);
 
       // Try tilesheet sprite first (ground, wall, fancy-ground)
       const sheetName = tilesheetName(tile);
@@ -252,8 +259,7 @@ export class GameRenderer {
         const sprite = new Sprite(sheetTex);
         sprite.width = ts;
         sprite.height = ts;
-        sprite.position.set(px.x, px.y);
-        this.tileLayer.addChild(sprite);
+        container.addChild(sprite);
       } else {
         // Individual sprite (chasm, water, soil, signpost) or fallback color
         const tex = this.sprites.getTexture(tile.displayName);
@@ -261,23 +267,20 @@ export class GameRenderer {
           const sprite = new Sprite(tex);
           sprite.width = ts;
           sprite.height = ts;
-          sprite.position.set(px.x, px.y);
-          this.tileLayer.addChild(sprite);
+          container.addChild(sprite);
         } else {
           // Colored rectangle fallback
           const g = new Graphics();
           const colorKey = tile.constructor.name;
           const color = TILE_COLORS[colorKey] ?? 0x8b7355;
           g.rect(0, 0, ts, ts).fill(color);
-          g.position.set(px.x, px.y);
-          this.tileLayer.addChild(g);
-          this.tileGraphics.set(Vector2Int.key(pos), g);
+          container.addChild(g);
         }
       }
 
       // Chasm border edges: draw on chasm tiles where neighbor is non-chasm
       if (tile instanceof Chasm) {
-        this.addChasmBorders(floor, pos, px, ts);
+        this.addChasmBorders(floor, pos, container, ts);
       }
     }
   }
@@ -288,7 +291,7 @@ export class GameRenderer {
    * rotated for all 4 edges, and gradient-top.png for the fade overlay.
    */
   private addChasmBorders(
-    floor: Floor, pos: Vector2Int, px: { x: number; y: number }, ts: number,
+    floor: Floor, pos: Vector2Int, container: Container, ts: number,
   ): void {
     const depth = floor.depth;
     const tint = chasmTint(depth);
@@ -298,11 +301,12 @@ export class GameRenderer {
     if (borderTex) {
       // Each edge: border-left (1×16) sized bw×ts, anchored at center, positioned
       // at center of each tile edge. Rotation swings around the center point.
+      // Coordinates are local to the container (origin = tile top-left).
       const edges: Array<{ dir: Vector2Int; x: number; y: number; rot: number }> = [
-        { dir: Vector2Int.left,  x: px.x + bw / 2,       y: px.y + ts / 2,       rot: 0 },
-        { dir: Vector2Int.right, x: px.x + ts - bw / 2,  y: px.y + ts / 2,       rot: Math.PI },
-        { dir: Vector2Int.up,    x: px.x + ts / 2,        y: px.y + bw / 2,       rot: -Math.PI / 2 },
-        { dir: Vector2Int.down,  x: px.x + ts / 2,        y: px.y + ts - bw / 2,  rot: Math.PI / 2 },
+        { dir: Vector2Int.left,  x: bw / 2,       y: ts / 2,       rot: 0 },
+        { dir: Vector2Int.right, x: ts - bw / 2,  y: ts / 2,       rot: Math.PI },
+        { dir: Vector2Int.up,    x: ts / 2,        y: bw / 2,       rot: -Math.PI / 2 },
+        { dir: Vector2Int.down,  x: ts / 2,        y: ts - bw / 2,  rot: Math.PI / 2 },
       ];
 
       for (const edge of edges) {
@@ -316,7 +320,7 @@ export class GameRenderer {
           sprite.rotation = edge.rot;
           sprite.position.set(edge.x, edge.y);
           sprite.tint = tint;
-          this.tileLayer.addChild(sprite);
+          container.addChild(sprite);
         }
       }
     }
@@ -330,11 +334,11 @@ export class GameRenderer {
       const fadeTex = this.sprites.getTexture('gradient-top');
       if (fadeTex) {
         const sprite = new Sprite(fadeTex);
-        sprite.position.set(px.x, px.y - ts * 0.25);
+        sprite.position.set(0, -ts * 0.25);
         sprite.width = ts;
         sprite.height = ts * 1.5;
         sprite.tint = tint;
-        this.tileLayer.addChild(sprite);
+        container.addChild(sprite);
       }
     }
   }
@@ -372,6 +376,31 @@ export class GameRenderer {
 
     const node = new Container();
     node.position.set(px.x, px.y);
+
+    // Shadow — bodies and grasses only (items have no shadow in Unity).
+    // Matches Unity Shadow.prefab: color rgba(0.055, 0.059, 0.075, 0.4).
+    // Most entities: angled (60°,20°,0°). Some grasses: flat (0°,0°,0°).
+    const hasShadow = layer === this.bodyLayer || layer === this.grassLayer;
+    if (hasShadow) {
+      const shadow = new Sprite(tex ?? Texture.WHITE);
+      shadow.tint = 0x0E0F13;
+      shadow.alpha = 0.4;
+      shadow.width = ts;
+      shadow.height = ts;
+
+      const isFlat = FLAT_SHADOW_ENTITIES.has(entity.displayName.toLowerCase());
+      if (isFlat) {
+        // Flat shadow: dark copy offset slightly right and up (Unity: 0.05, 0.05)
+        shadow.position.set(ts * 0.05, -ts * 0.05);
+      } else {
+        // Angled shadow: skewed up-right from entity's feet
+        shadow.anchor.set(0.5, 1.0);
+        shadow.position.set(ts / 2, ts);
+        shadow.scale.y *= 0.5;
+        shadow.skew.x = -0.35;
+      }
+      node.addChild(shadow);
+    }
 
     const sprite = new Sprite(tex ?? Texture.WHITE);
     sprite.width = ts;
@@ -417,7 +446,7 @@ export class GameRenderer {
       }
       const px = this.camera.tileToPixel(body.pos);
       node.position.set(px.x, px.y);
-      node.visible = body.isVisible;
+      node.visible = !body.isDead;
     }
 
     // Sync grasses
@@ -429,7 +458,7 @@ export class GameRenderer {
         if (!node) {
           node = this.addEntitySprite(grass, this.grassLayer);
         }
-        node.visible = grass.isVisible;
+        node.visible = !grass.isDead;
       }
     }
 
@@ -442,7 +471,7 @@ export class GameRenderer {
         if (!node) {
           node = this.addEntitySprite(item, this.itemLayer);
         }
-        node.visible = item.isVisible;
+        node.visible = !item.isDead;
       }
     }
 
@@ -469,7 +498,7 @@ export class GameRenderer {
     const ts = this.camera.tileSize;
 
     for (const body of floor.bodies) {
-      if (!body.isVisible || !('statuses' in body)) {
+      if (body.isDead || !('statuses' in body)) {
         const existing = this.statusIndicators.get(body.guid);
         if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
         continue;

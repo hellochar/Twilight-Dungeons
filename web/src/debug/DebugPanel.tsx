@@ -101,7 +101,7 @@ function buildCommands(
       execute: () => {
         const f = floor();
         if (!f) return;
-        allEncounters[name](f, null);
+        allEncounters[name](f, f.root);
         syncAndUpdate();
       },
     });

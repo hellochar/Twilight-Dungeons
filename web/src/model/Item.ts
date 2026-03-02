@@ -3,6 +3,8 @@ import { GameModelRef } from './GameModelRef';
 import type { EquipmentSlot } from './Equipment';
 import type { Inventory } from './Inventory';
 import type { Actor } from './Actor';
+import type { Entity } from './Entity';
+import type { Player } from './Player';
 import type { Soil } from './Tile';
 
 // ─── Symbol tags for item interfaces ───
@@ -14,6 +16,7 @@ export const USABLE_TAG = Symbol.for('IUsable');
 export const EDIBLE_TAG = Symbol.for('IEdible');
 export const PLANTABLE_TAG = Symbol.for('IPlantable');
 export const STICKY_TAG = Symbol.for('ISticky');
+export const TARGETED_ACTION_TAG = Symbol.for('ITargetedAction');
 
 // ─── Item interfaces ───
 
@@ -76,6 +79,14 @@ export interface IPlantable {
 /** Marker: cannot unequip or destroy once equipped. */
 export interface ISticky {
   readonly [STICKY_TAG]: true;
+}
+
+/** Item that requires player to select a target before use (e.g. place on tile, charm enemy). */
+export interface ITargetedAction {
+  readonly [TARGETED_ACTION_TAG]: true;
+  readonly targetedActionName: string;
+  targets(player: Player): Entity[];
+  performTargetedAction(player: Player, target: Entity): void;
 }
 
 // ─── Item base class ───
@@ -142,6 +153,9 @@ export class Item {
     const methods: string[] = ['Drop'];
     if (EDIBLE_TAG in this) methods.push('Eat');
     if (USABLE_TAG in this) methods.push('Use');
+    if (TARGETED_ACTION_TAG in this) {
+      methods.push((this as unknown as ITargetedAction).targetedActionName);
+    }
     return methods;
   }
 }

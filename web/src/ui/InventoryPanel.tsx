@@ -22,6 +22,7 @@ interface InventoryPanelProps {
   equipmentItems: (ItemSnapshot | null)[];
   onItemAction: (source: 'inventory' | 'equipment', slot: number, action: string) => void;
   disabled: boolean;
+  targetingActive?: boolean;
 }
 
 interface SelectedSlot {
@@ -29,8 +30,11 @@ interface SelectedSlot {
   index: number;
 }
 
-export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, disabled }: InventoryPanelProps) {
+export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, disabled, targetingActive }: InventoryPanelProps) {
   const [selected, setSelected] = useState<SelectedSlot | null>(null);
+
+  // Hide panel during targeting mode so map is unobstructed
+  if (targetingActive) return null;
 
   const handleSlotClick = useCallback((source: 'inventory' | 'equipment', index: number) => {
     if (disabled) return;

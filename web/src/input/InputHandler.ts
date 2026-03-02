@@ -5,7 +5,8 @@ import { EventEmitter } from '../core/EventEmitter';
 export type PlayerIntent =
   | { type: 'move'; direction: Vector2Int }
   | { type: 'click'; tilePos: Vector2Int }
-  | { type: 'wait' };
+  | { type: 'wait' }
+  | { type: 'cancel' };
 
 /**
  * Captures keyboard + mouse/touch input and emits PlayerIntent events.
@@ -74,6 +75,11 @@ export class InputHandler {
 
   private onKeyDown(e: KeyboardEvent): void {
     if (!this.enabled) return;
+
+    if (e.key === 'Escape') {
+      this.onIntent.emit({ type: 'cancel' });
+      return;
+    }
 
     // Wait: space or numpad5 or period
     if (e.key === ' ' || e.key === 'Numpad5' || e.key === '.') {

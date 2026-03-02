@@ -11,7 +11,8 @@ import { FollowPathTask } from '../model/tasks/FollowPathTask';
 import { AttackTask } from '../model/tasks/AttackTask';
 import { WaitTask } from '../model/tasks/WaitTask';
 import { MoveNextToTargetTask } from '../model/tasks/MoveNextToTargetTask';
-import { Item, EquippableItem, STACKABLE_TAG, DURABLE_TAG, EDIBLE_TAG, USABLE_TAG, type IStackable, type IDurable, type IEdible, type IUsable } from '../model/Item';
+import { Item, EquippableItem, STACKABLE_TAG, DURABLE_TAG, EDIBLE_TAG, USABLE_TAG, TARGETED_ACTION_TAG, type IStackable, type IDurable, type IEdible, type IUsable, type ITargetedAction } from '../model/Item';
+import type { Entity } from '../model/Entity';
 import { StackingStatus } from '../model/Status';
 import { ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../core/types';
 
@@ -48,6 +49,19 @@ export interface GameOverInfo {
 export interface OnTopActionSnapshot {
   name: string;
   spriteName: string;
+}
+
+/** Internal targeting data stored in a ref (accessed by processIntent without re-render deps). */
+interface TargetingInfo {
+  source: 'inventory' | 'equipment';
+  slotIndex: number;
+  actionName: string;
+  targetMap: Map<string, Entity>; // Vector2Int.key() → target entity
+}
+
+/** Exported targeting state for UI consumption. */
+export interface TargetingState {
+  actionName: string;
 }
 
 export interface GameState {
@@ -113,6 +127,8 @@ export function useGameLoop() {
   const animatorRef = useRef<AnimationPlayer | null>(null);
   const inputRef = useRef<InputHandler | null>(null);
   const processingRef = useRef(false);
+  const targetingRef = useRef<TargetingInfo | null>(null);
+  const [targetingState, setTargetingState] = useState<TargetingState | null>(null);
 
   const readState = useCallback((): GameState => {
     const model = modelRef.current;
@@ -179,6 +195,38 @@ export function useGameLoop() {
     setGameState(readState());
   }, [readState]);
 
+  const cancelTargeting = useCallback(() => {
+    targetingRef.current = null;
+    setTargetingState(null);
+    rendererRef.current?.clearTargetHighlights();
+  }, []);
+
+  const beginTargeting = useCallback((source: 'inventory' | 'equipment', slotIndex: number) => {
+    const model = modelRef.current;
+    const renderer = rendererRef.current;
+    if (!model || !renderer) return;
+
+    const container = source === 'inventory' ? model.player.inventory : model.player.equipment;
+    const item = container.getAt(slotIndex);
+    if (!item || !(TARGETED_ACTION_TAG in item)) return;
+
+    const targeted = item as unknown as ITargetedAction;
+    const targets = targeted.targets(model.player);
+    if (targets.length === 0) return;
+
+    const targetMap = new Map<string, Entity>();
+    const positions: Vector2Int[] = [];
+    for (const t of targets) {
+      const key = Vector2Int.key(t.pos);
+      targetMap.set(key, t);
+      positions.push(t.pos);
+    }
+
+    targetingRef.current = { source, slotIndex, actionName: targeted.targetedActionName, targetMap };
+    setTargetingState({ actionName: targeted.targetedActionName });
+    renderer.showTargetHighlights(positions);
+  }, []);
+
   /** Step model, play animations, sync renderer. */
   const stepAndAnimate = useCallback(async () => {
     const model = modelRef.current;
@@ -223,6 +271,37 @@ export function useGameLoop() {
     if (processingRef.current) return;
     if (model.player.isDead || model.currentFloor.isCleared) return;
 
+    // ─── Targeting mode intercept ───
+    const targeting = targetingRef.current;
+    if (targeting) {
+      if (intent.type === 'click') {
+        const key = Vector2Int.key(intent.tilePos);
+        const target = targeting.targetMap.get(key);
+        if (target) {
+          // Valid target selected — execute the targeted action
+          cancelTargeting();
+          const container = targeting.source === 'inventory'
+            ? model.player.inventory : model.player.equipment;
+          const item = container.getAt(targeting.slotIndex);
+          if (item && TARGETED_ACTION_TAG in item) {
+            (item as unknown as ITargetedAction).performTargetedAction(model.player, target);
+            // If performTargetedAction set player tasks (e.g. ChaseTargetTask), step normally.
+            // Otherwise treat as a single-turn action.
+            if (!model.player.task) {
+              model.player.setTasks(new WaitTask(model.player, 1));
+            }
+            await stepAndAnimate();
+          }
+        } else {
+          cancelTargeting();
+        }
+      } else {
+        // move / wait / cancel all cancel targeting
+        cancelTargeting();
+      }
+      return;
+    }
+
     const player = model.player;
     const floor = model.currentFloor;
 
@@ -231,7 +310,7 @@ export function useGameLoop() {
 
     player.setTasks(task);
     await stepAndAnimate();
-  }, [stepAndAnimate]);
+  }, [stepAndAnimate, cancelTargeting]);
 
   /** Execute an item action from the inventory/equipment UI. */
   const executeItemAction = useCallback(async (
@@ -246,6 +325,12 @@ export function useGameLoop() {
     const container = source === 'inventory' ? player.inventory : player.equipment;
     const item = container.getAt(slotIndex);
     if (!item || item.constructor.name === 'ItemHands') return;
+
+    // Check if this is a targeted action (e.g. "Place", "Charm")
+    if (TARGETED_ACTION_TAG in item && (item as unknown as ITargetedAction).targetedActionName === action) {
+      beginTargeting(source, slotIndex);
+      return;
+    }
 
     switch (action) {
       case 'Drop':
@@ -276,7 +361,7 @@ export function useGameLoop() {
       rendererRef.current?.syncToModel();
       setGameState(readState());
     }
-  }, [readState, stepAndAnimate]);
+  }, [readState, stepAndAnimate, beginTargeting]);
 
   /** Execute the on-top action at the player's current position. */
   const executeOnTopAction = useCallback(async () => {
@@ -409,7 +494,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */
@@ -456,6 +541,9 @@ function resolveIntent(
       }
       return null;
     }
+
+    case 'cancel':
+      return null;
   }
 }
 

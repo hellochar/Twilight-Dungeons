@@ -1,26 +1,27 @@
-import { Item, USABLE_TAG, type IUsable } from '../Item';
+import { Item, TARGETED_ACTION_TAG, type ITargetedAction } from '../Item';
 import { ScuttlerUnderground } from '../enemies/Scuttler';
-import type { Actor } from '../Actor';
+import type { Entity } from '../Entity';
+import type { Player } from '../Player';
 
 /**
  * Place a Scuttler Underground on an adjacent valid tile.
- * C# uses ITargetedAction<Tile>; web port auto-places on first valid adjacent tile.
+ * Player selects target tile via ITargetedAction UI.
  * Port of C# ItemScuttler.
  */
-export class ItemScuttler extends Item implements IUsable {
-  readonly [USABLE_TAG] = true as const;
+export class ItemScuttler extends Item implements ITargetedAction {
+  readonly [TARGETED_ACTION_TAG] = true as const;
+  readonly targetedActionName = 'Place';
 
-  use(actor: Actor): void {
-    const floor = actor.floor;
-    if (!floor) return;
-
-    const validTiles = floor.getAdjacentTiles(actor.pos)
+  targets(player: Player): Entity[] {
+    const floor = player.floor;
+    if (!floor) return [];
+    return floor.getAdjacentTiles(player.pos)
       .filter(t => ScuttlerUnderground.canOccupy(t));
+  }
 
-    if (validTiles.length > 0) {
-      floor.put(new ScuttlerUnderground(validTiles[0].pos));
-      this.Destroy();
-    }
+  performTargetedAction(player: Player, target: Entity): void {
+    player.floor!.put(new ScuttlerUnderground(target.pos));
+    this.Destroy();
   }
 
   getStats(): string {

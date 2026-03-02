@@ -118,6 +118,8 @@ export class GameRenderer {
   private tileGraphics = new Map<string, Graphics>();
   // Entity guid → status indicator sprite container (child of entityNode)
   private statusIndicators = new Map<string, Container>();
+  // Active targeting highlights on the effect layer
+  private targetHighlights: Graphics[] = [];
 
   private floor: Floor | null = null;
 
@@ -190,6 +192,27 @@ export class GameRenderer {
   /** Get the effect layer container (for animation overlays). */
   getEffectLayer(): Container {
     return this.effectLayer;
+  }
+
+  /** Show green highlight rectangles on valid target positions. */
+  showTargetHighlights(positions: Vector2Int[]): void {
+    this.clearTargetHighlights();
+    const ts = this.camera.tileSize;
+    for (const pos of positions) {
+      const px = this.camera.tileToPixel(pos);
+      const g = new Graphics();
+      g.rect(0, 0, ts, ts).fill({ color: 0x44ff44, alpha: 0.25 });
+      g.rect(0, 0, ts, ts).stroke({ color: 0x44ff44, alpha: 0.6, width: 2 });
+      g.position.set(px.x, px.y);
+      this.effectLayer.addChild(g);
+      this.targetHighlights.push(g);
+    }
+  }
+
+  /** Remove all target highlight graphics. */
+  clearTargetHighlights(): void {
+    for (const g of this.targetHighlights) g.destroy();
+    this.targetHighlights = [];
   }
 
   // ─── Private ───
@@ -434,16 +457,12 @@ export class GameRenderer {
   }
 
   /**
-   * Sync status/task indicators as siblings of the visual sprite inside the
+   * Sync status/task visuals as siblings of the visual sprite inside the
    * entity's Container node (mirrors Unity's Actor → Statuses child).
-   * Since indicators are NOT children of the Sprite, they don't inherit its tint.
-   * Since they ARE children of the Container node, they follow animations.
+   * Each status has its own position/scale from its Unity prefab — no generic row.
    */
   private syncStatusIndicators(floor: Floor): void {
     const ts = this.camera.tileSize;
-    // Unity: 0.75× actor size, positioned 0.65 tiles above center
-    const iconSize = ts * 0.75;
-    const gap = iconSize * 0.55;
 
     for (const body of floor.bodies) {
       if (!body.isVisible || !('statuses' in body)) {
@@ -452,33 +471,37 @@ export class GameRenderer {
         continue;
       }
 
-      const spriteKeys: string[] = [];
-      const tints: (number | null)[] = []; // per-icon tint override
-
       const actor = body as any;
+      const node = this.entityNodes.get(body.guid);
+      if (!node) continue;
+
       const isSleeping = actor.task?.constructor?.name === 'SleepTask';
+      const statuses = actor.statuses as { list: any[] };
+
+      // Collect visuals to render
+      const visuals: Array<{ config: StatusVisualConfig; status?: any; tint?: number }> = [];
+
+      // SleepTask visual
       if (isSleeping) {
-        spriteKeys.push('sleep');
-        // Deep sleep tints the ZZ icon blue (Unity SleepTaskController)
-        tints.push(actor.task.isDeepSleep ? DEEP_SLEEP_TINT : null);
+        visuals.push({
+          config: SLEEP_VISUAL,
+          tint: actor.task.isDeepSleep ? DEEP_SLEEP_TINT : undefined,
+        });
       }
 
-      const statuses = actor.statuses as { list: { constructor: { name: string } }[] };
+      // Status visuals — only statuses with Unity prefabs
       for (const s of statuses.list) {
-        const key = STATUS_SPRITES[s.constructor.name];
-        if (key) spriteKeys.push(key);
-        else spriteKeys.push('__unknown__');
-        tints.push(null);
+        const config = STATUS_VISUALS[s.constructor.name];
+        if (!config) continue;
+        if (config.hideWhenSleeping && isSleeping) continue;
+        visuals.push({ config, status: s });
       }
 
-      if (spriteKeys.length === 0) {
+      if (visuals.length === 0) {
         const existing = this.statusIndicators.get(body.guid);
         if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
         continue;
       }
-
-      const node = this.entityNodes.get(body.guid);
-      if (!node) continue;
 
       let container = this.statusIndicators.get(body.guid);
       if (container) {
@@ -493,33 +516,42 @@ export class GameRenderer {
         this.statusIndicators.set(body.guid, container);
       }
 
-      // Node-local coords are world pixels (node is unscaled Container).
-      // Center of tile = (ts/2, ts/2). Unity offset = 0.65 tiles above center.
-      const cx = ts / 2;
-      const cy = ts / 2 - ts * 0.65;
-      const totalW = spriteKeys.length > 1
-        ? (spriteKeys.length - 1) * gap + iconSize
-        : iconSize;
-
-      for (let i = 0; i < spriteKeys.length; i++) {
-        const tex = spriteKeys[i] !== '__unknown__'
-          ? this.sprites.getTexture(spriteKeys[i])
-          : null;
-        const x = cx - totalW / 2 + i * gap;
-        const y = cy - iconSize / 2;
-        if (tex) {
-          const icon = new Sprite(tex);
-          icon.width = iconSize;
-          icon.height = iconSize;
-          icon.position.set(x, y);
-          if (tints[i] != null) icon.tint = tints[i]!;
-          container.addChild(icon);
-        } else {
-          const g = new Graphics();
-          g.rect(0, 0, iconSize, iconSize).fill(0xffffff);
-          g.position.set(x, y);
-          container.addChild(g);
+      for (const { config, status, tint } of visuals) {
+        // PoisonedStatus: select frame from spritesheet based on stack count
+        let tex: Texture | null = null;
+        if (status?.constructor?.name === 'PoisonedStatus') {
+          const frames = this.sprites.getFrames('poisoned');
+          if (frames && frames.length > 0) {
+            const idx = Math.min(Math.max((status.stacks ?? 1) - 1, 0), frames.length - 1);
+            tex = frames[idx];
+          }
         }
+        if (!tex) {
+          tex = this.sprites.getTexture(config.spriteKey);
+        }
+        if (!tex) continue;
+
+        const icon = new Sprite(tex);
+        icon.anchor.set(0.5, 0.5);
+        const size = config.scale * ts;
+        icon.width = size;
+        icon.height = size;
+
+        // Convert Unity coords to PixiJS node-local coords
+        // Node center = (ts/2, ts/2), Y-flip for Unity Y-up → PixiJS Y-down
+        let cx = ts / 2 + config.offsetX * ts;
+        let cy = ts / 2 - config.offsetY * ts;
+
+        // ParasiteStatus: pseudo-random offset based on stacks (simplified wiggle)
+        if (status?.constructor?.name === 'ParasiteStatus') {
+          const seed = ((status.stacks ?? 1) * 7919) | 0;
+          cx += ((seed % 80) - 40) / 100 * ts;
+          cy += (((seed * 13) % 80) - 40) / 100 * ts;
+        }
+
+        icon.position.set(cx, cy);
+        if (tint != null) icon.tint = tint;
+        container.addChild(icon);
       }
     }
   }

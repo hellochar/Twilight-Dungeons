@@ -83,8 +83,8 @@ export class ScuttlerUnderground extends Grass implements IActorEnterHandler {
   }
 
   handleActorEnter(who: Actor): void {
-    if (!(who instanceof Scuttler)) {
-      this.floor!.put(new Scuttler(this.pos).targetting(who));
+    if (!(who instanceof Scuttler) && this.floor && !this.isDead) {
+      this.floor.put(new Scuttler(this.pos).targetting(who));
       this.kill(who);
     }
   }

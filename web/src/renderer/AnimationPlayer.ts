@@ -23,6 +23,8 @@ const HEAL_STYLE = new TextStyle({
 // ─── Unity BumpAndReturn constants (BumpAndReturn.cs) ───
 const BUMP_DURATION = 0.25;
 const BUMP_INTENSITY = 0.75;
+// Time when bump reaches peak displacement: t_peak=0.25, so 0.25*BUMP_DURATION
+const BUMP_IMPACT_TIME = BUMP_DURATION * 0.25;
 
 /** Unity's exact parabolic bump-and-return easing: pow(cos(PI/2 + PI*sqrt(t)), 4) * 0.75 */
 function bumpAndReturnEasing(t: number): number {
@@ -184,7 +186,8 @@ export class AnimationPlayer {
     node: Container, visual: Sprite | undefined,
     event: GameEvent, tl: gsap.core.Timeline,
   ): void {
-    const label = `dmg-${event.entityGuid}`;
+    // Start at bump impact time so damage overlaps the attack hit
+    const pos = BUMP_IMPACT_TIME;
 
     if (visual) {
       const origTint = visual.tint;
@@ -192,7 +195,7 @@ export class AnimationPlayer {
         tint: 0xff3333,
         duration: 0.05,
         onComplete: () => { visual.tint = origTint; },
-      }, label);
+      }, pos);
     }
 
     // Shake the whole node
@@ -202,10 +205,10 @@ export class AnimationPlayer {
       duration: 0.03,
       yoyo: true,
       repeat: 2,
-    }, label);
+    }, pos);
 
     if (event.amount !== undefined && event.amount > 0) {
-      this.spawnFloatingText(`-${event.amount}`, event, tl, label, DAMAGE_STYLE);
+      this.spawnFloatingText(`-${event.amount}`, event, tl, pos, DAMAGE_STYLE);
     }
   }
 
@@ -214,33 +217,42 @@ export class AnimationPlayer {
     visual: Sprite | undefined, event: GameEvent, tl: gsap.core.Timeline,
   ): void {
     if (!visual) return;
-    const label = `heal-${event.entityGuid}`;
+    const pos = BUMP_IMPACT_TIME;
     const origTint = visual.tint;
     tl.to(visual, {
       tint: 0x33ff66,
       duration: 0.08,
       onComplete: () => { visual.tint = origTint; },
-    }, label);
+    }, pos);
 
     if (event.amount !== undefined && event.amount > 0) {
-      this.spawnFloatingText(`+${event.amount}`, event, tl, label, HEAL_STYLE);
+      this.spawnFloatingText(`+${event.amount}`, event, tl, pos, HEAL_STYLE);
     }
   }
 
-  /** Shrink + fade out on death — targets the whole node. */
-  private animateDeath(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
-    const label = `death-${event.entityGuid}`;
+  /**
+   * Fade + shrink on death — matches Unity FadeThenDestroy.cs:
+   * fadeTime=0.5, shrink=0.5, linear easing, pivot at sprite center.
+   */
+  private animateDeath(node: Container, _event: GameEvent, tl: gsap.core.Timeline): void {
+    const pos = BUMP_IMPACT_TIME;
+    const ts = this.camera.tileSize;
+
+    // Shift pivot to center so shrink scales toward center (matching Unity sprite pivot)
+    node.pivot.set(ts / 2, ts / 2);
+    node.position.set(node.position.x + ts / 2, node.position.y + ts / 2);
+
     tl.to(node, {
       alpha: 0,
-      duration: 0.25,
-      ease: 'power2.in',
-    }, label);
+      duration: 0.5,
+      ease: 'none',
+    }, pos);
     tl.to(node.scale, {
-      x: 0,
-      y: 0,
-      duration: 0.25,
-      ease: 'power2.in',
-    }, label);
+      x: 0.5,
+      y: 0.5,
+      duration: 0.5,
+      ease: 'none',
+    }, pos);
   }
 
   /** Pop in from zero scale on spawn — targets the whole node. */
@@ -262,7 +274,7 @@ export class AnimationPlayer {
   /** Spawn floating text (e.g. "-3" or "+2") that drifts up and fades. */
   private spawnFloatingText(
     text: string, event: GameEvent, tl: gsap.core.Timeline,
-    label: string, style: TextStyle,
+    label: string | number, style: TextStyle,
   ): void {
     if (!event.to && !event.from) return;
     const pos = event.to ?? event.from!;

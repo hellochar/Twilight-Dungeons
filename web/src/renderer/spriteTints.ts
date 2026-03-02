@@ -6,6 +6,7 @@
 export const SPRITE_TINTS: Record<string, number> = {
   // Monochrome atlas sprites (white base, need tinting)
   'blob': 0xe845c1,        // rgb(0.906, 0.272, 0.757)
+  'mini blob': 0xff91f2,   // rgb(1.0, 0.568, 0.948)
 
   // Colored atlas sprites with non-white tints
   'bat': 0xdef327,          // rgb(0.869, 0.953, 0.155)

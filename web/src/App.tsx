@@ -14,17 +14,13 @@ function App() {
 
   const onDebugOpenChange = useCallback((open: boolean) => {
     setDebugOpen(open);
-    // Trigger resize so PixiJS + camera adapt to new container width
-    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+    // Trigger resize after React commits the DOM change so PixiJS picks up new container width
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 0);
   }, []);
 
-  const containerWidth = import.meta.env.DEV && debugOpen
-    ? `calc(100vw - ${PANEL_WIDTH}px)`
-    : '100vw';
-
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
-      <div ref={containerRef} style={{ width: containerWidth, height: '100%' }} />
+    <div style={{ width: '100vw', height: '100vh', display: 'flex', position: 'relative' }}>
+      <div ref={containerRef} style={{ flex: 1, height: '100%', minWidth: 0 }} />
       {ready && (
         <>
           <HUD
@@ -80,14 +76,6 @@ function App() {
           {gameState.gameOver && (
             <GameOverOverlay info={gameState.gameOver} onPlayAgain={resetGame} />
           )}
-          {import.meta.env.DEV && (
-            <DebugPanel
-              syncAndUpdate={syncAndUpdate}
-              modelRef={modelRef}
-              rendererRef={rendererRef}
-              onOpenChange={onDebugOpenChange}
-            />
-          )}
           {debugNotice && (
             <div style={{
               position: 'absolute',
@@ -121,6 +109,14 @@ function App() {
         }}>
           Loading...
         </div>
+      )}
+      {import.meta.env.DEV && ready && (
+        <DebugPanel
+          syncAndUpdate={syncAndUpdate}
+          modelRef={modelRef}
+          rendererRef={rendererRef}
+          onOpenChange={onDebugOpenChange}
+        />
       )}
     </div>
   );

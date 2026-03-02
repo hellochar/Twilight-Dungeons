@@ -384,10 +384,8 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange 
   return (
     <div
       style={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
         width: PANEL_WIDTH,
+        flexShrink: 0,
         height: '100%',
         background: 'rgba(20, 20, 32, 0.92)',
         borderLeft: '1px solid #444',

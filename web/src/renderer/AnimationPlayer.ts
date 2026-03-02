@@ -20,6 +20,15 @@ const HEAL_STYLE = new TextStyle({
   stroke: { color: 0x000000, width: 3 },
 });
 
+// ─── Unity BumpAndReturn constants (BumpAndReturn.cs) ───
+const BUMP_DURATION = 0.25;
+const BUMP_INTENSITY = 0.75;
+
+/** Unity's exact parabolic bump-and-return easing: pow(cos(PI/2 + PI*sqrt(t)), 4) * 0.75 */
+function bumpAndReturnEasing(t: number): number {
+  return Math.pow(Math.cos(Math.PI / 2 + Math.PI * Math.sqrt(t)), 4) * BUMP_INTENSITY;
+}
+
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
   type: 'move' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'spawn';
@@ -59,6 +68,23 @@ export class AnimationPlayer {
     return new Promise((resolve) => {
       this.timeline!.eventCallback('onComplete', resolve);
       // Safety timeout — if timeline is empty or instant, resolve immediately
+      if (this.timeline!.duration() === 0) resolve();
+    });
+  }
+
+  /** Play a batch of events on a fresh timeline (for per-step animation). */
+  async playBatch(events: GameEvent[]): Promise<void> {
+    if (events.length === 0) return;
+
+    this.timeline?.kill();
+    this.timeline = gsap.timeline();
+
+    for (const event of events) {
+      this.addEventToTimeline(event, this.timeline);
+    }
+
+    return new Promise((resolve) => {
+      this.timeline!.eventCallback('onComplete', resolve);
       if (this.timeline!.duration() === 0) resolve();
     });
   }
@@ -122,28 +148,32 @@ export class AnimationPlayer {
     }, '<');
   }
 
-  /** Bump toward target then return (melee attack feel). */
+  /**
+   * Bump toward target then return (melee attack feel).
+   * Unity BumpAndReturn.cs: duration 0.25s, intensity 0.75,
+   * easing = pow(cos(PI/2 + PI * sqrt(t)), 4) * 0.75
+   */
   private animateAttack(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
     if (!event.from || !event.to) return;
     const fromPx = this.camera.tileToPixel(event.from);
     const toPx = this.camera.tileToPixel(event.to);
 
-    const midX = fromPx.x + (toPx.x - fromPx.x) * 0.4;
-    const midY = fromPx.y + (toPx.y - fromPx.y) * 0.4;
+    const dx = (toPx.x - fromPx.x) * BUMP_INTENSITY;
+    const dy = (toPx.y - fromPx.y) * BUMP_INTENSITY;
 
-    const label = `attack-${event.entityGuid}`;
-    tl.to(node.position, {
-      x: midX,
-      y: midY,
-      duration: 0.06,
-      ease: 'power2.in',
-    }, label);
-    tl.to(node.position, {
-      x: fromPx.x,
-      y: fromPx.y,
-      duration: 0.06,
-      ease: 'power2.out',
-    }, '>');
+    const progress = { t: 0 };
+    tl.to(progress, {
+      t: 1,
+      duration: BUMP_DURATION,
+      ease: 'none',
+      onUpdate: () => {
+        const e = bumpAndReturnEasing(progress.t);
+        node.position.set(fromPx.x + dx * e, fromPx.y + dy * e);
+      },
+      onComplete: () => {
+        node.position.set(fromPx.x, fromPx.y);
+      },
+    }, `attack-${event.entityGuid}`);
   }
 
   /** Quick scale pulse for ground attack. */

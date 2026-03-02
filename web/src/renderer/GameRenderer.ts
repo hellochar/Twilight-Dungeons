@@ -138,6 +138,8 @@ export class GameRenderer {
   private statusIndicators = new Map<string, Container>();
   // Active targeting highlights on the effect layer
   private targetHighlights: Graphics[] = [];
+  // Entity guids currently mid-animation — skip position snapping for these
+  readonly animatingGuids = new Set<string>();
 
   private floor: Floor | null = null;
 
@@ -230,6 +232,50 @@ export class GameRenderer {
   clearTargetHighlights(): void {
     for (const g of this.targetHighlights) g.destroy();
     this.targetHighlights = [];
+  }
+
+  /**
+   * Lerp non-animated entity positions toward their model positions.
+   * Call from app.ticker each frame.
+   * Matches Unity ActorController.Update() lines 82-89:
+   *   speed = 16 / actionCost, snap if distance > 3 tiles.
+   */
+  lerpPositions(dt: number): void {
+    const floor = this.floor;
+    if (!floor) return;
+    const ts = this.camera.tileSize;
+
+    for (const body of floor.bodies) {
+      if (body.isDead) continue;
+      if (this.animatingGuids.has(body.guid)) continue;
+      const node = this.entityNodes.get(body.guid);
+      if (!node) continue;
+
+      const target = this.camera.tileToPixel(body.pos);
+      const dx = target.x - node.position.x;
+      const dy = target.y - node.position.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 0.5) {
+        node.position.set(target.x, target.y);
+        continue;
+      }
+
+      // Snap if distance > 3 tiles (matching Unity ActorController line 85-86)
+      if (dist > ts * 3) {
+        node.position.set(target.x, target.y);
+        continue;
+      }
+
+      // Lerp speed: 16 tiles per second (Unity ActorController line 82: 16 / actionCost)
+      // Most actors have move cost 1, so 16 t/s is the standard speed.
+      const speed = 16 * ts * dt;
+      const ratio = Math.min(speed / dist, 1);
+      node.position.set(
+        node.position.x + dx * ratio,
+        node.position.y + dy * ratio,
+      );
+    }
   }
 
   // ─── Private ───
@@ -554,8 +600,11 @@ export class GameRenderer {
       if (!node) {
         node = this.addEntitySprite(body, this.bodyLayer);
       }
-      const px = this.camera.tileToPixel(body.pos);
-      node.position.set(px.x, px.y);
+      // Skip position snapping for entities mid-animation — lerp handles them
+      if (!this.animatingGuids.has(body.guid)) {
+        const px = this.camera.tileToPixel(body.pos);
+        node.position.set(px.x, px.y);
+      }
       node.visible = !body.isDead;
     }
 

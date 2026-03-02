@@ -8,6 +8,7 @@ import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer } from '../renderer';
 import { InputHandler, type PlayerIntent, type TileContextEvent } from '../input/InputHandler';
 import type { EntityInfoData } from '../ui/EntityInfoPopup';
+import type { GameEvent } from '../renderer/AnimationPlayer';
 import { Body } from '../model/Body';
 import { FollowPathTask } from '../model/tasks/FollowPathTask';
 import { AttackTask } from '../model/tasks/AttackTask';
@@ -299,7 +300,10 @@ export function useGameLoop() {
     renderer.showTargetHighlights(positions);
   }, []);
 
-  /** Step model, play animations, sync renderer. */
+  // Skip-all flag: any input during animation loop sets this to skip all delays
+  const skipAllRef = useRef(false);
+
+  /** Async incremental step loop: step one entity at a time with stagger delays. */
   const stepAndAnimate = useCallback(async () => {
     const model = modelRef.current;
     const renderer = rendererRef.current;
@@ -309,24 +313,68 @@ export function useGameLoop() {
 
     processingRef.current = true;
     input.setEnabled(false);
+    skipAllRef.current = false;
 
-    model.turnManager.stepUntilPlayerChoice();
+    // Register skip-all handler after one frame so the triggering keypress doesn't count
+    const skipHandler = () => { skipAllRef.current = true; animator.skip(); };
+    const skipRAF = requestAnimationFrame(() => {
+      window.addEventListener('keydown', skipHandler);
+      window.addEventListener('pointerdown', skipHandler);
+    });
 
-    const events = model.consumeAnimationEvents();
-    if (events.length > 0) {
-      let skipRegistered = false;
-      const skipHandler = () => { if (skipRegistered) animator.skip(); };
-      requestAnimationFrame(() => {
-        skipRegistered = true;
-        window.addEventListener('keydown', skipHandler, { once: true });
-        window.addEventListener('pointerdown', skipHandler, { once: true });
-      });
-      try {
-        await animator.play(events);
-      } finally {
-        window.removeEventListener('keydown', skipHandler);
-        window.removeEventListener('pointerdown', skipHandler);
+    try {
+      model.turnManager.beginStepSession();
+
+      while (true) {
+        const result = model.turnManager.stepOneEntity();
+
+        if (result.done) break;
+
+        // Time-gap delay (matches Unity GAME_TIME_TO_SECONDS_WAIT_SCALE = 0.2)
+        if (!result.isFirstStep && result.timeGap > 0 && !result.shouldSpeedThrough && !skipAllRef.current) {
+          await delay(result.timeGap * 200);
+        }
+
+        // Consume and play animation events for this step
+        const events: GameEvent[] = model.consumeAnimationEvents();
+        if (events.length > 0) {
+          // Mark animated entity guids so renderer doesn't snap their positions
+          const animatedGuids = new Set<string>();
+          for (const ev of events) {
+            if (ev.type === 'move' || ev.type === 'attack' || ev.type === 'attackGround') {
+              animatedGuids.add(ev.entityGuid);
+              renderer.animatingGuids.add(ev.entityGuid);
+            }
+          }
+
+          if (skipAllRef.current) {
+            // Skip: just sync positions immediately
+            for (const guid of animatedGuids) {
+              renderer.animatingGuids.delete(guid);
+            }
+          } else {
+            try {
+              await animator.playBatch(events);
+            } finally {
+              for (const guid of animatedGuids) {
+                renderer.animatingGuids.delete(guid);
+              }
+            }
+          }
+        }
+
+        // Sync after each step so subsequent animations see updated positions
+        renderer.syncToModel();
+
+        // Stagger delay between visible enemy turns (Unity JUICE_STAGGER_SECONDS = 0.02)
+        if (result.shouldStagger && !skipAllRef.current && !result.shouldSpeedThrough) {
+          await delay(20);
+        }
       }
+    } finally {
+      cancelAnimationFrame(skipRAF);
+      window.removeEventListener('keydown', skipHandler);
+      window.removeEventListener('pointerdown', skipHandler);
     }
 
     renderer.syncToModel();
@@ -542,6 +590,11 @@ export function useGameLoop() {
       renderer.setFloor(model.currentFloor);
       renderer.syncToModel();
 
+      // Register ticker for position lerping (runs every frame)
+      app.ticker.add((ticker) => {
+        renderer.lerpPositions(ticker.deltaTime / 60);
+      });
+
       input = new InputHandler(camera, app.canvas);
       inputRef.current = input;
       input.onIntent.on(processIntent);
@@ -653,4 +706,8 @@ function countEnemies(floor: Floor): number {
     }
   }
   return count;
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

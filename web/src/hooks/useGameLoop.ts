@@ -371,17 +371,23 @@ export function useGameLoop() {
           await delay(20);
         }
       }
+    } catch (e) {
+      console.error('Error during step/animation loop:', e);
     } finally {
       cancelAnimationFrame(skipRAF);
       window.removeEventListener('keydown', skipHandler);
       window.removeEventListener('pointerdown', skipHandler);
+
+      try {
+        renderer.syncToModel();
+      } catch (e) {
+        console.error('Error syncing renderer after step loop:', e);
+      }
+      setGameState(readState());
+
+      processingRef.current = false;
+      input.setEnabled(true);
     }
-
-    renderer.syncToModel();
-    setGameState(readState());
-
-    processingRef.current = false;
-    input.setEnabled(true);
   }, [readState]);
 
   /** Process a player intent: assign task to player, step model, animate, sync. */

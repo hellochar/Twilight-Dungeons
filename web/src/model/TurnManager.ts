@@ -140,7 +140,8 @@ export class TurnManager {
         } else if (e instanceof ActorDiedException) {
           // Just continue
         } else {
-          throw e;
+          console.error(`Unexpected error during step for ${entity}:`, e);
+          entity.timeNextAction = this.model.time + 1;
         }
       }
 
@@ -277,7 +278,8 @@ export class TurnManager {
       } else if (e instanceof ActorDiedException) {
         // Just continue
       } else {
-        throw e;
+        console.error(`Unexpected error during step for ${entity}:`, e);
+        entity.timeNextAction = this.model.time + 1;
       }
     }
 

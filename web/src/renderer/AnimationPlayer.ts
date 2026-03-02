@@ -110,7 +110,8 @@ export class AnimationPlayer {
 
     switch (event.type) {
       case 'move':
-        this.animateMove(node, event, tl);
+        // No tween — movement is handled by GameRenderer.lerpPositions()
+        // (matching Unity's ActorController.Update() constant-speed lerp).
         break;
       case 'attack':
         this.animateAttack(node, event, tl);
@@ -131,19 +132,6 @@ export class AnimationPlayer {
         this.animateSpawn(node, event, tl);
         break;
     }
-  }
-
-  /** Slide to new position (from wherever the sprite currently is). */
-  private animateMove(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
-    if (!event.to) return;
-    const toPx = this.camera.tileToPixel(event.to);
-
-    tl.to(node.position, {
-      x: toPx.x,
-      y: toPx.y,
-      duration: 0.12,
-      ease: 'power2.out',
-    }, '<');
   }
 
   /**

@@ -337,10 +337,11 @@ export function useGameLoop() {
         // Consume and play animation events for this step
         const events: GameEvent[] = model.consumeAnimationEvents();
         if (events.length > 0) {
-          // Mark animated entity guids so renderer doesn't snap their positions
+          // Mark attack-animated guids so lerp doesn't interfere with bump-and-return.
+          // Moves are NOT marked — they're driven by lerpPositions (matching Unity).
           const animatedGuids = new Set<string>();
           for (const ev of events) {
-            if (ev.type === 'move' || ev.type === 'attack' || ev.type === 'attackGround') {
+            if (ev.type === 'attack' || ev.type === 'attackGround') {
               animatedGuids.add(ev.entityGuid);
               renderer.animatingGuids.add(ev.entityGuid);
             }

@@ -7,6 +7,7 @@ import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS } from './spriteTints';
+import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
 
 /** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
 const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
@@ -140,6 +141,13 @@ export class GameRenderer {
   private targetHighlights: Graphics[] = [];
   // Entity guids currently mid-animation — skip position snapping for these
   readonly animatingGuids = new Set<string>();
+  // Telegraph charging particle effects (TelegraphedTask.prefab port)
+  private telegraphEffects = new Map<string, {
+    container: Container;
+    particles: Array<{ g: Graphics; age: number; angle: number }>;
+    spawnAccum: number;
+    fadingOut: boolean;
+  }>();
 
   private floor: Floor | null = null;
 
@@ -293,6 +301,10 @@ export class GameRenderer {
     this.renderedTiles.clear();
     this.dimCells.clear();
     this.statusIndicators.clear();
+    for (const effect of this.telegraphEffects.values()) {
+      effect.container.destroy({ children: true });
+    }
+    this.telegraphEffects.clear();
   }
 
   private buildTiles(): void {
@@ -600,11 +612,9 @@ export class GameRenderer {
       if (!node) {
         node = this.addEntitySprite(body, this.bodyLayer);
       }
-      // Skip position snapping for entities mid-animation — lerp handles them
-      if (!this.animatingGuids.has(body.guid)) {
-        const px = this.camera.tileToPixel(body.pos);
-        node.position.set(px.x, px.y);
-      }
+      // Never snap body positions — lerpPositions handles smooth movement
+      // (matching Unity's ActorController.Update() lerp-only approach).
+      // Only animatingGuids (attack bumps etc.) bypass lerp.
       node.visible = !body.isDead;
     }
 
@@ -646,6 +656,8 @@ export class GameRenderer {
 
     // Sync status indicators on bodies
     this.syncStatusIndicators(floor);
+    // Sync telegraph charging effects
+    this.syncTelegraphEffects(floor);
   }
 
   /**
@@ -744,6 +756,116 @@ export class GameRenderer {
         icon.position.set(cx, cy);
         if (tint != null) icon.tint = tint;
         container.addChild(icon);
+      }
+    }
+  }
+
+  /**
+   * Detect which actors have TelegraphedTask and create/fade effects.
+   * Called from syncEntities each model sync.
+   */
+  private syncTelegraphEffects(floor: Floor): void {
+    const activeGuids = new Set<string>();
+
+    for (const body of floor.bodies) {
+      if (body.isDead) continue;
+      const actor = body as any;
+      if (actor.task instanceof TelegraphedTask) {
+        activeGuids.add(body.guid);
+        if (!this.telegraphEffects.has(body.guid)) {
+          const container = new Container();
+          this.effectLayer.addChild(container);
+          this.telegraphEffects.set(body.guid, {
+            container,
+            particles: [],
+            spawnAccum: 0,
+            fadingOut: false,
+          });
+        }
+      }
+    }
+
+    // Start fade-out for effects whose actor no longer has TelegraphedTask
+    for (const [guid, effect] of this.telegraphEffects) {
+      if (!activeGuids.has(guid) && !effect.fadingOut) {
+        effect.fadingOut = true;
+      }
+    }
+  }
+
+  /**
+   * Per-frame update for telegraph charging particle effects.
+   * Matches Unity TelegraphedTask.prefab:
+   * - 30 white particles/sec from circle rim (radiusThickness 0), radius 0.5 tiles
+   * - Particle life 0.4s, startSpeed 0
+   * - VelocityModule radial curve 0→-1 (scalar 1, speedModifier 5): particles
+   *   accelerate inward, reaching center exactly at end of life
+   * - Fades out over 0.25s when task ends
+   * @param dt Delta time in seconds.
+   */
+  updateTelegraphEffects(dt: number): void {
+    const ts = this.camera.tileSize;
+    const SPAWN_RATE = 30;
+    const PARTICLE_LIFE = 0.4;
+    const RADIUS = 0.5 * ts;
+    const PARTICLE_RADIUS = Math.max(1.5, 0.05 * ts);
+    // Radial displacement coefficient: particles travel from RADIUS to 0 over lifetime.
+    // v(a) = -6.25*ts*a, displacement = -3.125*ts*a² (reaches -RADIUS at a=0.4)
+    const RADIAL_COEFF = 3.125 * ts;
+
+    for (const [guid, effect] of this.telegraphEffects) {
+      const node = this.entityNodes.get(guid);
+      if (!node) {
+        effect.container.destroy({ children: true });
+        this.telegraphEffects.delete(guid);
+        continue;
+      }
+
+      // Position at entity center
+      effect.container.position.set(
+        node.position.x + ts / 2,
+        node.position.y + ts / 2,
+      );
+
+      // Spawn new particles at random angles on the circle rim
+      if (!effect.fadingOut) {
+        effect.spawnAccum += dt;
+        const interval = 1 / SPAWN_RATE;
+        while (effect.spawnAccum >= interval) {
+          effect.spawnAccum -= interval;
+          const angle = Math.random() * Math.PI * 2;
+          const g = new Graphics();
+          g.circle(0, 0, PARTICLE_RADIUS).fill({ color: 0xffffff });
+          g.position.set(Math.cos(angle) * RADIUS, Math.sin(angle) * RADIUS);
+          g.alpha = 0;
+          effect.container.addChild(g);
+          effect.particles.push({ g, age: 0, angle });
+        }
+      }
+
+      // Age particles: accelerate inward along their spawn angle
+      for (let i = effect.particles.length - 1; i >= 0; i--) {
+        const p = effect.particles[i];
+        p.age += dt;
+        if (p.age >= PARTICLE_LIFE) {
+          p.g.destroy();
+          effect.particles.splice(i, 1);
+        } else {
+          const r = RADIUS - RADIAL_COEFF * p.age * p.age;
+          p.g.position.set(Math.cos(p.angle) * r, Math.sin(p.angle) * r);
+          // Opacity: 0→1 over first 10%, hold at 1, then 1→0 over last 10%
+          const t = p.age / PARTICLE_LIFE;
+          p.g.alpha = t < 0.1 ? t / 0.1 : t > 0.9 ? (1 - t) / 0.1 : 1;
+        }
+      }
+
+      // Fade out container
+      if (effect.fadingOut) {
+        effect.container.alpha = Math.max(0, effect.container.alpha - dt / 0.25);
+        if (effect.container.alpha <= 0) {
+          effect.container.destroy({ children: true });
+          this.telegraphEffects.delete(guid);
+        }
       }
     }
   }

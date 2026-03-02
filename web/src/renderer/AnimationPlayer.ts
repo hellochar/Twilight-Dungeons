@@ -133,13 +133,11 @@ export class AnimationPlayer {
     }
   }
 
-  /** Slide from old position to new position. */
+  /** Slide to new position (from wherever the sprite currently is). */
   private animateMove(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
-    if (!event.from || !event.to) return;
-    const fromPx = this.camera.tileToPixel(event.from);
+    if (!event.to) return;
     const toPx = this.camera.tileToPixel(event.to);
 
-    node.position.set(fromPx.x, fromPx.y);
     tl.to(node.position, {
       x: toPx.x,
       y: toPx.y,

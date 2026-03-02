@@ -29,4 +29,8 @@ export const entityRegistry = {
   get(name: string): EntityConstructor | undefined {
     return registry.get(name);
   },
+
+  names(): string[] {
+    return Array.from(registry.keys());
+  },
 };

@@ -161,6 +161,11 @@ export class GameModel implements IGameModelRef {
   readonly onGameOver = new EventEmitter<[PlayStats]>();
   readonly onFloorCleared = new EventEmitter<[Floor]>();
 
+  /** Debug: the seed string used for generation (date or custom). */
+  dateSeed = '';
+  /** Debug: the depth selected for this game. */
+  generatedDepth = 0;
+
   get turnManager(): TurnManager {
     if (!this._turnManager) {
       this._turnManager = new TurnManager(this);
@@ -212,7 +217,10 @@ export class GameModel implements IGameModelRef {
     const generator = new FloorGenerator(floorSeeds);
     const floor = generator.generateCaveFloor(depth);
 
-    return GameModel.createAndSetMain(floor, floor.startPos);
+    const model = GameModel.createAndSetMain(floor, floor.startPos);
+    model.dateSeed = dateStr;
+    model.generatedDepth = depth;
+    return model;
   }
 
   /** Quick test setup: small hardcoded floor with enemies */

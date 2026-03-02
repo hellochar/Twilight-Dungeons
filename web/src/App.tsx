@@ -2,10 +2,11 @@ import { useGameLoop } from './hooks/useGameLoop';
 import { HUD } from './ui/HUD';
 import { InventoryPanel } from './ui/InventoryPanel';
 import { GameOverOverlay } from './ui/GameOverOverlay';
+import { DebugPanel } from './debug/DebugPanel';
 import './App.css';
 
 function App() {
-  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting } = useGameLoop();
+  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef } = useGameLoop();
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -61,6 +62,13 @@ function App() {
           )}
           {gameState.gameOver && (
             <GameOverOverlay info={gameState.gameOver} onPlayAgain={resetGame} />
+          )}
+          {import.meta.env.DEV && (
+            <DebugPanel
+              syncAndUpdate={syncAndUpdate}
+              modelRef={modelRef}
+              rendererRef={rendererRef}
+            />
           )}
         </>
       )}

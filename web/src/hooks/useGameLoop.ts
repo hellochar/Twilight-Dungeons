@@ -407,7 +407,6 @@ export function useGameLoop() {
 
     let input: InputHandler | null = null;
     let resizeHandler: (() => void) | null = null;
-    let keyHandler: ((e: KeyboardEvent) => void) | null = null;
     let destroyed = false;
     let appReady = false;
     let pixiApp: Application | null = null;
@@ -457,22 +456,6 @@ export function useGameLoop() {
       };
       window.addEventListener('resize', resizeHandler);
 
-      if (import.meta.env.DEV) {
-        keyHandler = (e: KeyboardEvent) => {
-          if (e.key === 'r' || e.key === 'R') {
-            if (processingRef.current) return;
-            const newModel = GameModel.createDailyGame(String(Date.now()));
-            newModel.consumeAnimationEvents();
-            modelRef.current = newModel;
-            renderer.setFloor(newModel.currentFloor);
-            renderer.syncToModel();
-            camera.resize(app.screen.width, app.screen.height, newModel.currentFloor.width, newModel.currentFloor.height);
-            setGameState(readState());
-          }
-        };
-        window.addEventListener('keydown', keyHandler);
-      }
-
       setGameState(readState());
       setReady(true);
     }
@@ -483,7 +466,6 @@ export function useGameLoop() {
       destroyed = true;
       input?.detach();
       if (resizeHandler) window.removeEventListener('resize', resizeHandler);
-      if (keyHandler) window.removeEventListener('keydown', keyHandler);
       if (pixiApp && appReady) {
         pixiApp.destroy(true, { children: true });
       }
@@ -494,7 +476,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

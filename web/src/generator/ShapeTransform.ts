@@ -82,7 +82,7 @@ function fillChunkCenteredAt(floor: Floor, x: number, y: number): number[][] {
       const pos = new Vector2Int(x + dx, y + dy);
       if (floor.inBounds(pos)) {
         const tile = floor.tiles.get(pos);
-        chunk[dx + 1][dy + 1] = tile ? tile.basePathfindingWeight() : 0;
+        chunk[dx + 1][dy + 1] = tile ? tile.getPathfindingWeight() : 0;
       } else {
         chunk[dx + 1][dy + 1] = 0;
       }

@@ -95,8 +95,7 @@ export class SporedStatus extends Status implements IAttackDamageModifier, IActi
   readonly [ATTACK_DAMAGE_MOD] = true as const;
   readonly [ACTION_PERFORMED_HANDLER] = true as const;
 
-  private static readonly ACTOR_KILLED = Symbol.for('IActorKilledHandler');
-  readonly [SporedStatus.ACTOR_KILLED] = true as const;
+  readonly [ACTOR_KILLED_HANDLER] = true as const;
 
   get isDebuff(): boolean {
     return true;

@@ -1,12 +1,12 @@
 import { Item, STACKABLE_TAG, USABLE_TAG, type IStackable, type IUsable } from '../Item';
 import type { Actor } from '../Actor';
-import type { AIActor } from '../enemies/AIActor';
-import { CharmedStatus } from '../statuses/CharmedStatus';
+import { AIActor } from '../enemies/AIActor';
+import { CharmAI } from '../enemies/CharmAI';
 import { Faction } from '../../core/types';
 import { Vector2Int } from '../../core/Vector2Int';
 
 /**
- * Stackable consumable. Using charms the nearest enemy (sets Ally faction + CharmedStatus).
+ * Stackable consumable. Using charms the nearest enemy (sets Ally faction + CharmAI).
  * C# uses ITargetedAction but web port simplifies to IUsable targeting nearest enemy.
  * Port of C# ItemCharmBerry.cs.
  */
@@ -35,26 +35,25 @@ export class ItemCharmBerry extends Item implements IStackable, IUsable {
   }
 
   use(actor: Actor): void {
-    // Find nearest enemy on the floor
     const floor = actor.floor;
     if (!floor) return;
 
+    // Find nearest enemy on the floor
     let nearest: AIActor | null = null;
     let bestDist = Infinity;
 
-    for (const entity of floor.entities) {
-      if ('faction' in entity && (entity as any).faction === Faction.Enemy) {
-        const dist = Vector2Int.manhattanDistance(actor.pos, entity.pos);
+    for (const body of floor.bodies) {
+      if (body instanceof AIActor && body.faction === Faction.Enemy) {
+        const dist = Vector2Int.manhattanDistance(actor.pos, body.pos);
         if (dist < bestDist) {
           bestDist = dist;
-          nearest = entity as AIActor;
+          nearest = body;
         }
       }
     }
 
     if (nearest) {
-      nearest.faction = Faction.Ally;
-      nearest.statuses.add(new CharmedStatus());
+      nearest.setAI(new CharmAI(nearest));
       this.stacks--;
     }
   }

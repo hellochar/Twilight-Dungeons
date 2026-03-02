@@ -1,4 +1,5 @@
-export { AIActor } from './AIActor';
+export { AIActor, AI } from './AIActor';
+export { CharmAI } from './CharmAI';
 export { SimpleStatusApplicationEnemy } from './SimpleStatusApplicationEnemy';
 export { Destructible, Rubble, Stump, Stalk } from './Destructible';
 export { Blob, MiniBlob } from './Blob';

@@ -7,6 +7,12 @@ import { Vector2Int } from '../../core/Vector2Int';
 import { Faction } from '../../core/types';
 import type { Entity } from '../Entity';
 
+/** Abstract AI override. Subclasses implement getNextTask(). */
+export abstract class AI {
+  abstract getNextTask(): ActorTask;
+  start(): void {}
+}
+
 /**
  * Base class for AI-controlled enemies.
  * Port of AIActor.cs — handles retry loop on NoActionException,
@@ -15,11 +21,19 @@ import type { Entity } from '../Entity';
 export abstract class AIActor extends Actor {
   inventory = new Inventory(3);
   private static MAX_RETRIES = 2;
+  private _aiOverride: AI | null = null;
 
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Enemy;
     this.setTasks(new SleepTask(this));
+  }
+
+  /** Replace this actor's AI with a custom override. */
+  setAI(ai: AI): void {
+    this._aiOverride = ai;
+    ai.start();
+    this.clearTasks();
   }
 
   /** Subclasses implement this to decide what to do next. */
@@ -40,7 +54,7 @@ export abstract class AIActor extends Actor {
         return super.step();
       } catch (e) {
         if (e instanceof NoActionException) {
-          this.setTasks(this.getNextTask());
+          this.setTasks(this._aiOverride ? this._aiOverride.getNextTask() : this.getNextTask());
         } else {
           throw e;
         }

@@ -8,6 +8,7 @@ import { Faction } from '../../core/types';
 import { GameModelRef } from '../GameModelRef';
 import { Grass } from '../grasses/Grass';
 import { Ground } from '../Tile';
+import { CharmedStatus } from '../statuses/CharmedStatus';
 import { entityRegistry } from '../../generator/entityRegistry';
 
 /**
@@ -23,7 +24,7 @@ export class Butterfly extends AIActor {
     this.faction = Faction.Ally;
     this._hp = this._baseMaxHp = 1;
     this.clearTasks();
-    // TODO: add CharmedStatus when ported
+    this.statuses.add(new CharmedStatus());
   }
 
   baseAttackDamage(): [number, number] {

@@ -11,7 +11,9 @@ import { Vector2Int } from '../../core/Vector2Int';
 import { ActionType } from '../../core/types';
 import { GameModelRef } from '../GameModelRef';
 import { TAKE_ANY_DAMAGE_HANDLER, type ITakeAnyDamageHandler } from '../Body';
+import { Brambles } from '../grasses/Brambles';
 import { entityRegistry } from '../../generator/entityRegistry';
+import type { Tile } from '../Tile';
 
 /**
  * Moves slowly. Summons Brambles around the player (needs vision).
@@ -57,16 +59,20 @@ export class Thistlebog extends AIActor implements ITakeAnyDamageHandler {
     }
   }
 
+  private avoidBrambles = (t: Tile): boolean => {
+    return !(this.floor?.grasses.get(t.pos) instanceof Brambles);
+  };
+
   protected getNextTask(): ActorTask {
     if (!this.canTargetPlayer()) {
-      return new MoveRandomlyTask(this);
+      return new MoveRandomlyTask(this, this.avoidBrambles);
     }
     const player = GameModelRef.main.player;
     if (this.isNextTo(player)) {
       return new RunAwayTask(this, player.pos, 1, false);
     }
     if (this.cooldown > 0) {
-      return new MoveRandomlyTask(this);
+      return new MoveRandomlyTask(this, this.avoidBrambles);
     }
     // Diamond distance to player
     const dx = Math.abs(this.pos.x - player.pos.x);
@@ -82,16 +88,14 @@ export class Thistlebog extends AIActor implements ITakeAnyDamageHandler {
   private summonBramblesAroundPlayer(): void {
     if (!this.canTargetPlayer() || this.cooldown > 0) return;
     this.cooldown = 10;
-    // TODO: Summon Brambles grass around player when Brambles is ported
-    // For now, this is a stub. When Brambles exists:
-    // const center = GameModelRef.main.player.pos;
-    // for (const tile of this.floor!.getAdjacentTiles(center)) {
-    //   if (Brambles.canOccupy(tile) && !tile.pos.equals(center)) {
-    //     const brambles = new Brambles(tile.pos);
-    //     this.floor!.put(brambles);
-    //     brambles.addTimedEvent(10, brambles.killSelf);
-    //   }
-    // }
+    const center = GameModelRef.main.player.pos;
+    for (const tile of this.floor!.getAdjacentTiles(center)) {
+      if (Brambles.canOccupy(tile) && !tile.pos.equals(center)) {
+        const brambles = new Brambles(tile.pos);
+        this.floor!.put(brambles);
+        brambles.addTimedEvent(10, () => brambles.killSelf());
+      }
+    }
   }
 }
 

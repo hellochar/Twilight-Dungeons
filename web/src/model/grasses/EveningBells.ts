@@ -14,9 +14,11 @@ import type { Tile } from '../Tile';
  */
 export class EveningBells extends Grass implements IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
+  readonly angle: number;
 
-  constructor(pos: Vector2Int) {
+  constructor(pos: Vector2Int, angle = 0) {
     super(pos);
+    this.angle = angle;
   }
 
   static canOccupy(tile: Tile): boolean {

@@ -9,3 +9,4 @@ export { ItemPumpkinHelmet } from './ItemPumpkinHelmet';
 export { ItemWildwoodLeaf } from './ItemWildwoodLeaf';
 export { ItemAstoria } from './ItemAstoria';
 export { ItemCharmBerry } from './ItemCharmBerry';
+export { ItemScuttler } from './ItemScuttler';

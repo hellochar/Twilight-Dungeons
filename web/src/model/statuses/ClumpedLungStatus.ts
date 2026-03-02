@@ -1,21 +1,34 @@
-import { StackingStatus } from '../Status';
+import { StackingStatus, type Status } from '../Status';
+import { GameModelRef } from '../GameModelRef';
 import { Vector2Int } from '../../core/Vector2Int';
 
 /**
  * At 20 stacks, you die.
- * Resets on floor cleared (debuff auto-removes on floor change).
+ * Removes on floor cleared.
  * Port of C# ClumpedLungStatus.
  */
 export class ClumpedLungStatus extends StackingStatus {
+  private floorClearedUnsub: (() => void) | null = null;
+
   get isDebuff(): boolean {
     return true;
   }
 
-  Consume(other: import('../Status').Status): boolean {
+  Start(): void {
+    const model = GameModelRef.mainOrNull;
+    if (model) {
+      this.floorClearedUnsub = model.onFloorCleared.on(() => this.Remove());
+    }
+  }
+
+  End(): void {
+    this.floorClearedUnsub?.();
+    this.floorClearedUnsub = null;
+  }
+
+  Consume(other: Status): boolean {
     const baseRetVal = super.Consume(other);
     if (this.stacks >= 20) {
-      // Import avoided at top level to prevent circular dep;
-      // create a temporary Clumpshroom-like source for the kill
       this.actor?.kill({ pos: new Vector2Int(0, 0) } as any);
     }
     return baseRetVal;

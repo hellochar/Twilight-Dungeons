@@ -119,6 +119,7 @@ export class GameRenderer {
   private itemLayer = new Container();
   private bodyLayer = new Container();
   private effectLayer = new Container();
+  private dimLayer = new Container();
 
   // Entity guid → Container node (position/scale/alpha target for animations)
   private entityNodes = new Map<string, Container>();
@@ -126,6 +127,8 @@ export class GameRenderer {
   private entityVisuals = new Map<string, Sprite>();
   // Tile position key → Container wrapping all display objects for that tile
   private tileContainers = new Map<string, Container>();
+  // Tile position key → Graphics dim overlay for Explored tiles
+  private dimCells = new Map<string, Graphics>();
   // Entity guid → status indicator sprite container (child of entityNode)
   private statusIndicators = new Map<string, Container>();
   // Active targeting highlights on the effect layer
@@ -144,6 +147,7 @@ export class GameRenderer {
     app.stage.addChild(this.itemLayer);
     app.stage.addChild(this.bodyLayer);
     app.stage.addChild(this.effectLayer);
+    app.stage.addChild(this.dimLayer);
   }
 
   /** Set the floor to render and do full rebuild. */
@@ -230,9 +234,11 @@ export class GameRenderer {
     this.itemLayer.removeChildren();
     this.bodyLayer.removeChildren();
     this.effectLayer.removeChildren();
+    this.dimLayer.removeChildren();
     this.entityNodes.clear();
     this.entityVisuals.clear();
     this.tileContainers.clear();
+    this.dimCells.clear();
     this.statusIndicators.clear();
   }
 
@@ -430,6 +436,44 @@ export class GameRenderer {
     this.entityNodes.set(entity.guid, node);
     this.entityVisuals.set(entity.guid, sprite);
     return node;
+  }
+
+  /**
+   * Sync tile visibility state:
+   * - Unexplored: hide tile container (background bleeds through)
+   * - Explored: show tile + dim overlay (player sees it, enemies can't target)
+   * - Visible: show tile, no dim
+   */
+  private syncTileVisibility(): void {
+    const floor = this.floor!;
+    const ts = this.camera.tileSize;
+    for (const pos of floor.enumerateFloor()) {
+      const tile = floor.tiles.get(pos);
+      if (!tile) continue;
+      const key = Vector2Int.key(pos);
+
+      // Hide/show tile sprite
+      const container = this.tileContainers.get(key);
+      if (container) {
+        container.visible = tile.visibility !== TileVisibility.Unexplored;
+      }
+
+      // Dim overlay for Explored tiles
+      const explored = tile.visibility === TileVisibility.Explored;
+      let dim = this.dimCells.get(key);
+      if (explored && !dim) {
+        const px = this.camera.tileToPixel(pos);
+        dim = new Graphics();
+        dim.rect(0, 0, ts, ts).fill(0x000000);
+        dim.position.set(px.x, px.y);
+        dim.alpha = 0.5;
+        this.dimLayer.addChild(dim);
+        this.dimCells.set(key, dim);
+      } else if (!explored && dim) {
+        dim.destroy();
+        this.dimCells.delete(key);
+      }
+    }
   }
 
   /**

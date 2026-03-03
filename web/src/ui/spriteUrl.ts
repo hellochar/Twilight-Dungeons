@@ -56,17 +56,27 @@ const NAME_MAP: Record<string, string> = {
   'mushroom cap': 'mushroom-cap',
 };
 
-/** Status className → sprite filename. */
+/** Status className → sprite filename. Matches spriteKey values from GameRenderer STATUS_VISUALS. */
 const STATUS_SPRITE_MAP: Record<string, string> = {
-  PoisonedStatus: 'poisoned-status',
-  WebbedStatus: 'web',
-  WeaknessStatus: 'weakness',
-  InShellStatus: 'snail-shell',
-  SlimedStatus: 'slimed',
-  SurprisedStatus: 'colored_transparent_packed_658',
-  GuardedStatus: 'guardroot',
-  FreeMoveStatus: 'free-move',
-  SoftGrassStatus: 'colored_transparent_packed_95',
+  PoisonedStatus:    'poisoned-status',
+  WebbedStatus:      'web',
+  WeaknessStatus:    'weakness',
+  InShellStatus:     'snail-shell',
+  SlimedStatus:      'slimed',
+  SurprisedStatus:   'colored_transparent_packed_658',
+  GuardedStatus:     'guardroot',
+  FreeMoveStatus:    'free-move',
+  SoftGrassStatus:   'colored_transparent_packed_95',
+  CharmedStatus:     'charmed',
+  ConfusedStatus:    'confused',
+  PacifiedStatus:    'peace',
+  ParasiteStatus:    'parasite',
+  VulnerableStatus:  'vulnerable',
+  SporedStatus:      'spored-status',
+  ConstrictedStatus: 'hanging-vines',
+  FrenziedStatus:    'deathbloom-stem',
+  InfectedStatus:    'infected',
+  ThirdEyeStatus:    'third-eye',
 };
 
 /** Known debuff status class names. */

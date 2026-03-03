@@ -46,7 +46,6 @@ const AUDIO_FILES = {
   'error.ogg':                 'self/error.wav',
   // Music (WAV sources — transcoded to .ogg)
   'background-music.ogg':      'self/background-music.wav',
-  'boss.ogg':                  'self/boss.wav',
 };
 
 /** Transcode src WAV → dest OGG using ffmpeg libopus 96kbps. Skip if dest is up to date. */

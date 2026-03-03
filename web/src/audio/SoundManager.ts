@@ -33,9 +33,8 @@ const SFX_FILES: Record<SoundKey, string> = {
 };
 
 const HURT_FILES = ['hurt1.ogg', 'hurt2.ogg', 'hurt3.ogg'];
-const MUSIC_FILES: Record<'normal' | 'boss', string> = {
+const MUSIC_FILES: Record<'normal', string> = {
   normal: 'background-music.ogg',
-  boss:   'boss.ogg',
 };
 
 export class SoundManager {
@@ -140,7 +139,7 @@ export class SoundManager {
 
     if (track === 'none') return;
 
-    const buffer = this.musicBuffers.get(track);
+    const buffer = this.musicBuffers.get(track === 'boss' ? 'normal' : track);
     if (!buffer) return;
 
     const gain = ctx.createGain();

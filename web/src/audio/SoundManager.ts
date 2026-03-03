@@ -15,27 +15,27 @@ type MusicTrack = 'normal' | 'boss' | 'none';
 const SFX_FILES: Record<SoundKey, string> = {
   move:                 'footstep04.ogg',
   attack:               'impactPlank_medium_002.ogg',
-  attackNoDamage:       'muted-impact.wav',
-  bossDeath:            'boss-defeated.wav',
-  death:                'death.wav',
+  attackNoDamage:       'muted-impact.ogg',
+  bossDeath:            'boss-defeated.ogg',
+  death:                'death.ogg',
   plantHarvest:         'plant-harvest.ogg',
   playerChangeWater:    'water.mp3',
   playerEquip:          'cloth3.ogg',
-  playerEquipmentBreak: 'item-breaking.wav',
+  playerEquipmentBreak: 'item-breaking.ogg',
   playerHeal:           'heal.ogg',
   playerGeneric:        'short-tone.ogg',
-  playerGetDebuff:      'debuff.wav',
+  playerGetDebuff:      'debuff.ogg',
   playerPickupItem:     'cloth4.ogg',
-  playerTakeStairs:     'floor-change.wav',
+  playerTakeStairs:     'floor-change.ogg',
   playerWait:           'little-noise.ogg',
-  summon:               'summon.wav',
-  uiError:              'error.wav',
+  summon:               'summon.ogg',
+  uiError:              'error.ogg',
 };
 
-const HURT_FILES = ['hurt1.wav', 'hurt2.wav', 'hurt3.wav'];
+const HURT_FILES = ['hurt1.ogg', 'hurt2.ogg', 'hurt3.ogg'];
 const MUSIC_FILES: Record<'normal' | 'boss', string> = {
-  normal: 'background-music.wav',
-  boss:   'boss.wav',
+  normal: 'background-music.ogg',
+  boss:   'boss.ogg',
 };
 
 export class SoundManager {
@@ -50,7 +50,8 @@ export class SoundManager {
   private musicGain: GainNode | null = null;
   private stopTimer: ReturnType<typeof setTimeout> | null = null;
 
-  async load(): Promise<void> {
+  /** Load SFX and hurt clips. Call this before starting the game. */
+  async loadSFX(): Promise<void> {
     this.ctx = new AudioContext();
 
     // iOS/mobile: AudioContext only unlocks when resume() is called directly inside
@@ -69,23 +70,23 @@ export class SoundManager {
     const base = import.meta.env.BASE_URL;
     const load = (file: string) => this.loadBuffer(`${base}audio/${file}`);
 
-    // SFX
-    await Promise.all(
-      Object.entries(SFX_FILES).map(async ([key, file]) => {
+    await Promise.all([
+      ...Object.entries(SFX_FILES).map(async ([key, file]) => {
         const buf = await load(file);
         if (buf) this.sfxBuffers.set(key, buf);
       }),
-    );
-
-    // Hurt variants
-    await Promise.all(
-      HURT_FILES.map(async (file) => {
+      ...HURT_FILES.map(async (file) => {
         const buf = await load(file);
         if (buf) this.hurtBuffers.push(buf);
       }),
-    );
+    ]);
+  }
 
-    // Music
+  /** Load background music tracks. Safe to fire-and-forget — setMusic() no-ops if not ready. */
+  async loadMusic(): Promise<void> {
+    const base = import.meta.env.BASE_URL;
+    const load = (file: string) => this.loadBuffer(`${base}audio/${file}`);
+
     await Promise.all(
       Object.entries(MUSIC_FILES).map(async ([key, file]) => {
         const buf = await load(file);

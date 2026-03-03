@@ -643,8 +643,11 @@ export function useGameLoop() {
       }
 
       const sound = new SoundManager();
-      await sound.load();
+      await sound.loadSFX();
       if (destroyed) { app.destroy(true, { children: true }); return; }
+      // Music loads in background — game starts without waiting for large music files.
+      // setMusic() no-ops gracefully if buffers aren't ready yet.
+      sound.loadMusic().catch(console.warn);
 
       const camera = new Camera();
       const renderer = new GameRenderer(app, camera, sprites);

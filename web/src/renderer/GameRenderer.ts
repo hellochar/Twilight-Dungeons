@@ -493,6 +493,7 @@ export class GameRenderer {
     // Bodies
     for (const body of floor.bodies) {
       this.addEntitySprite(body, this.bodyLayer);
+      this.bodyGuids.add(body.guid);
     }
   }
 

@@ -235,26 +235,28 @@ export class AnimationPlayer {
     // Start at bump impact time so damage overlaps the attack hit
     const pos = BUMP_IMPACT_TIME;
 
-    if (visual) {
-      const origTint = visual.tint;
-      tl.to(visual, {
-        tint: 0xff3333,
-        duration: 0.05,
-        onComplete: () => { visual.tint = origTint; },
+    if (event.amount !== 0) {
+      if (visual) {
+        const origTint = visual.tint;
+        tl.to(visual, {
+          tint: 0xff3333,
+          duration: 0.05,
+          onComplete: () => { visual.tint = origTint; },
+        }, pos);
+      }
+
+      // Shake the whole node — relative tween so it's independent of setup-time position changes
+      tl.to(node.position, {
+        x: '+=3',
+        duration: 0.03,
+        yoyo: true,
+        repeat: 2,
       }, pos);
-    }
 
-    // Shake the whole node — relative tween so it's independent of setup-time position changes
-    tl.to(node.position, {
-      x: '+=3',
-      duration: 0.03,
-      yoyo: true,
-      repeat: 2,
-    }, pos);
-
-    if (event.entityGuid === this.playerGuid && this.sound) {
-      const s = this.sound;
-      tl.call(() => s.playHurt(), [], pos);
+      if (event.entityGuid === this.playerGuid && this.sound) {
+        const s = this.sound;
+        tl.call(() => s.playHurt(), [], pos);
+      }
     }
 
     if (event.amount !== undefined && event.amount > 0) {

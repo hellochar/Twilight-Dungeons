@@ -162,9 +162,7 @@ export class Body extends Entity {
     damage = processModifiers(mods, damage);
     damage = Math.max(damage, 0);
     this.onTakeAnyDamageEvent(damage);
-    if (damage > 0) {
-      GameModelRef.mainOrNull?.emitAnimation({ type: 'damage', entityGuid: this.guid, to: this._pos, amount: damage });
-    }
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'damage', entityGuid: this.guid, to: this._pos, amount: damage });
     this._hp -= damage;
     if (this._hp <= 0) {
       this.kill(source);

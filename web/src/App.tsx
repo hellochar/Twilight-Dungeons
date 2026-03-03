@@ -86,7 +86,7 @@ function App() {
             <EntityInfoPopup data={entityInfo} onClose={() => setEntityInfo(null)} />
           )}
           {gameState.gameOver && (
-            <GameOverOverlay info={gameState.gameOver} onPlayAgain={resetGame} />
+            <GameOverOverlay info={gameState.gameOver} dateSeed={gameState.dateSeed} onPlayAgain={resetGame} />
           )}
           {debugNotice && (
             <div style={{

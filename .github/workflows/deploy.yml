@@ -24,8 +24,11 @@ jobs:
           node-version: 20
       - run: npm ci
         working-directory: web
-      - run: npm run build
+      - run: node scripts/copy-sprites.js && node scripts/copy-audio.js && npx vite build
         working-directory: web
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web/dist

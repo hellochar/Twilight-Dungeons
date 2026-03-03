@@ -84,6 +84,7 @@ export interface GameState {
   statuses: StatusSnapshot[];
   gameOver: GameOverInfo | null;
   onTopAction: OnTopActionSnapshot | null;
+  dateSeed: string;
 }
 
 const EMPTY_STATE: GameState = {
@@ -91,6 +92,7 @@ const EMPTY_STATE: GameState = {
   isPlayerDead: false, isCleared: false,
   inventoryItems: [], equipmentItems: [],
   statuses: [], gameOver: null, onTopAction: null,
+  dateSeed: '',
 };
 
 function getItemCategory(item: Item): string {
@@ -196,6 +198,7 @@ export function useGameLoop() {
       statuses,
       gameOver,
       onTopAction,
+      dateSeed: model.dateSeed,
     };
   }, []);
 

@@ -8,6 +8,7 @@ import { entityRegistry } from '../generator/entityRegistry';
 import { allEncounters } from '../generator/Encounters';
 import { StackingStatus } from '../model/Status';
 import * as AllItems from '../model/items';
+import { Item } from '../model/Item';
 import * as AllStatuses from '../model/statuses';
 
 // ─── Constants ───
@@ -109,9 +110,10 @@ function buildCommands(
     });
   }
 
-  // ── Items: one per exported item class (skip ItemHands) ──
+  // ── Items: one per exported item class (skip ItemHands and non-Item exports) ──
   for (const [exportName, ItemClass] of Object.entries(AllItems)) {
     if (exportName === 'ItemHands') continue;
+    if (!((ItemClass as any).prototype instanceof Item)) continue;
     cmds.push({
       label: exportName,
       category: 'Item',

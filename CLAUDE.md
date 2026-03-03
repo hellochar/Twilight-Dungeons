@@ -1,5 +1,6 @@
 # General
 - In the web port, match all aspects of the Unity behavior as concisely and closely as possible. Use exact colors. ALWAYS begin by referencing the Unity implementation. Fully read relevant pieces from the original Unity project before beginning. Your goal is an exact faithful port for all content and look. Exactly replicate the animations, colors, images, sizes, timings, layouts, behavior, logic.
+- After any TypeScript changes, run `npm run typecheck` (from the `web/` directory) and fix all errors before considering the task complete.
 - NEVER use Bash to read, search, or edit files. Use dedicated tools instead: `find`/`ls` → Glob, `grep`/`rg` → Grep, `cat`/`head`/`tail` → Read, `sed`/`awk` → Edit, `echo >`/heredoc → Write. These handle Windows paths natively. Bash is still needed for file management (`cp`, `mv`, `rm`, `mkdir`).
 - Take advantage of static typing and compiler features as much as possible.
 - Do NOT add defensive null and valid checks unless the variable is used in a way that requires it.

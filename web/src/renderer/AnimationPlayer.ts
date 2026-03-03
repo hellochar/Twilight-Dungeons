@@ -41,13 +41,14 @@ function bumpAndReturnEasing(t: number): number {
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
-  type: 'move' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'spawn';
+  type: 'move' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'spawn' | 'pulse';
   entityGuid: string;
   from?: Vector2Int;
   to?: Vector2Int;
   targetGuid?: string;
   amount?: number;
   isBoss?: boolean;
+  pulseScale?: number;
 }
 
 /**
@@ -156,6 +157,9 @@ export class AnimationPlayer {
         break;
       case 'spawn':
         this.animateSpawn(node, event, tl);
+        break;
+      case 'pulse':
+        this.animatePulse(event, tl);
         break;
     }
   }
@@ -312,6 +316,28 @@ export class AnimationPlayer {
     tl.to(scaleRoot, {
       alpha: 1,
       duration: 0.15,
+    }, '<');
+  }
+
+  /**
+   * Shrink/grow pulse — Unity PulseAnimation.cs: 0.33s, easing cos(t*PI)^4 from 1→pulseScale→1.
+   * Default pulseScale 0.75 (shrink). Values >1 give a grow pulse.
+   */
+  private animatePulse(event: GameEvent, tl: gsap.core.Timeline): void {
+    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
+    if (!scaleRoot) return;
+    const pulseScale = event.pulseScale ?? 0.75;
+    const progress = { t: 0 };
+    tl.to(progress, {
+      t: 1,
+      duration: 0.33,
+      ease: 'none',
+      onUpdate: () => {
+        const cosVal = Math.pow(Math.cos(progress.t * Math.PI), 4);
+        const s = 1 + (pulseScale - 1) * (1 - cosVal);
+        scaleRoot.scale.set(s, s);
+      },
+      onComplete: () => { scaleRoot.scale.set(1, 1); },
     }, '<');
   }
 

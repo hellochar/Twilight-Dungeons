@@ -2,6 +2,7 @@ import { ActionType } from '../core/types';
 import { Vector2Int } from '../core/Vector2Int';
 import type { Actor } from './Actor';
 import type { Body } from './Body';
+import { GameModelRef } from './GameModelRef';
 
 export class CannotPerformActionException extends Error {
   constructor(message = 'Cannot perform action') {
@@ -106,6 +107,7 @@ export class GenericBaseAction extends BaseAction {
 
   perform(): void {
     this.action();
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'pulse', entityGuid: this.actor.guid });
   }
 }
 

@@ -1,5 +1,6 @@
 import { Entity } from '../Entity';
 import { Vector2Int } from '../../core/Vector2Int';
+import { GameModelRef } from '../GameModelRef';
 
 /**
  * Base class for all grass entities.
@@ -23,8 +24,10 @@ export class Grass extends Entity {
     return null;
   }
 
-  /** Called when a noteworthy action occurs (for controller/view hooks). */
-  onNoteworthyAction: (() => void) = () => {};
+  /** Called when a noteworthy action occurs. Emits a pulse animation (Unity GrassController.cs). */
+  onNoteworthyAction: (() => void) = () => {
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'pulse', entityGuid: this.guid });
+  };
 
   constructor(pos: Vector2Int) {
     super();

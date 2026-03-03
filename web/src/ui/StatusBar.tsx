@@ -64,7 +64,7 @@ function StatusIcon({ status }: { status: StatusSnapshot }) {
           right: -2,
           background: '#000',
           color: '#fff',
-          fontSize: 9,
+          fontSize: 14,
           fontFamily: 'CodersCrux, monospace',
           fontWeight: 'bold',
           lineHeight: '1',

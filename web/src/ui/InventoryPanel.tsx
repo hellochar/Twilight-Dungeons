@@ -171,7 +171,7 @@ function Slot({ item, label, isSelected, onClick, onContextMenu }: SlotProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 7,
+          fontSize: 11,
           color: 'rgba(255,255,255,0.3)',
           fontFamily: 'CodersCrux, monospace',
           textTransform: 'uppercase',
@@ -225,7 +225,7 @@ const stackLabelStyle: React.CSSProperties = {
   position: 'absolute',
   bottom: 2,
   right: 3,
-  fontSize: 9,
+  fontSize: 14,
   fontFamily: 'CodersCrux, monospace',
   fontWeight: 'bold',
   color: '#fff',
@@ -280,14 +280,14 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: 'CodersCrux, monospace', fontWeight: 'bold', fontSize: 14, color: '#eee' }}>
+        <div style={{ fontFamily: 'CodersCrux, monospace', fontWeight: 'bold', fontSize: 21, color: '#eee' }}>
           {item.displayName}
         </div>
-        <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
+        <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 15, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
           {item.category}
         </div>
         {item.statsFull && (
-          <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 11, color: '#aaa', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
+          <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 17, color: '#aaa', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
             {item.statsFull}
           </div>
         )}
@@ -303,7 +303,7 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
                 borderRadius: 3,
                 padding: '4px 10px',
                 fontFamily: 'CodersCrux, monospace',
-                fontSize: 11,
+                fontSize: 17,
                 cursor: 'pointer',
               }}
             >

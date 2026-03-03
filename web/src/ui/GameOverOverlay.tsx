@@ -36,11 +36,11 @@ export function GameOverOverlay({ info, onPlayAgain }: GameOverOverlayProps) {
         color: '#ccc',
         whiteSpace: 'nowrap',
       }}>
-        <span style={{ color: borderColor, fontWeight: 'bold', fontSize: 15 }}>
+        <span style={{ color: borderColor, fontWeight: 'bold', fontSize: 23 }}>
           {title}
         </span>
 
-        <span style={{ fontSize: 12, color: '#888' }}>
+        <span style={{ fontSize: 18, color: '#888' }}>
           T{info.turnsTaken}
           {' \u00b7 '}
           {info.enemiesDefeated} killed
@@ -57,7 +57,7 @@ export function GameOverOverlay({ info, onPlayAgain }: GameOverOverlayProps) {
             borderRadius: 4,
             padding: '4px 14px',
             fontFamily: 'CodersCrux, monospace',
-            fontSize: 12,
+            fontSize: 18,
             cursor: 'pointer',
           }}
         >

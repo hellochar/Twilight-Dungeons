@@ -81,7 +81,7 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
         borderRadius: 6,
         padding: 10,
         fontFamily: 'CodersCrux, monospace',
-        fontSize: 12,
+        fontSize: 18,
         color: '#ddd',
         zIndex: 100,
         boxShadow: '0 4px 12px rgba(0,0,0,0.6)',
@@ -100,11 +100,11 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         <div>
-          <div style={{ fontWeight: 'bold', fontSize: 13, color: '#fff' }}>
+          <div style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>
             {data.name}
           </div>
           {data.hp != null && data.maxHp != null && (
-            <div style={{ fontSize: 11, color: '#aaa' }}>
+            <div style={{ fontSize: 17, color: '#aaa' }}>
               HP: {data.hp}/{data.maxHp}
             </div>
           )}
@@ -120,7 +120,7 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
 
       {/* Flavor text */}
       {flavorText && (
-        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: 11 }}>
+        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: 17 }}>
           {flavorText}
         </div>
       )}

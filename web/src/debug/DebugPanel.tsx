@@ -48,6 +48,8 @@ export interface PersistedDebugState {
   seed?: string;
   depth?: string;
   collapsed?: Record<string, boolean>;
+  open?: boolean;
+  scrollTop?: number;
 }
 
 export function loadDebugState(): PersistedDebugState {
@@ -232,21 +234,39 @@ function buildCommands(
 // ─── Component ───
 
 export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange }: DebugPanelProps) {
-  const [open, setOpen] = useState(false);
+  const persisted = useRef(loadDebugState());
+  const [open, setOpen] = useState(persisted.current.open ?? false);
   const [filter, setFilter] = useState('');
   const [placement, setPlacement] = useState<DebugCommand | null>(null);
-
-  const persisted = useRef(loadDebugState());
   const [seedInput, setSeedInput] = useState(persisted.current.seed ?? '');
   const [depthInput, setDepthInput] = useState(persisted.current.depth ?? '');
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>(persisted.current.collapsed ?? {});
   const collapsedBeforeSearch = useRef<Record<string, boolean> | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // Persist seed/depth/collapsed to localStorage
+  // Persist seed/depth/collapsed/open to localStorage
   useEffect(() => {
-    savePersisted({ seed: seedInput, depth: depthInput, collapsed });
-  }, [seedInput, depthInput, collapsed]);
+    savePersisted({ seed: seedInput, depth: depthInput, collapsed, open });
+  }, [seedInput, depthInput, collapsed, open]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Restore scroll position when panel opens
+  useEffect(() => {
+    if (open && scrollRef.current) {
+      scrollRef.current.scrollTop = persisted.current.scrollTop ?? 0;
+    }
+  }, [open]);
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const state: PersistedDebugState = raw ? JSON.parse(raw) : {};
+      state.scrollTop = scrollRef.current.scrollTop;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {}
+  }, []);
 
   // Notify parent of open state changes
   useEffect(() => { onOpenChange(open); }, [open, onOpenChange]);
@@ -470,7 +490,7 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange 
       </div>
 
       {/* Command list */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 4px 8px' }}>
+      <div ref={scrollRef} onScroll={handleScroll} style={{ flex: 1, overflowY: 'auto', padding: '0 4px 8px' }}>
         {orderedGroups.map(([category, cmds]) => (
           <div key={category}>
             <div

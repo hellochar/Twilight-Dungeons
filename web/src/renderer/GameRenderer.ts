@@ -9,9 +9,35 @@ import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
 import { VibrantIvy } from '../model/grasses/VibrantIvy';
+import { Violets } from '../model/grasses/Violets';
 
 /** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
 const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
+
+/**
+ * Port of VioletsController.Update(): selects the flower stage sprite key and
+ * PixiJS anchor based on violets.countUp and violets.isOpen.
+ * flowerStages = [purple_1, purple_2, purple_3, purple_4], open = purple_5.
+ * Anchors from Unity .meta pivots (y flipped: pixiAnchorY = 1 - unityPivotY).
+ */
+function violetFlowerStage(v: Violets): { key: string; anchorX: number; anchorY: number } {
+  const FLOWER_STAGES = ['purple_1', 'purple_2', 'purple_3', 'purple_4'];
+  // Anchors per stage index (from Purple.png.meta pivot values, y-flipped for PixiJS)
+  const ANCHORS: Array<[number, number]> = [
+    [0.5,     0.5    ], // purple_1: (0.5, 0.5)
+    [0.5,     0.5    ], // purple_2: (0.5, 0.5)
+    [0.46875, 0.5    ], // purple_3: (0.46875, 0.5)
+    [0.46875, 0.5    ], // purple_4: (0.46875, 0.5)
+  ];
+  if (v.isOpen) {
+    // purple_5: pivot (0.46875, 0.53125) → anchorY = 1 - 0.53125 = 0.46875
+    return { key: 'purple_5', anchorX: 0.46875, anchorY: 0.46875 };
+  }
+  const stage0Count = Violets.turnsToChange - FLOWER_STAGES.length; // 8
+  const idx = v.countUp >= stage0Count ? v.countUp - stage0Count : 0;
+  const [anchorX, anchorY] = ANCHORS[idx];
+  return { key: FLOWER_STAGES[idx], anchorX, anchorY };
+}
 
 /**
  * Grasses whose Unity prefab overrides Shadow rotation to (0,0,0) — flat shadow
@@ -164,6 +190,8 @@ export class GameRenderer {
   private ivyDirectionalSprites = new Map<string, Sprite[]>();
   // VibrantIvy: last known stacks value for detecting decreases
   private ivyLastStacks = new Map<string, number>();
+  // Violets: the animated "Flower" child sprite (purple_1..5), keyed by entity guid
+  private violetFlowerSprites = new Map<string, Sprite>();
 
   private floor: Floor | null = null;
 
@@ -369,6 +397,7 @@ export class GameRenderer {
     this.spawnStates.clear();
     for (const f of this.fadingNodes.values()) f.node.destroy({ children: true });
     this.fadingNodes.clear();
+    this.violetFlowerSprites.clear();
   }
 
   private buildTiles(): void {
@@ -620,6 +649,20 @@ export class GameRenderer {
     }
 
     scaleRoot.addChild(sprite);
+
+    // Violets: add a "Flower" child sprite (Unity VioletsController) on top of the stem.
+    // Scale 0.65, centered on tile. Texture switches based on countUp/isOpen each sync.
+    if (entity instanceof Violets) {
+      const flowerTex = this.sprites.getTextureByKey('purple_1') ?? Texture.WHITE;
+      const flowerSprite = new Sprite(flowerTex);
+      flowerSprite.width = ts * 0.65;
+      flowerSprite.height = ts * 0.65;
+      flowerSprite.anchor.set(0.5, 0.5);
+      flowerSprite.position.set(ts / 2, ts / 2);
+      scaleRoot.addChild(flowerSprite);
+      this.violetFlowerSprites.set(entity.guid, flowerSprite);
+    }
+
     layer.addChild(node);
     this.entityNodes.set(entity.guid, node);
     this.entityVisuals.set(entity.guid, sprite);
@@ -768,6 +811,21 @@ export class GameRenderer {
           this.initSpawnAnimation(grass.guid);
         }
         node.visible = !grass.isDead;
+
+        // Violets: update flower stage sprite (VioletsController port)
+        if (grass instanceof Violets) {
+          const flowerSprite = this.violetFlowerSprites.get(grass.guid);
+          if (flowerSprite) {
+            const ts = this.camera.tileSize;
+            const { key, anchorX, anchorY } = violetFlowerStage(grass);
+            const tex = this.sprites.getTextureByKey(key);
+            if (tex) flowerSprite.texture = tex;
+            flowerSprite.width = ts * 0.65;
+            flowerSprite.height = ts * 0.65;
+            flowerSprite.anchor.set(anchorX, anchorY);
+            flowerSprite.position.set(ts / 2, ts / 2);
+          }
+        }
       }
     }
 
@@ -802,6 +860,7 @@ export class GameRenderer {
         this.entityVisuals.delete(guid);
         this.entityScaleRoots.delete(guid);
         this.statusIndicators.delete(guid);
+        this.violetFlowerSprites.delete(guid);
       }
     }
 

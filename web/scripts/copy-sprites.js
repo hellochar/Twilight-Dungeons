@@ -22,6 +22,24 @@ const SPRITE_SOURCES = [
 const ATLAS_SOURCES = [
   join(projectRoot, 'Assets', '3rd Party', '1bitpack_kenney_1.1', 'Tilesheet', 'monochrome_transparent_packed.png'),
   join(projectRoot, 'Assets', '3rd Party', '1bitpack_kenney_1.1', 'Tilesheet', 'colored_transparent_packed.png'),
+  join(projectRoot, 'Assets', '3rd Party', 'Resources', 'plants.png'),
+  join(projectRoot, 'Assets', 'Textures', 'Resources', 'Purple.png'),
+];
+
+/** Specific sub-sprites to extract from sparse atlases (avoids extracting hundreds of unused sprites). */
+const TARGETED_SPRITES = [
+  {
+    atlas: join(projectRoot, 'Assets', '3rd Party', 'vectorpixelstar', '1-bit 16px icons part-1.png'),
+    wanted: ['Wildekin'],
+  },
+  {
+    atlas: join(projectRoot, 'Assets', '3rd Party', 'DawnLike', 'Characters', 'Undead0.png'),
+    wanted: ['Undead0_29'],
+  },
+  {
+    atlas: join(projectRoot, 'Assets', '3rd Party', 'DawnLike', 'Characters', 'Misc0.png'),
+    wanted: ['Misc0_14'],
+  },
 ];
 
 /** Get PNG dimensions by reading the IHDR chunk (bytes 16-23). */
@@ -107,6 +125,44 @@ async function extractAtlasSprites(manifest) {
   return extracted;
 }
 
+/** Extract a specific set of named sub-sprites from sparse atlases. */
+async function extractTargetedSprites(manifest) {
+  let extracted = 0;
+  for (const { atlas, wanted } of TARGETED_SPRITES) {
+    const metaPath = atlas + '.meta';
+    let metaText;
+    try {
+      metaText = await readFile(metaPath, 'utf-8');
+    } catch {
+      console.warn(`Skipping targeted atlas (no .meta): ${atlas}`);
+      continue;
+    }
+    const allSprites = parseMetaSpriteRects(metaText);
+    const metadata = await sharp(atlas).metadata();
+    const imageHeight = metadata.height;
+    for (const name of wanted) {
+      const s = allSprites.find(sp => sp.name === name);
+      if (!s) { console.warn(`Targeted sprite "${name}" not found in ${atlas}`); continue; }
+      const pixelY = imageHeight - s.y - s.height;
+      const spriteName = s.name.toLowerCase();
+      const destPath = join(outDir, `${spriteName}.png`);
+      await sharp(atlas)
+        .extract({ left: s.x, top: pixelY, width: s.width, height: s.height })
+        .toFile(destPath);
+      manifest[spriteName] = {
+        file: `${spriteName}.png`,
+        width: s.width,
+        height: s.height,
+        frameCount: 1,
+        frameWidth: s.width,
+        frameHeight: s.height,
+      };
+      extracted++;
+    }
+  }
+  return extracted;
+}
+
 async function main() {
   await mkdir(outDir, { recursive: true });
 
@@ -152,6 +208,9 @@ async function main() {
   // Extract sprites from Unity atlas spritesheets
   const extracted = await extractAtlasSprites(manifest);
 
+  // Extract specific sub-sprites from sparse atlases
+  const targetedExtracted = await extractTargetedSprites(manifest);
+
   // Extract heart sub-sprites from animated spritesheet (5 × 17×17 horizontal strip)
   const heartsDir = join(outDir, 'hearts');
   await mkdir(heartsDir, { recursive: true });
@@ -194,7 +253,7 @@ async function main() {
   );
 
   console.log(`Copied ${copied} sprites to public/sprites/`);
-  console.log(`Extracted ${extracted} atlas sprites`);
+  console.log(`Extracted ${extracted} atlas sprites, ${targetedExtracted} targeted sprites`);
   console.log(`Manifest: ${Object.keys(manifest).length} entries`);
 }
 

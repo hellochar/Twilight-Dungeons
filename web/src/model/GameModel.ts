@@ -64,6 +64,7 @@ import './grasses/Necroroot';
 import './grasses/Spores';
 import './grasses/Ninetails';
 import './grasses/BlobSlime';
+import './grasses/GoldGrass';
 // Enemies — Sprint 15
 import './enemies/FruitingBody';
 import './enemies/Blobmother';

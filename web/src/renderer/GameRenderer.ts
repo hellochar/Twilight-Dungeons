@@ -6,8 +6,9 @@ import { TileVisibility } from '../core/types';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
-import { SPRITE_TINTS } from './spriteTints';
+import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
+import { VibrantIvy } from '../model/grasses/VibrantIvy';
 
 /** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
 const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
@@ -159,6 +160,10 @@ export class GameRenderer {
   private spawnStates = new Map<string, { elapsed: number; scale: number }>();
   // Guid → fade-out state — FadeThenDestroy animation (grasses + items only; 0.5s, shrink=0.5)
   private fadingNodes = new Map<string, { node: Container; scaleRoot: Container; startScale: number; startTime: number }>();
+  // VibrantIvy: ordered list of active directional sprites (up/right/down/left, wall-filtered)
+  private ivyDirectionalSprites = new Map<string, Sprite[]>();
+  // VibrantIvy: last known stacks value for detecting decreases
+  private ivyLastStacks = new Map<string, number>();
 
   private floor: Floor | null = null;
 
@@ -518,6 +523,43 @@ export class GameRenderer {
     scaleRoot.position.set(ts / 2, ts / 2);
     node.addChild(scaleRoot);
 
+    // VibrantIvy: port of VibrantIvyController — 4 directional sprites (up/right/down/left),
+    // one per adjacent cardinal wall. No centered main sprite, no shadow (base SpriteRenderer
+    // is removed in the Unity prefab). Offset: 0.57 tile units from center; rotation per dir.
+    if (entity instanceof VibrantIvy) {
+      const ivy = entity;
+      const floor = ivy.floor!;
+      const OFFSET = 0.57;
+      // [gameDx, gameDy, pixiOffsetX, pixiOffsetY, rotation]
+      // game Y+1 = screen up (PixiJS -Y); game Y-1 = screen down (PixiJS +Y)
+      const dirs: [number, number, number, number, number][] = [
+        [ 0,  1,       0, -OFFSET,           0], // up
+        [ 1,  0,  OFFSET,       0,  Math.PI / 2], // right
+        [ 0, -1,       0,  OFFSET,      Math.PI], // down
+        [-1,  0, -OFFSET,       0, -Math.PI / 2], // left
+      ];
+      const ivySprites: Sprite[] = [];
+      for (const [gdx, gdy, odx, ody, rot] of dirs) {
+        const n = floor.tiles.get(new Vector2Int(ivy.pos.x + gdx, ivy.pos.y + gdy));
+        if (!(n instanceof Wall)) continue;
+        const s = new Sprite(tex ?? Texture.WHITE);
+        s.width = ts;
+        s.height = ts;
+        s.anchor.set(0.5, 0.5);
+        s.position.set(ts / 2 + odx * ts, ts / 2 + ody * ts);
+        s.rotation = rot;
+        scaleRoot.addChild(s);
+        ivySprites.push(s);
+      }
+      this.ivyDirectionalSprites.set(entity.guid, ivySprites);
+      this.ivyLastStacks.set(entity.guid, ivy.stacks);
+      layer.addChild(node);
+      this.entityNodes.set(entity.guid, node);
+      this.entityVisuals.set(entity.guid, ivySprites[0] ?? new Sprite(Texture.EMPTY));
+      this.entityScaleRoots.set(entity.guid, scaleRoot);
+      return node;
+    }
+
     // Shadow — bodies and grasses only (items have no shadow in Unity).
     // Matches Unity Shadow.prefab: color rgba(0.055, 0.059, 0.075, 0.4).
     // Most entities: angled (60°,20°,0°). Some grasses: flat (0°,0°,0°).
@@ -547,16 +589,24 @@ export class GameRenderer {
     }
 
     const sprite = new Sprite(tex ?? Texture.WHITE);
+    const lowerName = entity.displayName.toLowerCase();
+
+    // HangingVines: 2-tile height (Unity m_Size.y=2), hanging down from wall into floor below
+    const isHangingVines = lowerName === 'hanging vines';
     sprite.width = ts;
-    sprite.height = ts;
+    sprite.height = isHangingVines ? 2 * ts : ts;
 
     // Tint on sprite only — siblings (status indicators) won't inherit
-    const tint = SPRITE_TINTS[entity.displayName.toLowerCase()];
+    const tint = SPRITE_TINTS[lowerName];
     if (tint !== undefined) {
       sprite.tint = tint;
     } else if (!tex) {
       sprite.tint = this.fallbackColor(entity.displayName);
     }
+
+    // Alpha from Unity SpriteRenderer.m_Color.a (only for non-default alpha values)
+    const alpha = SPRITE_ALPHAS[lowerName];
+    if (alpha !== undefined) sprite.alpha = alpha;
 
     // Apply rotation for entities with angle property (e.g. EveningBells)
     if ('angle' in entity && typeof (entity as any).angle === 'number') {

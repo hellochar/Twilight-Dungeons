@@ -21,3 +21,4 @@ export { Necroroot, Zombie } from './Necroroot';
 export { Spores, SporeBloat, SporedStatus } from './Spores';
 export { Ninetails, ItemPlantableNinetails, HomeNinetails, ItemFloof } from './Ninetails';
 export { BlobSlime } from './BlobSlime';
+export { GoldGrass, GoldGrassStatus } from './GoldGrass';

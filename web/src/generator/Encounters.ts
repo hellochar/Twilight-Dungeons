@@ -686,12 +686,16 @@ export function addBrambles(floor: Floor, room: Room | null): void {
 
 export function addVibrantIvy(floor: Floor, room: Room | null): void {
   if (!room) return;
-  const candidates = floor.enumerateRoomTiles(room).filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null);
+  const canOccupy = (t: Tile) =>
+    (t instanceof Ground || t instanceof Water) &&
+    floor.grasses.get(t.pos) == null &&
+    floor.getCardinalNeighbors(t.pos).some(n => n instanceof Wall);
+  const candidates = floor.enumerateRoomTiles(room).filter(canOccupy);
   const startTile = randomPick(candidates);
   if (!startTile) return;
   let num = MyRandom.Range(5, 10);
   if (MyRandom.value < 0.2) num += 10;
-  const bfs = [...floor.breadthFirstSearch(startTile.pos, t => t instanceof Ground && floor.grasses.get(t.pos) == null)].slice(0, num);
+  const bfs = floor.breadthFirstSearch(startTile.pos, canOccupy, true, true).slice(0, num);
   for (const t of bfs) spawn(floor, 'VibrantIvy', t.pos);
 }
 

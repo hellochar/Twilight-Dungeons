@@ -26,3 +26,4 @@ export { DandyStatus } from './DandyStatus';
 export { FrenziedStatus } from './FrenziedStatus';
 export { ZenStatus } from './ZenStatus';
 export { ConstrictedStatus } from './ConstrictedStatus';
+export { GoldGrassStatus } from '../grasses/GoldGrass';

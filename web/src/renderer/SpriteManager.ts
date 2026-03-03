@@ -60,6 +60,7 @@ export class SpriteManager {
     'water': 'water',
     'signpost': 'sign',
     'mini blob': 'miniblob',
+    'gold grass': 'goldgrass',
     // Monochrome atlas sprites
     'blob': 'monochrome-blob',
     // Colored atlas sprites
@@ -94,9 +95,12 @@ export class SpriteManager {
     'iron jelly': 'iron-jelly',
     'golem': 'golem-head',
     'parasite egg': 'parasite-egg',
-    'hard shell': 'hardshell',
+    'hard shell': 'misc0_14',
     'scuttler underground': 'scuttler',
+    '???': 'scuttler',
     // Sprint 14 — complex enemies
+    'ghost': 'undead0_29',
+    'violets': 'purple_0',
     'hydra heart': 'hydra-heart',
     'hydra head': 'hydra-head',
     'grasper': 'grasper',

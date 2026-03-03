@@ -3,6 +3,9 @@
  * PixiJS applies tints as multiplicative RGB (same as Unity).
  * Only entities with non-white tints need entries here.
  */
+export const SPRITE_ALPHAS: Record<string, number> = {
+  'soft grass': 0.902, // m_Color.a = 0.9019608
+};
 export const SPRITE_TINTS: Record<string, number> = {
   // Monochrome atlas sprites (white base, need tinting)
   'blob': 0xe845c1,        // rgb(0.906, 0.272, 0.757)
@@ -19,6 +22,13 @@ export const SPRITE_TINTS: Record<string, number> = {
   'scorpion': 0xc7605c,     // rgb(0.78, 0.375, 0.362)
   'snail': 0xe4ff98,        // rgb(0.892, 1.0, 0.596)
 
+  'grasper': 0x6DBC3F,      // rgb(0.427, 0.737, 0.247)
+  'wildekin': 0xFFB300,     // rgb(1.0, 0.703, 0.0)
+  'hard shell': 0x00DBFF,   // rgb(0.0, 0.861, 1.0)
+
   // Individual PNG sprites with tints
   'snake': 0x9922ec,        // rgb(0.598, 0.134, 0.925)
+
+  // Grasses with non-white tints
+  'soft grass': 0x3BAA62,   // rgb(0.231, 0.667, 0.383) alpha=0.902
 };

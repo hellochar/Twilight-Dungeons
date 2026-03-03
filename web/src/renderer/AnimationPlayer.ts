@@ -28,6 +28,16 @@ function makeHealStyle(tileSize: number): TextStyle {
   });
 }
 
+function makeNeutralStyle(tileSize: number): TextStyle {
+  const sz = Math.round(tileSize * HP_TEXT_FONT_SCALE);
+  return new TextStyle({
+    fontFamily: 'CodersCrux, monospace',
+    fontSize: sz,
+    fill: 0xCCCCCC,
+    stroke: { color: 0x000000, width: Math.max(2, Math.round(sz * 0.12)) },
+  });
+}
+
 // ─── Unity BumpAndReturn constants (BumpAndReturn.cs) ───
 const BUMP_DURATION = 0.25;
 const BUMP_INTENSITY = 0.75;
@@ -249,6 +259,8 @@ export class AnimationPlayer {
 
     if (event.amount !== undefined && event.amount > 0) {
       this.spawnFloatingText(`-${event.amount}`, event, makeDamageStyle(this.camera.tileSize));
+    } else if (event.amount === 0) {
+      this.spawnFloatingText('0', event, makeNeutralStyle(this.camera.tileSize));
     }
   }
 

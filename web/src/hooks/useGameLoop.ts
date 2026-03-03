@@ -7,6 +7,9 @@ import { Vector2Int } from '../core/Vector2Int';
 import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer } from '../renderer';
 import { InputHandler, type PlayerIntent, type TileContextEvent } from '../input/InputHandler';
+import { SoundManager } from '../audio/SoundManager';
+import { Boss } from '../model/enemies/Boss';
+import { WaitBaseAction, GenericBaseAction } from '../model/BaseAction';
 import type { EntityInfoData } from '../ui/EntityInfoPopup';
 import type { GameEvent } from '../renderer/AnimationPlayer';
 import { Body } from '../model/Body';
@@ -597,6 +600,7 @@ export function useGameLoop() {
     let destroyed = false;
     let appReady = false;
     let pixiApp: Application | null = null;
+    const audioUnsubs: (() => void)[] = [];
 
     async function init() {
       if (destroyed) return;
@@ -635,12 +639,41 @@ export function useGameLoop() {
         setTimeout(() => setDebugNotice(null), 4000);
       }
 
+      const sound = new SoundManager();
+      await sound.load();
+      if (destroyed) { app.destroy(true, { children: true }); return; }
+
       const camera = new Camera();
       const renderer = new GameRenderer(app, camera, sprites);
       rendererRef.current = renderer;
 
-      const animator = new AnimationPlayer(renderer, camera);
+      const animator = new AnimationPlayer(renderer, camera, model.player.guid, sound);
       animatorRef.current = animator;
+
+      // Background music — boss floor plays boss track, all others play normal
+      const updateMusic = (floor: Floor) => {
+        const hasBoss = [...floor.bodies].some(b => b instanceof Boss);
+        sound.setMusic(hasBoss ? 'boss' : 'normal');
+      };
+      updateMusic(model.currentFloor);
+
+      // Per-player audio subscriptions (item pickup, equip, status, actions)
+      const p = model.player;
+      audioUnsubs.push(
+        p.inventory.onItemAdded.on(() => sound.play('playerPickupItem')),
+        p.equipment.onItemAdded.on(() => sound.play('playerEquip')),
+        p.equipment.onItemRemoved.on(() => sound.play('playerEquip')),
+        p.equipment.onItemDestroyed.on(() => setTimeout(() => sound.play('playerEquipmentBreak'), 250)),
+        p.onChangeWater.on(delta => { if (Math.abs(delta) > 1) sound.play('playerChangeWater', 0.2); }),
+        p.statuses.onAdded.on(s => { if (s.isDebuff) sound.play('playerGetDebuff'); }),
+        p.afterActionPerformed.on(a => {
+          if (a instanceof WaitBaseAction) sound.play('playerWait');
+          else if (a instanceof GenericBaseAction) sound.play('playerGeneric');
+        }),
+        model.currentFloor.onEntityRemoved.on(e => {
+          if (e instanceof Boss) sound.setMusic('none');
+        }),
+      );
 
       renderer.setFloor(model.currentFloor);
       renderer.syncToModel();
@@ -676,6 +709,7 @@ export function useGameLoop() {
 
     return () => {
       destroyed = true;
+      for (const unsub of audioUnsubs) unsub();
       input?.detach();
       if (resizeHandler) window.removeEventListener('resize', resizeHandler);
       if (pixiApp && appReady) {

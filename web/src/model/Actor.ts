@@ -75,6 +75,7 @@ export class Actor extends Body implements ISteppable {
 
   readonly onSetTask = new EventEmitter<[ActorTask | null]>();
   readonly onAttackGround = new EventEmitter<[Vector2Int]>();
+  readonly afterActionPerformed = new EventEmitter<[BaseAction, BaseAction]>();
 
   get myModifiers(): Iterable<object | null | undefined> {
     return [...super.myModifiers, ...this.statuses.list, this.task ?? null];
@@ -121,7 +122,7 @@ export class Actor extends Body implements ISteppable {
     if (target.isDead) {
       throw new Error('Cannot attack dead target.');
     }
-    GameModelRef.mainOrNull?.emitAnimation({ type: 'attack', entityGuid: this.guid, from: this.pos, to: target.pos, targetGuid: target.guid });
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'attack', entityGuid: this.guid, from: this.pos, to: target.pos, targetGuid: target.guid, amount: damage });
     this.onAttackEvent(damage, target);
     target.attacked(damage, this);
   }
@@ -279,6 +280,7 @@ export class Actor extends Body implements ISteppable {
     for (const handler of handlers) {
       handler.handleActionPerformed(finalAction, initialAction);
     }
+    this.afterActionPerformed.emit(finalAction, initialAction);
   }
 
   // ISteppable

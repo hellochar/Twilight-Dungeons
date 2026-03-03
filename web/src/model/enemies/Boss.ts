@@ -13,6 +13,7 @@ const DEATH_HANDLER = Symbol.for('IDeathHandler');
  */
 export abstract class Boss extends AIActor implements IDeathHandler {
   readonly [DEATH_HANDLER] = true as const;
+  override readonly isBoss = true;
   isSeen = false;
 
   constructor(pos: Vector2Int) {

@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "sprites": "node scripts/copy-sprites.js",
-    "dev": "node scripts/copy-sprites.js && vite",
-    "build": "node scripts/copy-sprites.js && tsc -b && vite build",
+    "audio": "node scripts/copy-audio.js",
+    "dev": "node scripts/copy-sprites.js && node scripts/copy-audio.js && vite",
+    "build": "node scripts/copy-sprites.js && node scripts/copy-audio.js && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

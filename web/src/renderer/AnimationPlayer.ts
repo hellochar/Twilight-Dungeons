@@ -3,6 +3,7 @@ import { Container, Sprite, Text, TextStyle } from 'pixi.js';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
+import type { SoundManager } from '../audio/SoundManager';
 
 // CodersCrux cap height ≈ 65% of point size; scale up so glyphs appear ~1 tile tall
 const HP_TEXT_FONT_SCALE = 1.00;
@@ -46,6 +47,7 @@ export interface GameEvent {
   to?: Vector2Int;
   targetGuid?: string;
   amount?: number;
+  isBoss?: boolean;
 }
 
 /**
@@ -55,12 +57,16 @@ export interface GameEvent {
 export class AnimationPlayer {
   private renderer: GameRenderer;
   private camera: Camera;
+  private playerGuid: string;
+  private sound: SoundManager | null;
   private timeline: gsap.core.Timeline | null = null;
   private floatingTexts: Text[] = [];
 
-  constructor(renderer: GameRenderer, camera: Camera) {
+  constructor(renderer: GameRenderer, camera: Camera, playerGuid: string, sound: SoundManager | null = null) {
     this.renderer = renderer;
     this.camera = camera;
+    this.playerGuid = playerGuid;
+    this.sound = sound;
   }
 
   /** Play a sequence of game events as animations. Returns a promise that resolves when done. */
@@ -128,6 +134,10 @@ export class AnimationPlayer {
       case 'move':
         // No tween — movement is handled by GameRenderer.lerpPositions()
         // (matching Unity's ActorController.Update() constant-speed lerp).
+        if (event.entityGuid === this.playerGuid && this.sound) {
+          const s = this.sound;
+          tl.call(() => s.play('move', 0.25), [], '<');
+        }
         break;
       case 'attack':
         this.animateAttack(node, event, tl);
@@ -176,6 +186,12 @@ export class AnimationPlayer {
         node.position.set(fromPx.x, fromPx.y);
       },
     }, `attack-${event.entityGuid}`);
+
+    if (event.entityGuid === this.playerGuid && this.sound) {
+      const s = this.sound;
+      const key = (event.amount !== undefined && event.amount > 0) ? 'attack' as const : 'attackNoDamage' as const;
+      tl.call(() => s.play(key), [], `<+=${BUMP_IMPACT_TIME}`);
+    }
   }
 
   /** Quick scale pulse for ground attack. */
@@ -222,6 +238,11 @@ export class AnimationPlayer {
       repeat: 2,
     }, pos);
 
+    if (event.entityGuid === this.playerGuid && this.sound) {
+      const s = this.sound;
+      tl.call(() => s.playHurt(), [], pos);
+    }
+
     if (event.amount !== undefined && event.amount > 0) {
       this.spawnFloatingText(`-${event.amount}`, event, makeDamageStyle(this.camera.tileSize));
     }
@@ -240,6 +261,11 @@ export class AnimationPlayer {
       onComplete: () => { visual.tint = origTint; },
     }, pos);
 
+    if (event.entityGuid === this.playerGuid && this.sound) {
+      const s = this.sound;
+      tl.call(() => s.play('playerHeal'), [], pos);
+    }
+
     if (event.amount !== undefined && event.amount > 0) {
       this.spawnFloatingText(`+${event.amount}`, event, makeHealStyle(this.camera.tileSize));
     }
@@ -256,6 +282,15 @@ export class AnimationPlayer {
     const pos = BUMP_IMPACT_TIME;
     tl.to(scaleRoot, { alpha: 0, duration: 0.5, ease: 'none' }, pos);
     tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: 0.5, ease: 'none' }, pos);
+
+    if (event.entityGuid !== this.playerGuid && this.sound) {
+      const s = this.sound;
+      if (event.isBoss) {
+        tl.call(() => s.play('bossDeath'), [], pos);
+      } else {
+        tl.call(() => s.play('death', 1, true), [], pos);
+      }
+    }
   }
 
   /** Pop in from zero scale on spawn — targets scaleRoot for center-pivot animation. */
@@ -264,6 +299,10 @@ export class AnimationPlayer {
     if (!scaleRoot) return;
     scaleRoot.scale.set(0, 0);
     scaleRoot.alpha = 0;
+    if (this.sound) {
+      const s = this.sound;
+      tl.call(() => s.play('summon'), [], '<');
+    }
     tl.to(scaleRoot.scale, {
       x: 1,
       y: 1,

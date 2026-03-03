@@ -46,6 +46,7 @@ export class Body extends Entity {
   private _pos: Vector2Int;
   protected _hp: number = 8;
   protected _baseMaxHp: number = 8;
+  readonly isBoss: boolean = false;
 
   readonly onMaxHPAdded = new EventEmitter();
 
@@ -173,7 +174,7 @@ export class Body extends Entity {
   kill(source: Entity): void {
     if (!this.isDead) {
       this._hp = Math.max(this._hp, 0);
-      GameModelRef.mainOrNull?.emitAnimation({ type: 'death', entityGuid: this.guid, to: this._pos });
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'death', entityGuid: this.guid, to: this._pos, isBoss: this.isBoss });
       super.kill(source);
     }
   }

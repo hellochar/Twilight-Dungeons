@@ -2,6 +2,7 @@ import { collectModifiers } from '../core/Modifiers';
 import { STATUS_ADDED_HANDLER, STATUS_REMOVED_HANDLER } from './Actor';
 import { Status } from './Status';
 import type { Actor } from './Actor';
+import { EventEmitter } from '../core/EventEmitter';
 
 /**
  * Manages the list of Status effects on an Actor.
@@ -10,6 +11,7 @@ import type { Actor } from './Actor';
 export class StatusList {
   readonly list: Status[] = [];
   readonly actor: Actor;
+  readonly onAdded = new EventEmitter<[Status]>();
 
   constructor(actor: Actor) {
     this.actor = actor;
@@ -67,6 +69,7 @@ export class StatusList {
     for (const handler of handlers) {
       handler.handleStatusAdded(status);
     }
+    this.onAdded.emit(status);
   }
 
   private onStatusRemoved(status: Status): void {

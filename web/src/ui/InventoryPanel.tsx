@@ -34,9 +34,6 @@ interface SelectedSlot {
 export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, onItemInfo, disabled, targetingActive }: InventoryPanelProps) {
   const [selected, setSelected] = useState<SelectedSlot | null>(null);
 
-  // Hide panel during targeting mode so map is unobstructed
-  if (targetingActive) return null;
-
   const handleSlotClick = useCallback((source: 'inventory' | 'equipment', index: number) => {
     if (disabled) return;
     const item = source === 'inventory' ? inventoryItems[index] : equipmentItems[index];
@@ -62,6 +59,9 @@ export function InventoryPanel({ inventoryItems, equipmentItems, onItemAction, o
   const selectedItem = selected
     ? (selected.source === 'inventory' ? inventoryItems[selected.index] : equipmentItems[selected.index])
     : null;
+
+  // Hide panel during targeting mode so map is unobstructed
+  if (targetingActive) return null;
 
   return (
     <div style={{

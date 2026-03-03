@@ -36,7 +36,7 @@ export { Boombug, BoombugCorpse } from './Boombug';
 export { Shielder } from './Shielder';
 export { CheshireWeed, CheshireWeedSprout } from './CheshireWeed';
 export { Pumpkin } from './Pumpkin';
-export { FruitingBody, ItemTanglefoot, ItemStiffarm, ItemBulbousSkin, ItemThirdEye, ItemScalySkin } from './FruitingBody';
+export { FruitingBody, ItemTanglefoot, ItemStiffarm, ItemBulbousSkin, ItemThirdEye, ItemScalySkin } from './fruiting';
 export { Boss } from './Boss';
 export { Blobmother } from './Blobmother';
 export { FungalColony, FungalBreeder, FungalSentinel } from './FungalColony';

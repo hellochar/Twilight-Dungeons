@@ -52,6 +52,7 @@ export class SpriteManager {
 
   /** Entity displayName → sprite key overrides. */
   private static NAME_MAP: Record<string, string> = {
+    // ── Player / Tiles ──────────────────────────────────────────────────────
     'player': 'player',
     'hands': 'hands',
     'stick': 'stick',
@@ -59,11 +60,9 @@ export class SpriteManager {
     'soil': 'soil',
     'water': 'water',
     'signpost': 'sign',
-    'mini blob': 'miniblob',
-    'gold grass': 'goldgrass',
-    // Monochrome atlas sprites
+    // ── Enemies ─────────────────────────────────────────────────────────────
     'blob': 'monochrome-blob',
-    // Colored atlas sprites
+    'mini blob': 'miniblob',
     'bat': 'colored_transparent_packed_409',
     'jackal': 'colored_transparent_packed_414',
     'jackal boss': 'jackalboss',
@@ -76,29 +75,12 @@ export class SpriteManager {
     'stump': 'colored_transparent_packed_305',
     'rubble': 'colored_transparent_packed_100',
     'fungal wall': 'fungal-wall',
-    // Grasses
-    'soft grass': 'softgrass',
-    'guardleaf': 'guardroot',
-    // Items
-    // Items
-    'bat tooth': 'bat-tooth',
-    'spider sandals': 'spider-silk-shoes',
-    'snail shell': 'snail-shell',
-    'pumpkin helmet': 'pumpkin-helmet',
-    'wildwood leaf': 'wildwood-leaf',
-    'charm berry': 'charmberry',
-    'mushroom cap': 'mushroom-cap',
-    // Grasses
-    'evening bells': 'evening-bell',
-    'poison moss': 'poisonmoss',
-    // Enemies
     'iron jelly': 'iron-jelly',
     'golem': 'golem-head',
     'parasite egg': 'parasite-egg',
     'hard shell': 'misc0_14',
     'scuttler underground': 'scuttler',
     '???': 'scuttler',
-    // Sprint 14 — complex enemies
     'ghost': 'undead0_29',
     'violets': 'purple_0',
     'hydra heart': 'hydra-heart',
@@ -108,29 +90,38 @@ export class SpriteManager {
     'cheshire weed': 'cheshire-weed',
     'cheshire weed sprout': 'cheshire-weed',
     'spore bloat': 'sporebloat',
-    // Sprint 14 — grasses
-    'black creeper': 'deathly-creeper',
-    'vibrant ivy': 'vibrant-ivy',
-    'hanging vines': 'hanging-vines',
-    'deathbloom': 'deathbloom-stem',
-    // Sprint 14 — items
-    'vine whip': 'vine-whip',
-    'wildwood wreath': 'wildwood-wreath',
-    'gloop shoes': 'goop',
-    'jackal hide': 'jackal-fur',
-    'deathbloom flower': 'deathbloom-stem',
-    // Sprint 15 — Enemies
     'fruiting body': 'fruitingbody',
     'blobmother': 'blob-boss',
     'fungal colony': 'fungal-colony',
     'fungal breeder': 'fungal-breeder',
     'fungal sentinel': 'fungal-sentinel',
     'blob slime': 'slimed',
-    // Sprint 15 — FruitingBody infection items
+    // ── Grasses ─────────────────────────────────────────────────────────────
+    'gold grass': 'goldgrass',
+    'soft grass': 'softgrass',
+    'guardleaf': 'guardroot',
+    'evening bells': 'evening-bell',
+    'poison moss': 'poisonmoss',
+    'black creeper': 'deathly-creeper',
+    'vibrant ivy': 'vibrant-ivy',
+    'hanging vines': 'hanging-vines',
+    'deathbloom': 'deathbloom-stem',
+    // ── Items ────────────────────────────────────────────────────────────────
+    'bat tooth': 'bat-tooth',
+    'spider sandals': 'spider-silk-shoes',
+    'snail shell': 'snail-shell',
+    'pumpkin helmet': 'pumpkin-helmet',
+    'wildwood leaf': 'wildwood-leaf',
+    'charm berry': 'charmberry',
+    'mushroom cap': 'mushroom-cap',
+    'vine whip': 'vine-whip',
+    'wildwood wreath': 'wildwood-wreath',
+    'gloop shoes': 'goop',
+    'jackal hide': 'jackal-fur',
+    'deathbloom flower': 'deathbloom-stem',
     'bulbous skin': 'bulbous-skin',
     'third eye': 'third-eye',
     'scaly skin': 'scaly-skin',
-    // Sprint 15 — Plant items
     'flower buds': 'flower-buds',
     'hardened sap': 'hardened-sap',
     'crescent vengeance': 'crescent-vengeance',

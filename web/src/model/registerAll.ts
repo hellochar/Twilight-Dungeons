@@ -1,0 +1,74 @@
+// Side-effect imports: register all entities in entityRegistry.
+// GameModel imports this one file instead of listing every module individually.
+
+// Enemies
+import './enemies/Scorpion';
+import './enemies/Crab';
+import './enemies/Bat';
+import './enemies/Goo';
+import './enemies/Snail';
+import './enemies/Spider';
+import './enemies/Destructible';
+import './enemies/Wallflower';
+import './enemies/HardShell';
+import './enemies/Golem';
+import './enemies/Dizapper';
+import './enemies/Bloodstone';
+import './enemies/Butterfly';
+import './enemies/Skully';
+import './enemies/Thistlebog';
+import './enemies/Healer';
+import './enemies/Poisoner';
+import './enemies/Muckola';
+import './enemies/Hopper';
+import './enemies/Clumpshroom';
+import './enemies/Wildekin';
+import './enemies/Scuttler';
+import './enemies/Jackal';
+import './enemies/Parasite';
+import './enemies/Octopus';
+import './enemies/IronJelly';
+import './enemies/HydraHeart';
+import './enemies/Grasper';
+import './enemies/Boombug';
+import './enemies/Shielder';
+import './enemies/CheshireWeed';
+import './enemies/Pumpkin';
+import './enemies/fruiting/FruitingBody';
+import './enemies/Blobmother';
+import './enemies/FungalColony';
+
+// Grasses
+import './grasses/Web';
+import './grasses/Bladegrass';
+import './grasses/SoftGrass';
+import './grasses/Guardleaf';
+import './grasses/Brambles';
+import './grasses/Mushroom';
+import './grasses/Astoria';
+import './grasses/EveningBells';
+import './grasses/Bloodwort';
+import './grasses/Redcap';
+import './grasses/Violets';
+import './grasses/Llaora';
+import './grasses/Poisonmoss';
+import './grasses/Fern';
+import './grasses/Dandypuff';
+import './grasses/DeathlyCreeper';
+import './grasses/Tunnelroot';
+import './grasses/Agave';
+import './grasses/VibrantIvy';
+import './grasses/Deathbloom';
+import './grasses/HangingVines';
+import './grasses/Necroroot';
+import './grasses/Spores';
+import './grasses/Ninetails';
+import './grasses/BlobSlime';
+import './grasses/GoldGrass';
+
+// Plant items — co-located entities register themselves
+import './items/ItemBroodpuff';
+import './items/ItemFaeleaf';
+import './items/ItemKingshroom';
+import './items/ItemStoutShrub';
+import './items/ItemWeirdwood';

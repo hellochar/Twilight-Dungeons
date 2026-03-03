@@ -1,44 +1,25 @@
 import { Application, Container, Sprite, Graphics, Texture } from 'pixi.js';
 import { Floor } from '../model/Floor';
-import { Tile, Wall, Chasm, Water, Soil, FancyGround, Signpost, HardGround } from '../model/Tile';
 import { Entity } from '../model/Entity';
-import { TileVisibility } from '../core/types';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
-import { VibrantIvy } from '../model/grasses/VibrantIvy';
-import { Violets } from '../model/grasses/Violets';
 import { Actor } from '../model/Actor';
-
-/** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
-const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
-
-/**
- * Port of VioletsController.Update(): selects the flower stage sprite key and
- * PixiJS anchor based on violets.countUp and violets.isOpen.
- * flowerStages = [purple_1, purple_2, purple_3, purple_4], open = purple_5.
- * Anchors from Unity .meta pivots (y flipped: pixiAnchorY = 1 - unityPivotY).
- */
-function violetFlowerStage(v: Violets): { key: string; anchorX: number; anchorY: number } {
-  const FLOWER_STAGES = ['purple_1', 'purple_2', 'purple_3', 'purple_4'];
-  // Anchors per stage index (from Purple.png.meta pivot values, y-flipped for PixiJS)
-  const ANCHORS: Array<[number, number]> = [
-    [0.5,     0.5    ], // purple_1: (0.5, 0.5)
-    [0.5,     0.5    ], // purple_2: (0.5, 0.5)
-    [0.46875, 0.5    ], // purple_3: (0.46875, 0.5)
-    [0.46875, 0.5    ], // purple_4: (0.46875, 0.5)
-  ];
-  if (v.isOpen) {
-    // purple_5: pivot (0.46875, 0.53125) → anchorY = 1 - 0.53125 = 0.46875
-    return { key: 'purple_5', anchorX: 0.46875, anchorY: 0.46875 };
-  }
-  const stage0Count = Violets.turnsToChange - FLOWER_STAGES.length; // 8
-  const idx = v.countUp >= stage0Count ? v.countUp - stage0Count : 0;
-  const [anchorX, anchorY] = ANCHORS[idx];
-  return { key: FLOWER_STAGES[idx], anchorX, anchorY };
-}
+import {
+  type EntityRenderState,
+  type RenderCtx,
+  getEntityRenderHooks,
+} from './entityRenderers';
+import { TileRenderer } from './TileRenderer';
+import {
+  DEEP_SLEEP_TINT,
+  SPAWN_ANIMATION_DURATION,
+  FADE_DURATION_MS,
+  FADE_END_SCALE,
+  TELEGRAPH_FADE_DURATION,
+} from './animationConstants';
 
 /**
  * Grasses whose Unity prefab overrides Shadow rotation to (0,0,0) — flat shadow
@@ -98,106 +79,38 @@ const SLEEP_VISUAL: StatusVisualConfig = {
   spriteKey: 'sleep', offsetX: 0, offsetY: 0.5, scale: 0.5,
 };
 
-/** Fallback colors when tilesheet sprite is missing. */
-const TILE_COLORS: Record<string, number> = {
-  Ground: 0x8b7355,
-  HardGround: 0x9a8866,
-  FancyGround: 0xa09070,
-  Wall: 0x3a3a4a,
-  Chasm: 0x1a1a2e,
-  Soil: 0x6b5b3a,
-  Water: 0x3a6b8b,
-  Signpost: 0x8b7355,
-  FungalWall: 0x4a5a3a,
-  Muck: 0x4a3a2a,
-};
-
-/**
- * Depth-dependent chasm border/fade tint colors, from Unity Chasm.prefab.
- * Borders and fade overlay are tinted to match the surrounding tile palette.
- */
-function chasmTint(depth: number): number {
-  if (depth >= 19) return 0x272C3A; // rgb(0.153, 0.173, 0.227) — dark blue
-  if (depth >= 10) return 0x212D23; // rgb(0.129, 0.176, 0.137) — dark green
-  return 0x382C33;                  // rgb(0.220, 0.173, 0.200) — dark brown
-}
-
-/**
- * Map tile instance → tilesheet sub-sprite name.
- * Ground/HardGround → "ground", Wall → "wall", FancyGround → "fancy-ground".
- * Chasm, Water, Soil, Signpost use their own individual sprites instead.
- */
-function tilesheetName(tile: Tile): string | null {
-  if (tile instanceof Wall) return 'wall';
-  if (tile instanceof FancyGround) return 'fancy-ground';
-  if (tile instanceof Chasm || tile instanceof Water ||
-      tile instanceof Soil || tile instanceof Signpost) return null;
-  // Ground, HardGround, and any other walkable tile
-  return 'ground';
-}
-
 /**
  * PixiJS-based renderer for the game floor.
  * Layered containers: tiles → grasses → items → bodies → above-entity → effects → fog.
+ * Tile rendering is delegated to TileRenderer.
  */
 export class GameRenderer {
   readonly app: Application;
   readonly camera: Camera;
   readonly sprites: SpriteManager;
 
-  // Layered containers (back to front)
-  private tileLayer = new Container();
+  private tileRenderer: TileRenderer;
+
+  // Entity layer containers (back to front, between tile and fog layers)
   private grassLayer = new Container();
   private itemLayer = new Container();
   private bodyLayer = new Container();
   private aboveEntityLayer = new Container();
   private effectLayer = new Container();
-  private dimLayer = new Container();
 
-  // Entity guid → Container node (position/scale/alpha target for animations)
-  private entityNodes = new Map<string, Container>();
-  // Entity guid → visual Sprite child (tint target for animations)
-  private entityVisuals = new Map<string, Sprite>();
-  // Entity guid → inner Container with center pivot (scale/alpha target for death/spawn)
-  private entityScaleRoots = new Map<string, Container>();
-  // Tile position key → Container wrapping all display objects for that tile
-  private tileContainers = new Map<string, Container>();
-  // Tile position key → Tile object rendered in that container (for change detection)
-  private renderedTiles = new Map<string, Tile>();
-  // Tile position key → Graphics dim overlay for Explored tiles
-  private dimCells = new Map<string, Graphics>();
-  // Entity guid → status indicator sprite container (child of entityNode)
-  private statusIndicators = new Map<string, Container>();
   // Active targeting highlights on the effect layer
   private targetHighlights: Graphics[] = [];
   // Proposed path dots (PathDot sprites) and reticle — FollowPathUI port
   private pathDotSprites: Sprite[] = [];
   private reticleSprite: Sprite | null = null;
+
   // Entity guids currently mid-animation — skip position snapping for these
   readonly animatingGuids = new Set<string>();
-  // Telegraph charging particle effects (TelegraphedTask.prefab port)
-  private telegraphEffects = new Map<string, {
-    container: Container;
-    particles: Array<{ g: Graphics; age: number; angle: number }>;
-    spawnAccum: number;
-    fadingOut: boolean;
-  }>();
-  // Body guids — excluded from renderer spawn/death animations (AnimationPlayer handles them)
-  private bodyGuids = new Set<string>();
-  // Guid → spawn grow state — GrowAtStart iterative lerp (grasses + items only)
-  private spawnStates = new Map<string, { elapsed: number; scale: number }>();
-  // Guid → fade-out state — FadeThenDestroy animation (grasses + items only; 0.5s, shrink=0.5)
-  private fadingNodes = new Map<string, { node: Container; scaleRoot: Container; startScale: number; startTime: number }>();
-  // Guid → detached shadow Container on grassLayer for 'above-entity' entities (e.g. Guardleaf)
-  private detachedShadows = new Map<string, Container>();
-  // Guid → idle bob state for moving bodies (Unity _Actor.prefab Idle.anim)
-  private bodyBobTimers = new Map<string, { timer: number; entity: Entity }>();
-  // VibrantIvy: ordered list of active directional sprites (up/right/down/left, wall-filtered)
-  private ivyDirectionalSprites = new Map<string, Sprite[]>();
-  // VibrantIvy: last known stacks value for detecting decreases
-  private ivyLastStacks = new Map<string, number>();
-  // Violets: the animated "Flower" child sprite (purple_1..5), keyed by entity guid
-  private violetFlowerSprites = new Map<string, Sprite>();
+
+  // All entity render state, keyed by guid.
+  // Active entities: state with no `fade`.
+  // Fading entities: state with `fade` set — removed by updateEntityAnimations when complete.
+  private entityStates = new Map<string, EntityRenderState>();
 
   private floor: Floor | null = null;
 
@@ -205,15 +118,16 @@ export class GameRenderer {
     this.app = app;
     this.camera = camera;
     this.sprites = sprites;
+    this.tileRenderer = new TileRenderer(camera, sprites);
 
     // Add layers in draw order
-    app.stage.addChild(this.tileLayer);
+    app.stage.addChild(this.tileRenderer.tileLayer);
     app.stage.addChild(this.grassLayer);
     app.stage.addChild(this.itemLayer);
     app.stage.addChild(this.bodyLayer);
     app.stage.addChild(this.aboveEntityLayer);
     app.stage.addChild(this.effectLayer);
-    app.stage.addChild(this.dimLayer);
+    app.stage.addChild(this.tileRenderer.dimLayer);
   }
 
   /** Set the floor to render and do full rebuild. */
@@ -244,32 +158,32 @@ export class GameRenderer {
   rebuildAll(): void {
     if (!this.floor) return;
     this.clearAll();
-    this.buildTiles();
+    this.tileRenderer.build(this.floor);
     this.buildEntities();
-    this.syncTileVisibility();
+    this.tileRenderer.syncVisibility(this.floor);
   }
 
   /** Sync visuals to current model state (call after each turn step). */
   syncToModel(): void {
     if (!this.floor) return;
-    this.syncTiles();
+    this.tileRenderer.sync(this.floor);
     this.syncEntities();
-    this.syncTileVisibility();
+    this.tileRenderer.syncVisibility(this.floor);
   }
 
   /** Get the entity node Container (for position/scale/alpha animations). */
   getEntitySprite(guid: string): Container | undefined {
-    return this.entityNodes.get(guid);
+    return this.entityStates.get(guid)?.node;
   }
 
   /** Get the visual Sprite child (for tint animations). */
   getEntityVisual(guid: string): Sprite | undefined {
-    return this.entityVisuals.get(guid);
+    return this.entityStates.get(guid)?.visual;
   }
 
   /** Get the scale/alpha inner Container (center-pivoted; for death/spawn animations). */
   getEntityScaleRoot(guid: string): Container | undefined {
-    return this.entityScaleRoots.get(guid);
+    return this.entityStates.get(guid)?.scaleRoot;
   }
 
   /** Get the effect layer container (for animation overlays). */
@@ -349,8 +263,9 @@ export class GameRenderer {
     for (const body of floor.bodies) {
       if (body.isDead) continue;
       if (this.animatingGuids.has(body.guid)) continue;
-      const node = this.entityNodes.get(body.guid);
-      if (!node) continue;
+      const state = this.entityStates.get(body.guid);
+      if (!state) continue;
+      const node = state.node;
 
       const target = this.camera.tileToPixel(body.pos);
       const dx = target.x - node.position.x;
@@ -369,7 +284,6 @@ export class GameRenderer {
       }
 
       // Lerp speed: 16 tiles per second (Unity ActorController line 82: 16 / actionCost)
-      // Most actors have move cost 1, so 16 t/s is the standard speed.
       const speed = 16 * ts * dt;
       const ratio = Math.min(speed / dist, 1);
       node.position.set(
@@ -383,142 +297,16 @@ export class GameRenderer {
 
   private clearAll(): void {
     this.clearProposedPath();
-    this.tileLayer.removeChildren();
+    this.tileRenderer.clear();
     this.grassLayer.removeChildren();
     this.itemLayer.removeChildren();
     this.bodyLayer.removeChildren();
     this.aboveEntityLayer.removeChildren();
     this.effectLayer.removeChildren();
-    this.dimLayer.removeChildren();
-    this.entityNodes.clear();
-    this.entityVisuals.clear();
-    this.entityScaleRoots.clear();
-    this.tileContainers.clear();
-    this.renderedTiles.clear();
-    this.dimCells.clear();
-    this.statusIndicators.clear();
-    for (const effect of this.telegraphEffects.values()) {
-      effect.container.destroy({ children: true });
+    for (const state of this.entityStates.values()) {
+      if (state.telegraph) state.telegraph.container.destroy({ children: true });
     }
-    this.telegraphEffects.clear();
-    this.bodyGuids.clear();
-    this.spawnStates.clear();
-    for (const f of this.fadingNodes.values()) f.node.destroy({ children: true });
-    this.fadingNodes.clear();
-    this.detachedShadows.clear();
-    this.bodyBobTimers.clear();
-    this.violetFlowerSprites.clear();
-    this.ivyDirectionalSprites.clear();
-    this.ivyLastStacks.clear();
-  }
-
-  private buildTiles(): void {
-    const floor = this.floor!;
-    const ts = this.camera.tileSize;
-    const depth = floor.depth;
-
-    for (const pos of floor.enumerateFloor()) {
-      const tile = floor.tiles.get(pos);
-      if (!tile) continue;
-
-      const px = this.camera.tileToPixel(pos);
-      const container = new Container();
-      container.position.set(px.x, px.y);
-      const key = Vector2Int.key(pos);
-      this.tileLayer.addChild(container);
-      this.tileContainers.set(key, container);
-      this.renderedTiles.set(key, tile);
-
-      // Try tilesheet sprite first (ground, wall, fancy-ground)
-      const sheetName = tilesheetName(tile);
-      const sheetTex = sheetName ? this.sprites.getTileTexture(sheetName, depth) : null;
-
-      if (sheetTex) {
-        const sprite = new Sprite(sheetTex);
-        sprite.width = ts;
-        sprite.height = ts;
-        container.addChild(sprite);
-      } else {
-        // Individual sprite (chasm, water, soil, signpost) or fallback color
-        const tex = this.sprites.getTexture(tile.displayName);
-        if (tex) {
-          const sprite = new Sprite(tex);
-          sprite.width = ts;
-          sprite.height = ts;
-          container.addChild(sprite);
-        } else {
-          // Colored rectangle fallback
-          const g = new Graphics();
-          const colorKey = tile.constructor.name;
-          const color = TILE_COLORS[colorKey] ?? 0x8b7355;
-          g.rect(0, 0, ts, ts).fill(color);
-          container.addChild(g);
-        }
-      }
-
-      // Chasm border edges: draw on chasm tiles where neighbor is non-chasm
-      if (tile instanceof Chasm) {
-        this.addChasmBorders(floor, pos, container, ts);
-      }
-    }
-  }
-
-  /**
-   * Draw border edges and fade gradient on chasm tiles.
-   * Unity Chasm.prefab uses a single border-left sprite (1×16, pivot 0,0.5)
-   * rotated for all 4 edges, and gradient-top.png for the fade overlay.
-   */
-  private addChasmBorders(
-    floor: Floor, pos: Vector2Int, container: Container, ts: number,
-  ): void {
-    const depth = floor.depth;
-    const tint = chasmTint(depth);
-    const bw = ts / 16; // 1 source pixel scaled to tile size
-
-    const borderTex = this.sprites.getBorderTexture();
-    if (borderTex) {
-      // Each edge: border-left (1×16) sized bw×ts, anchored at center, positioned
-      // at center of each tile edge. Rotation swings around the center point.
-      // Coordinates are local to the container (origin = tile top-left).
-      const edges: Array<{ dir: Vector2Int; x: number; y: number; rot: number }> = [
-        { dir: Vector2Int.left,  x: bw / 2,       y: ts / 2,       rot: 0 },
-        { dir: Vector2Int.right, x: ts - bw / 2,  y: ts / 2,       rot: Math.PI },
-        { dir: Vector2Int.up,    x: ts / 2,        y: bw / 2,       rot: -Math.PI / 2 },
-        { dir: Vector2Int.down,  x: ts / 2,        y: ts - bw / 2,  rot: Math.PI / 2 },
-      ];
-
-      for (const edge of edges) {
-        const neighbor = Vector2Int.add(pos, edge.dir);
-        const neighborTile = floor.inBounds(neighbor) ? floor.tiles.get(neighbor) : null;
-        if (neighborTile && !(neighborTile instanceof Chasm)) {
-          const sprite = new Sprite(borderTex);
-          sprite.anchor.set(0.5, 0.5);
-          sprite.width = bw;
-          sprite.height = ts;
-          sprite.rotation = edge.rot;
-          sprite.position.set(edge.x, edge.y);
-          sprite.tint = tint;
-          container.addChild(sprite);
-        }
-      }
-    }
-
-    // Fade gradient: when the tile above (game up) is not a chasm,
-    // draw gradient-top.png (white→transparent) tinted with depth color.
-    // Unity: positioned y=-0.25, scaled 1×1.5, tinted with depth color.
-    const above = Vector2Int.add(pos, Vector2Int.up);
-    const aboveTile = floor.inBounds(above) ? floor.tiles.get(above) : null;
-    if (aboveTile && !(aboveTile instanceof Chasm)) {
-      const fadeTex = this.sprites.getTexture('gradient-top');
-      if (fadeTex) {
-        const sprite = new Sprite(fadeTex);
-        sprite.position.set(0, -ts * 0.25);
-        sprite.width = ts;
-        sprite.height = ts * 1.5;
-        sprite.tint = tint;
-        container.addChild(sprite);
-      }
-    }
+    this.entityStates.clear();
   }
 
   private buildEntities(): void {
@@ -536,11 +324,17 @@ export class GameRenderer {
       if (item) this.addEntitySprite(item, this.itemLayer);
     }
 
-    // Bodies
+    // Bodies (no spawn animation — AnimationPlayer handles their events)
     for (const body of floor.bodies) {
       this.addEntitySprite(body, this.bodyLayer);
-      this.bodyGuids.add(body.guid);
     }
+  }
+
+  /** Returns aboveEntityLayer for entities declaring renderLayer='above-entity', else grassLayer. */
+  private grassLayerFor(entity: Entity): Container {
+    return (entity as any).renderLayer === 'above-entity'
+      ? this.aboveEntityLayer
+      : this.grassLayer;
   }
 
   /**
@@ -549,19 +343,12 @@ export class GameRenderer {
    * Tint goes on the Sprite so sibling children (status indicators) don't inherit it.
    * scaleRoot pivot=(ts/2,ts/2) + position=(ts/2,ts/2) keeps visual origin at node(0,0)
    * while scaling from tile center.
+   *
+   * For entities with EntityRenderHooks.overridesDefaultSprite, the hook handles all visual
+   * creation (no shadow or default sprite). For others, the hook's init() augments after
+   * the default setup (e.g. Violets adds a flower sprite on top).
    */
-  /** Returns aboveEntityLayer for entities declaring renderLayer='above-entity', else grassLayer. */
-  private grassLayerFor(entity: Entity): Container {
-    return (entity as any).renderLayer === 'above-entity'
-      ? this.aboveEntityLayer
-      : this.grassLayer;
-  }
-
   private addEntitySprite(entity: Entity, layer: Container): Container {
-    const spriteKeyOverride = 'spriteKey' in entity ? (entity as any).spriteKey as string : null;
-    const tex = spriteKeyOverride
-      ? this.sprites.getTextureByKey(spriteKeyOverride)
-      : this.sprites.getTexture(entity.displayName);
     const ts = this.camera.tileSize;
     const px = this.camera.tileToPixel(entity.pos);
 
@@ -574,229 +361,108 @@ export class GameRenderer {
     scaleRoot.position.set(ts / 2, ts / 2);
     node.addChild(scaleRoot);
 
-    // VibrantIvy: port of VibrantIvyController — 4 directional sprites (up/right/down/left),
-    // one per adjacent cardinal wall. No centered main sprite, no shadow (base SpriteRenderer
-    // is removed in the Unity prefab). Offset: 0.57 tile units from center; rotation per dir.
-    if (entity instanceof VibrantIvy) {
-      const ivy = entity;
-      const floor = ivy.floor!;
-      const OFFSET = 0.07;
-      // [gameDx, gameDy, pixiOffsetX, pixiOffsetY, rotation]
-      // game Y+1 = screen up (PixiJS -Y); game Y-1 = screen down (PixiJS +Y)
-      const dirs: [number, number, number, number, number][] = [
-        [ 0,  1,       0, -OFFSET,           0], // up
-        [ 1,  0,  OFFSET,       0,  Math.PI / 2], // right
-        [ 0, -1,       0,  OFFSET,      Math.PI], // down
-        [-1,  0, -OFFSET,       0, -Math.PI / 2], // left
-      ];
-      const ivySprites: Sprite[] = [];
-      for (const [gdx, gdy, odx, ody, rot] of dirs) {
-        const n = floor.tiles.get(new Vector2Int(ivy.pos.x + gdx, ivy.pos.y + gdy));
-        if (!(n instanceof Wall)) continue;
-        const s = new Sprite(tex ?? Texture.WHITE);
-        s.width = ts;
-        s.height = ts;
-        s.anchor.set(0.5, 0.5);
-        s.position.set(ts / 2 + odx * ts, ts / 2 + ody * ts);
-        s.rotation = rot;
-        scaleRoot.addChild(s);
-        ivySprites.push(s);
-      }
-      this.ivyDirectionalSprites.set(entity.guid, ivySprites);
-      this.ivyLastStacks.set(entity.guid, ivy.stacks);
-      layer.addChild(node);
-      this.entityNodes.set(entity.guid, node);
-      this.entityVisuals.set(entity.guid, ivySprites[0] ?? new Sprite(Texture.EMPTY));
-      this.entityScaleRoots.set(entity.guid, scaleRoot);
-      return node;
-    }
+    const hooks = getEntityRenderHooks(entity);
+    const ctx: RenderCtx = { sprites: this.sprites, ts };
 
-    // Shadow — bodies and grasses only (items have no shadow in Unity).
-    // Matches Unity Shadow.prefab: color rgba(0.055, 0.059, 0.075, 0.4).
-    // Most entities: angled (60°,20°,0°). Some grasses: flat (0°,0°,0°).
-    const hasShadow = layer === this.bodyLayer || layer === this.grassLayer || layer === this.aboveEntityLayer;
-    if (hasShadow) {
-      const bottomPad = this.sprites.getBottomPadding(entity.displayName) * ts;
-      const isFlat = FLAT_SHADOW_ENTITIES.has(entity.displayName.toLowerCase());
+    // Start building state — visual is a placeholder until assigned below
+    const state: EntityRenderState = {
+      node,
+      visual: new Sprite(Texture.EMPTY),
+      scaleRoot,
+      isBody: layer === this.bodyLayer,
+    };
 
-      const buildShadow = () => {
-        const shadow = new Sprite(tex ?? Texture.WHITE);
-        shadow.tint = 0x0E0F13;
-        shadow.alpha = 0.4;
-        shadow.width = ts;
-        shadow.height = ts;
-        if (isFlat) {
-          shadow.position.set(ts * 0.05, -ts * 0.05 - bottomPad);
+    if (hooks?.overridesDefaultSprite) {
+      // Entity renderer hook controls all visual creation (e.g. VibrantIvy: 4 directional sprites)
+      hooks.init!(entity, state, ctx);
+    } else {
+      // Default setup: shadow, main sprite, tint, alpha, rotation
+      const spriteKeyOverride = 'spriteKey' in entity ? (entity as any).spriteKey as string : null;
+      const tex = spriteKeyOverride
+        ? this.sprites.getTextureByKey(spriteKeyOverride)
+        : this.sprites.getTexture(entity.displayName);
+
+      // Shadow — bodies and grasses only (items have no shadow in Unity).
+      // Matches Unity Shadow.prefab: color rgba(0.055, 0.059, 0.075, 0.4).
+      const hasShadow = layer === this.bodyLayer || layer === this.grassLayer || layer === this.aboveEntityLayer;
+      if (hasShadow) {
+        const bottomPad = this.sprites.getBottomPadding(entity.displayName) * ts;
+        const isFlat = FLAT_SHADOW_ENTITIES.has(entity.displayName.toLowerCase());
+
+        const buildShadow = () => {
+          const shadow = new Sprite(tex ?? Texture.WHITE);
+          shadow.tint = 0x0E0F13;
+          shadow.alpha = 0.4;
+          shadow.width = ts;
+          shadow.height = ts;
+          if (isFlat) {
+            shadow.position.set(ts * 0.05, -ts * 0.05 - bottomPad);
+          } else {
+            shadow.anchor.set(0.5, 1.0);
+            shadow.position.set(ts / 2, ts - bottomPad);
+            shadow.scale.y *= 0.5;
+            shadow.skew.x = -0.35;
+          }
+          return shadow;
+        };
+
+        if (layer === this.aboveEntityLayer) {
+          // Shadow renders on grassLayer (below bodies) — mirrors Unity Guardleaf.
+          const shadowNode = new Container();
+          shadowNode.position.set(px.x, px.y);
+          shadowNode.addChild(buildShadow());
+          this.grassLayer.addChild(shadowNode);
+          state.detachedShadow = shadowNode;
         } else {
-          shadow.anchor.set(0.5, 1.0);
-          shadow.position.set(ts / 2, ts - bottomPad);
-          shadow.scale.y *= 0.5;
-          shadow.skew.x = -0.35;
+          scaleRoot.addChild(buildShadow());
         }
-        return shadow;
-      };
-
-      if (layer === this.aboveEntityLayer) {
-        // Shadow renders on grassLayer (below bodies) — mirrors Unity Guardleaf: main sprite
-        // on Entity sorting layer, shadow child retains Grass sorting layer.
-        const shadowNode = new Container();
-        shadowNode.position.set(px.x, px.y);
-        shadowNode.addChild(buildShadow());
-        this.grassLayer.addChild(shadowNode);
-        this.detachedShadows.set(entity.guid, shadowNode);
-      } else {
-        scaleRoot.addChild(buildShadow());
       }
-    }
 
-    const sprite = new Sprite(tex ?? Texture.WHITE);
-    const lowerName = entity.displayName.toLowerCase();
+      const sprite = new Sprite(tex ?? Texture.WHITE);
+      const lowerName = entity.displayName.toLowerCase();
 
-    // HangingVines: 2-tile height (Unity m_Size.y=2), hanging down from wall into floor below
-    const isHangingVines = lowerName === 'hanging vines';
-    sprite.width = ts;
-    sprite.height = isHangingVines ? 2 * ts : ts;
+      // HangingVines: 2-tile height (Unity m_Size.y=2), hanging down from wall into floor below
+      const isHangingVines = lowerName === 'hanging vines';
+      sprite.width = ts;
+      sprite.height = isHangingVines ? 2 * ts : ts;
 
-    // Tint on sprite only — siblings (status indicators) won't inherit
-    const tint = SPRITE_TINTS[lowerName];
-    if (tint !== undefined) {
-      sprite.tint = tint;
-    } else if (!tex) {
-      sprite.tint = this.fallbackColor(entity.displayName);
-    }
+      // Tint on sprite only — siblings (status indicators) won't inherit
+      const tint = SPRITE_TINTS[lowerName];
+      if (tint !== undefined) {
+        sprite.tint = tint;
+      } else if (!tex) {
+        sprite.tint = this.fallbackColor(entity.displayName);
+      }
 
-    // Alpha from Unity SpriteRenderer.m_Color.a (only for non-default alpha values)
-    const alpha = SPRITE_ALPHAS[lowerName];
-    if (alpha !== undefined) sprite.alpha = alpha;
+      // Alpha from Unity SpriteRenderer.m_Color.a
+      const alpha = SPRITE_ALPHAS[lowerName];
+      if (alpha !== undefined) sprite.alpha = alpha;
 
-    // Apply rotation for entities with angle property (e.g. EveningBells)
-    if ('angle' in entity && typeof (entity as any).angle === 'number') {
-      const angleDeg = (entity as any).angle as number;
-      sprite.anchor.set(0.5, 0.5);
-      sprite.position.set(ts / 2, ts / 2);
-      sprite.rotation = angleDeg * (Math.PI / 180);
-    }
+      // Rotation for entities with angle property (e.g. EveningBells)
+      if ('angle' in entity && typeof (entity as any).angle === 'number') {
+        const angleDeg = (entity as any).angle as number;
+        sprite.anchor.set(0.5, 0.5);
+        sprite.position.set(ts / 2, ts / 2);
+        sprite.rotation = angleDeg * (Math.PI / 180);
+      }
 
-    scaleRoot.addChild(sprite);
+      scaleRoot.addChild(sprite);
+      state.visual = sprite;
 
-    // Violets: add a "Flower" child sprite (Unity VioletsController) on top of the stem.
-    // Scale 0.65, centered on tile. Texture switches based on countUp/isOpen each sync.
-    if (entity instanceof Violets) {
-      const flowerTex = this.sprites.getTextureByKey('purple_1') ?? Texture.WHITE;
-      const flowerSprite = new Sprite(flowerTex);
-      flowerSprite.width = ts * 0.65;
-      flowerSprite.height = ts * 0.65;
-      flowerSprite.anchor.set(0.5, 0.5);
-      flowerSprite.position.set(ts / 2, ts / 2);
-      scaleRoot.addChild(flowerSprite);
-      this.violetFlowerSprites.set(entity.guid, flowerSprite);
+      // Idle bob: Actor instances only, not structurally stationary enemies
+      // (Grasper/Tendril/HydraHeart/HydraHead/Clumpshroom implement IBaseActionModifier directly)
+      const isStationary = (entity as any)[Symbol.for('IBaseActionModifier')] === true;
+      if (layer === this.bodyLayer && entity instanceof Actor && !isStationary) {
+        state.bob = { timer: Math.random(), entity };
+      }
+
+      // Entity-specific augmentation (e.g. Violets adds flower sprite on top)
+      if (hooks?.init) hooks.init(entity, state, ctx);
     }
 
     layer.addChild(node);
-    this.entityNodes.set(entity.guid, node);
-    this.entityVisuals.set(entity.guid, sprite);
-    this.entityScaleRoots.set(entity.guid, scaleRoot);
-
-    // Idle bob: only Actor instances (not plain Body like Destructible/Bloodstone/ParasiteEgg/CheshireWeed).
-    // Exclude entities that implement IBaseActionModifier directly on the class (Grasper/Tendril/HydraHeart/HydraHead/Clumpshroom — structurally stationary).
-    const isStationary = (entity as any)[Symbol.for('IBaseActionModifier')] === true;
-    if (layer === this.bodyLayer && entity instanceof Actor && !isStationary) {
-      this.bodyBobTimers.set(entity.guid, { timer: Math.random(), entity });
-    }
-
+    this.entityStates.set(entity.guid, state);
     return node;
-  }
-
-  /**
-   * Detect tiles that changed (e.g. encounter replaced Ground with Wall)
-   * and rebuild their sprite containers.
-   */
-  private syncTiles(): void {
-    const floor = this.floor!;
-    const ts = this.camera.tileSize;
-    const depth = floor.depth;
-
-    for (const pos of floor.enumerateFloor()) {
-      const tile = floor.tiles.get(pos);
-      if (!tile) continue;
-      const key = Vector2Int.key(pos);
-      if (this.renderedTiles.get(key) === tile) continue;
-
-      // Tile object changed — destroy old container and rebuild
-      const old = this.tileContainers.get(key);
-      if (old) old.destroy({ children: true });
-
-      const px = this.camera.tileToPixel(pos);
-      const container = new Container();
-      container.position.set(px.x, px.y);
-      this.tileLayer.addChild(container);
-      this.tileContainers.set(key, container);
-      this.renderedTiles.set(key, tile);
-
-      const sheetName = tilesheetName(tile);
-      const sheetTex = sheetName ? this.sprites.getTileTexture(sheetName, depth) : null;
-      if (sheetTex) {
-        const sprite = new Sprite(sheetTex);
-        sprite.width = ts;
-        sprite.height = ts;
-        container.addChild(sprite);
-      } else {
-        const tex = this.sprites.getTexture(tile.displayName);
-        if (tex) {
-          const sprite = new Sprite(tex);
-          sprite.width = ts;
-          sprite.height = ts;
-          container.addChild(sprite);
-        } else {
-          const g = new Graphics();
-          const color = TILE_COLORS[tile.constructor.name] ?? 0x8b7355;
-          g.rect(0, 0, ts, ts).fill(color);
-          container.addChild(g);
-        }
-      }
-
-      if (tile instanceof Chasm) {
-        this.addChasmBorders(floor, pos, container, ts);
-      }
-    }
-  }
-
-  /**
-   * Sync tile visibility state:
-   * - Unexplored: hide tile container (background bleeds through)
-   * - Explored: show tile + dim overlay (player sees it, enemies can't target)
-   * - Visible: show tile, no dim
-   */
-  private syncTileVisibility(): void {
-    const floor = this.floor!;
-    const ts = this.camera.tileSize;
-    for (const pos of floor.enumerateFloor()) {
-      const tile = floor.tiles.get(pos);
-      if (!tile) continue;
-      const key = Vector2Int.key(pos);
-
-      // Hide/show tile sprite
-      const container = this.tileContainers.get(key);
-      if (container) {
-        container.visible = tile.visibility !== TileVisibility.Unexplored;
-      }
-
-      // Dim overlay for Explored tiles
-      const explored = tile.visibility === TileVisibility.Explored;
-      let dim = this.dimCells.get(key);
-      if (explored && !dim) {
-        const px = this.camera.tileToPixel(pos);
-        dim = new Graphics();
-        dim.rect(0, 0, ts, ts).fill(0x000000);
-        dim.position.set(px.x, px.y);
-        dim.alpha = 0.5;
-        this.dimLayer.addChild(dim);
-        this.dimCells.set(key, dim);
-      } else if (!explored && dim) {
-        dim.destroy();
-        this.dimCells.delete(key);
-      }
-    }
   }
 
   /**
@@ -807,34 +473,30 @@ export class GameRenderer {
     const floor = this.floor!;
     const ts = this.camera.tileSize;
     const seenGuids = new Set<string>();
+    const ctx: RenderCtx = { sprites: this.sprites, ts };
 
     // Sync bodies
     for (const body of floor.bodies) {
       seenGuids.add(body.guid);
-      let node = this.entityNodes.get(body.guid);
-      if (!node) {
-        node = this.addEntitySprite(body, this.bodyLayer);
-        this.bodyGuids.add(body.guid);
+      let state = this.entityStates.get(body.guid);
+      if (!state) {
+        this.addEntitySprite(body, this.bodyLayer);
+        state = this.entityStates.get(body.guid)!;
         // No initSpawnAnimation — AnimationPlayer handles body spawn/death events
       }
-      // Never snap body positions — lerpPositions handles smooth movement
-      // (matching Unity's ActorController.Update() lerp-only approach).
-      // Only animatingGuids (attack bumps etc.) bypass lerp.
-      node.visible = !body.isDead;
+      state.node.visible = !body.isDead;
 
       // Update sprite variant + rotation for entities with dynamic spriteKey (e.g. Tendril).
       // TendrilController.UpdateSprite() is called after every Grasper action; we mirror that here.
       if (!body.isDead && 'spriteKey' in body) {
-        const visual = this.entityVisuals.get(body.guid);
-        if (visual) {
-          const key = (body as any).spriteKey as string;
-          const newTex = this.sprites.getTextureByKey(key);
-          if (newTex) visual.texture = newTex;
-          const angleDeg = (body as any).angle as number;
-          visual.anchor.set(0.5, 0.5);
-          visual.position.set(ts / 2, ts / 2);
-          visual.rotation = angleDeg * (Math.PI / 180);
-        }
+        const visual = state.visual;
+        const key = (body as any).spriteKey as string;
+        const newTex = this.sprites.getTextureByKey(key);
+        if (newTex) visual.texture = newTex;
+        const angleDeg = (body as any).angle as number;
+        visual.anchor.set(0.5, 0.5);
+        visual.position.set(ts / 2, ts / 2);
+        visual.rotation = angleDeg * (Math.PI / 180);
       }
     }
 
@@ -843,39 +505,16 @@ export class GameRenderer {
       const grass = floor.grasses.get(pos);
       if (grass) {
         seenGuids.add(grass.guid);
-        let node = this.entityNodes.get(grass.guid);
-        if (!node) {
-          node = this.addEntitySprite(grass, this.grassLayerFor(grass));
+        let state = this.entityStates.get(grass.guid);
+        if (!state) {
+          this.addEntitySprite(grass, this.grassLayerFor(grass));
+          state = this.entityStates.get(grass.guid)!;
           this.initSpawnAnimation(grass.guid);
         }
-        node.visible = !grass.isDead;
+        state.node.visible = !grass.isDead;
 
-        // VibrantIvy: hide directional sprites removed by stack loss
-        if (grass instanceof VibrantIvy) {
-          const sprites = this.ivyDirectionalSprites.get(grass.guid);
-          const last = this.ivyLastStacks.get(grass.guid) ?? grass.stacks;
-          if (sprites && grass.stacks < last && grass.stacks > 0) {
-            for (let i = 0; i < last - grass.stacks; i++) {
-              if (sprites.length > 0) sprites.shift()!.visible = false;
-            }
-          }
-          this.ivyLastStacks.set(grass.guid, grass.stacks);
-        }
-
-        // Violets: update flower stage sprite (VioletsController port)
-        if (grass instanceof Violets) {
-          const flowerSprite = this.violetFlowerSprites.get(grass.guid);
-          if (flowerSprite) {
-            const ts = this.camera.tileSize;
-            const { key, anchorX, anchorY } = violetFlowerStage(grass);
-            const tex = this.sprites.getTextureByKey(key);
-            if (tex) flowerSprite.texture = tex;
-            flowerSprite.width = ts * 0.65;
-            flowerSprite.height = ts * 0.65;
-            flowerSprite.anchor.set(anchorX, anchorY);
-            flowerSprite.position.set(ts / 2, ts / 2);
-          }
-        }
+        const hooks = getEntityRenderHooks(grass);
+        if (hooks?.sync) hooks.sync(grass, state, ctx);
       }
     }
 
@@ -884,41 +523,33 @@ export class GameRenderer {
       const item = floor.items.get(pos);
       if (item) {
         seenGuids.add(item.guid);
-        let node = this.entityNodes.get(item.guid);
-        if (!node) {
-          node = this.addEntitySprite(item, this.itemLayer);
+        let state = this.entityStates.get(item.guid);
+        if (!state) {
+          this.addEntitySprite(item, this.itemLayer);
+          state = this.entityStates.get(item.guid)!;
           this.initSpawnAnimation(item.guid);
         }
-        node.visible = !item.isDead;
+        state.node.visible = !item.isDead;
       }
     }
 
     // Remove nodes for dead/removed entities
-    for (const [guid, node] of this.entityNodes) {
-      if (!seenGuids.has(guid)) {
-        if (this.bodyGuids.has(guid)) {
-          // Bodies: AnimationPlayer already ran death animation — just destroy
-          node.destroy({ children: true });
-          this.bodyGuids.delete(guid);
-          this.bodyBobTimers.delete(guid);
-        } else {
-          // Grasses + items: FadeThenDestroy (Unity FloorController behavior)
-          const scaleRoot = this.entityScaleRoots.get(guid)!;
-          const now = performance.now();
-          this.fadingNodes.set(guid, { node, scaleRoot, startScale: scaleRoot.scale.x, startTime: now });
-          // Detached shadow (above-entity grasses): fade it out in sync
-          const shadowNode = this.detachedShadows.get(guid);
-          if (shadowNode) {
-            this.fadingNodes.set(guid + '-shadow', { node: shadowNode, scaleRoot: shadowNode, startScale: 1, startTime: now });
-            this.detachedShadows.delete(guid);
-          }
+    for (const [guid, state] of this.entityStates) {
+      if (seenGuids.has(guid) || state.fade) continue;
+      state.spawn = undefined;
+      if (state.isBody) {
+        // Bodies: AnimationPlayer already ran death animation — just destroy
+        state.node.destroy({ children: true });
+        if (state.telegraph) state.telegraph.container.destroy({ children: true });
+        this.entityStates.delete(guid);
+      } else {
+        // Grasses + items: FadeThenDestroy (Unity FloorController behavior)
+        const now = performance.now();
+        state.fade = { startScale: state.scaleRoot.scale.x, startTime: now };
+        if (state.statusIndicator) {
+          state.statusIndicator.destroy();
+          state.statusIndicator = undefined;
         }
-        this.spawnStates.delete(guid);
-        this.entityNodes.delete(guid);
-        this.entityVisuals.delete(guid);
-        this.entityScaleRoots.delete(guid);
-        this.statusIndicators.delete(guid);
-        this.violetFlowerSprites.delete(guid);
       }
     }
 
@@ -937,17 +568,16 @@ export class GameRenderer {
     const ts = this.camera.tileSize;
 
     for (const body of floor.bodies) {
-      if (body.isDead || !('statuses' in body)) {
-        const existing = this.statusIndicators.get(body.guid);
-        if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
+      const state = this.entityStates.get(body.guid);
+      if (!state || body.isDead || !('statuses' in body)) {
+        if (state?.statusIndicator) {
+          state.statusIndicator.destroy();
+          state.statusIndicator = undefined;
+        }
         continue;
       }
 
       const actor = body as any;
-      const node = this.entityNodes.get(body.guid);
-      const scaleRoot = this.entityScaleRoots.get(body.guid);
-      if (!node || !scaleRoot) continue;
-
       const isSleeping = actor.task?.constructor?.name === 'SleepTask';
       const statuses = actor.statuses as { list: any[] };
 
@@ -971,22 +601,24 @@ export class GameRenderer {
       }
 
       if (visuals.length === 0) {
-        const existing = this.statusIndicators.get(body.guid);
-        if (existing) { existing.destroy(); this.statusIndicators.delete(body.guid); }
+        if (state.statusIndicator) {
+          state.statusIndicator.destroy();
+          state.statusIndicator = undefined;
+        }
         continue;
       }
 
-      let container = this.statusIndicators.get(body.guid);
+      let container = state.statusIndicator;
       if (container) {
         container.removeChildren();
-        if (container.parent !== scaleRoot) {
+        if (container.parent !== state.scaleRoot) {
           container.removeFromParent();
-          scaleRoot.addChild(container);
+          state.scaleRoot.addChild(container);
         }
       } else {
         container = new Container();
-        scaleRoot.addChild(container);
-        this.statusIndicators.set(body.guid, container);
+        state.scaleRoot.addChild(container);
+        state.statusIndicator = container;
       }
 
       for (const { config, status, tint } of visuals) {
@@ -1041,23 +673,24 @@ export class GameRenderer {
       const actor = body as any;
       if (actor.task instanceof TelegraphedTask) {
         activeGuids.add(body.guid);
-        if (!this.telegraphEffects.has(body.guid)) {
+        const state = this.entityStates.get(body.guid);
+        if (state && !state.telegraph) {
           const container = new Container();
           this.effectLayer.addChild(container);
-          this.telegraphEffects.set(body.guid, {
+          state.telegraph = {
             container,
             particles: [],
             spawnAccum: 0,
             fadingOut: false,
-          });
+          };
         }
       }
     }
 
     // Start fade-out for effects whose actor no longer has TelegraphedTask
-    for (const [guid, effect] of this.telegraphEffects) {
-      if (!activeGuids.has(guid) && !effect.fadingOut) {
-        effect.fadingOut = true;
+    for (const [guid, state] of this.entityStates) {
+      if (state.telegraph && !activeGuids.has(guid) && !state.telegraph.fadingOut) {
+        state.telegraph.fadingOut = true;
       }
     }
   }
@@ -1082,18 +715,14 @@ export class GameRenderer {
     // v(a) = -6.25*ts*a, displacement = -3.125*ts*a² (reaches -RADIUS at a=0.4)
     const RADIAL_COEFF = 3.125 * ts;
 
-    for (const [guid, effect] of this.telegraphEffects) {
-      const node = this.entityNodes.get(guid);
-      if (!node) {
-        effect.container.destroy({ children: true });
-        this.telegraphEffects.delete(guid);
-        continue;
-      }
+    for (const [, state] of this.entityStates) {
+      const effect = state.telegraph;
+      if (!effect) continue;
 
       // Position at entity center
       effect.container.position.set(
-        node.position.x + ts / 2,
-        node.position.y + ts / 2,
+        state.node.position.x + ts / 2,
+        state.node.position.y + ts / 2,
       );
 
       // Spawn new particles at random angles on the circle rim
@@ -1130,10 +759,10 @@ export class GameRenderer {
 
       // Fade out container
       if (effect.fadingOut) {
-        effect.container.alpha = Math.max(0, effect.container.alpha - dt / 0.25);
+        effect.container.alpha = Math.max(0, effect.container.alpha - dt / TELEGRAPH_FADE_DURATION);
         if (effect.container.alpha <= 0) {
           effect.container.destroy({ children: true });
-          this.telegraphEffects.delete(guid);
+          state.telegraph = undefined;
         }
       }
     }
@@ -1141,11 +770,11 @@ export class GameRenderer {
 
   /** Initialize GrowAtStart spawn animation on a newly created entity. */
   private initSpawnAnimation(guid: string): void {
-    const scaleRoot = this.entityScaleRoots.get(guid);
-    if (!scaleRoot) return;
-    scaleRoot.scale.set(0.01, 0.01);
-    scaleRoot.alpha = 0.01;
-    this.spawnStates.set(guid, { elapsed: 0, scale: 0.01 });
+    const state = this.entityStates.get(guid);
+    if (!state) return;
+    state.scaleRoot.scale.set(0.01, 0.01);
+    state.scaleRoot.alpha = 0.01;
+    state.spawn = { elapsed: 0, scale: 0.01 };
   }
 
   /**
@@ -1163,43 +792,50 @@ export class GameRenderer {
    */
   updateEntityAnimations(dt: number): void {
     // GrowAtStart: iterative lerp matching Unity's frame-by-frame accumulation
-    for (const [guid, state] of this.spawnStates) {
-      const scaleRoot = this.entityScaleRoots.get(guid);
-      if (!scaleRoot) { this.spawnStates.delete(guid); continue; }
-      state.elapsed += dt;
-      const t = state.elapsed / 3.0; // ANIMATION_TIME = 3s
+    for (const [, state] of this.entityStates) {
+      if (!state.spawn) continue;
+      state.spawn.elapsed += dt;
+      const t = state.spawn.elapsed / SPAWN_ANIMATION_DURATION;
       if (t >= 1) {
-        scaleRoot.scale.set(1, 1);
-        scaleRoot.alpha = 1;
-        this.spawnStates.delete(guid);
+        state.scaleRoot.scale.set(1, 1);
+        state.scaleRoot.alpha = 1;
+        state.spawn = undefined;
       } else {
         const la = 1 - 1 / Math.exp(t * Math.PI * 2);
-        state.scale = state.scale + la * (1 - state.scale); // lerp(current, 1, la)
-        scaleRoot.scale.set(state.scale, state.scale);
-        scaleRoot.alpha = state.scale;
+        state.spawn.scale = state.spawn.scale + la * (1 - state.spawn.scale); // lerp(current, 1, la)
+        state.scaleRoot.scale.set(state.spawn.scale, state.spawn.scale);
+        state.scaleRoot.alpha = state.spawn.scale;
       }
     }
 
     // FadeThenDestroy: alpha 1→0, scale shrinks to 50% over 0.5s
     const now = performance.now();
-    for (const [guid, fade] of this.fadingNodes) {
-      const t = Math.min((now - fade.startTime) / 500, 1);
+    for (const [guid, state] of this.entityStates) {
+      if (!state.fade) continue;
+      const t = Math.min((now - state.fade.startTime) / FADE_DURATION_MS, 1);
       if (t >= 1) {
-        fade.node.destroy({ children: true });
-        this.fadingNodes.delete(guid);
+        state.node.destroy({ children: true });
+        if (state.detachedShadow) state.detachedShadow.destroy({ children: true });
+        if (state.telegraph) state.telegraph.container.destroy({ children: true });
+        this.entityStates.delete(guid);
       } else {
-        fade.scaleRoot.alpha = 1 - t;
-        const s = fade.startScale * (1 - 0.5 * t);
-        fade.scaleRoot.scale.set(s, s);
+        state.scaleRoot.alpha = 1 - t;
+        const s = state.fade.startScale * (1 - FADE_END_SCALE * t);
+        state.scaleRoot.scale.set(s, s);
+        if (state.detachedShadow) {
+          state.detachedShadow.alpha = 1 - t;
+          const ss = 1 - FADE_END_SCALE * t;
+          state.detachedShadow.scale.set(ss, ss);
+        }
       }
     }
 
     // Idle bob (Unity _Actor.prefab Idle.anim: step up 0.1 units at phase 0.5, speed = 1/baseActionCost)
     const bobTs = this.camera.tileSize;
-    for (const [guid, state] of this.bodyBobTimers) {
-      const scaleRoot = this.entityScaleRoots.get(guid);
-      if (!scaleRoot) { this.bodyBobTimers.delete(guid); continue; }
-      const actor = state.entity as any;
+    for (const [, state] of this.entityStates) {
+      if (!state.bob) continue;
+      const scaleRoot = state.scaleRoot;
+      const actor = state.bob.entity as any;
       // Unity SleepTaskController disables the Animator when sleeping — suppress bob.
       // ConstrictedStatus blocks movement — suppress bob.
       const isSleeping = actor.task?.constructor?.name === 'SleepTask';
@@ -1211,8 +847,8 @@ export class GameRenderer {
         continue;
       }
       const baseActionCost: number = actor.baseActionCost ?? 1;
-      state.timer = (state.timer + dt / baseActionCost) % 1.0;
-      const bobPx = state.timer >= 0.5 ? 0.1 * bobTs : 0;
+      state.bob.timer = (state.bob.timer + dt / baseActionCost) % 1.0;
+      const bobPx = state.bob.timer >= 0.5 ? 0.1 * bobTs : 0;
       scaleRoot.position.y = bobTs / 2 - bobPx;
     }
   }

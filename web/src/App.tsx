@@ -58,7 +58,7 @@ function App() {
               borderRadius: 4,
               padding: '6px 14px',
               fontFamily: 'CodersCrux, monospace',
-              fontSize: 12,
+              fontSize: 18,
               color: '#ccc',
               pointerEvents: 'auto',
               zIndex: 10,
@@ -74,7 +74,7 @@ function App() {
                   borderRadius: 3,
                   padding: '2px 8px',
                   fontFamily: 'CodersCrux, monospace',
-                  fontSize: 11,
+                  fontSize: 17,
                   cursor: 'pointer',
                 }}
               >
@@ -98,7 +98,7 @@ function App() {
               borderRadius: 4,
               padding: '6px 12px',
               fontFamily: 'CodersCrux, monospace',
-              fontSize: 11,
+              fontSize: 17,
               color: '#6cf',
               pointerEvents: 'none',
               zIndex: 15,

@@ -448,6 +448,11 @@ export class Floor {
       const isEnclosedByWalls = this.getAdjacentTiles(pos).every(adj => adj instanceof Wall);
       if (isEnclosedByWalls) continue;
 
+      if (player.isCamouflaged) {
+        t.visibility = Vector2Int.equals(pos, player.pos) ? TileVisibility.Visible : TileVisibility.Explored;
+        continue;
+      }
+
       const isVisible = this.testVisibility(player.pos, pos);
       t.visibility = isVisible ? TileVisibility.Visible : TileVisibility.Explored;
     }

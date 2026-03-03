@@ -2,13 +2,11 @@ import { Grass } from './Grass';
 import { AIActor } from '../enemies/AIActor';
 import { ActorTask } from '../ActorTask';
 import { AttackTask } from '../tasks/AttackTask';
-import { ChaseTargetTask } from '../tasks/ChaseTargetTask';
 import { ChaseDynamicTargetTask } from '../tasks/ChaseDynamicTargetTask';
 import { MoveRandomlyTask } from '../tasks/MoveRandomlyTask';
 import { ACTION_PERFORMED_HANDLER, type IActionPerformedHandler } from '../Actor';
 import { Vector2Int } from '../../core/Vector2Int';
 import { Faction, type IDeathHandler } from '../../core/types';
-import { GameModelRef } from '../GameModelRef';
 import { Ground } from '../Tile';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { BaseAction } from '../BaseAction';
@@ -112,7 +110,7 @@ export class Zombie extends AIActor implements IActionPerformedHandler {
     if (this.isNextTo(target)) {
       return new AttackTask(this, target as any);
     }
-    return new ChaseDynamicTargetTask(this, () => this.selectTarget());
+    return new ChaseDynamicTargetTask(this, () => this.selectTarget()!);
   }
 
   private selectTarget(): Body | null {

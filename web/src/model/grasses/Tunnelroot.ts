@@ -44,13 +44,13 @@ export class Tunnelroot extends Grass implements IActorEnterHandler {
     if (!this.partner || this.partner.isDead || !this.isOpen) return;
 
     // Check partner tile is unoccupied
-    const partnerBody = this.floor.bodies.get(this.partner.pos);
+    const partnerBody = this.floor!.bodies.get(this.partner.pos);
     if (partnerBody) return;
 
     // Find nearest open tile near partner via BFS (skip partner pos itself)
     let destTile: Tile | null = null;
     let first = true;
-    for (const t of this.floor.breadthFirstSearch(this.partner.pos)) {
+    for (const t of this.floor!.breadthFirstSearch(this.partner.pos)) {
       if (first) { first = false; continue; } // Skip(1) — skip partner pos
       if (t.canBeOccupied() && !(t.grass instanceof Tunnelroot)) {
         destTile = t;

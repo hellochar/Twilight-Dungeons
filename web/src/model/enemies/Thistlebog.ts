@@ -90,7 +90,7 @@ export class Thistlebog extends AIActor implements ITakeAnyDamageHandler {
     this.cooldown = 10;
     const center = GameModelRef.main.player.pos;
     for (const tile of this.floor!.getAdjacentTiles(center)) {
-      if (Brambles.canOccupy(tile) && !tile.pos.equals(center)) {
+      if (Brambles.canOccupy(tile) && !Vector2Int.equals(tile.pos, center)) {
         const brambles = new Brambles(tile.pos);
         this.floor!.put(brambles);
         brambles.addTimedEvent(10, () => brambles.killSelf());

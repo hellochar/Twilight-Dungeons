@@ -1,7 +1,7 @@
 import { Entity, NoSpaceException } from './Entity';
-import { Tile, Ground, Wall, type IBlocksVision } from './Tile';
+import { Tile, Wall } from './Tile';
 import { Vector2Int } from '../core/Vector2Int';
-import { TileVisibility, CollisionLayer, Faction } from '../core/types';
+import { TileVisibility, Faction } from '../core/types';
 import { EventEmitter } from '../core/EventEmitter';
 import { GameModelRef } from './GameModelRef';
 import { MyRandom } from '../core/MyRandom';
@@ -22,7 +22,7 @@ export class StaticEntityGrid<T extends Entity> {
     this.width = floor.width;
     this.height = floor.height;
     this.grid = Array.from({ length: floor.width }, () =>
-      Array.from<T | null>({ length: floor.height }, () => null),
+      Array.from({ length: floor.height }, () => null as T | null),
     );
     this.placementBehavior = placementBehavior ?? ((entity: T) => {
       const old = this.get(entity.pos);
@@ -90,7 +90,7 @@ export class MovingEntityList<T extends Entity> {
     if (!this.needsRecompute && this.grid) return;
     if (!this.grid) {
       this.grid = Array.from({ length: this.floor.width }, () =>
-        Array.from<T | null>({ length: this.floor.height }, () => null),
+        Array.from({ length: this.floor.height }, () => null as T | null),
       );
     } else {
       for (let x = 0; x < this.floor.width; x++) {
@@ -100,13 +100,12 @@ export class MovingEntityList<T extends Entity> {
       }
     }
     for (const t of this.list) {
-      this.grid[t.pos.x][t.pos.y] = t;
+      this.grid![t.pos.x][t.pos.y] = t;
     }
     this.needsRecompute = false;
   }
 
   put(entity: T): void {
-    const tile = this.floor.tiles.get(entity.pos);
     if (this.get(entity.pos) != null && this.placementBehavior) {
       this.placementBehavior(entity);
     }

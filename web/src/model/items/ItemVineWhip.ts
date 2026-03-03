@@ -8,7 +8,6 @@ import {
 import { EquipmentSlot } from '../Equipment';
 import { ATTACK_HANDLER, type IAttackHandler } from '../Actor';
 import type { Body } from '../Body';
-import type { Actor } from '../Actor';
 
 /**
  * Stackable vine weapon. Damage equals stacks. Destroyed on hitting an Actor.
@@ -53,7 +52,7 @@ export class ItemVineWhip
     this._stacks = stacks;
   }
 
-  onAttack(damage: number, target: Body): void {
+  onAttack(_damage: number, target: Body): void {
     if ('faction' in target) {
       // target is an Actor
       this.Destroy();

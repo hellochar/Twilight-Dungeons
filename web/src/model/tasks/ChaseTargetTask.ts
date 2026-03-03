@@ -3,7 +3,6 @@ import { TaskStage } from '../ActorTask';
 import { Vector2Int } from '../../core/Vector2Int';
 import type { Actor } from '../Actor';
 import type { Body } from '../Body';
-import type { BaseAction } from '../BaseAction';
 
 export class ChaseTargetTask extends MoveNextToTargetTask {
   protected targetBody: Body;

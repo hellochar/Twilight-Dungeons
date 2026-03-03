@@ -68,7 +68,7 @@ function savePersisted(state: PersistedDebugState): void {
 
 function buildCommands(
   modelRef: RefObject<GameModel | null>,
-  rendererRef: RefObject<GameRenderer | null>,
+  _rendererRef: RefObject<GameRenderer | null>,
   syncAndUpdate: () => void,
   regenerateWithSeed: (seed: string) => void,
 ): DebugCommand[] {

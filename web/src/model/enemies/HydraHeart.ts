@@ -1,5 +1,4 @@
 import { AIActor } from './AIActor';
-import { Actor } from '../Actor';
 import { Body } from '../Body';
 import { ActorTask } from '../ActorTask';
 import { WaitTask } from '../tasks/WaitTask';

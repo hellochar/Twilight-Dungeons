@@ -5,10 +5,8 @@ import { GameModelRef } from '../GameModelRef';
 import {
   ATTACK_DAMAGE_TAKEN_MOD,
   BASE_ACTION_MOD,
-  type IAttackDamageTakenModifier,
-  type IBaseActionModifier,
 } from '../../core/Modifiers';
-import { TAKE_ANY_DAMAGE_HANDLER, type ITakeAnyDamageHandler } from '../Body';
+import { TAKE_ANY_DAMAGE_HANDLER } from '../Body';
 import type { Actor } from '../Actor';
 
 export class SleepTask extends ActorTask {

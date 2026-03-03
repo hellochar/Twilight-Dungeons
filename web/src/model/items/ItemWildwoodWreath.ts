@@ -39,7 +39,7 @@ export class ItemWildwoodWreath
     if (!floor) return;
 
     const adjacentEnemies = floor.adjacentBodies(newPos).filter(
-      b => 'faction' in b && (b as any).faction === Faction.Enemy
+      (b: any) => 'faction' in b && (b as any).faction === Faction.Enemy
     );
 
     if (adjacentEnemies.length > 0) {

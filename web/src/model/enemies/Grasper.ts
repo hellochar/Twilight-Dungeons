@@ -4,7 +4,7 @@ import { Body } from '../Body';
 import { ActorTask } from '../ActorTask';
 import { WaitTask } from '../tasks/WaitTask';
 import { GenericTask } from '../tasks/GenericTask';
-import { WaitBaseAction, ActionCosts } from '../BaseAction';
+import { WaitBaseAction } from '../BaseAction';
 import { BASE_ACTION_MOD, type IBaseActionModifier } from '../../core/Modifiers';
 import { ActionType, Faction } from '../../core/types';
 import type { IDeathHandler } from '../../core/types';

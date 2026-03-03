@@ -5,7 +5,7 @@
 import { Vector2Int } from '../core/Vector2Int';
 import { MyRandom } from '../core/MyRandom';
 import { Floor } from '../model/Floor';
-import { Ground, Wall, Chasm, HardGround, FancyGround, Water, Soil, Signpost } from '../model/Tile';
+import { Ground, Wall, Chasm, FancyGround, Soil, Signpost } from '../model/Tile';
 import { Room } from './Room';
 import * as FloorUtils from './FloorUtils';
 import * as TileGroup from './TileGroup';
@@ -600,7 +600,7 @@ function connectGroups(floor: Floor, mainland: Set<any>, island: Set<any>): Grou
 }
 
 /** BSP sibling room connections — draw paths from parent center to child centers */
-function computeRoomConnections(rooms: Room[], root: Room): Array<[Vector2Int, Vector2Int]> {
+function computeRoomConnections(_rooms: Room[], root: Room): Array<[Vector2Int, Vector2Int]> {
   const paths: Array<[Vector2Int, Vector2Int]> = [];
   for (const node of root.traverse()) {
     if (node.isTerminal) continue;

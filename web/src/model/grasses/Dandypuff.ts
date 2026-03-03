@@ -57,8 +57,8 @@ export class Dandyslug extends AIActor implements IBodyMoveHandler {
   }
 
   protected getNextTask(): ActorTask {
-    const tiles = [...this.floor.enumerateCircle(this.pos, 5)]
-      .map(p => this.floor.tiles.get(p))
+    const tiles = [...this.floor!.enumerateCircle(this.pos, 5)]
+      .map(p => this.floor!.tiles.get(p))
       .filter(t => t != null && t.canBeOccupied());
     const target = MyRandom.Pick(tiles);
     if (target) {
@@ -67,7 +67,7 @@ export class Dandyslug extends AIActor implements IBodyMoveHandler {
     return new WaitTask(this, 1);
   }
 
-  handleMove(newPos: Vector2Int, oldPos: Vector2Int): void {
+  handleMove(_newPos: Vector2Int, oldPos: Vector2Int): void {
     if (this.floor) {
       this.floor.put(new Dandypuff(oldPos));
     }

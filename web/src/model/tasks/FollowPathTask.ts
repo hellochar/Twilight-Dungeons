@@ -4,7 +4,8 @@ import { Vector2Int } from '../../core/Vector2Int';
 import type { Actor } from '../Actor';
 
 export class FollowPathTask extends ActorTask {
-  readonly target: Vector2Int;
+  private _target: Vector2Int;
+  get target(): Vector2Int { return this._target; }
   path: Vector2Int[];
   maxMoves = Infinity;
   private _timesMoved = 0;
@@ -19,7 +20,7 @@ export class FollowPathTask extends ActorTask {
 
   constructor(actor: Actor, target: Vector2Int, path: Vector2Int[]) {
     super(actor);
-    this.target = target;
+    this._target = target;
     this.path = path;
   }
 

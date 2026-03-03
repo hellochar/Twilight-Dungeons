@@ -245,7 +245,6 @@ export class FungalWall extends Wall {
 
 export class Water extends Tile implements IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
-  private collected = false;
 
   constructor(pos: Vector2Int) {
     super(pos);
@@ -259,7 +258,6 @@ export class Water extends Tile implements IActorEnterHandler {
   }
 
   private collect(): void {
-    this.collected = true;
     // In the daily puzzle version, water just becomes ground (no water meter)
     this.floor!.put(new Ground(this.pos));
   }

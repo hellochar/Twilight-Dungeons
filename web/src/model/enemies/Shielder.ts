@@ -1,6 +1,5 @@
 import { AIActor } from './AIActor';
 import { Actor } from '../Actor';
-import { Body } from '../Body';
 import { ActorTask } from '../ActorTask';
 import { WaitTask } from '../tasks/WaitTask';
 import { TelegraphedTask } from '../tasks/TelegraphedTask';
@@ -8,7 +7,6 @@ import { GenericBaseAction } from '../BaseAction';
 import { Faction } from '../../core/types';
 import type { IDeathHandler } from '../../core/types';
 import { Vector2Int } from '../../core/Vector2Int';
-import { GameModelRef } from '../GameModelRef';
 import { MyRandom } from '../../core/MyRandom';
 import { Status } from '../Status';
 import { ArmoredStatus } from '../statuses/ArmoredStatus';

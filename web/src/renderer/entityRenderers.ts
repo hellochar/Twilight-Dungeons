@@ -152,7 +152,7 @@ registerEntityRenderer(VibrantIvy, {
  * Scale 0.65, centered on tile. Texture and anchor update each sync based on countUp/isOpen.
  */
 registerEntityRenderer(Violets, {
-  init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+  init(_entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
     const { sprites, ts } = ctx;
     const flowerTex = sprites.getTextureByKey('purple_1') ?? Texture.WHITE;
     const flowerSprite = new Sprite(flowerTex);

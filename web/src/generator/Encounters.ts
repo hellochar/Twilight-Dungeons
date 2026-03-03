@@ -9,11 +9,10 @@ import { Vector2Int } from '../core/Vector2Int';
 import { MyRandom } from '../core/MyRandom';
 import type { Floor } from '../model/Floor';
 import type { Tile } from '../model/Tile';
-import { Ground, Wall, Chasm, HardGround, FancyGround, Water, Signpost, Soil } from '../model/Tile';
+import { Ground, Wall, Chasm, HardGround, FancyGround, Water } from '../model/Tile';
 import type { Room } from './Room';
 import { entityRegistry } from './entityRegistry';
 import * as FloorUtils from './FloorUtils';
-import * as TileGroup from './TileGroup';
 import { concavitySections } from './TileSectionConcavity';
 import type { Encounter } from './EncounterGroup';
 import { Tunnelroot } from '../model/grasses/Tunnelroot';
@@ -222,7 +221,7 @@ function chasmsAwayFromWallsImpl(floor: Floor, room: Room | null, cliffEdgeSize:
   }
 }
 
-export function chasmBridge(floor: Floor, room: Room | null): void {
+export function chasmBridge(floor: Floor, _room: Room | null): void {
   switch (MyRandom.Range(0, 4)) {
     case 0: chasmBridgeImpl(floor, 1, 1); break;
     case 1: chasmBridgeImpl(floor, 1, -1); break;
@@ -821,7 +820,7 @@ export function addTunnelroot(floor: Floor, room: Room | null): void {
         tile.canBeOccupied() &&
         !floor.getAdjacentTiles(tile.pos).some(t2 =>
           t2.grass instanceof Tunnelroot ||
-          (floor.downstairsPos != null && t2.pos.equals(floor.downstairsPos))
+          (floor.downstairsPos != null && Vector2Int.equals(t2.pos, floor.downstairsPos))
         )
       )
       .sort((a, b) => Vector2Int.distance(b.pos, start.pos) - Vector2Int.distance(a.pos, start.pos))
@@ -929,7 +928,7 @@ export function matureChangErsWillow(floor: Floor, room: Room | null): void { pl
 export function matureStoutShrub(floor: Floor, room: Room | null): void { plantStub(floor, room, 'StoutShrub'); }
 export function matureBroodpuff(floor: Floor, room: Room | null): void { plantStub(floor, room, 'Broodpuff'); }
 
-function plantStub(floor: Floor, room: Room | null, _name: string): void {
+function plantStub(_floor: Floor, _room: Room | null, _name: string): void {
   // Plants need GoNextStage() twice — will be implemented when Plant class is ported
   // For now, consume no RNG to keep stream consistent
 }
@@ -948,21 +947,21 @@ export function addSpiderSandals(floor: Floor, room: Room | null): void {
 
 // ---- NPC encounters (stub) ----
 
-export function addOldDude(floor: Floor, room: Room | null): void {
+export function addOldDude(_floor: Floor, _room: Room | null): void {
   // NPC — will be ported later
 }
 
-export function addGambler(floor: Floor, room: Room | null): void {
+export function addGambler(_floor: Floor, _room: Room | null): void {
   // NPC — will be ported later
 }
 
-export function addMercenary(floor: Floor, room: Room | null): void {
+export function addMercenary(_floor: Floor, _room: Room | null): void {
   // NPC — will be ported later
 }
 
 // ---- Boss floor special encounters ----
 
-export function fungalColonyAnticipation(floor: Floor, room: Room | null): void {
+export function fungalColonyAnticipation(floor: Floor, _room: Room | null): void {
   if (!floor.downstairsPos) return;
   const dp = floor.downstairsPos;
   const min = Vector2Int.sub(dp, new Vector2Int(2, 2));

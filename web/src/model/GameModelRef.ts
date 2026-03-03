@@ -11,6 +11,7 @@ export interface IGameModelRef {
   player: any;
   stats: { damageDealt: number; damageTaken: number; enemiesDefeated: number };
   enqueuEvent(action: () => void): void;
+  drainEventQueue(): void;
   emitAnimation(event: object): void;
   gameOver(won: boolean, deathSource?: { displayName: string }): void;
   floorCleared(floor: any): void;

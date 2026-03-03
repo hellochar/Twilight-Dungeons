@@ -1,4 +1,4 @@
-import { Container, Sprite, Graphics, Texture } from 'pixi.js';
+import { Container, Sprite, Graphics } from 'pixi.js';
 import { Floor } from '../model/Floor';
 import { Tile, Wall, Chasm, Water, Soil, FancyGround, Signpost } from '../model/Tile';
 import { TileVisibility } from '../core/types';

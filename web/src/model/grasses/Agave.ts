@@ -56,7 +56,7 @@ export class ItemAgave extends Item implements IStackable {
   set stacks(value: number) {
     if (value < 0) throw new Error('Negative stacks');
     this._stacks = value;
-    if (this._stacks === 0) this.destroy();
+    if (this._stacks === 0) this.Destroy();
   }
   get stacksMax(): number { return 4; }
 
@@ -77,7 +77,7 @@ export class ItemAgave extends Item implements IStackable {
     if (this.stacks < this.stacksMax) return;
     const player = GameModelRef.main.player;
     player.floor.put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
-    this.destroy();
+    this.Destroy();
   }
 }
 
@@ -97,7 +97,7 @@ export class ItemAgaveHoney extends Item implements IEdible {
     if (debuffs.length > 0) {
       GameModelRef.main.drainEventQueue();
     }
-    this.destroy();
+    this.Destroy();
   }
 }
 

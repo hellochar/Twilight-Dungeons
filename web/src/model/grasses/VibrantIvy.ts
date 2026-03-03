@@ -8,7 +8,6 @@ import {
 } from '../../core/types';
 import { ATTACK_HANDLER, type IAttackHandler } from '../Actor';
 import { Ground, Wall, Water } from '../Tile';
-import { GameModelRef } from '../GameModelRef';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';

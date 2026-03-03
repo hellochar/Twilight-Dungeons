@@ -1,5 +1,5 @@
-import { Actor, ATTACK_HANDLER, DEAL_ATTACK_DAMAGE_HANDLER, ACTION_PERFORMED_HANDLER, STATUS_ADDED_HANDLER, type IAttackHandler, type IDealAttackDamageHandler, type IActionPerformedHandler } from './Actor';
-import { Body, BODY_MOVE_HANDLER, TAKE_ANY_DAMAGE_HANDLER, type IBodyMoveHandler, type ITakeAnyDamageHandler } from './Body';
+import { Actor, ATTACK_HANDLER, DEAL_ATTACK_DAMAGE_HANDLER, ACTION_PERFORMED_HANDLER, STATUS_ADDED_HANDLER } from './Actor';
+import { Body, BODY_MOVE_HANDLER, TAKE_ANY_DAMAGE_HANDLER } from './Body';
 import { Vector2Int } from '../core/Vector2Int';
 import { Faction } from '../core/types';
 import { collectModifiers } from '../core/Modifiers';

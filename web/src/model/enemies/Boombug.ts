@@ -5,18 +5,16 @@ import { ActorTask } from '../ActorTask';
 import { WaitTask } from '../tasks/WaitTask';
 import { MoveToTargetTask } from '../tasks/MoveToTargetTask';
 import { ExplodeTask } from '../tasks/ExplodeTask';
-import { WaitBaseAction, ActionCosts, type BaseAction } from '../BaseAction';
+import { ActionCosts } from '../BaseAction';
 import { ActionType, Faction } from '../../core/types';
 import type { IDeathHandler } from '../../core/types';
 import { Vector2Int } from '../../core/Vector2Int';
 import { GameModelRef } from '../GameModelRef';
 import { MyRandom } from '../../core/MyRandom';
 import { Item, STACKABLE_TAG, USABLE_TAG, type IStackable, type IUsable } from '../Item';
-import { ItemOnGround } from '../ItemOnGround';
 import { Inventory } from '../Inventory';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { Entity } from '../Entity';
-import type { Tile } from '../Tile';
 
 const DEATH_HANDLER = Symbol.for('IDeathHandler');
 
@@ -139,7 +137,7 @@ export class BoombugCorpse extends Actor implements IDeathHandler {
         this.attack(body);
       }
       // Destroy grasses on empty tiles or own tile
-      if ((!body || tile.pos.equals(this.pos)) && floor.grasses.get(tile.pos)) {
+      if ((!body || Vector2Int.equals(tile.pos, this.pos)) && floor.grasses.get(tile.pos)) {
         floor.grasses.get(tile.pos)!.kill(this);
       }
     }

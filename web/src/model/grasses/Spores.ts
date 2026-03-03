@@ -10,10 +10,8 @@ import { ATTACK_DAMAGE_MOD, type IAttackDamageModifier } from '../../core/Modifi
 import { ACTION_PERFORMED_HANDLER, ACTOR_KILLED_HANDLER, type IActionPerformedHandler } from '../Actor';
 import { ACTOR_ENTER_HANDLER, ActionType, Faction, type IActorEnterHandler } from '../../core/types';
 import { Vector2Int } from '../../core/Vector2Int';
-import { GameModelRef } from '../GameModelRef';
 import { MyRandom } from '../../core/MyRandom';
 import { entityRegistry } from '../../generator/entityRegistry';
-import type { Tile } from '../Tile';
 import type { Actor } from '../Actor';
 
 /**

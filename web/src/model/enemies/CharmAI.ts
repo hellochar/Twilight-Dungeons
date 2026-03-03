@@ -41,7 +41,7 @@ export class CharmAI extends AI {
 
   private targetDecider(): Actor | null {
     const player = GameModelRef.main.player;
-    const visibleEnemies = player.getVisibleActors(Faction.Enemy);
+    const visibleEnemies = player.getVisibleActors(Faction.Enemy) as Actor[];
     if (visibleEnemies.length === 0) return null;
 
     // Sort by diamond distance to player

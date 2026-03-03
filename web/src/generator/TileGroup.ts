@@ -1,5 +1,4 @@
 import type { Tile } from '../model/Tile';
-import { Vector2Int } from '../core/Vector2Int';
 
 /**
  * Tile connectivity utilities using BFS flood-fill.

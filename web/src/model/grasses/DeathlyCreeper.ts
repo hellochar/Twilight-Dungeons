@@ -35,12 +35,12 @@ export class DeathlyCreeper extends Grass implements ISteppable {
     }
 
     if (this.age % 4 === 3) {
-      const neighbors = this.floor.getCardinalNeighbors(this.pos)
+      const neighbors = this.floor!.getCardinalNeighbors(this.pos)
         .filter(t => DeathlyCreeper.canOccupy(t));
       const target = MyRandom.Pick(neighbors);
       if (target) {
         this.onNoteworthyAction();
-        this.floor.put(new DeathlyCreeper(target.pos));
+        this.floor!.put(new DeathlyCreeper(target.pos));
       }
     }
     return 1;
@@ -50,8 +50,8 @@ export class DeathlyCreeper extends Grass implements ISteppable {
     timeLastChecked = GameModelRef.main.time;
     // Check if all Ground tiles are covered by DeathlyCreeper
     let allCovered = true;
-    for (const tile of this.floor.enumerateFloor()) {
-      const t = this.floor.tiles.get(tile);
+    for (const tile of this.floor!.enumerateFloor()) {
+      const t = this.floor!.tiles.get(tile);
       if (t instanceof Ground && !(t.grass instanceof DeathlyCreeper)) {
         allCovered = false;
         break;
@@ -59,7 +59,7 @@ export class DeathlyCreeper extends Grass implements ISteppable {
     }
     if (allCovered) {
       GameModelRef.main.enqueuEvent(() => {
-        const bodies = [...this.floor.bodies];
+        const bodies = [...this.floor!.bodies];
         for (const body of bodies) {
           body.kill(this);
         }

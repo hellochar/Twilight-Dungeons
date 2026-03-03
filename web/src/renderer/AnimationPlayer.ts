@@ -4,21 +4,28 @@ import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
 
-const DAMAGE_STYLE = new TextStyle({
-  fontFamily: 'monospace',
-  fontSize: 14,
-  fontWeight: 'bold',
-  fill: 0xff3333,
-  stroke: { color: 0x000000, width: 3 },
-});
+// CodersCrux cap height ≈ 65% of point size; scale up so glyphs appear ~1 tile tall
+const HP_TEXT_FONT_SCALE = 1.00;
 
-const HEAL_STYLE = new TextStyle({
-  fontFamily: 'monospace',
-  fontSize: 14,
-  fontWeight: 'bold',
-  fill: 0x33ff66,
-  stroke: { color: 0x000000, width: 3 },
-});
+function makeDamageStyle(tileSize: number): TextStyle {
+  const sz = Math.round(tileSize * HP_TEXT_FONT_SCALE);
+  return new TextStyle({
+    fontFamily: 'CodersCrux, monospace',
+    fontSize: sz,
+    fill: 0xff3333,
+    stroke: { color: 0x000000, width: Math.max(2, Math.round(sz * 0.12)) },
+  });
+}
+
+function makeHealStyle(tileSize: number): TextStyle {
+  const sz = Math.round(tileSize * HP_TEXT_FONT_SCALE);
+  return new TextStyle({
+    fontFamily: 'CodersCrux, monospace',
+    fontSize: sz,
+    fill: 0x33ff66,
+    stroke: { color: 0x000000, width: Math.max(2, Math.round(sz * 0.12)) },
+  });
+}
 
 // ─── Unity BumpAndReturn constants (BumpAndReturn.cs) ───
 const BUMP_DURATION = 0.25;
@@ -49,6 +56,7 @@ export class AnimationPlayer {
   private renderer: GameRenderer;
   private camera: Camera;
   private timeline: gsap.core.Timeline | null = null;
+  private floatingTexts: Text[] = [];
 
   constructor(renderer: GameRenderer, camera: Camera) {
     this.renderer = renderer;
@@ -98,6 +106,12 @@ export class AnimationPlayer {
       this.timeline.kill();
       this.timeline = null;
     }
+    for (const t of this.floatingTexts) {
+      gsap.killTweensOf(t);
+      t.parent?.removeChild(t);
+      t.destroy();
+    }
+    this.floatingTexts = [];
   }
 
   /** Whether an animation is currently playing. */
@@ -209,7 +223,7 @@ export class AnimationPlayer {
     }, pos);
 
     if (event.amount !== undefined && event.amount > 0) {
-      this.spawnFloatingText(`-${event.amount}`, event, tl, pos, DAMAGE_STYLE);
+      this.spawnFloatingText(`-${event.amount}`, event, makeDamageStyle(this.camera.tileSize));
     }
   }
 
@@ -227,7 +241,7 @@ export class AnimationPlayer {
     }, pos);
 
     if (event.amount !== undefined && event.amount > 0) {
-      this.spawnFloatingText(`+${event.amount}`, event, tl, pos, HEAL_STYLE);
+      this.spawnFloatingText(`+${event.amount}`, event, makeHealStyle(this.camera.tileSize));
     }
   }
 
@@ -262,28 +276,48 @@ export class AnimationPlayer {
     }, '<');
   }
 
-  /** Spawn floating text (e.g. "-3" or "+2") that drifts up and fades. */
+  /**
+   * Spawn floating HP change text matching Unity's "HP Change Text" prefab animation.
+   * Runs independently (not on master timeline) so it doesn't block turn processing.
+   * Total duration: 2s. Y: power2.out over full 2s (immediate pop, smooth deceleration).
+   * Alpha: slow fade (0→1.083s) then fast fade (1.083→2s).
+   * RandomizeStartPosition: x ±0.3 tiles, y ±0.1 tiles.
+   */
   private spawnFloatingText(
-    text: string, event: GameEvent, tl: gsap.core.Timeline,
-    label: string | number, style: TextStyle,
+    text: string, event: GameEvent, style: TextStyle,
   ): void {
     if (!event.to && !event.from) return;
     const pos = event.to ?? event.from!;
+    const ts = this.camera.tileSize;
     const px = this.camera.tileToCenterPixel(pos);
 
+    // RandomizeStartPosition: Random.insideUnitSphere scaled by amount {x:0.3, y:0.1}
+    const randX = (Math.random() * 2 - 1) * 0.3 * ts;
+    const randY = (Math.random() * 2 - 1) * 0.1 * ts;
+
     const t = new Text({ text, style });
-    t.anchor.set(0.5, 1);
-    t.position.set(px.x, px.y - this.camera.tileSize * 0.1);
+    t.anchor.set(0.5, 0.5);
+    // Unity anim: y starts at -0.1 (0.1 tiles below center); PixiJS Y-down so +0.1*ts
+    t.position.set(px.x + randX, px.y + 0.1 * ts + randY);
 
     const layer = this.renderer.getEffectLayer();
     layer.addChild(t);
+    this.floatingTexts.push(t);
 
-    tl.to(t, {
-      y: t.y - 24,
-      alpha: 0,
-      duration: 0.6,
-      ease: 'power2.out',
-      onComplete: () => { t.destroy(); },
-    }, label);
+    const cleanup = () => {
+      const idx = this.floatingTexts.indexOf(t);
+      if (idx >= 0) this.floatingTexts.splice(idx, 1);
+      t.parent?.removeChild(t);
+      t.destroy();
+    };
+
+    // Y: single ease-out over 2s. Immediate pop (no pause), smooth deceleration into drift.
+    // power2.out matches Unity's quick-rise-then-slow-drift feel without the phase-boundary jerk.
+    gsap.to(t, { y: px.y - 0.4 * ts + randY, duration: 2, ease: 'power2.out' });
+    // Alpha: stays near full opacity, then fades. Two phases match Unity .anim keyframes.
+    // Phase 1 (0→1.083s): 1→0.749, accelerating fade → power2.in
+    gsap.to(t, { alpha: 0.749, duration: 1.083, ease: 'power2.in' });
+    // Phase 2 (1.083→2s): 0.749→0, decelerating fade → power2.out
+    gsap.to(t, { alpha: 0, duration: 0.917, delay: 1.083, ease: 'power2.out', onComplete: cleanup });
   }
 }

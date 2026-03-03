@@ -919,7 +919,7 @@ export class GameRenderer {
           effect.spawnAccum -= interval;
           const angle = Math.random() * Math.PI * 2;
           const g = new Graphics();
-          g.circle(0, 0, PARTICLE_RADIUS).fill({ color: 0xffffff });
+          g.circle(0, 0, PARTICLE_RADIUS).fill({ color: 0xffffff, alpha: 0.5 });
           g.position.set(Math.cos(angle) * RADIUS, Math.sin(angle) * RADIUS);
           g.alpha = 0;
           effect.container.addChild(g);

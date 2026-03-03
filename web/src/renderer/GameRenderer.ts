@@ -10,6 +10,7 @@ import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
 import { VibrantIvy } from '../model/grasses/VibrantIvy';
 import { Violets } from '../model/grasses/Violets';
+import { Actor } from '../model/Actor';
 
 /** Unity SleepTaskController: deep sleep tints the actor sprite blue. */
 const DEEP_SLEEP_TINT = 0x5DABFF; // Color(0.365, 0.6712619, 1)
@@ -186,6 +187,8 @@ export class GameRenderer {
   private spawnStates = new Map<string, { elapsed: number; scale: number }>();
   // Guid → fade-out state — FadeThenDestroy animation (grasses + items only; 0.5s, shrink=0.5)
   private fadingNodes = new Map<string, { node: Container; scaleRoot: Container; startScale: number; startTime: number }>();
+  // Guid → idle bob state for moving bodies (Unity _Actor.prefab Idle.anim)
+  private bodyBobTimers = new Map<string, { timer: number; entity: Entity }>();
   // VibrantIvy: ordered list of active directional sprites (up/right/down/left, wall-filtered)
   private ivyDirectionalSprites = new Map<string, Sprite[]>();
   // VibrantIvy: last known stacks value for detecting decreases
@@ -397,6 +400,7 @@ export class GameRenderer {
     this.spawnStates.clear();
     for (const f of this.fadingNodes.values()) f.node.destroy({ children: true });
     this.fadingNodes.clear();
+    this.bodyBobTimers.clear();
     this.violetFlowerSprites.clear();
   }
 
@@ -667,6 +671,14 @@ export class GameRenderer {
     this.entityNodes.set(entity.guid, node);
     this.entityVisuals.set(entity.guid, sprite);
     this.entityScaleRoots.set(entity.guid, scaleRoot);
+
+    // Idle bob: only Actor instances (not plain Body like Destructible/Bloodstone/ParasiteEgg/CheshireWeed).
+    // Exclude entities that implement IBaseActionModifier directly on the class (Grasper/Tendril/HydraHeart/HydraHead/Clumpshroom — structurally stationary).
+    const isStationary = (entity as any)[Symbol.for('IBaseActionModifier')] === true;
+    if (layer === this.bodyLayer && entity instanceof Actor && !isStationary) {
+      this.bodyBobTimers.set(entity.guid, { timer: Math.random(), entity });
+    }
+
     return node;
   }
 
@@ -768,6 +780,7 @@ export class GameRenderer {
    */
   private syncEntities(): void {
     const floor = this.floor!;
+    const ts = this.camera.tileSize;
     const seenGuids = new Set<string>();
 
     // Sync bodies
@@ -850,6 +863,7 @@ export class GameRenderer {
           // Bodies: AnimationPlayer already ran death animation — just destroy
           node.destroy({ children: true });
           this.bodyGuids.delete(guid);
+          this.bodyBobTimers.delete(guid);
         } else {
           // Grasses + items: FadeThenDestroy (Unity FloorController behavior)
           const scaleRoot = this.entityScaleRoots.get(guid)!;
@@ -1134,6 +1148,28 @@ export class GameRenderer {
         const s = fade.startScale * (1 - 0.5 * t);
         fade.scaleRoot.scale.set(s, s);
       }
+    }
+
+    // Idle bob (Unity _Actor.prefab Idle.anim: step up 0.1 units at phase 0.5, speed = 1/baseActionCost)
+    const bobTs = this.camera.tileSize;
+    for (const [guid, state] of this.bodyBobTimers) {
+      const scaleRoot = this.entityScaleRoots.get(guid);
+      if (!scaleRoot) { this.bodyBobTimers.delete(guid); continue; }
+      const actor = state.entity as any;
+      // Unity SleepTaskController disables the Animator when sleeping — suppress bob.
+      // ConstrictedStatus blocks movement — suppress bob.
+      const isSleeping = actor.task?.constructor?.name === 'SleepTask';
+      const isConstricted = actor.statuses?.list?.some(
+        (s: any) => s.constructor.name === 'ConstrictedStatus'
+      );
+      if (isSleeping || isConstricted) {
+        scaleRoot.position.y = bobTs / 2;
+        continue;
+      }
+      const baseActionCost: number = actor.baseActionCost ?? 1;
+      state.timer = (state.timer + dt / baseActionCost) % 1.0;
+      const bobPx = state.timer >= 0.5 ? 0.1 * bobTs : 0;
+      scaleRoot.position.y = bobTs / 2 - bobPx;
     }
   }
 

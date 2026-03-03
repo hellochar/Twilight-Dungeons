@@ -510,7 +510,10 @@ export class GameRenderer {
    * while scaling from tile center.
    */
   private addEntitySprite(entity: Entity, layer: Container): Container {
-    const tex = this.sprites.getTexture(entity.displayName);
+    const spriteKeyOverride = 'spriteKey' in entity ? (entity as any).spriteKey as string : null;
+    const tex = spriteKeyOverride
+      ? this.sprites.getTextureByKey(spriteKeyOverride)
+      : this.sprites.getTexture(entity.displayName);
     const ts = this.camera.tileSize;
     const px = this.camera.tileToPixel(entity.pos);
 
@@ -737,6 +740,21 @@ export class GameRenderer {
       // (matching Unity's ActorController.Update() lerp-only approach).
       // Only animatingGuids (attack bumps etc.) bypass lerp.
       node.visible = !body.isDead;
+
+      // Update sprite variant + rotation for entities with dynamic spriteKey (e.g. Tendril).
+      // TendrilController.UpdateSprite() is called after every Grasper action; we mirror that here.
+      if (!body.isDead && 'spriteKey' in body) {
+        const visual = this.entityVisuals.get(body.guid);
+        if (visual) {
+          const key = (body as any).spriteKey as string;
+          const newTex = this.sprites.getTextureByKey(key);
+          if (newTex) visual.texture = newTex;
+          const angleDeg = (body as any).angle as number;
+          visual.anchor.set(0.5, 0.5);
+          visual.position.set(ts / 2, ts / 2);
+          visual.rotation = angleDeg * (Math.PI / 180);
+        }
+      }
     }
 
     // Sync grasses

@@ -171,6 +171,50 @@ export class Tendril extends Actor implements IBaseActionModifier, IDeathHandler
     }
     return input;
   }
+
+  /**
+   * Sprite variant key for this tendril segment.
+   * Port of TendrilController.UpdateSprite() sprite selection logic.
+   */
+  get spriteKey(): string {
+    const tendrils = this.owner.tendrils;
+    const index = tendrils.indexOf(this);
+    const nextPos = index >= tendrils.length - 1 ? null : tendrils[index + 1]?.pos ?? null;
+    if (!nextPos) return 'monochrome-thick-path-end';
+
+    const prevPos = index === 0 ? this.owner.pos : tendrils[index - 1].pos;
+    const prevToMe = { x: this.pos.x - prevPos.x, y: this.pos.y - prevPos.y };
+    const meToNext = { x: nextPos.x - this.pos.x, y: nextPos.y - this.pos.y };
+    return (prevToMe.x === meToNext.x && prevToMe.y === meToNext.y)
+      ? 'monochrome-thick-path'
+      : 'monochrome-thick-path-angled';
+  }
+
+  /**
+   * Rotation in degrees (PixiJS CW-positive, Y-down) for this tendril segment.
+   * Port of TendrilController.UpdateSprite() rotation logic.
+   */
+  get angle(): number {
+    const tendrils = this.owner.tendrils;
+    const index = tendrils.indexOf(this);
+    const prevPos = index === 0 ? this.owner.pos : tendrils[index - 1].pos;
+    const prevToMe = { x: this.pos.x - prevPos.x, y: this.pos.y - prevPos.y };
+    const angleBase = Math.atan2(prevToMe.x, prevToMe.y) * (180 / Math.PI);
+
+    const nextPos = index >= tendrils.length - 1 ? null : tendrils[index + 1]?.pos ?? null;
+    if (!nextPos) return angleBase;
+
+    const meToNext = { x: nextPos.x - this.pos.x, y: nextPos.y - this.pos.y };
+    if (prevToMe.x === meToNext.x && prevToMe.y === meToNext.y) return angleBase;
+
+    // Angled sprite goes bottom→right by default.
+    // spriteTurnDir = -Perpendicular(prevToMe) = (prevToMe.y, -prevToMe.x) = right-turn direction
+    const spriteTurnX = prevToMe.y;
+    const spriteTurnY = -prevToMe.x;
+    return (meToNext.x === spriteTurnX && meToNext.y === spriteTurnY)
+      ? angleBase       // right turn: sprite already aligned
+      : angleBase - 90; // left turn: -90° offset via sprite symmetry
+  }
 }
 
 entityRegistry.register('Grasper', Grasper);

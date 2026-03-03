@@ -23,6 +23,7 @@ export const SPRITE_TINTS: Record<string, number> = {
   'snail': 0xe4ff98,        // rgb(0.892, 1.0, 0.596)
 
   'grasper': 0x6DBC3F,      // rgb(0.427, 0.737, 0.247)
+  'tendril': 0x6DBC3F,      // rgb(0.428, 0.736, 0.247) — Tendril.prefab m_Color
   'wildekin': 0xFFB300,     // rgb(1.0, 0.703, 0.0)
   'hard shell': 0x00DBFF,   // rgb(0.0, 0.861, 1.0)
 

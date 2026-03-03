@@ -259,6 +259,11 @@ export class SpriteManager {
     return this.manifest[key] ?? null;
   }
 
+  /** Get texture by raw sprite key (no NAME_MAP lookup). */
+  getTextureByKey(key: string): Texture | null {
+    return this.textures.get(key) ?? null;
+  }
+
   /** Check if a sprite exists for the given name. */
   has(displayName: string): boolean {
     const key = this.resolveKey(displayName);

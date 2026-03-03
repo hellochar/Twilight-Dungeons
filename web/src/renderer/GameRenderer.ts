@@ -402,6 +402,8 @@ export class GameRenderer {
     this.fadingNodes.clear();
     this.bodyBobTimers.clear();
     this.violetFlowerSprites.clear();
+    this.ivyDirectionalSprites.clear();
+    this.ivyLastStacks.clear();
   }
 
   private buildTiles(): void {
@@ -565,7 +567,7 @@ export class GameRenderer {
     if (entity instanceof VibrantIvy) {
       const ivy = entity;
       const floor = ivy.floor!;
-      const OFFSET = 0.57;
+      const OFFSET = 0.07;
       // [gameDx, gameDy, pixiOffsetX, pixiOffsetY, rotation]
       // game Y+1 = screen up (PixiJS -Y); game Y-1 = screen down (PixiJS +Y)
       const dirs: [number, number, number, number, number][] = [
@@ -824,6 +826,18 @@ export class GameRenderer {
           this.initSpawnAnimation(grass.guid);
         }
         node.visible = !grass.isDead;
+
+        // VibrantIvy: hide directional sprites removed by stack loss
+        if (grass instanceof VibrantIvy) {
+          const sprites = this.ivyDirectionalSprites.get(grass.guid);
+          const last = this.ivyLastStacks.get(grass.guid) ?? grass.stacks;
+          if (sprites && grass.stacks < last && grass.stacks > 0) {
+            for (let i = 0; i < last - grass.stacks; i++) {
+              if (sprites.length > 0) sprites.shift()!.visible = false;
+            }
+          }
+          this.ivyLastStacks.set(grass.guid, grass.stacks);
+        }
 
         // Violets: update flower stage sprite (VioletsController port)
         if (grass instanceof Violets) {

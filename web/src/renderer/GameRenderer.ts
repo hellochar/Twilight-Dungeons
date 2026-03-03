@@ -141,6 +141,9 @@ export class GameRenderer {
   private statusIndicators = new Map<string, Container>();
   // Active targeting highlights on the effect layer
   private targetHighlights: Graphics[] = [];
+  // Proposed path dots (PathDot sprites) and reticle — FollowPathUI port
+  private pathDotSprites: Sprite[] = [];
+  private reticleSprite: Sprite | null = null;
   // Entity guids currently mid-animation — skip position snapping for these
   readonly animatingGuids = new Set<string>();
   // Telegraph charging particle effects (TelegraphedTask.prefab port)
@@ -256,6 +259,43 @@ export class GameRenderer {
   }
 
   /**
+   * Show proposed path dots and reticle for FollowPathUI (two-click move preview).
+   * PathDot: 0.32 × tileSize, centered on tile, alpha = 0.5^i.
+   * Reticle: full tile at target position.
+   */
+  showProposedPath(target: Vector2Int, path: Vector2Int[]): void {
+    this.clearProposedPath();
+    const ts = this.camera.tileSize;
+    const dotSize = 0.32 * ts;
+    const dotTex = this.sprites.getTexture('path dot');
+    for (let i = 0; i < path.length; i++) {
+      const px = this.camera.tileToPixel(path[i]);
+      const dot = new Sprite(dotTex ?? Texture.WHITE);
+      dot.width = dotSize;
+      dot.height = dotSize;
+      dot.position.set(px.x + ts / 2 - dotSize / 2, px.y + ts / 2 - dotSize / 2);
+      dot.alpha = Math.pow(0.5, i);
+      this.effectLayer.addChild(dot);
+      this.pathDotSprites.push(dot);
+    }
+    const reticleTex = this.sprites.getTexture('colored_transparent_packed_697');
+    const reticle = new Sprite(reticleTex ?? Texture.WHITE);
+    const rPx = this.camera.tileToPixel(target);
+    reticle.width = ts;
+    reticle.height = ts;
+    reticle.position.set(rPx.x, rPx.y);
+    this.effectLayer.addChild(reticle);
+    this.reticleSprite = reticle;
+  }
+
+  /** Remove proposed path dots and reticle. */
+  clearProposedPath(): void {
+    for (const dot of this.pathDotSprites) dot.destroy();
+    this.pathDotSprites = [];
+    if (this.reticleSprite) { this.reticleSprite.destroy(); this.reticleSprite = null; }
+  }
+
+  /**
    * Lerp non-animated entity positions toward their model positions.
    * Call from app.ticker each frame.
    * Matches Unity ActorController.Update() lines 82-89:
@@ -302,6 +342,7 @@ export class GameRenderer {
   // ─── Private ───
 
   private clearAll(): void {
+    this.clearProposedPath();
     this.tileLayer.removeChildren();
     this.grassLayer.removeChildren();
     this.itemLayer.removeChildren();

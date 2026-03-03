@@ -118,6 +118,7 @@ export class InputHandler {
 
   private onClick(e: PointerEvent): void {
     if (!this.enabled) return;
+    if (e.button !== 0) return; // left-click only
 
     const rect = this.canvas.getBoundingClientRect();
     const px = e.clientX - rect.left;

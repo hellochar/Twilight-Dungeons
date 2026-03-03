@@ -133,6 +133,7 @@ export function useGameLoop() {
   const processingRef = useRef(false);
   const targetingRef = useRef<TargetingInfo | null>(null);
   const [targetingState, setTargetingState] = useState<TargetingState | null>(null);
+  const proposedTargetRef = useRef<Vector2Int | null>(null);
   const [debugNotice, setDebugNotice] = useState<string | null>(null);
   const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
 
@@ -204,6 +205,11 @@ export function useGameLoop() {
     targetingRef.current = null;
     setTargetingState(null);
     rendererRef.current?.clearTargetHighlights();
+  }, []);
+
+  const clearProposed = useCallback(() => {
+    proposedTargetRef.current = null;
+    rendererRef.current?.clearProposedPath();
   }, []);
 
   /** Build EntityInfoData from whatever entity/tile is at a given tile position. */
@@ -431,12 +437,54 @@ export function useGameLoop() {
     const player = model.player;
     const floor = model.currentFloor;
 
+    // ─── Two-click path preview (in combat only) ───
+    // First click: show path dots + reticle. Second click on same tile: execute.
+    if (intent.type === 'click') {
+      const { tilePos } = intent;
+      const isInCombat = floor.depth > 0 && !floor.isCleared;
+      const isAdjacent = Vector2Int.chebyshevDistance(player.pos, tilePos) === 1;
+      if (isInCombat && !Vector2Int.equals(tilePos, player.pos) && !isAdjacent) {
+        if (proposedTargetRef.current && Vector2Int.equals(proposedTargetRef.current, tilePos)) {
+          // Second click on same tile — clear dots visually, keep ref for post-execution refresh
+          rendererRef.current?.clearProposedPath();
+          // fall through to execute
+        } else {
+          // First click — compute task, show path preview if it's a FollowPathTask
+          const previewTask = resolveIntent(intent, player, floor);
+          if (previewTask instanceof FollowPathTask) {
+            clearProposed();
+            proposedTargetRef.current = previewTask.target;
+            rendererRef.current?.showProposedPath(previewTask.target, [...previewTask.path]);
+            return; // don't execute yet
+          }
+          // No valid path — clear proposed and bail
+          clearProposed();
+          return;
+        }
+      } else {
+        clearProposed();
+      }
+    } else {
+      clearProposed();
+    }
+
     const task = resolveIntent(intent, player, floor);
-    if (!task) return;
+    if (!task) { clearProposed(); return; }
 
     player.setTasks(task);
     await stepAndAnimate();
-  }, [stepAndAnimate, cancelTargeting]);
+
+    // After execution, refresh proposed path so the player can keep clicking the same target
+    const pendingTarget = proposedTargetRef.current;
+    if (pendingTarget) {
+      const newPath = floor.findPath(player.pos, pendingTarget, false, player);
+      if (!player.isDead && !floor.isCleared && newPath.length > 0) {
+        rendererRef.current?.showProposedPath(pendingTarget, newPath);
+      } else {
+        clearProposed();
+      }
+    }
+  }, [stepAndAnimate, cancelTargeting, clearProposed]);
 
   /** Execute an item action from the inventory/equipment UI. */
   const executeItemAction = useCallback(async (
@@ -518,6 +566,7 @@ export function useGameLoop() {
   const resetGame = useCallback(() => {
     const renderer = rendererRef.current;
     if (!renderer) return;
+    clearProposed();
 
     const debugState = import.meta.env.DEV ? loadDebugState() : {};
     const customSeed = debugState.seed?.trim() || undefined;
@@ -537,7 +586,7 @@ export function useGameLoop() {
       newModel.currentFloor.height,
     );
     setGameState(readState());
-  }, [readState]);
+  }, [readState, clearProposed]);
 
   useEffect(() => {
     const container = containerRef.current;

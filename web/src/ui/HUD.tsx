@@ -66,7 +66,7 @@ function Hearts({ hp, maxHp }: { hp: number; maxHp: number }) {
 function Heart({ state }: { state: number }) {
   return (
     <img
-      src={`/sprites/hearts/heart-${4 - state}.png`}
+      src={`${import.meta.env.BASE_URL}sprites/hearts/heart-${4 - state}.png`}
       alt=""
       style={{
         width: HEART_SIZE,
@@ -157,7 +157,7 @@ function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; o
         }}
       >
         <img
-          src={`/sprites/${action.spriteName}.png`}
+          src={`${import.meta.env.BASE_URL}sprites/${action.spriteName}.png`}
           alt=""
           style={{ width: 20, height: 20, imageRendering: 'pixelated' }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

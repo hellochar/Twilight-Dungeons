@@ -84,18 +84,20 @@ const DEBUFF_STATUSES = new Set([
   'PoisonedStatus', 'WebbedStatus', 'WeaknessStatus', 'InShellStatus', 'SlimedStatus',
 ]);
 
+const BASE = import.meta.env.BASE_URL;
+
 /** Resolve an entity/item display name to a sprite PNG URL. */
 export function spriteUrl(displayName: string): string {
   const lower = displayName.toLowerCase();
   const key = NAME_MAP[lower] ?? lower;
-  return `/sprites/${key}.png`;
+  return `${BASE}sprites/${key}.png`;
 }
 
 /** Resolve a status className to a sprite PNG URL. */
 export function statusSpriteUrl(className: string): string {
   const key = STATUS_SPRITE_MAP[className];
-  if (key) return `/sprites/${key}.png`;
-  return `/sprites/${className.toLowerCase().replace(/status$/, '')}.png`;
+  if (key) return `${BASE}sprites/${key}.png`;
+  return `${BASE}sprites/${className.toLowerCase().replace(/status$/, '')}.png`;
 }
 
 /** Check if a status className represents a debuff. */

@@ -66,12 +66,13 @@ export class SoundManager {
     document.addEventListener('pointerdown', unlockCtx, true);
     document.addEventListener('keydown', unlockCtx, true);
 
-    const load = (path: string) => this.loadBuffer(path);
+    const base = import.meta.env.BASE_URL;
+    const load = (file: string) => this.loadBuffer(`${base}audio/${file}`);
 
     // SFX
     await Promise.all(
       Object.entries(SFX_FILES).map(async ([key, file]) => {
-        const buf = await load(`/audio/${file}`);
+        const buf = await load(file);
         if (buf) this.sfxBuffers.set(key, buf);
       }),
     );
@@ -79,7 +80,7 @@ export class SoundManager {
     // Hurt variants
     await Promise.all(
       HURT_FILES.map(async (file) => {
-        const buf = await load(`/audio/${file}`);
+        const buf = await load(file);
         if (buf) this.hurtBuffers.push(buf);
       }),
     );
@@ -87,7 +88,7 @@ export class SoundManager {
     // Music
     await Promise.all(
       Object.entries(MUSIC_FILES).map(async ([key, file]) => {
-        const buf = await load(`/audio/${file}`);
+        const buf = await load(file);
         if (buf) this.musicBuffers.set(key, buf);
       }),
     );

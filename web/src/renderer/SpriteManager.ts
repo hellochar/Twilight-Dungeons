@@ -114,6 +114,9 @@ export class SpriteManager {
     'wildwood leaf': 'wildwood-leaf',
     'charm berry': 'charmberry',
     'mushroom cap': 'mushroom-cap',
+    'bark shield': 'colored_transparent_packed_134',
+    'backstep shoes': 'colored_transparent_packed_39',
+    'barkmeal': 'colored_transparent_packed_1046',
     'vine whip': 'vine-whip',
     'wildwood wreath': 'wildwood-wreath',
     'gloop shoes': 'goop',
@@ -145,14 +148,15 @@ export class SpriteManager {
   async load(): Promise<void> {
     if (this.loaded) return;
 
-    const resp = await fetch('/sprites/manifest.json');
+    const base = import.meta.env.BASE_URL;
+    const resp = await fetch(`${base}sprites/manifest.json`);
     this.manifest = await resp.json();
 
     // Preload all sprite textures
     const entries = Object.entries(this.manifest);
     const loadPromises = entries.map(async ([name, info]) => {
       try {
-        const texture = await Assets.load<Texture>(`/sprites/${info.file}`);
+        const texture = await Assets.load<Texture>(`${base}sprites/${info.file}`);
         this.textures.set(name, texture);
 
         // Slice multi-frame strips

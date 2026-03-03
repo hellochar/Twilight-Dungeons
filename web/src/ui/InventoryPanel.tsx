@@ -138,7 +138,7 @@ function Slot({ item, label, isSelected, onClick, onContextMenu }: SlotProps) {
     >
       {/* Slot background: panel-grey-inset sprite */}
       <img
-        src="/sprites/panel-grey-inset.png"
+        src={`${import.meta.env.BASE_URL}sprites/panel-grey-inset.png`}
         alt=""
         draggable={false}
         style={{
@@ -202,7 +202,7 @@ function Slot({ item, label, isSelected, onClick, onContextMenu }: SlotProps) {
               const img = e.target as HTMLImageElement;
               if (!img.dataset.fallback) {
                 img.dataset.fallback = '1';
-                img.src = `/sprites/${item.spriteName}.png`;
+                img.src = `${import.meta.env.BASE_URL}sprites/${item.spriteName}.png`;
               } else {
                 img.style.display = 'none';
               }
@@ -273,7 +273,7 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
             const img = e.target as HTMLImageElement;
             if (!img.dataset.fallback) {
               img.dataset.fallback = '1';
-              img.src = `/sprites/${item.spriteName}.png`;
+              img.src = `${import.meta.env.BASE_URL}sprites/${item.spriteName}.png`;
             }
           }}
         />

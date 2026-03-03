@@ -16,6 +16,7 @@ import * as FloorUtils from './FloorUtils';
 import * as TileGroup from './TileGroup';
 import { concavitySections } from './TileSectionConcavity';
 import type { Encounter } from './EncounterGroup';
+import { Tunnelroot } from '../model/grasses/Tunnelroot';
 
 // ---- Helpers ----
 
@@ -803,13 +804,32 @@ export function addRedcaps(floor: Floor, room: Room | null): void {
 }
 
 export function addTunnelroot(floor: Floor, room: Room | null): void {
-  // Tunnel roots are paired — place start and partner far apart
   const start = FloorUtils.tilesAwayFromCenter(floor, room)
-    .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null)
+    .filter(t => Tunnelroot.canOccupy(t))
     .slice(MyRandom.Range(0, 4))[0];
   if (!start) return;
-  // Can't fully implement without Tunnelroot class — just consume RNG for stream consistency
-  spawn(floor, 'Tunnelroot', start.pos);
+
+  const partner = randomPick(
+    floor.enumerateRoomTiles(floor.root)
+      .filter(tile =>
+        tile !== start &&
+        Tunnelroot.canOccupy(tile) &&
+        tile.canBeOccupied() &&
+        !floor.getAdjacentTiles(tile.pos).some(t2 =>
+          t2.grass instanceof Tunnelroot ||
+          (floor.downstairsPos != null && t2.pos.equals(floor.downstairsPos))
+        )
+      )
+      .sort((a, b) => Vector2Int.distance(b.pos, start.pos) - Vector2Int.distance(a.pos, start.pos))
+      .slice(0, 8)
+  );
+  if (!partner) return;
+
+  const root1 = new Tunnelroot(start.pos);
+  const root2 = new Tunnelroot(partner.pos);
+  floor.put(root1);
+  floor.put(root2);
+  root1.partnerWith(root2);
 }
 
 export const addTunnelroot4x: Encounter = twice(twice(addTunnelroot));

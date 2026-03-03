@@ -48,8 +48,9 @@ export function collectModifiers<T>(
   if (!provider) return [];
   const result: T[] = [];
   const visited = new Set<object>();
+  const seen = new Set<object>();
   visited.add(provider);
-  _collect(provider, tag, result, visited);
+  _collect(provider, tag, result, visited, seen);
   return result;
 }
 
@@ -58,13 +59,15 @@ function _collect(
   tag: symbol,
   result: unknown[],
   visited: Set<object>,
+  seen: Set<object>,
 ): void {
   for (const obj of provider.myModifiers) {
     if (obj == null) continue;
 
-    // Check if this object has the tag
-    if (typeof obj === 'object' && tag in obj) {
+    // Check if this object has the tag (deduplicated: each object added at most once)
+    if (typeof obj === 'object' && tag in obj && !seen.has(obj)) {
       result.push(obj);
+      seen.add(obj);
     }
 
     // Recurse into sub-providers (skip already-visited to prevent cycles)
@@ -75,7 +78,7 @@ function _collect(
       typeof (obj as IModifierProvider).myModifiers !== 'undefined'
     ) {
       visited.add(obj);
-      _collect(obj as IModifierProvider, tag, result, visited);
+      _collect(obj as IModifierProvider, tag, result, visited, seen);
     }
   }
 }

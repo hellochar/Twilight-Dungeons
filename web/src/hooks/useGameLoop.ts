@@ -601,6 +601,7 @@ export function useGameLoop() {
         const dt = ticker.deltaTime / 60;
         renderer.lerpPositions(dt);
         renderer.updateTelegraphEffects(dt);
+        renderer.updateEntityAnimations(dt);
       });
 
       input = new InputHandler(camera, app.canvas);

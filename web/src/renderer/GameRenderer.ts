@@ -129,6 +129,8 @@ export class GameRenderer {
   private entityNodes = new Map<string, Container>();
   // Entity guid → visual Sprite child (tint target for animations)
   private entityVisuals = new Map<string, Sprite>();
+  // Entity guid → inner Container with center pivot (scale/alpha target for death/spawn)
+  private entityScaleRoots = new Map<string, Container>();
   // Tile position key → Container wrapping all display objects for that tile
   private tileContainers = new Map<string, Container>();
   // Tile position key → Tile object rendered in that container (for change detection)
@@ -148,6 +150,12 @@ export class GameRenderer {
     spawnAccum: number;
     fadingOut: boolean;
   }>();
+  // Body guids — excluded from renderer spawn/death animations (AnimationPlayer handles them)
+  private bodyGuids = new Set<string>();
+  // Guid → spawn grow state — GrowAtStart iterative lerp (grasses + items only)
+  private spawnStates = new Map<string, { elapsed: number; scale: number }>();
+  // Guid → fade-out state — FadeThenDestroy animation (grasses + items only; 0.5s, shrink=0.5)
+  private fadingNodes = new Map<string, { node: Container; scaleRoot: Container; startScale: number; startTime: number }>();
 
   private floor: Floor | null = null;
 
@@ -214,6 +222,11 @@ export class GameRenderer {
   /** Get the visual Sprite child (for tint animations). */
   getEntityVisual(guid: string): Sprite | undefined {
     return this.entityVisuals.get(guid);
+  }
+
+  /** Get the scale/alpha inner Container (center-pivoted; for death/spawn animations). */
+  getEntityScaleRoot(guid: string): Container | undefined {
+    return this.entityScaleRoots.get(guid);
   }
 
   /** Get the effect layer container (for animation overlays). */
@@ -297,6 +310,7 @@ export class GameRenderer {
     this.dimLayer.removeChildren();
     this.entityNodes.clear();
     this.entityVisuals.clear();
+    this.entityScaleRoots.clear();
     this.tileContainers.clear();
     this.renderedTiles.clear();
     this.dimCells.clear();
@@ -305,6 +319,10 @@ export class GameRenderer {
       effect.container.destroy({ children: true });
     }
     this.telegraphEffects.clear();
+    this.bodyGuids.clear();
+    this.spawnStates.clear();
+    for (const f of this.fadingNodes.values()) f.node.destroy({ children: true });
+    this.fadingNodes.clear();
   }
 
   private buildTiles(): void {
@@ -438,9 +456,11 @@ export class GameRenderer {
   }
 
   /**
-   * Create a Container node with a visual Sprite child (mirrors Unity's
-   * Actor GameObject → SpriteRenderer child). Tint goes on the Sprite so
-   * sibling children (status indicators) don't inherit it.
+   * Create a Container node with a scaleRoot inner Container and a visual Sprite child.
+   * Structure: node (position/lerp) → scaleRoot (center pivot, scale/alpha) → shadow + sprite.
+   * Tint goes on the Sprite so sibling children (status indicators) don't inherit it.
+   * scaleRoot pivot=(ts/2,ts/2) + position=(ts/2,ts/2) keeps visual origin at node(0,0)
+   * while scaling from tile center.
    */
   private addEntitySprite(entity: Entity, layer: Container): Container {
     const tex = this.sprites.getTexture(entity.displayName);
@@ -449,6 +469,12 @@ export class GameRenderer {
 
     const node = new Container();
     node.position.set(px.x, px.y);
+
+    // scaleRoot: center-pivoted inner Container so scale/alpha animations use tile center
+    const scaleRoot = new Container();
+    scaleRoot.pivot.set(ts / 2, ts / 2);
+    scaleRoot.position.set(ts / 2, ts / 2);
+    node.addChild(scaleRoot);
 
     // Shadow — bodies and grasses only (items have no shadow in Unity).
     // Matches Unity Shadow.prefab: color rgba(0.055, 0.059, 0.075, 0.4).
@@ -475,7 +501,7 @@ export class GameRenderer {
         shadow.scale.y *= 0.5;
         shadow.skew.x = -0.35;
       }
-      node.addChild(shadow);
+      scaleRoot.addChild(shadow);
     }
 
     const sprite = new Sprite(tex ?? Texture.WHITE);
@@ -498,10 +524,11 @@ export class GameRenderer {
       sprite.rotation = angleDeg * (Math.PI / 180);
     }
 
-    node.addChild(sprite);
+    scaleRoot.addChild(sprite);
     layer.addChild(node);
     this.entityNodes.set(entity.guid, node);
     this.entityVisuals.set(entity.guid, sprite);
+    this.entityScaleRoots.set(entity.guid, scaleRoot);
     return node;
   }
 
@@ -611,6 +638,8 @@ export class GameRenderer {
       let node = this.entityNodes.get(body.guid);
       if (!node) {
         node = this.addEntitySprite(body, this.bodyLayer);
+        this.bodyGuids.add(body.guid);
+        // No initSpawnAnimation — AnimationPlayer handles body spawn/death events
       }
       // Never snap body positions — lerpPositions handles smooth movement
       // (matching Unity's ActorController.Update() lerp-only approach).
@@ -626,6 +655,7 @@ export class GameRenderer {
         let node = this.entityNodes.get(grass.guid);
         if (!node) {
           node = this.addEntitySprite(grass, this.grassLayer);
+          this.initSpawnAnimation(grass.guid);
         }
         node.visible = !grass.isDead;
       }
@@ -639,6 +669,7 @@ export class GameRenderer {
         let node = this.entityNodes.get(item.guid);
         if (!node) {
           node = this.addEntitySprite(item, this.itemLayer);
+          this.initSpawnAnimation(item.guid);
         }
         node.visible = !item.isDead;
       }
@@ -647,9 +678,19 @@ export class GameRenderer {
     // Remove nodes for dead/removed entities
     for (const [guid, node] of this.entityNodes) {
       if (!seenGuids.has(guid)) {
-        node.destroy({ children: true });
+        if (this.bodyGuids.has(guid)) {
+          // Bodies: AnimationPlayer already ran death animation — just destroy
+          node.destroy({ children: true });
+          this.bodyGuids.delete(guid);
+        } else {
+          // Grasses + items: FadeThenDestroy (Unity FloorController behavior)
+          const scaleRoot = this.entityScaleRoots.get(guid)!;
+          this.fadingNodes.set(guid, { node, scaleRoot, startScale: scaleRoot.scale.x, startTime: performance.now() });
+        }
+        this.spawnStates.delete(guid);
         this.entityNodes.delete(guid);
         this.entityVisuals.delete(guid);
+        this.entityScaleRoots.delete(guid);
         this.statusIndicators.delete(guid);
       }
     }
@@ -677,7 +718,8 @@ export class GameRenderer {
 
       const actor = body as any;
       const node = this.entityNodes.get(body.guid);
-      if (!node) continue;
+      const scaleRoot = this.entityScaleRoots.get(body.guid);
+      if (!node || !scaleRoot) continue;
 
       const isSleeping = actor.task?.constructor?.name === 'SleepTask';
       const statuses = actor.statuses as { list: any[] };
@@ -710,13 +752,13 @@ export class GameRenderer {
       let container = this.statusIndicators.get(body.guid);
       if (container) {
         container.removeChildren();
-        if (container.parent !== node) {
+        if (container.parent !== scaleRoot) {
           container.removeFromParent();
-          node.addChild(container);
+          scaleRoot.addChild(container);
         }
       } else {
         container = new Container();
-        node.addChild(container);
+        scaleRoot.addChild(container);
         this.statusIndicators.set(body.guid, container);
       }
 
@@ -866,6 +908,62 @@ export class GameRenderer {
           effect.container.destroy({ children: true });
           this.telegraphEffects.delete(guid);
         }
+      }
+    }
+  }
+
+  /** Initialize GrowAtStart spawn animation on a newly created entity. */
+  private initSpawnAnimation(guid: string): void {
+    const scaleRoot = this.entityScaleRoots.get(guid);
+    if (!scaleRoot) return;
+    scaleRoot.scale.set(0.01, 0.01);
+    scaleRoot.alpha = 0.01;
+    this.spawnStates.set(guid, { elapsed: 0, scale: 0.01 });
+  }
+
+  /**
+   * Update GrowAtStart spawn and FadeThenDestroy despawn animations each frame.
+   *
+   * GrowAtStart (Unity _Grass.prefab): iterative lerp each frame from current scale toward 1.
+   *   lerpAmount = 1 - 1/exp(t * PI * 2)  where t = elapsed / ANIMATION_TIME (3s).
+   *   scale = lerp(scale, 1, lerpAmount)  — same formula applied each frame, not direct.
+   *   This causes rapid early growth; visually done in ~0.25s despite the 3s window.
+   *   Alpha mirrors scale for a fade-in effect. Scaling is center-pivoted.
+   *
+   * FadeThenDestroy (Unity FloorController): alpha 1→0, scale shrinks to 50% over 0.5s.
+   *
+   * @param dt Delta time in seconds.
+   */
+  updateEntityAnimations(dt: number): void {
+    // GrowAtStart: iterative lerp matching Unity's frame-by-frame accumulation
+    for (const [guid, state] of this.spawnStates) {
+      const scaleRoot = this.entityScaleRoots.get(guid);
+      if (!scaleRoot) { this.spawnStates.delete(guid); continue; }
+      state.elapsed += dt;
+      const t = state.elapsed / 3.0; // ANIMATION_TIME = 3s
+      if (t >= 1) {
+        scaleRoot.scale.set(1, 1);
+        scaleRoot.alpha = 1;
+        this.spawnStates.delete(guid);
+      } else {
+        const la = 1 - 1 / Math.exp(t * Math.PI * 2);
+        state.scale = state.scale + la * (1 - state.scale); // lerp(current, 1, la)
+        scaleRoot.scale.set(state.scale, state.scale);
+        scaleRoot.alpha = state.scale;
+      }
+    }
+
+    // FadeThenDestroy: alpha 1→0, scale shrinks to 50% over 0.5s
+    const now = performance.now();
+    for (const [guid, fade] of this.fadingNodes) {
+      const t = Math.min((now - fade.startTime) / 500, 1);
+      if (t >= 1) {
+        fade.node.destroy({ children: true });
+        this.fadingNodes.delete(guid);
+      } else {
+        fade.scaleRoot.alpha = 1 - t;
+        const s = fade.startScale * (1 - 0.5 * t);
+        fade.scaleRoot.scale.set(s, s);
       }
     }
   }

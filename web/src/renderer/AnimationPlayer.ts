@@ -165,15 +165,17 @@ export class AnimationPlayer {
   }
 
   /** Quick scale pulse for ground attack. */
-  private animateAttackGround(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateAttackGround(_node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
+    if (!scaleRoot) return;
     const label = `atkground-${event.entityGuid}`;
-    tl.to(node.scale, {
+    tl.to(scaleRoot.scale, {
       x: 1.3,
       y: 1.3,
       duration: 0.06,
       ease: 'power2.in',
     }, label);
-    tl.to(node.scale, {
+    tl.to(scaleRoot.scale, {
       x: 1,
       y: 1,
       duration: 0.06,
@@ -198,10 +200,9 @@ export class AnimationPlayer {
       }, pos);
     }
 
-    // Shake the whole node
-    const startX = node.position.x;
+    // Shake the whole node — relative tween so it's independent of setup-time position changes
     tl.to(node.position, {
-      x: startX + 3,
+      x: '+=3',
       duration: 0.03,
       yoyo: true,
       repeat: 2,
@@ -232,40 +233,30 @@ export class AnimationPlayer {
 
   /**
    * Fade + shrink on death — matches Unity FadeThenDestroy.cs:
-   * fadeTime=0.5, shrink=0.5, linear easing, pivot at sprite center.
+   * fadeTime=0.5, shrink=0.5, linear easing.
+   * Targets scaleRoot (center-pivoted inner Container) so shrink animates from tile center.
    */
-  private animateDeath(node: Container, _event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateDeath(_node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
+    if (!scaleRoot) return;
     const pos = BUMP_IMPACT_TIME;
-    const ts = this.camera.tileSize;
-
-    // Shift pivot to center so shrink scales toward center (matching Unity sprite pivot)
-    node.pivot.set(ts / 2, ts / 2);
-    node.position.set(node.position.x + ts / 2, node.position.y + ts / 2);
-
-    tl.to(node, {
-      alpha: 0,
-      duration: 0.5,
-      ease: 'none',
-    }, pos);
-    tl.to(node.scale, {
-      x: 0.5,
-      y: 0.5,
-      duration: 0.5,
-      ease: 'none',
-    }, pos);
+    tl.to(scaleRoot, { alpha: 0, duration: 0.5, ease: 'none' }, pos);
+    tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: 0.5, ease: 'none' }, pos);
   }
 
-  /** Pop in from zero scale on spawn — targets the whole node. */
-  private animateSpawn(node: Container, _event: GameEvent, tl: gsap.core.Timeline): void {
-    node.scale.set(0, 0);
-    node.alpha = 0;
-    tl.to(node.scale, {
+  /** Pop in from zero scale on spawn — targets scaleRoot for center-pivot animation. */
+  private animateSpawn(_node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
+    if (!scaleRoot) return;
+    scaleRoot.scale.set(0, 0);
+    scaleRoot.alpha = 0;
+    tl.to(scaleRoot.scale, {
       x: 1,
       y: 1,
       duration: 0.2,
       ease: 'back.out(1.7)',
     }, '<');
-    tl.to(node, {
+    tl.to(scaleRoot, {
       alpha: 1,
       duration: 0.15,
     }, '<');

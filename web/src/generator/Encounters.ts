@@ -276,16 +276,17 @@ export function addOneWater(floor: Floor, room: Room | null): void {
   addWaterImpl(floor, room, 1);
 }
 
-function addWaterImpl(floor: Floor, room: Room | null, num: number, randomize = false): void {
-  let tiles = FloorUtils.tilesAwayFrom(floor, room, floor.downstairsPos ?? floor.center)
-    .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null &&
-      !Vector2Int.equals(t.pos, floor.startPos));
-  if (randomize) {
-    tiles = tiles.filter(() => MyRandom.value < 0.5);
-  }
-  for (const tile of tiles.slice(0, num)) {
-    floor.put(new Water(tile.pos));
-  }
+function addWaterImpl(_floor: Floor, _room: Room | null, _num: number, _randomize = false): void {
+  // commented out for now
+  // let tiles = FloorUtils.tilesAwayFrom(floor, room, floor.downstairsPos ?? floor.center)
+  //   .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null &&
+  //     !Vector2Int.equals(t.pos, floor.startPos));
+  // if (randomize) {
+  //   tiles = tiles.filter(() => MyRandom.value < 0.5);
+  // }
+  // for (const tile of tiles.slice(0, num)) {
+  //   floor.put(new Water(tile.pos));
+  // }
 }
 
 // ---- Downstairs Placement ----

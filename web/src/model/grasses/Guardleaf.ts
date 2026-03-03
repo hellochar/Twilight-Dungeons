@@ -14,6 +14,7 @@ import type { Tile } from '../Tile';
 export class Guardleaf extends Grass implements IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
 
+  readonly renderLayer = 'above-entity' as const;
   guardLeft = 5;
 
   constructor(pos: Vector2Int) {

@@ -138,7 +138,7 @@ function tilesheetName(tile: Tile): string | null {
 
 /**
  * PixiJS-based renderer for the game floor.
- * Layered containers: tiles → grasses → items → bodies → effects → fog.
+ * Layered containers: tiles → grasses → items → bodies → above-entity → effects → fog.
  */
 export class GameRenderer {
   readonly app: Application;
@@ -150,6 +150,7 @@ export class GameRenderer {
   private grassLayer = new Container();
   private itemLayer = new Container();
   private bodyLayer = new Container();
+  private aboveEntityLayer = new Container();
   private effectLayer = new Container();
   private dimLayer = new Container();
 
@@ -187,6 +188,8 @@ export class GameRenderer {
   private spawnStates = new Map<string, { elapsed: number; scale: number }>();
   // Guid → fade-out state — FadeThenDestroy animation (grasses + items only; 0.5s, shrink=0.5)
   private fadingNodes = new Map<string, { node: Container; scaleRoot: Container; startScale: number; startTime: number }>();
+  // Guid → detached shadow Container on grassLayer for 'above-entity' entities (e.g. Guardleaf)
+  private detachedShadows = new Map<string, Container>();
   // Guid → idle bob state for moving bodies (Unity _Actor.prefab Idle.anim)
   private bodyBobTimers = new Map<string, { timer: number; entity: Entity }>();
   // VibrantIvy: ordered list of active directional sprites (up/right/down/left, wall-filtered)
@@ -208,6 +211,7 @@ export class GameRenderer {
     app.stage.addChild(this.grassLayer);
     app.stage.addChild(this.itemLayer);
     app.stage.addChild(this.bodyLayer);
+    app.stage.addChild(this.aboveEntityLayer);
     app.stage.addChild(this.effectLayer);
     app.stage.addChild(this.dimLayer);
   }
@@ -383,6 +387,7 @@ export class GameRenderer {
     this.grassLayer.removeChildren();
     this.itemLayer.removeChildren();
     this.bodyLayer.removeChildren();
+    this.aboveEntityLayer.removeChildren();
     this.effectLayer.removeChildren();
     this.dimLayer.removeChildren();
     this.entityNodes.clear();
@@ -400,6 +405,7 @@ export class GameRenderer {
     this.spawnStates.clear();
     for (const f of this.fadingNodes.values()) f.node.destroy({ children: true });
     this.fadingNodes.clear();
+    this.detachedShadows.clear();
     this.bodyBobTimers.clear();
     this.violetFlowerSprites.clear();
     this.ivyDirectionalSprites.clear();
@@ -521,7 +527,7 @@ export class GameRenderer {
     // Grasses
     for (const pos of floor.enumerateFloor()) {
       const grass = floor.grasses.get(pos);
-      if (grass) this.addEntitySprite(grass, this.grassLayer);
+      if (grass) this.addEntitySprite(grass, this.grassLayerFor(grass));
     }
 
     // Items
@@ -544,6 +550,13 @@ export class GameRenderer {
    * scaleRoot pivot=(ts/2,ts/2) + position=(ts/2,ts/2) keeps visual origin at node(0,0)
    * while scaling from tile center.
    */
+  /** Returns aboveEntityLayer for entities declaring renderLayer='above-entity', else grassLayer. */
+  private grassLayerFor(entity: Entity): Container {
+    return (entity as any).renderLayer === 'above-entity'
+      ? this.aboveEntityLayer
+      : this.grassLayer;
+  }
+
   private addEntitySprite(entity: Entity, layer: Container): Container {
     const spriteKeyOverride = 'spriteKey' in entity ? (entity as any).spriteKey as string : null;
     const tex = spriteKeyOverride
@@ -601,29 +614,39 @@ export class GameRenderer {
     // Shadow — bodies and grasses only (items have no shadow in Unity).
     // Matches Unity Shadow.prefab: color rgba(0.055, 0.059, 0.075, 0.4).
     // Most entities: angled (60°,20°,0°). Some grasses: flat (0°,0°,0°).
-    const hasShadow = layer === this.bodyLayer || layer === this.grassLayer;
+    const hasShadow = layer === this.bodyLayer || layer === this.grassLayer || layer === this.aboveEntityLayer;
     if (hasShadow) {
-      const shadow = new Sprite(tex ?? Texture.WHITE);
-      shadow.tint = 0x0E0F13;
-      shadow.alpha = 0.4;
-      shadow.width = ts;
-      shadow.height = ts;
-
-      // Offset shadow up by transparent bottom padding so it aligns with visible feet
       const bottomPad = this.sprites.getBottomPadding(entity.displayName) * ts;
-
       const isFlat = FLAT_SHADOW_ENTITIES.has(entity.displayName.toLowerCase());
-      if (isFlat) {
-        // Flat shadow: dark copy offset slightly right and up (Unity: 0.05, 0.05)
-        shadow.position.set(ts * 0.05, -ts * 0.05 - bottomPad);
+
+      const buildShadow = () => {
+        const shadow = new Sprite(tex ?? Texture.WHITE);
+        shadow.tint = 0x0E0F13;
+        shadow.alpha = 0.4;
+        shadow.width = ts;
+        shadow.height = ts;
+        if (isFlat) {
+          shadow.position.set(ts * 0.05, -ts * 0.05 - bottomPad);
+        } else {
+          shadow.anchor.set(0.5, 1.0);
+          shadow.position.set(ts / 2, ts - bottomPad);
+          shadow.scale.y *= 0.5;
+          shadow.skew.x = -0.35;
+        }
+        return shadow;
+      };
+
+      if (layer === this.aboveEntityLayer) {
+        // Shadow renders on grassLayer (below bodies) — mirrors Unity Guardleaf: main sprite
+        // on Entity sorting layer, shadow child retains Grass sorting layer.
+        const shadowNode = new Container();
+        shadowNode.position.set(px.x, px.y);
+        shadowNode.addChild(buildShadow());
+        this.grassLayer.addChild(shadowNode);
+        this.detachedShadows.set(entity.guid, shadowNode);
       } else {
-        // Angled shadow: skewed up-right from entity's feet
-        shadow.anchor.set(0.5, 1.0);
-        shadow.position.set(ts / 2, ts - bottomPad);
-        shadow.scale.y *= 0.5;
-        shadow.skew.x = -0.35;
+        scaleRoot.addChild(buildShadow());
       }
-      scaleRoot.addChild(shadow);
     }
 
     const sprite = new Sprite(tex ?? Texture.WHITE);
@@ -822,7 +845,7 @@ export class GameRenderer {
         seenGuids.add(grass.guid);
         let node = this.entityNodes.get(grass.guid);
         if (!node) {
-          node = this.addEntitySprite(grass, this.grassLayer);
+          node = this.addEntitySprite(grass, this.grassLayerFor(grass));
           this.initSpawnAnimation(grass.guid);
         }
         node.visible = !grass.isDead;
@@ -881,7 +904,14 @@ export class GameRenderer {
         } else {
           // Grasses + items: FadeThenDestroy (Unity FloorController behavior)
           const scaleRoot = this.entityScaleRoots.get(guid)!;
-          this.fadingNodes.set(guid, { node, scaleRoot, startScale: scaleRoot.scale.x, startTime: performance.now() });
+          const now = performance.now();
+          this.fadingNodes.set(guid, { node, scaleRoot, startScale: scaleRoot.scale.x, startTime: now });
+          // Detached shadow (above-entity grasses): fade it out in sync
+          const shadowNode = this.detachedShadows.get(guid);
+          if (shadowNode) {
+            this.fadingNodes.set(guid + '-shadow', { node: shadowNode, scaleRoot: shadowNode, startScale: 1, startTime: now });
+            this.detachedShadows.delete(guid);
+          }
         }
         this.spawnStates.delete(guid);
         this.entityNodes.delete(guid);

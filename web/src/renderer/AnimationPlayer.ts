@@ -137,6 +137,9 @@ export class AnimationPlayer {
   }
 
   private addEventToTimeline(event: GameEvent, tl: gsap.core.Timeline): void {
+    // Position-based effects don't need the entity sprite (which may already be gone).
+    if (event.type === 'disperse') { this.animateDisperse(event, tl); return; }
+
     const node = this.renderer.getEntitySprite(event.entityGuid);
     if (!node) return;
     const visual = this.renderer.getEntityVisual(event.entityGuid);
@@ -448,6 +451,63 @@ export class AnimationPlayer {
 
     gsap.to(sprite, { y: sprite.y - 0.1 * ts, alpha: 0, duration: 0.5, ease: 'linear', onComplete: cleanup });
   }
+
+  /**
+   * Cyan particle burst matching Unity LlaoraController RedcapPoof effect.
+   * Motion: Unity VelocityModule speedModifier curve (1→0.315→0) ≈ (1-t)^5.
+   * Integrated position: dist(t) = speed*(1-(1-t)^6)/6 — particles decelerate to a stop.
+   * Alpha: Unity colorOverLifetime holds 1 until t=0.69, then fades to 0.
+   */
+  private animateDisperse(event: GameEvent, tl: gsap.core.Timeline): void {
+    if (!event.from) return;
+    const ts = this.camera.tileSize;
+    const px = this.camera.tileToCenterPixel(event.from);
+
+    // Unity startSize=0.1 diameter → radius 0.05*ts; per-particle random [0.5, 1.0]×
+    const P_RADIUS_BASE = 0.05 * ts;
+    // Unity peak speed=0.8×5=4 world units/s. BASE_SPEED=9*ts so avg reaches ~1.1 tiles.
+    const BASE_SPEED = 9.0 * ts;
+    const COLOR = 0x00acd8;
+    const COUNT = 120;
+    const LIFETIME = 1.0;
+
+    const container = new Container();
+    container.position.set(px.x, px.y);
+    this.renderer.getEffectLayer().addChild(container);
+
+    const particles: { g: Graphics; angle: number; speed: number }[] = [];
+    for (let i = 0; i < COUNT; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = BASE_SPEED * (0.5 + Math.random() * 0.5);
+      const radius = P_RADIUS_BASE; //  * (0.5 + Math.random() * 0.5);
+      const g = new Graphics();
+      g.circle(0, 0, radius).fill({ color: COLOR });
+      g.position.set(0, 0);
+      container.addChild(g);
+      particles.push({ g, angle, speed });
+    }
+
+    const progress = { t: 0 };
+    tl.to(progress, {
+      t: 1,
+      duration: LIFETIME,
+      ease: 'none',
+      onUpdate: () => {
+        const t = progress.t;
+        const alpha = t < 0.69 ? 1 : (1 - t) / 0.31;
+        for (const p of particles) {
+          const d = p.speed * (1 - Math.pow(1 - t, 6)) / 6;
+          p.g.position.set(Math.cos(p.angle) * d, Math.sin(p.angle) * d);
+          p.g.alpha = alpha;
+        }
+      },
+      onComplete: () => {
+        container.parent?.removeChild(container);
+        container.destroy({ children: true });
+      },
+    }, '<');
+  }
+
   /**
    * 6-frame explosion spritesheet animation at 3×3 tile scale.
    * Port of Unity Boombug Explosion.prefab: scale (3,3,1), Animator cycles explosion_0..5.

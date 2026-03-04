@@ -574,6 +574,14 @@ export function useGameLoop() {
     if (model.player.task) {
       await stepAndAnimate();
     } else {
+      // Play any animation events emitted directly by the handler (e.g. Llaora disperse poof).
+      const events = model.consumeAnimationEvents();
+      const animator = animatorRef.current;
+      if (events.length > 0 && animator) {
+        processingRef.current = true;
+        await animator.playBatch(events);
+        processingRef.current = false;
+      }
       syncAndUpdate();
     }
   }, [stepAndAnimate, syncAndUpdate]);

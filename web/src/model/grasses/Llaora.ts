@@ -30,6 +30,7 @@ export class Llaora extends Grass implements IOnTopActionHandler {
 
   disperse(who: any): void {
     this.onNoteworthyAction();
+    GameModelRef.main.emitAnimation({ type: 'disperse', entityGuid: this.guid, from: this.pos });
     const floor = this.floor!;
     for (const pos of floor.enumerateCircle(this.pos, Llaora.radius)) {
       const body = floor.bodies.get(pos);

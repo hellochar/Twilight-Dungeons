@@ -247,6 +247,16 @@ async function main() {
     console.warn('Could not extract roguelikeSheet sprites:', e.message);
   }
 
+  // explosion.png: 6-frame 32×32 horizontal strip from 3rd Party
+  const explosionSrc = join(projectRoot, 'Assets', '3rd Party', 'explosion.png');
+  try {
+    await copyFile(explosionSrc, join(outDir, 'explosion.png'));
+    manifest['explosion'] = { file: 'explosion.png', width: 192, height: 32, frameCount: 6, frameWidth: 32, frameHeight: 32 };
+    console.log('Copied explosion.png');
+  } catch (e) {
+    console.warn('Could not copy explosion.png:', e.message);
+  }
+
   await writeFile(
     join(outDir, 'manifest.json'),
     JSON.stringify(manifest, null, 2),

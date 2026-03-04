@@ -6,6 +6,7 @@ import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
+import { RunAwayTask } from '../model/tasks/RunAwayTask';
 import { Actor } from '../model/Actor';
 import {
   type EntityRenderState,
@@ -78,6 +79,12 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
 const SLEEP_VISUAL: StatusVisualConfig = {
   spriteKey: 'sleep', offsetX: 0, offsetY: 0.5, scale: 0.5,
 };
+
+/** RunAwayTask visual (from Assets/Prefabs/Resources/Tasks/RunAwayTask.prefab). */
+const RUN_AWAY_VISUAL: StatusVisualConfig = {
+  spriteKey: 'colored_transparent_packed_659', offsetX: 0, offsetY: 0.5, scale: 0.5,
+};
+const RUN_AWAY_TINT = 0xFF4000;
 
 /**
  * PixiJS-based renderer for the game floor.
@@ -590,6 +597,11 @@ export class GameRenderer {
           config: SLEEP_VISUAL,
           tint: actor.task.isDeepSleep ? DEEP_SLEEP_TINT : undefined,
         });
+      }
+
+      // RunAwayTask visual
+      if (actor.task instanceof RunAwayTask) {
+        visuals.push({ config: RUN_AWAY_VISUAL, tint: RUN_AWAY_TINT });
       }
 
       // Status visuals — only statuses with Unity prefabs

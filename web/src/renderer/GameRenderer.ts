@@ -7,6 +7,7 @@ import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
 import { AttackGroundTask } from '../model/tasks/AttackGroundTask';
+import { ExplodeTask } from '../model/tasks/ExplodeTask';
 import { RunAwayTask } from '../model/tasks/RunAwayTask';
 import { WaitTask } from '../model/tasks/WaitTask';
 import { AttackBaseAction, AttackGroundBaseAction } from '../model/BaseAction';
@@ -48,6 +49,8 @@ interface StatusVisualConfig {
   scale: number;
   /** Hide when actor is sleeping. */
   hideWhenSleeping?: boolean;
+  /** Optional tint color (Unity SpriteRenderer.color). */
+  tint?: number;
 }
 
 /**
@@ -324,6 +327,7 @@ export class GameRenderer {
     this.effectLayer.removeChildren();
     for (const state of this.entityStates.values()) {
       if (state.telegraph) state.telegraph.container.destroy({ children: true });
+      if (state.explodeAOE) state.explodeAOE.sprite.destroy();
       if (state.attackGround) { state.attackGround.line.destroy(); state.attackGround.reticle.destroy(); }
     }
     this.entityStates.clear();
@@ -566,6 +570,7 @@ export class GameRenderer {
         // Bodies: AnimationPlayer already ran death animation — just destroy
         state.node.destroy({ children: true });
         if (state.telegraph) state.telegraph.container.destroy({ children: true });
+        if (state.explodeAOE) state.explodeAOE.sprite.destroy();
         if (state.attackGround) { state.attackGround.line.destroy(); state.attackGround.reticle.destroy(); }
         this.entityStates.delete(guid);
       } else {
@@ -585,6 +590,8 @@ export class GameRenderer {
     this.syncTelegraphEffects(floor);
     // Sync AttackGroundTask line + reticle
     this.syncAttackGroundEffects(floor);
+    // Sync ExplodeTask AoE markers
+    this.syncExplodeEffects(floor);
   }
 
   /**
@@ -695,6 +702,7 @@ export class GameRenderer {
         }
 
         icon.position.set(cx, cy);
+        if (config.tint != null) icon.tint = config.tint;
         if (tint != null) icon.tint = tint;
         container.addChild(icon);
       }
@@ -907,6 +915,82 @@ export class GameRenderer {
       }
     }
   }
+
+  /**
+   * Show 3×3 AoE reticle (selection-48x48) while entity has ExplodeTask.
+   * On removal, marks fadingOut for updateExplodeEffects to fade out.
+   */
+  private syncExplodeEffects(floor: Floor): void {
+    const ts = this.camera.tileSize;
+    const activeGuids = new Set<string>();
+
+    for (const body of floor.bodies) {
+      if (body.isDead) continue;
+      if ((body as any).task instanceof ExplodeTask) {
+        activeGuids.add(body.guid);
+        const state = this.entityStates.get(body.guid);
+        if (!state) continue;
+        const px = this.camera.tileToPixel(body.pos);
+        if (!state.explodeAOE) {
+          const tex = this.sprites.getTextureByKey('selection-48x48') ?? Texture.WHITE;
+          const s = new Sprite(tex);
+          s.width = 3 * ts;
+          s.height = 3 * ts;
+          s.alpha = 0.85;
+          this.effectLayer.addChild(s);
+          state.explodeAOE = { sprite: s, elapsed: 0, fadingOut: false };
+        }
+        if (!state.explodeAOE.fadingOut) {
+          state.explodeAOE.sprite.position.set(px.x - ts, px.y - ts);
+        }
+      }
+    }
+
+    for (const [guid, state] of this.entityStates) {
+      if (state.explodeAOE && !activeGuids.has(guid) && !state.explodeAOE.fadingOut) {
+        state.explodeAOE.fadingOut = true;
+        state.explodeAOE.elapsed = 0;
+        state.explodeAOE.sprite.alpha = 0.85;
+      }
+    }
+  }
+
+  /**
+   * Per-frame update for ExplodeTask AoE markers.
+   * Pulses tint white→red at 2Hz while active, then fades out on removal.
+   */
+  updateExplodeEffects(dt: number): void {
+    const FADE_DUR = 0.3;
+    const PULSE_HZ = 2.0;
+    for (const [, state] of this.entityStates) {
+      const aoe = state.explodeAOE;
+      if (!aoe) continue;
+      aoe.elapsed += dt;
+      if (aoe.fadingOut) {
+        const t = Math.min(aoe.elapsed / FADE_DUR, 1);
+        aoe.sprite.alpha = 0.85 * (1 - t);
+        if (t >= 1) {
+          aoe.sprite.destroy();
+          state.explodeAOE = undefined;
+        }
+      } else {
+        // Lerp tint: white (0xFFFFFF) → red (0xFF0000) oscillating with sine
+        const pulse = (Math.sin(aoe.elapsed * PULSE_HZ * Math.PI * 2) + 1) / 2; // 0..1
+        const g = Math.round(255 * (1 - pulse));
+        const b = Math.round(255 * (1 - pulse));
+        aoe.sprite.tint = (0xFF << 16) | (g << 8) | b;
+      }
+    }
+  }
+
+  /** Create sprites for floor bodies not yet in entityStates. Call before animation playback. */
+  addNewBodySprites(): void {
+    if (!this.floor) return;
+    for (const body of this.floor.bodies) {
+      if (!this.entityStates.has(body.guid)) {
+        this.addEntitySprite(body, this.bodyLayer);
+      }
+    }
   }
 
   /** Initialize GrowAtStart spawn animation on a newly created entity. */
@@ -958,6 +1042,7 @@ export class GameRenderer {
         state.node.destroy({ children: true });
         if (state.detachedShadow) state.detachedShadow.destroy({ children: true });
         if (state.telegraph) state.telegraph.container.destroy({ children: true });
+        if (state.explodeAOE) state.explodeAOE.sprite.destroy();
         this.entityStates.delete(guid);
       } else {
         state.scaleRoot.alpha = 1 - t;

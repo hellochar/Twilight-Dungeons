@@ -344,6 +344,7 @@ export function useGameLoop() {
           // Play their animation events before exiting.
           const doneEvents = model.consumeAnimationEvents();
           if (doneEvents.length > 0 && !skipAllRef.current) {
+            renderer.addNewBodySprites();
             await animator.playBatch(doneEvents);
           }
           break;
@@ -374,6 +375,7 @@ export function useGameLoop() {
             }
           } else {
             try {
+              renderer.addNewBodySprites();
               await animator.playBatch(events);
             } finally {
               for (const guid of animatedGuids) {
@@ -741,6 +743,7 @@ export function useGameLoop() {
         const dt = ticker.deltaTime / 60;
         renderer.lerpPositions(dt);
         renderer.updateTelegraphEffects(dt);
+        renderer.updateExplodeEffects(dt);
         renderer.updateEntityAnimations(dt);
       });
 

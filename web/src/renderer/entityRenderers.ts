@@ -8,6 +8,7 @@ import { Wall } from '../model/Tile';
 import { Vector2Int } from '../core/Vector2Int';
 import { Snail } from '../model/enemies/Snail';
 import { InShellStatus } from '../model/statuses/InShellStatus';
+import { BoombugCorpse } from '../model/enemies/Boombug';
 
 // ─── EntityRenderState ───
 
@@ -51,6 +52,8 @@ export interface EntityRenderState {
     reticle: Sprite;
     reticleAge: number;
   };
+  /** ExplodeTask 3×3 AoE danger marker on the effectLayer — plays looping explosion anim. */
+  explodeAOE?: { sprite: Sprite; elapsed: number; fadingOut: boolean };
 }
 
 // ─── Entity Renderer Hooks ───
@@ -227,5 +230,23 @@ registerEntityRenderer(Snail, {
     state.visual.texture = tex;
     if (state.shadow) state.shadow.texture = tex;
     // Suppress idle bob while in shell
+  },
+});
+
+// ─── BoombugCorpse renderer ───
+
+/**
+ * BoombugCorpseController port: same boombug sprite but upside-down and fully black.
+ * Unity prefab uses darkened color (r:0.028 g:0.065 b:0.113); user spec says fully black.
+ */
+registerEntityRenderer(BoombugCorpse, {
+  init(_entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const { ts } = ctx;
+    state.visual.tint = 0x000000;
+    // Flip vertically: negate existing scale.y (set by sprite.height = ts) and offset y by ts.
+    state.visual.scale.y *= -1;
+    state.visual.position.y = ts;
+    // Suppress idle bob — corpse is stationary.
+    state.bob = undefined;
   },
 });

@@ -142,6 +142,7 @@ export class BoombugCorpse extends Actor implements IDeathHandler {
       }
     }
 
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'explosion', entityGuid: this.guid, from: this.pos });
     this.kill(this);
 
     GameModelRef.main.enqueuEvent(() => {

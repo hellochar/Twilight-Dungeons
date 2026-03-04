@@ -183,6 +183,12 @@ export class AnimationPlayer {
       case 'attackGroundHit':
         this.animateAttackGroundHit(event, tl);
         break;
+      case 'explosion':
+        this.animateExplosion(event, tl);
+        break;
+    }
+  }
+
   /**
    * Parabolic arc jump animation.
    * Unity PlayJumpAnimation: duration 0.5s, H = D * 0.5, quadratic arc a=-4H/D², b=4H/D.
@@ -442,6 +448,41 @@ export class AnimationPlayer {
 
     gsap.to(sprite, { y: sprite.y - 0.1 * ts, alpha: 0, duration: 0.5, ease: 'linear', onComplete: cleanup });
   }
+  /**
+   * 6-frame explosion spritesheet animation at 3×3 tile scale.
+   * Port of Unity Boombug Explosion.prefab: scale (3,3,1), Animator cycles explosion_0..5.
+   * Frame duration ~12fps so total ~0.5s.
+   */
+  private animateExplosion(event: GameEvent, tl: gsap.core.Timeline): void {
+    if (!event.from) return;
+    const ts = this.camera.tileSize;
+    const px = this.camera.tileToPixel(event.from);
+    const frames = this.renderer.sprites.getFrames('explosion');
+    if (!frames || frames.length === 0) return;
+
+    const s = new Sprite(frames[0]);
+    s.width = 3 * ts;
+    s.height = 3 * ts;
+    s.position.set(px.x - ts, px.y - ts);
+    this.renderer.getEffectLayer().addChild(s);
+
+    const FRAME_DURATION = 0.083; // ~12fps
+    const progress = { t: 0 };
+    tl.to(progress, {
+      t: 1,
+      duration: FRAME_DURATION * frames.length,
+      ease: 'none',
+      onUpdate: () => {
+        const idx = Math.min(Math.floor(progress.t * frames.length), frames.length - 1);
+        s.texture = frames[idx];
+      },
+      onComplete: () => {
+        s.parent?.removeChild(s);
+        s.destroy();
+      },
+    }, '<');
+  }
+
   /**
    * Attack Sprite hit animation — Unity Attack Sprite.prefab Swipe.anim (0.717s).
    * Spawned at target tile. Y: +0.2→−0.12 tiles, scale: 0→1.2→1→0.

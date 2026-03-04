@@ -211,6 +211,12 @@ export class GameRenderer {
     return this.entityStates.get(guid)?.scaleRoot;
   }
 
+  /** Stop the idle bob for an entity (e.g. during squish death animation). */
+  disableEntityBob(guid: string): void {
+    const state = this.entityStates.get(guid);
+    if (state) state.bob = undefined;
+  }
+
   /** Get the effect layer container (for animation overlays). */
   getEffectLayer(): Container {
     return this.effectLayer;
@@ -1115,16 +1121,37 @@ export class GameRenderer {
       scaleRoot.position.y = bobTs / 2 - bobPx;
     }
 
-    const VIBRATE_PERIOD  = 4.60;
+    const VIBRATE_PERIOD = 4.60;
     const ts = this.camera.tileSize;
     for (const [, state] of this.entityStates) {
       if (!state.muckVibrate) continue;
+      // Stop vibrating once the fade-out (disappear) animation starts
+      if (state.fade) {
+        state.scaleRoot.position.x = ts / 2;
+        continue;
+      }
       state.muckVibrate.timer += dt;
       const t = state.muckVibrate.timer % VIBRATE_PERIOD;
-      let amplitude: number = 0.1;
+      let amplitude: number = 0.07;
       // 20Hz alternating sign matching Vibrate.anim's 0.05s keyframe intervals
       const sign = (Math.floor(t / 0.05) % 2 === 0) ? -1 : 1;
       state.scaleRoot.position.x = ts / 2 + sign * amplitude * ts;
+    }
+
+    // Skully squish-spawn (unsquish from bottom): scaleY 0→1 over 0.3s, bottom-pivot.
+    const SQUISH_SPAWN_DURATION = 0.3;
+    for (const [, state] of this.entityStates) {
+      if (!state.squishSpawn) continue;
+      state.squishSpawn.elapsed += dt;
+      const tSq = Math.min(state.squishSpawn.elapsed / SQUISH_SPAWN_DURATION, 1);
+      const eased = 1 - Math.pow(1 - tSq, 2); // power2.out
+      state.scaleRoot.scale.y = eased;
+      state.scaleRoot.position.y = ts * (1 - eased / 2); // ts→ts/2 as eased 0→1
+      if (tSq >= 1) {
+        state.scaleRoot.scale.set(1, 1);
+        state.scaleRoot.position.y = ts / 2;
+        state.squishSpawn = undefined;
+      }
     }
 
     // Deathbloom bloom animation: scale 0.25→0.7836857, alpha 0.251→1.0 over 1.5s (ease-out quadratic)

@@ -171,10 +171,13 @@ export class Body extends Entity {
     }
   }
 
+  /** Subclasses may override to emit a different death animation event. */
+  protected get deathEventType(): string { return 'death'; }
+
   kill(source: Entity): void {
     if (!this.isDead) {
       this._hp = Math.max(this._hp, 0);
-      GameModelRef.mainOrNull?.emitAnimation({ type: 'death', entityGuid: this.guid, to: this._pos, isBoss: this.isBoss });
+      GameModelRef.mainOrNull?.emitAnimation({ type: this.deathEventType, entityGuid: this.guid, to: this._pos, isBoss: this.isBoss });
       super.kill(source);
     }
   }

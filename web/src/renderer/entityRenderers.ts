@@ -9,7 +9,7 @@ import { Wall } from '../model/Tile';
 import { Vector2Int } from '../core/Vector2Int';
 import { Snail } from '../model/enemies/Snail';
 import { InShellStatus } from '../model/statuses/InShellStatus';
-import { Muck } from '../model/enemies/Skully';
+import { Muck, Skully } from '../model/enemies/Skully';
 import { BoombugCorpse } from '../model/enemies/Boombug';
 
 // ─── EntityRenderState ───
@@ -58,6 +58,8 @@ export interface EntityRenderState {
   explodeAOE?: { sprite: Sprite; elapsed: number; fadingOut: boolean };
   /** Vibrate.anim state for Muck on its final turn before transforming back into Skully. */
   muckVibrate?: { timer: number };
+  /** Unsquish spawn state for Skully spawned from Muck (scaleY 0→1 from bottom pivot). */
+  squishSpawn?: { elapsed: number };
   /** Deathbloom bloomed flower animation state. */
   deathbloom?: { flower: Sprite; elapsed: number; done: boolean; targetScale: number };
 }
@@ -296,5 +298,21 @@ registerEntityRenderer(Muck, {
     if ((entity as Muck).turnsElapsed >= 2 && !state.muckVibrate) {
       state.muckVibrate = { timer: 0 };
     }
+  },
+});
+
+// ─── Skully renderer ───
+
+/**
+ * When Skully spawns from Muck (squishSpawn=true), initialize scaleRoot at
+ * scaleY=0 pinned to tile bottom. GameRenderer.updateEntityAnimations drives the unsquish.
+ */
+registerEntityRenderer(Skully, {
+  init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    if (!(entity as Skully).squishSpawn) return;
+    const { ts } = ctx;
+    state.scaleRoot.scale.set(1, 0);
+    state.scaleRoot.position.y = ts;
+    state.squishSpawn = { elapsed: 0 };
   },
 });

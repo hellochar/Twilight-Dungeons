@@ -51,7 +51,7 @@ function bumpAndReturnEasing(t: number): number {
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
-  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion';
+  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion';
   entityGuid: string;
   from?: Vector2Int;
   to?: Vector2Int;
@@ -89,7 +89,7 @@ export class AnimationPlayer {
     this.timeline = gsap.timeline();
 
     for (const event of events) {
-      this.addEventToTimeline(event, this.timeline);
+      this.addEventToTimeline(event, this.timeline, events);
     }
 
     return new Promise((resolve) => {
@@ -107,7 +107,7 @@ export class AnimationPlayer {
     this.timeline = gsap.timeline();
 
     for (const event of events) {
-      this.addEventToTimeline(event, this.timeline);
+      this.addEventToTimeline(event, this.timeline, events);
     }
 
     return new Promise((resolve) => {
@@ -136,7 +136,7 @@ export class AnimationPlayer {
     return this.timeline?.isActive() ?? false;
   }
 
-  private addEventToTimeline(event: GameEvent, tl: gsap.core.Timeline): void {
+  private addEventToTimeline(event: GameEvent, tl: gsap.core.Timeline, batch: GameEvent[] = []): void {
     // Position-based effects don't need the entity sprite (which may already be gone).
     if (event.type === 'disperse') { this.animateDisperse(event, tl); return; }
 
@@ -170,6 +170,9 @@ export class AnimationPlayer {
         break;
       case 'death':
         this.animateDeath(node, event, tl);
+        break;
+      case 'squishDeath':
+        this.animateSquishDeath(event, tl);
         break;
       case 'spawn':
         this.animateSpawn(node, event, tl);
@@ -358,6 +361,31 @@ export class AnimationPlayer {
       } else {
         tl.call(() => s.play('death', 1, true), [], pos);
       }
+    }
+  }
+
+  /**
+   * Squish-to-flat death: scaleY 1→0 pinned at tile bottom over 0.2s.
+   * Used for Skully → Muck transform.
+   * Keeps center pivot; position.y is derived from scale.y each frame to pin the bottom edge.
+   * Formula: position.y = ts - (ts/2) * scale.y  (ts/2 at scale=1, ts at scale=0).
+   */
+  private animateSquishDeath(event: GameEvent, tl: gsap.core.Timeline): void {
+    this.renderer.disableEntityBob(event.entityGuid);
+    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
+    if (!scaleRoot) return;
+    const ts = this.camera.tileSize;
+    const pos = BUMP_IMPACT_TIME;
+    tl.to(scaleRoot.scale, {
+      y: 0.1,
+      duration: 0.2,
+      ease: 'power1.out',
+      onUpdate: () => { scaleRoot.position.y = ts - (ts / 2) * scaleRoot.scale.y; },
+      // onComplete: () => { scaleRoot.position.y = ts; },
+    }, pos);
+    if (this.sound) {
+      const s = this.sound;
+      tl.call(() => s.play('death', 1, true), [], pos);
     }
   }
 

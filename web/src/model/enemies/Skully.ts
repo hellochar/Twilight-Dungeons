@@ -19,6 +19,10 @@ import type { Actor } from '../Actor';
  */
 export class Skully extends AIActor {
   readonly [ACTOR_KILLED_HANDLER] = true as const;
+  /** Set by Muck.step() so the renderer plays an unsquish spawn instead of GrowAtStart. */
+  squishSpawn = false;
+
+  protected override get deathEventType(): string { return 'squishDeath'; }
 
   constructor(pos: Vector2Int) {
     super(pos);
@@ -83,6 +87,7 @@ export class Muck extends Grass implements ISteppable, IActorEnterHandler {
     this.turnsElapsed++;
     if (this.turnsElapsed >= 3) {
       const s = new Skully(this.pos);
+      s.squishSpawn = true;
       s.clearTasks();
       s.timeNextAction += 1;
       this.floor!.put(s);

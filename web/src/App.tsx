@@ -39,14 +39,14 @@ function App() {
             onTopAction={gameState.onTopAction}
             onExecuteOnTopAction={executeOnTopAction}
           />
-          <InventoryPanel
+          {/* <InventoryPanel
             inventoryItems={gameState.inventoryItems}
             equipmentItems={gameState.equipmentItems}
             onItemAction={executeItemAction}
             onItemInfo={handleItemInfo}
             disabled={gameState.isPlayerDead}
             targetingActive={!!targetingState}
-          />
+          /> */}
           {targetingState && (
             <div style={{
               position: 'absolute',

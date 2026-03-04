@@ -971,6 +971,20 @@ export class GameRenderer {
       }
     }
 
+    // Bladegrass Sharpen animation: frames 0→1→2→3 over 0.35s (keyframes at t=0,0.083,0.167,0.25)
+    for (const [, state] of this.entityStates) {
+      const anim = state.bladegrassAnim;
+      if (!anim) continue;
+      const { frames, sharpenStart } = anim;
+      if (sharpenStart === null) {
+        state.visual.texture = frames[0];
+      } else {
+        const elapsed = (performance.now() - sharpenStart) / 1000;
+        const idx = elapsed < 0.083 ? 0 : elapsed < 0.167 ? 1 : elapsed < 0.250 ? 2 : 3;
+        state.visual.texture = frames[idx];
+      }
+    }
+
     // Idle bob (Unity _Actor.prefab Idle.anim: step up 0.1 units at phase 0.5, speed = 1/baseActionCost)
     const bobTs = this.camera.tileSize;
     for (const [, state] of this.entityStates) {

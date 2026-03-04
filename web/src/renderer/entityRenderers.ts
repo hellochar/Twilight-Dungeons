@@ -3,6 +3,7 @@ import type { Entity } from '../model/Entity';
 import type { SpriteManager } from './SpriteManager';
 import { VibrantIvy } from '../model/grasses/VibrantIvy';
 import { Violets } from '../model/grasses/Violets';
+import { Bladegrass } from '../model/grasses/Bladegrass';
 import { Wall } from '../model/Tile';
 import { Vector2Int } from '../core/Vector2Int';
 import { Snail } from '../model/enemies/Snail';
@@ -32,6 +33,8 @@ export interface EntityRenderState {
   ivy?: { directionalSprites: Sprite[]; lastStacks: number };
   /** Violets animated flower sprite. */
   violetFlower?: Sprite;
+  /** Bladegrass sharpen animation: frames + sharpenStart time (ms), null = not yet sharpened. */
+  bladegrassAnim?: { frames: Texture[]; sharpenStart: number | null };
   /** TelegraphedTask charging particle effect. */
   telegraph?: {
     container: Container;
@@ -188,6 +191,29 @@ registerEntityRenderer(Violets, {
     state.violetFlower.position.set(ts / 2, ts / 2);
   },
 });
+
+// ─── Bladegrass renderer ───
+
+/**
+ * BladegrassController port: starts on frame 0 (Small), plays Sharpen animation
+ * (frames 0→1→2→3 over 0.35s) when isSharp, then holds frame 3 (Big) forever.
+ * Animation driven per-frame in GameRenderer.updateEntityAnimations.
+ */
+registerEntityRenderer(Bladegrass, {
+  init(_entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const frames = ctx.sprites.getFrames('bladegrass');
+    if (!frames || frames.length < 4) return;
+    state.bladegrassAnim = { frames, sharpenStart: null };
+    state.visual.texture = frames[0];
+  },
+  sync(entity: Entity, state: EntityRenderState, _ctx: RenderCtx): void {
+    if (!state.bladegrassAnim) return;
+    if ((entity as Bladegrass).isSharp && state.bladegrassAnim.sharpenStart === null) {
+      state.bladegrassAnim.sharpenStart = performance.now();
+    }
+  },
+});
+
 // ─── Snail renderer ───
 
 registerEntityRenderer(Snail, {

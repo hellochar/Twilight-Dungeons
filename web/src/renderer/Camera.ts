@@ -26,24 +26,30 @@ export class Camera {
 
   /**
    * Recalculate tile size and offset to fit the floor in the viewport.
-   * Keeps square tiles and centers the grid.
+   * Keeps square tiles and centers the grid within the padded area.
+   * @param insets - per-edge pixel insets: { top, bottom, left, right }. Defaults to 16px on all sides.
    */
-  resize(viewportWidth: number, viewportHeight: number, floorWidth: number, floorHeight: number): void {
+  resize(
+    viewportWidth: number,
+    viewportHeight: number,
+    floorWidth: number,
+    floorHeight: number,
+    insets: { top?: number; bottom?: number; left?: number; right?: number } = {},
+  ): void {
     this.floorWidth = floorWidth;
     this.floorHeight = floorHeight;
 
-    // Fit floor into viewport with some padding
-    const padding = 16;
-    const availW = viewportWidth - padding * 2;
-    const availH = viewportHeight - padding * 2;
+    const { top = 16, bottom = 16, left = 16, right = 16 } = insets;
+    const availW = viewportWidth - left - right;
+    const availH = viewportHeight - top - bottom;
 
     this.tileSize = Math.floor(Math.min(availW / floorWidth, availH / floorHeight));
     this.tileSize = Math.max(this.tileSize, 8); // minimum 8px tiles
 
     const gridW = floorWidth * this.tileSize;
     const gridH = floorHeight * this.tileSize;
-    this.offsetX = Math.floor((viewportWidth - gridW) / 2);
-    this.offsetY = Math.floor((viewportHeight - gridH) / 2);
+    this.offsetX = Math.floor(left + (availW - gridW) / 2);
+    this.offsetY = Math.floor(top + (availH - gridH) / 2);
   }
 
   /**

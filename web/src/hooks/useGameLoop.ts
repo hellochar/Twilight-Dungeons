@@ -738,7 +738,8 @@ export function useGameLoop() {
         const w = container!.clientWidth;
         const h = container!.clientHeight;
         app.renderer.resize(w, h);
-        camera.resize(w, h, model.currentFloor.width, model.currentFloor.height);
+        const currentModel = modelRef.current ?? model;
+        camera.resize(w, h, currentModel.currentFloor.width, currentModel.currentFloor.height);
         renderer.rebuildAll();
       };
       window.addEventListener('resize', resizeHandler);

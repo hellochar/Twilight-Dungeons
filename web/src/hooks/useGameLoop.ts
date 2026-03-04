@@ -388,6 +388,9 @@ export function useGameLoop() {
         // Sync after each step so subsequent animations see updated positions
         renderer.syncToModel();
 
+        // If game just ended, show UI immediately without animating remaining entities
+        if (model.gameOverInfo) break;
+
         // Stagger delay between visible enemy turns (Unity JUICE_STAGGER_SECONDS = 0.02)
         if (result.shouldStagger && !skipAllRef.current && !result.shouldSpeedThrough) {
           await delay(20);

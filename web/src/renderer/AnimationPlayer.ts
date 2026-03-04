@@ -163,7 +163,9 @@ export class AnimationPlayer {
         this.animateAttackGround(node, event, tl);
         break;
       case 'damage':
-        this.animateDamage(node, visual, event, tl);
+        if (!batch.some(e => e.entityGuid === event.entityGuid && (e.type === 'death' || e.type === 'squishDeath'))) {
+          this.animateDamage(node, visual, event, tl);
+        }
         break;
       case 'heal':
         this.animateHeal(visual, event, tl);

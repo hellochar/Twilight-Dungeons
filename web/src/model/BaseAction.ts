@@ -111,6 +111,24 @@ export class GenericBaseAction extends BaseAction {
   }
 }
 
+export class JumpBaseAction extends BaseAction {
+  get type(): ActionType {
+    return ActionType.MOVE;
+  }
+  readonly targetPos: Vector2Int;
+
+  constructor(actor: Actor, pos: Vector2Int) {
+    super(actor);
+    this.targetPos = pos;
+  }
+
+  perform(): void {
+    this.actor.isJumping = true;
+    this.actor.pos = this.targetPos;
+    this.actor.isJumping = false;
+  }
+}
+
 export class StruggleBaseAction extends BaseAction {
   get type(): ActionType {
     return ActionType.MOVE;

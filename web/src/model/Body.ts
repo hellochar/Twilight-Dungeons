@@ -47,6 +47,8 @@ export class Body extends Entity {
   protected _hp: number = 8;
   protected _baseMaxHp: number = 8;
   readonly isBoss: boolean = false;
+  /** Set by JumpBaseAction.perform() so Body emits a 'jump' event instead of 'move'. */
+  isJumping = false;
 
   readonly onMaxHPAdded = new EventEmitter();
 
@@ -96,7 +98,7 @@ export class Body extends Entity {
       const oldPos = this._pos;
       this._pos = value;
       this.floor.bodyMoved();
-      GameModelRef.mainOrNull?.emitAnimation({ type: 'move', entityGuid: this.guid, from: oldPos, to: value });
+      GameModelRef.mainOrNull?.emitAnimation({ type: this.isJumping ? 'jump' : 'move', entityGuid: this.guid, from: oldPos, to: value });
       this.onMove(value, oldPos);
       const newTile = this.floor.tiles.get(this._pos)!;
       newTile.bodyEntered(this);

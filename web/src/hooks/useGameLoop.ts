@@ -353,7 +353,7 @@ export function useGameLoop() {
           // Moves are NOT marked — they're driven by lerpPositions (matching Unity).
           const animatedGuids = new Set<string>();
           for (const ev of events) {
-            if (ev.type === 'attack' || ev.type === 'attackGround') {
+            if (ev.type === 'attack' || ev.type === 'attackGround' || ev.type === 'jump' || ev.type === 'struggle') {
               animatedGuids.add(ev.entityGuid);
               renderer.animatingGuids.add(ev.entityGuid);
             }

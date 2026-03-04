@@ -1,10 +1,10 @@
 import { DoOnceTask } from '../ActorTask';
-import { MoveBaseAction, type BaseAction } from '../BaseAction';
+import { JumpBaseAction, type BaseAction } from '../BaseAction';
 import type { Actor } from '../Actor';
 import { Vector2Int } from '../../core/Vector2Int';
 
 /**
- * Instantly move to a target tile (teleport/jump).
+ * Jump to a target tile with parabolic arc animation.
  * Used by Bird and ItemBirdWings.
  */
 export class JumpToTargetTask extends DoOnceTask {
@@ -16,6 +16,6 @@ export class JumpToTargetTask extends DoOnceTask {
   }
 
   protected getNextActionImpl(): BaseAction {
-    return new MoveBaseAction(this.actor, this.target);
+    return new JumpBaseAction(this.actor, this.target);
   }
 }

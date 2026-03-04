@@ -51,7 +51,7 @@ function bumpAndReturnEasing(t: number): number {
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
-  type: 'move' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'spawn' | 'pulse';
+  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion';
   entityGuid: string;
   from?: Vector2Int;
   to?: Vector2Int;
@@ -150,6 +150,9 @@ export class AnimationPlayer {
           tl.call(() => s.play('move', 0.25), [], '<');
         }
         break;
+      case 'jump':
+        this.animateJump(node, event, tl);
+        break;
       case 'attack':
         this.animateAttack(node, event, tl);
         break;
@@ -171,7 +174,36 @@ export class AnimationPlayer {
       case 'pulse':
         this.animatePulse(event, tl);
         break;
-    }
+  /**
+   * Parabolic arc jump animation.
+   * Unity PlayJumpAnimation: duration 0.5s, H = D * 0.5, quadratic arc a=-4H/D², b=4H/D.
+   * PixiJS Y-down: subtract arc offset to move upward on screen.
+   */
+  private animateJump(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+    if (!event.from || !event.to) return;
+    const fromPx = this.camera.tileToPixel(event.from);
+    const toPx = this.camera.tileToPixel(event.to);
+    const D = Math.sqrt((toPx.x - fromPx.x) ** 2 + (toPx.y - fromPx.y) ** 2);
+    if (D < 0.5) return;
+    const H = D * 0.5;
+    const a = -4 * H / (D * D);
+    const b = 4 * H / D;
+    const progress = { tNorm: 0 };
+    tl.to(progress, {
+      tNorm: 1,
+      duration: 0.5,
+      ease: 'sine.inOut',
+      onUpdate: () => {
+        const t = progress.tNorm * D;
+        const arcY = a * t * t + b * t;
+        const wx = fromPx.x + (toPx.x - fromPx.x) * progress.tNorm;
+        const wy = fromPx.y + (toPx.y - fromPx.y) * progress.tNorm;
+        node.position.set(wx, wy - arcY);
+      },
+      onComplete: () => {
+        node.position.set(toPx.x, toPx.y);
+      },
+    }, `jump-${event.entityGuid}`);
   }
 
   /**

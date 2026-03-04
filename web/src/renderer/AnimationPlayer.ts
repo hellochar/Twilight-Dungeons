@@ -293,15 +293,15 @@ export class AnimationPlayer {
         const origTint = visual.tint;
         tl.to(visual, {
           tint: 0xff3333,
-          duration: 0.05,
+          duration: 0.25,
           onComplete: () => { visual.tint = origTint; },
         }, pos);
       }
 
       // Shake the whole node — relative tween so it's independent of setup-time position changes
       tl.to(node.position, {
-        x: '+=3',
-        duration: 0.03,
+        x: '+=30',
+        duration: 0.1,
         yoyo: true,
         repeat: 2,
       }, pos);

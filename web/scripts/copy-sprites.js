@@ -17,6 +17,7 @@ const outDir = resolve(__dirname, '..', 'public', 'sprites');
 const SPRITE_SOURCES = [
   join(projectRoot, 'Assets', 'Textures', 'Resources'),
   join(projectRoot, 'Assets', 'Textures', 'Plants'),
+  join(projectRoot, 'Assets', '3rd Party', 'Resources'),
 ];
 
 const ATLAS_SOURCES = [

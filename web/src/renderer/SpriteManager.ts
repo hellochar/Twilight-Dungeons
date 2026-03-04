@@ -183,6 +183,7 @@ export class SpriteManager {
 
     await Promise.all(loadPromises);
     this.sliceTilesheets();
+    this.sliceSkullySheet();
     this.sliceBorders();
     this.applyFrameAliases();
     this.loaded = true;
@@ -204,6 +205,14 @@ export class SpriteManager {
         this.textures.set(alias, frames[frameIndex]);
       }
     }
+  }
+
+  /** Slice skully.png (32×16) into 'skully' (left 16×16) and 'muck' (right 16×16) sub-sprites. */
+  private sliceSkullySheet(): void {
+    const tex = this.textures.get('skully');
+    if (!tex) return;
+    this.textures.set('skully', new Texture({ source: tex.source, frame: new Rectangle(0, 0, 16, 16) }));
+    this.textures.set('muck', new Texture({ source: tex.source, frame: new Rectangle(16, 0, 16, 16) }));
   }
 
   /** Slice tilesheets (tiles0, tiles12, tiles24) into named sub-sprites. */

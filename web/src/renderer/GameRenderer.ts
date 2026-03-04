@@ -1114,6 +1114,18 @@ export class GameRenderer {
       const bobPx = state.bob.timer >= 0.5 ? 0.1 * bobTs : 0;
       scaleRoot.position.y = bobTs / 2 - bobPx;
     }
+
+    const VIBRATE_PERIOD  = 4.60;
+    const ts = this.camera.tileSize;
+    for (const [, state] of this.entityStates) {
+      if (!state.muckVibrate) continue;
+      state.muckVibrate.timer += dt;
+      const t = state.muckVibrate.timer % VIBRATE_PERIOD;
+      let amplitude: number = 0.1;
+      // 20Hz alternating sign matching Vibrate.anim's 0.05s keyframe intervals
+      const sign = (Math.floor(t / 0.05) % 2 === 0) ? -1 : 1;
+      state.scaleRoot.position.x = ts / 2 + sign * amplitude * ts;
+    }
   }
 
   /** Generate a deterministic fallback color from a name string. */

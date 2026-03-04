@@ -8,6 +8,7 @@ import { Wall } from '../model/Tile';
 import { Vector2Int } from '../core/Vector2Int';
 import { Snail } from '../model/enemies/Snail';
 import { InShellStatus } from '../model/statuses/InShellStatus';
+import { Muck } from '../model/enemies/Skully';
 import { BoombugCorpse } from '../model/enemies/Boombug';
 
 // ─── EntityRenderState ───
@@ -54,6 +55,8 @@ export interface EntityRenderState {
   };
   /** ExplodeTask 3×3 AoE danger marker on the effectLayer — plays looping explosion anim. */
   explodeAOE?: { sprite: Sprite; elapsed: number; fadingOut: boolean };
+  /** Vibrate.anim state for Muck on its final turn before transforming back into Skully. */
+  muckVibrate?: { timer: number };
 }
 
 // ─── Entity Renderer Hooks ───
@@ -248,5 +251,18 @@ registerEntityRenderer(BoombugCorpse, {
     state.visual.position.y = ts;
     // Suppress idle bob — corpse is stationary.
     state.bob = undefined;
+  },
+});
+// ─── Muck renderer ───
+
+/**
+ * Vibrate.anim port: sets muckVibrate state when Muck reaches its final turn before
+ * transforming back into Skully. The actual oscillation is driven by GameRenderer.updateEntityAnimations.
+ */
+registerEntityRenderer(Muck, {
+  sync(entity: Entity, state: EntityRenderState): void {
+    if ((entity as Muck).turnsElapsed >= 2 && !state.muckVibrate) {
+      state.muckVibrate = { timer: 0 };
+    }
   },
 });

@@ -61,7 +61,7 @@ export class Skully extends AIActor {
 export class Muck extends Grass implements ISteppable, IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
   timeNextAction: number;
-  private turnsElapsed = 0;
+  turnsElapsed = 0;
 
   get turnPriority(): number {
     return 40;

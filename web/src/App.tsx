@@ -8,7 +8,7 @@ import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import './App.css';
 
 function App() {
-  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo } = useGameLoop();
+  const { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
 
   const handleItemInfo = useCallback((item: ItemSnapshot, screenX: number, screenY: number) => {
@@ -38,6 +38,7 @@ function App() {
             state={gameState}
             onTopAction={gameState.onTopAction}
             onExecuteOnTopAction={executeOnTopAction}
+            onWait={executeWait}
           />
           {/* <InventoryPanel
             inventoryItems={gameState.inventoryItems}

@@ -781,7 +781,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState, handleContextMenu]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

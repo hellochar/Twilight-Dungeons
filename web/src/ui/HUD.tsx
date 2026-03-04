@@ -5,6 +5,7 @@ interface HUDProps {
   state: GameState;
   onTopAction: OnTopActionSnapshot | null;
   onExecuteOnTopAction: () => void;
+  onWait: () => void;
 }
 
 /**
@@ -13,8 +14,10 @@ interface HUDProps {
  * - Top-left below hearts: Status icons
  * - Top-right: Depth + Turn banner
  * - Below banner: Enemy counter text
+ * - Bottom-right: Wait button; OnTopAction button above it when present
  */
-export function HUD({ state, onTopAction, onExecuteOnTopAction }: HUDProps) {
+export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDProps) {
+  const showButtons = !state.isPlayerDead && !state.isCleared;
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
       {/* Top row: hearts left, banner right */}
@@ -37,9 +40,12 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction }: HUDProps) {
       {/* Status icons below hearts */}
       <StatusBar statuses={state.statuses} />
 
-      {/* On-top action button */}
-      {onTopAction && (
-        <OnTopActionButton action={onTopAction} onClick={onExecuteOnTopAction} />
+      {/* Bottom-right: OnTopAction above Wait button */}
+      {showButtons && onTopAction && (
+        <OnTopActionButton action={onTopAction} onClick={onExecuteOnTopAction} bottom={64} />
+      )}
+      {showButtons && (
+        <WaitButton onClick={onWait} />
       )}
     </div>
   );
@@ -132,30 +138,45 @@ function EnemiesLeft({ count, isCleared }: { count: number; isCleared: boolean }
 
 // ─── On-Top Action Button ───
 
-function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; onClick: () => void }) {
+const BUTTON_STYLE = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 6,
+  padding: '6px 14px',
+  background: 'rgba(20, 20, 30, 0.85)',
+  border: '1px solid rgba(255, 255, 255, 0.25)',
+  borderRadius: 6,
+  color: '#eee',
+  fontFamily: 'CodersCrux, monospace',
+  fontSize: 20,
+  cursor: 'pointer',
+} as const;
+
+function WaitButton({ onClick }: { onClick: () => void }) {
+  return (
+    <div style={{ position: 'absolute', bottom: 16, right: 16, pointerEvents: 'auto' }}>
+      <button onClick={onClick} style={BUTTON_STYLE}>
+        <img
+          src={`${import.meta.env.BASE_URL}sprites/clock.png`}
+          alt=""
+          style={{ width: 20, height: 20, imageRendering: 'pixelated' }}
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+        />
+        Wait
+      </button>
+    </div>
+  );
+}
+
+function OnTopActionButton({ action, onClick, bottom }: { action: OnTopActionSnapshot; onClick: () => void; bottom: number }) {
   return (
     <div style={{
       position: 'absolute',
-      bottom: 16,
+      bottom,
       right: 16,
       pointerEvents: 'auto',
     }}>
-      <button
-        onClick={onClick}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '6px 14px',
-          background: 'rgba(20, 20, 30, 0.85)',
-          border: '1px solid rgba(255, 255, 255, 0.25)',
-          borderRadius: 6,
-          color: '#eee',
-          fontFamily: 'CodersCrux, monospace',
-          fontSize: 20,
-          cursor: 'pointer',
-        }}
-      >
+      <button onClick={onClick} style={BUTTON_STYLE}>
         <img
           src={`${import.meta.env.BASE_URL}sprites/${action.spriteName}.png`}
           alt=""

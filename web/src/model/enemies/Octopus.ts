@@ -27,9 +27,9 @@ export class Octopus extends AIActor {
     return [1, 2];
   }
 
-  /** Diamond distance (manhattan) <= 2 */
+  /** Diamond distance (Chebyshev) <= 2 — diagonals count as 1 */
   static isInRange(octopus: Entity, target: Entity): boolean {
-    return Vector2Int.manhattanDistance(target.pos, octopus.pos) <= 2;
+    return Vector2Int.chebyshevDistance(target.pos, octopus.pos) <= 2;
   }
 
   protected getNextTask(): ActorTask {

@@ -568,6 +568,42 @@ export function useGameLoop() {
     }
   }, [stepAndAnimate, syncAndUpdate]);
 
+  // Dev-only: R to regen same depth with new seed, +/= to go deeper, - to go shallower
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      const renderer = rendererRef.current;
+      if (!renderer) return;
+      const currentDepth = modelRef.current?.currentFloor.depth ?? 0;
+
+      let depth: number;
+      if (e.key === 'r' || e.key === 'R') {
+        depth = currentDepth;
+      } else if (e.key === '+' || e.key === '=') {
+        depth = Math.min(27, currentDepth + 1);
+      } else if (e.key === '-') {
+        depth = Math.max(0, currentDepth - 1);
+      } else {
+        return;
+      }
+
+      const seed = String(Date.now());
+      const newModel = GameModel.createDailyGame(seed, depth);
+      newModel.consumeAnimationEvents();
+      modelRef.current = newModel;
+      renderer.setFloor(newModel.currentFloor);
+      renderer.syncToModel();
+      renderer.camera.resize(renderer.app.screen.width, renderer.app.screen.height, newModel.currentFloor.width, newModel.currentFloor.height);
+      setGameState(readState());
+      setDebugNotice(`depth ${depth} (seed …${seed.slice(-5)})`);
+      setTimeout(() => setDebugNotice(null), 3000);
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [readState]);
+
   /** Reset game (play again). */
   const resetGame = useCallback(() => {
     const renderer = rendererRef.current;

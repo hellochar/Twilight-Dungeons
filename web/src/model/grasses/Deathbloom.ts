@@ -64,9 +64,10 @@ export class Deathbloom extends Grass implements IActorEnterHandler, IDeathHandl
       const player = GameModelRef.main.player;
       if (player.pos.x === this.pos.x && player.pos.y === this.pos.y) {
         const item = new ItemDeathbloomFlower();
-        if (!player.inventory.addItem(item, this)) {
-          this.floor?.put(new ItemOnGround(this.pos, item, this.pos));
-        }
+        item.eat(player);
+        // if (!player.inventory.addItem(item, this)) {
+        //   this.floor?.put(new ItemOnGround(this.pos, item, this.pos));
+        // }
       }
     }
   }

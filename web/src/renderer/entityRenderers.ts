@@ -5,6 +5,8 @@ import { VibrantIvy } from '../model/grasses/VibrantIvy';
 import { Violets } from '../model/grasses/Violets';
 import { Wall } from '../model/Tile';
 import { Vector2Int } from '../core/Vector2Int';
+import { Snail } from '../model/enemies/Snail';
+import { InShellStatus } from '../model/statuses/InShellStatus';
 
 // ─── EntityRenderState ───
 
@@ -22,6 +24,8 @@ export interface EntityRenderState {
   fade?: { startScale: number; startTime: number };
   /** Detached shadow Container on grassLayer for above-entity grasses (e.g. Guardleaf). */
   detachedShadow?: Container;
+  /** Shadow sprite (for entities whose shadow texture must update dynamically). */
+  shadow?: Sprite;
   /** Idle bob state for Actor bodies. */
   bob?: { timer: number; entity: Entity };
   /** VibrantIvy directional sprites and last known stack count. */
@@ -173,5 +177,20 @@ registerEntityRenderer(Violets, {
     state.violetFlower.height = ts * 0.65;
     state.violetFlower.anchor.set(anchorX, anchorY);
     state.violetFlower.position.set(ts / 2, ts / 2);
+  },
+});
+// ─── Snail renderer ───
+
+registerEntityRenderer(Snail, {
+  sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const frames = ctx.sprites.getFrames('snail');
+    if (!frames) return;
+    const inShell = (entity as Snail).statuses.get(InShellStatus);
+    const stacks = inShell?.stacks ?? 0;
+    const idx = Math.min(stacks, frames.length - 1);
+    const tex = frames[idx];
+    state.visual.texture = tex;
+    if (state.shadow) state.shadow.texture = tex;
+    // Suppress idle bob while in shell
   },
 });

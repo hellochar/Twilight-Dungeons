@@ -188,6 +188,23 @@ export class SpriteManager {
     console.log(`SpriteManager: loaded ${this.textures.size} sprites, ${this.tileSubSprites.size} tile sub-sprites`);
   }
 
+  /**
+   * Named frame aliases: key → [sourceKey, frameIndex].
+   * Creates a texture alias for a specific frame of a multi-frame sprite strip.
+   */
+  private static FRAME_ALIASES: Record<string, [string, number]> = {
+    'scuttler-underground': ['scuttler', 1],
+  };
+
+  private applyFrameAliases(): void {
+    for (const [alias, [sourceKey, frameIndex]] of Object.entries(SpriteManager.FRAME_ALIASES)) {
+      const frames = this.frames.get(sourceKey);
+      if (frames?.[frameIndex]) {
+        this.textures.set(alias, frames[frameIndex]);
+      }
+    }
+  }
+
   /** Slice tilesheets (tiles0, tiles12, tiles24) into named sub-sprites. */
   private sliceTilesheets(): void {
     for (const sheet of ['tiles0', 'tiles12', 'tiles24']) {

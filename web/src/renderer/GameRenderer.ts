@@ -421,7 +421,9 @@ export class GameRenderer {
           this.grassLayer.addChild(shadowNode);
           state.detachedShadow = shadowNode;
         } else {
-          scaleRoot.addChild(buildShadow());
+          const shadowSprite = buildShadow();
+          scaleRoot.addChild(shadowSprite);
+          state.shadow = shadowSprite;
         }
       }
 
@@ -505,6 +507,9 @@ export class GameRenderer {
         visual.position.set(ts / 2, ts / 2);
         visual.rotation = angleDeg * (Math.PI / 180);
       }
+
+      const hooks = getEntityRenderHooks(body);
+      if (hooks?.sync) hooks.sync(body, state, ctx);
     }
 
     // Sync grasses
@@ -850,11 +855,15 @@ export class GameRenderer {
       const actor = state.bob.entity as any;
       // Unity SleepTaskController disables the Animator when sleeping — suppress bob.
       // ConstrictedStatus blocks movement — suppress bob.
+      // InShellStatus: snail is stationary in shell — suppress bob.
       const isSleeping = actor.task?.constructor?.name === 'SleepTask';
       const isConstricted = actor.statuses?.list?.some(
         (s: any) => s.constructor.name === 'ConstrictedStatus'
       );
-      if (isSleeping || isConstricted) {
+      const isInShell = actor.statuses?.list?.some(
+        (s: any) => s.constructor.name === 'InShellStatus'
+      );
+      if (isSleeping || isConstricted || isInShell) {
         scaleRoot.position.y = bobTs / 2;
         continue;
       }

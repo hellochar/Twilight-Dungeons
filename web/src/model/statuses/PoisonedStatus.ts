@@ -8,7 +8,7 @@ import { StackingMode, StackingStatus } from '../Status';
  */
 export class PoisonedStatus extends StackingStatus {
   get stackingMode(): StackingMode {
-    return StackingMode.Independent;
+    return StackingMode.Add;
   }
 
   get isDebuff(): boolean {

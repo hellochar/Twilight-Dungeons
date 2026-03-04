@@ -343,16 +343,15 @@ export class AnimationPlayer {
   }
 
   /**
-   * Fade + shrink on death — matches Unity FadeThenDestroy.cs:
-   * fadeTime=0.5, shrink=0.5, linear easing.
+   * Fade + shrink on death — based on Unity FadeThenDestroy.cs.
    * Targets scaleRoot (center-pivoted inner Container) so shrink animates from tile center.
    */
   private animateDeath(_node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
     const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
     if (!scaleRoot) return;
     const pos = BUMP_IMPACT_TIME;
-    tl.to(scaleRoot, { alpha: 0, duration: 0.5, ease: 'none' }, pos);
-    tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: 0.5, ease: 'none' }, pos);
+    tl.to(scaleRoot, { alpha: 0, duration: 0.5, ease: 'power3.out' }, pos);
+    tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: 0.5, ease: 'power3.out' }, pos);
 
     if (event.entityGuid !== this.playerGuid && this.sound) {
       const s = this.sound;

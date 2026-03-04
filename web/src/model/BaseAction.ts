@@ -74,8 +74,11 @@ export class AttackGroundBaseAction extends BaseAction {
   }
 
   perform(): void {
+    const hitBody = this.actor.floor?.bodies.get(this.targetPosition);
     this.actor.attackGround(this.targetPosition);
-    GameModelRef.mainOrNull?.emitAnimation({ type: 'attackGroundHit', entityGuid: this.actor.guid, to: this.targetPosition });
+    if (!hitBody) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'attackGroundHit', entityGuid: this.actor.guid, to: this.targetPosition });
+    }
   }
 }
 

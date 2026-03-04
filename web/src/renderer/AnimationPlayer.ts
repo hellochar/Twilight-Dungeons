@@ -263,23 +263,31 @@ export class AnimationPlayer {
     }
   }
 
-  /** Quick scale pulse for ground attack. */
-  private animateAttackGround(_node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
-    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
-    if (!scaleRoot) return;
-    const label = `atkground-${event.entityGuid}`;
-    tl.to(scaleRoot.scale, {
-      x: 1.3,
-      y: 1.3,
-      duration: 0.06,
-      ease: 'power2.in',
-    }, label);
-    tl.to(scaleRoot.scale, {
-      x: 1,
-      y: 1,
-      duration: 0.06,
-      ease: 'power2.out',
-    }, '>');
+  /**
+   * Bump toward target then return — same BumpAndReturn as melee attack.
+   * Unity ActorController.HandleActionPerformed: AttackGroundBaseAction calls PlayAttackAnimation(targetPosition).
+   */
+  private animateAttackGround(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+    if (!event.from || !event.to) return;
+    const fromPx = this.camera.tileToPixel(event.from);
+    const toPx = this.camera.tileToPixel(event.to);
+
+    const dx = (toPx.x - fromPx.x) * BUMP_INTENSITY;
+    const dy = (toPx.y - fromPx.y) * BUMP_INTENSITY;
+
+    const progress = { t: 0 };
+    tl.to(progress, {
+      t: 1,
+      duration: BUMP_DURATION,
+      ease: 'none',
+      onUpdate: () => {
+        const e = bumpAndReturnEasing(progress.t);
+        node.position.set(fromPx.x + dx * e, fromPx.y + dy * e);
+      },
+      onComplete: () => {
+        node.position.set(fromPx.x, fromPx.y);
+      },
+    }, `atkground-${event.entityGuid}`);
   }
 
   /** Flash red on damage — tint targets the visual Sprite, shake targets the node. */
@@ -583,10 +591,10 @@ export class AnimationPlayer {
     const tex = this.renderer.sprites.getTextureByKey('colored_transparent_packed_553') ?? Texture.WHITE;
     const sprite = new Sprite(tex);
     sprite.anchor.set(0.5, 0.5);
-    sprite.width = ts;
-    sprite.height = ts;
-    sprite.scale.set(0, 0);
-    sprite.position.set(px.x, px.y + 0.2 * ts);
+    sprite.width = 1;
+    sprite.height = 1;
+    // sprite.scale.set(0, 0);
+    sprite.position.set(px.x, px.y + 0.1 * ts);
 
     const layer = this.renderer.getEffectLayer();
     layer.addChild(sprite);
@@ -598,10 +606,10 @@ export class AnimationPlayer {
 
     const label = `atkgroundhit-${event.entityGuid}`;
     // Scale up 0→1.2 over first ~35%, 1.2→1 middle, 1→0 end; Y moves 0.2→-0.12 total
-    tl.to(sprite.scale, { x: 1.2, y: 1.2, duration: 0.25, ease: 'power2.out' }, label);
-    tl.to(sprite, { y: px.y - 0.12 * ts, duration: 0.717, ease: 'power2.out' }, label);
-    tl.to(sprite.scale, { x: 1, y: 1, duration: 0.1, ease: 'none' }, '>');
-    tl.to(sprite.scale, { x: 0, y: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, '>');
+    tl.to(sprite, { width: ts, height: ts, duration: 0.25, ease: 'power2.out' }, label);
+    tl.to(sprite, { y: px.y - 0.12 * ts, duration: 0.5, ease: 'power3.out' }, label);
+    // tl.to(sprite.scale, { x: 1, y: 1, duration: 0.1, ease: 'none' }, '>');
+    tl.to(sprite, { width: 0, height: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, '>');
   }
 
   /**

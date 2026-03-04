@@ -744,25 +744,22 @@ export class GameRenderer {
     for (const body of floor.bodies) {
       if (body.isDead) continue;
       const actor = body as any;
-      if (actor.task instanceof TelegraphedTask) {
+      // AttackGroundTask has its own line+reticle; skip generic telegraph particles for it.
+      if (actor.task instanceof TelegraphedTask && !(actor.task instanceof AttackGroundTask)) {
         activeGuids.add(body.guid);
         const state = this.entityStates.get(body.guid);
         if (state && !state.telegraph) {
           const container = new Container();
           this.effectLayer.addChild(container);
 
-          // Detect attack target for reticle — skip if target == self position.
-          // AttackGroundTask has its own dedicated line+sprite reticle, so skip here.
           const then = actor.task.then;
           let reticleTilePos: Vector2Int | undefined;
-          if (!(actor.task instanceof AttackGroundTask)) {
-            if (then instanceof AttackBaseAction && !then.target.isDead) {
-              const tp = then.target.pos;
-              if (!(tp.x === body.pos.x && tp.y === body.pos.y)) reticleTilePos = tp;
-            } else if (then instanceof AttackGroundBaseAction) {
-              const tp = then.targetPosition;
-              if (!(tp.x === body.pos.x && tp.y === body.pos.y)) reticleTilePos = tp;
-            }
+          if (then instanceof AttackBaseAction && !then.target.isDead) {
+            const tp = then.target.pos;
+            if (!(tp.x === body.pos.x && tp.y === body.pos.y)) reticleTilePos = tp;
+          } else if (then instanceof AttackGroundBaseAction) {
+            const tp = then.targetPosition;
+            if (!(tp.x === body.pos.x && tp.y === body.pos.y)) reticleTilePos = tp;
           }
 
           state.telegraph = {
@@ -918,8 +915,8 @@ export class GameRenderer {
         const tex = this.sprites.getTextureByKey('colored_transparent_packed_613') ?? Texture.WHITE;
         const reticle = new Sprite(tex);
         reticle.anchor.set(0.5, 0.5);
-        reticle.width = 0.5 * ts;
-        reticle.height = 0.5 * ts;
+        reticle.width = ts;
+        reticle.height = ts;
         this.effectLayer.addChild(reticle);
         state.attackGround = { line, reticle, reticleAge: 0 };
       }

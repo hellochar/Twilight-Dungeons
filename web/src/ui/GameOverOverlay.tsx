@@ -12,13 +12,37 @@ interface GameOverOverlayProps {
 }
 
 export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlayProps) {
-  const title = info.won
-    ? 'Floor Cleared!'
-    : info.killedBy
-      ? `You perished to ${info.killedBy}...`
-      : 'You perished...';
+  if (!info.won) {
+    return (
+      <div style={{
+        position: 'absolute',
+        bottom: '16%',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 100,
+        pointerEvents: 'auto',
+      }}>
+        <button
+          onClick={onPlayAgain}
+          style={{
+            background: '#bbbbbb',
+            color: '#000',
+            border: '2px solid #888',
+            borderRadius: 8,
+            padding: '16px 64px',
+            fontFamily: 'CodersCrux, monospace',
+            fontSize: 48,
+            cursor: 'pointer',
+          }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
-  const borderColor = info.won ? '#4f4' : '#f44';
+  const title = 'Floor Cleared!';
+  const borderColor = '#4f4';
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -27,7 +51,7 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
 
   // On mount: save local score and check if already submitted
   useEffect(() => {
-    if (info.won && dateSeed) {
+    if (dateSeed) {
       saveLocalScore(dateSeed, info.turnsTaken);
       const local = getLocalScore(dateSeed);
       if (local?.submitted) {

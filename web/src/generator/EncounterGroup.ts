@@ -124,7 +124,7 @@ export function createEncounterGroups(E: Record<string, Encounter>): EncounterGr
   earlyGame.grasses.add(0.5, E.addEveningBells);
   earlyGame.grasses.add(0.4, E.addDeathbloom);
   earlyGame.grasses.add(0.4, E.addWebs);
-  earlyGame.grasses.add(0.4, E.addAgave);
+  // earlyGame.grasses.add(0.4, E.addAgave);
   earlyGame.grasses.add(0.35, E.addHangingVines);
   earlyGame.grasses.add(0.2, E.addViolets);
   earlyGame.grasses.add(0.2, E.fillWithFerns);
@@ -136,16 +136,16 @@ export function createEncounterGroups(E: Record<string, Encounter>): EncounterGr
   earlyGame.spice.add(0.25, E.addSoftGrass);
   earlyGame.spice.add(0.25, E.addBladegrass);
   earlyGame.spice.add(0.2, E.scatteredBoombugs);
-  earlyGame.spice.add(0.2, E.addWater);
-  earlyGame.spice.add(0.1, E.addOldDude);
+  // earlyGame.spice.add(0.2, E.addWater);
+  // earlyGame.spice.add(0.1, E.addOldDude);
   earlyGame.spice.add(0.1, E.addDeathbloom);
   earlyGame.spice.add(0.1, E.addGuardleaf);
   earlyGame.spice.add(0.1, E.addSpore);
   earlyGame.spice.add(0.05, E.addEveningBells);
   earlyGame.spice.add(0.05, E.addPoisonmoss);
   earlyGame.spice.add(0.05, E.fillWithFerns);
-  earlyGame.spice.add(0.01, E.addNecroroot);
-  earlyGame.spice.add(0.01, E.addFaegrass);
+  // earlyGame.spice.add(0.01, E.addNecroroot);
+  // earlyGame.spice.add(0.01, E.addFaegrass);
 
   // Everything (early-mid mixed) encounters
   const everything = new EncounterGroup();

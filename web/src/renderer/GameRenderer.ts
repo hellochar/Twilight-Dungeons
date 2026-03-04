@@ -66,6 +66,7 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   ConfusedStatus:  { spriteKey: 'confused',         offsetX: 0, offsetY: 0.65, scale: 0.75 },
   SurprisedStatus: { spriteKey: 'colored_transparent_packed_658', offsetX: 0, offsetY: 0.65, scale: 0.75 },
   PacifiedStatus:  { spriteKey: 'peace',            offsetX: 0, offsetY: 0.5,  scale: 0.4 },
+  DandyStatus:     { spriteKey: 'dandypuff',        offsetX: 0, offsetY: 0.4,  scale: 0.75 },
   // Body-level sprites
   WebbedStatus:    { spriteKey: 'web',              offsetX: 0, offsetY: -0.25, scale: 1.0 },
   ParasiteStatus:  { spriteKey: 'parasite',         offsetX: 0, offsetY: 0,    scale: 0.35 },
@@ -73,11 +74,11 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   SlimedStatus:    { spriteKey: 'slimed',           offsetX: 0, offsetY: 0,     scale: 1.0 },
   VulnerableStatus:{ spriteKey: 'vulnerable',       offsetX: 0, offsetY: 0,     scale: 0.5 },
   WeaknessStatus:  { spriteKey: 'weakness',         offsetX: 0, offsetY: 0.5,   scale: 1.0 },
-  FreeMoveStatus:  { spriteKey: 'free-move',        offsetX: 0, offsetY: -0.415, scale: 1.0, hideWhenSleeping: true },
+  // FreeMoveStatus: particles-only at y=-0.415 (ground level, hidden under entity) → status bar only
   // Sprint 14
   SporedStatus:    { spriteKey: 'spored-status',    offsetX: 0, offsetY: 0,     scale: 0.75 },
   ConstrictedStatus: { spriteKey: 'constricted-particle', offsetX: 0, offsetY: 0, scale: 1.0, tint: 0xC8A92A, secondSprite: { offsetX: -0.039, offsetY: -0.059, flipX: true } },
-  FrenziedStatus:  { spriteKey: 'deathbloom-stem',  offsetX: 0, offsetY: 0.65,  scale: 0.75 },
+  // FrenziedStatus: no Unity status prefab exists → status bar only
   // Sprint 15
   InfectedStatus:  { spriteKey: 'infected',         offsetX: 0, offsetY: 0,     scale: 0.5 },
   ThirdEyeStatus:  { spriteKey: 'third-eye',        offsetX: 0, offsetY: 0.65,  scale: 0.75 },

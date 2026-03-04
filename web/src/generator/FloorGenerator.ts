@@ -124,7 +124,7 @@ export class FloorGenerator {
     if (floor.enemiesLeft() === 0) {
       floor.isCleared = true;
     }
-    this.postProcessAddSignpost(floor);
+    // this.postProcessAddSignpost(floor);
   }
 
   private postProcessAddSignpost(floor: Floor): void {

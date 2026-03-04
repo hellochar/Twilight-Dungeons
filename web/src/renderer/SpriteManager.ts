@@ -79,8 +79,8 @@ export class SpriteManager {
     'golem': 'golem-head',
     'parasite egg': 'parasite-egg',
     'hard shell': 'misc0_14',
-    'scuttler underground': 'scuttler',
-    '???': 'scuttler',
+    'scuttler underground': 'scuttler-underground',
+    '???': 'scuttler-underground',
     'ghost': 'undead0_29',
     'violets': 'purple_0',
     'hydra heart': 'hydra-heart',
@@ -184,6 +184,7 @@ export class SpriteManager {
     await Promise.all(loadPromises);
     this.sliceTilesheets();
     this.sliceBorders();
+    this.applyFrameAliases();
     this.loaded = true;
     console.log(`SpriteManager: loaded ${this.textures.size} sprites, ${this.tileSubSprites.size} tile sub-sprites`);
   }

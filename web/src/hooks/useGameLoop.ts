@@ -339,7 +339,15 @@ export function useGameLoop() {
       while (true) {
         const result = model.turnManager.stepOneEntity();
 
-        if (result.done) break;
+        if (result.done) {
+          // Timed events (e.g. poison tickDamage) may have fired during this step.
+          // Play their animation events before exiting.
+          const doneEvents = model.consumeAnimationEvents();
+          if (doneEvents.length > 0 && !skipAllRef.current) {
+            await animator.playBatch(doneEvents);
+          }
+          break;
+        }
 
         // Time-gap delay (matches Unity GAME_TIME_TO_SECONDS_WAIT_SCALE = 0.2)
         if (!result.isFirstStep && result.timeGap > 0 && !result.shouldSpeedThrough && !skipAllRef.current) {

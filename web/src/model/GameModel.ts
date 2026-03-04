@@ -160,6 +160,11 @@ export class GameModel implements IGameModelRef {
 
     const depth = depthOverride ?? selectDepth(seed);
     const generator = new FloorGenerator(floorSeeds);
+    // Clear GameModelRef before generating the floor so all entities created during
+    // generation get timeCreated=0. Without this, on resetGame the old model (with
+    // time > 0) is still set, causing enemies to start with timeNextAction = old_time
+    // and the player getting that many free turns before any enemy can act.
+    GameModelRef.main = null;
     const floor = generator.generateCaveFloor(depth);
 
     const model = GameModel.createAndSetMain(floor, floor.startPos);

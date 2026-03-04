@@ -5,6 +5,7 @@ import { TileVisibility, Faction } from '../core/types';
 import { EventEmitter } from '../core/EventEmitter';
 import { GameModelRef } from './GameModelRef';
 import { MyRandom } from '../core/MyRandom';
+import { ItemOnGround } from './ItemOnGround';
 
 // ─── Entity Store types ───
 
@@ -219,6 +220,9 @@ export class Floor {
   // ─── Entity management ───
 
   put(entity: Entity): void {
+    if (entity instanceof ItemOnGround) {
+      return;
+    }
     try {
       this.entities.add(entity);
 

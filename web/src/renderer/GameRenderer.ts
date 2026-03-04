@@ -51,6 +51,8 @@ interface StatusVisualConfig {
   hideWhenSleeping?: boolean;
   /** Optional tint color (Unity SpriteRenderer.color). */
   tint?: number;
+  /** Second sprite for dual-sprite prefabs (e.g. ConstrictedStatus). */
+  secondSprite?: { offsetX: number; offsetY: number; flipX?: boolean };
 }
 
 /**
@@ -74,7 +76,7 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   FreeMoveStatus:  { spriteKey: 'free-move',        offsetX: 0, offsetY: -0.415, scale: 1.0, hideWhenSleeping: true },
   // Sprint 14
   SporedStatus:    { spriteKey: 'spored-status',    offsetX: 0, offsetY: 0,     scale: 0.75 },
-  ConstrictedStatus: { spriteKey: 'hanging-vines',  offsetX: 0, offsetY: 0,     scale: 0.5 },
+  ConstrictedStatus: { spriteKey: 'constricted-particle', offsetX: 0, offsetY: 0, scale: 1.0, tint: 0xC8A92A, secondSprite: { offsetX: -0.039, offsetY: -0.059, flipX: true } },
   FrenziedStatus:  { spriteKey: 'deathbloom-stem',  offsetX: 0, offsetY: 0.65,  scale: 0.75 },
   // Sprint 15
   InfectedStatus:  { spriteKey: 'infected',         offsetX: 0, offsetY: 0,     scale: 0.5 },
@@ -705,6 +707,22 @@ export class GameRenderer {
         if (config.tint != null) icon.tint = config.tint;
         if (tint != null) icon.tint = tint;
         container.addChild(icon);
+
+        // Second sprite for dual-sprite prefabs (e.g. ConstrictedStatus)
+        if (config.secondSprite) {
+          const icon2 = new Sprite(tex);
+          icon2.anchor.set(0.5, 0.5);
+          icon2.width = size;
+          icon2.height = size;
+          icon2.position.set(
+            ts / 2 + config.secondSprite.offsetX * ts,
+            ts / 2 - config.secondSprite.offsetY * ts,
+          );
+          if (config.secondSprite.flipX) icon2.scale.x *= -1;
+          if (config.tint != null) icon2.tint = config.tint;
+          if (tint != null) icon2.tint = tint;
+          container.addChild(icon2);
+        }
       }
     }
   }

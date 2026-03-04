@@ -26,7 +26,7 @@ export abstract class Tile extends Entity {
   set pos(_value: Vector2Int) {}
 
   get myModifiers(): Iterable<object | null | undefined> {
-    return [...super.myModifiers, this.grass, this.item];
+    return [...super.myModifiers, this.grass, this.item, this.trigger];
   }
 
   constructor(pos: Vector2Int) {

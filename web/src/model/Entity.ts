@@ -60,6 +60,10 @@ export abstract class Entity implements IModifierProvider {
     return this._floor?.bodies.get(this.pos) ?? null;
   }
 
+  get trigger(): Entity | null {
+    return this._floor?.triggers.get(this.pos) ?? null;
+  }
+
   get displayName(): string {
     return this.constructor.name.replace(/([A-Z])/g, ' $1').trim();
   }

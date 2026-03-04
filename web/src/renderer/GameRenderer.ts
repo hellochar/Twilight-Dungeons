@@ -6,7 +6,10 @@ import { Camera } from './Camera';
 import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
+import { AttackGroundTask } from '../model/tasks/AttackGroundTask';
 import { RunAwayTask } from '../model/tasks/RunAwayTask';
+import { WaitTask } from '../model/tasks/WaitTask';
+import { AttackBaseAction, AttackGroundBaseAction } from '../model/BaseAction';
 import { Actor } from '../model/Actor';
 import {
   type EntityRenderState,
@@ -85,6 +88,15 @@ const RUN_AWAY_VISUAL: StatusVisualConfig = {
   spriteKey: 'colored_transparent_packed_659', offsetX: 0, offsetY: 0.5, scale: 0.5,
 };
 const RUN_AWAY_TINT = 0xFF4000;
+
+/** WaitTask visual (from Assets/Prefabs/Resources/Tasks/WaitTask.prefab). */
+const WAIT_TASK_VISUAL: StatusVisualConfig = {
+  spriteKey: 'clock', offsetX: 0, offsetY: 0.5, scale: 0.5,
+};
+const WAIT_TASK_TINT = 0xCFC6B8;
+
+/** Enemies with hideWaitTask=true in Unity — do NOT show the clock icon. */
+const HIDE_WAIT_TASK_NAMES = new Set(['Leecher', 'FungalColony', 'FruitingBody', 'Crab']);
 
 /**
  * PixiJS-based renderer for the game floor.
@@ -312,6 +324,7 @@ export class GameRenderer {
     this.effectLayer.removeChildren();
     for (const state of this.entityStates.values()) {
       if (state.telegraph) state.telegraph.container.destroy({ children: true });
+      if (state.attackGround) { state.attackGround.line.destroy(); state.attackGround.reticle.destroy(); }
     }
     this.entityStates.clear();
   }
@@ -553,6 +566,7 @@ export class GameRenderer {
         // Bodies: AnimationPlayer already ran death animation — just destroy
         state.node.destroy({ children: true });
         if (state.telegraph) state.telegraph.container.destroy({ children: true });
+        if (state.attackGround) { state.attackGround.line.destroy(); state.attackGround.reticle.destroy(); }
         this.entityStates.delete(guid);
       } else {
         // Grasses + items: FadeThenDestroy (Unity FloorController behavior)
@@ -569,6 +583,8 @@ export class GameRenderer {
     this.syncStatusIndicators(floor);
     // Sync telegraph charging effects
     this.syncTelegraphEffects(floor);
+    // Sync AttackGroundTask line + reticle
+    this.syncAttackGroundEffects(floor);
   }
 
   /**
@@ -607,6 +623,13 @@ export class GameRenderer {
       // RunAwayTask visual
       if (actor.task instanceof RunAwayTask) {
         visuals.push({ config: RUN_AWAY_VISUAL, tint: RUN_AWAY_TINT });
+      }
+
+      // WaitTask visual — all non-player actors unless hideWaitTask=true in Unity
+      const isPlayer = body.constructor.name === 'Player';
+      const hideWaitTask = HIDE_WAIT_TASK_NAMES.has(body.constructor.name);
+      if (!isPlayer && !hideWaitTask && actor.task instanceof WaitTask) {
+        visuals.push({ config: WAIT_TASK_VISUAL, tint: WAIT_TASK_TINT });
       }
 
       // Status visuals — only statuses with Unity prefabs
@@ -694,11 +717,28 @@ export class GameRenderer {
         if (state && !state.telegraph) {
           const container = new Container();
           this.effectLayer.addChild(container);
+
+          // Detect attack target for reticle — skip if target == self position.
+          // AttackGroundTask has its own dedicated line+sprite reticle, so skip here.
+          const then = actor.task.then;
+          let reticleTilePos: Vector2Int | undefined;
+          if (!(actor.task instanceof AttackGroundTask)) {
+            if (then instanceof AttackBaseAction && !then.target.isDead) {
+              const tp = then.target.pos;
+              if (!(tp.x === body.pos.x && tp.y === body.pos.y)) reticleTilePos = tp;
+            } else if (then instanceof AttackGroundBaseAction) {
+              const tp = then.targetPosition;
+              if (!(tp.x === body.pos.x && tp.y === body.pos.y)) reticleTilePos = tp;
+            }
+          }
+
           state.telegraph = {
             container,
             particles: [],
             spawnAccum: 0,
             fadingOut: false,
+            reticleAge: 0,
+            reticleTilePos,
           };
         }
       }
@@ -774,15 +814,99 @@ export class GameRenderer {
         }
       }
 
+      // Reticle: flash at attack target (orange rectangle, sin-wave alpha)
+      if (effect.reticleTilePos) {
+        effect.reticleAge += dt;
+        if (!effect.reticle) {
+          const g = new Graphics();
+          this.effectLayer.addChild(g);
+          effect.reticle = g;
+        }
+        const rPx = this.camera.tileToPixel(effect.reticleTilePos);
+        effect.reticle.clear();
+        if (!effect.fadingOut) {
+          const alpha = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(effect.reticleAge * Math.PI * 2 * 2));
+          effect.reticle.rect(rPx.x, rPx.y, ts, ts).stroke({ color: 0xff6633, alpha, width: 2 });
+        }
+      }
+
       // Fade out container
       if (effect.fadingOut) {
         effect.container.alpha = Math.max(0, effect.container.alpha - dt / TELEGRAPH_FADE_DURATION);
         if (effect.container.alpha <= 0) {
+          if (effect.reticle) { effect.reticle.destroy(); }
           effect.container.destroy({ children: true });
           state.telegraph = undefined;
         }
       }
     }
+
+    // AttackGroundTask reticle flash animation (Flashing.anim: white→reddish 0xff1a2f, 0.5s loop)
+    for (const [, state] of this.entityStates) {
+      const ag = state.attackGround;
+      if (!ag) continue;
+      ag.reticleAge += dt;
+      // sin oscillates 0→1→0 at period 0.5s
+      const t = 0.5 + 0.5 * Math.sin(ag.reticleAge * Math.PI * 4);
+      const r = 255;
+      const g = Math.round(255 * (1 - t * (1 - 0.102))); // 255 → 26 (0.1 * 255)
+      const b = Math.round(255 * (1 - t * (1 - 0.184))); // 255 → 47
+      ag.reticle.tint = (r << 16) | (g << 8) | b;
+    }
+  }
+
+  /**
+   * Sync AttackGroundTask visuals: line from actor to target + flashing reticle sprite.
+   * Unity AttackGroundTaskController.cs: LineRenderer (tan→transparent) + colored_transparent_packed_613 reticle.
+   * Line width: 0.08 tiles normally, 0.03 if diamond distance > 1.
+   * Reticle flash animation (Flashing.anim) is driven per-frame inside updateTelegraphEffects.
+   */
+  private syncAttackGroundEffects(floor: Floor): void {
+    const ts = this.camera.tileSize;
+    const activeGuids = new Set<string>();
+
+    for (const body of floor.bodies) {
+      if (body.isDead) continue;
+      const actor = body as any;
+      if (!(actor.task instanceof AttackGroundTask)) continue;
+      activeGuids.add(body.guid);
+      const state = this.entityStates.get(body.guid);
+      if (!state) continue;
+
+      const targetPos = (actor.task as AttackGroundTask).targetPosition;
+      const fromPx = this.camera.tileToCenterPixel(body.pos);
+      const toPx = this.camera.tileToCenterPixel(targetPos);
+      const diamondDist = Math.abs(targetPos.x - body.pos.x) + Math.abs(targetPos.y - body.pos.y);
+      const lineWidth = (diamondDist > 1 ? 0.03 : 0.08) * ts;
+
+      if (!state.attackGround) {
+        const line = new Graphics();
+        this.effectLayer.addChild(line);
+        const tex = this.sprites.getTextureByKey('colored_transparent_packed_613') ?? Texture.WHITE;
+        const reticle = new Sprite(tex);
+        reticle.anchor.set(0.5, 0.5);
+        reticle.width = 0.5 * ts;
+        reticle.height = 0.5 * ts;
+        this.effectLayer.addChild(reticle);
+        state.attackGround = { line, reticle, reticleAge: 0 };
+      }
+
+      const { line, reticle } = state.attackGround;
+      line.clear();
+      line.moveTo(fromPx.x, fromPx.y)
+        .lineTo(toPx.x, toPx.y)
+        .stroke({ color: 0xCFC6B8, alpha: 0.8, width: lineWidth });
+      reticle.position.set(toPx.x, toPx.y);
+    }
+
+    for (const [guid, state] of this.entityStates) {
+      if (state.attackGround && !activeGuids.has(guid)) {
+        state.attackGround.line.destroy();
+        state.attackGround.reticle.destroy();
+        state.attackGround = undefined;
+      }
+    }
+  }
   }
 
   /** Initialize GrowAtStart spawn animation on a newly created entity. */

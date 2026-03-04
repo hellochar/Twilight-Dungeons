@@ -604,6 +604,14 @@ export function useGameLoop() {
     return () => window.removeEventListener('keydown', onKey);
   }, [readState]);
 
+  /** Make the player wait one turn — mirrors Unity WaitButtonController.HandleWaitPressed(). */
+  const executeWait = useCallback(async () => {
+    const model = modelRef.current;
+    if (!model || processingRef.current || model.player.isDead) return;
+    model.player.setTasks(new WaitTask(model.player, 1));
+    await stepAndAnimate();
+  }, [stepAndAnimate]);
+
   /** Reset game (play again). */
   const resetGame = useCallback(() => {
     const renderer = rendererRef.current;

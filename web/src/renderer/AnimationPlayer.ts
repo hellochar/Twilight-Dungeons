@@ -1,5 +1,5 @@
 import gsap from 'gsap';
-import { Container, Sprite, Text, TextStyle } from 'pixi.js';
+import { Container, Graphics, Sprite, Text, TextStyle, Texture } from 'pixi.js';
 import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
@@ -173,6 +173,15 @@ export class AnimationPlayer {
         break;
       case 'pulse':
         this.animatePulse(event, tl);
+        break;
+      case 'struggle':
+        this.animateStruggle(node, event, tl);
+        break;
+      case 'wait':
+        this.animatePlayerWait(event);
+        break;
+      case 'attackGroundHit':
+        this.animateAttackGroundHit(event, tl);
         break;
   /**
    * Parabolic arc jump animation.
@@ -385,6 +394,84 @@ export class AnimationPlayer {
       },
       onComplete: () => { scaleRoot.scale.set(1, 1); },
     }, '<');
+  }
+
+  /**
+   * X-axis shake matching Struggle.anim keyframes (tile units):
+   * 0→−0.2, 0.083→+0.2, 0.167→−0.2, 0.25→+0.2, 0.333→−0.2, 0.417→+0.2, 0.5→−0.1, 0.583→0
+   */
+  private animateStruggle(node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+    if (!event.from) return;
+    const px = this.camera.tileToPixel(event.from);
+    const d = 0.2 * this.camera.tileSize;
+    const label = `struggle-${event.entityGuid}`;
+    tl.set(node.position, { x: px.x - d }, label);
+    tl.to(node.position, { x: px.x + d, duration: 0.083, ease: 'none' }, '>');
+    tl.to(node.position, { x: px.x - d, duration: 0.083, ease: 'none' }, '>');
+    tl.to(node.position, { x: px.x + d, duration: 0.083, ease: 'none' }, '>');
+    tl.to(node.position, { x: px.x - d, duration: 0.083, ease: 'none' }, '>');
+    tl.to(node.position, { x: px.x + d, duration: 0.083, ease: 'none' }, '>');
+    tl.to(node.position, { x: px.x - d * 0.5, duration: 0.083, ease: 'none' }, '>');
+    tl.to(node.position, { x: px.x, duration: 0.083, ease: 'none', onComplete: () => { node.position.x = px.x; } }, '>');
+  }
+
+  /**
+   * Floating clock sprite for player wait — Unity Wait.prefab FadeUp animation.
+   * Clock rises 0.1 tiles, alpha 1→0 over 0.5s from player.pos.y + 0.9 tiles.
+   * Runs independently (not on master timeline).
+   */
+  private animatePlayerWait(event: GameEvent): void {
+    if (!event.from) return;
+    const ts = this.camera.tileSize;
+    const px = this.camera.tileToCenterPixel(event.from);
+    const tex = this.renderer.sprites.getTextureByKey('clock') ?? Texture.WHITE;
+    const sprite = new Sprite(tex);
+    sprite.anchor.set(0.5, 0.5);
+    sprite.width = ts;
+    sprite.height = ts;
+    sprite.tint = 0xCFC6B8;
+    sprite.position.set(px.x, px.y - 0.9 * ts);
+
+    const layer = this.renderer.getEffectLayer();
+    layer.addChild(sprite);
+
+    const cleanup = () => {
+      sprite.parent?.removeChild(sprite);
+      sprite.destroy();
+    };
+
+    gsap.to(sprite, { y: sprite.y - 0.1 * ts, alpha: 0, duration: 0.5, ease: 'linear', onComplete: cleanup });
+  }
+  /**
+   * Attack Sprite hit animation — Unity Attack Sprite.prefab Swipe.anim (0.717s).
+   * Spawned at target tile. Y: +0.2→−0.12 tiles, scale: 0→1.2→1→0.
+   */
+  private animateAttackGroundHit(event: GameEvent, tl: gsap.core.Timeline): void {
+    if (!event.to) return;
+    const ts = this.camera.tileSize;
+    const px = this.camera.tileToCenterPixel(event.to);
+    const tex = this.renderer.sprites.getTextureByKey('colored_transparent_packed_553') ?? Texture.WHITE;
+    const sprite = new Sprite(tex);
+    sprite.anchor.set(0.5, 0.5);
+    sprite.width = ts;
+    sprite.height = ts;
+    sprite.scale.set(0, 0);
+    sprite.position.set(px.x, px.y + 0.2 * ts);
+
+    const layer = this.renderer.getEffectLayer();
+    layer.addChild(sprite);
+
+    const cleanup = () => {
+      sprite.parent?.removeChild(sprite);
+      sprite.destroy();
+    };
+
+    const label = `atkgroundhit-${event.entityGuid}`;
+    // Scale up 0→1.2 over first ~35%, 1.2→1 middle, 1→0 end; Y moves 0.2→-0.12 total
+    tl.to(sprite.scale, { x: 1.2, y: 1.2, duration: 0.25, ease: 'power2.out' }, label);
+    tl.to(sprite, { y: px.y - 0.12 * ts, duration: 0.717, ease: 'power2.out' }, label);
+    tl.to(sprite.scale, { x: 1, y: 1, duration: 0.1, ease: 'none' }, '>');
+    tl.to(sprite.scale, { x: 0, y: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, '>');
   }
 
   /**

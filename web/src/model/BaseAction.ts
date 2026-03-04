@@ -75,6 +75,7 @@ export class AttackGroundBaseAction extends BaseAction {
 
   perform(): void {
     this.actor.attackGround(this.targetPosition);
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'attackGroundHit', entityGuid: this.actor.guid, to: this.targetPosition });
   }
 }
 
@@ -89,7 +90,11 @@ export class WaitBaseAction extends BaseAction {
     this._type = type;
   }
 
-  perform(): void {}
+  perform(): void {
+    if (this.actor === GameModelRef.mainOrNull?.player) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'wait', entityGuid: this.actor.guid, from: this.actor.pos });
+    }
+  }
 }
 
 export class GenericBaseAction extends BaseAction {
@@ -138,7 +143,9 @@ export class StruggleBaseAction extends BaseAction {
     super(actor);
   }
 
-  perform(): void {}
+  perform(): void {
+    GameModelRef.mainOrNull?.emitAnimation({ type: 'struggle', entityGuid: this.actor.guid, from: this.actor.pos });
+  }
 }
 
 /** Map of ActionType → cost (in turns). Mutable for modifier processing. */

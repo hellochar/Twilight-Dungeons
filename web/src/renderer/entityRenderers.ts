@@ -38,6 +38,15 @@ export interface EntityRenderState {
     particles: Array<{ g: Graphics; age: number; angle: number }>;
     spawnAccum: number;
     fadingOut: boolean;
+    reticle?: Graphics;
+    reticleAge: number;
+    reticleTilePos?: Vector2Int;
+  };
+  /** AttackGroundTask line + reticle effects. */
+  attackGround?: {
+    line: Graphics;
+    reticle: Sprite;
+    reticleAge: number;
   };
 }
 

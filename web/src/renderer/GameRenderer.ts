@@ -1126,6 +1126,19 @@ export class GameRenderer {
       const sign = (Math.floor(t / 0.05) % 2 === 0) ? -1 : 1;
       state.scaleRoot.position.x = ts / 2 + sign * amplitude * ts;
     }
+
+    // Deathbloom bloom animation: scale 0.25→0.7836857, alpha 0.251→1.0 over 1.5s (ease-out quadratic)
+    for (const [, state] of this.entityStates) {
+      if (!state.deathbloom || state.deathbloom.done) continue;
+      const db = state.deathbloom;
+      db.elapsed += dt;
+      const t = Math.min(db.elapsed / 1.5, 1.0);
+      const ease = t * (2 - t);
+      const scaleRatio = (0.25 / 0.7836857) + ease * (1 - 0.25 / 0.7836857);
+      db.flower.scale.set(db.targetScale * scaleRatio);
+      db.flower.alpha = 0.251 + ease * (1.0 - 0.251);
+      if (t >= 1.0) db.done = true;
+    }
   }
 
   /** Generate a deterministic fallback color from a name string. */

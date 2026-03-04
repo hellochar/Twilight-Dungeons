@@ -4,6 +4,7 @@ import type { SpriteManager } from './SpriteManager';
 import { VibrantIvy } from '../model/grasses/VibrantIvy';
 import { Violets } from '../model/grasses/Violets';
 import { Bladegrass } from '../model/grasses/Bladegrass';
+import { Deathbloom } from '../model/grasses/Deathbloom';
 import { Wall } from '../model/Tile';
 import { Vector2Int } from '../core/Vector2Int';
 import { Snail } from '../model/enemies/Snail';
@@ -57,6 +58,8 @@ export interface EntityRenderState {
   explodeAOE?: { sprite: Sprite; elapsed: number; fadingOut: boolean };
   /** Vibrate.anim state for Muck on its final turn before transforming back into Skully. */
   muckVibrate?: { timer: number };
+  /** Deathbloom bloomed flower animation state. */
+  deathbloom?: { flower: Sprite; elapsed: number; done: boolean; targetScale: number };
 }
 
 // ─── Entity Renderer Hooks ───
@@ -253,6 +256,35 @@ registerEntityRenderer(BoombugCorpse, {
     state.bob = undefined;
   },
 });
+
+// ─── Deathbloom renderer ───
+
+/**
+ * DeathbloomController port: when isBloomed, tint stem red and animate flower child
+ * (3Red sprite) from scale 0.25 → 0.7836857 and alpha 0.251 → 1.0 over 1.5s (ease-out).
+ * Position offset: (-0.005, 0.116) Unity units → (-0.005*ts, -0.116*ts) PixiJS.
+ */
+registerEntityRenderer(Deathbloom, {
+  sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const db = entity as Deathbloom;
+    if (!db.isBloomed || state.deathbloom) return;
+    const { sprites, ts } = ctx;
+    // Red-tint the stem sprite
+    state.visual.tint = 0xFF5A5A;
+    // Create flower sprite
+    const tex = sprites.getTextureByKey('3red') ?? Texture.WHITE;
+    const flower = new Sprite(tex);
+    flower.anchor.set(0.5, 0.5);
+    flower.position.set(ts / 2 - 0.005 * ts, ts / 2 - 0.116 * ts);
+    const nativeW = tex === Texture.WHITE ? 16 : (tex.width || 16);
+    const targetScale = (0.7836857 * ts) / nativeW;
+    flower.scale.set((0.25 * ts) / nativeW);
+    flower.alpha = 0.251;
+    state.scaleRoot.addChild(flower);
+    state.deathbloom = { flower, elapsed: 0, done: false, targetScale };
+  },
+});
+
 // ─── Muck renderer ───
 
 /**

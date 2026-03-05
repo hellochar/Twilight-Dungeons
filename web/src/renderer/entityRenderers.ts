@@ -22,10 +22,12 @@ export interface EntityRenderState {
   /** True for floor.bodies entries — exempt from FadeThenDestroy on removal. */
   isBody: boolean;
   statusIndicator?: Container;
-  /** GrowAtStart spawn animation progress. */
-  spawn?: { elapsed: number; scale: number };
+  /** GrowAtStart spawn animation progress. Duration defaults to SPAWN_ANIMATION_DURATION; renderers can pre-set a custom value. */
+  spawn?: { elapsed: number; scale: number; duration: number };
   /** FadeThenDestroy exit animation. Set when entity leaves the floor; drives updateEntityAnimations. */
   fade?: { startScale: number; startTime: number };
+  /** If true, skip FadeThenDestroy when removed (AnimationPlayer already handled cleanup via quickDeath etc.). */
+  suppressFade?: boolean;
   /** Detached shadow Container on grassLayer for above-entity grasses (e.g. Guardleaf). */
   detachedShadow?: Container;
   /** Shadow sprite (for entities whose shadow texture must update dynamically). */
@@ -294,6 +296,12 @@ registerEntityRenderer(Deathbloom, {
  * transforming back into Skully. The actual oscillation is driven by GameRenderer.updateEntityAnimations.
  */
 registerEntityRenderer(Muck, {
+  init(_entity: Entity, state: EntityRenderState): void {
+    // Fast GrowAtStart: 0.1s instead of the default 3s (spawned from dying Skully).
+    state.scaleRoot.scale.set(0.01, 0.01);
+    state.scaleRoot.alpha = 0.01;
+    state.spawn = { elapsed: 0, scale: 0.01, duration: 0.1 };
+  },
   sync(entity: Entity, state: EntityRenderState): void {
     if ((entity as Muck).turnsElapsed >= 2 && !state.vibrate) {
       state.vibrate = { timer: 0 };

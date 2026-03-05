@@ -224,6 +224,22 @@ export class GameRenderer {
     if (state) state.bob = undefined;
   }
 
+  /** Mark entity to skip FadeThenDestroy (AnimationPlayer will handle cleanup). */
+  suppressEntityFade(guid: string): void {
+    const state = this.entityStates.get(guid);
+    if (state) state.suppressFade = true;
+  }
+
+  /** Immediately destroy entity state (called by AnimationPlayer after quickDeath etc.). */
+  destroyEntityState(guid: string): void {
+    const state = this.entityStates.get(guid);
+    if (!state) return;
+    state.node.destroy({ children: true });
+    if (state.detachedShadow) state.detachedShadow.destroy({ children: true });
+    if (state.statusIndicator) state.statusIndicator.destroy();
+    this.entityStates.delete(guid);
+  }
+
   /** Stop the vibrate animation and snap position.x back to center. */
   disableEntityVibrate(guid: string): void {
     const state = this.entityStates.get(guid);
@@ -588,7 +604,7 @@ export class GameRenderer {
 
     // Remove nodes for dead/removed entities
     for (const [guid, state] of this.entityStates) {
-      if (seenGuids.has(guid) || state.fade) continue;
+      if (seenGuids.has(guid) || state.fade || state.suppressFade) continue;
       state.spawn = undefined;
       if (state.isBody) {
         // Bodies: AnimationPlayer already ran death animation — just destroy
@@ -1039,13 +1055,13 @@ export class GameRenderer {
     }
   }
 
-  /** Initialize GrowAtStart spawn animation on a newly created entity. */
+  /** Initialize GrowAtStart spawn animation. Skips if the renderer's init hook already set state.spawn. */
   private initSpawnAnimation(guid: string): void {
     const state = this.entityStates.get(guid);
-    if (!state) return;
+    if (!state || state.spawn) return;
     state.scaleRoot.scale.set(0.01, 0.01);
     state.scaleRoot.alpha = 0.01;
-    state.spawn = { elapsed: 0, scale: 0.01 };
+    state.spawn = { elapsed: 0, scale: 0.01, duration: SPAWN_ANIMATION_DURATION };
   }
 
   /**
@@ -1066,7 +1082,7 @@ export class GameRenderer {
     for (const [, state] of this.entityStates) {
       if (!state.spawn) continue;
       state.spawn.elapsed += dt;
-      const t = state.spawn.elapsed / SPAWN_ANIMATION_DURATION;
+      const t = state.spawn.elapsed / state.spawn.duration;
       if (t >= 1) {
         state.scaleRoot.scale.set(1, 1);
         state.scaleRoot.alpha = 1;

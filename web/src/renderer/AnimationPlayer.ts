@@ -183,7 +183,9 @@ export class AnimationPlayer {
         this.animateSpawn(node, event, tl);
         break;
       case 'pulse':
-        this.animatePulse(event, tl);
+        if (!batch.some(e => e.entityGuid === event.entityGuid && (e.type === 'death' || e.type === 'squishDeath' || e.type === 'quickDeath'))) {
+          this.animatePulse(event, tl);
+        }
         break;
       case 'struggle':
         this.animateStruggle(node, event, tl);
@@ -412,7 +414,15 @@ export class AnimationPlayer {
     this.renderer.disableEntityVibrate(event.entityGuid);
     const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
     if (!scaleRoot) return;
-    tl.to(scaleRoot, { alpha: 0, duration: 0.1, ease: 'power1.out' }, 0);
+    // Suppress FadeThenDestroy — we handle cleanup ourselves on complete.
+    this.renderer.suppressEntityFade(event.entityGuid);
+    const guid = event.entityGuid;
+    tl.to(scaleRoot, {
+      alpha: 0,
+      duration: 0.1,
+      ease: 'power1.out',
+      onComplete: () => this.renderer.destroyEntityState(guid),
+    }, 0);
   }
 
   /** Pop in from zero scale on spawn — targets scaleRoot for center-pivot animation. */

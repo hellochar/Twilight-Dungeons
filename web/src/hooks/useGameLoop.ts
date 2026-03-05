@@ -537,9 +537,19 @@ export function useGameLoop() {
     // After execution, refresh proposed path so the player can keep clicking the same target
     const pendingTarget = proposedTargetRef.current;
     if (pendingTarget) {
-      const newPath = floor.findPath(player.pos, pendingTarget, false, player);
-      if (!player.isDead && !floor.isCleared && newPath.length > 0) {
-        rendererRef.current?.showProposedPath(pendingTarget, newPath);
+      if (!player.isDead && !floor.isCleared) {
+        const newPath = floor.findPath(player.pos, pendingTarget, false, player);
+        if (newPath.length > 0) {
+          rendererRef.current?.showProposedPath(pendingTarget, newPath);
+        } else {
+          // Target may be an enemy (pathfinding can't enter occupied tile) — show reticle for attack
+          const bodyAtTarget = floor.bodies.get(pendingTarget);
+          if (bodyAtTarget && bodyAtTarget !== player && 'hp' in bodyAtTarget) {
+            rendererRef.current?.showProposedPath(pendingTarget, [pendingTarget]);
+          } else {
+            clearProposed();
+          }
+        }
       } else {
         clearProposed();
       }

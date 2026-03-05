@@ -671,7 +671,7 @@ export class GameRenderer {
       if (isSleeping) {
         visuals.push({
           config: SLEEP_VISUAL,
-          tint: actor.task.isDeepSleep ? DEEP_SLEEP_TINT : undefined,
+          tint: (actor.task as SleepTask).isDeepSleep ? DEEP_SLEEP_TINT : undefined,
         });
       }
 

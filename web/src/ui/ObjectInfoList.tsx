@@ -131,7 +131,7 @@ export function ObjectInfoList({ bodies, grasses, playerPos, hoveredTilePos, hor
 
 import { forwardRef } from 'react';
 
-const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; horizontal: boolean }>(
+export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; horizontal: boolean }>(
   function EntityCard({ data, horizontal }, ref) {
     const info = getObjectInfo(data.typeName);
     const description = info?.description ?? '';

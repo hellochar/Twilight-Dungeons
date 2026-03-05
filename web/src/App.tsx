@@ -3,6 +3,7 @@ import { useGameLoop } from './hooks/useGameLoop';
 import { HUD } from './ui/HUD';
 import { GameOverOverlay } from './ui/GameOverOverlay';
 import { ObjectInfoList } from './ui/ObjectInfoList';
+import { MobileInfoPopup } from './ui/MobileInfoPopup';
 import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import { DateSelectorPanel } from './ui/DateSelectorPanel';
 import { FONT_FAMILY, FontSize } from './ui/fonts';
@@ -12,10 +13,9 @@ import './App.css';
 
 const GAME_MAX_W = 1200;
 const INFO_PANEL_W = 330;
-const BOTTOM_PANEL_H = 0;
 
 function App() {
-  const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos } = useGameLoop();
+  const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
   const [viewW, setViewW] = useState(() => window.innerWidth);
 
@@ -34,13 +34,13 @@ function App() {
     setTimeout(() => window.dispatchEvent(new Event('resize')), 0);
   }, []);
 
-  const showRight = viewW > GAME_MAX_W;
+  const showRight = !isMobile();
   const hasPanelContent = gameState.floorBodies.length > 0 || gameState.floorGrasses.length > 0;
 
   return (
     <div style={{ width: '100vw', height: '100dvh', display: 'flex', alignItems: 'stretch', justifyContent: 'center' }}>
       <div style={{ width: '100%', maxWidth: GAME_MAX_W, height: '100%', display: 'flex', position: 'relative' }}>
-        <div ref={containerRef} style={{ flex: 1, height: !showRight && hasPanelContent ? `calc(100% - ${BOTTOM_PANEL_H}px)` : '100%', minWidth: 0 }} />
+        <div ref={containerRef} style={{ flex: 1, height: '100%', minWidth: 0 }} />
 
         {ready && (
           <>
@@ -125,27 +125,16 @@ function App() {
           </div>
         )}
 
-        {/* Bottom panel for mobile/narrow viewports */}
-        {ready && !showRight && hasPanelContent && (
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: BOTTOM_PANEL_H,
-            borderTop: '1px solid #333',
-            overflow: 'hidden',
-          }}>
-            <ObjectInfoList
-              bodies={gameState.floorBodies}
-              grasses={gameState.floorGrasses}
-              playerPos={gameState.playerPos}
-              hoveredTilePos={hoveredTilePos}
-              horizontal
-              containerRef={containerRef}
-              rendererRef={rendererRef}
-            />
-          </div>
+        {/* Floating info popup for mobile */}
+        {ready && !showRight && hoveredTilePos && (
+          <MobileInfoPopup
+            bodies={gameState.floorBodies}
+            grasses={gameState.floorGrasses}
+            hoveredTilePos={hoveredTilePos}
+            containerRef={containerRef}
+            rendererRef={rendererRef}
+            onClose={clearHoveredTile}
+          />
         )}
 
         {import.meta.env.DEV && ready && (

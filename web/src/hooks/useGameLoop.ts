@@ -522,13 +522,17 @@ export function useGameLoop() {
     const player = model.player;
     const floor = model.currentFloor;
 
-    // ─── Two-click path preview (in combat only) ───
-    // First click: show path dots + reticle. Second click on same tile: execute.
+    // ─── Two-click path/action preview ───
+    // Desktop: non-adjacent tiles in combat only. Mobile: all non-self tiles.
+    // First click: show path dots + reticle (+ info popup on mobile). Second click on same tile: execute.
     if (intent.type === 'click') {
       const { tilePos } = intent;
       const isInCombat = floor.depth > 0 && !floor.isCleared;
       const isAdjacent = Vector2Int.chebyshevDistance(player.pos, tilePos) === 1;
-      if (isInCombat && !Vector2Int.equals(tilePos, player.pos) && !isAdjacent) {
+      const needsConfirm = isMobile()
+        ? !Vector2Int.equals(tilePos, player.pos)
+        : (isInCombat && !Vector2Int.equals(tilePos, player.pos) && !isAdjacent);
+      if (needsConfirm) {
         if (proposedTargetRef.current && Vector2Int.equals(proposedTargetRef.current, tilePos)) {
           // Second click on same tile — clear dots visually, keep ref for post-execution refresh
           rendererRef.current?.clearProposedPath();
@@ -540,6 +544,13 @@ export function useGameLoop() {
             clearProposed();
             proposedTargetRef.current = previewTask.target;
             rendererRef.current?.showProposedPath(previewTask.target, [...previewTask.path]);
+            return; // don't execute yet
+          }
+          // Adjacent or no valid path on mobile — show reticle only for first tap
+          if (isMobile() && isAdjacent) {
+            clearProposed();
+            proposedTargetRef.current = tilePos;
+            rendererRef.current?.showProposedPath(tilePos, [tilePos]);
             return; // don't execute yet
           }
           // No valid path — clear proposed and bail
@@ -906,7 +917,12 @@ export function useGameLoop() {
     };
   }, [processIntent, readState/*, handleTileInspect*/]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos/*, entityInfo, setEntityInfo*/ };
+  const clearHoveredTile = useCallback(() => {
+    setHoveredTilePos(null);
+    clearProposed();
+  }, [clearProposed]);
+
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile/*, entityInfo, setEntityInfo*/ };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

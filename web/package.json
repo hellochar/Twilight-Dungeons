@@ -6,8 +6,8 @@
   "scripts": {
     "sprites": "node scripts/copy-sprites.js",
     "audio": "node scripts/copy-audio.js",
-    "dev": "node scripts/copy-sprites.js && node scripts/copy-audio.js && vite",
-    "build": "node scripts/copy-sprites.js && node scripts/copy-audio.js && tsc -b && vite build",
+    "dev": "node scripts/copy-sprites.js && vite",
+    "build": "node scripts/copy-sprites.js && tsc -b && vite build",
     "typecheck": "tsc -p tsconfig.app.json",
     "lint": "eslint .",
     "preview": "vite preview"

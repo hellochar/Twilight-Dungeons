@@ -10,7 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 public/sprites
-public/audio
 dist-ssr
 *.local
 

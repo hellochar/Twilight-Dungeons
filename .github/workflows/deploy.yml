@@ -24,7 +24,7 @@ jobs:
           node-version: 20
       - run: npm ci
         working-directory: web
-      - run: node scripts/copy-sprites.js && node scripts/copy-audio.js && npx vite build
+      - run: node scripts/copy-sprites.js && npx vite build
         working-directory: web
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}

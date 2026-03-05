@@ -27,7 +27,7 @@ registerObjectInfo('Bird', { description: 'Jumps up to two tiles, then pauses.' 
 registerObjectInfo('Snake', { description: 'Only moves or attacks if you\'re in the same row or column. Attacks other creatures. Attacks apply Weakness.' });
 registerObjectInfo('Spider', { description: 'Spins Webs. Attacks deal no damage but apply Poison.' });
 registerObjectInfo('Snail', { description: 'Slow. Goes into its shell when it takes damage. While in its shell, it takes 1 less attack damage.' });
-registerObjectInfo('Wallflower', { description: 'Must stick next to a wall.' });
+registerObjectInfo('Wallflower', { description: 'Stays next to walls.' });
 registerObjectInfo('WallflowerTendril', { description: 'Also makes a free attack on the creature directionally behind the one you attack.' });
 registerObjectInfo('Jackal', { description: 'Runs away when another Jackal dies.' });
 registerObjectInfo('JackalBoss', { description: 'Summons jackals if there are none on the map.' });

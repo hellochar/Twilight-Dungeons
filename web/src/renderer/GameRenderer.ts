@@ -1150,14 +1150,17 @@ export class GameRenderer {
       const isMovementBlocked = actor.statuses?.list?.some(
         (s: any) => s.blocksMovement?.() === true
       );
+      const baseX = bobTs / 2 + (state.baseOffset?.x ?? 0);
+      const baseY = bobTs / 2 + (state.baseOffset?.y ?? 0);
+      scaleRoot.position.x = baseX;
       if (isSleeping || isMovementBlocked) {
-        scaleRoot.position.y = bobTs / 2;
+        scaleRoot.position.y = baseY;
         continue;
       }
       const baseActionCost: number = actor.baseActionCost ?? 1;
       state.bob.timer = (state.bob.timer + dt / baseActionCost) % 1.0;
       const bobPx = state.bob.timer >= 0.5 ? 0.1 * bobTs : 0;
-      scaleRoot.position.y = bobTs / 2 - bobPx;
+      scaleRoot.position.y = baseY - bobPx;
     }
 
     const VIBRATE_PERIOD = 4.60;
@@ -1165,8 +1168,9 @@ export class GameRenderer {
     for (const [, state] of this.entityStates) {
       if (!state.vibrate) continue;
       // Stop vibrating once the fade-out (disappear) animation starts
+      const baseX = ts / 2 + (state.baseOffset?.x ?? 0);
       if (state.fade) {
-        state.scaleRoot.position.x = ts / 2;
+        state.scaleRoot.position.x = baseX;
         continue;
       }
       state.vibrate.timer += dt;
@@ -1174,7 +1178,7 @@ export class GameRenderer {
       let amplitude: number = 0.07;
       // 20Hz alternating sign matching Vibrate.anim's 0.05s keyframe intervals
       const sign = (Math.floor(t / 0.05) % 2 === 0) ? -1 : 1;
-      state.scaleRoot.position.x = ts / 2 + sign * amplitude * ts;
+      state.scaleRoot.position.x = baseX + sign * amplitude * ts;
     }
 
     // Skully squish-spawn (unsquish from bottom): scaleY 0→1 over 0.3s, bottom-pivot.

@@ -59,6 +59,8 @@ export interface EntityRenderState {
   };
   /** ExplodeTask 3×3 AoE danger marker on the effectLayer — plays looping explosion anim. */
   explodeAOE?: { sprite: Sprite; elapsed: number; fadingOut: boolean };
+  /** Pixel offset from default scaleRoot center (ts/2, ts/2). Used by wallflower wall-hug; bob/vibrate add to this. */
+  baseOffset?: { x: number; y: number };
   /** Vibrate.anim state — driven by GameRenderer.updateEntityAnimations. Any entity can use this. */
   vibrate?: { timer: number };
   /** Unsquish spawn state for Skully spawned from Muck (scaleY 0→1 from bottom pivot). */
@@ -339,9 +341,10 @@ registerEntityRenderer(Wallflower, {
     const len = Math.sqrt(wx * wx + wy * wy);
     if (len > 1) { wx /= len; wy /= len; }
 
-    const offset = 0.25 * ts;
+    const offset = 0.4 * ts;
     // Y-flip: Unity Y-up → PixiJS Y-down
-    state.scaleRoot.position.set(ts / 2 + wx * offset, ts / 2 - wy * offset);
+    // Store as baseOffset — bob and vibrate animations add to this rather than overwriting
+    state.baseOffset = { x: wx * offset, y: -wy * offset };
   },
 });
 

@@ -44,36 +44,36 @@ export class FloorGenerator {
     return [
       // early game (depths 0-9)
       () => this.generateFloor0(0),
-      () => this.generateSingleRoomFloor(1, 9, 6, 1, 1),
-      () => this.generateSingleRoomFloor(2, 9, 6, 1, 1, false, undefined, E.oneAstoria),
-      () => this.generateSingleRoomFloor(3, 9, 7, 2, 1, false, undefined, E.addOneWater),
-      () => this.generateSingleRoomFloor(4, 9, 7, 2, 1, true, undefined, E.oneAstoria),
-      () => this.generateSingleRoomFloor(5, 10, 8, 3, 2),
-      () => this.generateSingleRoomFloor(6, 10, 8, 3, 2, false, undefined, E.addOneWater),
-      () => this.generateSingleRoomFloor(7, 10, 8, 3, 3),
+      () => this.generateSingleRoomFloor(1, 6, 9, 1, 1),
+      () => this.generateSingleRoomFloor(2, 6, 9, 1, 1, false, undefined, E.oneAstoria),
+      () => this.generateSingleRoomFloor(3, 7, 9, 2, 1, false, undefined, E.addOneWater),
+      () => this.generateSingleRoomFloor(4, 7, 9, 2, 1, true, undefined, E.oneAstoria),
+      () => this.generateSingleRoomFloor(5, 8, 10, 3, 2),
+      () => this.generateSingleRoomFloor(6, 8, 10, 3, 2, false, undefined, E.addOneWater),
+      () => this.generateSingleRoomFloor(7, 8, 10, 3, 3),
       () => this.generateRewardFloor(8, this.shared.plants.getRandomAndDiscount(1), E.addDownstairsInRoomCenter),
       () => this.generateBlobBossFloor(9),
 
       // midgame (depths 10-18)
-      () => this.generateSingleRoomFloor(10, 9, 7, 2, 1),
-      () => this.generateSingleRoomFloor(11, 9, 7, 2, 1, false, undefined, E.addOneWater),
-      () => this.generateSingleRoomFloor(12, 10, 8, 3, 1),
-      () => this.generateSingleRoomFloor(13, 10, 8, 3, 2, true, undefined, E.oneAstoria),
-      () => this.generateSingleRoomFloor(14, 11, 8, 4, 2),
-      () => this.generateSingleRoomFloor(15, 12, 8, 4, 3),
-      () => this.generateSingleRoomFloor(16, 12, 8, 5, 5),
+      () => this.generateSingleRoomFloor(10, 7, 9, 2, 1),
+      () => this.generateSingleRoomFloor(11, 7, 9, 2, 1, false, undefined, E.addOneWater),
+      () => this.generateSingleRoomFloor(12, 8, 10, 3, 1),
+      () => this.generateSingleRoomFloor(13, 8, 10, 3, 2, true, undefined, E.oneAstoria),
+      () => this.generateSingleRoomFloor(14, 8, 11, 4, 2),
+      () => this.generateSingleRoomFloor(15, 8, 12, 4, 3),
+      () => this.generateSingleRoomFloor(16, 8, 12, 5, 5),
       () => this.generateRewardFloor(17, E.addDownstairsInRoomCenter, E.fungalColonyAnticipation, this.shared.plants.getRandomAndDiscount(1)),
       () => this.generateFungalColonyBossFloor(18),
 
       // endgame (depths 19-27)
-      () => this.generateSingleRoomFloor(19, 10, 8, 2, 2),
-      () => this.generateSingleRoomFloor(20, 12, 8, 3, 2),
-      () => this.generateSingleRoomFloor(21, 14, 9, 4, 3, true, [E.lineWithOpening, E.chasmsAwayFromWalls1]),
-      () => this.generateSingleRoomFloor(22, 13, 9, 5, 2, false, undefined, E.addWater),
-      () => this.generateSingleRoomFloor(23, 14, 9, 6, 4),
-      () => this.generateSingleRoomFloor(24, 14, 9, 7, 4),
-      () => this.generateSingleRoomFloor(25, 14, 9, 8, 5),
-      () => this.generateSingleRoomFloor(26, 14, 9, 9, 6),
+      () => this.generateSingleRoomFloor(19, 8, 10, 2, 2),
+      () => this.generateSingleRoomFloor(20, 8, 12, 3, 2),
+      () => this.generateSingleRoomFloor(21, 9, 14, 4, 3, true, [E.lineWithOpening, E.chasmsAwayFromWalls1]),
+      () => this.generateSingleRoomFloor(22, 9, 13, 5, 2, false, undefined, E.addWater),
+      () => this.generateSingleRoomFloor(23, 9, 14, 6, 4),
+      () => this.generateSingleRoomFloor(24, 9, 14, 7, 4),
+      () => this.generateSingleRoomFloor(25, 9, 14, 8, 5),
+      () => this.generateSingleRoomFloor(26, 9, 14, 9, 6),
       () => this.generateEndFloor(27),
     ];
   }
@@ -142,7 +142,7 @@ export class FloorGenerator {
   // ---- Floor 0: Tutorial / Home ----
 
   private generateFloor0(depth: number): Floor {
-    const floor = new Floor(depth, 12, 7);
+    const floor = new Floor(depth, 7, 12);
     floor.isCleared = true;
 
     FloorUtils.carveGround(floor);
@@ -168,7 +168,7 @@ export class FloorGenerator {
     this.encounterGroup.plants.getRandomAndDiscount(1)?.(floor, room0);
 
     // Downstairs
-    floor.downstairsPos = new Vector2Int(floor.width - 1, Math.floor(floor.height / 2));
+    floor.downstairsPos = new Vector2Int(Math.floor(floor.width / 2), floor.height - 1);
 
     E.addHomeWater(floor, room0);
 
@@ -179,7 +179,7 @@ export class FloorGenerator {
   // ---- Reward Floor ----
 
   private generateRewardFloor(depth: number, ...extraEncounters: Encounter[]): Floor {
-    const floor = new Floor(depth, 12, 8);
+    const floor = new Floor(depth, 8, 12);
     FloorUtils.carveGround(floor);
     FloorUtils.surroundWithWalls(floor);
     FloorUtils.naturalizeEdges(floor);
@@ -253,7 +253,7 @@ export class FloorGenerator {
 
   private tryGenerateSingleRoomFloor(depth: number, width: number, height: number, defaultEncounters = true): Floor {
     const floor = new Floor(depth, width, height);
-    floor.startPos = new Vector2Int(1, Math.floor(floor.height / 2));
+    floor.startPos = new Vector2Int(Math.floor(floor.width / 2), 1);
 
     // Fill with walls
     for (const p of floor.enumerateFloor()) {
@@ -285,7 +285,7 @@ export class FloorGenerator {
   // ---- Boss Floors ----
 
   private generateBlobBossFloor(depth: number): Floor {
-    const floor = new Floor(depth, 14, 9);
+    const floor = new Floor(depth, 9, 14);
 
     // Fill with ground
     for (const p of floor.enumerateFloor()) {
@@ -316,15 +316,15 @@ export class FloorGenerator {
     floor.upstairsRoom = room0;
     floor.downstairsRoom = room0;
 
-    // Boss
-    entityRegistry.create('Blobmother', new Vector2Int(floor.width - 2, Math.floor(floor.height / 2)));
+    // Boss at top-center
+    entityRegistry.create('Blobmother', new Vector2Int(Math.floor(floor.width / 2), floor.height - 2));
 
     FloorUtils.tidyUpAroundStairs(floor);
     return floor;
   }
 
   private generateFungalColonyBossFloor(depth: number): Floor {
-    const floor = new Floor(depth, 13, 9);
+    const floor = new Floor(depth, 9, 13);
 
     for (const p of floor.enumerateFloor()) {
       floor.put(new Wall(p));
@@ -337,8 +337,8 @@ export class FloorGenerator {
       FloorUtils.carveGround(floor, floor.enumerateCircle(center, radius));
     };
 
-    cutCircle(new Vector2Int(3, Math.floor(floor.height / 2)), 2);
-    cutCircle(new Vector2Int(floor.width - 4, Math.floor(floor.height / 2)), 2);
+    cutCircle(new Vector2Int(Math.floor(floor.width / 2), 3), 2);
+    cutCircle(new Vector2Int(Math.floor(floor.width / 2), floor.height - 4), 2);
     cutCircle(room0.center, 4.5);
 
     // Boss in center

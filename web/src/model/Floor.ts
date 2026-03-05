@@ -178,7 +178,7 @@ export class Floor {
     this.depth = depth;
     this.width = width;
     this.height = height;
-    this.startPos = new Vector2Int(1, Math.floor(height / 2));
+    this.startPos = new Vector2Int(Math.floor(width / 2), 1);
 
     this.tiles = new StaticEntityGrid<Tile>(this);
     this.grasses = new StaticEntityGrid<Entity>(this);

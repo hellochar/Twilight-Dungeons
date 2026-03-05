@@ -46,14 +46,14 @@ function twice(fn: Encounter): Encounter {
 }
 
 /**
- * SpectrumPos: Get BFS-ordered tiles starting from a column at spectrum% across the floor.
- * Used for spatially biasing enemy placement (e.g., enemies spawn toward the right side).
+ * SpectrumPos: Get BFS-ordered tiles starting from a row at spectrum% up the floor.
+ * Used for spatially biasing enemy placement (e.g., enemies spawn toward the top).
  */
 function spectrumPos(floor: Floor, spectrum: number): Tile[] {
-  const posX = MyRandom.RandRound((floor.width - 2) * spectrum);
+  const posY = MyRandom.RandRound((floor.height - 2) * spectrum);
   const line = [...floor.enumerateLine(
-    new Vector2Int(posX, 0),
-    new Vector2Int(posX, floor.height - 1),
+    new Vector2Int(0, posY),
+    new Vector2Int(floor.width - 1, posY),
   )]
     .map(pos => floor.tiles.get(pos))
     .filter((t): t is Tile => t != null && t.canBeOccupied());
@@ -61,7 +61,7 @@ function spectrumPos(floor: Floor, spectrum: number): Tile[] {
   let startTile = randomPick(line);
 
   if (!startTile) {
-    startTile = [...floor.breadthFirstSearch(new Vector2Int(posX, Math.floor(floor.height / 2)))]
+    startTile = [...floor.breadthFirstSearch(new Vector2Int(Math.floor(floor.width / 2), posY))]
       .find(t => t.canBeOccupied()) ?? null;
   }
 
@@ -293,8 +293,8 @@ function addWaterImpl(_floor: Floor, _room: Room | null, _num: number, _randomiz
 
 export function addDownstairsInRoomCenter(floor: Floor, room: Room | null): void {
   if (!room) return;
-  const posX = floor.depth < 9 ? room.max.x - 1 : room.max.x - 2;
-  const center = new Vector2Int(posX, room.center.y);
+  const posY = floor.depth < 9 ? room.max.y - 1 : room.max.y - 2;
+  const center = new Vector2Int(room.center.x, posY);
   for (const tile of floor.getAdjacentTiles(center)) {
     floor.put(new HardGround(tile.pos));
     const grass = floor.grasses.get(tile.pos);

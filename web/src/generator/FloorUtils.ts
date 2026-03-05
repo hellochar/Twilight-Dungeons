@@ -42,7 +42,7 @@ export function tidyUpAroundStairs(floor: Floor): void {
     if (dsTile && dsTile.basePathfindingWeight() === 0) {
       floor.put(new HardGround(floor.downstairsPos));
     }
-    const entrancePos = Vector2Int.add(floor.downstairsPos, Vector2Int.left);
+    const entrancePos = Vector2Int.add(floor.downstairsPos, Vector2Int.down);
     if (floor.inBounds(entrancePos)) {
       const entranceTile = floor.tiles.get(entrancePos);
       if (entranceTile && !(entranceTile instanceof (Water as any))) {

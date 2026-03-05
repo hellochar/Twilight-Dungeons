@@ -1,7 +1,7 @@
 import type { GameState, OnTopActionSnapshot } from '../hooks/useGameLoop';
 import { DIFFICULTY_LABEL } from '../model/GameModel';
 import { StatusBar } from './StatusBar';
-import { FONT_FAMILY, FontSize } from './fonts';
+import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
 
 interface HUDProps {
   state: GameState;
@@ -27,7 +27,7 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
         <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
       </div>
 
-      {/* Bottom-center: status icons above hearts */}
+      {/* Bottom-center: status icons above hearts, with action buttons inline */}
       <div style={{
         position: 'absolute',
         bottom: '5%',
@@ -36,19 +36,21 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 4,
+        gap: 16,
       }}>
-        <StatusBar statuses={state.statuses} />
-        <Hearts hp={state.hp} maxHp={state.maxHp} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <StatusBar statuses={state.statuses} />
+          {showButtons && onTopAction && (
+            <OnTopActionButton action={onTopAction} onClick={onExecuteOnTopAction} />
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          <Hearts hp={state.hp} maxHp={state.maxHp} />
+          {showButtons && (
+            <WaitButton onClick={onWait} />
+          )}
+        </div>
       </div>
-
-      {/* Bottom-right: OnTopAction above Wait button */}
-      {showButtons && onTopAction && (
-        <OnTopActionButton action={onTopAction} onClick={onExecuteOnTopAction} bottom={64} />
-      )}
-      {showButtons && (
-        <WaitButton onClick={onWait} />
-      )}
     </div>
   );
 }
@@ -116,19 +118,19 @@ const BUTTON_STYLE = {
   display: 'flex',
   alignItems: 'center',
   gap: 6,
-  padding: '6px 14px',
+  padding: '10px 18px',
   background: 'rgba(20, 20, 30, 0.85)',
   border: '1px solid rgba(255, 255, 255, 0.25)',
   borderRadius: 6,
   color: '#eee',
   fontFamily: FONT_FAMILY,
-  fontSize: FontSize.lg,
+  fontSize: FontSize.xl,
   cursor: 'pointer',
 } as const;
 
 function WaitButton({ onClick }: { onClick: () => void }) {
   return (
-    <div style={{ position: 'absolute', bottom: 16, right: 16, pointerEvents: 'auto' }}>
+    <div style={{ pointerEvents: 'auto' }}>
       <button onClick={onClick} style={BUTTON_STYLE}>
         <img
           src={`${import.meta.env.BASE_URL}sprites/clock.png`}
@@ -142,19 +144,22 @@ function WaitButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function OnTopActionButton({ action, onClick, bottom }: { action: OnTopActionSnapshot; onClick: () => void; bottom: number }) {
+const ACTION_BUTTON_STYLE = {
+  ...BUTTON_STYLE,
+  background: '#e8c820',
+  color: '#1a1a00',
+  border: '2px solid #ffd700',
+  // fontWeight: 'bold',
+} as const;
+
+function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; onClick: () => void }) {
   return (
-    <div style={{
-      position: 'absolute',
-      bottom,
-      right: 16,
-      pointerEvents: 'auto',
-    }}>
-      <button onClick={onClick} style={BUTTON_STYLE}>
+    <div style={{ pointerEvents: 'auto' }}>
+      <button onClick={onClick} style={ACTION_BUTTON_STYLE}>
         <img
           src={`${import.meta.env.BASE_URL}sprites/${action.spriteName}.png`}
           alt=""
-          style={{ width: 20, height: 20, imageRendering: 'pixelated' }}
+          style={{ width: 28, height: 28, imageRendering: 'pixelated' }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         {action.name}

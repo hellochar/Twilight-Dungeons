@@ -6,6 +6,8 @@ import {
   submitScore, fetchHistogram, type HistogramBucket,
 } from '../services/ScoreService';
 
+const AUTO_SUBMIT = true;
+
 interface GameOverOverlayProps {
   info: GameOverInfo;
   dateSeed: string;
@@ -43,7 +45,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
     );
   }
 
-  const title = `${DIFFICULTY_LABEL[difficulty]} Cleared!`;
+  const title = `Cleared ${dateSeed} ${DIFFICULTY_LABEL[difficulty]} on turn ${info.turnsTaken}!`;
   const next = NEXT_DIFFICULTY[difficulty];
   const nextUrl = next ? (() => { const p = new URLSearchParams(window.location.search); p.set('difficulty', next); return `?${p.toString()}`; })() : null;
   const scoreKey = dateSeed ? `${dateSeed}-${difficulty}` : '';
@@ -54,14 +56,15 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
   const [histogram, setHistogram] = useState<HistogramBucket[] | null>(null);
   const [loadingHistogram, setLoadingHistogram] = useState(false);
 
-  // On mount: save local score and check if already submitted
+  // On mount: save local score, auto-submit if enabled, or load histogram if already submitted
   useEffect(() => {
-    if (scoreKey) {
-      saveLocalScore(scoreKey, info.turnsTaken);
-      const local = getLocalScore(scoreKey);
-      if (local?.submitted) {
-        loadHistogram();
-      }
+    if (!scoreKey) return;
+    saveLocalScore(scoreKey, info.turnsTaken);
+    const local = getLocalScore(scoreKey);
+    if (local?.submitted) {
+      loadHistogram();
+    } else if (AUTO_SUBMIT) {
+      handleSubmit();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,6 +92,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
   }
 
   const alreadySubmitted = scoreKey ? (getLocalScore(scoreKey)?.submitted ?? false) : false;
+  const showNextDifficulty = histogram !== null && next;
 
   return (
     <div style={{
@@ -111,46 +115,27 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
         color: '#ccc',
         minWidth: 360,
       }}>
-        {/* Top row: title + stats + new game */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20, whiteSpace: 'nowrap' }}>
-          <span style={{ color: borderColor, fontWeight: 'bold', fontSize: 23 }}>
-            {title}
-          </span>
+        {/* Title row */}
+        <span style={{ color: borderColor, fontSize: 24, whiteSpace: 'nowrap' }}>
+          {title}
+        </span>
 
-          <span style={{ fontSize: 18, color: '#888' }}>
-            {info.turnsTaken} turns
-            {' \u00b7 '}
-            {info.enemiesDefeated} killed
-            {' \u00b7 '}
-            {info.damageDealt} dmg
-          </span>
-
-          <button
-            onClick={onPlayAgain}
-            style={{
-              background: '#335',
-              color: '#ccc',
-              border: '1px solid #556',
-              borderRadius: 4,
-              padding: '4px 14px',
-              fontFamily: 'CodersCrux, monospace',
-              fontSize: 18,
-              cursor: 'pointer',
-            }}
-          >
-            New Game
-          </button>
-        </div>
-
-        {/* Score section — wins only */}
-        {info.won && dateSeed && (
+        {/* Score section */}
+        {dateSeed && (
           <div style={{ borderTop: '1px solid #334', paddingTop: 8 }}>
             {histogram ? (
-              <Histogram buckets={histogram} playerTurns={info.turnsTaken} />
+              <>
+                <Histogram buckets={histogram} playerTurns={info.turnsTaken} />
+                <div style={{ marginTop: 8, display: 'flex', justifyContent: 'center' }}>
+                  <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
+                </div>
+              </>
             ) : alreadySubmitted ? (
               loadingHistogram
-                ? <span style={{ fontSize: 14, color: '#666' }}>Loading scores…</span>
-                : null
+                ? <span style={{ fontSize: 21, color: '#666' }}>Loading scores…</span>
+                : (
+                  <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
+                )
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <button
@@ -170,6 +155,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
                 >
                   {submitting ? 'Submitting…' : 'Submit Score'}
                 </button>
+                <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
                 {submitError && (
                   <span style={{ fontSize: 13, color: '#f88' }}>{submitError}</span>
                 )}
@@ -177,8 +163,9 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
             )}
           </div>
         )}
-        {/* Next difficulty link — shown after histogram section */}
-        {info.won && next && (
+
+        {/* Next difficulty — only after histogram is shown */}
+        {showNextDifficulty && (
           <div style={{ borderTop: '1px solid #334', paddingTop: 8 }}>
             <a
               href={nextUrl!}
@@ -195,7 +182,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
                 cursor: 'pointer',
               }}
             >
-              Play {DIFFICULTY_LABEL[next]}
+              Play {DIFFICULTY_LABEL[next!]}
             </a>
           </div>
         )}
@@ -204,7 +191,21 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
   );
 }
 
+const secondaryButtonStyle: React.CSSProperties = {
+  background: '#335',
+  color: '#ccc',
+  border: '1px solid #556',
+  borderRadius: 4,
+  padding: '4px 14px',
+  fontFamily: 'CodersCrux, monospace',
+  fontSize: 18,
+  cursor: 'pointer',
+};
+
 // ---- Histogram component ----
+
+const BAR_WIDTH = 18;
+const BAR_GAP = 3;
 
 function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playerTurns: number }) {
   if (buckets.length === 0) return null;
@@ -220,36 +221,42 @@ function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playe
 
   return (
     <div>
-      <div style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>
+      <div style={{ fontSize: 20, color: '#888', marginBottom: 8 }}>
         {totalPlayers} {totalPlayers === 1 ? 'score' : 'scores'} today
         {' \u00b7 '}
         top {percentile}% with {playerTurns} turns
       </div>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 40 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: BAR_GAP, height: 80 }}>
         {buckets.map(b => {
           const isPlayer = b.turns_taken === playerTurns;
           const heightPct = (b.count / maxCount) * 100;
           return (
-            <div key={b.turns_taken} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            <div key={b.turns_taken} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+              <span style={{
+                fontSize: 12,
+                color: isPlayer ? '#4f4' : '#666',
+                lineHeight: 1,
+              }}>
+                {b.count}
+              </span>
               <div
-                title={`${b.turns_taken} turns: ${b.count} player${b.count !== 1 ? 's' : ''}`}
                 style={{
-                  width: 10,
+                  width: BAR_WIDTH,
                   height: `${heightPct}%`,
-                  minHeight: 2,
+                  minHeight: 3,
                   background: isPlayer ? '#4f4' : '#446',
-                  borderRadius: 1,
+                  borderRadius: 2,
                 }}
               />
             </div>
           );
         })}
       </div>
-      <div style={{ display: 'flex', gap: 2, marginTop: 2 }}>
+      <div style={{ display: 'flex', gap: BAR_GAP, marginTop: 3 }}>
         {buckets.map(b => (
           <div key={b.turns_taken} style={{
-            width: 10,
-            fontSize: 8,
+            width: BAR_WIDTH,
+            fontSize: 12,
             color: b.turns_taken === playerTurns ? '#4f4' : '#555',
             textAlign: 'center',
             overflow: 'hidden',

@@ -76,7 +76,7 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   // Particle-based (static sprite fallback — TODO: implement PixiJS particles)
   SlimedStatus:    { spriteKey: 'slimed',           offsetX: 0, offsetY: 0,     scale: 1.0 },
   VulnerableStatus:{ spriteKey: 'vulnerable',       offsetX: 0, offsetY: 0,     scale: 0.5 },
-  WeaknessStatus:  { spriteKey: 'weakness',         offsetX: 0, offsetY: 0.5,   scale: 1.0 },
+  WeaknessStatus:  { spriteKey: 'weakness',         offsetX: 0, offsetY: 0.65,   scale: 0.5 },
   // FreeMoveStatus: particles-only at y=-0.415 (ground level, hidden under entity) → status bar only
   // Sprint 14
   SporedStatus:    { spriteKey: 'spored-status',    offsetX: 0, offsetY: 0,     scale: 0.75 },

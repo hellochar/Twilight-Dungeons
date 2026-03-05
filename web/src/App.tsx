@@ -80,7 +80,7 @@ function App() {
             )}
             <DateSelectorPanel currentDateSeed={gameState.dateSeed} currentTurn={gameState.turn} />
             {gameState.gameOver && (
-              <GameOverOverlay info={gameState.gameOver} dateSeed={gameState.dateSeed} onPlayAgain={resetGame} />
+              <GameOverOverlay info={gameState.gameOver} dateSeed={gameState.dateSeed} difficulty={gameState.difficulty} onPlayAgain={resetGame} />
             )}
             {debugNotice && (
               <div style={{

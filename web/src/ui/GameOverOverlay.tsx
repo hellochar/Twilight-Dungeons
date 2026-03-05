@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { GameOverInfo } from '../hooks/useGameLoop';
+import { NEXT_DIFFICULTY, DIFFICULTY_LABEL, type Difficulty } from '../model/GameModel';
 import {
   getLocalScore, saveLocalScore, markSubmitted,
   submitScore, fetchHistogram, type HistogramBucket,
@@ -8,10 +9,11 @@ import {
 interface GameOverOverlayProps {
   info: GameOverInfo;
   dateSeed: string;
+  difficulty: Difficulty;
   onPlayAgain: () => void;
 }
 
-export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlayProps) {
+export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: GameOverOverlayProps) {
   if (!info.won) {
     return (
       <div style={{
@@ -41,7 +43,10 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
     );
   }
 
-  const title = 'Floor Cleared!';
+  const title = `${DIFFICULTY_LABEL[difficulty]} Cleared!`;
+  const next = NEXT_DIFFICULTY[difficulty];
+  const nextUrl = next ? (() => { const p = new URLSearchParams(window.location.search); p.set('difficulty', next); return `?${p.toString()}`; })() : null;
+  const scoreKey = dateSeed ? `${dateSeed}-${difficulty}` : '';
   const borderColor = '#4f4';
 
   const [submitting, setSubmitting] = useState(false);
@@ -51,9 +56,9 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
 
   // On mount: save local score and check if already submitted
   useEffect(() => {
-    if (dateSeed) {
-      saveLocalScore(dateSeed, info.turnsTaken);
-      const local = getLocalScore(dateSeed);
+    if (scoreKey) {
+      saveLocalScore(scoreKey, info.turnsTaken);
+      const local = getLocalScore(scoreKey);
       if (local?.submitted) {
         loadHistogram();
       }
@@ -64,7 +69,7 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
   async function loadHistogram() {
     setLoadingHistogram(true);
     try {
-      const data = await fetchHistogram(dateSeed);
+      const data = await fetchHistogram(scoreKey);
       setHistogram(data);
     } catch { /* silent */ }
     setLoadingHistogram(false);
@@ -74,8 +79,8 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
     setSubmitting(true);
     setSubmitError(null);
     try {
-      await submitScore(dateSeed, info.turnsTaken);
-      markSubmitted(dateSeed);
+      await submitScore(scoreKey, info.turnsTaken);
+      markSubmitted(scoreKey);
       await loadHistogram();
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : 'Submission failed');
@@ -83,7 +88,7 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
     setSubmitting(false);
   }
 
-  const alreadySubmitted = dateSeed ? (getLocalScore(dateSeed)?.submitted ?? false) : false;
+  const alreadySubmitted = scoreKey ? (getLocalScore(scoreKey)?.submitted ?? false) : false;
 
   return (
     <div style={{
@@ -170,6 +175,28 @@ export function GameOverOverlay({ info, dateSeed, onPlayAgain }: GameOverOverlay
                 )}
               </div>
             )}
+          </div>
+        )}
+        {/* Next difficulty link — shown after histogram section */}
+        {info.won && next && (
+          <div style={{ borderTop: '1px solid #334', paddingTop: 8 }}>
+            <a
+              href={nextUrl!}
+              style={{
+                display: 'inline-block',
+                background: '#335',
+                color: '#ccc',
+                border: '1px solid #556',
+                borderRadius: 4,
+                padding: '4px 14px',
+                fontFamily: 'CodersCrux, monospace',
+                fontSize: 18,
+                textDecoration: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Play {DIFFICULTY_LABEL[next]}
+            </a>
           </div>
         )}
       </div>

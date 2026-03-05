@@ -26,6 +26,20 @@ function djb2(str: string): number {
   return hash >>> 0;
 }
 
+export type Difficulty = 'basic' | 'medium' | 'complex';
+
+export const NEXT_DIFFICULTY: Record<Difficulty, Difficulty | null> = {
+  basic: 'medium',
+  medium: 'complex',
+  complex: null,
+};
+
+export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  basic: '',
+  medium: 'Medium',
+  complex: 'Complex',
+};
+
 /**
  * Select a floor depth for the daily puzzle.
  * Easy to swap out — currently returns a seeded random depth 1-26.
@@ -35,6 +49,29 @@ export function selectDepth(seed: number): number {
   // Use the seed to pick a depth — avoid depth 0 (tutorial) and 27 (end floor)
   const rng = seed >>> 0;
   return 1 + (rng % 26);
+}
+
+/** Generate today's basic-difficulty game (depths 1–9, earlyGame encounters). */
+export function generateBasicGame(dateSeed?: string): GameModel {
+  const seed = djb2(dateSeed ?? _todayString());
+  return GameModel.createDailyGame(dateSeed, 1 + (seed % 9));
+}
+
+/** Generate today's medium-difficulty game (depths 10–18, everything encounters). */
+export function generateMediumGame(dateSeed?: string): GameModel {
+  const seed = djb2(dateSeed ?? _todayString());
+  return GameModel.createDailyGame(dateSeed, 10 + (seed % 9));
+}
+
+/** Generate today's complex-difficulty game (depths 19–26, midGame encounters). */
+export function generateComplexGame(dateSeed?: string): GameModel {
+  const seed = djb2(dateSeed ?? _todayString());
+  return GameModel.createDailyGame(dateSeed, 19 + (seed % 8));
+}
+
+function _todayString(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
 /**

@@ -1,4 +1,5 @@
 import type { GameState, OnTopActionSnapshot } from '../hooks/useGameLoop';
+import { DIFFICULTY_LABEL } from '../model/GameModel';
 import { StatusBar } from './StatusBar';
 
 interface HUDProps {
@@ -12,7 +13,7 @@ interface HUDProps {
  * Top HUD matching Unity layout:
  * - Top-left: Hearts (4 HP per heart, 5 fill states)
  * - Top-left below hearts: Status icons
- * - Top-right: Depth + Turn banner
+ * - Top-center: Depth + Turn banner
  * - Below banner: Enemy counter text
  * - Bottom-right: Wait button; OnTopAction button above it when present
  */
@@ -20,7 +21,7 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
   const showButtons = !state.isPlayerDead && !state.isCleared;
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
-      {/* Top row: hearts left, banner right */}
+      {/* Top row: hearts left, info center */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -30,10 +31,9 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
         {/* Hearts */}
         <Hearts hp={state.hp} maxHp={state.maxHp} />
 
-        {/* Right side: banner + enemies */}
-        <div style={{ textAlign: 'right' }}>
-          <Banner depth={state.depth} turn={state.turn} isCleared={state.isCleared} />
-          <EnemiesLeft count={state.enemyCount} isCleared={state.isCleared} />
+        {/* Center: date · difficulty · turn */}
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 6, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+          <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
         </div>
       </div>
 
@@ -84,13 +84,14 @@ function Heart({ state }: { state: number }) {
 }
 
 // ─── Banner ───
-// Unity: "Depth X   Turn Y" or "Depth X   Cleared!"
 
-function Banner({ depth, turn, isCleared }: { depth: number; turn: number; isCleared: boolean }) {
-  const parts: string[] = [`Depth ${depth}`];
+type BannerProps = { dateSeed: string; difficulty: import('../model/GameModel').Difficulty; turn: number; isCleared: boolean; clearedOnTurn: number | null };
+
+function Banner({ dateSeed, difficulty, turn, isCleared, clearedOnTurn }: BannerProps) {
+  const parts: string[] = [dateSeed, DIFFICULTY_LABEL[difficulty]];
   if (isCleared) {
-    parts.push('Cleared!');
-  } else if (turn > 0) {
+    parts.push(`Cleared on turn ${clearedOnTurn ?? turn}`);
+  } else {
     parts.push(`Turn ${turn}`);
   }
 
@@ -101,37 +102,7 @@ function Banner({ depth, turn, isCleared }: { depth: number; turn: number; isCle
       color: '#ccc',
       textShadow: '1px 1px 2px #000',
     }}>
-      {parts.join('   ')}
-    </div>
-  );
-}
-
-// ─── Enemies Left ───
-// Unity: "Defeat all enemies." (>3), "X enemies left." (1-3), "Cleared!" (0)
-
-function EnemiesLeft({ count, isCleared }: { count: number; isCleared: boolean }) {
-  let text = '';
-  if (isCleared) {
-    text = 'Cleared!';
-  } else if (count > 3) {
-    text = 'Defeat all enemies.';
-  } else if (count === 1) {
-    text = '1 enemy left.';
-  } else if (count > 0) {
-    text = `${count} enemies left.`;
-  }
-
-  if (!text) return null;
-
-  return (
-    <div style={{
-      fontFamily: 'CodersCrux, monospace',
-      fontSize: 17,
-      color: isCleared ? '#4f4' : '#aaa',
-      textShadow: '1px 1px 2px #000',
-      marginTop: 2,
-    }}>
-      {text}
+      {parts.join(' ')}
     </div>
   );
 }

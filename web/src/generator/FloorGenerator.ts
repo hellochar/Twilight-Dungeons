@@ -51,8 +51,10 @@ export class FloorGenerator {
       () => this.generateSingleRoomFloor(5, 8, 10, 3, 2),
       () => this.generateSingleRoomFloor(6, 8, 10, 3, 2, false, undefined, E.addOneWater),
       () => this.generateSingleRoomFloor(7, 8, 10, 3, 3),
-      () => this.generateRewardFloor(8, this.shared.plants.getRandomAndDiscount(1), E.addDownstairsInRoomCenter),
-      () => this.generateBlobBossFloor(9),
+      () => this.generateSingleRoomFloor(8, 8, 10, 3, 3),
+      () => this.generateSingleRoomFloor(9, 8, 10, 3, 3),
+      // () => this.generateRewardFloor(8, this.shared.plants.getRandomAndDiscount(1), E.addDownstairsInRoomCenter),
+      // () => this.generateBlobBossFloor(9),
 
       // midgame (depths 10-18)
       () => this.generateSingleRoomFloor(10, 7, 9, 2, 1),
@@ -62,8 +64,10 @@ export class FloorGenerator {
       () => this.generateSingleRoomFloor(14, 8, 11, 4, 2),
       () => this.generateSingleRoomFloor(15, 8, 12, 4, 3),
       () => this.generateSingleRoomFloor(16, 8, 12, 5, 5),
-      () => this.generateRewardFloor(17, E.addDownstairsInRoomCenter, E.fungalColonyAnticipation, this.shared.plants.getRandomAndDiscount(1)),
-      () => this.generateFungalColonyBossFloor(18),
+      () => this.generateSingleRoomFloor(17, 8, 12, 5, 5),
+      () => this.generateSingleRoomFloor(18, 8, 12, 5, 5),
+      // () => this.generateRewardFloor(17, E.addDownstairsInRoomCenter, E.fungalColonyAnticipation, this.shared.plants.getRandomAndDiscount(1)),
+      // () => this.generateFungalColonyBossFloor(18),
 
       // endgame (depths 19-27)
       () => this.generateSingleRoomFloor(19, 8, 10, 2, 2),
@@ -74,7 +78,8 @@ export class FloorGenerator {
       () => this.generateSingleRoomFloor(24, 9, 14, 7, 4),
       () => this.generateSingleRoomFloor(25, 9, 14, 8, 5),
       () => this.generateSingleRoomFloor(26, 9, 14, 9, 6),
-      () => this.generateEndFloor(27),
+      () => this.generateSingleRoomFloor(27, 9, 14, 9, 6),
+      // () => this.generateEndFloor(27),
     ];
   }
 

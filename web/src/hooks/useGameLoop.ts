@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Application, TextureSource } from 'pixi.js';
-import { GameModel } from '../model/GameModel';
+import { GameModel, type Difficulty, generateBasicGame, generateMediumGame, generateComplexGame } from '../model/GameModel';
 import { Player } from '../model/Player';
 import { Floor } from '../model/Floor';
 import { Vector2Int } from '../core/Vector2Int';
@@ -36,10 +36,26 @@ function getUrlDateParam(): string | undefined {
   const raw = new URLSearchParams(window.location.search).get('date');
   if (!raw) return undefined;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(raw) || raw < DAY_ONE || raw > localTodayStr()) {
-    window.history.replaceState(null, '', window.location.pathname);
+    const p = new URLSearchParams(window.location.search);
+    p.delete('date');
+    const qs = p.toString();
+    window.history.replaceState(null, '', window.location.pathname + (qs ? `?${qs}` : ''));
     return undefined;
   }
   return raw;
+}
+
+/** Reads ?difficulty= from URL, defaults to 'basic' if absent or invalid. */
+function getUrlDifficulty(): Difficulty {
+  const raw = new URLSearchParams(window.location.search).get('difficulty');
+  if (raw === 'medium' || raw === 'complex') return raw;
+  return 'basic';
+}
+
+function createGameForDifficulty(difficulty: Difficulty, dateSeed?: string): GameModel {
+  if (difficulty === 'medium') return generateMediumGame(dateSeed);
+  if (difficulty === 'complex') return generateComplexGame(dateSeed);
+  return generateBasicGame(dateSeed);
 }
 
 // ─── Snapshot types for React consumption ───
@@ -105,6 +121,7 @@ export interface GameState {
   enemyCount: number;
   isPlayerDead: boolean;
   isCleared: boolean;
+  clearedOnTurn: number | null;
   inventoryItems: (ItemSnapshot | null)[];
   equipmentItems: (ItemSnapshot | null)[];
   statuses: StatusSnapshot[];
@@ -113,14 +130,16 @@ export interface GameState {
   dateSeed: string;
   floorBodies: EntityCardData[];
   floorGrasses: EntityCardData[];
+  difficulty: Difficulty;
 }
 
 const EMPTY_STATE: GameState = {
   hp: 0, maxHp: 0, depth: 0, turn: 0, enemyCount: 0,
-  isPlayerDead: false, isCleared: false,
+  isPlayerDead: false, isCleared: false, clearedOnTurn: null,
   inventoryItems: [], equipmentItems: [],
   statuses: [], gameOver: null, onTopAction: null,
   dateSeed: '', floorBodies: [], floorGrasses: [],
+  difficulty: 'basic',
 };
 
 function getItemCategory(item: Item): string {
@@ -155,6 +174,7 @@ function snapshotItem(item: Item | null, index: number): ItemSnapshot | null {
  */
 export function useGameLoop() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const difficulty = useRef<Difficulty>(getUrlDifficulty()).current;
   const [gameState, setGameState] = useState<GameState>(EMPTY_STATE);
   const [ready, setReady] = useState(false);
 
@@ -233,6 +253,7 @@ export function useGameLoop() {
       enemyCount: countEnemies(floor),
       isPlayerDead: player.isDead,
       isCleared: floor.isCleared,
+      clearedOnTurn: floor.clearedOnTurn,
       inventoryItems,
       equipmentItems,
       statuses,
@@ -241,8 +262,9 @@ export function useGameLoop() {
       dateSeed: model.dateSeed,
       floorBodies,
       floorGrasses,
+      difficulty,
     };
-  }, []);
+  }, [difficulty]);
 
   // /** Build EntityInfoData from entity/tile at a given tile position (hover/click inspect). */
   // const handleTileInspect = useCallback((event: TileContextEvent) => {
@@ -665,7 +687,9 @@ export function useGameLoop() {
     if (!renderer) return;
     clearProposed();
 
-    const newModel = GameModel.createDailyGame(customSeed, depthArg);
+    const newModel = depthArg != null
+      ? GameModel.createDailyGame(customSeed, depthArg)
+      : createGameForDifficulty(difficulty, customSeed);
     newModel.consumeAnimationEvents();
     modelRef.current = newModel;
 
@@ -717,7 +741,9 @@ export function useGameLoop() {
       const customDepth = debugState.depth ? parseInt(debugState.depth, 10) : undefined;
       const depthArg = customDepth != null && customDepth >= 0 && customDepth <= 27 ? customDepth : undefined;
 
-      const model = GameModel.createDailyGame(customSeed, depthArg);
+      const model = depthArg != null
+        ? GameModel.createDailyGame(customSeed, depthArg)
+        : createGameForDifficulty(difficulty, customSeed);
       model.consumeAnimationEvents();
       modelRef.current = model;
 

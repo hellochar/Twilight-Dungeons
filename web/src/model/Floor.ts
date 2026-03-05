@@ -152,6 +152,7 @@ export class Floor {
   readonly height: number;
   depth: number;
   isCleared = false;
+  clearedOnTurn: number | null = null;
 
   tiles: StaticEntityGrid<Tile>;
   grasses: StaticEntityGrid<Entity>;
@@ -501,6 +502,7 @@ export class Floor {
     this.isCleared = true;
     const model = GameModelRef.mainOrNull;
     if (model) {
+      this.clearedOnTurn = Math.floor(model.time);
       model.gameOver(true);
       model.floorCleared(this);
     }

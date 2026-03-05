@@ -27,12 +27,21 @@ interface LocalStore {
 
 const STORAGE_KEY = 'twilight-dungeons';
 
+function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  // Fallback for insecure contexts (e.g. itch.io iframe on mobile)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 function loadStore(): LocalStore {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as LocalStore;
   } catch { /* ignore */ }
-  return { playerId: crypto.randomUUID(), scores: {} };
+  return { playerId: generateId(), scores: {} };
 }
 
 function saveStore(store: LocalStore): void {

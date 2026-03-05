@@ -6,6 +6,8 @@ import { ObjectInfoList } from './ui/ObjectInfoList';
 import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import { DateSelectorPanel } from './ui/DateSelectorPanel';
 import { FONT_FAMILY, FontSize } from './ui/fonts';
+import { DIFFICULTY_LABEL } from './model/GameModel';
+import { isMobile } from './renderer';
 import './App.css';
 
 const GAME_MAX_W = 1200;
@@ -16,6 +18,10 @@ function App() {
   const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
   const [viewW, setViewW] = useState(() => window.innerWidth);
+
+  useEffect(() => {
+    document.title = `${gameState.dateSeed} ${DIFFICULTY_LABEL[gameState.difficulty]} | Twilight Dungeons`;
+  }, [gameState.dateSeed, gameState.difficulty]);
 
   useEffect(() => {
     const onResize = () => setViewW(window.innerWidth);

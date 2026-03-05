@@ -9,4 +9,7 @@ export default defineConfig({
   esbuild: {
     keepNames: true,
   },
+  server: {
+    host: true,
+  },
 })

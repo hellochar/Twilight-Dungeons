@@ -9,9 +9,11 @@ import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
 import { AttackGroundTask } from '../model/tasks/AttackGroundTask';
 import { ExplodeTask } from '../model/tasks/ExplodeTask';
 import { RunAwayTask } from '../model/tasks/RunAwayTask';
+import { SleepTask } from '../model/tasks/SleepTask';
 import { WaitTask } from '../model/tasks/WaitTask';
 import { AttackBaseAction, AttackGroundBaseAction } from '../model/BaseAction';
 import { Actor } from '../model/Actor';
+import { Player } from '../model/Player';
 import {
   type EntityRenderState,
   type RenderCtx,
@@ -658,8 +660,8 @@ export class GameRenderer {
         continue;
       }
 
-      const actor = body as any;
-      const isSleeping = actor.task?.constructor?.name === 'SleepTask';
+      const actor = body as Actor;
+      const isSleeping = actor.task instanceof SleepTask;
       const statuses = actor.statuses as { list: any[] };
 
       // Collect visuals to render
@@ -679,7 +681,7 @@ export class GameRenderer {
       }
 
       // WaitTask visual — all non-player actors unless hideWaitTask=true in Unity
-      const isPlayer = body.constructor.name === 'Player';
+      const isPlayer = body instanceof Player;
       const hideWaitTask = HIDE_WAIT_TASK_NAMES.has(body.constructor.name);
       if (!isPlayer && !hideWaitTask && actor.task instanceof WaitTask) {
         visuals.push({ config: WAIT_TASK_VISUAL, tint: WAIT_TASK_TINT });
@@ -1143,10 +1145,10 @@ export class GameRenderer {
     for (const [, state] of this.entityStates) {
       if (!state.bob) continue;
       const scaleRoot = state.scaleRoot;
-      const actor = state.bob.entity as any;
+      const actor = state.bob.entity as Actor;
       // Unity SleepTaskController disables the Animator when sleeping — suppress bob.
       // Any status with blocksMovement() true (Webbed, Constricted, InShell, etc.) — suppress bob.
-      const isSleeping = actor.task?.constructor?.name === 'SleepTask';
+      const isSleeping = actor.task instanceof SleepTask;
       const isMovementBlocked = actor.statuses?.list?.some(
         (s: any) => s.blocksMovement?.() === true
       );

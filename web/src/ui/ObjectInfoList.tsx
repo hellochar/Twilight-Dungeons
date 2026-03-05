@@ -1,7 +1,7 @@
 import type { EntityCardData } from '../hooks/useGameLoop';
 import { getObjectInfo } from '../model/ObjectInfo';
 import { spriteUrl, getSpriteImgStyle } from './spriteUrl';
-import { FONT_FAMILY, FontSize } from './fonts';
+import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
 
 interface ObjectInfoListProps {
   bodies: EntityCardData[];
@@ -61,10 +61,10 @@ function EntityCard({ data, horizontal }: { data: EntityCardData; horizontal: bo
           style={{ height: 32, width: 'auto', imageRendering: 'pixelated', flexShrink: 0, ...getSpriteImgStyle(data.displayName) }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
-        <span style={{ fontSize: FontSize.lg, color: '#fff' }}>{data.displayName}</span>
+        <span style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifLg, color: '#fff' }}>{data.displayName}</span>
       </div>
       {description && (
-        <div style={{ fontSize: FontSize.md, color: '#fff', whiteSpace: 'pre-wrap', lineHeight: 1.3 }}>
+        <div style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifSm, color: '#fff', whiteSpace: 'pre-wrap', lineHeight: 1.3 }}>
           {description}
         </div>
       )}

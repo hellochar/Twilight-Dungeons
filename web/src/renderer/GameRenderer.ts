@@ -21,6 +21,7 @@ import {
 } from './entityRenderers';
 import { TileRenderer } from './TileRenderer';
 import { HpLabelRenderer } from './HpLabelRenderer';
+import { FloatyDots } from './FloatyDots';
 import {
   DEEP_SLEEP_TINT,
   SPAWN_ANIMATION_DURATION,
@@ -126,6 +127,7 @@ export class GameRenderer {
   private bodyLayer = new Container();
   private aboveEntityLayer = new Container();
   private effectLayer = new Container();
+  private floatyDots: FloatyDots;
   private hpLabelRenderer: HpLabelRenderer;
 
   // Active targeting highlights on the effect layer
@@ -149,9 +151,11 @@ export class GameRenderer {
     this.camera = camera;
     this.sprites = sprites;
     this.tileRenderer = new TileRenderer(camera, sprites);
+    this.floatyDots = new FloatyDots();
 
     // Add layers in draw order
     app.stage.addChild(this.tileRenderer.tileLayer);
+    app.stage.addChild(this.floatyDots.container);
     app.stage.addChild(this.grassLayer);
     app.stage.addChild(this.itemLayer);
     app.stage.addChild(this.attackGroundLayer);
@@ -196,6 +200,7 @@ export class GameRenderer {
     this.tileRenderer.build(this.floor);
     this.buildEntities();
     this.tileRenderer.syncVisibility(this.floor);
+    this.floatyDots.prewarm(this.camera);
   }
 
   /** Sync visuals to current model state (call after each turn step). */
@@ -328,6 +333,7 @@ export class GameRenderer {
   lerpPositions(dt: number): void {
     const floor = this.floor;
     if (!floor) return;
+    this.floatyDots.update(dt, this.camera);
     const ts = this.camera.tileSize;
 
     for (const body of floor.bodies) {
@@ -373,6 +379,7 @@ export class GameRenderer {
     this.bodyLayer.removeChildren();
     this.aboveEntityLayer.removeChildren();
     this.effectLayer.removeChildren();
+    this.floatyDots.clear();
     for (const state of this.entityStates.values()) {
       if (state.telegraph) state.telegraph.container.destroy({ children: true });
       if (state.explodeAOE) state.explodeAOE.sprite.destroy();

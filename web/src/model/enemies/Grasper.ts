@@ -24,6 +24,7 @@ const DEATH_HANDLER = Symbol.for('IDeathHandler');
  */
 export class Grasper extends AIActor implements IBaseActionModifier {
   readonly [BASE_ACTION_MOD] = true as const;
+  override get isStationary() { return true; }
 
   readonly tendrils: Tendril[] = [];
 
@@ -140,6 +141,7 @@ export class Grasper extends AIActor implements IBaseActionModifier {
 export class Tendril extends Actor implements IBaseActionModifier, IDeathHandler {
   readonly [BASE_ACTION_MOD] = true as const;
   readonly [DEATH_HANDLER] = true;
+  override get isStationary() { return true; }
 
   readonly owner: Grasper;
 

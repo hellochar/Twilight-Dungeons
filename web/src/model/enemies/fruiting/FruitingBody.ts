@@ -36,6 +36,7 @@ const InfectionTypes = new Map<EquipmentSlot, () => EquippableItem>([
  */
 export class FruitingBody extends AIActor implements INoTurnDelay {
   readonly noTurnDelay = true as const;
+  override get isStationary() { return true; }
 
   private cooldown: number;
 

@@ -244,6 +244,7 @@ export class InfectedStatus extends Status {
  * Port of C# ThickMushroom from Kingshroom.cs.
  */
 export class ThickMushroom extends Actor implements ISteppable {
+  override get isStationary() { return true; }
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Ally;

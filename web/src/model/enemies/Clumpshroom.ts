@@ -23,6 +23,7 @@ export class Clumpshroom extends AIActor implements IBaseActionModifier, INoTurn
   readonly [BASE_ACTION_MOD] = true as const;
   readonly noTurnDelay = true as const;
   readonly [DEATH_HANDLER] = true as const;
+  override get isStationary() { return true; }
 
   constructor(pos: Vector2Int) {
     super(pos);

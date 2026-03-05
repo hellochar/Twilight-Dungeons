@@ -86,6 +86,11 @@ export class Actor extends Body implements ISteppable {
     return processModifiers(mods, this._baseMaxHp);
   }
 
+  /** Stationary actors never move — suppresses idle bob animation. Override to true in subclasses. */
+  get isStationary(): boolean {
+    return false;
+  }
+
   protected get actionCosts(): ActionCosts {
     return ActionCosts.default();
   }

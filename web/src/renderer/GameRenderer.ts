@@ -523,10 +523,8 @@ export class GameRenderer {
       scaleRoot.addChild(sprite);
       state.visual = sprite;
 
-      // Idle bob: Actor instances only, not structurally stationary enemies
-      // (Grasper/Tendril/HydraHeart/HydraHead/Clumpshroom implement IBaseActionModifier directly)
-      const isStationary = (entity as any)[Symbol.for('IBaseActionModifier')] === true;
-      if (layer === this.bodyLayer && entity instanceof Actor && !isStationary) {
+      // Idle bob: non-stationary Actor instances only
+      if (layer === this.bodyLayer && entity instanceof Actor && !entity.isStationary) {
         state.bob = { timer: Math.random(), entity };
       }
 

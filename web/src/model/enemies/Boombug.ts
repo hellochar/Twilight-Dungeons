@@ -82,6 +82,7 @@ export class Boombug extends AIActor implements IDeathHandler {
  */
 export class BoombugCorpse extends Actor implements IDeathHandler {
   readonly [DEATH_HANDLER] = true;
+  override get isStationary() { return true; }
 
   get turnPriority(): number {
     return 30;

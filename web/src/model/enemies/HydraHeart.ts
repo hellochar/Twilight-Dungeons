@@ -26,6 +26,7 @@ const DEATH_HANDLER = Symbol.for('IDeathHandler');
 export class HydraHeart extends AIActor implements IBaseActionModifier, IDeathHandler {
   readonly [BASE_ACTION_MOD] = true as const;
   readonly [DEATH_HANDLER] = true;
+  override get isStationary() { return true; }
 
   static readonly spawnRange = 3;
 
@@ -135,6 +136,7 @@ export class HydraHeart extends AIActor implements IBaseActionModifier, IDeathHa
  */
 export class HydraHead extends AIActor implements IBaseActionModifier {
   readonly [BASE_ACTION_MOD] = true as const;
+  override get isStationary() { return true; }
 
   protected get actionCosts(): ActionCosts {
     return new ActionCosts([

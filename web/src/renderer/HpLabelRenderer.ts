@@ -70,9 +70,19 @@ export class HpLabelRenderer {
       }
 
       label.text = `${actor.hp}/${actor.maxHp}`;
-      const center = this.camera.tileToCenterPixel(actor.pos);
-      label.x = center.x;
-      label.y = center.y + HP_LABEL_Y_OFFSET * ts;
+    }
+  }
+
+  /** Call every frame (after lerpPositions) to keep labels glued to their sprites. */
+  syncPositions(getSprite: (guid: string) => Container | undefined): void {
+    if (!this.layer.visible) return;
+    const ts = this.camera.tileSize;
+    for (const [guid, label] of this.labels) {
+      const node = getSprite(guid);
+      if (node) {
+        label.x = node.x + ts / 2;
+        label.y = node.y + ts / 2 + HP_LABEL_Y_OFFSET * ts;
+      }
     }
   }
 

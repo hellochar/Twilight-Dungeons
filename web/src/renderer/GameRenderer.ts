@@ -319,6 +319,10 @@ export class GameRenderer {
    * Matches Unity ActorController.Update() lines 82-89:
    *   speed = 16 / actionCost, snap if distance > 3 tiles.
    */
+  syncHpLabelPositions(): void {
+    this.hpLabelRenderer.syncPositions((guid) => this.entityStates.get(guid)?.node);
+  }
+
   lerpPositions(dt: number): void {
     const floor = this.floor;
     if (!floor) return;

@@ -801,6 +801,7 @@ export function useGameLoop() {
       app.ticker.add((ticker) => {
         const dt = ticker.deltaTime / 60;
         renderer.lerpPositions(dt);
+        renderer.syncHpLabelPositions();
         renderer.updateTelegraphEffects(dt);
         renderer.updateExplodeEffects(dt);
         renderer.updateEntityAnimations(dt);

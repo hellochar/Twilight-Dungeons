@@ -11,6 +11,7 @@ import { Snail } from '../model/enemies/Snail';
 import { InShellStatus } from '../model/statuses/InShellStatus';
 import { Muck, Skully } from '../model/enemies/Skully';
 import { BoombugCorpse } from '../model/enemies/Boombug';
+import { Wallflower } from '../model/enemies/Wallflower';
 
 // ─── EntityRenderState ───
 
@@ -315,6 +316,35 @@ registerEntityRenderer(Muck, {
  * When Skully spawns from Muck (squishSpawn=true), initialize scaleRoot at
  * scaleY=0 pinned to tile bottom. GameRenderer.updateEntityAnimations drives the unsquish.
  */
+/**
+ * Wallflower: offset sprite 25% into the nearest adjacent wall to show wall-hugging.
+ * If multiple walls, average the directions.
+ */
+registerEntityRenderer(Wallflower, {
+  sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const { ts } = ctx;
+    const floor = entity.floor;
+    if (!floor) return;
+
+    let wx = 0;
+    let wy = 0;
+    for (const n of floor.getCardinalNeighbors(entity.pos)) {
+      if (n instanceof Wall) {
+        wx += n.pos.x - entity.pos.x;
+        wy += n.pos.y - entity.pos.y;
+      }
+    }
+
+    // Clamp magnitude to 1 so opposite walls (cancel to 0) and corners don't break
+    const len = Math.sqrt(wx * wx + wy * wy);
+    if (len > 1) { wx /= len; wy /= len; }
+
+    const offset = 0.25 * ts;
+    // Y-flip: Unity Y-up → PixiJS Y-down
+    state.scaleRoot.position.set(ts / 2 + wx * offset, ts / 2 - wy * offset);
+  },
+});
+
 registerEntityRenderer(Skully, {
   init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
     if (!(entity as Skully).squishSpawn) return;

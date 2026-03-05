@@ -12,7 +12,7 @@ import { EntityInfoPopup, type EntityInfoData } from './EntityInfoPopup';
  * - Click/tap opens ObjectInfo popup
  */
 
-const ICON_SIZE = 24;
+const ICON_SIZE = 48;
 
 interface StatusBarProps {
   statuses: StatusSnapshot[];
@@ -89,7 +89,7 @@ function StatusIcon({
         position: 'relative',
         border: status.isDebuff ? '1.5px solid #c44' : '1.5px solid rgba(255,255,255,0.15)',
         borderRadius: 3,
-        background: 'rgba(0,0,0,0.5)',
+        background: 'rgba(0,0,0,0.9)',
         imageRendering: 'pixelated',
         cursor: 'pointer',
       }}
@@ -108,14 +108,14 @@ function StatusIcon({
       {status.stacks != null && status.stacks > 0 && (
         <div style={{
           position: 'absolute',
-          bottom: -2,
-          right: -2,
+          bottom: -4,
+          right: -4,
           background: '#000',
           color: '#fff',
-          fontSize: 14,
+          fontSize: 30,
           fontFamily: 'CodersCrux, monospace',
-          fontWeight: 'bold',
-          lineHeight: '1',
+          // fontWeight: 'bold',
+          // lineHeight: '1',
           padding: '0 2px',
           borderRadius: 2,
           minWidth: 10,

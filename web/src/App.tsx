@@ -31,7 +31,7 @@ function App() {
   const hasPanelContent = gameState.floorBodies.length > 0 || gameState.floorGrasses.length > 0;
 
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'stretch', justifyContent: 'center' }}>
+    <div style={{ width: '100vw', height: '100dvh', display: 'flex', alignItems: 'stretch', justifyContent: 'center' }}>
       <div style={{ width: '100%', maxWidth: GAME_MAX_W, height: '100%', display: 'flex', position: 'relative' }}>
         <div ref={containerRef} style={{ flex: 1, height: !showRight && hasPanelContent ? `calc(100% - ${BOTTOM_PANEL_H}px)` : '100%', minWidth: 0 }} />
 

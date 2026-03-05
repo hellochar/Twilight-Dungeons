@@ -21,24 +21,25 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
   const showButtons = !state.isPlayerDead && !state.isCleared;
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
-      {/* Top row: hearts left, info center */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        padding: '6px 10px',
-      }}>
-        {/* Hearts */}
-        <Hearts hp={state.hp} maxHp={state.maxHp} />
-
-        {/* Center: date · difficulty · turn */}
-        <div style={{ position: 'absolute', left: 0, right: 0, top: 6, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
-          <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
-        </div>
+      {/* Top-center: date · difficulty · turn */}
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 10px' }}>
+        <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
       </div>
 
-      {/* Status icons below hearts */}
-      <StatusBar statuses={state.statuses} />
+      {/* Bottom-center: status icons above hearts */}
+      <div style={{
+        position: 'absolute',
+        bottom: '5%',
+        left: 0,
+        right: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 4,
+      }}>
+        <StatusBar statuses={state.statuses} />
+        <Hearts hp={state.hp} maxHp={state.maxHp} />
+      </div>
 
       {/* Bottom-right: OnTopAction above Wait button */}
       {showButtons && onTopAction && (

@@ -21,7 +21,7 @@ export function getObjectInfo(name: string): ObjectInfoEntry | undefined {
 
 // ─── Early Game Enemies ───
 
-registerObjectInfo('Blob', { description: 'Telegraphs attacks.', flavorText: 'An odorless mass advances towards you with a steady, brainless determination.' });
+registerObjectInfo('Blob', { description: 'Telegraphs attacks. Deals 2 damage.', flavorText: 'An odorless mass advances towards you with a steady, brainless determination.' });
 registerObjectInfo('MiniBlob', { description: 'Telegraphs attacks.' });
 registerObjectInfo('Bird', { description: 'Jumps up to two tiles, then pauses.' });
 registerObjectInfo('Snake', { description: 'Only moves or attacks if you\'re in the same row or column. Attacks other creatures. Attacks apply Weakness.' });

@@ -126,8 +126,13 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
             {histogram ? (
               <>
                 <Histogram buckets={histogram} playerTurns={info.turnsTaken} />
-                <div style={{ marginTop: 8, display: 'flex', justifyContent: 'center' }}>
+                <div style={{ marginTop: 8, display: 'flex', justifyContent: 'center', gap: 10 }}>
                   <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
+                  {showNextDifficulty && (
+                    <a href={nextUrl!} style={{ ...secondaryButtonStyle, textDecoration: 'none', display: 'inline-block' }}>
+                      Play {DIFFICULTY_LABEL[next!]}
+                    </a>
+                  )}
                 </div>
               </>
             ) : alreadySubmitted ? (
@@ -164,28 +169,6 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
           </div>
         )}
 
-        {/* Next difficulty — only after histogram is shown */}
-        {showNextDifficulty && (
-          <div style={{ borderTop: '1px solid #334', paddingTop: 8 }}>
-            <a
-              href={nextUrl!}
-              style={{
-                display: 'inline-block',
-                background: '#335',
-                color: '#ccc',
-                border: '1px solid #556',
-                borderRadius: 4,
-                padding: '4px 14px',
-                fontFamily: 'CodersCrux, monospace',
-                fontSize: 18,
-                textDecoration: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              Play {DIFFICULTY_LABEL[next!]}
-            </a>
-          </div>
-        )}
       </div>
     </div>
   );

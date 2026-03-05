@@ -18,6 +18,7 @@ import {
   getEntityRenderHooks,
 } from './entityRenderers';
 import { TileRenderer } from './TileRenderer';
+import { HpLabelRenderer } from './HpLabelRenderer';
 import {
   DEEP_SLEEP_TINT,
   SPAWN_ANIMATION_DURATION,
@@ -119,9 +120,11 @@ export class GameRenderer {
   // Entity layer containers (back to front, between tile and fog layers)
   private grassLayer = new Container();
   private itemLayer = new Container();
+  private attackGroundLayer = new Container();
   private bodyLayer = new Container();
   private aboveEntityLayer = new Container();
   private effectLayer = new Container();
+  private hpLabelRenderer: HpLabelRenderer;
 
   // Active targeting highlights on the effect layer
   private targetHighlights: Graphics[] = [];
@@ -149,9 +152,12 @@ export class GameRenderer {
     app.stage.addChild(this.tileRenderer.tileLayer);
     app.stage.addChild(this.grassLayer);
     app.stage.addChild(this.itemLayer);
+    app.stage.addChild(this.attackGroundLayer);
     app.stage.addChild(this.bodyLayer);
     app.stage.addChild(this.aboveEntityLayer);
     app.stage.addChild(this.effectLayer);
+    this.hpLabelRenderer = new HpLabelRenderer(camera);
+    app.stage.addChild(this.hpLabelRenderer.layer);
     app.stage.addChild(this.tileRenderer.dimLayer);
   }
 
@@ -194,6 +200,7 @@ export class GameRenderer {
     this.tileRenderer.sync(this.floor);
     this.syncEntities();
     this.tileRenderer.syncVisibility(this.floor);
+    this.hpLabelRenderer.sync();
   }
 
   /** Get the entity node Container (for position/scale/alpha animations). */
@@ -215,6 +222,14 @@ export class GameRenderer {
   disableEntityBob(guid: string): void {
     const state = this.entityStates.get(guid);
     if (state) state.bob = undefined;
+  }
+
+  /** Stop the vibrate animation and snap position.x back to center. */
+  disableEntityVibrate(guid: string): void {
+    const state = this.entityStates.get(guid);
+    if (!state) return;
+    state.vibrate = undefined;
+    state.scaleRoot.position.x = this.camera.tileSize / 2;
   }
 
   /** Get the effect layer container (for animation overlays). */
@@ -911,13 +926,13 @@ export class GameRenderer {
 
       if (!state.attackGround) {
         const line = new Graphics();
-        this.effectLayer.addChild(line);
+        this.attackGroundLayer.addChild(line);
         const tex = this.sprites.getTextureByKey('colored_transparent_packed_613') ?? Texture.WHITE;
         const reticle = new Sprite(tex);
         reticle.anchor.set(0.5, 0.5);
         reticle.width = ts;
         reticle.height = ts;
-        this.effectLayer.addChild(reticle);
+        this.attackGroundLayer.addChild(reticle);
         state.attackGround = { line, reticle, reticleAge: 0 };
       }
 
@@ -935,6 +950,15 @@ export class GameRenderer {
         state.attackGround.reticle.destroy();
         state.attackGround = undefined;
       }
+    }
+  }
+
+  /** Hide the attack-ground line+reticle for a given entity guid (called from AnimationPlayer at bump impact). */
+  hideAttackGroundEffect(guid: string): void {
+    const state = this.entityStates.get(guid);
+    if (state?.attackGround) {
+      state.attackGround.line.visible = false;
+      state.attackGround.reticle.visible = false;
     }
   }
 
@@ -1121,14 +1145,14 @@ export class GameRenderer {
     const VIBRATE_PERIOD = 4.60;
     const ts = this.camera.tileSize;
     for (const [, state] of this.entityStates) {
-      if (!state.muckVibrate) continue;
+      if (!state.vibrate) continue;
       // Stop vibrating once the fade-out (disappear) animation starts
       if (state.fade) {
         state.scaleRoot.position.x = ts / 2;
         continue;
       }
-      state.muckVibrate.timer += dt;
-      const t = state.muckVibrate.timer % VIBRATE_PERIOD;
+      state.vibrate.timer += dt;
+      const t = state.vibrate.timer % VIBRATE_PERIOD;
       let amplitude: number = 0.07;
       // 20Hz alternating sign matching Vibrate.anim's 0.05s keyframe intervals
       const sign = (Math.floor(t / 0.05) % 2 === 0) ? -1 : 1;

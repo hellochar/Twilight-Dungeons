@@ -140,7 +140,7 @@ export function createEncounterGroups(E: Record<string, Encounter>): EncounterGr
   // earlyGame.spice.add(0.1, E.addOldDude);
   // earlyGame.spice.add(0.1, E.addDeathbloom);
   // earlyGame.spice.add(0.1, E.addGuardleaf);
-  earlyGame.spice.add(0.5, E.addSpore);
+  // earlyGame.spice.add(0.5, E.addSpore);
   earlyGame.spice.add(0.05, E.addEveningBells);
   earlyGame.spice.add(0.05, E.addPoisonmoss);
   earlyGame.spice.add(0.05, E.fillWithFerns);

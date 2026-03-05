@@ -41,9 +41,10 @@ interface Props {
   currentDateSeed: string;
   currentDifficulty: Difficulty;
   currentTurn: number;
+  gameOver: boolean;
 }
 
-export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentTurn }: Props) {
+export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentTurn, gameOver }: Props) {
   const [open, setOpen] = useState(false);
 
   const days = getAllDays();
@@ -54,7 +55,7 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
       setOpen(false);
       return;
     }
-    if (currentTurn > 0 && !confirm("You'll lose your current progress. Continue?")) {
+    if (currentTurn > 0 && !gameOver && !confirm("You'll lose your current progress. Continue?")) {
       e.preventDefault();
     } else {
       setOpen(false);

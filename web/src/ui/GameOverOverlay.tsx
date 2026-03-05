@@ -6,6 +6,7 @@ import {
   submitScore, fetchHistogram, type HistogramBucket,
 } from '../services/ScoreService';
 import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
+import { buttonBase, buttonPadding } from './theme';
 
 const AUTO_SUBMIT = true;
 
@@ -45,14 +46,12 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
         <button
           onClick={onPlayAgain}
           style={{
+            ...buttonBase,
+            ...buttonPadding,
             background: '#bbbbbb',
             color: '#000',
             border: '2px solid #888',
-            borderRadius: 8,
             padding: '16px 64px',
-            fontFamily: FONT_FAMILY,
-            fontSize: FontSize.xl,
-            cursor: 'pointer',
           }}
         >
           Retry
@@ -163,13 +162,11 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
                   onClick={handleSubmit}
                   disabled={submitting}
                   style={{
+                    ...buttonBase,
+                    ...buttonPadding,
                     background: '#253',
                     color: '#ccc',
                     border: '1px solid #4f4',
-                    borderRadius: 4,
-                    padding: '3px 12px',
-                    fontFamily: FONT_FAMILY,
-                    fontSize: FontSize.md,
                     cursor: submitting ? 'default' : 'pointer',
                     opacity: submitting ? 0.6 : 1,
                   }}
@@ -191,14 +188,11 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
 }
 
 const secondaryButtonStyle: React.CSSProperties = {
+  ...buttonBase,
+  ...buttonPadding,
   background: '#335',
   color: '#ccc',
   border: '1px solid #556',
-  borderRadius: 4,
-  padding: '4px 14px',
-  fontFamily: FONT_FAMILY,
-  fontSize: FontSize.md,
-  cursor: 'pointer',
 };
 
 // ---- Histogram component ----

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
+import { FONT_FAMILY_SERIF, FontSize } from './fonts';
+import { buttonBase, buttonPaddingCompact } from './theme';
 
 const SEEN_KEY = 'twilight-dungeons-help-seen';
 
@@ -17,15 +18,11 @@ export function HelpButton() {
         <button
           onClick={() => setOpen(true)}
           style={{
+            ...buttonBase,
+            ...buttonPaddingCompact,
             background: 'rgba(16, 16, 24, 0.88)',
             color: '#aaa',
             border: '1px solid #445',
-            borderRadius: 4,
-            padding: '2px 10px',
-            fontFamily: FONT_FAMILY,
-            fontSize: FontSize.lg,
-            cursor: 'pointer',
-            lineHeight: 1.2,
           }}
         >
           ?
@@ -79,16 +76,14 @@ function HelpPopup({ onClose }: { onClose: () => void }) {
           <button
             onClick={onClose}
           style={{
+            ...buttonBase,
+            ...buttonPaddingCompact,
             position: 'absolute',
             top: 0,
             right: 0,
             background: 'transparent',
             border: 'none',
             color: '#888',
-            fontFamily: FONT_FAMILY,
-            fontSize: FontSize.lg,
-            cursor: 'pointer',
-            padding: '2px 6px',
             lineHeight: 1,
             zIndex: 1,
           }}

@@ -2,6 +2,7 @@ import type { GameState, OnTopActionSnapshot } from '../hooks/useGameLoop';
 import { DIFFICULTY_LABEL } from '../model/GameModel';
 import { StatusBar } from './StatusBar';
 import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
+import { buttonBase, buttonPadding } from './theme';
 
 interface HUDProps {
   state: GameState;
@@ -115,17 +116,14 @@ function Banner({ dateSeed, difficulty, turn, isCleared, clearedOnTurn }: Banner
 // ─── On-Top Action Button ───
 
 const BUTTON_STYLE = {
+  ...buttonBase,
+  ...buttonPadding,
   display: 'flex',
   alignItems: 'center',
   gap: 6,
-  padding: '10px 18px',
   background: 'rgba(20, 20, 30, 0.85)',
   border: '1px solid rgba(255, 255, 255, 0.25)',
-  borderRadius: 6,
   color: '#eee',
-  fontFamily: FONT_FAMILY,
-  fontSize: FontSize.xl,
-  cursor: 'pointer',
 } as const;
 
 function WaitButton({ onClick }: { onClick: () => void }) {

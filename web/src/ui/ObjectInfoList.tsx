@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, type RefObject } from 'react';
+import { useRef, useLayoutEffect, useState, useEffect, type RefObject } from 'react';
 import type { EntityCardData } from '../hooks/useGameLoop';
 import type { GameRenderer } from '../renderer/GameRenderer';
 import { getObjectInfo } from '../model/ObjectInfo';
@@ -28,8 +28,21 @@ function chebyshev(a: { x: number; y: number }, b: { x: number; y: number }): nu
 }
 
 export function ObjectInfoList({ bodies, grasses, playerPos, hoveredTilePos, horizontal, containerRef, rendererRef }: ObjectInfoListProps) {
+  // Hold Alt to temporarily show all entities on the floor
+  const [altHeld, setAltHeld] = useState(false);
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => { if (e.key === 'Alt') { e.preventDefault(); setAltHeld(true); } };
+    const up = (e: KeyboardEvent) => { if (e.key === 'Alt') setAltHeld(false); };
+    const blur = () => setAltHeld(false);
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+    window.addEventListener('blur', blur);
+    return () => { window.removeEventListener('keydown', down); window.removeEventListener('keyup', up); window.removeEventListener('blur', blur); };
+  }, []);
+
+  const showAll = SHOW_ALL || altHeld;
   const isRelevant = (e: EntityCardData) =>
-    SHOW_ALL ||
+    showAll ||
     (SHOW_ADJACENT && chebyshev(playerPos, e.pos) <= 1) ||
     (SHOW_HOVERED && hoveredTilePos != null && e.pos.x === hoveredTilePos.x && e.pos.y === hoveredTilePos.y);
 

@@ -35,7 +35,7 @@ export const NEXT_DIFFICULTY: Record<Difficulty, Difficulty | null> = {
 };
 
 export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
-  basic: '',
+  basic: 'Basic',
   medium: 'Medium',
   complex: 'Complex',
 };
@@ -54,19 +54,19 @@ export function selectDepth(seed: number): number {
 /** Generate today's basic-difficulty game (depths 1–9, earlyGame encounters). */
 export function generateBasicGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
-  return GameModel.createDailyGame(dateSeed, 1 + (seed % 9));
+  return GameModel.createDailyGame(dateSeed, 3, 3);
 }
 
 /** Generate today's medium-difficulty game (depths 10–18, everything encounters). */
 export function generateMediumGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
-  return GameModel.createDailyGame(dateSeed, 10 + (seed % 9));
+  return GameModel.createDailyGame(dateSeed, 5, 4);
 }
 
 /** Generate today's complex-difficulty game (depths 19–26, midGame encounters). */
 export function generateComplexGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
-  return GameModel.createDailyGame(dateSeed, 19 + (seed % 8));
+  return GameModel.createDailyGame(dateSeed, 7, 5);
 }
 
 function _todayString(): string {
@@ -184,7 +184,7 @@ export class GameModel implements IGameModelRef {
    * Create a daily puzzle game from a date seed.
    * Uses FloorGenerator to produce a procedurally generated floor.
    */
-  static createDailyGame(dateSeed?: string, depthOverride?: number): GameModel {
+  static createDailyGame(dateSeed?: string, depthOverride?: number, playerHp?: number): GameModel {
     const _d = new Date();
     const dateStr = dateSeed ?? `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,'0')}-${String(_d.getDate()).padStart(2,'0')}`;
     const seed = djb2(dateStr);
@@ -206,6 +206,9 @@ export class GameModel implements IGameModelRef {
     const floor = generator.generateCaveFloor(depth);
 
     const model = GameModel.createAndSetMain(floor, floor.startPos);
+    if (playerHp !== undefined) {
+      model.player.hp = model.player.baseMaxHp = playerHp;
+    }
     model.dateSeed = dateStr;
     model.generatedDepth = depth;
     return model;

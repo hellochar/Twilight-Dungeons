@@ -55,14 +55,14 @@ export class Body extends Entity {
   get hp(): number {
     return this._hp;
   }
-  protected set hp(value: number) {
+  public set hp(value: number) {
     this._hp = value;
   }
 
   get baseMaxHp(): number {
     return this._baseMaxHp;
   }
-  protected set baseMaxHp(value: number) {
+  public set baseMaxHp(value: number) {
     this._baseMaxHp = value;
   }
 

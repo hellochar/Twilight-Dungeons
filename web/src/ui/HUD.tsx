@@ -56,14 +56,15 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
 // Sheet order: heart-0.png = empty ... heart-4.png = full
 // Unity scene reverses: sprites[0]=full, sprites[4]=empty → index as (4 - hpForThis)
 
-const HP_PER_HEART = 4;
-const HEART_SIZE = 20;
+const HP_PER_HEART = 1;
+const HEART_SIZE = 48;
 
 function Hearts({ hp, maxHp }: { hp: number; maxHp: number }) {
   const numHearts = Math.ceil(maxHp / HP_PER_HEART);
   const hearts = [];
   for (let i = 0; i < numHearts; i++) {
-    const hpForThis = Math.max(0, Math.min(HP_PER_HEART, hp - i * HP_PER_HEART));
+    // const hpForThis = Math.max(0, Math.min(HP_PER_HEART, hp - i * HP_PER_HEART));
+    const hpForThis = i < hp ? 4 : 0;
     hearts.push(<Heart key={i} state={hpForThis} />);
   }
   return <div style={{ display: 'flex', gap: 2 }}>{hearts}</div>;

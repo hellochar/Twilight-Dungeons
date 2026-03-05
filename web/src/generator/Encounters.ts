@@ -860,7 +860,7 @@ export const addScuttlers4x: Encounter = twice(twice(addScuttlers));
 export function addFruitingBodies(floor: Floor, room: Room | null): void {
   const positions = FloorUtils.emptyTilesInRoom(floor, room);
   MyRandom.Shuffle(positions);
-  const num = MyRandom.Range(3, Math.floor((positions.length + 1) / 4));
+  const num = 3; // MyRandom.Range(3, Math.floor((positions.length + 1) / 4));
   for (const tile of positions.slice(0, num)) {
     spawn(floor, 'FruitingBody', tile.pos);
   }

@@ -57,7 +57,7 @@ function bumpAndReturnEasing(t: number): number {
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
-  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'quickDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion';
+  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'quickDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion' | 'spray';
   entityGuid: string;
   from?: Vector2Int;
   to?: Vector2Int;
@@ -65,6 +65,7 @@ export interface GameEvent {
   amount?: number;
   isBoss?: boolean;
   pulseScale?: number;
+  color?: number;
 }
 
 /**
@@ -144,7 +145,8 @@ export class AnimationPlayer {
 
   private addEventToTimeline(event: GameEvent, tl: gsap.core.Timeline, batch: GameEvent[] = []): void {
     // Position-based effects don't need the entity sprite (which may already be gone).
-    if (event.type === 'disperse') { this.animateDisperse(event, tl); return; }
+    if (event.type === 'disperse') { this.animateParticleBurst(tl, event.from!); return; }
+    if (event.type === 'spray') { this.animateParticleBurst(tl, event.from!, { color: event.color, speed: 6.5 }); return; }
 
     const node = this.renderer.getEntitySprite(event.entityGuid);
     if (!node) return;
@@ -538,23 +540,23 @@ export class AnimationPlayer {
   }
 
   /**
-   * Cyan particle burst matching Unity LlaoraController RedcapPoof effect.
-   * Motion: Unity VelocityModule speedModifier curve (1→0.315→0) ≈ (1-t)^5.
-   * Integrated position: dist(t) = speed*(1-(1-t)^6)/6 — particles decelerate to a stop.
-   * Alpha: Unity colorOverLifetime holds 1 until t=0.69, then fades to 0.
+   * Reusable radial particle burst. Defaults match Llaora's cyan poof.
+   * Motion: deceleration curve dist(t) = speed*(1-(1-t)^6)/6.
+   * Alpha: holds 1 until t=0.69, then fades to 0.
    */
-  private animateDisperse(event: GameEvent, tl: gsap.core.Timeline): void {
-    if (!event.from) return;
+  private animateParticleBurst(
+    tl: gsap.core.Timeline,
+    from: Vector2Int,
+    opts?: { color?: number; count?: number; speed?: number; lifetime?: number },
+  ): void {
     const ts = this.camera.tileSize;
-    const px = this.camera.tileToCenterPixel(event.from);
+    const px = this.camera.tileToCenterPixel(from);
 
-    // Unity startSize=0.1 diameter → radius 0.05*ts; per-particle random [0.5, 1.0]×
     const P_RADIUS_BASE = 0.05 * ts;
-    // Unity peak speed=0.8×5=4 world units/s. BASE_SPEED=9*ts so avg reaches ~1.1 tiles.
-    const BASE_SPEED = 9.0 * ts;
-    const COLOR = 0x00acd8;
-    const COUNT = 120;
-    const LIFETIME = 1.0;
+    const BASE_SPEED = (opts?.speed ?? 9.0) * ts;
+    const COLOR = opts?.color ?? 0x00acd8;
+    const COUNT = opts?.count ?? 120;
+    const LIFETIME = opts?.lifetime ?? 1.0;
 
     const container = new Container();
     container.position.set(px.x, px.y);
@@ -564,9 +566,8 @@ export class AnimationPlayer {
     for (let i = 0; i < COUNT; i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = BASE_SPEED * (0.5 + Math.random() * 0.5);
-      const radius = P_RADIUS_BASE; //  * (0.5 + Math.random() * 0.5);
       const g = new Graphics();
-      g.circle(0, 0, radius).fill({ color: COLOR });
+      g.circle(0, 0, P_RADIUS_BASE).fill({ color: COLOR });
       g.position.set(0, 0);
       container.addChild(g);
       particles.push({ g, angle, speed });

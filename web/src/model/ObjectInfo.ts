@@ -36,7 +36,7 @@ registerObjectInfo('Octopus', { description: 'Range 2. Runs away if you get too 
 registerObjectInfo('Boombug', { description: 'Neutral. Leaves an explosive corpse on death.', flavorText: 'How such a creature was able to survive and breed is Nature\'s mystery.' });
 registerObjectInfo('Scuttler', { description: 'Chases and attacks its target until it dies, then burrows back into the ground.' });
 registerObjectInfo('ScuttlerUnderground', { description: 'Something lies in wait here. Anything that walks over it will become targeted.' });
-registerObjectInfo('FruitingBody', { description: 'Periodically sprays adjacent creatures.\nCreatures hit are converted into Fruiting Bodies.\nYou survive the spray but gain an Infected stack. At 4 stacks, you die.', flavorText: 'Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.' });
+registerObjectInfo('FruitingBody', { description: 'Walk near it to telegraph a spray. After one turn, it dies, but adjacent creatures turn into Fruiting Bodies. Fruiting Bodies do not count as enemies.', flavorText: 'Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.' });
 registerObjectInfo('SporeBloat', { description: 'Pops after three turns, applying the Spored Status on to adjacent creatures.', flavorText: 'Inflated and swollen and looking to spread its seed.' });
 
 // ─── Early Game Grasses ───

@@ -6,45 +6,25 @@ import { GenericBaseAction } from '../../BaseAction';
 import { Faction } from '../../../core/types';
 import type { INoTurnDelay } from '../../../core/types';
 import { Vector2Int } from '../../../core/Vector2Int';
-import { MyRandom } from '../../../core/MyRandom';
 import { GameModelRef } from '../../GameModelRef';
-import { type EquippableItem, STICKY_TAG } from '../../Item';
-import { ItemOnGround } from '../../ItemOnGround';
-import { EquipmentSlot } from '../../Equipment';
 import { entityRegistry } from '../../../generator/entityRegistry';
-import type { Player } from '../../Player';
-import { ItemTanglefoot } from './ItemTanglefoot';
-import { ItemStiffarm } from './ItemStiffarm';
-import { ItemBulbousSkin } from './ItemBulbousSkin';
-import { ItemThirdEye } from './ItemThirdEye';
-import { ItemScalySkin } from './ItemScalySkin';
-
-// ─── Infection item constructors by slot ───
-
-const InfectionTypes = new Map<EquipmentSlot, () => EquippableItem>([
-  [EquipmentSlot.Footwear, () => new ItemTanglefoot()],
-  [EquipmentSlot.Weapon, () => new ItemStiffarm()],
-  [EquipmentSlot.Armor, () => new ItemBulbousSkin()],
-  [EquipmentSlot.Headwear, () => new ItemThirdEye()],
-  [EquipmentSlot.Offhand, () => new ItemScalySkin()],
-]);
+import { Player } from '../../Player';
+// import { FungalInfectionStatus } from '../../statuses/InfectedStatus';
+import type { Actor } from '../../Actor';
 
 /**
- * Neutral fungus that sprays infection onto the player.
- * If all 5 equipment slots are already infected, heals the player instead.
- * Port of C# FruitingBody.cs.
+ * Neutral fungus that periodically sprays adjacent creatures.
+ * Non-player creatures hit by the spray are instantly converted into FruitingBodies.
+ * The player instead gains an Infected stack. At 4 stacks, the player dies.
  */
 export class FruitingBody extends AIActor implements INoTurnDelay {
   readonly noTurnDelay = true as const;
   override get isStationary() { return true; }
 
-  private cooldown: number;
-
   constructor(pos: Vector2Int) {
     super(pos);
     this._hp = this._baseMaxHp = 1;
     this.faction = Faction.Neutral;
-    this.cooldown = MyRandom.Range(0, 10);
     this.clearTasks();
   }
 
@@ -53,50 +33,35 @@ export class FruitingBody extends AIActor implements INoTurnDelay {
   }
 
   protected getNextTask(): ActorTask {
-    if (this.cooldown > 0) {
-      this.cooldown--;
-      return new WaitTask(this, 1);
-    } else {
+    const player = GameModelRef.main.player;
+    if (player.isNextTo(this)) {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, () => this.spray()));
     }
+    return new WaitTask(this, 1);
   }
 
   private spray(): void {
-    this.cooldown = 10;
-    const player = GameModelRef.main.player;
-    if (player.isNextTo(this)) {
-      const uninfectedSlots: EquipmentSlot[] = [];
-      for (const [slot, factory] of InfectionTypes) {
-        const equipped = player.equipment.get(slot);
-        // Check if the equipped item is NOT the infection type for this slot
-        const infectionInstance = factory();
-        if (!equipped || equipped.constructor !== infectionInstance.constructor) {
-          uninfectedSlots.push(slot);
-        }
-      }
+    const floor = this.floor;
+    if (!floor) return;
 
-      if (uninfectedSlots.length === 0) {
-        player.heal(1);
-      } else {
-        this.infect(uninfectedSlots, player);
-      }
-      this.killSelf();
+    const adjacentActors = floor.adjacentActors(this.pos);
+
+    for (const entity of adjacentActors) {
+      const actor = entity as Actor;
+      if (actor instanceof FruitingBody) continue;
+
+      // if (actor instanceof Player) {
+      //   actor.statuses.add(new FungalInfectionStatus(1));
+      // } else {
+        // Convert non-player creature into a new FruitingBody
+        const pos = actor.pos;
+        actor.kill(this);
+        floor.put(new FruitingBody(pos));
+      // }
     }
-  }
 
-  private infect(uninfectedSlots: EquipmentSlot[], player: Player): void {
-    const slot = MyRandom.Pick(uninfectedSlots);
-    const factory = InfectionTypes.get(slot)!;
-    const infection = factory();
-
-    const existingEquipment = player.equipment.get(infection.slot);
-    if (existingEquipment != null && existingEquipment.constructor.name !== 'ItemHands') {
-      player.equipment.removeItem(existingEquipment);
-      if (!(STICKY_TAG in existingEquipment)) {
-        player.floor!.put(new ItemOnGround(player.pos, existingEquipment));
-      }
-    }
-    player.equipment.addItem(infection);
+    GameModelRef.main.emitAnimation({ type: 'spray', entityGuid: this.guid, from: this.pos, color: 0x8634FE });
+    this.killSelf();
   }
 }
 

@@ -147,7 +147,10 @@ export class Actor extends Body implements ISteppable {
   attackGround(targetPosition: Vector2Int): void {
     const target = this.floor?.bodies.get(targetPosition);
     const grass = this.floor?.grasses.get(targetPosition);
-    GameModelRef.mainOrNull?.emitAnimation({ type: 'attackGround', entityGuid: this.guid, from: this.pos, to: targetPosition });
+    // Suppress attackGround event when hitting a body — the 'attack' event from this.attack() handles the bump.
+    if (!target) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'attackGround', entityGuid: this.guid, from: this.pos, to: targetPosition });
+    }
     this.onAttackGround.emit(targetPosition);
     if (target) {
       this.attack(target as Body);

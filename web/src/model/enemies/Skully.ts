@@ -36,13 +36,12 @@ export class Skully extends AIActor {
   onKilled(_a: Actor): void {
     const floor = this.floor!;
     const pos = this.pos;
-    GameModelRef.main.enqueuEvent(() => {
-      const candidates = floor.breadthFirstSearch(pos, tile => tile instanceof Ground);
-      const muckSpot = candidates.find(t => !(floor.grasses.get(t.pos) instanceof Muck));
-      if (muckSpot) {
-        floor.put(new Muck(muckSpot.pos));
-      }
-    });
+    // Synchronous: Muck appears in the same animation batch as the squishDeath.
+    const candidates = floor.breadthFirstSearch(pos, tile => tile instanceof Ground);
+    const muckSpot = candidates.find(t => !(floor.grasses.get(t.pos) instanceof Muck));
+    if (muckSpot) {
+      floor.put(new Muck(muckSpot.pos));
+    }
   }
 
   protected getNextTask(): ActorTask {
@@ -86,6 +85,7 @@ export class Muck extends Grass implements ISteppable, IActorEnterHandler {
     this.onNoteworthyAction();
     this.turnsElapsed++;
     if (this.turnsElapsed >= 3) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'quickDeath', entityGuid: this.guid });
       const s = new Skully(this.pos);
       s.squishSpawn = true;
       s.clearTasks();

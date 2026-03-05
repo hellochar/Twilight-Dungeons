@@ -51,7 +51,7 @@ function bumpAndReturnEasing(t: number): number {
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
-  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion';
+  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'quickDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion';
   entityGuid: string;
   from?: Vector2Int;
   to?: Vector2Int;
@@ -176,6 +176,9 @@ export class AnimationPlayer {
       case 'squishDeath':
         this.animateSquishDeath(event, tl);
         break;
+      case 'quickDeath':
+        this.animateQuickDeath(event, tl);
+        break;
       case 'spawn':
         this.animateSpawn(node, event, tl);
         break;
@@ -275,6 +278,8 @@ export class AnimationPlayer {
     const dx = (toPx.x - fromPx.x) * BUMP_INTENSITY;
     const dy = (toPx.y - fromPx.y) * BUMP_INTENSITY;
 
+    const bumpLabel = `atkground-${event.entityGuid}`;
+    const impactLabel = `atkground-impact-${event.entityGuid}`;
     const progress = { t: 0 };
     tl.to(progress, {
       t: 1,
@@ -287,7 +292,11 @@ export class AnimationPlayer {
       onComplete: () => {
         node.position.set(fromPx.x, fromPx.y);
       },
-    }, `atkground-${event.entityGuid}`);
+    }, bumpLabel);
+    // Label at impact time — used by animateAttackGroundHit to synchronize
+    tl.addLabel(impactLabel, `${bumpLabel}+=${BUMP_IMPACT_TIME}`);
+    // Hide line+reticle at impact
+    tl.call(() => this.renderer.hideAttackGroundEffect(event.entityGuid), [], impactLabel);
   }
 
   /** Flash red on damage — tint targets the visual Sprite, shake targets the node. */
@@ -396,6 +405,14 @@ export class AnimationPlayer {
       const s = this.sound;
       tl.call(() => s.play('death', 1, true), [], pos);
     }
+  }
+
+  /** Muck → Skully transform: instant (0.1s) fade-out. Stops vibrate immediately. */
+  private animateQuickDeath(event: GameEvent, tl: gsap.core.Timeline): void {
+    this.renderer.disableEntityVibrate(event.entityGuid);
+    const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
+    if (!scaleRoot) return;
+    tl.to(scaleRoot, { alpha: 0, duration: 0.1, ease: 'power1.out' }, 0);
   }
 
   /** Pop in from zero scale on spawn — targets scaleRoot for center-pivot animation. */
@@ -604,11 +621,10 @@ export class AnimationPlayer {
       sprite.destroy();
     };
 
-    const label = `atkgroundhit-${event.entityGuid}`;
-    // Scale up 0→1.2 over first ~35%, 1.2→1 middle, 1→0 end; Y moves 0.2→-0.12 total
-    tl.to(sprite, { width: ts, height: ts, duration: 0.25, ease: 'power2.out' }, label);
-    tl.to(sprite, { y: px.y - 0.12 * ts, duration: 0.5, ease: 'power3.out' }, label);
-    // tl.to(sprite.scale, { x: 1, y: 1, duration: 0.1, ease: 'none' }, '>');
+    // Anchor to the impact label set by animateAttackGround so swipe appears at bump peak
+    const impactLabel = `atkground-impact-${event.entityGuid}`;
+    tl.to(sprite, { width: ts, height: ts, duration: 0.25, ease: 'power2.out' }, impactLabel);
+    tl.to(sprite, { y: px.y - 0.12 * ts, duration: 0.5, ease: 'power3.out' }, impactLabel);
     tl.to(sprite, { width: 0, height: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, '>');
   }
 

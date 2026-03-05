@@ -56,8 +56,8 @@ export interface EntityRenderState {
   };
   /** ExplodeTask 3×3 AoE danger marker on the effectLayer — plays looping explosion anim. */
   explodeAOE?: { sprite: Sprite; elapsed: number; fadingOut: boolean };
-  /** Vibrate.anim state for Muck on its final turn before transforming back into Skully. */
-  muckVibrate?: { timer: number };
+  /** Vibrate.anim state — driven by GameRenderer.updateEntityAnimations. Any entity can use this. */
+  vibrate?: { timer: number };
   /** Unsquish spawn state for Skully spawned from Muck (scaleY 0→1 from bottom pivot). */
   squishSpawn?: { elapsed: number };
   /** Deathbloom bloomed flower animation state. */
@@ -295,8 +295,8 @@ registerEntityRenderer(Deathbloom, {
  */
 registerEntityRenderer(Muck, {
   sync(entity: Entity, state: EntityRenderState): void {
-    if ((entity as Muck).turnsElapsed >= 2 && !state.muckVibrate) {
-      state.muckVibrate = { timer: 0 };
+    if ((entity as Muck).turnsElapsed >= 2 && !state.vibrate) {
+      state.vibrate = { timer: 0 };
     }
   },
 });

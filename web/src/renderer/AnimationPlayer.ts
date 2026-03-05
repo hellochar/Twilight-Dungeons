@@ -553,7 +553,7 @@ export class AnimationPlayer {
     const px = this.camera.tileToCenterPixel(from);
 
     const P_RADIUS_BASE = 0.05 * ts;
-    const BASE_SPEED = (opts?.speed ?? 9.0) * ts;
+    const BASE_SPEED = (opts?.speed ?? 12.0) * ts;
     const COLOR = opts?.color ?? 0x00acd8;
     const COUNT = opts?.count ?? 120;
     const LIFETIME = opts?.lifetime ?? 1.0;

@@ -350,10 +350,10 @@ export function useGameLoop() {
     skipAllRef.current = false;
 
     // Register skip-all handler after one frame so the triggering keypress doesn't count
+    // Note: pointerdown intentionally excluded — clicks show path preview instead of skipping.
     const skipHandler = () => { skipAllRef.current = true; animator.skip(); };
     const skipRAF = requestAnimationFrame(() => {
       window.addEventListener('keydown', skipHandler);
-      window.addEventListener('pointerdown', skipHandler);
     });
 
     try {
@@ -424,7 +424,6 @@ export function useGameLoop() {
     } finally {
       cancelAnimationFrame(skipRAF);
       window.removeEventListener('keydown', skipHandler);
-      window.removeEventListener('pointerdown', skipHandler);
 
       try {
         renderer.syncToModel();
@@ -442,8 +441,27 @@ export function useGameLoop() {
   const processIntent = useCallback(async (intent: PlayerIntent) => {
     const model = modelRef.current;
     if (!model) return;
-    if (processingRef.current) return;
     if (model.player.isDead) return;
+
+    // ─── During animation: clicks show path preview only, no execution ───
+    if (processingRef.current) {
+      if (intent.type !== 'click') return;
+      const { tilePos } = intent;
+      const { player, currentFloor: floor } = model;
+      if (Vector2Int.equals(tilePos, player.pos)) { clearProposed(); return; }
+      const previewTask = resolveIntent(intent, player, floor);
+      if (previewTask instanceof FollowPathTask) {
+        proposedTargetRef.current = previewTask.target;
+        rendererRef.current?.showProposedPath(previewTask.target, [...previewTask.path]);
+      } else if (previewTask) {
+        // Adjacent attack / move-next-to: show a single-tile path as reticle
+        proposedTargetRef.current = tilePos;
+        rendererRef.current?.showProposedPath(tilePos, [tilePos]);
+      } else {
+        clearProposed();
+      }
+      return;
+    }
 
     // ─── Targeting mode intercept ───
     const targeting = targetingRef.current;

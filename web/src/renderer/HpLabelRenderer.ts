@@ -31,12 +31,12 @@ export class HpLabelRenderer {
     this.layer.visible = true;
 
     const player = GameModelRef.main?.player;
-    if (!player) {
+    if (!player || !player.floor) {
       this.clear();
       return;
     }
 
-    const visible = player.floor!.bodies.where((e) => e instanceof Actor) as Actor[];
+    const visible = player.floor.bodies.where((e) => e instanceof Actor) as Actor[];
     const visibleGuids = new Set(visible.map((a) => a.guid));
 
     // Remove stale labels

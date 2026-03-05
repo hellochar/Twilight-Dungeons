@@ -5,7 +5,7 @@ import checker from 'vite-plugin-checker'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), checker({ typescript: true })],
-  base: '/Twilight-Dungeons/',
+  base: process.env.VITE_BASE_PATH === '' ? '/' : '/Twilight-Dungeons/',
   esbuild: {
     keepNames: true,
   },

@@ -131,10 +131,16 @@ export function ObjectInfoList({ bodies, grasses, playerPos, hoveredTilePos, hor
 
 import { forwardRef } from 'react';
 
+function describeDamage(spread: [number, number]): string {
+  const [min, max] = spread;
+  return min === max ? `Deals ${min} damage` : `Deals ${min} - ${max} damage`;
+}
+
 export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; horizontal: boolean }>(
   function EntityCard({ data, horizontal }, ref) {
     const info = getObjectInfo(data.typeName);
     const description = info?.description ?? '';
+    const hasStats = data.attackDamage != null || (data.hp != null && data.maxHp != null && data.maxHp > 0);
 
     return (
       <div ref={ref} style={{
@@ -149,7 +155,7 @@ export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; hor
         color: '#ddd',
         boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: description ? 6 : 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: (description || hasStats) ? 6 : 0 }}>
           <img
             src={spriteUrl(data.displayName)}
             alt={data.displayName}
@@ -158,6 +164,14 @@ export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; hor
           />
           <span style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifLg, color: '#fff' }}>{data.displayName}</span>
         </div>
+        {hasStats && (
+          <div style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifSm, color: '#fff', lineHeight: 1.3, marginBottom: description ? 4 : 0 }}>
+            {[
+              data.hp != null && data.maxHp != null && data.maxHp > 0 ? `HP: ${data.hp}/${data.maxHp}` : null,
+              data.attackDamage != null ? describeDamage(data.attackDamage) : null,
+            ].filter(Boolean).join('. ') + '.'}
+          </div>
+        )}
         {description && (
           <div style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifSm, color: '#fff', whiteSpace: 'pre-wrap', lineHeight: 1.3 }}>
             {description}

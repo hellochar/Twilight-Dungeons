@@ -6,6 +6,7 @@ import { ObjectInfoList } from './ui/ObjectInfoList';
 import { MobileInfoPopup } from './ui/MobileInfoPopup';
 import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import { DateSelectorPanel } from './ui/DateSelectorPanel';
+import { HelpButton } from './ui/HelpPopup';
 import { FONT_FAMILY, FontSize } from './ui/fonts';
 import { DIFFICULTY_LABEL } from './model/GameModel';
 import { isMobile } from './renderer';
@@ -44,6 +45,7 @@ function App() {
 
         {ready && (
           <>
+            {/* <HelpButton /> */}
             <HUD
               state={gameState}
               onTopAction={gameState.onTopAction}

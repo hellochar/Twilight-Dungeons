@@ -8,6 +8,8 @@ export interface SpriteInfo {
   frameCount: number;
   frameWidth: number;
   frameHeight: number;
+  ax: number;
+  ay: number;
 }
 
 export type SpriteManifest = Record<string, SpriteInfo>;
@@ -59,42 +61,41 @@ export class SpriteManager {
     const resp = await fetch(`${base}sprites/manifest.json`);
     this.manifest = await resp.json();
 
-    // Preload all sprite textures
-    const entries = Object.entries(this.manifest);
-    const loadPromises = entries.map(async ([name, info]) => {
-      try {
-        const texture = await Assets.load<Texture>(`${base}sprites/${info.file}`);
-        this.textures.set(name, texture);
+    // Load single texture atlas instead of 264 individual PNGs
+    const atlasTexture = await Assets.load<Texture>(`${base}sprites/atlas.png`);
+    const atlasSource = atlasTexture.source;
 
-        // Slice multi-frame strips
-        if (info.frameCount > 1) {
-          const frameTextures: Texture[] = [];
-          for (let i = 0; i < info.frameCount; i++) {
-            const frame = new Texture({
-              source: texture.source,
-              frame: new Rectangle(
-                i * info.frameWidth,
-                0,
-                info.frameWidth,
-                info.frameHeight,
-              ),
-            });
-            frameTextures.push(frame);
-          }
-          this.frames.set(name, frameTextures);
+    for (const [name, info] of Object.entries(this.manifest)) {
+      const tex = new Texture({
+        source: atlasSource,
+        frame: new Rectangle(info.ax, info.ay, info.width, info.height),
+      });
+      this.textures.set(name, tex);
+
+      // Slice multi-frame strips (frames are horizontal within the atlas region)
+      if (info.frameCount > 1) {
+        const frameTextures: Texture[] = [];
+        for (let i = 0; i < info.frameCount; i++) {
+          frameTextures.push(new Texture({
+            source: atlasSource,
+            frame: new Rectangle(
+              info.ax + i * info.frameWidth,
+              info.ay,
+              info.frameWidth,
+              info.frameHeight,
+            ),
+          }));
         }
-      } catch {
-        // Skip sprites that fail to load
+        this.frames.set(name, frameTextures);
       }
-    });
+    }
 
-    await Promise.all(loadPromises);
     this.sliceTilesheets();
     this.sliceSkullySheet();
     this.sliceBorders();
     this.applyFrameAliases();
     this.loaded = true;
-    console.log(`SpriteManager: loaded ${this.textures.size} sprites, ${this.tileSubSprites.size} tile sub-sprites`);
+    console.log(`SpriteManager: loaded ${this.textures.size} sprites from atlas, ${this.tileSubSprites.size} tile sub-sprites`);
   }
 
   /**
@@ -116,21 +117,23 @@ export class SpriteManager {
 
   /** Slice skully.png (32×16) into 'skully' (left 16×16) and 'muck' (right 16×16) sub-sprites. */
   private sliceSkullySheet(): void {
+    const info = this.manifest['skully'];
     const tex = this.textures.get('skully');
-    if (!tex) return;
-    this.textures.set('skully', new Texture({ source: tex.source, frame: new Rectangle(0, 0, 16, 16) }));
-    this.textures.set('muck', new Texture({ source: tex.source, frame: new Rectangle(16, 0, 16, 16) }));
+    if (!tex || !info) return;
+    this.textures.set('skully', new Texture({ source: tex.source, frame: new Rectangle(info.ax, info.ay, 16, 16) }));
+    this.textures.set('muck', new Texture({ source: tex.source, frame: new Rectangle(info.ax + 16, info.ay, 16, 16) }));
   }
 
   /** Slice tilesheets (tiles0, tiles12, tiles24) into named sub-sprites. */
   private sliceTilesheets(): void {
     for (const sheet of ['tiles0', 'tiles12', 'tiles24']) {
       const tex = this.textures.get(sheet);
-      if (!tex) continue;
+      const info = this.manifest[sheet];
+      if (!tex || !info) continue;
       for (const [name, region] of Object.entries(TILESHEET_REGIONS)) {
         const sub = new Texture({
           source: tex.source,
-          frame: new Rectangle(region.x, region.y, 16, 16),
+          frame: new Rectangle(info.ax + region.x, info.ay + region.y, 16, 16),
         });
         this.tileSubSprites.set(`${sheet}/${name}`, sub);
       }
@@ -140,11 +143,12 @@ export class SpriteManager {
   /** Slice border-left sub-sprite from border.png for chasm edge rendering. */
   private sliceBorders(): void {
     const tex = this.textures.get('border');
-    if (!tex) return;
+    const info = this.manifest['border'];
+    if (!tex || !info) return;
 
     this.borderTexture = new Texture({
       source: tex.source,
-      frame: new Rectangle(1, 0, 1, 16),
+      frame: new Rectangle(info.ax + 1, info.ay, 1, 16),
     });
   }
 

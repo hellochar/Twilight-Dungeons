@@ -258,6 +258,54 @@ async function main() {
     console.warn('Could not copy explosion.png:', e.message);
   }
 
+  // ─── Atlas Packing ───
+  // Pack all manifest sprites into a single texture atlas for fast PixiJS loading.
+  // Individual PNGs are still kept for React <img> usage (spriteUrl/statusSpriteUrl).
+  const atlasSprites = [];
+  for (const [name, info] of Object.entries(manifest)) {
+    const filePath = join(outDir, info.file);
+    try {
+      const buffer = await readFile(filePath);
+      atlasSprites.push({ name, buffer, width: info.width, height: info.height });
+    } catch {
+      console.warn(`Atlas: could not read ${filePath}, skipping`);
+    }
+  }
+
+  // Shelf bin-packer: sort by height desc, pack left-to-right into rows
+  const MAX_ATLAS_WIDTH = 2048;
+  atlasSprites.sort((a, b) => b.height - a.height || b.width - a.width);
+  let shelfY = 0, shelfHeight = 0, cursorX = 0;
+  for (const s of atlasSprites) {
+    if (cursorX + s.width > MAX_ATLAS_WIDTH) {
+      shelfY += shelfHeight;
+      shelfHeight = 0;
+      cursorX = 0;
+    }
+    s.ax = cursorX;
+    s.ay = shelfY;
+    cursorX += s.width;
+    shelfHeight = Math.max(shelfHeight, s.height);
+  }
+  const atlasHeight = nextPow2(shelfY + shelfHeight);
+
+  // Add atlas coords to manifest
+  for (const s of atlasSprites) {
+    manifest[s.name].ax = s.ax;
+    manifest[s.name].ay = s.ay;
+  }
+
+  // Composite atlas PNG
+  const atlasPath = join(outDir, 'atlas.png');
+  await sharp({
+    create: { width: MAX_ATLAS_WIDTH, height: atlasHeight, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
+    .composite(atlasSprites.map(s => ({ input: s.buffer, left: s.ax, top: s.ay })))
+    .png()
+    .toFile(atlasPath);
+
+  console.log(`Atlas: ${atlasSprites.length} sprites packed into ${MAX_ATLAS_WIDTH}×${atlasHeight} (${atlasPath})`);
+
   await writeFile(
     join(outDir, 'manifest.json'),
     JSON.stringify(manifest, null, 2),
@@ -267,6 +315,8 @@ async function main() {
   console.log(`Extracted ${extracted} atlas sprites, ${targetedExtracted} targeted sprites`);
   console.log(`Manifest: ${Object.keys(manifest).length} entries`);
 }
+
+function nextPow2(n) { let v = 1; while (v < n) v <<= 1; return v; }
 
 main().catch((err) => {
   console.error(err);

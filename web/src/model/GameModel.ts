@@ -148,7 +148,8 @@ export class GameModel implements IGameModelRef {
    * Uses FloorGenerator to produce a procedurally generated floor.
    */
   static createDailyGame(dateSeed?: string, depthOverride?: number): GameModel {
-    const dateStr = dateSeed ?? new Date().toISOString().slice(0, 10);
+    const _d = new Date();
+    const dateStr = dateSeed ?? `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,'0')}-${String(_d.getDate()).padStart(2,'0')}`;
     const seed = djb2(dateStr);
 
     // Generate floor seeds from master seed

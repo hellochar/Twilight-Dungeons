@@ -633,16 +633,35 @@ export function useGameLoop() {
     await stepAndAnimate();
   }, [stepAndAnimate]);
 
-  /** Reset game (play again). */
-  const resetGame = useCallback(() => {
+  /** Load a specific date seed into the game. */
+  const playDate = useCallback((dateSeed: string) => {
     const renderer = rendererRef.current;
     if (!renderer) return;
     clearProposed();
+    const newModel = GameModel.createDailyGame(dateSeed);
+    newModel.consumeAnimationEvents();
+    modelRef.current = newModel;
+    renderer.setFloor(newModel.currentFloor);
+    renderer.syncToModel();
+    renderer.camera.resize(
+      renderer.app.screen.width,
+      renderer.app.screen.height,
+      newModel.currentFloor.width,
+      newModel.currentFloor.height,
+    );
+    setGameState(readState());
+  }, [readState, clearProposed]);
 
+  /** Reset game (play again / today's puzzle). */
+  const resetGame = useCallback(() => {
     const debugState = import.meta.env.DEV ? loadDebugState() : {};
     const customSeed = debugState.seed?.trim() || undefined;
     const customDepth = debugState.depth ? parseInt(debugState.depth, 10) : undefined;
     const depthArg = customDepth != null && customDepth >= 0 && customDepth <= 27 ? customDepth : undefined;
+
+    const renderer = rendererRef.current;
+    if (!renderer) return;
+    clearProposed();
 
     const newModel = GameModel.createDailyGame(customSeed, depthArg);
     newModel.consumeAnimationEvents();
@@ -795,7 +814,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState, handleContextMenu]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, entityInfo, setEntityInfo };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

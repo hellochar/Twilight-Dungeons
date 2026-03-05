@@ -384,7 +384,8 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange 
     const renderer = rendererRef.current;
     if (!renderer) return;
 
-    const seedStr = model?.dateSeed || new Date().toISOString().slice(0, 10);
+    const _d = new Date();
+    const seedStr = model?.dateSeed || `${_d.getFullYear()}-${String(_d.getMonth()+1).padStart(2,'0')}-${String(_d.getDate()).padStart(2,'0')}`;
     const newModel = GameModel.createDailyGame(seedStr, d);
     newModel.consumeAnimationEvents();
     modelRef.current = newModel;

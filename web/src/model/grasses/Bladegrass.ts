@@ -29,7 +29,7 @@ export class Bladegrass extends Grass implements IActorEnterHandler, IActorLeave
     if (!this.isSharp) {
       this.isSharp = true;
       this.onSharpened?.();
-      this.addTimedEvent(10, () => this.killSelf());
+      // this.addTimedEvent(10, () => this.killSelf());
     }
   }
 
@@ -40,7 +40,7 @@ export class Bladegrass extends Grass implements IActorEnterHandler, IActorLeave
   handleActorEnter(actor: any): void {
     if (this.isSharp) {
       this.kill(actor);
-      actor.takeDamage(2, this);
+      actor.takeDamage(1, this);
     }
   }
 }

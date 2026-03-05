@@ -24,7 +24,7 @@ export class Jackal extends AIActor implements IDeathHandler {
 
   protected get actionCosts(): ActionCosts {
     return new ActionCosts([
-      [ActionType.MOVE, 0.67],
+      [ActionType.MOVE, 1],
       [ActionType.ATTACK, 1],
       [ActionType.WAIT, 1],
       [ActionType.GENERIC, 1],
@@ -34,11 +34,11 @@ export class Jackal extends AIActor implements IDeathHandler {
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Enemy;
-    this.hp = this._baseMaxHp = 2;
+    this.hp = this._baseMaxHp = 1;
   }
 
   baseAttackDamage(): [number, number] {
-    return [1, 2];
+    return [1, 1];
   }
 
   protected getNextTask(): ActorTask {

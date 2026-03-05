@@ -36,7 +36,7 @@ export class Llaora extends Grass implements IOnTopActionHandler {
       const body = floor.bodies.get(pos);
       if (body && 'faction' in body && (body as any).faction === Faction.Enemy) {
         (body as any).clearTasks();
-        (body as any).statuses.add(new ConfusedStatus(10));
+        (body as any).statuses.add(new ConfusedStatus(9999));
       }
     }
     this.kill(who);

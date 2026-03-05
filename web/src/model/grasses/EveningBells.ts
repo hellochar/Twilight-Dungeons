@@ -8,8 +8,8 @@ import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
 
 /**
- * Any non-player creature walking into the Evening Bells falls into
- * deep sleep for 3 turns. This consumes the Evening Bells.
+ * Any non-player creature walking into the Evening Bells falls asleep.
+ * This consumes the Evening Bells.
  * Port of C# EveningBells.cs.
  */
 export class EveningBells extends Grass implements IActorEnterHandler {
@@ -27,7 +27,7 @@ export class EveningBells extends Grass implements IActorEnterHandler {
 
   handleActorEnter(actor: any): void {
     if (actor !== GameModelRef.main.player) {
-      actor.setTasks(new SleepTask(actor, 3, true));
+      actor.setTasks(new SleepTask(actor, 9999, true));
       GameModelRef.main.enqueuEvent(() => this.kill(actor));
     }
   }

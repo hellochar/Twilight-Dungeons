@@ -8,14 +8,14 @@ import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
 
 /**
- * Blocks up to 5 attack damage for the creature standing on it.
+ * Blocks the next attack for the creature standing on it.
  * Port of C# Guardleaf.cs.
  */
 export class Guardleaf extends Grass implements IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
 
   readonly renderLayer = 'above-entity' as const;
-  guardLeft = 5;
+  // guardLeft = 5;
 
   constructor(pos: Vector2Int) {
     super(pos);
@@ -49,11 +49,8 @@ export class Guardleaf extends Grass implements IActorEnterHandler {
     this.onNoteworthyAction();
   }
 
-  removeGuard(reduction: number): void {
-    this.guardLeft -= reduction;
-    if (this.guardLeft <= 0) {
-      GameModelRef.main.enqueuEvent(() => this.killSelf());
-    }
+  removeGuard(): void {
+    GameModelRef.main.enqueuEvent(() => this.killSelf());
   }
 }
 

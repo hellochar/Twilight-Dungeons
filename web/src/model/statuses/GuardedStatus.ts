@@ -6,7 +6,7 @@ import { StackingStatus, Status } from '../Status';
  * Stacks delegate to the leaf's guardLeft.
  * Port of C# GuardedStatus from Guardleaf.cs.
  */
-export class GuardedStatus extends StackingStatus implements IAttackDamageTakenModifier {
+export class GuardedStatus extends Status implements IAttackDamageTakenModifier {
   readonly [ATTACK_DAMAGE_TAKEN_MOD] = true as const;
 
   /** Duck-type access to the Guardleaf grass under the actor. */
@@ -15,16 +15,8 @@ export class GuardedStatus extends StackingStatus implements IAttackDamageTakenM
     return grass && 'guardLeft' in grass ? grass : null;
   }
 
-  get stacks(): number {
-    return this.leaf?.guardLeft ?? 0;
-  }
-
-  set stacks(_value: number) {
-    // stacks delegated to leaf.guardLeft — don't store locally
-  }
-
   constructor() {
-    super(0);
+    super();
   }
 
   /** Handles STEP_MOD (inherited) and ATTACK_DAMAGE_TAKEN_MOD. */
@@ -33,10 +25,11 @@ export class GuardedStatus extends StackingStatus implements IAttackDamageTakenM
       // ATTACK_DAMAGE_TAKEN_MOD: absorb damage
       const leaf = this.leaf;
       if (leaf) {
-        const reduction = Math.min(input, leaf.guardLeft);
-        leaf.removeGuard(reduction);
+        const reduction = input;
+        leaf.removeGuard();
         leaf.onNoteworthyAction?.();
-        return input - reduction;
+        this.Remove();
+        return 0;
       } else {
         this.Remove();
         return input;
@@ -47,7 +40,7 @@ export class GuardedStatus extends StackingStatus implements IAttackDamageTakenM
   }
 
   Step(): void {
-    if (!this.leaf || this.stacks <= 0) {
+    if (!this.leaf) {
       this.Remove();
     }
   }

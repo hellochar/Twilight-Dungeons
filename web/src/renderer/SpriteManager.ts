@@ -1,4 +1,5 @@
 import { Assets, Texture, Rectangle } from 'pixi.js';
+import { SPRITE_NAME_MAP } from './spriteNameMap';
 
 export interface SpriteInfo {
   file: string;
@@ -50,100 +51,6 @@ export class SpriteManager {
   /** Cached bottom padding fraction (0–1) per sprite key. */
   private bottomPaddingCache = new Map<string, number>();
 
-  /** Entity displayName → sprite key overrides. */
-  private static NAME_MAP: Record<string, string> = {
-    // ── Player / Tiles ──────────────────────────────────────────────────────
-    'player': 'player',
-    'hands': 'hands',
-    'stick': 'stick',
-    'chasm': 'chasm',
-    'soil': 'soil',
-    'water': 'water',
-    'signpost': 'sign',
-    // ── Enemies ─────────────────────────────────────────────────────────────
-    'blob': 'monochrome-blob',
-    'mini blob': 'miniblob',
-    'bat': 'colored_transparent_packed_409',
-    'jackal': 'colored_transparent_packed_414',
-    'jackal boss': 'jackalboss',
-    'gambler': 'gambler',
-    'mercenary': 'mercenary',
-    'octopus': 'octopus',
-    'moss man': 'moss-man',
-    'scorpion': 'colored_transparent_packed_263',
-    'old dude': 'colored_transparent_packed_311',
-    'stump': 'colored_transparent_packed_305',
-    'rubble': 'colored_transparent_packed_100',
-    'fungal wall': 'fungal-wall',
-    'iron jelly': 'iron-jelly',
-    'golem': 'golem-head',
-    'parasite egg': 'parasite-egg',
-    'hard shell': 'misc0_14',
-    'scuttler underground': 'scuttler-underground',
-    '???': 'scuttler-underground',
-    'ghost': 'undead0_29',
-    'violets': 'purple_0',
-    'hydra heart': 'hydra-heart',
-    'hydra head': 'hydra-head',
-    'grasper': 'grasper',
-    'boombug corpse': 'boombug',
-    'cheshire weed': 'cheshire-weed',
-    'cheshire weed sprout': 'cheshire-weed',
-    'spore bloat': 'sporebloat',
-    'fruiting body': 'fruitingbody',
-    'blobmother': 'blob-boss',
-    'fungal colony': 'fungal-colony',
-    'fungal breeder': 'fungal-breeder',
-    'fungal sentinel': 'fungal-sentinel',
-    'blob slime': 'slimed',
-    // ── Grasses ─────────────────────────────────────────────────────────────
-    'gold grass': 'goldgrass',
-    'soft grass': 'softgrass',
-    'guardleaf': 'guardroot',
-    'evening bells': 'evening-bell',
-    'poison moss': 'poisonmoss',
-    'black creeper': 'deathly-creeper',
-    'vibrant ivy': 'vibrant-ivy',
-    'hanging vines': 'hanging-vines',
-    'deathbloom': 'deathbloom-stem',
-    // ── Items ────────────────────────────────────────────────────────────────
-    'bat tooth': 'bat-tooth',
-    'spider sandals': 'spider-silk-shoes',
-    'snail shell': 'snail-shell',
-    'pumpkin helmet': 'pumpkin-helmet',
-    'wildwood leaf': 'wildwood-leaf',
-    'charm berry': 'charmberry',
-    'mushroom cap': 'mushroom-cap',
-    'bark shield': 'colored_transparent_packed_134',
-    'backstep shoes': 'colored_transparent_packed_39',
-    'barkmeal': 'colored_transparent_packed_1046',
-    'vine whip': 'vine-whip',
-    'wildwood wreath': 'wildwood-wreath',
-    'gloop shoes': 'goop',
-    'jackal hide': 'jackal-fur',
-    'deathbloom flower': 'deathbloom-stem',
-    'bulbous skin': 'bulbous-skin',
-    'third eye': 'third-eye',
-    'scaly skin': 'scaly-skin',
-    'flower buds': 'flower-buds',
-    'hardened sap': 'hardened-sap',
-    'crescent vengeance': 'crescent-vengeance',
-    'thick branch': 'thick-stick',
-    'plated armor': 'plated-armor',
-    'stompin boots': 'stompinboots',
-    'kingshroom powder': 'kingshroom',
-    'living armor': 'living-armor',
-    'stout shield': 'stout-shrub',
-    'hearty veggie': 'hearty-veggie',
-    'crown of thorns': 'crown-of-thorns',
-    'thorn shield': 'thornshield',
-    'blademail': 'thornmail',
-    'vile potion': 'vile-potion',
-    'vile growth': 'vile-growth',
-    'witchs shiv': 'witchs-shiv',
-    'wildwood rod': 'wildwood',
-    'prickly growth': 'prickly-growth',
-  };
 
   async load(): Promise<void> {
     if (this.loaded) return;
@@ -258,7 +165,7 @@ export class SpriteManager {
   /** Get the sprite key for a given entity display name. */
   resolveKey(displayName: string): string {
     const lower = displayName.toLowerCase();
-    return SpriteManager.NAME_MAP[lower] ?? lower;
+    return SPRITE_NAME_MAP[lower] ?? lower;
   }
 
   /** Get the first frame texture for an entity. */

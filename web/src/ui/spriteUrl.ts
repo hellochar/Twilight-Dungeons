@@ -1,60 +1,6 @@
-/**
- * Maps entity/item/status display names to sprite URLs for React DOM <img> tags.
- * Mirrors the NAME_MAP logic from SpriteManager but returns file paths instead of PixiJS textures.
- */
-
-/** Entity displayName → sprite filename overrides (same as SpriteManager.NAME_MAP). */
-const NAME_MAP: Record<string, string> = {
-  'player': 'player',
-  'hands': 'hands',
-  'stick': 'stick',
-  'chasm': 'chasm',
-  'soil': 'soil',
-  'water': 'water',
-  'signpost': 'sign',
-  'mini blob': 'miniblob',
-  'blob': 'monochrome-blob',
-  'bat': 'colored_transparent_packed_409',
-  'scorpion': 'colored_transparent_packed_263',
-  'soft grass': 'softgrass',
-  'guardleaf': 'guardroot',
-  'bat tooth': 'bat-tooth',
-  'spider sandals': 'spider-silk-shoes',
-  'snail shell': 'snail-shell',
-  'redberry': 'redberry',
-  // Sprint 15
-  'fruiting body': 'fruitingbody',
-  'blobmother': 'blob-boss',
-  'fungal colony': 'fungal-colony',
-  'fungal breeder': 'fungal-breeder',
-  'fungal sentinel': 'fungal-sentinel',
-  'blob slime': 'slimed',
-  'bulbous skin': 'bulbous-skin',
-  'third eye': 'third-eye',
-  'scaly skin': 'scaly-skin',
-  'flower buds': 'flower-buds',
-  'hardened sap': 'hardened-sap',
-  'crescent vengeance': 'crescent-vengeance',
-  'thick branch': 'thick-stick',
-  'plated armor': 'plated-armor',
-  'stompin boots': 'stompinboots',
-  'kingshroom powder': 'kingshroom',
-  'living armor': 'living-armor',
-  'stout shield': 'stout-shrub',
-  'hearty veggie': 'hearty-veggie',
-  'crown of thorns': 'crown-of-thorns',
-  'thorn shield': 'thornshield',
-  'blademail': 'thornmail',
-  'vile potion': 'vile-potion',
-  'vile growth': 'vile-growth',
-  'witchs shiv': 'witchs-shiv',
-  'wildwood rod': 'wildwood',
-  'prickly growth': 'prickly-growth',
-  'pumpkin helmet': 'pumpkin-helmet',
-  'wildwood leaf': 'wildwood-leaf',
-  'charm berry': 'charmberry',
-  'mushroom cap': 'mushroom-cap',
-};
+import type { CSSProperties } from 'react';
+import { SPRITE_NAME_MAP } from '../renderer/spriteNameMap';
+import { SPRITE_TINTS, SPRITE_ALPHAS } from '../renderer/spriteTints';
 
 /** Status className → sprite filename. Matches spriteKey values from GameRenderer STATUS_VISUALS. */
 const STATUS_SPRITE_MAP: Record<string, string> = {
@@ -89,7 +35,7 @@ const BASE = import.meta.env.BASE_URL;
 /** Resolve an entity/item display name to a sprite PNG URL. */
 export function spriteUrl(displayName: string): string {
   const lower = displayName.toLowerCase();
-  const key = NAME_MAP[lower] ?? lower;
+  const key = SPRITE_NAME_MAP[lower] ?? lower;
   return `${BASE}sprites/${key}.png`;
 }
 
@@ -98,6 +44,30 @@ export function statusSpriteUrl(className: string): string {
   const key = STATUS_SPRITE_MAP[className];
   if (key) return `${BASE}sprites/${key}.png`;
   return `${BASE}sprites/${className.toLowerCase().replace(/status$/, '')}.png`;
+}
+
+/**
+ * Builds an SVG feColorMatrix filter that exactly replicates PixiJS multiplicative tinting.
+ * The matrix multiplies each channel independently: output_R = input_R * r_t, etc.
+ */
+function hexTintToFilter(hex: number): string {
+  const r = ((hex >> 16) & 0xff) / 255;
+  const g = ((hex >> 8) & 0xff) / 255;
+  const b = (hex & 0xff) / 255;
+  const matrix = `${r} 0 0 0 0  0 ${g} 0 0 0  0 0 ${b} 0 0  0 0 0 1 0`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg'><filter id='tint'><feColorMatrix type='matrix' values='${matrix}'/></filter></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}#tint")`;
+}
+
+/** Returns CSS style for a sprite img that applies the correct tint and opacity from spriteTints. */
+export function getSpriteImgStyle(displayName: string): CSSProperties {
+  const lower = displayName.toLowerCase();
+  const tint = SPRITE_TINTS[lower];
+  const alpha = SPRITE_ALPHAS[lower];
+  const style: CSSProperties = {};
+  if (tint != null) style.filter = hexTintToFilter(tint);
+  if (alpha != null) style.opacity = alpha;
+  return style;
 }
 
 /** Check if a status className represents a debuff. */

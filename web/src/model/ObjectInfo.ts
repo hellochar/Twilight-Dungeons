@@ -206,6 +206,6 @@ registerObjectInfo('ArmoredStatus', { description: 'Block 1 damage from the next
 registerObjectInfo('BarkmealStatus', { description: '+{stacks} max HP.' });
 registerObjectInfo('HeartyVeggieStatus', { description: 'Heal {stacks} more HP over {stacks*25} turns. Next tick in {turnsLeft} turns (paused while at full HP).' });
 registerObjectInfo('ShieldLinkStatus', { description: 'The Shielder has linked you! Block 1 damage from all sources.' });
-registerObjectInfo('GuardedStatus', { description: 'The Guardleaf will block {stacks} more attack damage.' });
+registerObjectInfo('GuardedStatus', { description: 'Guardleaf protects you from the next attack!' });
 registerObjectInfo('ClumpedLungStatus', { description: 'At 20 stacks, you die.\n\nResets on floor cleared.' });
 registerObjectInfo('ZenStatus', { description: 'Your next {stacks} moves on a non-cleared Floor are Free Moves. Removed once you take or deal damage.' });

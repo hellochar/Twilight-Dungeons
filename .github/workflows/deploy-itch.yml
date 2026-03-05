@@ -1,0 +1,26 @@
+name: Deploy to itch.io
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+        working-directory: web
+      - run: node scripts/copy-sprites.js && npx vite build
+        working-directory: web
+        env:
+          VITE_BASE_PATH: ''
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+      - uses: jdno/setup-butler@v1
+      - run: butler push web/dist hellochar/twilight-dungeons-daily:html5
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}

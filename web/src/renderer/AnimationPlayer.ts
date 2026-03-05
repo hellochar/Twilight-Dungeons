@@ -4,6 +4,7 @@ import { Vector2Int } from '../core/Vector2Int';
 import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
 import type { SoundManager } from '../audio/SoundManager';
+import { FONT_FAMILY } from '../ui/fonts';
 
 // CodersCrux cap height ≈ 65% of point size; scale up so glyphs appear ~1 tile tall
 const HP_TEXT_FONT_SCALE = 1.00;
@@ -11,7 +12,7 @@ const HP_TEXT_FONT_SCALE = 1.00;
 function makeDamageStyle(tileSize: number): TextStyle {
   const sz = Math.round(tileSize * HP_TEXT_FONT_SCALE);
   return new TextStyle({
-    fontFamily: 'CodersCrux, monospace',
+    fontFamily: FONT_FAMILY,
     fontSize: sz,
     fill: 0xff3333,
     stroke: { color: 0x000000, width: Math.max(2, Math.round(sz * 0.12)) },
@@ -21,7 +22,7 @@ function makeDamageStyle(tileSize: number): TextStyle {
 function makeHealStyle(tileSize: number): TextStyle {
   const sz = Math.round(tileSize * HP_TEXT_FONT_SCALE);
   return new TextStyle({
-    fontFamily: 'CodersCrux, monospace',
+    fontFamily: FONT_FAMILY,
     fontSize: sz,
     fill: 0x33ff66,
     stroke: { color: 0x000000, width: Math.max(2, Math.round(sz * 0.12)) },
@@ -31,7 +32,7 @@ function makeHealStyle(tileSize: number): TextStyle {
 function makeNeutralStyle(tileSize: number): TextStyle {
   const sz = Math.round(tileSize * HP_TEXT_FONT_SCALE);
   return new TextStyle({
-    fontFamily: 'CodersCrux, monospace',
+    fontFamily: FONT_FAMILY,
     fontSize: sz,
     fill: 0xCCCCCC,
     stroke: { color: 0x000000, width: Math.max(2, Math.round(sz * 0.12)) },

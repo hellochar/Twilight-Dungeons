@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getLocalScore } from '../services/ScoreService';
 import { type Difficulty, DIFFICULTY_LABEL } from '../model/GameModel';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 const DAY_ONE = '2026-02-04';
 const DIFFICULTIES: Difficulty[] = ['basic', 'medium', 'complex'];
@@ -72,8 +73,8 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
           border: '1px solid #445',
           borderRadius: 4,
           padding: '3px 10px',
-          fontFamily: 'CodersCrux, monospace',
-          fontSize: 32,
+          fontFamily: FONT_FAMILY,
+          fontSize: FontSize.xl,
           cursor: 'pointer',
         }}
       >
@@ -107,10 +108,10 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
                   padding: '5px 12px',
                   borderLeft: isActiveDate ? '3px solid #88f' : '3px solid transparent',
                   background: isActiveDate ? '#1a1a2c' : 'transparent',
-                  fontFamily: 'CodersCrux, monospace',
+                  fontFamily: FONT_FAMILY,
                 }}
               >
-                <span style={{ fontSize: 26, color: isActiveDate ? '#ccf' : '#666', minWidth: 140 }}>{dateStr}</span>
+                <span style={{ fontSize: FontSize.lg, color: isActiveDate ? '#ccf' : '#666', minWidth: 140 }}>{dateStr}</span>
                 <div style={{ display: 'flex', gap: 6 }}>
                   {DIFFICULTIES.map(diff => {
                     const score = getLocalScore(`${dateStr}-${diff}`);
@@ -129,7 +130,7 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
                           borderRadius: 3,
                           border: isActiveChip ? '1px solid #88f' : '1px solid #334',
                           background: isActiveChip ? '#252540' : 'transparent',
-                          fontSize: 20,
+                          fontSize: FontSize.lg,
                           color: score ? '#4a8' : '#444',
                           whiteSpace: 'nowrap',
                         }}

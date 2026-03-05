@@ -2,6 +2,7 @@ import { Container, Text, TextStyle } from 'pixi.js';
 import { Camera } from './Camera';
 import { GameModelRef } from '../model/GameModelRef';
 import { Actor } from '../model/Actor';
+import { FONT_FAMILY } from '../ui/fonts';
 
 /** Toggle to show/hide HP labels for all visible actors. */
 export const SHOW_HP_LABELS = true;
@@ -56,7 +57,7 @@ export class HpLabelRenderer {
         label = new Text({
           text: '',
           style: new TextStyle({
-            fontFamily: 'CodersCrux, monospace',
+            fontFamily: FONT_FAMILY,
             fontSize,
             fill: 0xffffff,
             stroke: { color: 0x000000, width: Math.max(2, Math.round(fontSize * 0.12)) },

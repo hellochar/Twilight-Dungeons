@@ -5,6 +5,7 @@ import {
   getLocalScore, saveLocalScore, markSubmitted,
   submitScore, fetchHistogram, type HistogramBucket,
 } from '../services/ScoreService';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 const AUTO_SUBMIT = true;
 
@@ -34,8 +35,8 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
             border: '2px solid #888',
             borderRadius: 8,
             padding: '16px 64px',
-            fontFamily: 'CodersCrux, monospace',
-            fontSize: 48,
+            fontFamily: FONT_FAMILY,
+            fontSize: FontSize.xl,
             cursor: 'pointer',
           }}
         >
@@ -111,12 +112,12 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
         display: 'flex',
         flexDirection: 'column',
         gap: 10,
-        fontFamily: 'CodersCrux, monospace',
+        fontFamily: FONT_FAMILY,
         color: '#ccc',
         minWidth: 360,
       }}>
         {/* Title row */}
-        <span style={{ color: borderColor, fontSize: 24, whiteSpace: 'nowrap' }}>
+        <span style={{ color: borderColor, fontSize: FontSize.lg, whiteSpace: 'nowrap' }}>
           {title}
         </span>
 
@@ -137,7 +138,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
               </>
             ) : alreadySubmitted ? (
               loadingHistogram
-                ? <span style={{ fontSize: 21, color: '#666' }}>Loading scores…</span>
+                ? <span style={{ fontSize: FontSize.lg, color: '#666' }}>Loading scores…</span>
                 : (
                   <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
                 )
@@ -152,8 +153,8 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
                     border: '1px solid #4f4',
                     borderRadius: 4,
                     padding: '3px 12px',
-                    fontFamily: 'CodersCrux, monospace',
-                    fontSize: 16,
+                    fontFamily: FONT_FAMILY,
+                    fontSize: FontSize.md,
                     cursor: submitting ? 'default' : 'pointer',
                     opacity: submitting ? 0.6 : 1,
                   }}
@@ -162,7 +163,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
                 </button>
                 <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
                 {submitError && (
-                  <span style={{ fontSize: 13, color: '#f88' }}>{submitError}</span>
+                  <span style={{ fontSize: FontSize.sm, color: '#f88' }}>{submitError}</span>
                 )}
               </div>
             )}
@@ -180,8 +181,8 @@ const secondaryButtonStyle: React.CSSProperties = {
   border: '1px solid #556',
   borderRadius: 4,
   padding: '4px 14px',
-  fontFamily: 'CodersCrux, monospace',
-  fontSize: 18,
+  fontFamily: FONT_FAMILY,
+  fontSize: FontSize.md,
   cursor: 'pointer',
 };
 
@@ -204,7 +205,7 @@ function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playe
 
   return (
     <div>
-      <div style={{ fontSize: 20, color: '#888', marginBottom: 8 }}>
+      <div style={{ fontSize: FontSize.lg, color: '#888', marginBottom: 8 }}>
         {totalPlayers} {totalPlayers === 1 ? 'score' : 'scores'} today
         {' \u00b7 '}
         top {percentile}% with {playerTurns} turns
@@ -216,7 +217,7 @@ function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playe
           return (
             <div key={b.turns_taken} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
               <span style={{
-                fontSize: 12,
+                fontSize: FontSize.sm,
                 color: isPlayer ? '#4f4' : '#666',
                 lineHeight: 1,
               }}>

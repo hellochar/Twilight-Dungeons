@@ -1,5 +1,6 @@
 import { getObjectInfo } from '../model/ObjectInfo';
 import { spriteUrl } from './spriteUrl';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 export interface EntityInfoData {
   name: string;
@@ -27,8 +28,8 @@ export function EntityInfoPanel({ data }: EntityInfoPanelProps) {
 
   return (
     <div style={{
-      fontFamily: 'CodersCrux, monospace',
-      fontSize: 30,
+      fontFamily: FONT_FAMILY,
+      fontSize: FontSize.md,
       color: '#ddd',
       padding: '10px 12px',
     }}>
@@ -41,11 +42,11 @@ export function EntityInfoPanel({ data }: EntityInfoPanelProps) {
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         <div>
-          <div style={{ fontSize: 24, color: '#fff' }}>
+          <div style={{ fontSize: FontSize.lg, color: '#fff' }}>
             {data.name}
           </div>
           {data.hp != null && data.maxHp != null && (
-            <div style={{ fontSize: 20, color: '#fff' }}>
+            <div style={{ fontSize: FontSize.lg, color: '#fff' }}>
               HP: {data.hp}/{data.maxHp}
             </div>
           )}
@@ -59,7 +60,7 @@ export function EntityInfoPanel({ data }: EntityInfoPanelProps) {
       )}
 
       {flavorText && (
-        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: 17 }}>
+        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: FontSize.md }}>
           {flavorText}
         </div>
       )}

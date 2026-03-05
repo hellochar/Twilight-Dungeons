@@ -5,6 +5,7 @@ import { GameOverOverlay } from './ui/GameOverOverlay';
 import { ObjectInfoList } from './ui/ObjectInfoList';
 import { DebugPanel, PANEL_WIDTH } from './debug/DebugPanel';
 import { DateSelectorPanel } from './ui/DateSelectorPanel';
+import { FONT_FAMILY, FontSize } from './ui/fonts';
 import './App.css';
 
 const GAME_MAX_W = 1200;
@@ -53,8 +54,8 @@ function App() {
                 border: '1px solid #4f4',
                 borderRadius: 4,
                 padding: '6px 14px',
-                fontFamily: 'CodersCrux, monospace',
-                fontSize: 18,
+                fontFamily: FONT_FAMILY,
+                fontSize: FontSize.md,
                 color: '#ccc',
                 pointerEvents: 'auto',
                 zIndex: 10,
@@ -69,8 +70,8 @@ function App() {
                     border: '1px solid #555',
                     borderRadius: 3,
                     padding: '2px 8px',
-                    fontFamily: 'CodersCrux, monospace',
-                    fontSize: 17,
+                    fontFamily: FONT_FAMILY,
+                    fontSize: FontSize.md,
                     cursor: 'pointer',
                   }}
                 >
@@ -91,8 +92,8 @@ function App() {
                 border: '1px solid #6cf',
                 borderRadius: 4,
                 padding: '6px 12px',
-                fontFamily: 'CodersCrux, monospace',
-                fontSize: 17,
+                fontFamily: FONT_FAMILY,
+                fontSize: FontSize.md,
                 color: '#6cf',
                 pointerEvents: 'none',
                 zIndex: 15,
@@ -112,7 +113,7 @@ function App() {
             alignItems: 'center',
             justifyContent: 'center',
             color: '#888',
-            fontFamily: 'CodersCrux, monospace',
+            fontFamily: FONT_FAMILY,
           }}>
             Loading...
           </div>

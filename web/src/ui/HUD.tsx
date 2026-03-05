@@ -1,6 +1,7 @@
 import type { GameState, OnTopActionSnapshot } from '../hooks/useGameLoop';
 import { DIFFICULTY_LABEL } from '../model/GameModel';
 import { StatusBar } from './StatusBar';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 interface HUDProps {
   state: GameState;
@@ -99,8 +100,8 @@ function Banner({ dateSeed, difficulty, turn, isCleared, clearedOnTurn }: Banner
 
   return (
     <div style={{
-      fontFamily: 'CodersCrux, monospace',
-      fontSize: 20,
+      fontFamily: FONT_FAMILY,
+      fontSize: FontSize.lg,
       color: '#ccc',
       textShadow: '1px 1px 2px #000',
     }}>
@@ -120,8 +121,8 @@ const BUTTON_STYLE = {
   border: '1px solid rgba(255, 255, 255, 0.25)',
   borderRadius: 6,
   color: '#eee',
-  fontFamily: 'CodersCrux, monospace',
-  fontSize: 20,
+  fontFamily: FONT_FAMILY,
+  fontSize: FontSize.lg,
   cursor: 'pointer',
 } as const;
 

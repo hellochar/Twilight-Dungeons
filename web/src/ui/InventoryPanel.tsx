@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { ItemSnapshot } from '../hooks/useGameLoop';
 import { spriteUrl } from './spriteUrl';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 /**
  * Inventory + Equipment panel matching Unity's InventorySlotController + ItemController.
@@ -171,9 +172,9 @@ function Slot({ item, label, isSelected, onClick, onContextMenu }: SlotProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 11,
+          fontSize: FontSize.sm,
           color: 'rgba(255,255,255,0.3)',
-          fontFamily: 'CodersCrux, monospace',
+          fontFamily: FONT_FAMILY,
           textTransform: 'uppercase',
           zIndex: 1,
         }}>
@@ -225,8 +226,8 @@ const stackLabelStyle: React.CSSProperties = {
   position: 'absolute',
   bottom: 2,
   right: 3,
-  fontSize: 14,
-  fontFamily: 'CodersCrux, monospace',
+  fontSize: FontSize.sm,
+  fontFamily: FONT_FAMILY,
   fontWeight: 'bold',
   color: '#fff',
   textShadow: '0 0 2px #000, 0 0 2px #000',
@@ -280,14 +281,14 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: 'CodersCrux, monospace', fontWeight: 'bold', fontSize: 21, color: '#eee' }}>
+        <div style={{ fontFamily: FONT_FAMILY, fontWeight: 'bold', fontSize: FontSize.lg, color: '#eee' }}>
           {item.displayName}
         </div>
-        <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 15, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
+        <div style={{ fontFamily: FONT_FAMILY, fontSize: FontSize.sm, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
           {item.category}
         </div>
         {item.statsFull && (
-          <div style={{ fontFamily: 'CodersCrux, monospace', fontSize: 17, color: '#aaa', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
+          <div style={{ fontFamily: FONT_FAMILY, fontSize: FontSize.md, color: '#aaa', marginBottom: 6, whiteSpace: 'pre-wrap' }}>
             {item.statsFull}
           </div>
         )}
@@ -302,8 +303,8 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
                 border: '1px solid #555',
                 borderRadius: 3,
                 padding: '4px 10px',
-                fontFamily: 'CodersCrux, monospace',
-                fontSize: 17,
+                fontFamily: FONT_FAMILY,
+                fontSize: FontSize.md,
                 cursor: 'pointer',
               }}
             >
@@ -318,8 +319,8 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
               border: '1px solid #333',
               borderRadius: 3,
               padding: '4px 8px',
-              fontFamily: 'CodersCrux, monospace',
-              fontSize: 11,
+              fontFamily: FONT_FAMILY,
+              fontSize: FontSize.sm,
               cursor: 'pointer',
             }}
           >

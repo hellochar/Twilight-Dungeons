@@ -3,6 +3,7 @@ import type { StatusSnapshot } from '../hooks/useGameLoop';
 import { statusSpriteUrl } from './spriteUrl';
 import { getObjectInfo } from '../model/ObjectInfo';
 import { EntityInfoPopup, type EntityInfoData } from './EntityInfoPopup';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 /**
  * Status effect icons matching Unity StatusIconController:
@@ -112,8 +113,8 @@ function StatusIcon({
           right: -4,
           background: '#000',
           color: '#fff',
-          fontSize: 30,
-          fontFamily: 'CodersCrux, monospace',
+          fontSize: FontSize.xl,
+          fontFamily: FONT_FAMILY,
           // fontWeight: 'bold',
           // lineHeight: '1',
           padding: '0 2px',

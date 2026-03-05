@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { getObjectInfo } from '../model/ObjectInfo';
 import { spriteUrl } from './spriteUrl';
+import { FONT_FAMILY, FontSize } from './fonts';
 
 export interface EntityInfoData {
   name: string;
@@ -82,8 +83,8 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
         border: '1px solid #555',
         borderRadius: 6,
         padding: 10,
-        fontFamily: 'CodersCrux, monospace',
-        fontSize: 18,
+        fontFamily: FONT_FAMILY,
+        fontSize: FontSize.md,
         color: '#ddd',
         zIndex: 100,
         boxShadow: '0 4px 12px rgba(0,0,0,0.6)',
@@ -102,11 +103,11 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         <div>
-          <div style={{ fontWeight: 'bold', fontSize: 20, color: '#fff' }}>
+          <div style={{ fontWeight: 'bold', fontSize: FontSize.lg, color: '#fff' }}>
             {data.name}
           </div>
           {data.hp != null && data.maxHp != null && (
-            <div style={{ fontSize: 17, color: '#aaa' }}>
+            <div style={{ fontSize: FontSize.md, color: '#aaa' }}>
               HP: {data.hp}/{data.maxHp}
             </div>
           )}
@@ -122,7 +123,7 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
 
       {/* Flavor text */}
       {flavorText && (
-        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: 17 }}>
+        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: FontSize.md }}>
           {flavorText}
         </div>
       )}

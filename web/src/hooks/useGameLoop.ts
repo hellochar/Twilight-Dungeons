@@ -359,6 +359,13 @@ export function useGameLoop() {
     try {
       model.turnManager.beginStepSession();
 
+      // Track whether the previous batch had move events, and how long we've already waited,
+      // so we can delay attack animations enough for the move lerp to visually complete.
+      // Move lerp runs at 16 tiles/s → 1 tile takes ~63ms. We target 65ms to account for variance.
+      const MOVE_LERP_MS = 65;
+      let prevBatchHadMoves = false;
+      let prevStaggerMs = 0;
+
       while (true) {
         const result = model.turnManager.stepOneEntity();
 
@@ -374,8 +381,9 @@ export function useGameLoop() {
         }
 
         // Time-gap delay (matches Unity GAME_TIME_TO_SECONDS_WAIT_SCALE = 0.2)
+        const timeGapDelayMs = result.timeGap * 200;
         if (!result.isFirstStep && result.timeGap > 0 && !result.shouldSpeedThrough && !skipAllRef.current) {
-          await delay(result.timeGap * 200);
+          await delay(timeGapDelayMs);
         }
 
         // Consume and play animation events for this step
@@ -397,6 +405,15 @@ export function useGameLoop() {
               renderer.animatingGuids.delete(guid);
             }
           } else {
+            // If a creature just moved into a telegraphed attack tile, the move lerp may still
+            // be in progress when the attack batch plays (stagger=20ms < lerp=63ms).
+            // Add extra delay so the attack fires only after the creature visually arrives.
+            if (prevBatchHadMoves && !result.shouldSpeedThrough &&
+                events.some(e => e.type === 'attack' || e.type === 'attackGround')) {
+              const alreadyWaited = prevStaggerMs + timeGapDelayMs;
+              const extra = Math.max(0, MOVE_LERP_MS - alreadyWaited);
+              if (extra > 0) await delay(extra);
+            }
             try {
               renderer.addNewBodySprites();
               await animator.playBatch(events);
@@ -408,6 +425,8 @@ export function useGameLoop() {
           }
         }
 
+        prevBatchHadMoves = events.some(e => e.type === 'move');
+
         // Sync after each step so subsequent animations see updated positions
         renderer.syncToModel();
 
@@ -415,7 +434,9 @@ export function useGameLoop() {
         if (model.gameOverInfo) break;
 
         // Stagger delay between visible enemy turns (Unity JUICE_STAGGER_SECONDS = 0.02)
-        if (result.shouldStagger && !skipAllRef.current && !result.shouldSpeedThrough) {
+        const willStagger = result.shouldStagger && !skipAllRef.current && !result.shouldSpeedThrough;
+        prevStaggerMs = willStagger ? 20 : 0;
+        if (willStagger) {
           await delay(20);
         }
       }

@@ -44,6 +44,11 @@ const BUMP_INTENSITY = 0.75;
 // Time when bump reaches peak displacement: t_peak=0.25, so 0.25*BUMP_DURATION
 const BUMP_IMPACT_TIME = BUMP_DURATION * 0.25;
 
+// Time for a 1-tile move lerp at 16 tiles/s (matches lerpPositions speed).
+// Used to delay animations on entities that moved and died in the same step,
+// since lerpPositions skips dead entities and the sprite never reaches the new tile.
+const MOVE_LERP_S = 0.15;
+
 /** Unity's exact parabolic bump-and-return easing: pow(cos(PI/2 + PI*sqrt(t)), 4) * 0.75 */
 function bumpAndReturnEasing(t: number): number {
   return Math.pow(Math.cos(Math.PI / 2 + Math.PI * Math.sqrt(t)), 4) * BUMP_INTENSITY;
@@ -144,15 +149,30 @@ export class AnimationPlayer {
     if (!node) return;
     const visual = this.renderer.getEntityVisual(event.entityGuid);
 
+    // When an entity moves and dies in the same step, lerpPositions skips it (dead entities
+    // are excluded). We detect this and add a GSAP tween for the move, then delay the
+    // death animation so the creature visually arrives at the new tile before dying.
+    const entityMovedAndDies = (guid: string) =>
+      batch.some(e => e.type === 'move' && e.entityGuid === guid) &&
+      batch.some(e => e.entityGuid === guid && (e.type === 'death' || e.type === 'squishDeath'));
+
     switch (event.type) {
-      case 'move':
-        // No tween — movement is handled by GameRenderer.lerpPositions()
-        // (matching Unity's ActorController.Update() constant-speed lerp).
+      case 'move': {
+        // Normal case: movement driven by GameRenderer.lerpPositions() (matching Unity).
+        // Special case: if this entity dies in the same batch, lerpPositions won't run (it
+        // skips dead entities), so we add a GSAP tween to animate the position directly.
+        if (entityMovedAndDies(event.entityGuid) && event.from && event.to) {
+          const fromPx = this.camera.tileToPixel(event.from);
+          const toPx = this.camera.tileToPixel(event.to);
+          node.position.set(fromPx.x, fromPx.y);
+          tl.to(node.position, { x: toPx.x, y: toPx.y, duration: MOVE_LERP_S, ease: 'none' }, 0);
+        }
         if (event.entityGuid === this.playerGuid && this.sound) {
           const s = this.sound;
           tl.call(() => s.play('move', 0.25), [], '<');
         }
         break;
+      }
       case 'jump':
         this.animateJump(node, event, tl);
         break;
@@ -171,10 +191,10 @@ export class AnimationPlayer {
         this.animateHeal(visual, event, tl);
         break;
       case 'death':
-        this.animateDeath(node, event, tl);
+        this.animateDeath(node, event, tl, entityMovedAndDies(event.entityGuid) ? MOVE_LERP_S : BUMP_IMPACT_TIME);
         break;
       case 'squishDeath':
-        this.animateSquishDeath(event, tl);
+        this.animateSquishDeath(event, tl, entityMovedAndDies(event.entityGuid) ? MOVE_LERP_S : BUMP_IMPACT_TIME);
         break;
       case 'quickDeath':
         this.animateQuickDeath(event, tl);
@@ -367,10 +387,10 @@ export class AnimationPlayer {
    * Fade + shrink on death — based on Unity FadeThenDestroy.cs.
    * Targets scaleRoot (center-pivoted inner Container) so shrink animates from tile center.
    */
-  private animateDeath(_node: Container, event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateDeath(_node: Container, event: GameEvent, tl: gsap.core.Timeline, startTime = BUMP_IMPACT_TIME): void {
     const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
     if (!scaleRoot) return;
-    const pos = BUMP_IMPACT_TIME;
+    const pos = startTime;
     tl.to(scaleRoot, { alpha: 0, duration: 0.5, ease: 'power3.out' }, pos);
     tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: 0.5, ease: 'power3.out' }, pos);
 
@@ -390,12 +410,12 @@ export class AnimationPlayer {
    * Keeps center pivot; position.y is derived from scale.y each frame to pin the bottom edge.
    * Formula: position.y = ts - (ts/2) * scale.y  (ts/2 at scale=1, ts at scale=0).
    */
-  private animateSquishDeath(event: GameEvent, tl: gsap.core.Timeline): void {
+  private animateSquishDeath(event: GameEvent, tl: gsap.core.Timeline, startTime = BUMP_IMPACT_TIME): void {
     this.renderer.disableEntityBob(event.entityGuid);
     const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
     if (!scaleRoot) return;
     const ts = this.camera.tileSize;
-    const pos = BUMP_IMPACT_TIME;
+    const pos = startTime;
     tl.to(scaleRoot.scale, {
       y: 0.1,
       duration: 0.2,

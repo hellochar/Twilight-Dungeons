@@ -57,8 +57,9 @@ export function getLocalScore(day: string): DayScore | null {
 
 export function saveLocalScore(day: string, turnsTaken: number): void {
   const store = loadStore();
-  // Don't overwrite an existing entry
-  if (!store.scores[day]) {
+  const existing = store.scores[day];
+  if (!existing || turnsTaken < existing.turnsTaken) {
+    // New best score — reset submitted so it gets re-submitted
     store.scores[day] = { turnsTaken, submitted: false };
     saveStore(store);
   }
@@ -75,10 +76,11 @@ export function markSubmitted(day: string): void {
 export async function submitScore(day: string, turnsTaken: number): Promise<void> {
   if (!supabase) return;
   const playerId = getPlayerId();
-  const { error } = await supabase.from('daily_scores').upsert(
-    { day, turns_taken: turnsTaken, player_id: playerId },
-    { onConflict: 'player_id,day', ignoreDuplicates: true }
-  );
+  const { error } = await supabase.rpc('submit_score_if_better', {
+    p_day: day,
+    p_turns_taken: turnsTaken,
+    p_player_id: playerId,
+  });
   if (error) throw error;
 }
 

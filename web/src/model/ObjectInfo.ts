@@ -21,7 +21,7 @@ export function getObjectInfo(name: string): ObjectInfoEntry | undefined {
 
 // ─── Enemies ───
 
-registerObjectInfo('Blob', { description: 'Telegraphs attacks for 1 turn.\nChases you.', flavorText: 'An odorless mass advances towards you with a steady, brainless determination.' });
+registerObjectInfo('Blob', { description: 'Telegraphs attacks.', flavorText: 'An odorless mass advances towards you with a steady, brainless determination.' });
 registerObjectInfo('MiniBlob', { description: 'Telegraphs attacks for 1 turn.\nChases you.' });
 registerObjectInfo('Bird', { description: 'Jumps two tiles per turn and waits after every jump.' });
 registerObjectInfo('Snake', { description: 'Only moves or attacks if you\'re in the same row or column.\n\nAttacks anything in its way.\n\nAttacks apply Weakness.' });
@@ -176,6 +176,7 @@ registerObjectInfo('VileGrowth', { description: 'Deals 1 damage per turn to the 
 
 // ─── Statuses ───
 
+registerObjectInfo('FrenziedStatus', { description: '+2 damage for {stacks} attacks.\nWhen Frenzied ends, gain Weakness, dealing -1 damage on three attacks.' });
 registerObjectInfo('CharmedStatus', { description: 'On your team!' });
 registerObjectInfo('ConfusedStatus', { description: 'Your next {stacks} turns must be spent moving in a random direction.' });
 registerObjectInfo('ConstrictedStatus', { description: 'You must break free of vines before you can move or attack!\n{stacks} stacks left.' });

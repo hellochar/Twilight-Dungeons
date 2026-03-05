@@ -15,6 +15,7 @@ export class FrenziedStatus extends StackingStatus implements IAttackDamageModif
 
   modify(input: any): any {
     if (typeof input === 'number') {
+      this.stacks -= 1;
       return input + 2;
     }
     return super.modify(input);

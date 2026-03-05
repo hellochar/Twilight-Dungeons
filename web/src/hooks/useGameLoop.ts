@@ -111,6 +111,7 @@ export interface EntityCardData {
   typeName: string;
   hp?: number;
   maxHp?: number;
+  pos: { x: number; y: number };
 }
 
 export interface GameState {
@@ -128,6 +129,7 @@ export interface GameState {
   gameOver: GameOverInfo | null;
   onTopAction: OnTopActionSnapshot | null;
   dateSeed: string;
+  playerPos: { x: number; y: number };
   floorBodies: EntityCardData[];
   floorGrasses: EntityCardData[];
   difficulty: Difficulty;
@@ -138,7 +140,7 @@ const EMPTY_STATE: GameState = {
   isPlayerDead: false, isCleared: false, clearedOnTurn: null,
   inventoryItems: [], equipmentItems: [],
   statuses: [], gameOver: null, onTopAction: null,
-  dateSeed: '', floorBodies: [], floorGrasses: [],
+  dateSeed: '', playerPos: { x: 0, y: 0 }, floorBodies: [], floorGrasses: [],
   difficulty: 'basic',
 };
 
@@ -188,6 +190,7 @@ export function useGameLoop() {
   const [targetingState, setTargetingState] = useState<TargetingState | null>(null);
   const proposedTargetRef = useRef<Vector2Int | null>(null);
   const [debugNotice, setDebugNotice] = useState<string | null>(null);
+  const [hoveredTilePos, setHoveredTilePos] = useState<{ x: number; y: number } | null>(null);
   // const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
 
   const readState = useCallback((): GameState => {
@@ -237,12 +240,12 @@ export function useGameLoop() {
     for (const body of floor.bodies) {
       if (body === player) continue;
       const b = body as any;
-      floorBodies.push({ displayName: body.displayName, typeName: body.constructor.name, hp: b.hp, maxHp: b.maxHp });
+      floorBodies.push({ displayName: body.displayName, typeName: body.constructor.name, hp: b.hp, maxHp: b.maxHp, pos: { x: body.pos.x, y: body.pos.y } });
     }
 
     const floorGrasses: EntityCardData[] = [];
     for (const grass of floor.grasses) {
-      floorGrasses.push({ displayName: grass.displayName, typeName: grass.constructor.name });
+      floorGrasses.push({ displayName: grass.displayName, typeName: grass.constructor.name, pos: { x: grass.pos.x, y: grass.pos.y } });
     }
 
     return {
@@ -260,6 +263,7 @@ export function useGameLoop() {
       gameOver,
       onTopAction,
       dateSeed: model.dateSeed,
+      playerPos: { x: player.pos.x, y: player.pos.y },
       floorBodies,
       floorGrasses,
       difficulty,
@@ -860,7 +864,7 @@ export function useGameLoop() {
       inputRef.current = input;
       input.onIntent.on(processIntent);
       // input.onContextMenu.on(handleTileInspect);
-      // input.onTileHover.on(handleTileInspect);
+      input.onTileHover.on((ev) => setHoveredTilePos({ x: ev.tilePos.x, y: ev.tilePos.y }));
       input.attach();
 
       resizeHandler = () => {
@@ -895,7 +899,7 @@ export function useGameLoop() {
     };
   }, [processIntent, readState/*, handleTileInspect*/]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice/*, entityInfo, setEntityInfo*/ };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos/*, entityInfo, setEntityInfo*/ };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

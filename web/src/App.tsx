@@ -13,7 +13,7 @@ const INFO_PANEL_W = 330;
 const BOTTOM_PANEL_H = 0;
 
 function App() {
-  const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice } = useGameLoop();
+  const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
   const [viewW, setViewW] = useState(() => window.innerWidth);
 
@@ -133,7 +133,11 @@ function App() {
             <ObjectInfoList
               bodies={gameState.floorBodies}
               grasses={gameState.floorGrasses}
+              playerPos={gameState.playerPos}
+              hoveredTilePos={hoveredTilePos}
               horizontal
+              containerRef={containerRef}
+              rendererRef={rendererRef}
             />
           </div>
         )}
@@ -156,6 +160,7 @@ function App() {
           top: 0,
           bottom: 0,
           width: INFO_PANEL_W,
+          pointerEvents: 'none',
           overflowY: 'auto',
           overflowX: 'hidden',
           display: 'flex',
@@ -164,7 +169,11 @@ function App() {
           <ObjectInfoList
             bodies={gameState.floorBodies}
             grasses={gameState.floorGrasses}
+            playerPos={gameState.playerPos}
+            hoveredTilePos={hoveredTilePos}
             horizontal={false}
+            containerRef={containerRef}
+            rendererRef={rendererRef}
           />
         </div>
       )}

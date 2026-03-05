@@ -5,7 +5,7 @@ import {
   getLocalScore, saveLocalScore, markSubmitted,
   submitScore, fetchHistogram, type HistogramBucket,
 } from '../services/ScoreService';
-import { FONT_FAMILY, FontSize } from './fonts';
+import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
 
 const AUTO_SUBMIT = true;
 
@@ -26,7 +26,22 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
         transform: 'translateX(-50%)',
         zIndex: 100,
         pointerEvents: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}>
+        {info.killedBy && (
+          <div style={{
+            fontFamily: FONT_FAMILY_SERIF,
+            fontSize: FontSize.xl,
+            color: 'white',
+            textAlign: 'center',
+            marginBottom: 8,
+            whiteSpace: 'nowrap',
+          }}>
+            You perished to a {info.killedBy}...
+          </div>
+        )}
         <button
           onClick={onPlayAgain}
           style={{

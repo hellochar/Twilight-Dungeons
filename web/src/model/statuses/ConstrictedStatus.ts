@@ -18,6 +18,8 @@ export class ConstrictedStatus extends StackingStatus implements IBaseActionModi
   readonly [BODY_MOVE_HANDLER] = true as const;
   readonly [DEATH_HANDLER] = true as const;
 
+  blocksMovement(): boolean { return true; }
+
   private owner: { constrictedStatusEnded(): void; constrictedCreatureDied(): void } | null;
 
   get isDebuff(): boolean {

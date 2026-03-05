@@ -11,6 +11,8 @@ export class InShellStatus extends StackingStatus implements IAttackDamageTakenM
   readonly [ATTACK_DAMAGE_TAKEN_MOD] = true as const;
   readonly [BASE_ACTION_MOD] = true as const;
 
+  blocksMovement(): boolean { return true; }
+
   get stackingMode(): StackingMode {
     return StackingMode.Max;
   }

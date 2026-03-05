@@ -35,7 +35,7 @@ export class Web extends Grass implements IActorEnterHandler {
 
   protected handleEnterFloor(): void {
     const standing = this.actor;
-    if (standing) {
+    if (standing && !isActorWebNice(standing)) {
       standing.statuses.add(new WebbedStatus());
     }
   }
@@ -48,8 +48,10 @@ export class Web extends Grass implements IActorEnterHandler {
   }
 
   handleActorEnter(actor: any): void {
-    (actor as Actor).statuses.add(new WebbedStatus());
-    this.onNoteworthyAction();
+    if (!isActorWebNice(actor)) {
+      (actor as Actor).statuses.add(new WebbedStatus());
+      this.onNoteworthyAction();
+    }
   }
 }
 

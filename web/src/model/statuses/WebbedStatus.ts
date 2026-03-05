@@ -43,6 +43,10 @@ export class WebbedStatus extends Status implements IAttackDamageTakenModifier, 
     return !isActorWebNice(this.actor);
   }
 
+  blocksMovement(): boolean {
+    return !isActorWebNice(this.actor);
+  }
+
   private get web(): any {
     return getWeb(this.actor);
   }

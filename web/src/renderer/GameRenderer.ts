@@ -69,7 +69,7 @@ const STATUS_VISUALS: Record<string, StatusVisualConfig> = {
   PacifiedStatus:  { spriteKey: 'peace',            offsetX: 0, offsetY: 0.5,  scale: 0.4 },
   DandyStatus:     { spriteKey: 'dandypuff',        offsetX: 0, offsetY: 0.4,  scale: 0.75 },
   // Body-level sprites
-  WebbedStatus:    { spriteKey: 'web',              offsetX: 0, offsetY: -0.25, scale: 1.0 },
+  WebbedStatus:    { spriteKey: 'web-bottom',       offsetX: 0, offsetY: 0,    scale: 1.0 },
   ParasiteStatus:  { spriteKey: 'parasite',         offsetX: 0, offsetY: 0,    scale: 0.35 },
   // Particle-based (static sprite fallback — TODO: implement PixiJS particles)
   SlimedStatus:    { spriteKey: 'slimed',           offsetX: 0, offsetY: 0,     scale: 1.0 },
@@ -1141,16 +1141,12 @@ export class GameRenderer {
       const scaleRoot = state.scaleRoot;
       const actor = state.bob.entity as any;
       // Unity SleepTaskController disables the Animator when sleeping — suppress bob.
-      // ConstrictedStatus blocks movement — suppress bob.
-      // InShellStatus: snail is stationary in shell — suppress bob.
+      // Any status with blocksMovement() true (Webbed, Constricted, InShell, etc.) — suppress bob.
       const isSleeping = actor.task?.constructor?.name === 'SleepTask';
-      const isConstricted = actor.statuses?.list?.some(
-        (s: any) => s.constructor.name === 'ConstrictedStatus'
+      const isMovementBlocked = actor.statuses?.list?.some(
+        (s: any) => s.blocksMovement?.() === true
       );
-      const isInShell = actor.statuses?.list?.some(
-        (s: any) => s.constructor.name === 'InShellStatus'
-      );
-      if (isSleeping || isConstricted || isInShell) {
+      if (isSleeping || isMovementBlocked) {
         scaleRoot.position.y = bobTs / 2;
         continue;
       }

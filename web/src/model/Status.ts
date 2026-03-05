@@ -43,6 +43,11 @@ export abstract class Status implements IStepModifier {
     return false;
   }
 
+  /** Returns true if this status prevents the actor from moving. Used to suppress idle bob. */
+  blocksMovement(): boolean {
+    return false;
+  }
+
   get displayName(): string {
     return this.constructor.name.replace(/Status$/, '').replace(/([A-Z])/g, ' $1').trim();
   }

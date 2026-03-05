@@ -22,6 +22,7 @@ export interface TileContextEvent {
 export class InputHandler {
   readonly onIntent = new EventEmitter<[PlayerIntent]>();
   readonly onContextMenu = new EventEmitter<[TileContextEvent]>();
+  readonly onTileHover = new EventEmitter<[TileContextEvent]>();
   private camera: Camera;
   private canvas: HTMLCanvasElement;
   private enabled = true;
@@ -51,14 +52,14 @@ export class InputHandler {
     Numpad1: new Vector2Int(-1, 1),
     Numpad3: new Vector2Int(1, 1),
     // Diagonal with QEZC
-    q: new Vector2Int(-1, -1),
-    e: new Vector2Int(1, -1),
-    z: new Vector2Int(-1, 1),
-    c: new Vector2Int(1, 1),
-    Q: new Vector2Int(-1, -1),
-    E: new Vector2Int(1, -1),
-    Z: new Vector2Int(-1, 1),
-    C: new Vector2Int(1, 1),
+    q: new Vector2Int(-1, 1),
+    e: new Vector2Int(1, 1),
+    z: new Vector2Int(-1, -1),
+    c: new Vector2Int(1, -1),
+    Q: new Vector2Int(-1, 1),
+    E: new Vector2Int(1, 1),
+    Z: new Vector2Int(-1, -1),
+    C: new Vector2Int(1, -1),
   };
 
   constructor(camera: Camera, canvas: HTMLCanvasElement) {
@@ -67,6 +68,7 @@ export class InputHandler {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onContextMenuEvent = this.onContextMenuEvent.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
   }
@@ -75,6 +77,7 @@ export class InputHandler {
     window.addEventListener('keydown', this.onKeyDown);
     this.canvas.addEventListener('pointerdown', this.onClick);
     this.canvas.addEventListener('contextmenu', this.onContextMenuEvent);
+    this.canvas.addEventListener('mousemove', this.onMouseMove);
     this.canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
     this.canvas.addEventListener('touchend', this.onTouchEnd);
     this.canvas.addEventListener('touchcancel', this.onTouchEnd);
@@ -84,6 +87,7 @@ export class InputHandler {
     window.removeEventListener('keydown', this.onKeyDown);
     this.canvas.removeEventListener('pointerdown', this.onClick);
     this.canvas.removeEventListener('contextmenu', this.onContextMenuEvent);
+    this.canvas.removeEventListener('mousemove', this.onMouseMove);
     this.canvas.removeEventListener('touchstart', this.onTouchStart);
     this.canvas.removeEventListener('touchend', this.onTouchEnd);
     this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
@@ -130,6 +134,16 @@ export class InputHandler {
     }
   }
 
+  private onMouseMove(e: MouseEvent): void {
+    const rect = this.canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const tilePos = this.camera.pixelToTile(px, py);
+    if (this.camera.isInBounds(tilePos)) {
+      this.onTileHover.emit({ tilePos, screenX: e.clientX, screenY: e.clientY });
+    }
+  }
+
   private onContextMenuEvent(e: MouseEvent): void {
     e.preventDefault();
     if (!this.enabled) return;
@@ -150,6 +164,15 @@ export class InputHandler {
     const touch = e.touches[0];
     const screenX = touch.clientX;
     const screenY = touch.clientY;
+
+    // Immediately emit hover so the info panel updates on tap
+    const rect = this.canvas.getBoundingClientRect();
+    const px = screenX - rect.left;
+    const py = screenY - rect.top;
+    const tilePos = this.camera.pixelToTile(px, py);
+    if (this.camera.isInBounds(tilePos)) {
+      this.onTileHover.emit({ tilePos, screenX, screenY });
+    }
 
     this.longPressTimer = setTimeout(() => {
       this.longPressTimer = null;

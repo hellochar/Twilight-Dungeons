@@ -6,13 +6,14 @@ import { Floor } from '../model/Floor';
 import { Vector2Int } from '../core/Vector2Int';
 import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer, isMobile } from '../renderer';
-import { InputHandler, type PlayerIntent, type TileContextEvent } from '../input/InputHandler';
+import { InputHandler, type PlayerIntent/*, type TileContextEvent*/ } from '../input/InputHandler';
 import { SoundManager } from '../audio/SoundManager';
+// FUTURE: hover entity → draw line to card. Re-enable these + restore EntityInfoPanel in App.tsx
+// import type { EntityInfoData } from '../ui/EntityInfoPanel';
+// import { Body } from '../model/Body';
 import { Boss } from '../model/enemies/Boss';
 import { WaitBaseAction, GenericBaseAction } from '../model/BaseAction';
-import type { EntityInfoData } from '../ui/EntityInfoPopup';
 import type { GameEvent } from '../renderer/AnimationPlayer';
-import { Body } from '../model/Body';
 import { FollowPathTask } from '../model/tasks/FollowPathTask';
 import { AttackTask } from '../model/tasks/AttackTask';
 import { WaitTask } from '../model/tasks/WaitTask';
@@ -89,6 +90,13 @@ export interface TargetingState {
   actionName: string;
 }
 
+export interface EntityCardData {
+  displayName: string;
+  typeName: string;
+  hp?: number;
+  maxHp?: number;
+}
+
 export interface GameState {
   hp: number;
   maxHp: number;
@@ -103,6 +111,8 @@ export interface GameState {
   gameOver: GameOverInfo | null;
   onTopAction: OnTopActionSnapshot | null;
   dateSeed: string;
+  floorBodies: EntityCardData[];
+  floorGrasses: EntityCardData[];
 }
 
 const EMPTY_STATE: GameState = {
@@ -110,7 +120,7 @@ const EMPTY_STATE: GameState = {
   isPlayerDead: false, isCleared: false,
   inventoryItems: [], equipmentItems: [],
   statuses: [], gameOver: null, onTopAction: null,
-  dateSeed: '',
+  dateSeed: '', floorBodies: [], floorGrasses: [],
 };
 
 function getItemCategory(item: Item): string {
@@ -158,7 +168,7 @@ export function useGameLoop() {
   const [targetingState, setTargetingState] = useState<TargetingState | null>(null);
   const proposedTargetRef = useRef<Vector2Int | null>(null);
   const [debugNotice, setDebugNotice] = useState<string | null>(null);
-  const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
+  // const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
 
   const readState = useCallback((): GameState => {
     const model = modelRef.current;
@@ -203,6 +213,18 @@ export function useGameLoop() {
       }
     }
 
+    const floorBodies: EntityCardData[] = [];
+    for (const body of floor.bodies) {
+      if (body === player) continue;
+      const b = body as any;
+      floorBodies.push({ displayName: body.displayName, typeName: body.constructor.name, hp: b.hp, maxHp: b.maxHp });
+    }
+
+    const floorGrasses: EntityCardData[] = [];
+    for (const grass of floor.grasses) {
+      floorGrasses.push({ displayName: grass.displayName, typeName: grass.constructor.name });
+    }
+
     return {
       hp: player.hp,
       maxHp: player.maxHp,
@@ -217,8 +239,35 @@ export function useGameLoop() {
       gameOver,
       onTopAction,
       dateSeed: model.dateSeed,
+      floorBodies,
+      floorGrasses,
     };
   }, []);
+
+  // /** Build EntityInfoData from entity/tile at a given tile position (hover/click inspect). */
+  // const handleTileInspect = useCallback((event: TileContextEvent) => {
+  //   const model = modelRef.current;
+  //   if (!model) return;
+  //   const floor = model.currentFloor;
+  //   const { tilePos } = event;
+  //   const body = floor.bodies.get(tilePos);
+  //   if (body) {
+  //     const b = body as any as Body;
+  //     setEntityInfo({ name: body.displayName, typeName: body.constructor.name, hp: b.hp, maxHp: b.maxHp });
+  //     return;
+  //   }
+  //   const grass = floor.grasses.get(tilePos);
+  //   if (grass) { setEntityInfo({ name: grass.displayName, typeName: grass.constructor.name }); return; }
+  //   const item = floor.items.get(tilePos);
+  //   if (item) {
+  //     const heldItem = (item as any).heldItem;
+  //     if (heldItem) setEntityInfo({ name: heldItem.displayName, typeName: heldItem.constructor.name, stats: heldItem.getStatsFull?.() ?? '' });
+  //     else setEntityInfo({ name: item.displayName, typeName: item.constructor.name });
+  //     return;
+  //   }
+  //   const tile = floor.tiles.get(tilePos);
+  //   if (tile) setEntityInfo({ name: tile.displayName, typeName: tile.constructor.name });
+  // }, []);
 
   const syncAndUpdate = useCallback(() => {
     rendererRef.current?.syncToModel();
@@ -236,72 +285,6 @@ export function useGameLoop() {
     rendererRef.current?.clearProposedPath();
   }, []);
 
-  /** Build EntityInfoData from whatever entity/tile is at a given tile position. */
-  const handleContextMenu = useCallback((event: TileContextEvent) => {
-    const model = modelRef.current;
-    if (!model) return;
-    const floor = model.currentFloor;
-    const { tilePos, screenX, screenY } = event;
-
-    // Priority: body > grass > item on ground > tile
-    const body = floor.bodies.get(tilePos);
-    if (body) {
-      const b = body as any as Body;
-      setEntityInfo({
-        name: body.displayName,
-        typeName: body.constructor.name,
-        hp: b.hp,
-        maxHp: b.maxHp,
-        x: screenX,
-        y: screenY,
-      });
-      return;
-    }
-
-    const grass = floor.grasses.get(tilePos);
-    if (grass) {
-      setEntityInfo({
-        name: grass.displayName,
-        typeName: grass.constructor.name,
-        x: screenX,
-        y: screenY,
-      });
-      return;
-    }
-
-    const item = floor.items.get(tilePos);
-    if (item) {
-      // ItemOnGround wraps a held item — show that item's info
-      const heldItem = (item as any).heldItem;
-      if (heldItem) {
-        setEntityInfo({
-          name: heldItem.displayName,
-          typeName: heldItem.constructor.name,
-          stats: heldItem.getStatsFull?.() ?? '',
-          x: screenX,
-          y: screenY,
-        });
-      } else {
-        setEntityInfo({
-          name: item.displayName,
-          typeName: item.constructor.name,
-          x: screenX,
-          y: screenY,
-        });
-      }
-      return;
-    }
-
-    const tile = floor.tiles.get(tilePos);
-    if (tile) {
-      setEntityInfo({
-        name: tile.displayName,
-        typeName: tile.constructor.name,
-        x: screenX,
-        y: screenY,
-      });
-    }
-  }, []);
 
   const beginTargeting = useCallback((source: 'inventory' | 'equipment', slotIndex: number) => {
     const model = modelRef.current;
@@ -800,7 +783,8 @@ export function useGameLoop() {
       input = new InputHandler(camera, app.canvas);
       inputRef.current = input;
       input.onIntent.on(processIntent);
-      input.onContextMenu.on(handleContextMenu);
+      // input.onContextMenu.on(handleTileInspect);
+      // input.onTileHover.on(handleTileInspect);
       input.attach();
 
       resizeHandler = () => {
@@ -832,9 +816,9 @@ export function useGameLoop() {
       animatorRef.current = null;
       inputRef.current = null;
     };
-  }, [processIntent, readState, handleContextMenu]);
+  }, [processIntent, readState/*, handleTileInspect*/]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice/*, entityInfo, setEntityInfo*/ };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

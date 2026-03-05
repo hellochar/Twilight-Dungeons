@@ -4,11 +4,13 @@
  * GameModel sets this on construction. Other modules read from here.
  */
 
+import type { Player } from "./Player";
+
 export interface IGameModelRef {
   time: number;
   currentFloor: any;
   timedEvents: { register(evt: any): void };
-  player: any;
+  player: Player;
   stats: { damageDealt: number; damageTaken: number; enemiesDefeated: number };
   enqueuEvent(action: () => void): void;
   drainEventQueue(): void;

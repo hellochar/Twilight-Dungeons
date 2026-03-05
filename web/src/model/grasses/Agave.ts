@@ -76,7 +76,7 @@ export class ItemAgave extends Item implements IStackable {
   refine(): void {
     if (this.stacks < this.stacksMax) return;
     const player = GameModelRef.main.player;
-    player.floor.put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
+    player.floor!.put(new ItemOnGround(player.pos, new ItemAgaveHoney(), player.pos));
     this.Destroy();
   }
 }

@@ -111,6 +111,8 @@ export interface EntityCardData {
   typeName: string;
   hp?: number;
   maxHp?: number;
+  /** Base attack damage range [min, max]. Only set for Actors with non-zero damage. */
+  attackDamage?: [number, number];
   pos: { x: number; y: number };
 }
 
@@ -240,7 +242,9 @@ export function useGameLoop() {
     for (const body of floor.bodies) {
       if (body === player) continue;
       const b = body as any;
-      floorBodies.push({ displayName: body.displayName, typeName: body.constructor.name, hp: b.hp, maxHp: b.maxHp, pos: { x: body.pos.x, y: body.pos.y } });
+      const dmg: [number, number] | undefined = typeof b.baseAttackDamage === 'function' ? b.baseAttackDamage() : undefined;
+      const attackDamage = dmg && (dmg[0] !== 0 || dmg[1] !== 0) ? dmg : undefined;
+      floorBodies.push({ displayName: body.displayName, typeName: body.constructor.name, hp: b.hp, maxHp: b.maxHp, attackDamage, pos: { x: body.pos.x, y: body.pos.y } });
     }
 
     const floorGrasses: EntityCardData[] = [];
@@ -684,6 +688,28 @@ export function useGameLoop() {
       const renderer = rendererRef.current;
       if (!renderer) return;
       const currentDepth = modelRef.current?.currentFloor.depth ?? 0;
+
+      // '<' / '>' — shift date seed by one day (bypasses validation limits)
+      if (e.key === '<' || e.key === '>') {
+        const currentSeed = modelRef.current?.dateSeed ?? localTodayStr();
+        const d = new Date(currentSeed + 'T00:00:00');
+        d.setDate(d.getDate() + (e.key === '>' ? 1 : -1));
+        const newDateSeed = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const newModel = createGameForDifficulty(difficulty, newDateSeed);
+        newModel.consumeAnimationEvents();
+        modelRef.current = newModel;
+        renderer.setFloor(newModel.currentFloor);
+        renderer.syncToModel();
+        renderer.camera.resize(renderer.app.screen.width, renderer.app.screen.height, newModel.currentFloor.width, newModel.currentFloor.height, isMobile() ? -0.5 : 0.5);
+        setGameState(readState());
+        setDebugNotice(`date ${newDateSeed}`);
+        setTimeout(() => setDebugNotice(null), 3000);
+        // Update URL to match
+        const p = new URLSearchParams(window.location.search);
+        p.set('date', newDateSeed);
+        window.history.replaceState(null, '', `${window.location.pathname}?${p.toString()}`);
+        return;
+      }
 
       let depth: number;
       if (e.key === 'r' || e.key === 'R') {

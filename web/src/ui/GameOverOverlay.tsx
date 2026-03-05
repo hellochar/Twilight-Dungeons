@@ -118,7 +118,7 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
           </span>
 
           <span style={{ fontSize: 18, color: '#888' }}>
-            T{info.turnsTaken}
+            {info.turnsTaken} turns
             {' \u00b7 '}
             {info.enemiesDefeated} killed
             {' \u00b7 '}
@@ -232,7 +232,7 @@ function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playe
           return (
             <div key={b.turns_taken} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
               <div
-                title={`T${b.turns_taken}: ${b.count} player${b.count !== 1 ? 's' : ''}`}
+                title={`${b.turns_taken} turns: ${b.count} player${b.count !== 1 ? 's' : ''}`}
                 style={{
                   width: 10,
                   height: `${heightPct}%`,

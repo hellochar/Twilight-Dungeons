@@ -27,8 +27,7 @@ export class Wallflower extends AIActor {
   /** A tile can be occupied by a wallflower only if it's occupiable AND adjacent to a wall. */
   static canOccupy(t: Tile): boolean {
     if (!t.canBeOccupied()) return false;
-    const adjacent = t.floor!.getAdjacentTiles(t.pos);
-    return adjacent.some(n => n instanceof Wall);
+    return t.floor!.getCardinalNeighbors(t.pos).some(n => n instanceof Wall);
   }
 
   protected getNextTask(): ActorTask {

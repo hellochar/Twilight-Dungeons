@@ -363,7 +363,7 @@ export function aFewBlobs(floor: Floor, _room: Room | null): void {
 
 export function addWallflowers(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 0.9).filter(t =>
-    t.canBeOccupied() && floor.getAdjacentTiles(t.pos).some(n => n instanceof Wall)
+    t.canBeOccupied() && floor.getCardinalNeighbors(t.pos).some(n => n instanceof Wall)
   );
   for (const t of tiles.slice(0, 2)) spawn(floor, 'Wallflower', t.pos);
 }

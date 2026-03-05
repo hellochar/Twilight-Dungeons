@@ -57,7 +57,7 @@ function EntityCard({ data, horizontal }: { data: EntityCardData; horizontal: bo
         <img
           src={spriteUrl(data.displayName)}
           alt={data.displayName}
-          style={{ width: 32, height: 32, imageRendering: 'pixelated', flexShrink: 0 }}
+          style={{ height: 32, width: 'auto', imageRendering: 'pixelated', flexShrink: 0 }}
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         <span style={{ fontSize: 20, color: '#fff' }}>{data.displayName}</span>

@@ -1,8 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:docs.unity3d.com)",
-      "Bash(*)"
+      "Bash(*)",
+      "WebFetch(*)"
     ]
   }
 }

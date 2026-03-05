@@ -121,7 +121,9 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
                         onClick={e => handleChipClick(e, dateStr, diff)}
                         style={{
                           display: 'inline-block',
-                          padding: '2px 8px',
+                          width: 72,
+                          padding: '2px 0',
+                          textAlign: 'center',
                           textDecoration: 'none',
                           borderRadius: 3,
                           border: isActiveChip ? '1px solid #88f' : '1px solid #334',
@@ -131,7 +133,7 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        {DIFFICULTY_LABEL[diff]}{score ? ` ${score.turnsTaken} turns` : ''}
+                        {score ? `turn ${score.turnsTaken}` : DIFFICULTY_LABEL[diff]}
                       </a>
                     );
                   })}

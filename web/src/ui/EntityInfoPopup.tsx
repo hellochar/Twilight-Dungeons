@@ -10,6 +10,8 @@ export interface EntityInfoData {
   maxHp?: number;
   /** Item stats string (from getStatsFull). */
   stats?: string;
+  /** Override sprite URL (e.g. for statuses that use a different URL scheme). */
+  spriteSrc?: string;
   /** Screen position to anchor popup near. */
   x: number;
   y: number;
@@ -62,7 +64,7 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
     top = Math.max(margin, window.innerHeight - popupMaxHeight - margin);
   }
 
-  const spriteSrc = spriteUrl(data.name);
+  const spriteSrc = data.spriteSrc ?? spriteUrl(data.name);
   const description = data.stats || info?.description || '';
   const flavorText = info?.flavorText;
 

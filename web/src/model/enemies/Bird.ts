@@ -26,11 +26,11 @@ export class Bird extends AIActor implements IActionPerformedHandler {
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 3;
+    this.hp = this._baseMaxHp = 2;
   }
 
   baseAttackDamage(): [number, number] {
-    return [1, 2];
+    return [1, 1];
   }
 
   /** After moving, insert a wait turn. */

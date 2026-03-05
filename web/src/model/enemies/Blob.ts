@@ -18,11 +18,11 @@ export class Blob extends AIActor {
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 6;
+    this.hp = this._baseMaxHp = 4;
   }
 
   baseAttackDamage(): [number, number] {
-    return [2, 3];
+    return [2, 2];
   }
 
   protected getNextTask(): ActorTask {
@@ -48,11 +48,11 @@ export class MiniBlob extends AIActor {
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 3;
+    this.hp = this._baseMaxHp = 2;
   }
 
   baseAttackDamage(): [number, number] {
-    return [2, 2];
+    return [1, 1];
   }
 
   protected getNextTask(): ActorTask {

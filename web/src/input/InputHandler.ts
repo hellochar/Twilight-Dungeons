@@ -27,6 +27,10 @@ export class InputHandler {
   private canvas: HTMLCanvasElement;
   private enabled = true;
   private longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Tile where the current touch started (null when no touch active). */
+  private touchStartTile: Vector2Int | null = null;
+  /** Set true if finger drags to a different tile — suppresses click intent on release. */
+  private touchDragged = false;
 
   // Key → direction mapping (arrows, WASD, numpad)
   private static KEY_MAP: Record<string, Vector2Int> = {
@@ -70,6 +74,7 @@ export class InputHandler {
     this.onContextMenuEvent = this.onContextMenuEvent.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
   }
 
@@ -79,6 +84,7 @@ export class InputHandler {
     this.canvas.addEventListener('contextmenu', this.onContextMenuEvent);
     this.canvas.addEventListener('mousemove', this.onMouseMove);
     this.canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+    this.canvas.addEventListener('touchmove', this.onTouchMove, { passive: true });
     this.canvas.addEventListener('touchend', this.onTouchEnd);
     this.canvas.addEventListener('touchcancel', this.onTouchEnd);
   }
@@ -89,6 +95,7 @@ export class InputHandler {
     this.canvas.removeEventListener('contextmenu', this.onContextMenuEvent);
     this.canvas.removeEventListener('mousemove', this.onMouseMove);
     this.canvas.removeEventListener('touchstart', this.onTouchStart);
+    this.canvas.removeEventListener('touchmove', this.onTouchMove);
     this.canvas.removeEventListener('touchend', this.onTouchEnd);
     this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
     this.clearLongPress();
@@ -122,6 +129,9 @@ export class InputHandler {
 
   private onClick(e: PointerEvent): void {
     if (e.button !== 0) return; // left-click only
+    // If the finger dragged to a different tile, suppress the click — the drag
+    // already updated hover/reticle and the user didn't intend to tap-confirm.
+    if (this.touchDragged) return;
 
     const rect = this.canvas.getBoundingClientRect();
     const px = e.clientX - rect.left;
@@ -164,12 +174,15 @@ export class InputHandler {
     const screenX = touch.clientX;
     const screenY = touch.clientY;
 
+    this.touchDragged = false;
+
     // Immediately emit hover so the info panel updates on tap
     const rect = this.canvas.getBoundingClientRect();
     const px = screenX - rect.left;
     const py = screenY - rect.top;
     const tilePos = this.camera.pixelToTile(px, py);
-    if (this.camera.isInBounds(tilePos)) {
+    this.touchStartTile = this.camera.isInBounds(tilePos) ? tilePos : null;
+    if (this.touchStartTile) {
       this.onTileHover.emit({ tilePos, screenX, screenY });
     }
 
@@ -185,8 +198,29 @@ export class InputHandler {
     }, 500);
   }
 
+  /** Dragging finger updates hover/reticle to the tile under the finger. */
+  private onTouchMove(e: TouchEvent): void {
+    if (!this.enabled || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const rect = this.canvas.getBoundingClientRect();
+    const px = touch.clientX - rect.left;
+    const py = touch.clientY - rect.top;
+    const tilePos = this.camera.pixelToTile(px, py);
+    if (!this.camera.isInBounds(tilePos)) return;
+
+    // Only emit when the tile actually changed
+    if (this.touchStartTile && Vector2Int.equals(tilePos, this.touchStartTile) && !this.touchDragged) return;
+
+    this.touchDragged = true;
+    this.clearLongPress();
+    this.onTileHover.emit({ tilePos, screenX: touch.clientX, screenY: touch.clientY });
+  }
+
   private onTouchEnd(): void {
     this.clearLongPress();
+    this.touchStartTile = null;
+    // Reset touchDragged after a microtask so onClick (which fires after touchend) can still read it
+    Promise.resolve().then(() => { this.touchDragged = false; });
   }
 
   private clearLongPress(): void {

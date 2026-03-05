@@ -763,6 +763,7 @@ export function useGameLoop() {
 
     let input: InputHandler | null = null;
     let resizeHandler: (() => void) | null = null;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     let destroyed = false;
     let appReady = false;
     let pixiApp: Application | null = null;
@@ -868,13 +869,16 @@ export function useGameLoop() {
       input.attach();
 
       resizeHandler = () => {
-        const w = container!.clientWidth;
-        const h = container!.clientHeight;
-        app.renderer.resize(w, h);
-        const currentModel = modelRef.current ?? model;
-        camera.resize(w, h, currentModel.currentFloor.width, currentModel.currentFloor.height, isMobile() ? -0.5 : 0.5);
-        renderer.rebuildAll();
-        renderer.syncToModel();
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const w = container!.clientWidth;
+          const h = container!.clientHeight;
+          app.renderer.resize(w, h);
+          const currentModel = modelRef.current ?? model;
+          camera.resize(w, h, currentModel.currentFloor.width, currentModel.currentFloor.height, isMobile() ? -0.5 : 0.5);
+          renderer.rebuildAll();
+          renderer.syncToModel();
+        }, 150);
       };
       window.addEventListener('resize', resizeHandler);
 
@@ -888,7 +892,10 @@ export function useGameLoop() {
       destroyed = true;
       for (const unsub of audioUnsubs) unsub();
       input?.detach();
-      if (resizeHandler) window.removeEventListener('resize', resizeHandler);
+      if (resizeHandler) {
+        window.removeEventListener('resize', resizeHandler);
+        if (resizeTimer) clearTimeout(resizeTimer);
+      }
       if (pixiApp && appReady) {
         pixiApp.destroy(true, { children: true });
       }

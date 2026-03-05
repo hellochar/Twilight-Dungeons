@@ -231,8 +231,8 @@ export function chasmBridge(floor: Floor, _room: Room | null): void {
 }
 
 function chasmBridgeImpl(floor: Floor, thickness: number, crossScalar: number): void {
-  const origin = new Vector2Int(1, floor.boundsMax.y - 3);
-  const end = new Vector2Int(floor.boundsMax.x - 2, 1);
+  const origin = new Vector2Int(1, 1);
+  const end = new Vector2Int(floor.boundsMax.x - 2, floor.boundsMax.y - 3);
   const offsetX = end.x - origin.x;
   const offsetY = end.y - origin.y;
   const mag = Math.sqrt(offsetX * offsetX + offsetY * offsetY);

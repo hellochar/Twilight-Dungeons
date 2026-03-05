@@ -23,6 +23,24 @@ import { StackingStatus } from '../model/Status';
 import { ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../core/types';
 import { loadDebugState } from '../debug/DebugPanel';
 
+const DAY_ONE = '2026-02-04';
+
+function localTodayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/** Reads ?date= from URL, validates it, strips it if invalid, returns it or undefined. */
+function getUrlDateParam(): string | undefined {
+  const raw = new URLSearchParams(window.location.search).get('date');
+  if (!raw) return undefined;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw) || raw < DAY_ONE || raw > localTodayStr()) {
+    window.history.replaceState(null, '', window.location.pathname);
+    return undefined;
+  }
+  return raw;
+}
+
 // ─── Snapshot types for React consumption ───
 
 export interface ItemSnapshot {
@@ -654,8 +672,9 @@ export function useGameLoop() {
 
   /** Reset game (play again / today's puzzle). */
   const resetGame = useCallback(() => {
+    const urlDate = getUrlDateParam();
     const debugState = import.meta.env.DEV ? loadDebugState() : {};
-    const customSeed = debugState.seed?.trim() || undefined;
+    const customSeed = urlDate || debugState.seed?.trim() || undefined;
     const customDepth = debugState.depth ? parseInt(debugState.depth, 10) : undefined;
     const depthArg = customDepth != null && customDepth >= 0 && customDepth <= 27 ? customDepth : undefined;
 
@@ -709,8 +728,9 @@ export function useGameLoop() {
       await sprites.load();
       if (destroyed) { app.destroy(true, { children: true }); return; }
 
+      const urlDate = getUrlDateParam();
       const debugState = import.meta.env.DEV ? loadDebugState() : {};
-      const customSeed = debugState.seed?.trim() || undefined;
+      const customSeed = urlDate || debugState.seed?.trim() || undefined;
       const customDepth = debugState.depth ? parseInt(debugState.depth, 10) : undefined;
       const depthArg = customDepth != null && customDepth >= 0 && customDepth <= 27 ? customDepth : undefined;
 

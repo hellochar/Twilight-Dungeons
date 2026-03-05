@@ -20,6 +20,8 @@ jobs:
           VITE_BASE_PATH: ''
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_POSTHOG_KEY: ${{ vars.VITE_POSTHOG_KEY }}
+          VITE_DEPLOY_TARGET: itch
       - uses: jdno/setup-butler@v1
       - run: butler push web/dist hellochar/twilight-dungeons-daily:html5
         env:

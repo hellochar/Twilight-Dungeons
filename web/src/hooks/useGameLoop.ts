@@ -23,6 +23,9 @@ import type { Entity } from '../model/Entity';
 import { StackingStatus } from '../model/Status';
 import { ON_TOP_ACTION_HANDLER, type IOnTopActionHandler } from '../core/types';
 import { loadDebugState } from '../debug/DebugPanel';
+import { getLocalScore } from '../services/ScoreService';
+import { trackSessionStart, trackGameOver, trackRetry } from '../services/AnalyticsService';
+import type { PlayStats } from '../model/GameModel';
 
 const DAY_ONE = '2026-02-04';
 
@@ -193,6 +196,9 @@ export function useGameLoop() {
   const proposedTargetRef = useRef<Vector2Int | null>(null);
   const [debugNotice, setDebugNotice] = useState<string | null>(null);
   const [hoveredTilePos, setHoveredTilePos] = useState<{ x: number; y: number } | null>(null);
+  const gameStartTimeRef = useRef<number>(Date.now());
+  const retryCountRef = useRef<number>(0);
+  const lastGameOverRef = useRef<PlayStats | null>(null);
   // const [entityInfo, setEntityInfo] = useState<EntityInfoData | null>(null);
 
   const readState = useCallback((): GameState => {
@@ -315,6 +321,32 @@ export function useGameLoop() {
     rendererRef.current?.clearProposedPath();
   }, []);
 
+  /** Show path/reticle preview for a tile on mobile (used by both tap and drag). */
+  const updateMobilePreview = useCallback((tilePos: Vector2Int) => {
+    const model = modelRef.current;
+    if (!model || !isMobile()) return;
+    const player = model.player;
+    const floor = model.currentFloor;
+    if (player.isDead || Vector2Int.equals(tilePos, player.pos)) { clearProposed(); return; }
+
+    const intent: PlayerIntent = { type: 'click', tilePos };
+    const previewTask = resolveIntent(intent, player, floor);
+    if (previewTask instanceof FollowPathTask) {
+      clearProposed();
+      proposedTargetRef.current = previewTask.target;
+      rendererRef.current?.showProposedPath(previewTask.target, [...previewTask.path]);
+      return;
+    }
+    // Adjacent tile — show reticle only
+    const isAdjacent = Vector2Int.chebyshevDistance(player.pos, tilePos) === 1;
+    if (isAdjacent) {
+      clearProposed();
+      proposedTargetRef.current = tilePos;
+      rendererRef.current?.showProposedPath(tilePos, [tilePos]);
+      return;
+    }
+    clearProposed();
+  }, [clearProposed]);
 
   const beginTargeting = useCallback((source: 'inventory' | 'equipment', slotIndex: number) => {
     const model = modelRef.current;
@@ -767,6 +799,12 @@ export function useGameLoop() {
 
   /** Reset game (play again / today's puzzle). */
   const resetGame = useCallback(() => {
+    if (lastGameOverRef.current) {
+      retryCountRef.current += 1;
+      trackRetry(retryCountRef.current, lastGameOverRef.current);
+    }
+    gameStartTimeRef.current = Date.now();
+
     const urlDate = getUrlDateParam();
     const debugState = import.meta.env.DEV ? loadDebugState() : {};
     const customSeed = urlDate || debugState.seed?.trim() || undefined;
@@ -885,6 +923,12 @@ export function useGameLoop() {
         }),
       );
 
+      // Analytics: track game over
+      model.onGameOver.on((stats) => {
+        lastGameOverRef.current = stats;
+        trackGameOver(stats, difficulty, model.dateSeed, Date.now() - gameStartTimeRef.current, retryCountRef.current);
+      });
+
       renderer.setFloor(model.currentFloor);
       renderer.syncToModel();
 
@@ -902,7 +946,10 @@ export function useGameLoop() {
       inputRef.current = input;
       input.onIntent.on(processIntent);
       // input.onContextMenu.on(handleTileInspect);
-      input.onTileHover.on((ev) => setHoveredTilePos({ x: ev.tilePos.x, y: ev.tilePos.y }));
+      input.onTileHover.on((ev) => {
+        setHoveredTilePos({ x: ev.tilePos.x, y: ev.tilePos.y });
+        updateMobilePreview(ev.tilePos);
+      });
       input.attach();
 
       resizeHandler = () => {
@@ -921,6 +968,7 @@ export function useGameLoop() {
 
       setGameState(readState());
       setReady(true);
+      trackSessionStart(!!getLocalScore(`${localTodayStr()}-${difficulty}`), difficulty);
     }
 
     init();
@@ -941,7 +989,7 @@ export function useGameLoop() {
       animatorRef.current = null;
       inputRef.current = null;
     };
-  }, [processIntent, readState/*, handleTileInspect*/]);
+  }, [processIntent, readState, updateMobilePreview/*, handleTileInspect*/]);
 
   const clearHoveredTile = useCallback(() => {
     setHoveredTilePos(null);

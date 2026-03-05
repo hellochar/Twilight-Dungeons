@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.98.0",
     "gsap": "^3.14.2",
     "pixi.js": "^8.16.0",
+    "posthog-js": "^1.359.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

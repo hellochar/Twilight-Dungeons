@@ -2,7 +2,7 @@ import { Application, Container, Sprite, Graphics, Texture } from 'pixi.js';
 import { Floor } from '../model/Floor';
 import { Entity } from '../model/Entity';
 import { Vector2Int } from '../core/Vector2Int';
-import { Camera } from './Camera';
+import { Camera, isMobile } from './Camera';
 import { SpriteManager } from './SpriteManager';
 import { SPRITE_TINTS, SPRITE_ALPHAS } from './spriteTints';
 import { TelegraphedTask } from '../model/tasks/TelegraphedTask';
@@ -169,6 +169,7 @@ export class GameRenderer {
       this.app.screen.height,
       floor.width,
       floor.height,
+      isMobile() ? -0.5 : 0.5,
     );
     this.rebuildAll();
   }
@@ -181,6 +182,7 @@ export class GameRenderer {
       this.app.screen.height,
       this.floor.width,
       this.floor.height,
+      isMobile() ? -0.5 : 0.5,
     );
     this.rebuildAll();
   }

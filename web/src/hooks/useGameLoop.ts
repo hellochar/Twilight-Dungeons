@@ -5,7 +5,7 @@ import { Player } from '../model/Player';
 import { Floor } from '../model/Floor';
 import { Vector2Int } from '../core/Vector2Int';
 import { Faction } from '../core/types';
-import { Camera, SpriteManager, GameRenderer, AnimationPlayer } from '../renderer';
+import { Camera, SpriteManager, GameRenderer, AnimationPlayer, isMobile } from '../renderer';
 import { InputHandler, type PlayerIntent, type TileContextEvent } from '../input/InputHandler';
 import { SoundManager } from '../audio/SoundManager';
 import { Boss } from '../model/enemies/Boss';
@@ -615,7 +615,7 @@ export function useGameLoop() {
       modelRef.current = newModel;
       renderer.setFloor(newModel.currentFloor);
       renderer.syncToModel();
-      renderer.camera.resize(renderer.app.screen.width, renderer.app.screen.height, newModel.currentFloor.width, newModel.currentFloor.height);
+      renderer.camera.resize(renderer.app.screen.width, renderer.app.screen.height, newModel.currentFloor.width, newModel.currentFloor.height, isMobile() ? -0.5 : 0.5);
       setGameState(readState());
       setDebugNotice(`depth ${depth} (seed …${seed.slice(-5)})`);
       setTimeout(() => setDebugNotice(null), 3000);
@@ -769,7 +769,7 @@ export function useGameLoop() {
         const h = container!.clientHeight;
         app.renderer.resize(w, h);
         const currentModel = modelRef.current ?? model;
-        camera.resize(w, h, currentModel.currentFloor.width, currentModel.currentFloor.height);
+        camera.resize(w, h, currentModel.currentFloor.width, currentModel.currentFloor.height, isMobile() ? -0.5 : 0.5);
         renderer.rebuildAll();
       };
       window.addEventListener('resize', resizeHandler);

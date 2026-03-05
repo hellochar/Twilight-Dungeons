@@ -1,5 +1,10 @@
 import { Vector2Int } from '../core/Vector2Int';
 
+/** Returns true on touch/mobile devices. */
+export function isMobile(): boolean {
+  return navigator.maxTouchPoints > 0 || window.innerWidth < 768;
+}
+
 /**
  * Converts between tile coordinates and pixel coordinates.
  * Handles viewport sizing and centering.
@@ -26,30 +31,29 @@ export class Camera {
 
   /**
    * Recalculate tile size and offset to fit the floor in the viewport.
-   * Keeps square tiles and centers the grid within the padded area.
-   * @param insets - per-edge pixel insets: { top, bottom, left, right }. Defaults to 16px on all sides.
+   * Keeps square tiles and centers the grid.
+   * @param tilePadding - empty tile padding on each side (symmetric). Negative = zoom in past edges. Default 0.5.
    */
   resize(
     viewportWidth: number,
     viewportHeight: number,
     floorWidth: number,
     floorHeight: number,
-    insets: { top?: number; bottom?: number; left?: number; right?: number } = {},
+    tilePadding: number = 0.5,
   ): void {
     this.floorWidth = floorWidth;
     this.floorHeight = floorHeight;
 
-    const { top = 16, bottom = 16, left = 16, right = 16 } = insets;
-    const availW = viewportWidth - left - right;
-    const availH = viewportHeight - top - bottom;
-
-    this.tileSize = Math.floor(Math.min(availW / floorWidth, availH / floorHeight));
+    this.tileSize = Math.floor(Math.min(
+      viewportWidth / (floorWidth + 2 * tilePadding),
+      viewportHeight / (floorHeight + 2 * tilePadding),
+    ));
     this.tileSize = Math.max(this.tileSize, 8); // minimum 8px tiles
 
     const gridW = floorWidth * this.tileSize;
     const gridH = floorHeight * this.tileSize;
-    this.offsetX = Math.floor(left + (availW - gridW) / 2);
-    this.offsetY = Math.floor(top + (availH - gridH) / 2);
+    this.offsetX = Math.floor((viewportWidth - gridW) / 2);
+    this.offsetY = Math.floor((viewportHeight - gridH) / 2);
   }
 
   /**

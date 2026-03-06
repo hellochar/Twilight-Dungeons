@@ -8,6 +8,7 @@ import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer, isMobile } from '../renderer';
 import { InputHandler, type PlayerIntent/*, type TileContextEvent*/ } from '../input/InputHandler';
 import { soundManager } from '../audio/SoundManager';
+import gsap from 'gsap';
 import { WATER_SFX_VOLUME, MOVE_LERP_MS, TIME_GAP_DELAY } from '../constants';
 // FUTURE: hover entity → draw line to card. Re-enable these + restore EntityInfoPanel in App.tsx
 // import type { EntityInfoData } from '../ui/EntityInfoPanel';
@@ -934,9 +935,12 @@ export function useGameLoop() {
       renderer.setFloor(model.currentFloor);
       renderer.syncToModel();
 
+      // Sync GSAP ticker with PixiJS so animations update in the same frame as rendering
+      gsap.ticker.remove(gsap.updateRoot);
       // Register ticker for per-frame updates (runs every frame)
       app.ticker.add((ticker) => {
         const dt = ticker.deltaTime / 60;
+        gsap.updateRoot(gsap.ticker.time + dt);
         renderer.lerpPositions(dt);
         renderer.syncHpLabelPositions();
         renderer.updateTelegraphEffects(dt);

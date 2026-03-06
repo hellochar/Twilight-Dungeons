@@ -578,14 +578,14 @@ export const addGuardleaf4x: Encounter = (floor, room) => addGuardleafImpl(floor
 
 function addGuardleafImpl(floor: Floor, room: Room | null, mult: number): void {
   if (!room) return;
-  const occupiable = spectrumPos(floor, 0.25)
+  const occupiable = spectrumPos(floor, 0.30)
     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null);
   if (occupiable.length === 0) return;
   // const start = randomPick(occupiable);
   // if (!start) return;
   // const occupiableSet = new Set(occupiable);
   // const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
-  const num = 3;
+  const num = 5;
   for (const tile of occupiable.slice(0, num)) {
     spawn(floor, 'Guardleaf', tile.pos);
   }

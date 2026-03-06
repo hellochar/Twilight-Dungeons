@@ -275,6 +275,13 @@ registerEntityRenderer(BoombugCorpse, {
 registerEntityRenderer(Deathbloom, {
   sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
     const db = entity as Deathbloom;
+    // Unbloom: remove flower and reset tint
+    if (!db.isBloomed && state.deathbloom) {
+      state.deathbloom.flower.destroy();
+      state.deathbloom = undefined;
+      state.visual.tint = 0xFFFFFF;
+      return;
+    }
     if (!db.isBloomed || state.deathbloom) return;
     const { sprites, ts } = ctx;
     // Red-tint the stem sprite

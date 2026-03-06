@@ -22,6 +22,6 @@ export class FrenziedStatus extends StackingStatus implements IAttackDamageModif
   }
 
   End(): void {
-    this.actor?.statuses.add(new WeaknessStatus(3));
+    this.actor?.statuses.add(new WeaknessStatus(1));
   }
 }

@@ -185,7 +185,7 @@ registerObjectInfo('VileGrowth', { description: 'Deals 1 damage per turn to the 
 
 // ─── Statuses ───
 
-registerObjectInfo('FrenziedStatus', { description: '+2 damage for {stacks} attacks.\nWhen Frenzied ends, gain Weakness, dealing -1 damage on three attacks.' });
+registerObjectInfo('FrenziedStatus', { description: '+2 damage for the next {stacks} attacks.\nWhen Frenzied ends, gain Weakness, dealing -1 damage on the next attack.' });
 registerObjectInfo('CharmedStatus', { description: 'On your team!' });
 registerObjectInfo('ConfusedStatus', { description: 'Your next {stacks} turns must be spent moving in a random direction.' });
 registerObjectInfo('ConstrictedStatus', { description: 'You must break free of vines before you can move or attack!\n{stacks} stacks left.' });

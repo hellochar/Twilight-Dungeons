@@ -5,7 +5,7 @@ import { WeaknessStatus } from '../statuses/WeaknessStatus';
 import { FrenziedStatus } from '../statuses/FrenziedStatus';
 
 /**
- * Edible flower that removes Weakness and grants 3 stacks of Frenzied.
+ * Edible flower that removes Weakness and grants a stack of Frenzied.
  * Port of C# ItemDeathbloomFlower from Deathbloom.cs.
  */
 export class ItemDeathbloomFlower extends Item implements IEdible {
@@ -17,7 +17,7 @@ export class ItemDeathbloomFlower extends Item implements IEdible {
       weakness.Remove();
       GameModelRef.main.drainEventQueue();
     }
-    actor.statuses.add(new FrenziedStatus(3));
+    actor.statuses.add(new FrenziedStatus(1));
     this.Destroy();
   }
 

@@ -8,6 +8,15 @@ export type Encounter = (floor: Floor, room: Room | null) => void;
 /** Weighted bag of encounters — extends WeightedRandomBag with encounter-specific typing */
 export class EncounterBag extends WeightedRandomBag<Encounter> {}
 
+export function mult(fn: Encounter, times: number): Encounter {
+  return (floor, room) => {
+    for (var i = 0; i < times; i++) {
+      fn(floor, room);
+    }
+  };
+}
+
+
 /**
  * Encounter groups organize encounters by category and difficulty tier.
  * Port of C# EncounterGroup.cs + EncounterGroupShared.
@@ -122,26 +131,26 @@ function makeBasicEncounterGroup(E: Record<string, Encounter>): EncounterGroup {
   basic.grasses.add(1, E.scatteredBoombugs);
   basic.grasses.add(1, E.addEveningBells);
   basic.grasses.add(1, E.addDeathbloom);
-  basic.grasses.add(0.5, E.addWebs);
+  // basic.grasses.add(0.5, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   basic.grasses.add(1, E.addViolets);
   // earlyGame.grasses.add(0.2, E.fillWithFerns);
 
   basic.spice = new EncounterBag();
-  basic.spice.add(100, E.empty);
+  basic.spice.add(20, E.empty);
   // basic.spice.add(0.5, E.addFruitingBodies);
   // basic.spice.add(0.5, E.addScuttlers);
   // earlyGame.spice.add(0.25, E.addSoftGrass);
-  // earlyGame.spice.add(0.25, E.addBladegrass);
-  basic.spice.add(5, E.scatteredBoombugs);
+  basic.spice.add(1, E.fillWithBladegrass);
+  basic.spice.add(1, E.scatteredBoombugs4x);
   // earlyGame.spice.add(0.2, E.addWater);
   // earlyGame.spice.add(0.1, E.addOldDude);
   // earlyGame.spice.add(0.1, E.addDeathbloom);
-  // earlyGame.spice.add(0.1, E.addGuardleaf);
+  basic.spice.add(1, E.addGuardleaf4x);
   // earlyGame.spice.add(0.5, E.addSpore);
-  basic.spice.add(5, E.addEveningBells);
-  basic.spice.add(5, E.addPoisonmoss);
+  basic.spice.add(1, E.addEveningBells);
+  basic.spice.add(1, E.addPoisonmoss);
   // basic.spice.add(0.05, E.fillWithFerns);
   // earlyGame.spice.add(0.01, E.addNecroroot);
   // earlyGame.spice.add(0.01, E.addFaegrass);
@@ -162,36 +171,37 @@ function makeMediumEncounterGroup(E: Record<string, Encounter>): EncounterGroup 
   medium.mobs.add(1.0, E.addOctopus);
   medium.mobs.add(1.0, E.aFewSnails);
   medium.mobs.add(1.0, E.addSpiders);
+  medium.mobs.add(1.0, E.addBats);
 
   medium.grasses = new EncounterBag();
-  medium.grasses.add(1, E.addSoftGrass);
+  medium.grasses.add(0.5, E.addSoftGrass);
   medium.grasses.add(1, E.addLlaora);
   medium.grasses.add(1, E.addGuardleaf);
   medium.grasses.add(1, E.addBladegrass);
   medium.grasses.add(1, E.scatteredBoombugs);
   medium.grasses.add(1, E.addEveningBells);
   medium.grasses.add(1, E.addDeathbloom);
-  medium.grasses.add(0.5, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   medium.grasses.add(1, E.addViolets);
   // earlyGame.grasses.add(0.2, E.fillWithFerns);
 
   medium.spice = new EncounterBag();
-  medium.spice.add(100, E.empty);
-  // basic.spice.add(0.5, E.addFruitingBodies);
-  // basic.spice.add(0.5, E.addScuttlers);
+  // medium.spice.add(100, E.empty);
+  medium.spice.add(1, E.addWebs);
+  medium.spice.add(1, E.addFruitingBodies);
+  medium.spice.add(1, E.addScuttlers);
   // earlyGame.spice.add(0.25, E.addSoftGrass);
   // earlyGame.spice.add(0.25, E.addBladegrass);
-  medium.spice.add(5, E.scatteredBoombugs);
+  medium.spice.add(1, E.scatteredBoombugs4x);
   // earlyGame.spice.add(0.2, E.addWater);
   // earlyGame.spice.add(0.1, E.addOldDude);
-  // earlyGame.spice.add(0.1, E.addDeathbloom);
+  medium.spice.add(1, mult(E.addDeathbloom, 4));
   // earlyGame.spice.add(0.1, E.addGuardleaf);
   // earlyGame.spice.add(0.5, E.addSpore);
-  medium.spice.add(5, E.addEveningBells);
-  medium.spice.add(5, E.addPoisonmoss);
-  // basic.spice.add(0.05, E.fillWithFerns);
+  medium.spice.add(1, E.addEveningBells);
+  medium.spice.add(1, E.addPoisonmoss);
+  medium.spice.add(1, E.fillWithFerns);
   // earlyGame.spice.add(0.01, E.addNecroroot);
   // earlyGame.spice.add(0.01, E.addFaegrass);
   return medium;
@@ -211,36 +221,37 @@ function makeComplexEncounterGroup(E: Record<string, Encounter>): EncounterGroup
   complex.mobs.add(1.0, E.addOctopus);
   complex.mobs.add(1.0, E.aFewSnails);
   complex.mobs.add(1.0, E.addSpiders);
+  complex.mobs.add(1.0, E.addBats);
 
   complex.grasses = new EncounterBag();
-  complex.grasses.add(1, E.addSoftGrass);
+  complex.grasses.add(0.5, E.addSoftGrass);
   complex.grasses.add(1, E.addLlaora);
   complex.grasses.add(1, E.addGuardleaf);
   complex.grasses.add(1, E.addBladegrass);
   complex.grasses.add(1, E.scatteredBoombugs);
   complex.grasses.add(1, E.addEveningBells);
   complex.grasses.add(1, E.addDeathbloom);
-  complex.grasses.add(0.5, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   complex.grasses.add(1, E.addViolets);
   // earlyGame.grasses.add(0.2, E.fillWithFerns);
 
   complex.spice = new EncounterBag();
-  complex.spice.add(100, E.empty);
-  // basic.spice.add(0.5, E.addFruitingBodies);
-  // basic.spice.add(0.5, E.addScuttlers);
+  // medium.spice.add(100, E.empty);
+  complex.spice.add(1, E.addWebs);
+  complex.spice.add(1, E.addFruitingBodies);
+  complex.spice.add(1, E.addScuttlers);
   // earlyGame.spice.add(0.25, E.addSoftGrass);
   // earlyGame.spice.add(0.25, E.addBladegrass);
-  complex.spice.add(5, E.scatteredBoombugs);
+  complex.spice.add(1, E.scatteredBoombugs4x);
   // earlyGame.spice.add(0.2, E.addWater);
   // earlyGame.spice.add(0.1, E.addOldDude);
-  // earlyGame.spice.add(0.1, E.addDeathbloom);
+  complex.spice.add(1, mult(E.addDeathbloom, 4));
   // earlyGame.spice.add(0.1, E.addGuardleaf);
   // earlyGame.spice.add(0.5, E.addSpore);
-  complex.spice.add(5, E.addEveningBells);
-  complex.spice.add(5, E.addPoisonmoss);
-  // basic.spice.add(0.05, E.fillWithFerns);
+  complex.spice.add(1, E.addEveningBells);
+  complex.spice.add(1, E.addPoisonmoss);
+  complex.spice.add(1, E.fillWithFerns);
   // earlyGame.spice.add(0.01, E.addNecroroot);
   // earlyGame.spice.add(0.01, E.addFaegrass);
   return complex;

@@ -418,7 +418,7 @@ export function addSpiders(floor: Floor, _room: Room | null): void {
 
 export function addBats(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 0.8);
-  const num = floor.depth < 13 ? 1 : 2;
+  const num = floor.depth < 15 ? 1 : 2;
   for (const t of tiles.slice(0, num)) spawn(floor, 'Bat', t.pos);
 }
 
@@ -585,7 +585,7 @@ function addGuardleafImpl(floor: Floor, room: Room | null, mult: number): void {
   // if (!start) return;
   // const occupiableSet = new Set(occupiable);
   // const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
-  const num = 5;
+  const num = 5 * mult;
   for (const tile of occupiable.slice(0, num)) {
     spawn(floor, 'Guardleaf', tile.pos);
   }
@@ -602,6 +602,12 @@ export function addViolets(floor: Floor, room: Room | null): void {
   }
 }
 
+export function addDeathbloom4x(floor: Floor, room: Room | null): void {
+  for (var i = 0; i < 4; i++) {
+    addDeathbloom(floor, room);
+  }
+}
+
 export function addDeathbloom(floor: Floor, room: Room | null): void {
   if (!room) return;
   const tiles = FloorUtils.emptyTilesInRoom(floor, room)
@@ -612,11 +618,10 @@ export function addDeathbloom(floor: Floor, room: Room | null): void {
 
 export function addWebs(floor: Floor, room: Room | null): void {
   const tiles = FloorUtils.tilesSortedByCorners(floor, room)
-    .filter(t => floor.grasses.get(t.pos) == null && t instanceof Ground)
-    .reverse();
-  const num = tiles.length / 2;
+    .filter(t => floor.grasses.get(t.pos) == null && t instanceof Ground);
+  const num = tiles.length * 0.75;
   for (const tile of tiles.slice(0, num)) {
-    if (MyRandom.value < 0.87) spawn(floor, 'Web', tile.pos);
+    if (MyRandom.value < 0.5) spawn(floor, 'Web', tile.pos);
   }
 }
 
@@ -1019,7 +1024,7 @@ export const allEncounters: Record<string, Encounter> = {
   addThistlebog, addWildekins, addDizapper, addGoo, addHardShell,
   addHoppers, addHealer, addPoisoner, addMuckola, addIronJelly,
   addSoftGrass, addBladegrass, addGuardleaf, addGuardleaf4x, addViolets,
-  addDeathbloom, addWebs, addHangingVines, addHangingVines2x,
+  addDeathbloom, addDeathbloom4x, addWebs, addHangingVines, addHangingVines2x,
   addSpore, addSpore8x, addAgave, addPoisonmoss, addBrambles,
   addVibrantIvy, addNecroroot, addFaegrass, addEveningBells,
   addLlaora, addBloodwort, addBloodstone, addGoldGrass, addRedcaps,

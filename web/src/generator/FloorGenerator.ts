@@ -46,8 +46,8 @@ export class FloorGenerator {
 
   private initFloorGenerators(): Array<() => Floor> {
     var basic = () => this.generateSingleRoomFloor(3, 7, 10, 2, 1);
-    var medium = () => this.generateSingleRoomFloor(14, 8, 11, 3, 2);
-    var complex = () => this.generateSingleRoomFloor(23, 9, 13, 5, 4);
+    var medium = () => this.generateSingleRoomFloor(14, 8, 12, 3, 2);
+    var complex = () => this.generateSingleRoomFloor(23, 9, 14, 5, 4);
 
     return [
       // early game (depths 0-9)

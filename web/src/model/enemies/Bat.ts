@@ -30,7 +30,7 @@ export class Bat extends AIActor implements IActionPerformedHandler, IDealAttack
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 5;
+    this.hp = this._baseMaxHp = 3;
   }
 
   baseAttackDamage(): [number, number] {

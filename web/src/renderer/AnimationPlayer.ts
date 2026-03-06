@@ -658,9 +658,9 @@ export class AnimationPlayer {
     // the main animation chain. The main timeline only reserves 0.25s for this effect.
     const impactLabel = `atkground-impact-${event.entityGuid}`;
     const standalone = gsap.timeline();
-    standalone.to(sprite, { width: ts, height: ts, duration: 0.25, ease: 'power2.out' }, 0);
-    standalone.to(sprite, { y: px.y - 0.12 * ts, duration: 0.5, ease: 'power3.out' }, 0);
-    standalone.to(sprite, { width: 0, height: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, 0.5);
+    standalone.to(sprite, { width: ts * 0.9, height: ts * 0.9, duration: 0.2, ease: 'power2.out' }, 0);
+    standalone.to(sprite, { y: px.y - 0.12 * ts, duration: 0.45, ease: 'power3.out' }, 0);
+    standalone.to(sprite, { width: 0, height: 0, duration: 0.27, ease: 'power2.in', onComplete: cleanup }, 0.5);
 
     // Reserve only 0.25s on the main timeline so the chain continues while the effect plays
     tl.call(() => { standalone.play(0); }, [], impactLabel);

@@ -697,7 +697,7 @@ export function addPoisonmoss(floor: Floor, room: Room | null): void {
 export function addBrambles(floor: Floor, room: Room | null): void {
   const tiles = FloorUtils.tilesSortedByCorners(floor, room)
     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null && t.canBeOccupied());
-  let num = MyRandom.Range(Math.floor(tiles.length / 12), Math.floor(tiles.length / 6));
+  let num = MyRandom.Range(5, 9);
   while (num >= 2 && tiles.length >= 2) {
     const tile = tiles.pop()!;
     spawn(floor, 'Brambles', tile.pos);
@@ -862,9 +862,8 @@ export function addTunnelroot(floor: Floor, room: Room | null): void {
 export const addTunnelroot4x: Encounter = twice(twice(addTunnelroot));
 
 export function addCrabs(floor: Floor, room: Room | null): void {
-  const tiles = FloorUtils.emptyTilesInRoom(floor, room);
-  MyRandom.Shuffle(tiles);
-  for (const t of tiles.slice(0, 1)) spawn(floor, 'Crab', t.pos);
+  const tiles = spectrumPos(floor, MyRandom.value * 0.2 + 0.4);
+  for (const t of tiles.slice(0, 2)) spawn(floor, 'Crab', t.pos);
 }
 
 export function addScuttlers(floor: Floor, room: Room | null): void {

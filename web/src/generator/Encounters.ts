@@ -434,13 +434,13 @@ export function addFungalBreeder(floor: Floor, _room: Room | null): void {
 
 export function addScorpions(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 1.0);
-  const num = randomRangeBasedOnIndex(Math.floor((floor.depth - 10) / 4), [1, 1], [1, 2], [2, 2]);
+  const num = 1;
   for (const t of tiles.slice(0, num)) spawn(floor, 'Scorpion', t.pos);
 }
 
 export function addGolems(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 1.0);
-  const num = floor.depth < 16 ? 1 : 2;
+  const num = 1;
   for (const t of tiles.slice(0, num)) spawn(floor, 'Golem', t.pos);
 }
 
@@ -459,7 +459,7 @@ export function addHydra(floor: Floor, room: Room | null): void {
 
 export function addClumpshroom(floor: Floor, room: Room | null): void {
   if (!room) return;
-  const tiles = FloorUtils.tilesAwayFromCenter(floor, room)
+  const tiles = spectrumPos(floor, 1.0)
     .filter(t => t.pos.x >= room.center.x);
   const startTile = tiles[MyRandom.Range(0, Math.min(4, tiles.length))];
   if (startTile) spawn(floor, 'Clumpshroom', startTile.pos);
@@ -501,7 +501,7 @@ export function addHardShell(floor: Floor, room: Room | null): void {
 export function addHoppers(floor: Floor, room: Room | null): void {
   const startTile = randomPick(FloorUtils.emptyTilesInRoom(floor, room));
   if (!startTile) return;
-  const num = randomRangeBasedOnIndex(Math.floor((floor.depth - 24) / 4), [2, 2], [2, 2], [2, 3]);
+  const num = 2;
   const tiles = [...floor.breadthFirstSearch(startTile.pos, t => t.canBeOccupied())].slice(0, num);
   for (const t of tiles) spawn(floor, 'Hopper', t.pos);
 }
@@ -522,8 +522,9 @@ export function addMuckola(floor: Floor, _room: Room | null): void {
 }
 
 export function addIronJelly(floor: Floor, _room: Room | null): void {
-  const posX = MyRandom.RandRound(floor.width * 0.25);
-  const posY = Math.floor(floor.height / 2);
+  // const tiles = spectrumPos(floor, 0.35);
+  const posX = MyRandom.RandRound(floor.width / 2);
+  const posY = Math.floor(floor.height * 0.25);
   const score = (t: Tile) => floor.getAdjacentTiles(t.pos).filter(a => a instanceof Ground).length;
   const candidates = [...floor.breadthFirstSearch(new Vector2Int(posX, posY))]
     .filter(t => t.canBeOccupied())

@@ -23,7 +23,7 @@ export class Goo extends AIActor implements IBodyTakeAttackDamageHandler {
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 12;
+    this.hp = this._baseMaxHp = 8;
   }
 
   baseAttackDamage(): [number, number] {

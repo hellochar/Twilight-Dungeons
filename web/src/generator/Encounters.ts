@@ -343,7 +343,7 @@ export function addBird(floor: Floor, _room: Room | null): void {
 
 export function addSnake(floor: Floor, _room: Room | null): void {
   const tile = spectrumPos(floor, 0.6)[0];
-  if (tile) spawn(floor, 'Snake', tile.pos);
+  for (let i = 0; i < 2; i++) spawn(floor, 'Snake', tile.pos);
 }
 
 export function aFewBlobs(floor: Floor, _room: Room | null): void {

@@ -15,6 +15,7 @@ import { Wallflower } from '../model/enemies/Wallflower';
 import { Jackal } from '../model/enemies/Jackal';
 import { Hopper } from '../model/enemies/Hopper';
 import { Goo } from '../model/enemies/Goo';
+import { Crab } from '../model/enemies/Crab';
 
 // ─── EntityRenderState ───
 
@@ -70,6 +71,8 @@ export interface EntityRenderState {
   squishSpawn?: { elapsed: number };
   /** Deathbloom bloomed flower animation state. */
   deathbloom?: { flower: Sprite; elapsed: number; done: boolean; targetScale: number };
+  /** Crab turn-around animation: cycles through 5 frames over 0.25s. */
+  crabTurn?: { frames: Texture[]; startTime: number; targetIdx: number };
 }
 
 // ─── Entity Renderer Hooks ───
@@ -413,6 +416,46 @@ registerEntityRenderer(Goo, {
     const tex = gooFrame(frames, goo.hp, goo.maxHp);
     state.visual.texture = tex;
     if (state.shadow) state.shadow.texture = tex;
+  },
+});
+
+// ─── Crab renderer ───
+
+/**
+ * CrabController port: 5 directional frames (right, rightMid, mid, leftMid, left).
+ * Initial sprite set by dx. On direction change, plays SpriteSwap over 0.25s.
+ */
+registerEntityRenderer(Crab, {
+  init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const frames = ctx.sprites.getFrames('crab');
+    if (!frames || frames.length < 5) return;
+    const crab = entity as Crab;
+    // frames: 0=right, 1=rightMid, 2=mid, 3=leftMid, 4=left
+    const idx = crab.dx === 1 ? 0 : 4;
+    state.visual.texture = frames[idx];
+    if (state.shadow) state.shadow.texture = frames[idx];
+
+    crab.onDirectionChanged = () => {
+      // dx already flipped when this fires
+      if (crab.dx === -1) {
+        // was right, now left → animate 0→1→2→3→4
+        state.crabTurn = { frames, startTime: performance.now(), targetIdx: 4 };
+      } else {
+        // was left, now right → animate 4→3→2→1→0
+        state.crabTurn = { frames, startTime: performance.now(), targetIdx: 0 };
+      }
+    };
+  },
+  sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    // Ensure callback stays connected after re-sync
+    if (!state.crabTurn) {
+      const frames = ctx.sprites.getFrames('crab');
+      if (!frames || frames.length < 5) return;
+      const crab = entity as Crab;
+      const idx = crab.dx === 1 ? 0 : 4;
+      state.visual.texture = frames[idx];
+      if (state.shadow) state.shadow.texture = frames[idx];
+    }
   },
 });
 

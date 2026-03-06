@@ -191,16 +191,23 @@ async function main() {
 
       const dims = await getPngDimensions(srcPath);
       if (dims) {
-        const frameHeight = 16; // Standard sprite height
-        const frameWidth = 16;  // Standard sprite width
-        const frameCount = Math.floor(dims.width / frameWidth);
+        // Custom frame overrides for non-standard sprite sheets
+        // Crab: 5 frames of 18×16 at x=0,20,40,60,80 (2px gap between frames)
+        const CUSTOM_FRAMES = {
+          'crab': { frameWidth: 18, frameHeight: 16, frameCount: 5, stride: 20 },
+        };
+        const custom = CUSTOM_FRAMES[name];
+        const frameHeight = custom?.frameHeight ?? 16;
+        const frameWidth = custom?.frameWidth ?? 16;
+        const frameCount = custom?.frameCount ?? (Math.floor(dims.width / frameWidth) > 1 ? Math.floor(dims.width / frameWidth) : 1);
         manifest[name] = {
           file: `${name}.png`,
           width: dims.width,
           height: dims.height,
-          frameCount: frameCount > 1 ? frameCount : 1,
+          frameCount,
           frameWidth,
           frameHeight,
+          ...(custom?.stride ? { stride: custom.stride } : {}),
         };
       }
     }

@@ -10,6 +10,8 @@ export interface SpriteInfo {
   frameHeight: number;
   ax: number;
   ay: number;
+  /** Horizontal stride between frame origins (defaults to frameWidth). */
+  stride?: number;
 }
 
 export type SpriteManifest = Record<string, SpriteInfo>;
@@ -74,12 +76,13 @@ export class SpriteManager {
 
       // Slice multi-frame strips (frames are horizontal within the atlas region)
       if (info.frameCount > 1) {
+        const stride = info.stride ?? info.frameWidth;
         const frameTextures: Texture[] = [];
         for (let i = 0; i < info.frameCount; i++) {
           frameTextures.push(new Texture({
             source: atlasSource,
             frame: new Rectangle(
-              info.ax + i * info.frameWidth,
+              info.ax + i * stride,
               info.ay,
               info.frameWidth,
               info.frameHeight,

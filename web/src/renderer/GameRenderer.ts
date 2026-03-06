@@ -1171,6 +1171,27 @@ export class GameRenderer {
       }
     }
 
+    // Crab turn-around: SpriteSwap 5 frames over 0.25s
+    const CRAB_TURN_DURATION = 0.25;
+    for (const [, state] of this.entityStates) {
+      if (!state.crabTurn) continue;
+      const { frames, startTime, targetIdx } = state.crabTurn;
+      const elapsed = (performance.now() - startTime) / 1000;
+      if (elapsed >= CRAB_TURN_DURATION) {
+        state.visual.texture = frames[targetIdx];
+        if (state.shadow) state.shadow.texture = frames[targetIdx];
+        state.crabTurn = undefined;
+      } else {
+        // 5 frames, 4 intervals → each interval = duration/4
+        const interval = CRAB_TURN_DURATION / 4;
+        const frameIdx = Math.min(Math.floor(elapsed / interval), 3);
+        // targetIdx 4 → sequence 0,1,2,3,4; targetIdx 0 → sequence 4,3,2,1,0
+        const idx = targetIdx === 4 ? frameIdx : 4 - frameIdx;
+        state.visual.texture = frames[idx];
+        if (state.shadow) state.shadow.texture = frames[idx];
+      }
+    }
+
     // Idle bob (Unity _Actor.prefab Idle.anim: step up 0.1 units at phase 0.5, speed = 1/baseActionCost)
     const bobTs = this.camera.tileSize;
     for (const [, state] of this.entityStates) {

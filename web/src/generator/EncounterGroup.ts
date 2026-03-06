@@ -122,7 +122,7 @@ function makeBasicEncounterGroup(E: Record<string, Encounter>): EncounterGroup {
   basic.grasses.add(1, E.scatteredBoombugs);
   basic.grasses.add(1, E.addEveningBells);
   basic.grasses.add(1, E.addDeathbloom);
-  basic.grasses.add(1, E.addWebs);
+  basic.grasses.add(0.5, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   basic.grasses.add(1, E.addViolets);
@@ -171,7 +171,7 @@ function makeMediumEncounterGroup(E: Record<string, Encounter>): EncounterGroup 
   medium.grasses.add(1, E.scatteredBoombugs);
   medium.grasses.add(1, E.addEveningBells);
   medium.grasses.add(1, E.addDeathbloom);
-  medium.grasses.add(1, E.addWebs);
+  medium.grasses.add(0.5, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   medium.grasses.add(1, E.addViolets);
@@ -220,7 +220,7 @@ function makeComplexEncounterGroup(E: Record<string, Encounter>): EncounterGroup
   complex.grasses.add(1, E.scatteredBoombugs);
   complex.grasses.add(1, E.addEveningBells);
   complex.grasses.add(1, E.addDeathbloom);
-  complex.grasses.add(1, E.addWebs);
+  complex.grasses.add(0.5, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   complex.grasses.add(1, E.addViolets);

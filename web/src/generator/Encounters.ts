@@ -159,14 +159,14 @@ export function addStalk(floor: Floor, room: Room | null): void {
   }
 }
 
-export function rubbleCluster(floor: Floor, _room: Room | null): void {
-  objectClusterImpl(floor, 'Rubble');
+export function rubbleCluster(floor: Floor, room: Room | null): void {
+  objectClusterImpl(floor, room, 'Rubble');
 }
 
-function objectClusterImpl(floor: Floor, entityName: string, num?: number): void {
-  if (num == null) num = MyRandom.Range(3, 6);
-  const tiles = FloorUtils.clusters(floor, new Vector2Int(2, 2), num);
-  for (const t of tiles) {
+function objectClusterImpl(floor: Floor, room: Room | null, entityName: string, num?: number): void {
+  if (num == null) num = MyRandom.Range(1, 5);
+  const tiles = FloorUtils.tilesFromCenter(floor, room);
+  for (const t of tiles.slice(0, num)) {
     spawn(floor, entityName, t.pos);
   }
 }
@@ -352,21 +352,18 @@ export function aFewBlobs(floor: Floor, _room: Room | null): void {
   //   if (isMini) numMini++; else numNormal++;
   //   budget -= cost;
   // }
-  const choice = MyRandom.value;
+  const choice = MyRandom.Range(0, 3);
   let numMini: number;
   let numNormal: number;
   
-  if (choice < 0.25) {
+  if (choice == 0) {
     numMini = 0;
-    numNormal = 2;
-  } else if (choice < 0.5) {
+    numNormal = 1;
+  } else if (choice == 1) {
     numMini = 1;
     numNormal = 1;
-  } else if (choice < 0.75) {
-    numMini = 2;
-    numNormal = 1;
   } else {
-    numMini = 3;
+    numMini = 2;
     numNormal = 0;
   }
   

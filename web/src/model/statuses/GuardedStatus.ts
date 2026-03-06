@@ -2,17 +2,15 @@ import { ATTACK_DAMAGE_TAKEN_MOD, type IAttackDamageTakenModifier } from '../../
 import { StackingStatus, Status } from '../Status';
 
 /**
- * Absorbs attack damage via Guardleaf's guardLeft pool.
- * Stacks delegate to the leaf's guardLeft.
- * Port of C# GuardedStatus from Guardleaf.cs.
+ * Blocks the next incoming attack, then destroys the Guardleaf.
  */
 export class GuardedStatus extends Status implements IAttackDamageTakenModifier {
   readonly [ATTACK_DAMAGE_TAKEN_MOD] = true as const;
 
-  /** Duck-type access to the Guardleaf grass under the actor. */
+  /** Duck-type access — avoids circular import with Guardleaf. */
   private get leaf(): any {
     const grass = this.actor?.grass;
-    return grass && 'guardLeft' in grass ? grass : null;
+    return grass && 'removeGuard' in grass ? grass : null;
   }
 
   constructor() {

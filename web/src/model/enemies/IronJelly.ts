@@ -27,12 +27,16 @@ export class IronJelly extends AIActor implements IAnyDamageTakenModifier, IBody
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Neutral;
-    this.hp = this._baseMaxHp = 99;
+    this.hp = this._baseMaxHp = 1;
     this.clearTasks();
   }
 
   baseAttackDamage(): [number, number] {
     return [99, 99];
+  }
+
+  get isStationary(): boolean {
+    return true;
   }
 
   /** IAnyDamageTakenModifier — reduce all damage to 0 (invulnerable). */

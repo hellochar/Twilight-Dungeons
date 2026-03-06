@@ -7,7 +7,7 @@ import { Vector2Int } from '../core/Vector2Int';
 import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer, isMobile } from '../renderer';
 import { InputHandler, type PlayerIntent/*, type TileContextEvent*/ } from '../input/InputHandler';
-import { SoundManager } from '../audio/SoundManager';
+import { soundManager } from '../audio/SoundManager';
 // FUTURE: hover entity → draw line to card. Re-enable these + restore EntityInfoPanel in App.tsx
 // import type { EntityInfoData } from '../ui/EntityInfoPanel';
 // import { Body } from '../model/Body';
@@ -880,11 +880,11 @@ export function useGameLoop() {
         setTimeout(() => setDebugNotice(null), 4000);
       }
 
-      const sound = new SoundManager();
+      const sound = soundManager;
+      sound.init();
       await sound.loadSFX();
       if (destroyed) { app.destroy(true, { children: true }); return; }
-      // Music loads in background — game starts without waiting for large music files.
-      // setMusic() no-ops gracefully if buffers aren't ready yet.
+      // Music loads in background. After loading, pending setMusic() calls are replayed.
       sound.loadMusic().catch(console.warn);
 
       const camera = new Camera();

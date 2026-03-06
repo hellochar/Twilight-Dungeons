@@ -37,27 +37,58 @@ const MUSIC_FILES: Record<'normal', string> = {
   normal: 'background-music.ogg',
 };
 
+const MUTE_KEY = 'twilight-dungeons-muted';
+
 export class SoundManager {
   private ctx: AudioContext | null = null;
+  private masterGain: GainNode | null = null;
   private sfxBuffers = new Map<string, AudioBuffer>();
   private hurtBuffers: AudioBuffer[] = [];
   private musicBuffers = new Map<string, AudioBuffer>();
+  private _muted: boolean = localStorage.getItem(MUTE_KEY) === '1';
+  private _muteListeners: Array<(muted: boolean) => void> = [];
 
   // Music state
   private currentTrack: MusicTrack = 'none';
+  private pendingTrack: MusicTrack = 'none';
   private musicSource: AudioBufferSourceNode | null = null;
   private musicGain: GainNode | null = null;
   private stopTimer: ReturnType<typeof setTimeout> | null = null;
 
-  /** Load SFX and hurt clips. Call this before starting the game. */
-  async loadSFX(): Promise<void> {
-    this.ctx = new AudioContext();
+  get muted(): boolean { return this._muted; }
 
-    // iOS/mobile: AudioContext only unlocks when resume() is called directly inside
-    // a user gesture handler. GSAP timeline callbacks run in RAF — outside gesture scope.
-    // This listener fires resume() at the earliest possible gesture, before any RAF tick.
+  toggleMute(): void {
+    this._muted = !this._muted;
+    localStorage.setItem(MUTE_KEY, this._muted ? '1' : '0');
+    if (this.masterGain) {
+      this.masterGain.gain.value = this._muted ? 0 : 1;
+    }
+    for (const fn of this._muteListeners) fn(this._muted);
+  }
+
+  onMuteChange(fn: (muted: boolean) => void): () => void {
+    this._muteListeners.push(fn);
+    return () => { this._muteListeners = this._muteListeners.filter(f => f !== fn); };
+  }
+
+  /** Ensure AudioContext exists, creating it on demand. */
+  private ensureContext(): AudioContext {
+    if (!this.ctx) {
+      this.ctx = new AudioContext();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = this._muted ? 0 : 1;
+      this.masterGain.connect(this.ctx.destination);
+    }
+    return this.ctx;
+  }
+
+  /** Initialize audio system. Registers gesture-based unlock for AudioContext. */
+  init(): void {
     const unlockCtx = () => {
-      this.ctx?.resume();
+      if (!this.ctx) {
+        this.ensureContext();
+      }
+      this.ctx!.resume();
       document.removeEventListener('touchstart', unlockCtx, true);
       document.removeEventListener('pointerdown', unlockCtx, true);
       document.removeEventListener('keydown', unlockCtx, true);
@@ -65,6 +96,11 @@ export class SoundManager {
     document.addEventListener('touchstart', unlockCtx, true);
     document.addEventListener('pointerdown', unlockCtx, true);
     document.addEventListener('keydown', unlockCtx, true);
+  }
+
+  /** Load SFX and hurt clips. Call this before starting the game. */
+  async loadSFX(): Promise<void> {
+    this.ensureContext();
 
     const base = import.meta.env.BASE_URL;
     const load = (file: string) => this.loadBuffer(`${base}audio/${file}`);
@@ -81,7 +117,7 @@ export class SoundManager {
     ]);
   }
 
-  /** Load background music tracks. Safe to fire-and-forget — setMusic() no-ops if not ready. */
+  /** Load background music tracks. After loading, starts any pending track. */
   async loadMusic(): Promise<void> {
     const base = import.meta.env.BASE_URL;
     const load = (file: string) => this.loadBuffer(`${base}audio/${file}`);
@@ -92,6 +128,13 @@ export class SoundManager {
         if (buf) this.musicBuffers.set(key, buf);
       }),
     );
+
+    // If setMusic was called before buffers were ready, replay now
+    if (this.pendingTrack !== 'none') {
+      const track = this.pendingTrack;
+      this.currentTrack = 'none'; // Reset so setMusic doesn't early-return
+      this.setMusic(track);
+    }
   }
 
   /** Play a named SFX. pitchVariation applies random 0.75–1.25 playbackRate (for death). */
@@ -119,6 +162,7 @@ export class SoundManager {
    */
   setMusic(track: MusicTrack): void {
     if (track === this.currentTrack) return;
+    this.pendingTrack = track;
     const ctx = this.ctx;
     if (!ctx) return;
     ctx.resume();
@@ -145,7 +189,7 @@ export class SoundManager {
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 2);
-    gain.connect(ctx.destination);
+    gain.connect(this.masterGain!);
 
     const source = ctx.createBufferSource();
     source.buffer = buffer;
@@ -175,7 +219,7 @@ export class SoundManager {
     const ctx = this.ctx!;
     const gain = ctx.createGain();
     gain.gain.value = volume;
-    gain.connect(ctx.destination);
+    gain.connect(this.masterGain!);
 
     const source = ctx.createBufferSource();
     source.buffer = buffer;
@@ -186,3 +230,6 @@ export class SoundManager {
     source.start(0);
   }
 }
+
+/** Singleton instance — created once, shared across the app. */
+export const soundManager = new SoundManager();

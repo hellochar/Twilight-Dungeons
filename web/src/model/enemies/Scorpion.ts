@@ -25,7 +25,7 @@ export class Scorpion extends AIActor {
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this.hp = this._baseMaxHp = 4;
+    this.hp = this._baseMaxHp = 2;
   }
 
   baseAttackDamage(): [number, number] {

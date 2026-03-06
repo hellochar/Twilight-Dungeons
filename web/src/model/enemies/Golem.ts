@@ -16,16 +16,15 @@ import { BODY_MOVE_HANDLER, type IBodyMoveHandler } from '../Body';
 import { entityRegistry } from '../../generator/entityRegistry';
 
 /**
- * Slow, tanky. Blocks 1 attack damage. Leaves Rubble behind when moving.
+ * Slow, tanky. Leaves Rubble behind when moving.
  * Port of C# Golem.cs.
  */
-export class Golem extends AIActor implements IBodyMoveHandler, IAttackDamageTakenModifier {
+export class Golem extends AIActor implements IBodyMoveHandler {
   readonly [BODY_MOVE_HANDLER] = true as const;
-  readonly [ATTACK_DAMAGE_TAKEN_MOD] = true as const;
 
   constructor(pos: Vector2Int) {
     super(pos);
-    this._hp = this._baseMaxHp = 6;
+    this._hp = this._baseMaxHp = 5;
   }
 
   protected get actionCosts(): ActionCosts {
@@ -36,16 +35,11 @@ export class Golem extends AIActor implements IBodyMoveHandler, IAttackDamageTak
   }
 
   baseAttackDamage(): [number, number] {
-    return [3, 4];
+    return [2, 2];
   }
 
   handleMove(_newPos: Vector2Int, oldPos: Vector2Int): void {
     this.floor!.put(new Rubble(oldPos));
-  }
-
-  /** Blocks 1 attack damage. */
-  modify(input: number): number {
-    return input - 1;
   }
 
   protected getNextTask(): ActorTask {

@@ -2,6 +2,7 @@ import { Grass } from './Grass';
 import { Ground } from '../Tile';
 import { PoisonedStatus } from '../statuses/PoisonedStatus';
 import { entityRegistry } from '../../generator/entityRegistry';
+import { Actor } from '../Actor';
 import type { ISteppable } from '../Floor';
 import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
@@ -25,9 +26,10 @@ export class Poisonmoss extends Grass implements ISteppable {
     return tile instanceof Ground;
   }
 
-  /** Actor standing on this grass's tile. */
-  private get actor(): any {
-    return this.floor?.bodies.get(this.pos) ?? null;
+  /** Actor standing on this grass's tile (null if body is not an Actor). */
+  private get actor(): Actor | null {
+    const body = this.floor?.bodies.get(this.pos);
+    return body instanceof Actor ? body : null;
   }
 
   step(): number {

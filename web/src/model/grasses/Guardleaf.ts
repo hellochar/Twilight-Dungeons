@@ -4,6 +4,7 @@ import { ACTOR_ENTER_HANDLER, type IActorEnterHandler } from '../../core/types';
 import { Ground } from '../Tile';
 import { GameModelRef } from '../GameModelRef';
 import { entityRegistry } from '../../generator/entityRegistry';
+import { Actor } from '../Actor';
 import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
 
@@ -25,9 +26,10 @@ export class Guardleaf extends Grass implements IActorEnterHandler {
     return tile instanceof Ground;
   }
 
-  /** Actor standing on this grass's tile. */
-  private get actor(): any {
-    return this.floor?.bodies.get(this.pos) ?? null;
+  /** Actor standing on this grass's tile (null if body is not an Actor). */
+  private get actor(): Actor | null {
+    const body = this.floor?.bodies.get(this.pos);
+    return body instanceof Actor ? body : null;
   }
 
   protected handleEnterFloor(): void {

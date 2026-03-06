@@ -5,7 +5,7 @@ import { Ground } from '../Tile';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { Vector2Int } from '../../core/Vector2Int';
 import type { Tile } from '../Tile';
-import type { Actor } from '../Actor';
+import { Actor } from '../Actor';
 
 /**
  * Web grass placed by Spiders. Applies WebbedStatus on enter.
@@ -28,9 +28,10 @@ export class Web extends Grass implements IActorEnterHandler {
     return isActorWebNice(actor);
   }
 
-  /** Actor property: whoever is standing on this grass's tile. */
+  /** Actor standing on this grass's tile (null if body is not an Actor). */
   private get actor(): Actor | null {
-    return this.floor?.bodies.get(this.pos) as Actor | null;
+    const body = this.floor?.bodies.get(this.pos);
+    return body instanceof Actor ? body : null;
   }
 
   protected handleEnterFloor(): void {

@@ -284,7 +284,7 @@ export class FloorGenerator {
       E.addWater(floor, room0);
     }
 
-    // FloorUtils.tidyUpAroundStairs(floor);
+    FloorUtils.tidyUpAroundStairs(floor);
 
     console.log(`[FloorGen] depth ${depth} encounters\n${encounterLog.join('\n')}`);
 

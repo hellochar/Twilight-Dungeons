@@ -505,7 +505,7 @@ export class Floor {
     this.isCleared = true;
     const model = GameModelRef.mainOrNull;
     if (model) {
-      this.clearedOnTurn = Math.floor(model.time);
+      this.clearedOnTurn = Math.floor(model.time) + 1;
       model.gameOver(true);
       model.floorCleared(this);
     }

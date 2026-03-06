@@ -297,7 +297,7 @@ export class GameModel implements IGameModelRef {
   gameOver(won: boolean, deathSource?: { displayName: string }): void {
     if (this.gameOverInfo) return; // already ended
     this.stats.won = won;
-    this.stats.turnsTaken = Math.floor(this.time);
+    this.stats.turnsTaken = Math.floor(this.time) + 1;
     this.stats.killedBy = deathSource?.displayName ?? null;
     this.gameOverInfo = { ...this.stats };
     this.onGameOver.emit(this.gameOverInfo);

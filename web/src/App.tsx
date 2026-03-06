@@ -16,7 +16,7 @@ const GAME_MAX_W = 1200;
 const INFO_PANEL_W = 330;
 
 function App() {
-  const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile } = useGameLoop();
+  const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, navigateToGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
   const [viewW, setViewW] = useState(() => window.innerWidth);
 
@@ -87,9 +87,9 @@ function App() {
                 </button>
               </div>
             )}
-            <DateSelectorPanel currentDateSeed={gameState.dateSeed} currentDifficulty={gameState.difficulty} currentTurn={gameState.turn} gameOver={!!gameState.gameOver} />
+            <DateSelectorPanel currentDateSeed={gameState.dateSeed} currentDifficulty={gameState.difficulty} currentTurn={gameState.turn} gameOver={!!gameState.gameOver} onNavigate={navigateToGame} />
             {gameState.gameOver && (
-              <GameOverOverlay info={gameState.gameOver} dateSeed={gameState.dateSeed} difficulty={gameState.difficulty} onPlayAgain={resetGame} />
+              <GameOverOverlay info={gameState.gameOver} dateSeed={gameState.dateSeed} difficulty={gameState.difficulty} onPlayAgain={resetGame} onNavigate={navigateToGame} />
             )}
             {debugNotice && (
               <div style={{

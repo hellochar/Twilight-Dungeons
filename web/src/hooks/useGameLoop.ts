@@ -8,6 +8,7 @@ import { Faction } from '../core/types';
 import { Camera, SpriteManager, GameRenderer, AnimationPlayer, isMobile } from '../renderer';
 import { InputHandler, type PlayerIntent/*, type TileContextEvent*/ } from '../input/InputHandler';
 import { soundManager } from '../audio/SoundManager';
+import { WATER_SFX_VOLUME, MOVE_LERP_MS, TIME_GAP_DELAY } from '../constants';
 // FUTURE: hover entity → draw line to card. Re-enable these + restore EntityInfoPanel in App.tsx
 // import type { EntityInfoData } from '../ui/EntityInfoPanel';
 // import { Body } from '../model/Body';
@@ -181,7 +182,7 @@ function snapshotItem(item: Item | null, index: number): ItemSnapshot | null {
  */
 export function useGameLoop() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const difficulty = useRef<Difficulty>(getUrlDifficulty()).current;
+  const difficultyRef = useRef<Difficulty>(getUrlDifficulty());
   const [gameState, setGameState] = useState<GameState>(EMPTY_STATE);
   const [ready, setReady] = useState(false);
 
@@ -276,9 +277,9 @@ export function useGameLoop() {
       playerPos: { x: player.pos.x, y: player.pos.y },
       floorBodies,
       floorGrasses,
-      difficulty,
+      difficulty: difficultyRef.current,
     };
-  }, [difficulty]);
+  }, []);
 
   // /** Build EntityInfoData from entity/tile at a given tile position (hover/click inspect). */
   // const handleTileInspect = useCallback((event: TileContextEvent) => {
@@ -402,7 +403,7 @@ export function useGameLoop() {
       // Ensure move lerps complete before the next entity steps. The delay must happen
       // BEFORE stepOneEntity() because the step may kill a moving entity, and lerpPositions
       // skips dead entities (freezing the sprite mid-walk).
-      const MOVE_LERP_MS = 65; // 16 tiles/s → ~63ms per tile, +2ms variance buffer
+      // MOVE_LERP_MS imported from constants.ts (derived from MOVE_SPEED)
       let prevBatchHadMoves = false;
       let prevStaggerMs = 0;
 
@@ -426,7 +427,7 @@ export function useGameLoop() {
         }
 
         // Time-gap delay (matches Unity GAME_TIME_TO_SECONDS_WAIT_SCALE = 0.2)
-        const timeGapDelayMs = result.timeGap * 200;
+        const timeGapDelayMs = result.timeGap * TIME_GAP_DELAY;
         if (!result.isFirstStep && result.timeGap > 0 && !result.shouldSpeedThrough && !skipAllRef.current) {
           await delay(timeGapDelayMs);
         }
@@ -723,7 +724,7 @@ export function useGameLoop() {
         const d = new Date(currentSeed + 'T00:00:00');
         d.setDate(d.getDate() + (e.key === '>' ? 1 : -1));
         const newDateSeed = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        const newModel = createGameForDifficulty(difficulty, newDateSeed);
+        const newModel = createGameForDifficulty(difficultyRef.current, newDateSeed);
         newModel.consumeAnimationEvents();
         modelRef.current = newModel;
         renderer.setFloor(newModel.currentFloor);
@@ -813,7 +814,42 @@ export function useGameLoop() {
 
     const newModel = depthArg != null
       ? GameModel.createDailyGame(customSeed, depthArg)
-      : createGameForDifficulty(difficulty, customSeed);
+      : createGameForDifficulty(difficultyRef.current, customSeed);
+    newModel.consumeAnimationEvents();
+    modelRef.current = newModel;
+
+    renderer.setFloor(newModel.currentFloor);
+    renderer.syncToModel();
+    renderer.camera.resize(
+      renderer.app.screen.width,
+      renderer.app.screen.height,
+      newModel.currentFloor.width,
+      newModel.currentFloor.height,
+    );
+    setGameState(readState());
+  }, [readState, clearProposed]);
+
+  /** SPA navigation: switch date/difficulty without full page reload. */
+  const navigateToGame = useCallback((dateSeed: string, diff: Difficulty) => {
+    const renderer = rendererRef.current;
+    if (!renderer) return;
+    clearProposed();
+
+    // Update URL
+    const p = new URLSearchParams(window.location.search);
+    p.set('date', dateSeed);
+    p.set('difficulty', diff);
+    window.history.pushState(null, '', `${window.location.pathname}?${p.toString()}`);
+
+    // Update difficulty ref
+    difficultyRef.current = diff;
+
+    // Reset tracking state
+    gameStartTimeRef.current = Date.now();
+    retryCountRef.current = 0;
+    lastGameOverRef.current = null;
+
+    const newModel = createGameForDifficulty(diff, dateSeed);
     newModel.consumeAnimationEvents();
     modelRef.current = newModel;
 
@@ -868,7 +904,7 @@ export function useGameLoop() {
 
       const model = depthArg != null
         ? GameModel.createDailyGame(customSeed, depthArg)
-        : createGameForDifficulty(difficulty, customSeed);
+        : createGameForDifficulty(difficultyRef.current, customSeed);
       model.consumeAnimationEvents();
       modelRef.current = model;
 
@@ -908,7 +944,7 @@ export function useGameLoop() {
         p.equipment.onItemAdded.on(() => sound.play('playerEquip')),
         p.equipment.onItemRemoved.on(() => sound.play('playerEquip')),
         p.equipment.onItemDestroyed.on(() => setTimeout(() => sound.play('playerEquipmentBreak'), 250)),
-        p.onChangeWater.on(delta => { if (Math.abs(delta) > 1) sound.play('playerChangeWater', 0.2); }),
+        p.onChangeWater.on(delta => { if (Math.abs(delta) > 1) sound.play('playerChangeWater', WATER_SFX_VOLUME); }),
         p.statuses.onAdded.on(s => { if (s.isDebuff) sound.play('playerGetDebuff'); }),
         p.afterActionPerformed.on(a => {
           if (a instanceof WaitBaseAction) sound.play('playerWait');
@@ -922,7 +958,7 @@ export function useGameLoop() {
       // Analytics: track game over
       model.onGameOver.on((stats) => {
         lastGameOverRef.current = stats;
-        trackGameOver(stats, difficulty, model.dateSeed, Date.now() - gameStartTimeRef.current, retryCountRef.current);
+        trackGameOver(stats, difficultyRef.current, model.dateSeed, Date.now() - gameStartTimeRef.current, retryCountRef.current);
       });
 
       renderer.setFloor(model.currentFloor);
@@ -964,7 +1000,7 @@ export function useGameLoop() {
 
       setGameState(readState());
       setReady(true);
-      trackSessionStart(!!getLocalScore(`${localTodayStr()}-${difficulty}`), difficulty);
+      trackSessionStart(!!getLocalScore(`${localTodayStr()}-${difficultyRef.current}`), difficultyRef.current);
     }
 
     init();
@@ -992,7 +1028,7 @@ export function useGameLoop() {
     clearProposed();
   }, [clearProposed]);
 
-  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile/*, entityInfo, setEntityInfo*/ };
+  return { containerRef, gameState, ready, executeItemAction, executeOnTopAction, executeWait, resetGame, playDate, navigateToGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile/*, entityInfo, setEntityInfo*/ };
 }
 
 /** Translate a PlayerIntent into an ActorTask for the player. */

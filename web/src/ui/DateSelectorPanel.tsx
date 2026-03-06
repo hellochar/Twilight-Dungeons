@@ -34,33 +34,29 @@ function getAllDays(): DayEntry[] {
   return days.reverse(); // newest first
 }
 
-function diffUrl(dateStr: string, diff: Difficulty): string {
-  return `?date=${dateStr}&difficulty=${diff}`;
-}
-
 interface Props {
   currentDateSeed: string;
   currentDifficulty: Difficulty;
   currentTurn: number;
   gameOver: boolean;
+  onNavigate: (dateSeed: string, difficulty: Difficulty) => void;
 }
 
-export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentTurn, gameOver }: Props) {
+export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentTurn, gameOver, onNavigate }: Props) {
   const [open, setOpen] = useState(false);
 
   const days = getAllDays();
 
-  function handleChipClick(e: React.MouseEvent<HTMLAnchorElement>, dateStr: string, diff: Difficulty) {
+  function handleChipClick(dateStr: string, diff: Difficulty) {
     if (dateStr === currentDateSeed && diff === currentDifficulty) {
-      e.preventDefault();
       setOpen(false);
       return;
     }
     if (currentTurn > 0 && !gameOver && !confirm("You'll lose your current progress. Continue?")) {
-      e.preventDefault();
-    } else {
-      setOpen(false);
+      return;
     }
+    setOpen(false);
+    onNavigate(dateStr, diff);
   }
 
   return (
@@ -117,26 +113,26 @@ export function DateSelectorPanel({ currentDateSeed, currentDifficulty, currentT
                     const score = getLocalScore(`${dateStr}-${diff}`);
                     const isActiveChip = isActiveDate && diff === currentDifficulty;
                     return (
-                      <a
+                      <button
                         key={diff}
-                        href={diffUrl(dateStr, diff)}
-                        onClick={e => handleChipClick(e, dateStr, diff)}
+                        onClick={() => handleChipClick(dateStr, diff)}
                         style={{
                           display: 'inline-block',
                           width: 72,
                           padding: '2px 0',
                           textAlign: 'center',
-                          textDecoration: 'none',
                           borderRadius: 3,
                           border: isActiveChip ? '1px solid #88f' : '1px solid #334',
                           background: isActiveChip ? '#252540' : 'transparent',
                           fontSize: FontSize.lg,
+                          fontFamily: FONT_FAMILY,
                           color: score ? '#4a8' : '#444',
                           whiteSpace: 'nowrap',
+                          cursor: 'pointer',
                         }}
                       >
                         {score ? `turn ${score.turnsTaken}` : DIFFICULTY_LABEL[diff]}
-                      </a>
+                      </button>
                     );
                   })}
                 </div>

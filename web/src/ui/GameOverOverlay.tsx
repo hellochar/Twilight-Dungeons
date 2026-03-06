@@ -15,9 +15,10 @@ interface GameOverOverlayProps {
   dateSeed: string;
   difficulty: Difficulty;
   onPlayAgain: () => void;
+  onNavigate?: (dateSeed: string, difficulty: Difficulty) => void;
 }
 
-export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: GameOverOverlayProps) {
+export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain, onNavigate }: GameOverOverlayProps) {
   if (!info.won) {
     return (
       <div style={{
@@ -62,7 +63,6 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
 
   const title = `Cleared ${dateSeed} ${DIFFICULTY_LABEL[difficulty]} on turn ${info.turnsTaken}!`;
   const next = NEXT_DIFFICULTY[difficulty];
-  const nextUrl = next ? (() => { const p = new URLSearchParams(window.location.search); p.set('difficulty', next); return `?${p.toString()}`; })() : null;
   const scoreKey = dateSeed ? `${dateSeed}-${difficulty}` : '';
   const borderColor = '#4f4';
 
@@ -143,10 +143,10 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain }: Gam
                 <Histogram buckets={histogram} playerTurns={info.turnsTaken} />
                 <div style={{ marginTop: 8, display: 'flex', justifyContent: 'center', gap: 10 }}>
                   <button onClick={onPlayAgain} style={secondaryButtonStyle}>Retry</button>
-                  {showNextDifficulty && (
-                    <a href={nextUrl!} style={{ ...secondaryButtonStyle, textDecoration: 'none', display: 'inline-block' }}>
+                  {showNextDifficulty && onNavigate && (
+                    <button onClick={() => onNavigate(dateSeed, next!)} style={secondaryButtonStyle}>
                       Play {DIFFICULTY_LABEL[next!]}
-                    </a>
+                    </button>
                   )}
                 </div>
               </>

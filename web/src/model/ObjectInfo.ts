@@ -44,7 +44,7 @@ registerObjectInfo('Bat', { description: 'Heals itself from attacks. Goes into D
 
 registerObjectInfo('Scorpion', { description: 'Attacks and moves twice.' });
 registerObjectInfo('Golem', { description: 'Attacks and moves slowly. Leaves a trail of Rubble.', flavorText: 'Eager to prove himself, Aurogan managed to Will Life into the boulder on Boulder Hill. The Council was impressed, then horrified, then flattened.' });
-registerObjectInfo('Crab', { description: 'Neutral. Only moves horizontally. Attacks anything in its path.' });
+registerObjectInfo('Crab', { description: 'Neutral. Only moves horizontally. Attacks any non-Crab creature in its path.' });
 registerObjectInfo('HydraHeart', { description: 'Spawns Hydra Heads. Does not move or attack on its own.', flavorText: 'Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.' });
 registerObjectInfo('HydraHead', { description: 'Telegraph attacks anything adjacent to it. Stationary.', flavorText: 'A fleshy tube with a gaping jaw at the end, grasping at any food nearby.' });
 registerObjectInfo('Clumpshroom', { description: 'Duplicates in 5-7 turns. You get Clumped Lung when killing it. If you have 10 Clumped Lung, you die.' });

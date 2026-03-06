@@ -16,6 +16,7 @@ import * as FloorUtils from './FloorUtils';
 import { concavitySections } from './TileSectionConcavity';
 import type { Encounter } from './EncounterGroup';
 import { Tunnelroot } from '../model/grasses/Tunnelroot';
+import { Destructible } from '../model/enemies/Destructible';
 
 // ---- Helpers ----
 
@@ -181,6 +182,13 @@ export function chasmsAwayFromWalls1(floor: Floor, room: Room | null): void {
   chasmsAwayFromWallsImpl(floor, room, 1, 2);
 }
 
+/** Place a chasm, removing any Destructible body at the position first. */
+function placeChasm(floor: Floor, pos: Vector2Int): void {
+  const body = floor.bodies.get(pos);
+  if (body instanceof Destructible) floor.remove(body);
+  floor.put(new Chasm(pos));
+}
+
 function chasmsAwayFromWallsImpl(floor: Floor, room: Room | null, cliffEdgeSize: number, extrude = 1): void {
   if (!room) return;
   const roomTiles = new Set(floor.enumerateRoomTiles(room, extrude));
@@ -216,7 +224,7 @@ function chasmsAwayFromWallsImpl(floor: Floor, room: Room | null, cliffEdgeSize:
   const grounds = [...roomTiles].filter(t => t instanceof Ground);
   for (const t of grounds) {
     if (!cliffEdgeSet.has(t)) {
-      floor.put(new Chasm(t.pos));
+      placeChasm(floor, t.pos);
     }
   }
 }
@@ -248,7 +256,7 @@ function chasmBridgeImpl(floor: Floor, thickness: number, crossScalar: number): 
     const projY = origin.y + dirY * dot;
     const dist = Math.sqrt((projX - pos.x) ** 2 + (projY - pos.y) ** 2);
     if (dist > thickness && cross <= 0) {
-      floor.put(new Chasm(pos));
+      placeChasm(floor, pos);
     }
   }
   floor.startPos = origin;
@@ -258,7 +266,7 @@ function chasmBridgeImpl(floor: Floor, thickness: number, crossScalar: number): 
 export function chasmGrowths(floor: Floor, _room: Room | null): void {
   const tiles = FloorUtils.clusters(floor, Vector2Int.zero, 7);
   for (const t of tiles) {
-    floor.put(new Chasm(t.pos));
+    placeChasm(floor, t.pos);
   }
 }
 

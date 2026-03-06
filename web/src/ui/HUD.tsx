@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { GameState, OnTopActionSnapshot } from '../hooks/useGameLoop';
 import { DIFFICULTY_LABEL } from '../model/GameModel';
+import { soundManager } from '../audio/SoundManager';
 import { StatusBar } from './StatusBar';
 import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
 import { buttonBase, buttonPadding } from './theme';
@@ -26,6 +28,11 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
       {/* Top-center: date · difficulty · turn */}
       <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 10px' }}>
         <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
+      </div>
+
+      {/* Top-right: mute button */}
+      <div style={{ position: 'absolute', top: 6, right: 10, pointerEvents: 'auto' }}>
+        <MuteButton />
       </div>
 
       {/* Bottom-center: status icons above hearts, with action buttons inline */}
@@ -163,5 +170,58 @@ function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; o
         {action.name}
       </button>
     </div>
+  );
+}
+
+// ─── Mute Button ───
+
+const MUTE_BUTTON_STYLE: React.CSSProperties = {
+  ...buttonBase,
+  padding: '6px 6px 0 6px',
+  background: 'rgba(20, 20, 30, 0.85)',
+  border: 'none',
+  borderRadius: 0,
+  // border: '1px solid rgba(255, 255, 255, 0.25)',
+  color: '#ccc',
+  fontSize: FontSize.xl,
+  lineHeight: 1,
+};
+
+const ICON_STYLE: React.CSSProperties = { width: 40, height: 40, fill: 'currentColor' };
+
+function MuteButton() {
+  const [muted, setMuted] = useState(() => soundManager.muted);
+
+  const handleClick = () => {
+    soundManager.toggleMute();
+    setMuted(soundManager.muted);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      style={MUTE_BUTTON_STYLE}
+      title={muted ? 'Unmute' : 'Mute'}
+    >
+      {muted ? <VolumeXMarkIcon /> : <VolumeHighIcon />}
+    </button>
+  );
+}
+
+/** FA solid volume-high (Font Awesome Free 6.x, CC BY 4.0) */
+function VolumeHighIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style={ICON_STYLE}>
+      <path d="M412.6 182c-10.28-8.334-25.41-6.867-33.75 3.402c-8.406 10.24-6.906 25.35 3.375 33.74C393.5 228.4 400 241.8 400 255.1c0 14.17-6.5 27.59-17.81 36.83c-10.28 8.396-11.78 23.5-3.375 33.74c4.719 5.806 11.62 8.802 18.56 8.802c5.344 0 10.75-1.779 15.19-5.399C435.1 311.5 448 284.6 448 255.1S435.1 200.4 412.6 182zM473.1 108.2c-10.22-8.334-25.34-6.898-33.78 3.34c-8.406 10.24-6.906 25.35 3.344 33.74C476.6 172.1 496 213.3 496 255.1s-19.44 82.1-53.31 110.7c-10.25 8.396-11.75 23.5-3.344 33.74c4.75 5.775 11.62 8.771 18.56 8.771c5.375 0 10.75-1.779 15.22-5.431C518.2 366.9 544 313 544 255.1S518.2 145 473.1 108.2zM534.4 33.4c-10.22-8.334-25.34-6.867-33.78 3.34c-8.406 10.24-6.906 25.35 3.344 33.74C559.9 116.3 592 183.9 592 255.1s-32.09 139.7-88.06 185.5c-10.25 8.396-11.75 23.5-3.344 33.74C505.3 481 512.2 484 519.2 484c5.375 0 10.75-1.779 15.22-5.431C601.5 423.6 640 342.5 640 255.1S601.5 88.34 534.4 33.4zM301.2 34.98c-11.5-5.181-25.01-3.076-34.43 5.29L131.8 160.1H48c-26.51 0-48 21.48-48 47.96v95.92c0 26.48 21.49 47.96 48 47.96h83.84l134.9 119.8C272.7 477 280.3 479.8 288 479.8c4.438 0 8.959-.9314 13.16-2.835C312.7 471.8 320 460.4 320 447.9V64.12C320 51.55 312.7 40.13 301.2 34.98z"/>
+    </svg>
+  );
+}
+
+/** FA solid volume-xmark (Font Awesome Free 6.x, CC BY 4.0) */
+function VolumeXMarkIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style={ICON_STYLE}>
+      <path d="M301.2 34.85c-11.5-5.188-25.02-3.122-34.44 5.253L131.8 160H48c-26.51 0-48 21.49-48 47.1v95.1c0 26.51 21.49 47.1 48 47.1h83.84l134.9 119.9c5.984 5.312 13.58 8.094 21.26 8.094c4.438 0 8.972-.9375 13.17-2.844c11.5-5.156 18.82-16.56 18.82-29.16V64C319.1 51.41 312.7 40 301.2 34.85zM513.9 255.1l47.03-47.03c9.375-9.375 9.375-24.56 0-33.94s-24.56-9.375-33.94 0L480 222.1L432.1 175c-9.375-9.375-24.56-9.375-33.94 0s-9.375 24.56 0 33.94l47.03 47.03l-47.03 47.03c-9.375 9.375-9.375 24.56 0 33.94c9.373 9.373 24.56 9.381 33.94 0L480 289.9l47.03 47.03c9.373 9.373 24.56 9.381 33.94 0c9.375-9.375 9.375-24.56 0-33.94L513.9 255.1z"/>
+    </svg>
   );
 }

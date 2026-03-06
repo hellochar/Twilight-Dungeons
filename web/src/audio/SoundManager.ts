@@ -3,6 +3,8 @@
  * Mirrors Unity's AudioClipStore + PlayerController audio logic.
  */
 
+import { MASTER_VOLUME, SFX_VOLUME, HURT_VOLUME, MUSIC_VOLUME, MUSIC_FADE_IN_S, MUSIC_FADE_OUT_S } from '../constants';
+
 export type SoundKey =
   | 'move' | 'attack' | 'attackNoDamage' | 'bossDeath' | 'death'
   | 'plantHarvest' | 'playerChangeWater' | 'playerEquip' | 'playerEquipmentBreak'
@@ -61,7 +63,7 @@ export class SoundManager {
     this._muted = !this._muted;
     localStorage.setItem(MUTE_KEY, this._muted ? '1' : '0');
     if (this.masterGain) {
-      this.masterGain.gain.value = this._muted ? 0 : 1;
+      this.masterGain.gain.value = this._muted ? 0 : MASTER_VOLUME;
     }
     for (const fn of this._muteListeners) fn(this._muted);
   }
@@ -76,7 +78,7 @@ export class SoundManager {
     if (!this.ctx) {
       this.ctx = new AudioContext();
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.value = this._muted ? 0 : 1;
+      this.masterGain.gain.value = this._muted ? 0 : MASTER_VOLUME;
       this.masterGain.connect(this.ctx.destination);
     }
     return this.ctx;
@@ -144,7 +146,7 @@ export class SoundManager {
     ctx.resume();
     const buffer = this.sfxBuffers.get(key);
     if (!buffer) return;
-    this.playBuffer(buffer, volume, pitchVariation);
+    this.playBuffer(buffer, volume * SFX_VOLUME, pitchVariation);
   }
 
   /** Play a random hurt clip at volume 3.0 (matches Unity vol 3f). */
@@ -153,7 +155,7 @@ export class SoundManager {
     if (!ctx || this.hurtBuffers.length === 0) return;
     ctx.resume();
     const buf = this.hurtBuffers[Math.floor(Math.random() * this.hurtBuffers.length)];
-    this.playBuffer(buf, 3.0, false);
+    this.playBuffer(buf, HURT_VOLUME * SFX_VOLUME, false);
   }
 
   /**
@@ -175,8 +177,8 @@ export class SoundManager {
       this.musicGain = null;
       if (this.stopTimer !== null) clearTimeout(this.stopTimer);
       gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-      this.stopTimer = setTimeout(() => { try { src.stop(); } catch { /* ignore */ } }, 1100);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + MUSIC_FADE_OUT_S);
+      this.stopTimer = setTimeout(() => { try { src.stop(); } catch { /* ignore */ } }, (MUSIC_FADE_OUT_S + 0.1) * 1000);
     }
 
     this.currentTrack = track;
@@ -188,7 +190,7 @@ export class SoundManager {
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 2);
+    gain.gain.linearRampToValueAtTime(MUSIC_VOLUME, ctx.currentTime + MUSIC_FADE_IN_S);
     gain.connect(this.masterGain!);
 
     const source = ctx.createBufferSource();

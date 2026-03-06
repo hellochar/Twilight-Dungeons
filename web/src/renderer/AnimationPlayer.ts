@@ -5,6 +5,7 @@ import { Camera } from './Camera';
 import { GameRenderer } from './GameRenderer';
 import type { SoundManager } from '../audio/SoundManager';
 import { FONT_FAMILY } from '../ui/fonts';
+import { BUMP_DURATION, BUMP_INTENSITY, BUMP_IMPACT_TIME, MOVE_LERP_S, DEATH_FADE_S, DAMAGE_FLASH_S, DAMAGE_TEXT_FADE_S, MOVE_SFX_VOLUME } from '../constants';
 
 // CodersCrux cap height ≈ 65% of point size; scale up so glyphs appear ~1 tile tall
 const HP_TEXT_FONT_SCALE = 1.00;
@@ -39,16 +40,7 @@ function makeNeutralStyle(tileSize: number): TextStyle {
   });
 }
 
-// ─── Unity BumpAndReturn constants (BumpAndReturn.cs) ───
-const BUMP_DURATION = 0.25;
-const BUMP_INTENSITY = 0.75;
-// Time when bump reaches peak displacement: t_peak=0.25, so 0.25*BUMP_DURATION
-const BUMP_IMPACT_TIME = BUMP_DURATION * 0.25;
-
-// Time for a 1-tile move lerp at 16 tiles/s (matches lerpPositions speed).
-// Used to delay animations on entities that moved and died in the same step,
-// since lerpPositions skips dead entities and the sprite never reaches the new tile.
-const MOVE_LERP_S = 0.15;
+// BumpAndReturn constants and MOVE_LERP_S imported from constants.ts
 
 /** Unity's exact parabolic bump-and-return easing: pow(cos(PI/2 + PI*sqrt(t)), 4) * 0.75 */
 function bumpAndReturnEasing(t: number): number {
@@ -172,7 +164,7 @@ export class AnimationPlayer {
         }
         if (event.entityGuid === this.playerGuid && this.sound) {
           const s = this.sound;
-          tl.call(() => s.play('move', 0.25), [], '<');
+          tl.call(() => s.play('move', MOVE_SFX_VOLUME), [], '<');
         }
         break;
       }
@@ -340,7 +332,7 @@ export class AnimationPlayer {
         const origTint = visual.tint;
         tl.to(visual, {
           tint: 0xff3333,
-          duration: 0.25,
+          duration: DAMAGE_FLASH_S,
           onComplete: () => { visual.tint = origTint; },
         }, pos);
       }
@@ -402,8 +394,8 @@ export class AnimationPlayer {
     const scaleRoot = this.renderer.getEntityScaleRoot(event.entityGuid);
     if (!scaleRoot) return;
     const pos = startTime;
-    tl.to(scaleRoot, { alpha: 0, duration: 0.5, ease: 'power3.out' }, pos);
-    tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: 0.5, ease: 'power3.out' }, pos);
+    tl.to(scaleRoot, { alpha: 0, duration: DEATH_FADE_S, ease: 'power3.out' }, pos);
+    tl.to(scaleRoot.scale, { x: 0.5, y: 0.5, duration: DEATH_FADE_S, ease: 'power3.out' }, pos);
 
     if (event.entityGuid !== this.playerGuid && this.sound) {
       const s = this.sound;
@@ -544,7 +536,7 @@ export class AnimationPlayer {
       sprite.destroy();
     };
 
-    gsap.to(sprite, { y: sprite.y - 0.1 * ts, alpha: 0, duration: 0.5, ease: 'linear', onComplete: cleanup });
+    gsap.to(sprite, { y: sprite.y - 0.1 * ts, alpha: 0, duration: DAMAGE_TEXT_FADE_S, ease: 'linear', onComplete: cleanup });
   }
 
   /**

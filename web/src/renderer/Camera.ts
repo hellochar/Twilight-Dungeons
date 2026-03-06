@@ -1,4 +1,5 @@
 import { Vector2Int } from '../core/Vector2Int';
+import { DEFAULT_TILE_SIZE, MIN_TILE_SIZE, TILE_PADDING } from '../constants';
 
 /** Returns true on touch/mobile devices. */
 export function isMobile(): boolean {
@@ -22,7 +23,7 @@ export class Camera {
   floorHeight: number;
 
   constructor() {
-    this.tileSize = 32;
+    this.tileSize = DEFAULT_TILE_SIZE;
     this.offsetX = 0;
     this.offsetY = 0;
     this.floorWidth = 0;
@@ -39,7 +40,7 @@ export class Camera {
     viewportHeight: number,
     floorWidth: number,
     floorHeight: number,
-    tilePadding: number = 0.5,
+    tilePadding: number = TILE_PADDING,
   ): void {
     this.floorWidth = floorWidth;
     this.floorHeight = floorHeight;
@@ -48,7 +49,7 @@ export class Camera {
       viewportWidth / (floorWidth + 2 * tilePadding),
       viewportHeight / (floorHeight + 2 * tilePadding),
     ));
-    this.tileSize = Math.max(this.tileSize, 8); // minimum 8px tiles
+    this.tileSize = Math.max(this.tileSize, MIN_TILE_SIZE);
 
     const gridW = floorWidth * this.tileSize;
     const gridH = floorHeight * this.tileSize;

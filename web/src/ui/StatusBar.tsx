@@ -4,6 +4,7 @@ import { statusSpriteUrl } from './spriteUrl';
 import { getObjectInfo } from '../model/ObjectInfo';
 import { EntityInfoPopup, type EntityInfoData } from './EntityInfoPopup';
 import { FONT_FAMILY, FontSize } from './fonts';
+import { STATUS_ICON_SIZE } from '../constants';
 
 /**
  * Status effect icons matching Unity StatusIconController:
@@ -12,8 +13,6 @@ import { FONT_FAMILY, FontSize } from './fonts';
  * - Stack count overlay for StackingStatus
  * - Click/tap opens ObjectInfo popup
  */
-
-const ICON_SIZE = 48;
 
 interface StatusBarProps {
   statuses: StatusSnapshot[];
@@ -85,8 +84,8 @@ function StatusIcon({
       onClick={handleClick}
       onTouchEnd={handleTouch}
       style={{
-        width: ICON_SIZE,
-        height: ICON_SIZE,
+        width: STATUS_ICON_SIZE,
+        height: STATUS_ICON_SIZE,
         position: 'relative',
         border: status.isDebuff ? '1.5px solid #c44' : '1.5px solid rgba(255,255,255,0.15)',
         borderRadius: 3,

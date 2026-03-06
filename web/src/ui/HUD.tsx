@@ -5,6 +5,7 @@ import { soundManager } from '../audio/SoundManager';
 import { StatusBar } from './StatusBar';
 import { FONT_FAMILY, FONT_FAMILY_SERIF, FontSize } from './fonts';
 import { buttonBase, buttonPadding } from './theme';
+import { HEART_SIZE, MUTE_ICON_SIZE } from '../constants';
 
 interface HUDProps {
   state: GameState;
@@ -69,7 +70,6 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
 // Unity scene reverses: sprites[0]=full, sprites[4]=empty → index as (4 - hpForThis)
 
 const HP_PER_HEART = 1;
-const HEART_SIZE = 48;
 
 function Hearts({ hp, maxHp }: { hp: number; maxHp: number }) {
   const numHearts = Math.ceil(maxHp / HP_PER_HEART);
@@ -187,7 +187,7 @@ const MUTE_BUTTON_STYLE: React.CSSProperties = {
   lineHeight: 1,
 };
 
-const ICON_STYLE: React.CSSProperties = { width: 40, height: 40, fill: 'currentColor' };
+const ICON_STYLE: React.CSSProperties = { width: MUTE_ICON_SIZE, height: MUTE_ICON_SIZE, fill: 'currentColor' };
 
 function MuteButton() {
   const [muted, setMuted] = useState(() => soundManager.muted);

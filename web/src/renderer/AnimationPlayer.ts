@@ -601,6 +601,8 @@ export class AnimationPlayer {
    */
   private animateExplosion(event: GameEvent, tl: gsap.core.Timeline): void {
     if (!event.from) return;
+    // Unity Boombug Explosion.prefab: AudioSource volume 0.5, pitch randomized 0.9–1.111
+    this.sound?.play('explosion', 0.5);
     const ts = this.camera.tileSize;
     const px = this.camera.tileToPixel(event.from);
     const frames = this.renderer.sprites.getFrames('explosion');

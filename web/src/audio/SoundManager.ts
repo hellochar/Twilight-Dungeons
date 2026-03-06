@@ -6,7 +6,7 @@
 import { MASTER_VOLUME, SFX_VOLUME, HURT_VOLUME, MUSIC_VOLUME, MUSIC_FADE_IN_S, MUSIC_FADE_OUT_S } from '../constants';
 
 export type SoundKey =
-  | 'move' | 'attack' | 'attackNoDamage' | 'bossDeath' | 'death'
+  | 'move' | 'attack' | 'attackNoDamage' | 'bossDeath' | 'death' | 'explosion'
   | 'plantHarvest' | 'playerChangeWater' | 'playerEquip' | 'playerEquipmentBreak'
   | 'playerHeal' | 'playerGeneric' | 'playerGetDebuff' | 'playerPickupItem'
   | 'playerTakeStairs' | 'playerWait' | 'summon' | 'uiError';
@@ -20,6 +20,7 @@ const SFX_FILES: Record<SoundKey, string> = {
   attackNoDamage:       'muted-impact.ogg',
   bossDeath:            'boss-defeated.ogg',
   death:                'death.ogg',
+  explosion:            'boombug-explode.ogg',
   plantHarvest:         'plant-harvest.ogg',
   playerChangeWater:    'water.mp3',
   playerEquip:          'cloth3.ogg',

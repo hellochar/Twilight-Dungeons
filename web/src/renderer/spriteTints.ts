@@ -13,13 +13,13 @@ export const SPRITE_TINTS: Record<string, number> = {
 
   // Colored atlas sprites with non-white tints
   'bat': 0xdef327,          // rgb(0.869, 0.953, 0.155)
-  'jackal': 0xc7954e,       // rgb(0.78, 0.584, 0.307)
-  'jackal boss': 0xc7954e,  // rgb(0.78, 0.584, 0.307) — same as Jackal
+  'jackal': 0xff954e,       // rgb(1.0, 0.584, 0.307)
+  'jackal boss': 0xff954e,  // rgb(1.0, 0.584, 0.307) — same as Jackal
   'gambler': 0xa7ffef,      // rgb(0.655, 1.0, 0.934)
   'mercenary': 0xeebfae,    // rgb(0.934, 0.749, 0.682)
   'octopus': 0x5affd1,      // rgb(0.354, 1.0, 0.818)
   'moss man': 0xe9ffe3,     // rgb(0.912, 1.0, 0.891)
-  'scorpion': 0xc7605c,     // rgb(0.78, 0.375, 0.362)
+  'scorpion': 0xff605c,     // rgb(1.0, 0.375, 0.362)
   'snail': 0xe4ff98,        // rgb(0.892, 1.0, 0.596)
 
   'grasper': 0x6DBC3F,      // rgb(0.427, 0.737, 0.247)

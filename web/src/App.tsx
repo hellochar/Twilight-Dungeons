@@ -51,6 +51,7 @@ function App() {
               onTopAction={gameState.onTopAction}
               onExecuteOnTopAction={executeOnTopAction}
               onWait={executeWait}
+              onRetry={resetGame}
             />
             {targetingState && (
               <div style={{

@@ -12,6 +12,7 @@ interface HUDProps {
   onTopAction: OnTopActionSnapshot | null;
   onExecuteOnTopAction: () => void;
   onWait: () => void;
+  onRetry: () => void;
 }
 
 /**
@@ -22,7 +23,7 @@ interface HUDProps {
  * - Below banner: Enemy counter text
  * - Bottom-right: Wait button; OnTopAction button above it when present
  */
-export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDProps) {
+export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait, onRetry }: HUDProps) {
   const showButtons = !state.isPlayerDead && !state.isCleared;
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
@@ -31,8 +32,9 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait }: HUDPro
         <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
       </div>
 
-      {/* Top-right: mute button */}
-      <div style={{ position: 'absolute', top: 6, right: 10, pointerEvents: 'auto' }}>
+      {/* Top-right: retry + mute buttons */}
+      <div style={{ position: 'absolute', top: 6, right: 10, display: 'flex', gap: 4, pointerEvents: 'auto' }}>
+        <RetryButton onClick={onRetry} />
         <MuteButton />
       </div>
 
@@ -170,6 +172,29 @@ function OnTopActionButton({ action, onClick }: { action: OnTopActionSnapshot; o
         {action.name}
       </button>
     </div>
+  );
+}
+
+// ─── Retry Button ───
+
+function RetryButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={MUTE_BUTTON_STYLE}
+      title="Retry"
+    >
+      <RetryIcon />
+    </button>
+  );
+}
+
+/** FA solid arrow-rotate-right (Font Awesome Free 6.x, CC BY 4.0) */
+function RetryIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={ICON_STYLE}>
+      <path d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"/>
+    </svg>
   );
 }
 

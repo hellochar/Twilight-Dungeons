@@ -650,7 +650,8 @@ function connectGroups(floor: Floor, mainland: Set<any>, island: Set<any>): Grou
   const islandArr = [...island];
   const mainlandNode = mainlandArr[MyRandom.Range(0, mainlandArr.length)];
   const islandNode = islandArr[MyRandom.Range(0, islandArr.length)];
-  return FloorUtils.line3x3(floor, mainlandNode.pos, islandNode.pos)
+  return Array.from(floor.enumerateLine(mainlandNode.pos, islandNode.pos))
+  // return FloorUtils.line3x3(floor, mainlandNode.pos, islandNode.pos)
     .filter(p => { const t = floor.tiles.get(p); return t && t.basePathfindingWeight() === 0; })
     .map(p => new Ground(p));
 }

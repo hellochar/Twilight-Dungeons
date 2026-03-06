@@ -63,7 +63,7 @@ export function generateMediumGame(dateSeed?: string): GameModel {
 
 export function generateComplexGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
-  return GameModel.createDailyGame(dateSeed, 23, 3);
+  return GameModel.createDailyGame(dateSeed, 23, 5);
 }
 
 function _todayString(): string {

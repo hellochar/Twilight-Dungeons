@@ -49,7 +49,7 @@ function bumpAndReturnEasing(t: number): number {
 
 /** Describes an event that happened during a turn step, for animation. */
 export interface GameEvent {
-  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'quickDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion' | 'spray';
+  type: 'move' | 'jump' | 'attack' | 'attackGround' | 'damage' | 'heal' | 'death' | 'squishDeath' | 'quickDeath' | 'spawn' | 'pulse' | 'struggle' | 'wait' | 'attackGroundHit' | 'disperse' | 'explosion' | 'spray' | 'projectile';
   entityGuid: string;
   from?: Vector2Int;
   to?: Vector2Int;
@@ -139,6 +139,7 @@ export class AnimationPlayer {
     // Position-based effects don't need the entity sprite (which may already be gone).
     if (event.type === 'disperse') { this.animateParticleBurst(tl, event.from!); return; }
     if (event.type === 'spray') { this.animateParticleBurst(tl, event.from!, { color: event.color, speed: 6.5 }); return; }
+    if (event.type === 'projectile') { this.animateProjectile(tl, event); return; }
 
     const node = this.renderer.getEntitySprite(event.entityGuid);
     if (!node) return;
@@ -537,6 +538,48 @@ export class AnimationPlayer {
     };
 
     gsap.to(sprite, { y: sprite.y - 0.1 * ts, alpha: 0, duration: DAMAGE_TEXT_FADE_S, ease: 'linear', onComplete: cleanup });
+  }
+
+  /**
+   * Animate a small colored orb traveling from one tile to another.
+   * Used by Poisoner (and potentially other ranged status-application enemies).
+   */
+  private animateProjectile(tl: gsap.core.Timeline, event: GameEvent): void {
+    if (!event.from || !event.to) return;
+    const ts = this.camera.tileSize;
+    const fromPx = this.camera.tileToCenterPixel(event.from);
+    const toPx = this.camera.tileToCenterPixel(event.to);
+    const color = event.color ?? 0xffffff;
+    const radius = 0.20 * ts;
+
+    const g = new Graphics();
+    g.circle(0, 0, radius).fill({ color });
+    g.position.set(fromPx.x, fromPx.y);
+    this.renderer.getEffectLayer().addChild(g);
+
+    // Parabolic arc (same math as jump animation)
+    const D = Math.sqrt((toPx.x - fromPx.x) ** 2 + (toPx.y - fromPx.y) ** 2);
+    const H = D * 0.5;
+    const a = D > 0.5 ? -4 * H / (D * D) : 0;
+    const b = D > 0.5 ? 4 * H / D : 0;
+    const progress = { tNorm: 0 };
+
+    tl.to(progress, {
+      tNorm: 1,
+      duration: 1.0,
+      ease: 'sine.in',
+      onUpdate: () => {
+        const t = progress.tNorm * D;
+        const arcY = a * t * t + b * t;
+        const wx = fromPx.x + (toPx.x - fromPx.x) * progress.tNorm;
+        const wy = fromPx.y + (toPx.y - fromPx.y) * progress.tNorm;
+        g.position.set(wx, wy - arcY);
+      },
+      onComplete: () => {
+        g.parent?.removeChild(g);
+        g.destroy();
+      },
+    }, '<');
   }
 
   /**

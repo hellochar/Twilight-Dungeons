@@ -16,7 +16,15 @@ export class Poisoner extends SimpleStatusApplicationEnemy {
   }
 
   doTask(): void {
-    GameModelRef.main.player.statuses.add(new PoisonedStatus(1));
+    const player = GameModelRef.main.player;
+    GameModelRef.mainOrNull?.emitAnimation({
+      type: 'projectile',
+      entityGuid: this.guid,
+      from: this.pos,
+      to: player.pos,
+      color: 0x8E56CC,
+    });
+    player.statuses.add(new PoisonedStatus(1));
   }
 }
 

@@ -44,16 +44,19 @@ public class Goo : AIActor, IBodyTakeAttackDamageHandler {
     if (aiOverride is CharmAI) {
       goo1.SetAI(new CharmAI(goo1));
     }
+    floor.Put(goo1);
 
-    var goo2 = new Goo(pos);
-    goo2.hp = hp2;
-    goo2.ClearTasks();
-    goo2.statuses.Add(new SurprisedStatus());
-    if (aiOverride is CharmAI) {
-      goo2.SetAI(new CharmAI(goo2));
+    if (hp2 > 0) {
+      var goo2 = new Goo(pos);
+      goo2.hp = hp2;
+      goo2.ClearTasks();
+      goo2.statuses.Add(new SurprisedStatus());
+      if (aiOverride is CharmAI) {
+        goo2.SetAI(new CharmAI(goo2));
+      }
+      floor.Put(goo2);
     }
 
-    floor.PutAll(goo1, goo2);
     // don't die
     floor.Remove(this);
   }

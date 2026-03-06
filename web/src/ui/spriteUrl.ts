@@ -20,7 +20,7 @@ const STATUS_SPRITE_MAP: Record<string, string> = {
   VulnerableStatus:  'vulnerable',
   SporedStatus:      'spored-status',
   ConstrictedStatus: 'hanging-vines',
-  FrenziedStatus:    'deathbloom-stem',
+  FrenziedStatus:    '3red',
   InfectedStatus:    'infected',
   ThirdEyeStatus:    'third-eye',
 };

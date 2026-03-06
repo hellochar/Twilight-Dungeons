@@ -14,6 +14,15 @@ import { allEncounters as E } from './Encounters';
 import { entityRegistry } from './entityRegistry';
 import { tipMap } from './Tips';
 
+/** Reverse lookup: encounter function → name string for debug logging */
+const encounterNameMap = new Map<Encounter, string>();
+for (const [name, fn] of Object.entries(E)) {
+  encounterNameMap.set(fn, name);
+}
+function encounterName(enc: Encounter): string {
+  return encounterNameMap.get(enc) ?? enc.name ?? '(anonymous)';
+}
+
 export class FloorGenerator {
   encounterGroup!: EncounterGroup;
   floorSeeds: number[];
@@ -219,7 +228,8 @@ export class FloorGenerator {
     preMobEncounters?: Encounter[],
     ...extraEncounters: Encounter[]
   ): Floor {
-    const floor = this.tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null);
+    const encounterLog: string[] = [];
+    const floor = this.tryGenerateSingleRoomFloor(depth, width, height, preMobEncounters == null, encounterLog);
 
     // Ensure perimeter is walls
     for (const pos of floor.enumeratePerimeter()) {
@@ -233,24 +243,38 @@ export class FloorGenerator {
 
     if (preMobEncounters) {
       for (const enc of preMobEncounters) {
+        encounterLog.push(`preMob: ${encounterName(enc)}`);
         enc(floor, room0);
       }
     }
 
     // X mobs
     for (let i = 0; i < numMobs; i++) {
-      this.encounterGroup.mobs.getRandomAndDiscount()?.(floor, room0);
+      const enc = this.encounterGroup.mobs.getRandomAndDiscount();
+      if (enc) {
+        encounterLog.push(`mob: ${encounterName(enc)}`);
+        enc(floor, room0);
+      }
     }
 
     // Y grasses
     for (let i = 0; i < numGrasses; i++) {
-      this.encounterGroup.grasses.getRandomAndDiscount()?.(floor, room0);
+      const enc = this.encounterGroup.grasses.getRandomAndDiscount();
+      if (enc) {
+        encounterLog.push(`grass: ${encounterName(enc)}`);
+        enc(floor, room0);
+      }
     }
 
     // Spice
-    this.encounterGroup.spice.getRandom()?.(floor, room0);
+    const spiceEnc = this.encounterGroup.spice.getRandom();
+    if (spiceEnc) {
+      encounterLog.push(`spice: ${encounterName(spiceEnc)}`);
+      spiceEnc(floor, room0);
+    }
 
     for (const enc of extraEncounters) {
+      encounterLog.push(`extra: ${encounterName(enc)}`);
       enc(floor, room0);
     }
 
@@ -260,14 +284,18 @@ export class FloorGenerator {
       E.addWater(floor, room0);
     }
 
-    FloorUtils.tidyUpAroundStairs(floor);
+    // FloorUtils.tidyUpAroundStairs(floor);
+
+    console.log(`[FloorGen] depth ${depth} encounters\n${encounterLog.join('\n')}`);
+
     // Re-run connectivity after all encounters (preMobEncounters like
     // lineWithOpening + chasmsAwayFromWalls can create impassable barriers)
     ensureConnectedness(floor);
+
     return floor;
   }
 
-  private tryGenerateSingleRoomFloor(depth: number, width: number, height: number, defaultEncounters = true): Floor {
+  private tryGenerateSingleRoomFloor(depth: number, width: number, height: number, defaultEncounters = true, encounterLog: string[]): Floor {
     const floor = new Floor(depth, width, height);
     floor.startPos = new Vector2Int(Math.floor(floor.width / 2), 1);
 
@@ -281,11 +309,23 @@ export class FloorGenerator {
 
     if (defaultEncounters) {
       // One wall variation
-      this.encounterGroup.walls.getRandomAndDiscount()?.(floor, room0);
+      {
+        var enc = this.encounterGroup.walls.getRandomAndDiscount();
+        if (enc) {
+          enc(floor, room0);
+          encounterLog.push(`walls: ${encounterName(enc)}`);
+        }
+      }
       FloorUtils.naturalizeEdges(floor);
 
       // Chasms (rare — 4% discount rate for exponential decrease)
-      this.encounterGroup.chasms.getRandomAndDiscount(0.04)?.(floor, room0);
+      {
+        var enc = this.encounterGroup.chasms.getRandomAndDiscount(0.04);
+        if (enc) {
+          enc(floor, room0);
+          encounterLog.push(`chasms: ${encounterName(enc)}`);
+        }
+      }
     }
 
     ensureConnectedness(floor);

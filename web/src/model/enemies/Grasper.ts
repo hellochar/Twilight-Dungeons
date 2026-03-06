@@ -165,7 +165,7 @@ export class Tendril extends Actor implements IBaseActionModifier, IDeathHandler
     super(pos);
     this.owner = owner;
     this.faction = Faction.Neutral;
-    this._hp = this._baseMaxHp = 1;
+    this._hp = this._baseMaxHp = 2;
     this.timeNextAction += 999999;
   }
 

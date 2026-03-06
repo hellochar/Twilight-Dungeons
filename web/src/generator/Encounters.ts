@@ -894,8 +894,8 @@ export function addPumpkin(floor: Floor, room: Room | null): void {
 }
 
 export function scatteredBoombugs(floor: Floor, room: Room | null): void {
-  const tiles = spectrumPos(floor, 0.4);
-  for (const t of tiles.slice(0, 1)) spawn(floor, 'Boombug', t.pos);
+  const tiles = spectrumPos(floor, 0.3);
+  for (const t of tiles.slice(0, 2)) spawn(floor, 'Boombug', t.pos);
 }
 
 export const scatteredBoombugs4x: Encounter = (floor, room) => {

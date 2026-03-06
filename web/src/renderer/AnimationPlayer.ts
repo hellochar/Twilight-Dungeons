@@ -186,7 +186,10 @@ export class AnimationPlayer {
         this.animateAttackGround(node, event, tl);
         break;
       case 'damage':
-        if (!batch.some(e => e.entityGuid === event.entityGuid && (e.type === 'death' || e.type === 'squishDeath'))) {
+        if (batch.some(e => e.entityGuid === event.entityGuid && (e.type === 'death' || e.type === 'squishDeath'))) {
+          // Skip visual effects (flash, shake) for dying entities, but still show floating text
+          this.spawnDamageText(event);
+        } else {
           this.animateDamage(node, visual, event, tl);
         }
         break;
@@ -356,6 +359,11 @@ export class AnimationPlayer {
       }
     }
 
+    this.spawnDamageText(event);
+  }
+
+  /** Spawn floating damage/block text without any visual effects on the sprite. */
+  private spawnDamageText(event: GameEvent): void {
     if (event.amount !== undefined && event.amount > 0) {
       this.spawnFloatingText(`-${event.amount}`, event, makeDamageStyle(this.camera.tileSize));
     } else if (event.amount === 0) {

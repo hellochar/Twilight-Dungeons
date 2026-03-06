@@ -37,7 +37,7 @@ export class Goo extends AIActor implements IBodyTakeAttackDamageHandler {
   }
 
   private split(): void {
-    if (this.isDead) return;
+    if (this.hp < 2) return;
 
     const hp1 = Math.ceil(this.hp / 2);
     const hp2 = Math.floor(this.hp / 2);

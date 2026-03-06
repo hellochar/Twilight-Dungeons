@@ -650,7 +650,6 @@ export class AnimationPlayer {
     sprite.anchor.set(0.5, 0.5);
     sprite.width = 1;
     sprite.height = 1;
-    // sprite.scale.set(0, 0);
     sprite.position.set(px.x, px.y + 0.1 * ts);
 
     const layer = this.renderer.getEffectLayer();
@@ -661,11 +660,17 @@ export class AnimationPlayer {
       sprite.destroy();
     };
 
-    // Anchor to the impact label set by animateAttackGround so swipe appears at bump peak
+    // Run the full 0.717s swipe animation on a standalone timeline so it doesn't block
+    // the main animation chain. The main timeline only reserves 0.25s for this effect.
     const impactLabel = `atkground-impact-${event.entityGuid}`;
-    tl.to(sprite, { width: ts, height: ts, duration: 0.25, ease: 'power2.out' }, impactLabel);
-    tl.to(sprite, { y: px.y - 0.12 * ts, duration: 0.5, ease: 'power3.out' }, impactLabel);
-    tl.to(sprite, { width: 0, height: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, '>');
+    const standalone = gsap.timeline();
+    standalone.to(sprite, { width: ts, height: ts, duration: 0.25, ease: 'power2.out' }, 0);
+    standalone.to(sprite, { y: px.y - 0.12 * ts, duration: 0.5, ease: 'power3.out' }, 0);
+    standalone.to(sprite, { width: 0, height: 0, duration: 0.367, ease: 'power2.in', onComplete: cleanup }, 0.5);
+
+    // Reserve only 0.25s on the main timeline so the chain continues while the effect plays
+    tl.call(() => { standalone.play(0); }, [], impactLabel);
+    tl.set({}, {}, `${impactLabel}+=0.25`);
   }
 
   /**

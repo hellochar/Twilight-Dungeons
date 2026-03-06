@@ -28,7 +28,7 @@ export class ClumpedLungStatus extends StackingStatus {
 
   Consume(other: Status): boolean {
     const baseRetVal = super.Consume(other);
-    if (this.stacks >= 8) {
+    if (this.stacks >= 10) {
       this.actor?.kill({ pos: new Vector2Int(0, 0) } as any);
     }
     return baseRetVal;

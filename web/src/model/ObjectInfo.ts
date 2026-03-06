@@ -90,6 +90,7 @@ registerObjectInfo('VibrantIvy', { description: 'Camouflages creatures standing 
 
 registerObjectInfo('HardShell', { description: 'If the Hardshell would take more than 2 attack damage, it is reduced to 0.' });
 registerObjectInfo('Bloodstone', { description: 'You deal +1 attack damage.\nYou take +1 attack damage.\n\nDestroy the Bloodstone to remove.' });
+registerObjectInfo('BloodstoneStatus', { description: 'You deal +1 attack damage.\nYou take +1 attack damage.\n\nDestroy the Bloodstone to remove.' });
 registerObjectInfo('Butterfly', { description: 'Every 5 turns, the Butterfly duplicates the Grass you\'re standing on to the four cardinally adjacent tiles.' });
 registerObjectInfo('Wildekin', { description: 'Chases you.\nStays one Tile away from Walls or non-Wildekins, but will attack you if possible.\nRuns away for three turns after it attacks.' });
 registerObjectInfo('Parasite', { description: 'Once Parasite deals attack damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves twice, but randomly.', flavorText: 'Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.' });

@@ -55,7 +55,7 @@ export class Boombug extends AIActor implements IDeathHandler {
     const floor = this.floor!;
     const candidates: Vector2Int[] = [];
     for (const p of floor.enumerateCircle(this.pos, 5)) {
-      const t = floor.tiles.get(p);
+      const t = floor.tiles.get(p)!;
       if (t && t.canBeOccupied()) {
         candidates.push(p);
       }

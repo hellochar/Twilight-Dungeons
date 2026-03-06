@@ -68,12 +68,13 @@ export class WebbedStatus extends Status implements IAttackDamageTakenModifier, 
   /** Handles STEP_MOD (inherited), ATTACK_DAMAGE_TAKEN_MOD, and BASE_ACTION_MOD. */
   modify(input: any): any {
     if (typeof input === 'number') {
-      // ATTACK_DAMAGE_TAKEN_MOD: +1 damage taken
-      const web = this.web;
-      if (!web) return input;
-      if (isActorWebNice(web.actor)) return input;
-      this.Remove();
-      return input + 1;
+      // // ATTACK_DAMAGE_TAKEN_MOD: +1 damage taken
+      // const web = this.web;
+      // if (!web) return input;
+      // if (isActorWebNice(web.actor)) return input;
+      // this.Remove();
+      // return input + 1;
+      return input;
     }
     if (input instanceof BaseAction) {
       // BASE_ACTION_MOD

@@ -43,9 +43,9 @@ registerObjectInfo('JackalBoss', { description: 'Summons jackals if there are no
 
 // ─── Early Game Grasses ───
 
-registerObjectInfo('Web', { description: 'Take +1 damage from the next attack. You must spend one turn to break the Web.' });
+registerObjectInfo('Web', { description: 'Prevents your next movement.' });
 registerObjectInfo('Bladegrass', { description: 'Sharpens when walked over. Then the next creature walking into it takes 1 damage.' });
-registerObjectInfo('SoftGrass', { description: 'Moving twice on Soft Grass gives you a Free Move.', flavorText: 'Feels nice on your feet.' });
+registerObjectInfo('SoftGrass', { description: 'Moving twice on Soft Grass gives the Player a Free Move.', flavorText: 'Feels nice on your feet.' });
 registerObjectInfo('Guardleaf', { description: 'Blocks the next attack on the covered creature.', flavorText: 'Huge leaves, sprouting out from the ground, gently twist themselves around you in a protective cover.' });
 registerObjectInfo('EveningBells', { description: 'Enemies fall asleep when walking into Evening Bells. When hit, they take 2x damage and awake.' });
 registerObjectInfo('Llaora', { description: 'You may Disperse the Llaora, permanently confusing Enemies in radius 2. Confused enemies walk randomly and don\'t attack.' });

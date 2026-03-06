@@ -39,7 +39,25 @@ registerObjectInfo('ScuttlerUnderground', { description: 'A Scuttler lies in wai
 registerObjectInfo('FruitingBody', { description: 'Walk near it to telegraph a spray. After one turn, it dies, but adjacent creatures turn into Fruiting Bodies. Fruiting Bodies do not count as enemies.', flavorText: 'Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.' });
 // registerObjectInfo('SporeBloat', { description: 'Pops after three turns, applying the Spored Status on to adjacent creatures.', flavorText: 'Inflated and swollen and looking to spread its seed.' });
 
-registerObjectInfo('JackalBoss', { description: 'Summons jackals if there are none on the map.' });
+
+registerObjectInfo('Bat', { description: 'Heals itself from attacks. Goes into Deep Sleep for 5 turns after 5 turns awake.', flavorText: '"Eat, sleep, fly, repeat!\nAs far as I\'m concerned, you\'re meat!"\n\t - Northland nursery rhyme' });
+
+registerObjectInfo('Scorpion', { description: 'Attacks and moves twice.' });
+registerObjectInfo('Golem', { description: 'Attacks and moves slowly. Leaves a trail of Rubble.', flavorText: 'Eager to prove himself, Aurogan managed to Will Life into the boulder on Boulder Hill. The Council was impressed, then horrified, then flattened.' });
+registerObjectInfo('Crab', { description: 'Neutral. Only moves horizontally. Attacks anything in its path.' });
+registerObjectInfo('HydraHeart', { description: 'Spawns Hydra Heads. Does not move or attack on its own.', flavorText: 'Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.' });
+registerObjectInfo('HydraHead', { description: 'Attacks anything adjacent to it. Stationary.', flavorText: 'A fleshy tube with a gaping jaw at the end, grasping at any food nearby.' });
+registerObjectInfo('Clumpshroom', { description: 'After 5-7 turns, turns into two or three Clumpshrooms in adjacent tiles.\nDoes not attack or move.\nOn death, it applies Clumped Lung to the killer.\nIf you have 20 Clumped Lung, you die.' });
+registerObjectInfo('Goo', { description: 'When attacked, it duplicates into two with half HP.' });
+
+registerObjectInfo('Dizapper', { description: 'Applies Vulnerable when it hits you.\nGets stunned when attacked.' });
+registerObjectInfo('Hopper', { description: 'Jumps next to you.\nWhen hurt, it will eat a nearby Grass to heal itself to full HP.' });
+registerObjectInfo('IronJelly', { description: 'Invulnerable.\nAttacking the Iron Jelly pushes it away, first attacking any Creature in its way.' });
+registerObjectInfo('Grasper', { description: 'Shoots out a long, snaking Tendril that surrounds you.\nIf you are next to three or more Tendrils, Grasper deals 3 attack damage.' });
+registerObjectInfo('Tendril', { description: 'If you next to 3 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.' });
+registerObjectInfo('Poisoner', { description: 'Every other turn, applies Poisoned to the Player if visible.' });
+registerObjectInfo('Muckola', { description: 'Every other turn, place a Muck next to the Player, if visible.' });
+registerObjectInfo('Thistlebog', { description: 'Moves slowly.\nSummons a ring of Brambles around you that disappear after 10 turns (needs vision).\nInterrupted when taking damage.' });
 
 // ─── Early Game Grasses ───
 
@@ -58,31 +76,24 @@ registerObjectInfo('Muck', { description: 'Regenerates into a Skully after three
 
 registerObjectInfo('Spores', { description: 'Releases three Spore Bloats when walked over.', flavorText: 'One man\'s dead brother is a fungi\'s feast.' });
 
+registerObjectInfo('Brambles', { description: 'Take 1 attack damage when walking into Brambles.' });
+registerObjectInfo('Tunnelroot', { description: 'Walking into the Tunnelroot teleports you to the paired Tunnelroot elsewhere on this level.\nEnemy creatures are surprised on teleport.' });
+registerObjectInfo('Astoria', { description: 'Heals you for 4 HP if you\'re hurt.\nIf you\'re full HP, you can pick up the Astoria and use it later.' });
+registerObjectInfo('Bloodwort', { description: 'When you walk over the Bloodwort, destroy it and gain 2 strength.' });
+registerObjectInfo('VibrantIvy', { description: 'Camouflages creatures standing on it.' });
+
+
 // ─── Mid/Late Game Enemies ───
 
-registerObjectInfo('Bat', { description: 'Targets the nearest creature.\nHeals when it deals damage.\nGoes into Deep Sleep after 7 turns awake.', flavorText: '"Eat, sleep, fly, repeat!\nAs far as I\'m concerned, you\'re meat!"\n\t - Northland nursery rhyme' });
-registerObjectInfo('Goo', { description: 'When attacked, it duplicates into two with half HP.' });
-registerObjectInfo('Scorpion', { description: 'Chases you.\nAttacks and moves twice.' });
-registerObjectInfo('Crab', { description: 'Only moves horizontally.\nAttacks anything in its path.' });
-registerObjectInfo('Golem', { description: 'Attacks and moves slowly.\nBlocks 1 attack damage.\nLeaves a trail of Rubble.', flavorText: 'Eager to prove himself, Aurogan managed to Will Life into the boulder on Boulder Hill. The Council was impressed, then horrified, then flattened.' });
+
+
 registerObjectInfo('HardShell', { description: 'If the Hardshell would take more than 2 attack damage, it is reduced to 0.' });
-registerObjectInfo('Dizapper', { description: 'Applies Vulnerable when it hits you.\nGets stunned when attacked.' });
 registerObjectInfo('Bloodstone', { description: 'You deal +1 attack damage.\nYou take +1 attack damage.\n\nDestroy the Bloodstone to remove.' });
 registerObjectInfo('Butterfly', { description: 'Every 5 turns, the Butterfly duplicates the Grass you\'re standing on to the four cardinally adjacent tiles.' });
-registerObjectInfo('Hopper', { description: 'Jumps next to you.\nWhen hurt, it will eat a nearby Grass to heal itself to full HP.' });
-registerObjectInfo('Clumpshroom', { description: 'After 5-7 turns, turns into two or three Clumpshrooms in adjacent tiles.\nDoes not attack or move.\nOn death, it applies Clumped Lung to the killer.\nIf you have 20 Clumped Lung, you die.' });
 registerObjectInfo('Wildekin', { description: 'Chases you.\nStays one Tile away from Walls or non-Wildekins, but will attack you if possible.\nRuns away for three turns after it attacks.' });
 registerObjectInfo('Parasite', { description: 'Once Parasite deals attack damage, it applies the Parasite Status and dies.\nAttacks anything near it.\nMoves twice, but randomly.', flavorText: 'Blind but fast, these bloodthirsty ticks will latch onto anything they can feel out.' });
 registerObjectInfo('ParasiteEgg', { description: 'Hatches into two Parasites after 3 turns.' });
-registerObjectInfo('IronJelly', { description: 'Invulnerable.\nAttacking the Iron Jelly pushes it away, first attacking any Creature in its way.' });
-registerObjectInfo('HydraHeart', { description: 'Every four turns, spawns a Hydra Head (max 6) within range 3.\nOn death, all Hydra Heads die as well.\nDoes not move or attack.', flavorText: 'Thick veins writhe underneath this pulsating white mass, connecting it to an ever growing network of Heads.' });
-registerObjectInfo('HydraHead', { description: 'Attacks anything adjacent to it.\nStationary.', flavorText: 'A fleshy tube with a gaping jaw at the end, grasping at any food nearby.' });
-registerObjectInfo('Grasper', { description: 'Shoots out a long, snaking Tendril that surrounds you.\nIf you are next to three or more Tendrils, Grasper deals 3 attack damage.' });
-registerObjectInfo('Tendril', { description: 'If you next to 3 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.' });
 registerObjectInfo('Healer', { description: 'Every turn, heals a random hurt enemy other than itself for 1 HP.' });
-registerObjectInfo('Poisoner', { description: 'Every other turn, applies Poisoned to the Player if visible.' });
-registerObjectInfo('Muckola', { description: 'Every other turn, place a Muck next to the Player, if visible.' });
-registerObjectInfo('Thistlebog', { description: 'Moves slowly.\nSummons a ring of Brambles around you that disappear after 10 turns (needs vision).\nInterrupted when taking damage.' });
 registerObjectInfo('Shielder', { description: 'Duplicates then waits.' });
 registerObjectInfo('CheshireWeed', { description: 'Harmless.' });
 registerObjectInfo('Pumpkin', { description: 'Drops a Pumpkin item on death.' });
@@ -94,13 +105,9 @@ registerObjectInfo('Pistrala', { description: 'Every other turn, grow a Cheshire
 
 // ─── Mid/Late Game Grasses ───
 
-registerObjectInfo('Brambles', { description: 'Take 1 attack damage when walking into Brambles.' });
-registerObjectInfo('Mushroom', { description: 'Walk over it to harvest.' });
-registerObjectInfo('Astoria', { description: 'Heals you for 4 HP if you\'re hurt.\nIf you\'re full HP, you can pick up the Astoria and use it later.' });
-registerObjectInfo('Bloodwort', { description: 'When you walk over the Bloodwort, destroy it and gain 2 strength.' });
 registerObjectInfo('Redcap', { description: 'You may pop the Redcap, applying the Vulnerable Status to adjacent enemies for 7 turns.', flavorText: '' });
+registerObjectInfo('Mushroom', { description: 'Walk over it to harvest.' });
 registerObjectInfo('DeathlyCreeper', { description: 'Spreads to unoccupied adjacent Tiles without Grass.\n\nIf all Ground tiles have Black Creeper, all creatures (including you) Die.' });
-registerObjectInfo('Tunnelroot', { description: 'Walking into the Tunnelroot teleports you to the paired Tunnelroot elsewhere on this level.\nEnemy creatures are surprised on teleport.' });
 registerObjectInfo('Dandypuff', { description: 'When a creature walks over a Dandypuff, they gain Weakness, dealing -1 damage on their next attack.' });
 registerObjectInfo('Necroroot', { description: 'Spawn a Zombie of any creature that dies on the Necroroot (this consumes the Necroroot).\nZombies attack anything nearby and lose 1 HP while not standing on Necroroot.' });
 registerObjectInfo('Ninetails', { description: 'Occasionally drops a Floof.' });
@@ -108,10 +115,10 @@ registerObjectInfo('NinetailsFloof', { description: '.' });
 registerObjectInfo('DandypuffTrail', { description: 'Leaves a trail of Dandypuffs.\nWhen a creature walks over a Dandypuff, they gain Weakness, dealing -1 damage on their next attack.' });
 registerObjectInfo('Agave', { description: 'Walk over to harvest.' });
 registerObjectInfo('BlobSlime', { description: 'Deals 1 damage to any non-Blob that walks into it.\nRemoved when you walk into it, or the Blobmother dies.' });
-registerObjectInfo('VibrantIvy', { description: 'Camouflages creatures standing on it.' });
 
 // ─── Bosses ───
 
+registerObjectInfo('JackalBoss', { description: 'Summons jackals if there are none on the map.' });
 registerObjectInfo('Blobmother', { description: 'Spawns a Blob or MiniBlob upon taking damage.\n\nLeaves a trail of Blob Slime.' });
 registerObjectInfo('FungalColony', { description: 'Blocks 1 attack damage.\nSpawns a Fungal Sentinel when attacked.\nCan be damaged by Fungal Sentinel explosions.\nEvery 12 turns, summons a Fungal Breeder and moves itself to a random Fungal Wall.\nDoes not move or attack.' });
 registerObjectInfo('FungalBreeder', { description: 'Summons a Fungal Sentinel every 7 turns.\nDoes not move or attack.' });

@@ -28,8 +28,8 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait, onRetry 
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
       {/* Top-center: date · difficulty · turn */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 10px' }}>
-        <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} />
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 80px 0 6px' }}>
+        <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} enemyCount={state.enemyCount} />
       </div>
 
       {/* Top-right: retry + mute buttons */}
@@ -100,13 +100,14 @@ function Heart({ state }: { state: number }) {
 
 // ─── Banner ───
 
-type BannerProps = { dateSeed: string; difficulty: import('../model/GameModel').Difficulty; turn: number; isCleared: boolean; clearedOnTurn: number | null };
+type BannerProps = { dateSeed: string; difficulty: import('../model/GameModel').Difficulty; turn: number; isCleared: boolean; clearedOnTurn: number | null; enemyCount: number };
 
-function Banner({ dateSeed, difficulty, turn, isCleared, clearedOnTurn }: BannerProps) {
-  const parts: string[] = [dateSeed, DIFFICULTY_LABEL[difficulty]];
+function Banner({ dateSeed, difficulty, turn, isCleared, clearedOnTurn, enemyCount }: BannerProps) {
+  const parts: string[] = [`${dateSeed} ${DIFFICULTY_LABEL[difficulty]}`];
   if (isCleared) {
     parts.push(`Cleared on turn ${clearedOnTurn ?? turn}`);
   } else {
+    parts.push(`${enemyCount} enemies remaining`);
     parts.push(`Turn ${turn}`);
   }
 
@@ -114,10 +115,10 @@ function Banner({ dateSeed, difficulty, turn, isCleared, clearedOnTurn }: Banner
     <div style={{
       fontFamily: FONT_FAMILY,
       fontSize: FontSize.lg,
-      color: '#ccc',
+      color: '#fff',
       textShadow: '1px 1px 2px #000',
     }}>
-      {parts.join(' ')}
+      {parts.join(' - ')}
     </div>
   );
 }

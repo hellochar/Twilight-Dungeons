@@ -172,6 +172,7 @@ function makeMediumEncounterGroup(E: Record<string, Encounter>): EncounterGroup 
   medium.mobs.add(1.0, E.aFewSnails);
   medium.mobs.add(1.0, E.addSpiders);
   medium.mobs.add(1.0, E.addBats);
+  medium.mobs.add(1.0, E.addGolems);
 
   medium.grasses = new EncounterBag();
   medium.grasses.add(0.5, E.addSoftGrass);
@@ -184,6 +185,7 @@ function makeMediumEncounterGroup(E: Record<string, Encounter>): EncounterGroup 
   // earlyGame.grasses.add(0.4, E.addAgave);
   // basic.grasses.add(0.35, E.addHangingVines);
   medium.grasses.add(1, E.addViolets);
+  medium.grasses.add(1, E.addBrambles);
   // earlyGame.grasses.add(0.2, E.fillWithFerns);
 
   medium.spice = new EncounterBag();
@@ -210,50 +212,66 @@ function makeMediumEncounterGroup(E: Record<string, Encounter>): EncounterGroup 
 function makeComplexEncounterGroup(E: Record<string, Encounter>): EncounterGroup {
   const complex = new EncounterGroup();
   complex.assignShared(makeShared(E));
+  complex.walls.remove(E.empty);
 
   complex.mobs = new EncounterBag();
-  complex.mobs.add(1.0, E.addWallflowers);
-  complex.mobs.add(1.0, E.addBird);
-  complex.mobs.add(1.0, E.addSnake);
-  complex.mobs.add(1.0, E.aFewBlobs);
-  complex.mobs.add(1.0, E.jackalPile);
-  complex.mobs.add(1.0, E.addSkullys);
-  complex.mobs.add(1.0, E.addOctopus);
-  complex.mobs.add(1.0, E.aFewSnails);
-  complex.mobs.add(1.0, E.addSpiders);
-  complex.mobs.add(1.0, E.addBats);
+  // complex.mobs.add(1.0, E.addWallflowers);
+  // complex.mobs.add(1.0, E.addBird);
+  // complex.mobs.add(1.0, E.aFewSnails);
+
+  // complex.mobs.add(1.0, mult(E.addSkullys, 2));
+  complex.mobs.add(1.0, mult(E.addSnake, 2));
+  // complex.mobs.add(1.0, E.aFewBlobs);
+  // complex.mobs.add(1.0, E.jackalPile);
+  complex.mobs.add(1.0, mult(E.addOctopus, 1));
+  complex.mobs.add(1.0, mult(E.addSpiders, 2));
+  complex.mobs.add(1.0, mult(E.addBats, 1));
+
+  complex.mobs.add(1.0, E.addScorpions);
+  complex.mobs.add(1.0, E.addGolems);
+  complex.mobs.add(1.0, E.addHoppers);
+  complex.mobs.add(1.0, E.addHydra);
+  complex.mobs.add(1.0, E.addGrasper);
+  complex.mobs.add(1.0, E.addPoisoner);
+  complex.mobs.add(1.0, E.addGoo);
+  complex.mobs.add(0.5, E.addClumpshroom);
+
+  // complex.mobs.add(1.0, E.addMuckola);
+  // complex.mobs.add(1.0, E.addDizapper);
+  // complex.mobs.add(1.0, E.addWildekins);
+  // complex.mobs.add(1.0, E.addThistlebog);
+
 
   complex.grasses = new EncounterBag();
-  complex.grasses.add(0.5, E.addSoftGrass);
-  complex.grasses.add(1, E.addLlaora);
-  complex.grasses.add(1, E.addGuardleaf);
-  complex.grasses.add(1, E.addBladegrass);
-  complex.grasses.add(1, E.scatteredBoombugs);
-  complex.grasses.add(1, E.addEveningBells);
-  complex.grasses.add(1, E.addDeathbloom);
-  // earlyGame.grasses.add(0.4, E.addAgave);
-  // basic.grasses.add(0.35, E.addHangingVines);
   complex.grasses.add(1, E.addViolets);
-  // earlyGame.grasses.add(0.2, E.fillWithFerns);
+  complex.grasses.add(1, E.addGoldGrass);
+  // complex.grasses.add(0.75, E.addRedcaps);
+  complex.grasses.add(1, E.addVibrantIvy);
+  complex.grasses.add(1, E.addCrabs);
+  // complex.grasses.add(0.5, E.addHangingVines2x);
+  complex.grasses.add(1, E.addDeathbloom);
+  complex.grasses.add(1, E.addPoisonmoss);
+  // complex.grasses.add(1, E.addSpore);
+  complex.grasses.add(1, E.addEveningBells);
+  complex.grasses.add(1, E.addTunnelroot);
+  complex.grasses.add(1, E.addGuardleaf);
+  complex.grasses.add(1, E.addBrambles);
+  // complex.grasses.add(0.05, E.addNecroroot);
 
   complex.spice = new EncounterBag();
-  // medium.spice.add(100, E.empty);
-  complex.spice.add(1, E.addWebs);
-  complex.spice.add(1, E.addFruitingBodies);
-  complex.spice.add(1, E.addScuttlers);
-  // earlyGame.spice.add(0.25, E.addSoftGrass);
-  // earlyGame.spice.add(0.25, E.addBladegrass);
+  complex.spice.add(1, E.fillWithViolets);
+  complex.spice.add(1, E.addCrabs);
+  // complex.spice.add(1.0, mult(E.jackalPile, 4));
+  complex.spice.add(1, mult(E.addCrabs, 4));
+  complex.spice.add(1, E.addIronJelly);
+  complex.spice.add(1, E.addBloodstone);
+  // complex.spice.add(1, E.addTunnelroot4x);
+  complex.spice.add(1, E.addScuttlers4x);
   complex.spice.add(1, E.scatteredBoombugs4x);
-  // earlyGame.spice.add(0.2, E.addWater);
-  // earlyGame.spice.add(0.1, E.addOldDude);
-  complex.spice.add(1, mult(E.addDeathbloom, 4));
-  // earlyGame.spice.add(0.1, E.addGuardleaf);
-  // earlyGame.spice.add(0.5, E.addSpore);
-  complex.spice.add(1, E.addEveningBells);
-  complex.spice.add(1, E.addPoisonmoss);
-  complex.spice.add(1, E.fillWithFerns);
-  // earlyGame.spice.add(0.01, E.addNecroroot);
-  // earlyGame.spice.add(0.01, E.addFaegrass);
+  complex.spice.add(0.2, E.fillWithFerns);
+  complex.spice.add(0.2, E.fillWithGuardleaf);
+  complex.spice.add(0.25, E.fillWithBladegrass);
+  complex.spice.add(0.05, E.fillWithViolets);
   return complex;
 }
 
@@ -358,8 +376,8 @@ export function createEncounterGroupsOld_donotdelete(E: Record<string, Encounter
   midGame.spice = new EncounterBag();
   midGame.spice.add(5, E.empty);
   midGame.spice.add(0.5, E.addIronJelly);
-  midGame.spice.add(0.25, E.addTunnelroot4x);
   midGame.spice.add(0.25, E.addBloodstone);
+  midGame.spice.add(0.25, E.addTunnelroot4x);
   midGame.spice.add(0.25, E.addScuttlers4x);
   midGame.spice.add(0.25, E.addMercenary);
   midGame.spice.add(0.25, E.addSpore8x);

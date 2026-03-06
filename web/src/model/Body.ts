@@ -164,12 +164,17 @@ export class Body extends Entity {
     damage = processModifiers(mods, damage);
     damage = Math.max(damage, 0);
     this.onTakeAnyDamageEvent(damage);
-    GameModelRef.mainOrNull?.emitAnimation({ type: 'damage', entityGuid: this.guid, to: this._pos, amount: damage });
+    if (this.showDamageAnimation) {
+      GameModelRef.mainOrNull?.emitAnimation({ type: 'damage', entityGuid: this.guid, to: this._pos, amount: damage });
+    }
     this._hp -= damage;
     if (this._hp <= 0) {
       this.kill(source);
     }
   }
+
+  /** Subclasses may override to suppress damage number display. */
+  protected get showDamageAnimation(): boolean { return true; }
 
   /** Subclasses may override to emit a different death animation event. */
   protected get deathEventType(): string { return 'death'; }

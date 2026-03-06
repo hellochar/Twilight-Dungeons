@@ -39,6 +39,10 @@ export class IronJelly extends AIActor implements IAnyDamageTakenModifier, IBody
     return true;
   }
 
+  protected get showDamageAnimation(): boolean {
+    return false;
+  }
+
   /** IAnyDamageTakenModifier — reduce all damage to 0 (invulnerable). */
   modify(_input: number): number {
     return 0;

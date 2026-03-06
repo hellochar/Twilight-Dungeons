@@ -261,6 +261,9 @@ export class FloorGenerator {
     }
 
     FloorUtils.tidyUpAroundStairs(floor);
+    // Re-run connectivity after all encounters (preMobEncounters like
+    // lineWithOpening + chasmsAwayFromWalls can create impassable barriers)
+    ensureConnectedness(floor);
     return floor;
   }
 

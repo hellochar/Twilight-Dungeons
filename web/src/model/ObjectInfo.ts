@@ -34,8 +34,8 @@ registerObjectInfo('Octopus', { description: 'Range 2. Runs away if you get too 
 
 
 registerObjectInfo('Boombug', { description: 'Neutral. Leaves an explosive corpse on death.', flavorText: 'How such a creature was able to survive and breed is Nature\'s mystery.' });
-registerObjectInfo('Scuttler', { description: 'Chases and attacks its target until it dies, then burrows back into the ground.' });
-registerObjectInfo('ScuttlerUnderground', { description: 'Something lies in wait here. Anything that walks over it will become targeted.' });
+registerObjectInfo('Scuttler', { description: 'Attacks its target, then burrows back into the ground.' });
+registerObjectInfo('ScuttlerUnderground', { description: 'A Scuttler lies in wait for something to walk over it. Upon triggering a Scuttler will attack once then burrow again.' });
 registerObjectInfo('FruitingBody', { description: 'Walk near it to telegraph a spray. After one turn, it dies, but adjacent creatures turn into Fruiting Bodies. Fruiting Bodies do not count as enemies.', flavorText: 'Did you know? Sporocarp of a basidiomycete is known as a basidiocarp or basidiome, while the fruitbody of an ascomycete is known as an ascocarp.' });
 // registerObjectInfo('SporeBloat', { description: 'Pops after three turns, applying the Spored Status on to adjacent creatures.', flavorText: 'Inflated and swollen and looking to spread its seed.' });
 

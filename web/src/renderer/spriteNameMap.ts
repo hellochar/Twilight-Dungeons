@@ -32,7 +32,7 @@ export const SPRITE_NAME_MAP: Record<string, string> = {
   'parasite egg': 'parasite-egg',
   'hard shell': 'misc0_14',
   'scuttler underground': 'scuttler-underground',
-  '???': 'scuttler-underground',
+  'burrowed scuttler': 'scuttler-underground',
   'ghost': 'undead0_29',
   'violets': 'purple_0',
   'hydra heart': 'hydra-heart',

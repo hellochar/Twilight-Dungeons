@@ -20,6 +20,7 @@ export class Scuttler extends AIActor {
   get turnPriority(): number { return 21; }
 
   target: Actor | null = null;
+  private hasAttacked = false;
 
   constructor(pos: Vector2Int) {
     super(pos);
@@ -49,7 +50,7 @@ export class Scuttler extends AIActor {
   }
 
   protected getNextTask(): ActorTask {
-    if (this.target == null || this.target.isDead) {
+    if (this.hasAttacked || this.target == null || this.target.isDead) {
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, () => this.becomeGrass()));
     }
     const player = GameModelRef.main.player;
@@ -58,6 +59,7 @@ export class Scuttler extends AIActor {
     }
 
     if (this.isNextTo(this.target)) {
+      this.hasAttacked = true;
       return new AttackTask(this, this.target);
     } else {
       return new ChaseTargetTask(this, this.target);
@@ -72,7 +74,7 @@ export class Scuttler extends AIActor {
 export class ScuttlerUnderground extends Grass implements IActorEnterHandler {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
 
-  get displayName(): string { return '???'; }
+  get displayName(): string { return 'Burrowed Scuttler'; }
 
   constructor(pos: Vector2Int) {
     super(pos);

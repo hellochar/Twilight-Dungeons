@@ -1,5 +1,5 @@
 # General
-- In the web port, match all aspects of the Unity behavior as concisely and closely as possible. Use exact colors. ALWAYS begin by referencing the Unity implementation. Fully read relevant pieces from the original Unity project before beginning. Your goal is an exact faithful port for all content and look. Exactly replicate the animations, colors, images, sizes, timings, layouts, behavior, logic.
+- In the web port, match visual aspects of Unity. Use exact colors. ALWAYS begin by referencing the Unity implementation. Fully read relevant pieces from the original Unity project before beginning. Your goal is an exact faithful port for all content look. Exactly replicate the animations, colors, images, sizes, timings, layouts, behavior, logic.
 - After any TypeScript changes, run `npm run typecheck` (from the `web/` directory) and fix all errors before considering the task complete.
 - NEVER abbreviate turns as T. Use the full string 'turns'.
 - Avoid any player facing abbreviations. Use full game terminology in user facing strings.

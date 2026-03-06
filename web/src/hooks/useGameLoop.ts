@@ -9,7 +9,7 @@ import { Camera, SpriteManager, GameRenderer, AnimationPlayer, isMobile } from '
 import { InputHandler, type PlayerIntent/*, type TileContextEvent*/ } from '../input/InputHandler';
 import { soundManager } from '../audio/SoundManager';
 import gsap from 'gsap';
-import { WATER_SFX_VOLUME, MOVE_LERP_MS, TIME_GAP_DELAY } from '../constants';
+import { WATER_SFX_VOLUME, MOVE_LERP_MS, TIME_GAP_DELAY, DAY_ONE } from '../constants';
 // FUTURE: hover entity → draw line to card. Re-enable these + restore EntityInfoPanel in App.tsx
 // import type { EntityInfoData } from '../ui/EntityInfoPanel';
 // import { Body } from '../model/Body';
@@ -28,8 +28,6 @@ import { loadDebugState } from '../debug/DebugPanel';
 import { getLocalScore } from '../services/ScoreService';
 import { trackSessionStart, trackGameOver, trackRetry } from '../services/AnalyticsService';
 import type { PlayStats } from '../model/GameModel';
-
-const DAY_ONE = '2026-02-04';
 
 function localTodayStr(): string {
   const d = new Date();

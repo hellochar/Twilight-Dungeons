@@ -72,3 +72,5 @@ export const HEART_SIZE = 48;
 export const STATUS_ICON_SIZE = 48;
 /** Mute button icon size in pixels. */
 export const MUTE_ICON_SIZE = 40;
+
+export const DAY_ONE = '2026-03-01';

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { getLocalScore } from '../services/ScoreService';
 import { type Difficulty, DIFFICULTY_LABEL } from '../model/GameModel';
 import { FONT_FAMILY, FontSize } from './fonts';
+import { DAY_ONE } from '../constants';
 
-const DAY_ONE = '2026-02-04';
 const DIFFICULTIES: Difficulty[] = ['basic', 'medium', 'complex'];
 
 function localDateStr(date: Date): string {

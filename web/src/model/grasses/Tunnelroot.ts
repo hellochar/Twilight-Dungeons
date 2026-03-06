@@ -34,9 +34,13 @@ export class Tunnelroot extends Grass implements IActorEnterHandler {
   protected handleLeaveFloor(): void {
     if (this.partner && this.partner.floor) {
       const partner = this.partner;
-      GameModelRef.main.enqueuEvent(() => {
+      if (GameModelRef.main) {
+        GameModelRef.main.enqueuEvent(() => {
+          partner.floor?.remove(partner);
+        });
+      } else {
         partner.floor?.remove(partner);
-      });
+      }
     }
   }
 

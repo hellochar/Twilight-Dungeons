@@ -18,12 +18,12 @@ import { entityRegistry } from '../../generator/entityRegistry';
 export class Hopper extends AIActor {
   constructor(pos: Vector2Int) {
     super(pos);
-    this._hp = 6;
-    this._baseMaxHp = 6;
+    this._hp = 3;
+    this._baseMaxHp = 3;
   }
 
   baseAttackDamage(): [number, number] {
-    return [2, 2];
+    return [1, 1];
   }
 
   protected getNextTask(): ActorTask {

@@ -13,6 +13,7 @@ import { Muck, Skully } from '../model/enemies/Skully';
 import { BoombugCorpse } from '../model/enemies/Boombug';
 import { Wallflower } from '../model/enemies/Wallflower';
 import { Jackal } from '../model/enemies/Jackal';
+import { Hopper } from '../model/enemies/Hopper';
 
 // ─── EntityRenderState ───
 
@@ -364,6 +365,23 @@ registerEntityRenderer(Wallflower, {
 //     state.visual.tint = (entity as Jackal).sprintReady ? 0x9B303E : 0xc7954e;
 //   },
 // });
+
+// ─── Hopper renderer ───
+
+/**
+ * HopperController port: swaps to damaged sprite (frame 1) when hp < maxHp.
+ */
+registerEntityRenderer(Hopper, {
+  sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const frames = ctx.sprites.getFrames('hopper');
+    if (!frames || frames.length < 2) return;
+    const hopper = entity as Hopper;
+    const isDamaged = hopper.hp < hopper.maxHp;
+    const tex = isDamaged ? frames[1] : frames[0];
+    state.visual.texture = tex;
+    if (state.shadow) state.shadow.texture = tex;
+  },
+});
 
 registerEntityRenderer(Skully, {
   init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {

@@ -31,6 +31,7 @@ import {
   TELEGRAPH_FADE_DURATION,
 } from './animationConstants';
 import { AcesTonemapFilter } from './AcesTonemapFilter';
+import { GameModelRef } from '../model/GameModelRef';
 
 
 /**
@@ -713,7 +714,8 @@ export class GameRenderer {
       // WaitTask visual — all non-player actors unless hideWaitTask=true in Unity
       const isPlayer = body instanceof Player;
       const hideWaitTask = HIDE_WAIT_TASK_NAMES.has(body.constructor.name);
-      if (!isPlayer && !hideWaitTask && actor.task instanceof WaitTask) {
+      const isWaiting = actor.task instanceof WaitTask || actor.timeNextAction > GameModelRef.main.player.timeNextAction;
+      if (!isPlayer && !hideWaitTask && isWaiting) {
         visuals.push({ config: WAIT_TASK_VISUAL, tint: WAIT_TASK_TINT });
       }
 

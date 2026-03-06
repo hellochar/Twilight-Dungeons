@@ -334,24 +334,42 @@ export function addBird(floor: Floor, _room: Room | null): void {
 }
 
 export function addSnake(floor: Floor, _room: Room | null): void {
-  const tile = spectrumPos(floor, 0.5)[0];
+  const tile = spectrumPos(floor, 0.6)[0];
   if (tile) spawn(floor, 'Snake', tile.pos);
 }
 
 export function aFewBlobs(floor: Floor, _room: Room | null): void {
-  const tiles = spectrumPos(floor, 0.75);
-  let budget = 1 + Math.pow(floor.depth, 0.9) / 3.6;
-  let numMini = 0;
-  let numNormal = 0;
-  while (budget > 0) {
-    const isMini = MyRandom.value < 0.5;
-    const cost = isMini ? 0.75 : 1;
-    if (cost > budget) {
-      if (MyRandom.value * cost > budget) break;
-    }
-    if (isMini) numMini++; else numNormal++;
-    budget -= cost;
+  const tiles = spectrumPos(floor, 0.8);
+  // let budget = 1 + Math.pow(floor.depth, 0.9) / 3.6;
+  // let numMini = 0;
+  // let numNormal = 0;
+  // while (budget > 0) {
+  //   const isMini = MyRandom.value < 0.5;
+  //   const cost = isMini ? 0.75 : 1;
+  //   if (cost > budget) {
+  //     if (MyRandom.value * cost > budget) break;
+  //   }
+  //   if (isMini) numMini++; else numNormal++;
+  //   budget -= cost;
+  // }
+  const choice = MyRandom.value;
+  let numMini: number;
+  let numNormal: number;
+  
+  if (choice < 0.25) {
+    numMini = 0;
+    numNormal = 2;
+  } else if (choice < 0.5) {
+    numMini = 1;
+    numNormal = 1;
+  } else if (choice < 0.75) {
+    numMini = 2;
+    numNormal = 1;
+  } else {
+    numMini = 3;
+    numNormal = 0;
   }
+  
   let idx = 0;
   for (let i = 0; i < numMini && idx < tiles.length; i++, idx++) {
     spawn(floor, 'MiniBlob', tiles[idx].pos);
@@ -365,12 +383,12 @@ export function addWallflowers(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 0.9).filter(t =>
     t.canBeOccupied() && floor.getCardinalNeighbors(t.pos).some(n => n instanceof Wall)
   );
-  for (const t of tiles.slice(0, 2)) spawn(floor, 'Wallflower', t.pos);
+  for (const t of tiles.slice(0, 1)) spawn(floor, 'Wallflower', t.pos);
 }
 
 export function jackalPile(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 0.8);
-  const num = randomRangeBasedOnIndex(Math.floor(floor.depth / 4), [1, 1], [2, 2], [3, 3]);
+  const num = 3; // randomRangeBasedOnIndex(Math.floor(floor.depth / 4), [1, 1], [2, 2], [3, 3]);
   for (const t of tiles.slice(0, num)) spawn(floor, 'Jackal', t.pos);
 }
 
@@ -381,22 +399,23 @@ export function addSkullys(floor: Floor, room: Room | null): void {
 
 export function addOctopus(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 0.95);
-  const num = randomRangeBasedOnIndex(Math.floor(floor.depth / 6), [1, 1], [2, 2]);
+  const num = 2; // randomRangeBasedOnIndex(Math.floor(floor.depth / 6), [1, 1], [2, 2]);
   for (const t of tiles.slice(0, num)) spawn(floor, 'Octopus', t.pos);
 }
 
 export function aFewSnails(floor: Floor, room: Room | null): void {
   const tiles = FloorUtils.emptyTilesInRoom(floor, room);
   MyRandom.Shuffle(tiles);
-  const num = randomRangeBasedOnIndex(Math.floor(floor.depth / 4), [1, 1], [2, 2], [2, 3]);
+  const num = 2; // randomRangeBasedOnIndex(Math.floor(floor.depth / 4), [1, 1], [2, 2], [2, 3]);
   for (const t of tiles.slice(0, num)) spawn(floor, 'Snail', t.pos);
 }
 
 export function addSpiders(floor: Floor, _room: Room | null): void {
   const tiles = spectrumPos(floor, 0.5);
-  const num = randomRangeBasedOnIndex(
-    Math.floor(floor.depth / 4), [1, 1], [2, 2], [3, 3], [3, 3], [4, 4], [4, 4],
-  );
+  const num = 2;
+  // randomRangeBasedOnIndex(
+  //   Math.floor(floor.depth / 4), [1, 1], [2, 2], [3, 3], [3, 3], [4, 4], [4, 4],
+  // );
   for (const t of tiles.slice(0, num)) spawn(floor, 'Spider', t.pos);
 }
 
@@ -527,12 +546,12 @@ function addSoftGrassImpl(floor: Floor, room: Room | null, mult: number): void {
   const occupiable = floor.enumerateRoomTiles(room)
     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null);
   if (occupiable.length === 0) return;
-  const start = randomPick(occupiable);
-  if (!start) return;
-  const occupiableSet = new Set(occupiable);
-  const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
-  const num = Math.round(MyRandom.Range(Math.floor(occupiable.length / 4), Math.floor(occupiable.length / 2) + 1) * mult);
-  for (const tile of bfs.slice(0, num)) {
+  // const start = randomPick(occupiable);
+  // if (!start) return;
+  // const occupiableSet = new Set(occupiable);
+  // const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
+  // const num = Math.round(MyRandom.Range(Math.floor(occupiable.length / 4), Math.floor(occupiable.length / 2) + 1) * mult);
+  for (const tile of occupiable) {
     spawn(floor, 'SoftGrass', tile.pos);
   }
 }
@@ -550,7 +569,8 @@ function addBladegrassImpl(floor: Floor, room: Room | null, mult: number): void 
   if (!start) return;
   const occupiableSet = new Set(occupiable);
   const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
-  const num = Math.max(3, MyRandom.Range(Math.floor(occupiable.length / 10), Math.floor(occupiable.length / 5)) * mult);
+  // const num = Math.max(3, MyRandom.Range(Math.floor(occupiable.length / 10), Math.floor(occupiable.length / 5)) * mult);
+  const num = 5;
   for (const tile of bfs.slice(0, num)) {
     spawn(floor, 'Bladegrass', tile.pos);
   }
@@ -564,15 +584,15 @@ export const addGuardleaf4x: Encounter = (floor, room) => addGuardleafImpl(floor
 
 function addGuardleafImpl(floor: Floor, room: Room | null, mult: number): void {
   if (!room) return;
-  const occupiable = floor.enumerateRoomTiles(room)
+  const occupiable = spectrumPos(floor, 0.25)
     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null);
   if (occupiable.length === 0) return;
-  const start = randomPick(occupiable);
-  if (!start) return;
-  const occupiableSet = new Set(occupiable);
-  const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
-  const num = MyRandom.Range(1, 4) * mult;
-  for (const tile of bfs.slice(0, num)) {
+  // const start = randomPick(occupiable);
+  // if (!start) return;
+  // const occupiableSet = new Set(occupiable);
+  // const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
+  const num = 3;
+  for (const tile of occupiable.slice(0, num)) {
     spawn(floor, 'Guardleaf', tile.pos);
   }
 }
@@ -581,8 +601,8 @@ export function addViolets(floor: Floor, room: Room | null): void {
   const occupiable = FloorUtils.tilesFromCenter(floor, room)
     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null);
   if (occupiable.length === 0) return;
-  let num = MyRandom.Range(Math.floor(occupiable.length / 9), Math.floor(occupiable.length / 5));
-  if (MyRandom.value < 0.2) num = occupiable.length;
+  let num = Math.floor(occupiable.length / 4);
+  // if (MyRandom.value < 0.2) num = occupiable.length;
   for (const tile of occupiable.slice(0, num)) {
     spawn(floor, 'Violets', tile.pos);
   }
@@ -600,7 +620,7 @@ export function addWebs(floor: Floor, room: Room | null): void {
   const tiles = FloorUtils.tilesSortedByCorners(floor, room)
     .filter(t => floor.grasses.get(t.pos) == null && t instanceof Ground)
     .reverse();
-  const num = MyRandom.Range(Math.floor(tiles.length / 12), Math.floor(tiles.length / 8));
+  const num = tiles.length / 2;
   for (const tile of tiles.slice(0, num)) {
     if (MyRandom.value < 0.87) spawn(floor, 'Web', tile.pos);
   }
@@ -759,10 +779,11 @@ function EveningBellsCanOccupy(t: Tile, floor: Floor): boolean {
 }
 
 export function addLlaora(floor: Floor, room: Room | null): void {
-  const tile = randomPick(
-    FloorUtils.tilesFromCenter(floor, room)
-      .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null && t.pos.x <= 5),
-  );
+  const tile = spectrumPos(floor, 0.25)[0];
+  // const tile = randomPick(
+  //   FloorUtils.tilesFromCenter(floor, room)
+  //     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null && t.pos.x <= 5),
+  // );
   if (tile) spawn(floor, 'Llaora', tile.pos);
 }
 

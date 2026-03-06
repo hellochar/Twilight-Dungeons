@@ -17,9 +17,13 @@ import { tipMap } from './Tips';
 export class FloorGenerator {
   encounterGroup!: EncounterGroup;
   floorSeeds: number[];
+  // aka basic
   private earlyGame: EncounterGroup;
+  // aka medium
   private everything: EncounterGroup;
+  // aka complex
   private midGame: EncounterGroup;
+
   private shared: EncounterGroup;
   private floorGenerators: Array<() => Floor>;
 
@@ -41,12 +45,16 @@ export class FloorGenerator {
   }
 
   private initFloorGenerators(): Array<() => Floor> {
+    var basic = () => this.generateSingleRoomFloor(3, 7, 10, 2, 1);
+    var medium = () => this.generateSingleRoomFloor(14, 8, 11, 3, 2);
+    var complex = () => this.generateSingleRoomFloor(23, 9, 13, 5, 4);
+
     return [
       // early game (depths 0-9)
       () => this.generateFloor0(0),
       () => this.generateSingleRoomFloor(1, 6, 9, 1, 1),
       () => this.generateSingleRoomFloor(2, 6, 9, 1, 1, false, undefined, E.oneAstoria),
-      () => this.generateSingleRoomFloor(3, 7, 9, 2, 1, false, undefined, E.addOneWater),
+      basic,
       () => this.generateSingleRoomFloor(4, 7, 9, 2, 1, true, undefined, E.oneAstoria),
       () => this.generateSingleRoomFloor(5, 8, 10, 3, 2),
       () => this.generateSingleRoomFloor(6, 8, 10, 3, 2, false, undefined, E.addOneWater),
@@ -61,7 +69,7 @@ export class FloorGenerator {
       () => this.generateSingleRoomFloor(11, 7, 9, 2, 1, false, undefined, E.addOneWater),
       () => this.generateSingleRoomFloor(12, 8, 10, 3, 1),
       () => this.generateSingleRoomFloor(13, 8, 10, 3, 2, true, undefined, E.oneAstoria),
-      () => this.generateSingleRoomFloor(14, 8, 11, 4, 2),
+      medium,
       () => this.generateSingleRoomFloor(15, 8, 12, 4, 3),
       () => this.generateSingleRoomFloor(16, 8, 12, 5, 5),
       () => this.generateSingleRoomFloor(17, 8, 12, 5, 5),
@@ -74,7 +82,7 @@ export class FloorGenerator {
       () => this.generateSingleRoomFloor(20, 8, 12, 3, 2),
       () => this.generateSingleRoomFloor(21, 9, 14, 4, 3, true, [E.lineWithOpening, E.chasmsAwayFromWalls1]),
       () => this.generateSingleRoomFloor(22, 9, 13, 5, 2, false, undefined, E.addWater),
-      () => this.generateSingleRoomFloor(23, 9, 14, 6, 4),
+      complex,
       () => this.generateSingleRoomFloor(24, 9, 14, 7, 4),
       () => this.generateSingleRoomFloor(25, 9, 14, 8, 5),
       () => this.generateSingleRoomFloor(26, 9, 14, 9, 6),

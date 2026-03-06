@@ -51,22 +51,19 @@ export function selectDepth(seed: number): number {
   return 1 + (rng % 26);
 }
 
-/** Generate today's basic-difficulty game (depths 1–9, earlyGame encounters). */
 export function generateBasicGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
   return GameModel.createDailyGame(dateSeed, 3, 3);
 }
 
-/** Generate today's medium-difficulty game (depths 10–18, everything encounters). */
 export function generateMediumGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
-  return GameModel.createDailyGame(dateSeed, 5, 4);
+  return GameModel.createDailyGame(dateSeed, 14, 4);
 }
 
-/** Generate today's complex-difficulty game (depths 19–26, midGame encounters). */
 export function generateComplexGame(dateSeed?: string): GameModel {
   const seed = djb2(dateSeed ?? _todayString());
-  return GameModel.createDailyGame(dateSeed, 7, 5);
+  return GameModel.createDailyGame(dateSeed, 23, 5);
 }
 
 function _todayString(): string {

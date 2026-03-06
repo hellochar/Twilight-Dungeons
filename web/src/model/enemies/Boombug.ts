@@ -40,14 +40,18 @@ export class Boombug extends AIActor implements IDeathHandler {
     this.faction = Faction.Neutral;
   }
 
+  override get isStationary(): boolean {
+    return true;
+  }
+
   baseAttackDamage(): [number, number] {
     return [0, 0];
   }
 
   protected getNextTask(): ActorTask {
-    if (MyRandom.value < 0.5) {
-      return new WaitTask(this, MyRandom.Range(1, 5));
-    }
+    // if (MyRandom.value < 0.5) {
+    return new WaitTask(this, MyRandom.Range(1, 5));
+    // }
     const floor = this.floor!;
     const candidates: Vector2Int[] = [];
     for (const p of floor.enumerateCircle(this.pos, 5)) {

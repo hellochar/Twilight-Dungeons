@@ -55,11 +55,7 @@ export interface EncounterGroupSet {
   midGame: EncounterGroup;
 }
 
-/**
- * Create all encounter groups with properly weighted bags.
- * Called by FloorGenerator constructor after Encounters module is loaded.
- */
-export function createEncounterGroups(E: Record<string, Encounter>): EncounterGroupSet {
+function makeShared(E: Record<string, Encounter>): EncounterGroup {
   // Shared encounters (walls, chasms, rewards, plants, rests)
   const shared = new EncounterGroup();
 
@@ -100,56 +96,170 @@ export function createEncounterGroups(E: Record<string, Encounter>): EncounterGr
 
   shared.rests = new EncounterBag();
 
-  // Early game encounters
-  const earlyGame = new EncounterGroup();
-  earlyGame.assignShared(shared);
+  return shared;
+}
 
-  earlyGame.mobs = new EncounterBag();
-  earlyGame.mobs.add(1.0, E.addWallflowers);
-  earlyGame.mobs.add(1.0, E.addBird);
-  earlyGame.mobs.add(1.0, E.addSnake);
-  earlyGame.mobs.add(1.0, E.aFewBlobs);
-  earlyGame.mobs.add(1.0, E.jackalPile);
-  earlyGame.mobs.add(1.0, E.addSkullys);
-  earlyGame.mobs.add(1.0, E.addOctopus);
-  earlyGame.mobs.add(1.0, E.aFewSnails);
-  earlyGame.mobs.add(0.33, E.addSpiders);
+function makeBasicEncounterGroup(E: Record<string, Encounter>): EncounterGroup {
+  const basic = new EncounterGroup();
+  basic.assignShared(makeShared(E));
 
-  earlyGame.grasses = new EncounterBag();
-  earlyGame.grasses.add(1, E.addSoftGrass);
-  earlyGame.grasses.add(0.6, E.addLlaora);
-  earlyGame.grasses.add(0.6, E.addGuardleaf);
-  earlyGame.grasses.add(0.6, E.addBladegrass);
-  earlyGame.grasses.add(0.5, E.scatteredBoombugs);
-  earlyGame.grasses.add(0.5, E.addEveningBells);
-  earlyGame.grasses.add(0.4, E.addDeathbloom);
-  earlyGame.grasses.add(0.4, E.addWebs);
+  basic.mobs = new EncounterBag();
+  basic.mobs.add(1.0, E.addWallflowers);
+  basic.mobs.add(1.0, E.addBird);
+  basic.mobs.add(1.0, E.addSnake);
+  basic.mobs.add(1.0, E.aFewBlobs);
+  basic.mobs.add(1.0, E.jackalPile);
+  basic.mobs.add(1.0, E.addSkullys);
+  basic.mobs.add(1.0, E.addOctopus);
+  basic.mobs.add(1.0, E.aFewSnails);
+  basic.mobs.add(1.0, E.addSpiders);
+
+  basic.grasses = new EncounterBag();
+  basic.grasses.add(1, E.addSoftGrass);
+  basic.grasses.add(1, E.addLlaora);
+  basic.grasses.add(1, E.addGuardleaf);
+  basic.grasses.add(1, E.addBladegrass);
+  basic.grasses.add(1, E.scatteredBoombugs);
+  basic.grasses.add(1, E.addEveningBells);
+  basic.grasses.add(1, E.addDeathbloom);
+  basic.grasses.add(1, E.addWebs);
   // earlyGame.grasses.add(0.4, E.addAgave);
-  earlyGame.grasses.add(0.35, E.addHangingVines);
-  earlyGame.grasses.add(0.2, E.addViolets);
+  // basic.grasses.add(0.35, E.addHangingVines);
+  basic.grasses.add(1, E.addViolets);
   // earlyGame.grasses.add(0.2, E.fillWithFerns);
 
-  earlyGame.spice = new EncounterBag();
-  earlyGame.spice.add(5, E.empty);
-  earlyGame.spice.add(0.5, E.addFruitingBodies);
-  earlyGame.spice.add(0.5, E.addScuttlers);
+  basic.spice = new EncounterBag();
+  basic.spice.add(100, E.empty);
+  // basic.spice.add(0.5, E.addFruitingBodies);
+  // basic.spice.add(0.5, E.addScuttlers);
   // earlyGame.spice.add(0.25, E.addSoftGrass);
   // earlyGame.spice.add(0.25, E.addBladegrass);
-  earlyGame.spice.add(0.2, E.scatteredBoombugs);
+  basic.spice.add(5, E.scatteredBoombugs);
   // earlyGame.spice.add(0.2, E.addWater);
   // earlyGame.spice.add(0.1, E.addOldDude);
   // earlyGame.spice.add(0.1, E.addDeathbloom);
   // earlyGame.spice.add(0.1, E.addGuardleaf);
   // earlyGame.spice.add(0.5, E.addSpore);
-  earlyGame.spice.add(0.05, E.addEveningBells);
-  earlyGame.spice.add(0.05, E.addPoisonmoss);
-  earlyGame.spice.add(0.05, E.fillWithFerns);
+  basic.spice.add(5, E.addEveningBells);
+  basic.spice.add(5, E.addPoisonmoss);
+  // basic.spice.add(0.05, E.fillWithFerns);
   // earlyGame.spice.add(0.01, E.addNecroroot);
   // earlyGame.spice.add(0.01, E.addFaegrass);
+  return basic;
+}
 
-  // Everything (early-mid mixed) encounters
-  const everything = new EncounterGroup();
-  everything.assignShared(shared);
+function makeMediumEncounterGroup(E: Record<string, Encounter>): EncounterGroup {
+  const medium = new EncounterGroup();
+  medium.assignShared(makeShared(E));
+
+  medium.mobs = new EncounterBag();
+  medium.mobs.add(1.0, E.addWallflowers);
+  medium.mobs.add(1.0, E.addBird);
+  medium.mobs.add(1.0, E.addSnake);
+  medium.mobs.add(1.0, E.aFewBlobs);
+  medium.mobs.add(1.0, E.jackalPile);
+  medium.mobs.add(1.0, E.addSkullys);
+  medium.mobs.add(1.0, E.addOctopus);
+  medium.mobs.add(1.0, E.aFewSnails);
+  medium.mobs.add(0.33, E.addSpiders);
+
+  medium.grasses = new EncounterBag();
+  medium.grasses.add(1, E.addSoftGrass);
+  medium.grasses.add(0.6, E.addLlaora);
+  medium.grasses.add(0.6, E.addGuardleaf);
+  medium.grasses.add(0.6, E.addBladegrass);
+  medium.grasses.add(0.5, E.scatteredBoombugs);
+  medium.grasses.add(0.5, E.addEveningBells);
+  medium.grasses.add(0.4, E.addDeathbloom);
+  medium.grasses.add(0.4, E.addWebs);
+  // earlyGame.grasses.add(0.4, E.addAgave);
+  medium.grasses.add(0.35, E.addHangingVines);
+  medium.grasses.add(0.2, E.addViolets);
+  // earlyGame.grasses.add(0.2, E.fillWithFerns);
+
+  medium.spice = new EncounterBag();
+  medium.spice.add(5, E.empty);
+  medium.spice.add(0.5, E.addFruitingBodies);
+  medium.spice.add(0.5, E.addScuttlers);
+  // earlyGame.spice.add(0.25, E.addSoftGrass);
+  // earlyGame.spice.add(0.25, E.addBladegrass);
+  medium.spice.add(0.2, E.scatteredBoombugs);
+  // earlyGame.spice.add(0.2, E.addWater);
+  // earlyGame.spice.add(0.1, E.addOldDude);
+  // earlyGame.spice.add(0.1, E.addDeathbloom);
+  // earlyGame.spice.add(0.1, E.addGuardleaf);
+  // earlyGame.spice.add(0.5, E.addSpore);
+  medium.spice.add(0.05, E.addEveningBells);
+  medium.spice.add(0.05, E.addPoisonmoss);
+  medium.spice.add(0.05, E.fillWithFerns);
+  // earlyGame.spice.add(0.01, E.addNecroroot);
+  // earlyGame.spice.add(0.01, E.addFaegrass);
+  return medium;
+}
+
+function makeComplexEncounterGroup(E: Record<string, Encounter>): EncounterGroup {
+  const complex = new EncounterGroup();
+  complex.assignShared(makeShared(E));
+
+  complex.mobs = new EncounterBag();
+  complex.mobs.add(1.0, E.addWallflowers);
+  complex.mobs.add(1.0, E.addBird);
+  complex.mobs.add(1.0, E.addSnake);
+  complex.mobs.add(1.0, E.aFewBlobs);
+  complex.mobs.add(1.0, E.jackalPile);
+  complex.mobs.add(1.0, E.addSkullys);
+  complex.mobs.add(1.0, E.addOctopus);
+  complex.mobs.add(1.0, E.aFewSnails);
+  complex.mobs.add(0.33, E.addSpiders);
+
+  complex.grasses = new EncounterBag();
+  complex.grasses.add(1, E.addSoftGrass);
+  complex.grasses.add(0.6, E.addLlaora);
+  complex.grasses.add(0.6, E.addGuardleaf);
+  complex.grasses.add(0.6, E.addBladegrass);
+  complex.grasses.add(0.5, E.scatteredBoombugs);
+  complex.grasses.add(0.5, E.addEveningBells);
+  complex.grasses.add(0.4, E.addDeathbloom);
+  complex.grasses.add(0.4, E.addWebs);
+  // earlyGame.grasses.add(0.4, E.addAgave);
+  complex.grasses.add(0.35, E.addHangingVines);
+  complex.grasses.add(0.2, E.addViolets);
+  // earlyGame.grasses.add(0.2, E.fillWithFerns);
+
+  complex.spice = new EncounterBag();
+  complex.spice.add(5, E.empty);
+  complex.spice.add(0.5, E.addFruitingBodies);
+  complex.spice.add(0.5, E.addScuttlers);
+  // earlyGame.spice.add(0.25, E.addSoftGrass);
+  // earlyGame.spice.add(0.25, E.addBladegrass);
+  complex.spice.add(0.2, E.scatteredBoombugs);
+  // earlyGame.spice.add(0.2, E.addWater);
+  // earlyGame.spice.add(0.1, E.addOldDude);
+  // earlyGame.spice.add(0.1, E.addDeathbloom);
+  // earlyGame.spice.add(0.1, E.addGuardleaf);
+  // earlyGame.spice.add(0.5, E.addSpore);
+  complex.spice.add(0.05, E.addEveningBells);
+  complex.spice.add(0.05, E.addPoisonmoss);
+  complex.spice.add(0.05, E.fillWithFerns);
+  // earlyGame.spice.add(0.01, E.addNecroroot);
+  // earlyGame.spice.add(0.01, E.addFaegrass);
+  return complex;
+}
+
+/**
+ * Create all encounter groups with properly weighted bags.
+ * Called by FloorGenerator constructor after Encounters module is loaded.
+ */
+export function createEncounterGroups(E: Record<string, Encounter>): EncounterGroupSet {
+  var earlyGame = makeBasicEncounterGroup(E);
+  const everything = makeMediumEncounterGroup(E);
+  const midGame = makeComplexEncounterGroup(E);
+  return { shared: makeShared(E), earlyGame, everything, midGame };
+}
+
+export function createEncounterGroupsOld_donotdelete(E: Record<string, Encounter>) {
+  // medium difficulty
+  const everything = makeMediumEncounterGroup(E);
 
   everything.mobs = new EncounterBag();
   everything.mobs.add(1, E.addFungalBreeder);
@@ -199,7 +309,7 @@ export function createEncounterGroups(E: Record<string, Encounter>): EncounterGr
   everything.spice.add(0.02, E.addNecroroot);
   everything.spice.add(0.01, E.addHydra);
 
-  // Mid game encounters
+  // complex difficulty
   const midGame = new EncounterGroup();
   midGame.assignShared(shared);
 
@@ -249,6 +359,4 @@ export function createEncounterGroups(E: Record<string, Encounter>): EncounterGr
   midGame.spice.add(0.05, E.addParasite8x);
   midGame.spice.add(0.02, E.addFaegrass);
   midGame.spice.add(0.02, E.addNecroroot);
-
-  return { shared, earlyGame, everything, midGame };
 }

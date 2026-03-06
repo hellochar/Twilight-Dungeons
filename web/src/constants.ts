@@ -24,16 +24,22 @@ export const MUSIC_FADE_OUT_S = 1.0;
 
 // ─── Animation ───
 
+export const TIME_GAP_DELAY = .2; // a one turn delay turns into a 0.2 second wait
+
 /** BumpAndReturn total duration in seconds. */
 export const BUMP_DURATION = 0.25;
 /** BumpAndReturn peak displacement scale. */
 export const BUMP_INTENSITY = 0.75;
 /** Time when bump reaches peak displacement: 0.25 * BUMP_DURATION. */
 export const BUMP_IMPACT_TIME = BUMP_DURATION * 0.25;
-/** Time for a 1-tile move lerp in seconds (matches lerpPositions at 16 tiles/s). */
-export const MOVE_LERP_S = 0.15;
+/** Entity movement speed in tiles per second (Unity ActorController: 16 / actionCost). */
+export const MOVE_SPEED = 12;
+/** Time for a 1-tile move lerp in seconds, derived from MOVE_SPEED. */
+export const MOVE_LERP_S = 1 / MOVE_SPEED;
+/** Move lerp delay in ms between entity steps (MOVE_LERP_S + small buffer). */
+export const MOVE_LERP_MS = Math.ceil(MOVE_LERP_S * 1000) + 100;
 /** Death fade-out duration in seconds. */
-export const DEATH_FADE_S = 0.5;
+export const DEATH_FADE_S = 0.25;
 /** Damage flash duration in seconds. */
 export const DAMAGE_FLASH_S = 0.25;
 /** Damage/heal text float-up fade duration in seconds. */

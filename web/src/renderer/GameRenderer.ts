@@ -1,4 +1,5 @@
 import { Application, Container, Sprite, Graphics, Texture } from 'pixi.js';
+import { MOVE_SPEED } from '../constants';
 import { Floor } from '../model/Floor';
 import { Entity } from '../model/Entity';
 import { Vector2Int } from '../core/Vector2Int';
@@ -359,8 +360,7 @@ export class GameRenderer {
         continue;
       }
 
-      // Lerp speed: 16 tiles per second (Unity ActorController line 82: 16 / actionCost)
-      const speed = 16 * ts * dt;
+      const speed = MOVE_SPEED * ts * dt;
       const ratio = Math.min(speed / dist, 1);
       node.position.set(
         node.position.x + dx * ratio,

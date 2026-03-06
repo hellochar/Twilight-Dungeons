@@ -1,4 +1,4 @@
-import { Application, Container, Sprite, Graphics, Texture } from 'pixi.js';
+import { Application, Container, Sprite, Graphics, Texture, ColorMatrixFilter } from 'pixi.js';
 import { MOVE_SPEED } from '../constants';
 import { Floor } from '../model/Floor';
 import { Entity } from '../model/Entity';
@@ -30,6 +30,8 @@ import {
   FADE_END_SCALE,
   TELEGRAPH_FADE_DURATION,
 } from './animationConstants';
+import { AcesTonemapFilter } from './AcesTonemapFilter';
+
 
 /**
  * Grasses whose Unity prefab overrides Shadow rotation to (0,0,0) — flat shadow
@@ -166,6 +168,29 @@ export class GameRenderer {
     this.hpLabelRenderer = new HpLabelRenderer(camera);
     app.stage.addChild(this.hpLabelRenderer.layer);
     app.stage.addChild(this.tileRenderer.dimLayer);
+
+    const colorMatrix = new ColorMatrixFilter();
+    colorMatrix.saturate(0.3, true);
+    colorMatrix.brightness(1.06, true);
+
+    // colorMatrix.contrast(0.0, true);
+    // colorMatrix.night(5, true);
+    // colorMatrix.colorTone(0.0, 0.0, 0xa9a5a3, 0x23591, true);
+    // colorMatrix.lsd(true);
+    // colorMatrix.kodachrome(true);
+
+    // colorMatrix.polaroid(true);
+    // colorMatrix.brightness(.95, true);
+    // colorMatrix.contrast(-0.12, true);
+
+    // colorMatrix.technicolor(true);
+    // colorMatrix.tint
+
+    app.stage.filters = [colorMatrix];
+
+    // const aces = new AcesTonemapFilter(0.75); // exposure: 1.0 = neutral, >1 brighter
+    // app.stage.filters = [colorMatrix, aces];
+
   }
 
   /** Set the floor to render and do full rebuild. */

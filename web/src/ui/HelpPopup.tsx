@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FONT_FAMILY_SERIF, FontSize } from './fonts';
 import { buttonBase, buttonPaddingCompact } from './theme';
+import { CloseButton } from './CloseButton';
 
 const SEEN_KEY = 'twilight-dungeons-help-seen';
 
@@ -73,23 +74,10 @@ function HelpPopup({ onClose }: { onClose: () => void }) {
       >
         <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <span style={{ fontSize: FontSize.xl }}>Twilight Dungeons</span>
-          <button
+          <CloseButton
             onClick={onClose}
-          style={{
-            ...buttonBase,
-            ...buttonPaddingCompact,
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            background: 'transparent',
-            border: 'none',
-            color: '#888',
-            lineHeight: 1,
-            zIndex: 1,
-          }}
-        >
-          ✕
-        </button>
+            style={{ position: 'absolute', top: 0, right: 0, zIndex: 1 }}
+          />
         </div>
 
         <div style={{ marginBottom: 20 }}>

@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { getObjectInfo } from '../model/ObjectInfo';
-import { spriteUrl } from './spriteUrl';
-import { FONT_FAMILY, FontSize } from './fonts';
+import { useEffect } from 'react';
+import { EntityCard } from './ObjectInfoList';
+import { CloseButton } from './CloseButton';
 
 export interface EntityInfoData {
   name: string;
@@ -9,7 +8,7 @@ export interface EntityInfoData {
   typeName: string;
   hp?: number;
   maxHp?: number;
-  /** Item stats string (from getStatsFull). */
+  /** Pre-formatted description (e.g. status with stacks substituted). */
   stats?: string;
   /** Override sprite URL (e.g. for statuses that use a different URL scheme). */
   spriteSrc?: string;
@@ -24,24 +23,6 @@ interface EntityInfoPopupProps {
 }
 
 export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const info = getObjectInfo(data.typeName);
-
-  // Close on click outside
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
-    // Delay to avoid closing immediately from the same click that opened it
-    const timer = setTimeout(() => document.addEventListener('mousedown', handler), 50);
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('mousedown', handler);
-    };
-  }, [onClose]);
-
   // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -65,68 +46,42 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
     top = Math.max(margin, window.innerHeight - popupMaxHeight - margin);
   }
 
-  const spriteSrc = data.spriteSrc ?? spriteUrl(data.name);
-  const description = data.stats || info?.description || '';
-  const flavorText = info?.flavorText;
-
   return (
+    /* Fullscreen backdrop absorbs clicks so they don't reach the canvas */
     <div
-      ref={ref}
-      style={{
-        position: 'fixed',
-        left,
-        top,
-        width: popupWidth,
-        maxHeight: popupMaxHeight,
-        overflow: 'auto',
-        background: 'rgba(16, 16, 28, 0.95)',
-        border: '1px solid #555',
-        borderRadius: 6,
-        padding: 10,
-        fontFamily: FONT_FAMILY,
-        fontSize: FontSize.md,
-        color: '#ddd',
-        zIndex: 100,
-        boxShadow: '0 4px 12px rgba(0,0,0,0.6)',
-      }}
+      style={{ position: 'fixed', inset: 0, zIndex: 99, pointerEvents: 'auto' }}
+      onMouseDown={onClose}
+      onTouchEnd={onClose}
     >
-      {/* Header: sprite + name + HP */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <img
-          src={spriteSrc}
-          alt={data.name}
-          style={{
-            width: 32,
-            height: 32,
-            imageRendering: 'pixelated',
-          }}
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+      <div
+        style={{
+          position: 'fixed',
+          left,
+          top,
+          width: popupWidth,
+          maxHeight: popupMaxHeight,
+          overflow: 'auto',
+          zIndex: 100,
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => e.stopPropagation()}
+      >
+        <CloseButton
+          onClick={onClose}
+          style={{ position: 'absolute', top: 4, right: 4, zIndex: 101 }}
         />
-        <div>
-          <div style={{ fontWeight: 'bold', fontSize: FontSize.lg, color: '#fff' }}>
-            {data.name}
-          </div>
-          {data.hp != null && data.maxHp != null && (
-            <div style={{ fontSize: FontSize.md, color: '#aaa' }}>
-              HP: {data.hp}/{data.maxHp}
-            </div>
-          )}
-        </div>
+        <EntityCard
+          data={{
+            displayName: data.name,
+            typeName: data.typeName,
+            hp: data.hp,
+            maxHp: data.maxHp,
+          }}
+          horizontal={false}
+          description={data.stats}
+          spriteSrc={data.spriteSrc}
+        />
       </div>
-
-      {/* Description */}
-      {description && (
-        <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.4, marginBottom: flavorText ? 8 : 0 }}>
-          {description}
-        </div>
-      )}
-
-      {/* Flavor text */}
-      {flavorText && (
-        <div style={{ fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: FontSize.md }}>
-          {flavorText}
-        </div>
-      )}
     </div>
   );
 }

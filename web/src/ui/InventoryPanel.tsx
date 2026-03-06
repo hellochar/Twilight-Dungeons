@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react';
 import type { ItemSnapshot } from '../hooks/useGameLoop';
 import { spriteUrl } from './spriteUrl';
 import { FONT_FAMILY, FontSize } from './fonts';
-import { buttonBase, buttonPadding, buttonPaddingCompact } from './theme';
+import { buttonBase, buttonPadding } from './theme';
+import { CloseButton } from './CloseButton';
 
 /**
  * Inventory + Equipment panel matching Unity's InventorySlotController + ItemController.
@@ -309,18 +310,7 @@ function ItemPopup({ item, onAction, onClose }: ItemPopupProps) {
               {m}
             </button>
           ))}
-          <button
-            onClick={onClose}
-            style={{
-              ...buttonBase,
-              ...buttonPaddingCompact,
-              background: 'transparent',
-              color: '#666',
-              border: '1px solid #333',
-            }}
-          >
-            ×
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
       </div>
     </div>

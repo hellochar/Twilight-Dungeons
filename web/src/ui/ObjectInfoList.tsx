@@ -149,11 +149,28 @@ function describeDamage(spread: [number, number]): string {
   return min === max ? `Deals ${min} damage` : `Deals ${min} - ${max} damage`;
 }
 
-export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; horizontal: boolean }>(
-  function EntityCard({ data, horizontal }, ref) {
+export interface EntityCardProps {
+  data: {
+    displayName: string;
+    typeName: string;
+    hp?: number;
+    maxHp?: number;
+    attackDamage?: [number, number];
+  };
+  horizontal: boolean;
+  /** Override description (e.g. status with stacks substituted). */
+  description?: string;
+  /** Override sprite URL (e.g. for statuses). */
+  spriteSrc?: string;
+}
+
+export const EntityCard = forwardRef<HTMLDivElement, EntityCardProps>(
+  function EntityCard({ data, horizontal, description: descOverride, spriteSrc }, ref) {
     const info = getObjectInfo(data.typeName);
-    const description = info?.description ?? '';
+    const description = descOverride ?? info?.description ?? '';
+    const flavorText = info?.flavorText;
     const hasStats = data.attackDamage != null || (data.hp != null && data.maxHp != null && data.maxHp > 0);
+    const imgSrc = spriteSrc ?? spriteUrl(data.displayName);
 
     return (
       <div ref={ref} style={{
@@ -170,7 +187,7 @@ export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; hor
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: (description || hasStats) ? 6 : 0 }}>
           <img
-            src={spriteUrl(data.displayName)}
+            src={imgSrc}
             alt={data.displayName}
             style={{ height: 32, width: 'auto', imageRendering: 'pixelated', flexShrink: 0, ...getSpriteImgStyle(data.displayName) }}
             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -186,8 +203,13 @@ export const EntityCard = forwardRef<HTMLDivElement, { data: EntityCardData; hor
           </div>
         )}
         {description && (
-          <div style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifSm, color: '#fff', whiteSpace: 'pre-wrap', lineHeight: 1.3 }}>
+          <div style={{ fontFamily: FONT_FAMILY_SERIF, fontSize: FontSize.serifSm, color: '#fff', whiteSpace: 'pre-wrap', lineHeight: 1.3, marginBottom: flavorText ? 4 : 0 }}>
             {description}
+          </div>
+        )}
+        {flavorText && (
+          <div style={{ fontFamily: FONT_FAMILY_SERIF, fontStyle: 'italic', color: '#888', whiteSpace: 'pre-wrap', lineHeight: 1.3, fontSize: FontSize.serifSm }}>
+            {flavorText}
           </div>
         )}
       </div>

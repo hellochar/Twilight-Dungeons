@@ -18,6 +18,10 @@ export abstract class SimpleStatusApplicationEnemy extends AIActor {
 
   private justWaited = false;
 
+  get isStationary(): boolean {
+    return true;
+  }
+
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Enemy;

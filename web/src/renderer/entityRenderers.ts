@@ -16,6 +16,7 @@ import { Jackal } from '../model/enemies/Jackal';
 import { Hopper } from '../model/enemies/Hopper';
 import { Goo } from '../model/enemies/Goo';
 import { Crab } from '../model/enemies/Crab';
+import { IronJelly } from '../model/enemies/IronJelly';
 
 // ─── EntityRenderState ───
 
@@ -455,6 +456,24 @@ registerEntityRenderer(Crab, {
       const idx = crab.dx === 1 ? 0 : 4;
       state.visual.texture = frames[idx];
       if (state.shadow) state.shadow.texture = frames[idx];
+    }
+  },
+});
+
+// ─── IronJelly renderer ───
+
+registerEntityRenderer(IronJelly, {
+  init(_entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const { ts } = ctx;
+    state.visual.width = ts * 1.5;
+    state.visual.height = ts * 1.5;
+    state.visual.position.set(ts / 2, ts / 2);
+    state.visual.anchor.set(0.5, 0.5);
+    if (state.shadow) {
+      state.shadow.width = ts * 1.5;
+      state.shadow.height = ts * 1.5;
+      state.shadow.position.set(ts / 2, ts / 2);
+      state.shadow.anchor.set(0.5, 0.5);
     }
   },
 });

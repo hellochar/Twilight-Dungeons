@@ -2,8 +2,8 @@ import { AIActor } from './AIActor';
 import { Body } from '../Body';
 import { ActorTask } from '../ActorTask';
 import { WaitTask } from '../tasks/WaitTask';
-import { AttackTask } from '../tasks/AttackTask';
 import { TelegraphedTask } from '../tasks/TelegraphedTask';
+import { AttackGroundTask } from '../tasks/AttackGroundTask';
 import { GenericBaseAction, WaitBaseAction, ActionCosts } from '../BaseAction';
 import { BASE_ACTION_MOD, type IBaseActionModifier } from '../../core/Modifiers';
 import { ActionType, Faction } from '../../core/types';
@@ -31,7 +31,7 @@ export class HydraHeart extends AIActor implements IBaseActionModifier, IDeathHa
   static readonly spawnRange = 3;
 
   private heads: HydraHead[] = [];
-  private needsWait = true;
+  private needsWait = false;
 
   static isTarget(b: Body): boolean {
     return !(b instanceof HydraHead) && !(b instanceof HydraHeart) && !b.isDead;
@@ -40,7 +40,7 @@ export class HydraHeart extends AIActor implements IBaseActionModifier, IDeathHa
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Enemy;
-    this._hp = this._baseMaxHp = 11;
+    this._hp = this._baseMaxHp = 5;
   }
 
   baseAttackDamage(): [number, number] {
@@ -54,7 +54,7 @@ export class HydraHeart extends AIActor implements IBaseActionModifier, IDeathHa
     }
     // Clean up dead heads
     this.heads = this.heads.filter(h => !h.isDead);
-    if (this.heads.length < 6) {
+    if (this.heads.length < 5) {
       this.needsWait = true;
       return new TelegraphedTask(this, 1, new GenericBaseAction(this, () => this.spawnHydraHead()));
     }
@@ -131,16 +131,20 @@ export class HydraHeart extends AIActor implements IBaseActionModifier, IDeathHa
 
 /**
  * Stationary head that attacks random adjacent non-Hydra targets.
- * Attack cost = 2. Cannot move.
+ * Attack cost = 3. Cannot move.
  * Port of C# HydraHead.cs.
  */
 export class HydraHead extends AIActor implements IBaseActionModifier {
   readonly [BASE_ACTION_MOD] = true as const;
   override get isStationary() { return true; }
 
+  get turnPriority(): number {
+    return this.task?.constructor.name === 'AttackGroundTask' ? 90 : super.turnPriority;
+  }
+
   protected get actionCosts(): ActionCosts {
     return new ActionCosts([
-      [ActionType.ATTACK, 2],
+      [ActionType.ATTACK, 1],
       [ActionType.GENERIC, 1],
       [ActionType.MOVE, 1],
       [ActionType.WAIT, 1],
@@ -150,7 +154,7 @@ export class HydraHead extends AIActor implements IBaseActionModifier {
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Enemy;
-    this._hp = this._baseMaxHp = 3;
+    this._hp = this._baseMaxHp = 1;
   }
 
   baseAttackDamage(): [number, number] {
@@ -166,7 +170,7 @@ export class HydraHead extends AIActor implements IBaseActionModifier {
 
     if (targets.length > 0) {
       const target = MyRandom.Pick(targets);
-      return new AttackTask(this, target);
+      return new AttackGroundTask(this, target.pos, 1);
     }
     return new WaitTask(this, 1);
   }

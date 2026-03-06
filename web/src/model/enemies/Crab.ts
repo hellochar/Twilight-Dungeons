@@ -25,11 +25,11 @@ export class Crab extends AIActor {
     super(pos);
     this.dx = MyRandom.value < 0.5 ? -1 : 1;
     this.faction = Faction.Neutral;
-    this.hp = this._baseMaxHp = 5;
+    this.hp = this._baseMaxHp = 1;
   }
 
   baseAttackDamage(): [number, number] {
-    return [2, 2];
+    return [1, 1];
   }
 
   protected getNextTask(): ActorTask {

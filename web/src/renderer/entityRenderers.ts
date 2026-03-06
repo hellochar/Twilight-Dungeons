@@ -14,6 +14,7 @@ import { BoombugCorpse } from '../model/enemies/Boombug';
 import { Wallflower } from '../model/enemies/Wallflower';
 import { Jackal } from '../model/enemies/Jackal';
 import { Hopper } from '../model/enemies/Hopper';
+import { Goo } from '../model/enemies/Goo';
 
 // ─── EntityRenderState ───
 
@@ -378,6 +379,38 @@ registerEntityRenderer(Hopper, {
     const hopper = entity as Hopper;
     const isDamaged = hopper.hp < hopper.maxHp;
     const tex = isDamaged ? frames[1] : frames[0];
+    state.visual.texture = tex;
+    if (state.shadow) state.shadow.texture = tex;
+  },
+});
+
+// ─── Goo renderer ───
+
+/**
+ * GooController port: swaps sprite based on HP thresholds.
+ * Frames: 0=full, 1=half, 2=quarter, 3=eighth.
+ */
+function gooFrame(frames: Texture[], hp: number, maxHp: number): Texture {
+  if (hp <= maxHp / 8) return frames[3];
+  if (hp <= maxHp / 4) return frames[2];
+  if (hp <= maxHp / 2) return frames[1];
+  return frames[0];
+}
+
+registerEntityRenderer(Goo, {
+  init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const frames = ctx.sprites.getFrames('goo');
+    if (!frames || frames.length < 4) return;
+    const goo = entity as Goo;
+    const tex = gooFrame(frames, goo.hp, goo.maxHp);
+    state.visual.texture = tex;
+    if (state.shadow) state.shadow.texture = tex;
+  },
+  sync(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {
+    const frames = ctx.sprites.getFrames('goo');
+    if (!frames || frames.length < 4) return;
+    const goo = entity as Goo;
+    const tex = gooFrame(frames, goo.hp, goo.maxHp);
     state.visual.texture = tex;
     if (state.shadow) state.shadow.texture = tex;
   },

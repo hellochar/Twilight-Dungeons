@@ -8,7 +8,7 @@ import { GameModelRef } from '../GameModelRef';
 import { ACTOR_KILLED_HANDLER } from '../Actor';
 import { Grass } from '../grasses/Grass';
 import { Ground } from '../Tile';
-import { ACTOR_ENTER_HANDLER, type IActorEnterHandler } from '../../core/types';
+import { ACTOR_ENTER_HANDLER, ENEMY_ENTITY_TAG, type IActorEnterHandler, type IEnemyEntity } from '../../core/types';
 import { entityRegistry } from '../../generator/entityRegistry';
 import type { ISteppable } from '../Floor';
 import type { Actor } from '../Actor';
@@ -61,8 +61,9 @@ export class Skully extends AIActor {
  * Step on it to remove it.
  * Port of C# Muck.
  */
-export class Muck extends Grass implements ISteppable, IActorEnterHandler {
+export class Muck extends Grass implements ISteppable, IActorEnterHandler, IEnemyEntity {
   readonly [ACTOR_ENTER_HANDLER] = true as const;
+  readonly [ENEMY_ENTITY_TAG] = true as const;
   timeNextAction: number;
   turnsElapsed = 0;
 

@@ -1,7 +1,7 @@
 import { Entity, NoSpaceException } from './Entity';
 import { Tile, Wall } from './Tile';
 import { Vector2Int } from '../core/Vector2Int';
-import { TileVisibility, Faction } from '../core/types';
+import { TileVisibility, Faction, ENEMY_ENTITY_TAG } from '../core/types';
 import { EventEmitter } from '../core/EventEmitter';
 import { GameModelRef } from './GameModelRef';
 import { MyRandom } from '../core/MyRandom';
@@ -309,7 +309,7 @@ export class Floor {
     return '_isItem' in e;
   }
   private isEnemy(e: Entity): boolean {
-    return ('faction' in e && (e as any).faction === Faction.Enemy);
+    return ('faction' in e && (e as any).faction === Faction.Enemy) || ENEMY_ENTITY_TAG in e;
   }
 
   // ─── Queries ───
@@ -318,6 +318,9 @@ export class Floor {
     let count = 0;
     for (const b of this.bodies) {
       if (this.isEnemy(b)) count++;
+    }
+    for (const g of this.grasses) {
+      if (ENEMY_ENTITY_TAG in g) count++;
     }
     return count;
   }

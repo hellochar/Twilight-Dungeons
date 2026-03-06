@@ -40,6 +40,14 @@ export interface IKillEntityHandler {
   onKill(entity: any): void;
 }
 
+/** Symbol marking non-AIActor entities (e.g. Muck, ParasiteEgg) as enemies for floor clearing. */
+export const ENEMY_ENTITY_TAG = Symbol.for('IEnemyEntity');
+
+/** Marker interface for entities that count as enemies for floor clearing. */
+export interface IEnemyEntity {
+  readonly [ENEMY_ENTITY_TAG]: true;
+}
+
 /** Symbol for collecting IActorEnterHandler via collectModifiers. */
 export const ACTOR_ENTER_HANDLER = Symbol.for('IActorEnterHandler');
 

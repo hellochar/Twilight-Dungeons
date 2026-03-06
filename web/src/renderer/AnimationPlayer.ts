@@ -71,6 +71,8 @@ export class AnimationPlayer {
   private sound: SoundManager | null;
   private timeline: gsap.core.Timeline | null = null;
   private floatingTexts: Text[] = [];
+  /** Tracks explosion count within a batch for chain-reaction stagger. */
+  private _explosionIndex = 0;
 
   constructor(renderer: GameRenderer, camera: Camera, playerGuid: string, sound: SoundManager | null = null) {
     this.renderer = renderer;
@@ -104,6 +106,7 @@ export class AnimationPlayer {
 
     this.timeline?.kill();
     this.timeline = gsap.timeline();
+    this._explosionIndex = 0;
 
     for (const event of events) {
       this.addEventToTimeline(event, this.timeline, events);
@@ -644,18 +647,27 @@ export class AnimationPlayer {
    */
   private animateExplosion(event: GameEvent, tl: gsap.core.Timeline): void {
     if (!event.from) return;
-    // Unity Boombug Explosion.prefab: AudioSource volume 0.5, pitch randomized 0.9–1.111
-    this.sound?.play('explosion', 0.5);
     const ts = this.camera.tileSize;
     const px = this.camera.tileToPixel(event.from);
     const frames = this.renderer.sprites.getFrames('explosion');
     if (!frames || frames.length === 0) return;
+
+    // Chain-reaction stagger: each explosion in a batch offsets by 0.1s
+    const CHAIN_STAGGER = 0.25;
+    const staggerOffset = this._explosionIndex * CHAIN_STAGGER;
+    this._explosionIndex++;
 
     const s = new Sprite(frames[0]);
     s.width = 3 * ts;
     s.height = 3 * ts;
     s.position.set(px.x - ts, px.y - ts);
     this.renderer.getEffectLayer().addChild(s);
+
+    // Unity Boombug Explosion.prefab: AudioSource volume 0.5, pitch randomized 0.9–1.111
+    const sound = this.sound;
+    if (sound) {
+      tl.call(() => sound.play('explosion', 0.5), [], staggerOffset);
+    }
 
     const FRAME_DURATION = 0.083; // ~12fps
     const progress = { t: 0 };
@@ -671,7 +683,7 @@ export class AnimationPlayer {
         s.parent?.removeChild(s);
         s.destroy();
       },
-    }, '<');
+    }, staggerOffset);
   }
 
   /**

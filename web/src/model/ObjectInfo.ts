@@ -28,7 +28,7 @@ registerObjectInfo('Snake', { description: 'Only moves or attacks if you\'re in 
 registerObjectInfo('Spider', { description: 'Spins Webs. Attacks deal no damage but apply Poison.' });
 registerObjectInfo('Snail', { description: 'Slow. Goes into its shell when it takes damage. While in its shell, it takes 1 less attack damage.' });
 registerObjectInfo('Wallflower', { description: 'Stays next to walls.' });
-registerObjectInfo('Jackal', { description: 'Runs away when another Jackal dies.' });
+registerObjectInfo('Jackal', { description: 'Alternates moving 1 and 2 tiles. Runs away when another Jackal dies.' });
 registerObjectInfo('Skully', { description: 'Regenerates after three turns. Attack then step on it to kill it.' });
 registerObjectInfo('Octopus', { description: 'Range 2. Runs away if you get too close.' });
 

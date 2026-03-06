@@ -12,6 +12,7 @@ import { InShellStatus } from '../model/statuses/InShellStatus';
 import { Muck, Skully } from '../model/enemies/Skully';
 import { BoombugCorpse } from '../model/enemies/Boombug';
 import { Wallflower } from '../model/enemies/Wallflower';
+import { Jackal } from '../model/enemies/Jackal';
 
 // ─── EntityRenderState ───
 
@@ -347,6 +348,15 @@ registerEntityRenderer(Wallflower, {
     state.baseOffset = { x: wx * offset, y: -wy * offset };
   },
 });
+
+// // ─── Jackal renderer ───
+
+// registerEntityRenderer(Jackal, {
+//   sync(entity: Entity, state: EntityRenderState): void {
+//     // Brighten tint on fast turns to telegraph the double-move
+//     state.visual.tint = (entity as Jackal).sprintReady ? 0x9B303E : 0xc7954e;
+//   },
+// });
 
 registerEntityRenderer(Skully, {
   init(entity: Entity, state: EntityRenderState, ctx: RenderCtx): void {

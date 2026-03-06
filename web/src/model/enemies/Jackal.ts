@@ -4,6 +4,7 @@ import { AttackTask } from '../tasks/AttackTask';
 import { ChaseTargetTask } from '../tasks/ChaseTargetTask';
 import { MoveRandomlyTask } from '../tasks/MoveRandomlyTask';
 import { RunAwayTask } from '../tasks/RunAwayTask';
+import { WaitTask } from '../tasks/WaitTask';
 import { TelegraphedTask } from '../tasks/TelegraphedTask';
 import { ActionCosts, GenericBaseAction } from '../BaseAction';
 import { ActionType, Faction } from '../../core/types';
@@ -22,9 +23,16 @@ const DEATH_HANDLER = Symbol.for('IDeathHandler');
 export class Jackal extends AIActor implements IDeathHandler {
   readonly [DEATH_HANDLER] = true as const;
 
+  private fastStepsRemaining = 2;
+  private wasAdjacentAtTurnStart = false;
+
+  get sprintReady(): boolean {
+    return this.fastStepsRemaining > 0;
+  }
+
   protected get actionCosts(): ActionCosts {
     return new ActionCosts([
-      [ActionType.MOVE, 1],
+      [ActionType.MOVE, this.fastStepsRemaining > 0 ? 0.5 : 1],
       [ActionType.ATTACK, 1],
       [ActionType.WAIT, 1],
       [ActionType.GENERIC, 1],
@@ -41,10 +49,26 @@ export class Jackal extends AIActor implements IDeathHandler {
     return [1, 1];
   }
 
+  step(): number {
+    if (this.fastStepsRemaining === 2) {
+      this.wasAdjacentAtTurnStart = this.isNextTo(GameModelRef.main.player);
+    }
+    const cost = super.step();
+    if (cost <= 0.5) {
+      this.fastStepsRemaining--;
+    } else {
+      this.fastStepsRemaining = 2;
+    }
+    return cost;
+  }
+
   protected getNextTask(): ActorTask {
     const player = GameModelRef.main.player;
     if (this.canTargetPlayer()) {
       if (this.isNextTo(player)) {
+        if (this.sprintReady && !this.wasAdjacentAtTurnStart) {
+          return new WaitTask(this, 1);
+        }
         return new AttackTask(this, player);
       }
       return new ChaseTargetTask(this, player);

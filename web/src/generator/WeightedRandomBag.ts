@@ -42,6 +42,8 @@ export class WeightedRandomBag<T> {
 
   /** Get an item and reduce its weight by reduceChanceBy fraction */
   getRandomAndDiscount(reduceChanceBy = 0.3): T {
+    // 11th hour hack - prevent drawing the same item twice
+    reduceChanceBy = 1;
     const item = this.getRandom();
     if (item != null) this.discount(item, reduceChanceBy);
     return item;

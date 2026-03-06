@@ -53,8 +53,8 @@ registerObjectInfo('Goo', { description: 'When attacked, it duplicates into two 
 registerObjectInfo('Dizapper', { description: 'Applies Vulnerable when it hits you.\nGets stunned when attacked.' });
 registerObjectInfo('Hopper', { description: 'Jumps next to you.\nWhen hurt, it will eat a nearby Grass to heal itself to full HP.' });
 registerObjectInfo('IronJelly', { description: 'Invulnerable.\nAttacking the Iron Jelly pushes it away, first attacking any Creature in its way.' });
-registerObjectInfo('Grasper', { description: 'Attempts to surround you with its Tendril. If you are next to three contiguous Tendrils, Grasper attacks for 3 damage.' });
-registerObjectInfo('Tendril', { description: 'If you next to 3 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.' });
+registerObjectInfo('Grasper', { description: 'Surrounds you with its Tendril. If you are next to three contiguous Tendrils, Grasper attacks for 3 damage.' });
+registerObjectInfo('Tendril', { description: ' Killing a Tendril kills descendant Tendrils.' });
 registerObjectInfo('Poisoner', { description: 'Every other turn, applies Poisoned to the Player if visible.' });
 registerObjectInfo('Muckola', { description: 'Every other turn, place a Muck next to the Player, if visible.' });
 registerObjectInfo('Thistlebog', { description: 'Moves slowly.\nSummons a ring of Brambles around you that disappear after 10 turns (needs vision).\nInterrupted when taking damage.' });
@@ -217,5 +217,5 @@ registerObjectInfo('BarkmealStatus', { description: '+{stacks} max HP.' });
 registerObjectInfo('HeartyVeggieStatus', { description: 'Heal {stacks} more HP over {stacks*25} turns. Next tick in {turnsLeft} turns (paused while at full HP).' });
 registerObjectInfo('ShieldLinkStatus', { description: 'The Shielder has linked you! Block 1 damage from all sources.' });
 registerObjectInfo('GuardedStatus', { description: 'Guardleaf protects you from the next attack!' });
-registerObjectInfo('ClumpedLungStatus', { description: 'At 20 stacks, you die.\n\nResets on floor cleared.' });
+registerObjectInfo('ClumpedLungStatus', { description: 'At 8 stacks, you die.' });
 registerObjectInfo('ZenStatus', { description: 'Your next {stacks} moves on a non-cleared Floor are Free Moves. Removed once you take or deal damage.' });

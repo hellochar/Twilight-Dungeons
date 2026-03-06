@@ -23,6 +23,7 @@ const STATUS_SPRITE_MAP: Record<string, string> = {
   FrenziedStatus:    '3red',
   InfectedStatus:    'infected',
   ThirdEyeStatus:    'third-eye',
+  ClumpedLungStatus: 'clumped-lung',
 };
 
 /** Known debuff status class names. */

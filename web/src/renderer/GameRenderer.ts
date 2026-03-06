@@ -110,7 +110,7 @@ const WAIT_TASK_VISUAL: StatusVisualConfig = {
 const WAIT_TASK_TINT = 0xCFC6B8;
 
 /** Enemies with hideWaitTask=true in Unity — do NOT show the clock icon. */
-const HIDE_WAIT_TASK_NAMES = new Set(['Leecher', 'FungalColony', 'FruitingBody', 'Crab']);
+const HIDE_WAIT_TASK_NAMES = new Set(['Leecher', 'FungalColony', 'FruitingBody', 'Crab', 'Tendril', 'ThickMushroom']);
 
 /**
  * PixiJS-based renderer for the game floor.
@@ -172,9 +172,8 @@ export class GameRenderer {
 
     const colorMatrix = new ColorMatrixFilter();
     colorMatrix.saturate(0.3, true);
-    colorMatrix.brightness(1.06, true);
-
-    // colorMatrix.contrast(0.0, true);
+    colorMatrix.brightness(0.97, true);
+    colorMatrix.contrast(0.1, true);
     // colorMatrix.night(5, true);
     // colorMatrix.colorTone(0.0, 0.0, 0xa9a5a3, 0x23591, true);
     // colorMatrix.lsd(true);
@@ -1242,6 +1241,26 @@ export class GameRenderer {
       db.flower.scale.set(db.targetScale * scaleRatio);
       db.flower.alpha = 0.251 + ease * (1.0 - 0.251);
       if (t >= 1.0) db.done = true;
+    }
+
+    // Tendril threat pulse: tendrils in a threatening group (3+ adjacent to player) pulse red
+    const TENDRIL_NORMAL_TINT = 0x6DBC3F;
+    const pulse = (Math.sin(performance.now() * 0.012) + 1) / 2; // 0..1 oscillation
+    if (this.floor) {
+      for (const body of this.floor.bodies) {
+        if (!('isThreatening' in body)) continue;
+        const state = this.entityStates.get(body.guid);
+        if (!state || !state.node.visible) continue;
+        if ((body as any).isThreatening) {
+          // Lerp from normal green to warning red
+          const r = Math.round(0x6D + (0xFF - 0x6D) * pulse);
+          const g = Math.round(0xBC + (0x44 - 0xBC) * pulse);
+          const b = Math.round(0x3F + (0x44 - 0x3F) * pulse);
+          state.visual.tint = (r << 16) | (g << 8) | b;
+        } else {
+          state.visual.tint = TENDRIL_NORMAL_TINT;
+        }
+      }
     }
   }
 

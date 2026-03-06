@@ -53,7 +53,7 @@ registerObjectInfo('Goo', { description: 'When attacked, it duplicates into two 
 registerObjectInfo('Dizapper', { description: 'Applies Vulnerable when it hits you.\nGets stunned when attacked.' });
 registerObjectInfo('Hopper', { description: 'Jumps next to you.\nWhen hurt, it will eat a nearby Grass to heal itself to full HP.' });
 registerObjectInfo('IronJelly', { description: 'Invulnerable.\nAttacking the Iron Jelly pushes it away, first attacking any Creature in its way.' });
-registerObjectInfo('Grasper', { description: 'Shoots out a long, snaking Tendril that surrounds you.\nIf you are next to three or more Tendrils, Grasper deals 3 attack damage.' });
+registerObjectInfo('Grasper', { description: 'Attempts to surround you with its Tendril. If you are next to three contiguous Tendrils, Grasper attacks for 3 damage.' });
 registerObjectInfo('Tendril', { description: 'If you next to 3 or more Tendrils, the Grasper deals 3 attack damage a turn.\nKilling a Tendril kills descendant Tendrils.' });
 registerObjectInfo('Poisoner', { description: 'Every other turn, applies Poisoned to the Player if visible.' });
 registerObjectInfo('Muckola', { description: 'Every other turn, place a Muck next to the Player, if visible.' });

@@ -22,8 +22,9 @@ const DEATH_HANDLER = Symbol.for('IDeathHandler');
  * the player, deals 3 attack damage.
  * Port of C# Grasper.cs.
  */
-export class Grasper extends AIActor implements IBaseActionModifier {
+export class Grasper extends AIActor implements IBaseActionModifier, IDeathHandler {
   readonly [BASE_ACTION_MOD] = true as const;
+  readonly [DEATH_HANDLER] = true;
   override get isStationary() { return true; }
 
   readonly tendrils: Tendril[] = [];
@@ -31,7 +32,7 @@ export class Grasper extends AIActor implements IBaseActionModifier {
   constructor(pos: Vector2Int) {
     super(pos);
     this.faction = Faction.Enemy;
-    this._hp = this._baseMaxHp = 6;
+    this._hp = this._baseMaxHp = 3;
   }
 
   baseAttackDamage(): [number, number] {
@@ -47,6 +48,11 @@ export class Grasper extends AIActor implements IBaseActionModifier {
       return new WaitTask(this, 1);
     }
     return new GenericTask(this, () => this.spawnTendril());
+  }
+
+  /** Returns the set of tendrils that form a threatening contiguous run (3+) adjacent to the player, or null. */
+  getThreateningTendrils(): Tendril[] | null {
+    return this.getContiguousTendrilsSurroundingPlayer(3);
   }
 
   private getContiguousTendrilsSurroundingPlayer(minLength: number): Tendril[] | null {
@@ -122,6 +128,16 @@ export class Grasper extends AIActor implements IBaseActionModifier {
     this.tendrils.splice(index, this.tendrils.length - index);
   }
 
+  handleDeath(_source: Entity | null): void {
+    // Kill all tendrils when the grasper dies
+    for (const t of [...this.tendrils]) {
+      if (!t.isDead) {
+        t.kill(this);
+      }
+    }
+    this.tendrils.length = 0;
+  }
+
   modify(input: any): any {
     if (input != null && typeof input === 'object' && 'type' in input) {
       if (input.type === ActionType.ATTACK || input.type === ActionType.MOVE) {
@@ -149,8 +165,14 @@ export class Tendril extends Actor implements IBaseActionModifier, IDeathHandler
     super(pos);
     this.owner = owner;
     this.faction = Faction.Neutral;
-    this._hp = this._baseMaxHp = 3;
+    this._hp = this._baseMaxHp = 1;
     this.timeNextAction += 999999;
+  }
+
+  /** True if this tendril is part of a threatening group (3+ contiguous, adjacent to player). */
+  get isThreatening(): boolean {
+    const group = this.owner.getThreateningTendrils();
+    return group != null && group.includes(this);
   }
 
   step(): number {
@@ -215,7 +237,7 @@ export class Tendril extends Actor implements IBaseActionModifier, IDeathHandler
     const spriteTurnY = -prevToMe.x;
     return (meToNext.x === spriteTurnX && meToNext.y === spriteTurnY)
       ? angleBase       // right turn: sprite already aligned
-      : angleBase - 90; // left turn: -90° offset via sprite symmetry
+      : angleBase + 90; // left turn: +90° offset (PixiJS CW-positive, opposite of Unity CCW)
   }
 }
 

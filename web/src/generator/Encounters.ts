@@ -715,9 +715,9 @@ export function addVibrantIvy(floor: Floor, room: Room | null): void {
   const candidates = floor.enumerateRoomTiles(room).filter(canOccupy);
   const startTile = randomPick(candidates);
   if (!startTile) return;
-  let num = MyRandom.Range(5, 10);
-  if (MyRandom.value < 0.2) num += 10;
-  const bfs = floor.breadthFirstSearch(startTile.pos, canOccupy, true, true).slice(0, num);
+  let num = 10;
+  if (MyRandom.value < 0.2) num += 40;
+  const bfs = floor.breadthFirstSearch(startTile.pos).filter(canOccupy).slice(0, num);
   for (const t of bfs) spawn(floor, 'VibrantIvy', t.pos);
 }
 

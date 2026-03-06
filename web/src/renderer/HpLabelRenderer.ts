@@ -37,7 +37,7 @@ export class HpLabelRenderer {
       return;
     }
 
-    const visible = player.floor.bodies.where((e) => e instanceof Actor) as Actor[];
+    const visible = player.floor.bodies.where((e) => e instanceof Actor && e.maxHp > 1) as Actor[];
     const visibleGuids = new Set(visible.map((a) => a.guid));
 
     // Remove stale labels
@@ -50,7 +50,7 @@ export class HpLabelRenderer {
     }
 
     const ts = this.camera.tileSize;
-    const fontSize = Math.round(ts * HP_FONT_SCALE);
+    const fontSize = 30
     for (const actor of visible) {
       let label = this.labels.get(actor.guid);
       if (!label) {

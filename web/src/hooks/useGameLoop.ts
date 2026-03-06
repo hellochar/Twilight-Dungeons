@@ -399,14 +399,19 @@ export function useGameLoop() {
     try {
       model.turnManager.beginStepSession();
 
-      // Track whether the previous batch had move events, and how long we've already waited,
-      // so we can delay attack animations enough for the move lerp to visually complete.
-      // Move lerp runs at 16 tiles/s → 1 tile takes ~63ms. We target 65ms to account for variance.
-      const MOVE_LERP_MS = 65;
+      // Ensure move lerps complete before the next entity steps. The delay must happen
+      // BEFORE stepOneEntity() because the step may kill a moving entity, and lerpPositions
+      // skips dead entities (freezing the sprite mid-walk).
+      const MOVE_LERP_MS = 65; // 16 tiles/s → ~63ms per tile, +2ms variance buffer
       let prevBatchHadMoves = false;
       let prevStaggerMs = 0;
 
       while (true) {
+        if (prevBatchHadMoves && !skipAllRef.current) {
+          const extra = Math.max(0, MOVE_LERP_MS - prevStaggerMs);
+          if (extra > 0) await delay(extra);
+        }
+
         const result = model.turnManager.stepOneEntity();
 
         if (result.done) {
@@ -445,15 +450,6 @@ export function useGameLoop() {
               renderer.animatingGuids.delete(guid);
             }
           } else {
-            // If a creature just moved into a telegraphed attack tile, the move lerp may still
-            // be in progress when the attack batch plays (stagger=20ms < lerp=63ms).
-            // Add extra delay so the attack fires only after the creature visually arrives.
-            if (prevBatchHadMoves && !result.shouldSpeedThrough &&
-                events.some(e => e.type === 'attack' || e.type === 'attackGround')) {
-              const alreadyWaited = prevStaggerMs + timeGapDelayMs;
-              const extra = Math.max(0, MOVE_LERP_MS - alreadyWaited);
-              if (extra > 0) await delay(extra);
-            }
             try {
               renderer.addNewBodySprites();
               await animator.playBatch(events);

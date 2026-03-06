@@ -552,7 +552,9 @@ function addSoftGrassImpl(floor: Floor, room: Room | null, mult: number): void {
   // const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
   // const num = Math.round(MyRandom.Range(Math.floor(occupiable.length / 4), Math.floor(occupiable.length / 2) + 1) * mult);
   for (const tile of occupiable) {
-    spawn(floor, 'SoftGrass', tile.pos);
+    if (MyRandom.value < 0.5) {
+      spawn(floor, 'SoftGrass', tile.pos);
+    }
   }
 }
 
@@ -562,16 +564,11 @@ export function addBladegrass(floor: Floor, room: Room | null): void {
 
 function addBladegrassImpl(floor: Floor, room: Room | null, mult: number): void {
   if (!room) return;
-  const occupiable = floor.enumerateRoomTiles(room)
+  const occupiable = spectrumPos(floor, 0.35)
     .filter(t => t instanceof Ground && floor.grasses.get(t.pos) == null);
   if (occupiable.length === 0) return;
-  const start = randomPick(occupiable);
-  if (!start) return;
-  const occupiableSet = new Set(occupiable);
-  const bfs = [...floor.breadthFirstSearch(start.pos, t => occupiableSet.has(t))];
-  // const num = Math.max(3, MyRandom.Range(Math.floor(occupiable.length / 10), Math.floor(occupiable.length / 5)) * mult);
   const num = 5;
-  for (const tile of bfs.slice(0, num)) {
+  for (const tile of occupiable.slice(0, num)) {
     spawn(floor, 'Bladegrass', tile.pos);
   }
 }
@@ -900,8 +897,7 @@ export function addPumpkin(floor: Floor, room: Room | null): void {
 }
 
 export function scatteredBoombugs(floor: Floor, room: Room | null): void {
-  const tiles = FloorUtils.emptyTilesInRoom(floor, room);
-  MyRandom.Shuffle(tiles);
+  const tiles = spectrumPos(floor, 0.4);
   for (const t of tiles.slice(0, 1)) spawn(floor, 'Boombug', t.pos);
 }
 

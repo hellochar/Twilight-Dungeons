@@ -182,7 +182,7 @@ function snapshotItem(item: Item | null, index: number): ItemSnapshot | null {
  */
 export function useGameLoop() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const difficultyRef = useRef<Difficulty>(getUrlDifficulty());
+  const difficulty = useRef<Difficulty>(getUrlDifficulty()).current;
   const [gameState, setGameState] = useState<GameState>(EMPTY_STATE);
   const [ready, setReady] = useState(false);
 
@@ -277,7 +277,7 @@ export function useGameLoop() {
       playerPos: { x: player.pos.x, y: player.pos.y },
       floorBodies,
       floorGrasses,
-      difficulty: difficultyRef.current,
+      difficulty: difficulty,
     };
   }, []);
 
@@ -724,7 +724,7 @@ export function useGameLoop() {
         const d = new Date(currentSeed + 'T00:00:00');
         d.setDate(d.getDate() + (e.key === '>' ? 1 : -1));
         const newDateSeed = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        const newModel = createGameForDifficulty(difficultyRef.current, newDateSeed);
+        const newModel = createGameForDifficulty(difficulty, newDateSeed);
         newModel.consumeAnimationEvents();
         modelRef.current = newModel;
         renderer.setFloor(newModel.currentFloor);
@@ -814,7 +814,7 @@ export function useGameLoop() {
 
     const newModel = depthArg != null
       ? GameModel.createDailyGame(customSeed, depthArg)
-      : createGameForDifficulty(difficultyRef.current, customSeed);
+      : createGameForDifficulty(difficulty, customSeed);
     newModel.consumeAnimationEvents();
     modelRef.current = newModel;
 
@@ -829,40 +829,10 @@ export function useGameLoop() {
     setGameState(readState());
   }, [readState, clearProposed]);
 
-  /** SPA navigation: switch date/difficulty without full page reload. */
+  /** Navigate to a different date/difficulty via full page reload. */
   const navigateToGame = useCallback((dateSeed: string, diff: Difficulty) => {
-    const renderer = rendererRef.current;
-    if (!renderer) return;
-    clearProposed();
-
-    // Update URL
-    const p = new URLSearchParams(window.location.search);
-    p.set('date', dateSeed);
-    p.set('difficulty', diff);
-    window.history.pushState(null, '', `${window.location.pathname}?${p.toString()}`);
-
-    // Update difficulty ref
-    difficultyRef.current = diff;
-
-    // Reset tracking state
-    gameStartTimeRef.current = Date.now();
-    retryCountRef.current = 0;
-    lastGameOverRef.current = null;
-
-    const newModel = createGameForDifficulty(diff, dateSeed);
-    newModel.consumeAnimationEvents();
-    modelRef.current = newModel;
-
-    renderer.setFloor(newModel.currentFloor);
-    renderer.syncToModel();
-    renderer.camera.resize(
-      renderer.app.screen.width,
-      renderer.app.screen.height,
-      newModel.currentFloor.width,
-      newModel.currentFloor.height,
-    );
-    setGameState(readState());
-  }, [readState, clearProposed]);
+    window.location.assign(`?date=${encodeURIComponent(dateSeed)}&difficulty=${encodeURIComponent(diff)}`);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -904,7 +874,7 @@ export function useGameLoop() {
 
       const model = depthArg != null
         ? GameModel.createDailyGame(customSeed, depthArg)
-        : createGameForDifficulty(difficultyRef.current, customSeed);
+        : createGameForDifficulty(difficulty, customSeed);
       model.consumeAnimationEvents();
       modelRef.current = model;
 
@@ -958,7 +928,7 @@ export function useGameLoop() {
       // Analytics: track game over
       model.onGameOver.on((stats) => {
         lastGameOverRef.current = stats;
-        trackGameOver(stats, difficultyRef.current, model.dateSeed, Date.now() - gameStartTimeRef.current, retryCountRef.current);
+        trackGameOver(stats, difficulty, model.dateSeed, Date.now() - gameStartTimeRef.current, retryCountRef.current);
       });
 
       renderer.setFloor(model.currentFloor);
@@ -1000,7 +970,7 @@ export function useGameLoop() {
 
       setGameState(readState());
       setReady(true);
-      trackSessionStart(!!getLocalScore(`${localTodayStr()}-${difficultyRef.current}`), difficultyRef.current);
+      trackSessionStart(!!getLocalScore(`${localTodayStr()}-${difficulty}`), difficulty);
     }
 
     init();

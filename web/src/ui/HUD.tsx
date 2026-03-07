@@ -15,19 +15,20 @@ interface HUDProps {
   onRetry: () => void;
 }
 
-export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait, onRetry }: HUDProps) {
+export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait, onRetry, helpButton }: HUDProps & { helpButton?: React.ReactNode }) {
   const showButtons = !state.isPlayerDead && !state.isCleared;
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
-      {/* Top-center: date · difficulty · turn */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 80px 0 60px' }}>
-        <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} enemyCount={state.enemyCount} />
-      </div>
-
-      {/* Top-right: retry + mute buttons */}
-      <div style={{ position: 'absolute', top: 6, right: 10, display: 'flex', gap: 4, pointerEvents: 'auto' }}>
-        <RetryButton onClick={onRetry} />
-        <MuteButton />
+      {/* Top row: help button, banner text, retry + mute */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 4, padding: '6px 10px 0 10px', pointerEvents: 'none' }}>
+        {helpButton && <div style={{ pointerEvents: 'auto', flexShrink: 0 }}>{helpButton}</div>}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} enemyCount={state.enemyCount} />
+        </div>
+        <div style={{ display: 'flex', gap: 4, pointerEvents: 'auto', flexShrink: 0 }}>
+          <RetryButton onClick={onRetry} />
+          <MuteButton />
+        </div>
       </div>
 
       {/* Bottom-center: status icons above hearts, with action buttons inline */}

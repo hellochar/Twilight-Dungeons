@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { EntityCard } from './ObjectInfoList';
 import { CloseButton } from './CloseButton';
+import { isMobile } from '../renderer';
 
 export interface EntityInfoData {
   name: string;
@@ -32,19 +33,44 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
     return () => document.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // Position: try to place to the right and below the click point, but keep on screen
+  // Position: on mobile use centered bottom sheet; on desktop anchor near click
+  const mobile = isMobile();
   const popupWidth = 240;
   const popupMaxHeight = 300;
   const margin = 8;
   let left = data.x + margin;
   let top = data.y + margin;
 
-  if (left + popupWidth > window.innerWidth - margin) {
-    left = data.x - popupWidth - margin;
+  if (!mobile) {
+    if (left + popupWidth > window.innerWidth - margin) {
+      left = data.x - popupWidth - margin;
+    }
+    if (top + popupMaxHeight > window.innerHeight - margin) {
+      top = Math.max(margin, window.innerHeight - popupMaxHeight - margin);
+    }
   }
-  if (top + popupMaxHeight > window.innerHeight - margin) {
-    top = Math.max(margin, window.innerHeight - popupMaxHeight - margin);
-  }
+
+  const mobileStyle: React.CSSProperties = {
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    bottom: 80,
+    maxWidth: 330,
+    width: 'calc(100% - 32px)',
+    maxHeight: popupMaxHeight,
+    overflow: 'auto',
+    zIndex: 100,
+  };
+
+  const desktopStyle: React.CSSProperties = {
+    position: 'fixed',
+    left,
+    top,
+    width: popupWidth,
+    maxHeight: popupMaxHeight,
+    overflow: 'auto',
+    zIndex: 100,
+  };
 
   return (
     /* Fullscreen backdrop absorbs clicks so they don't reach the canvas */
@@ -54,15 +80,7 @@ export function EntityInfoPopup({ data, onClose }: EntityInfoPopupProps) {
       onTouchEnd={onClose}
     >
       <div
-        style={{
-          position: 'fixed',
-          left,
-          top,
-          width: popupWidth,
-          maxHeight: popupMaxHeight,
-          overflow: 'auto',
-          zIndex: 100,
-        }}
+        style={mobile ? mobileStyle : desktopStyle}
         onMouseDown={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
       >

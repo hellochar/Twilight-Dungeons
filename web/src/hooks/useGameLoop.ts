@@ -784,12 +784,6 @@ export function useGameLoop() {
     modelRef.current = newModel;
     renderer.setFloor(newModel.currentFloor);
     renderer.syncToModel();
-    renderer.camera.resize(
-      renderer.app.screen.width,
-      renderer.app.screen.height,
-      newModel.currentFloor.width,
-      newModel.currentFloor.height,
-    );
     setGameState(readState());
   }, [readState, clearProposed]);
 
@@ -819,12 +813,6 @@ export function useGameLoop() {
 
     renderer.setFloor(newModel.currentFloor);
     renderer.syncToModel();
-    renderer.camera.resize(
-      renderer.app.screen.width,
-      renderer.app.screen.height,
-      newModel.currentFloor.width,
-      newModel.currentFloor.height,
-    );
     setGameState(readState());
   }, [readState, clearProposed]);
 

@@ -63,13 +63,13 @@ function App() {
 
         {ready && (
           <>
-            <HelpButton />
             <HUD
               state={gameState}
               onTopAction={gameState.onTopAction}
               onExecuteOnTopAction={executeOnTopAction}
               onWait={executeWait}
               onRetry={resetGame}
+              helpButton={<HelpButton />}
             />
             {targetingState && (
               <div style={{

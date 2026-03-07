@@ -337,12 +337,18 @@ export function useGameLoop() {
       rendererRef.current?.showProposedPath(previewTask.target, [...previewTask.path]);
       return;
     }
-    // Adjacent tile — show reticle only
+    // Adjacent tile — show reticle only if there's something to inspect
     const isAdjacent = Vector2Int.chebyshevDistance(player.pos, tilePos) === 1;
     if (isAdjacent) {
+      const body = floor.bodies.get(tilePos);
+      const grass = floor.grasses.get(tilePos);
+      if ((body && body !== player) || grass) {
+        clearProposed();
+        proposedTargetRef.current = tilePos;
+        rendererRef.current?.showProposedPath(tilePos, [tilePos]);
+        return;
+      }
       clearProposed();
-      proposedTargetRef.current = tilePos;
-      rendererRef.current?.showProposedPath(tilePos, [tilePos]);
       return;
     }
     clearProposed();
@@ -555,15 +561,31 @@ export function useGameLoop() {
     const floor = model.currentFloor;
 
     // ─── Two-click path/action preview ───
-    // Desktop: non-adjacent tiles in combat only. Mobile: all non-self tiles.
+    // Desktop: non-adjacent tiles in combat only. Mobile: most non-self tiles.
     // First click: show path dots + reticle (+ info popup on mobile). Second click on same tile: execute.
     if (intent.type === 'click') {
       const { tilePos } = intent;
+
+      // Tapping self clears all UI state and does nothing
+      if (Vector2Int.equals(tilePos, player.pos)) {
+        clearProposed();
+        setHoveredTilePos(null);
+        return;
+      }
+
       const isInCombat = floor.depth > 0 && !floor.isCleared;
       const isAdjacent = Vector2Int.chebyshevDistance(player.pos, tilePos) === 1;
+
+      // On mobile, skip confirm for adjacent tiles with nothing to inspect
+      const hasInspectable = (() => {
+        const body = floor.bodies.get(tilePos);
+        if (body && body !== player) return true;
+        return !!floor.grasses.get(tilePos);
+      })();
+
       const needsConfirm = isMobile()
-        ? !Vector2Int.equals(tilePos, player.pos)
-        : (isInCombat && !Vector2Int.equals(tilePos, player.pos) && !isAdjacent);
+        ? (!isAdjacent || hasInspectable)
+        : (isInCombat && !isAdjacent);
       if (needsConfirm) {
         if (proposedTargetRef.current && Vector2Int.equals(proposedTargetRef.current, tilePos)) {
           // Second click on same tile — clear dots visually, keep ref for post-execution refresh

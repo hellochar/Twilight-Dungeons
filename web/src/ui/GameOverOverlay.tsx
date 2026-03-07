@@ -16,9 +16,10 @@ interface GameOverOverlayProps {
   difficulty: Difficulty;
   onPlayAgain: () => void;
   onNavigate?: (dateSeed: string, difficulty: Difficulty) => void;
+  overrideHistogram?: HistogramBucket[];
 }
 
-export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain, onNavigate }: GameOverOverlayProps) {
+export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain, onNavigate, overrideHistogram }: GameOverOverlayProps) {
   if (!info.won) {
     return (
       <div style={{
@@ -73,6 +74,10 @@ export function GameOverOverlay({ info, dateSeed, difficulty, onPlayAgain, onNav
 
   // On mount: save local score, auto-submit if enabled, or load histogram if already submitted
   useEffect(() => {
+    if (overrideHistogram) {
+      setHistogram(overrideHistogram);
+      return;
+    }
     if (!scoreKey) return;
     saveLocalScore(scoreKey, info.turnsTaken);
     const local = getLocalScore(scoreKey);

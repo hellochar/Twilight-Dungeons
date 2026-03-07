@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGameLoop } from './hooks/useGameLoop';
+import type { GameOverInfo } from './hooks/useGameLoop';
 import { HUD } from './ui/HUD';
 import { GameOverOverlay } from './ui/GameOverOverlay';
 import { ObjectInfoList } from './ui/ObjectInfoList';
@@ -9,6 +10,7 @@ import { DateSelectorPanel } from './ui/DateSelectorPanel';
 import { HelpButton } from './ui/HelpPopup';
 import { FONT_FAMILY, FontSize } from './ui/fonts';
 import { DIFFICULTY_LABEL } from './model/GameModel';
+import type { HistogramBucket } from './services/ScoreService';
 import { isMobile } from './renderer';
 import './App.css';
 
@@ -18,6 +20,7 @@ const INFO_PANEL_W = 330;
 function App() {
   const { containerRef, gameState, ready, executeOnTopAction, executeWait, resetGame, navigateToGame, targetingState, cancelTargeting, syncAndUpdate, modelRef, rendererRef, debugNotice, hoveredTilePos, clearHoveredTile } = useGameLoop();
   const [debugOpen, setDebugOpen] = useState(false);
+  const [debugCleared, setDebugCleared] = useState(false);
   const [viewW, setViewW] = useState(() => window.innerWidth);
 
   useEffect(() => {
@@ -37,6 +40,21 @@ function App() {
 
   const showRight = !isMobile();
   const hasPanelContent = gameState.floorBodies.length > 0 || gameState.floorGrasses.length > 0;
+
+  // Debug: fake histogram with a distribution from 27-100 turns
+  const debugHistogram = useMemo<HistogramBucket[]>(() => {
+    const buckets: HistogramBucket[] = [];
+    const mean = 34; const stddev = 3;
+    for (let t = 27; t <= 40; t++) {
+      const z = (t - mean) / stddev;
+      const count = Math.max(1, Math.round(40 * Math.exp(-0.5 * z * z)));
+      buckets.push({ turns_taken: t, count });
+    }
+    return buckets;
+  }, []);
+  const debugClearedInfo = useMemo<GameOverInfo>(() => ({
+    won: true, turnsTaken: 31, killedBy: null, enemiesDefeated: 12, damageDealt: 48, damageTaken: 16,
+  }), []);
 
   return (
     <div style={{ width: '100vw', height: '100dvh', display: 'flex', alignItems: 'stretch', justifyContent: 'center' }}>
@@ -92,6 +110,9 @@ function App() {
             {gameState.gameOver && (
               <GameOverOverlay info={gameState.gameOver} dateSeed={gameState.dateSeed} difficulty={gameState.difficulty} onPlayAgain={resetGame} onNavigate={navigateToGame} />
             )}
+            {debugCleared && (
+              <GameOverOverlay info={debugClearedInfo} dateSeed={gameState.dateSeed} difficulty={gameState.difficulty} onPlayAgain={() => setDebugCleared(false)} overrideHistogram={debugHistogram} />
+            )}
             {debugNotice && (
               <div style={{
                 position: 'absolute',
@@ -146,6 +167,7 @@ function App() {
             modelRef={modelRef}
             rendererRef={rendererRef}
             onOpenChange={onDebugOpenChange}
+            onShowDebugCleared={() => setDebugCleared(true)}
           />
         )}
       </div>

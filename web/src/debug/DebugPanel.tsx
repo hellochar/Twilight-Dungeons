@@ -43,6 +43,7 @@ interface DebugPanelProps {
   modelRef: RefObject<GameModel | null>;
   rendererRef: RefObject<GameRenderer | null>;
   onOpenChange: (open: boolean) => void;
+  onShowDebugCleared?: () => void;
 }
 
 export interface PersistedDebugState {
@@ -71,6 +72,7 @@ function buildCommands(
   _rendererRef: RefObject<GameRenderer | null>,
   syncAndUpdate: () => void,
   regenerateWithSeed: (seed: string) => void,
+  onShowDebugCleared?: () => void,
 ): DebugCommand[] {
   const cmds: DebugCommand[] = [];
 
@@ -229,13 +231,19 @@ function buildCommands(
     label: 'Log Model', category: 'Misc', mode: 'instant',
     execute: () => { console.log('GameModel:', model()); console.log('Player:', player()); console.log('Floor:', floor()); },
   });
+  if (onShowDebugCleared) {
+    cmds.push({
+      label: 'Show Cleared Screen', category: 'Misc', mode: 'instant',
+      execute: () => onShowDebugCleared(),
+    });
+  }
 
   return cmds;
 }
 
 // ─── Component ───
 
-export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange }: DebugPanelProps) {
+export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange, onShowDebugCleared }: DebugPanelProps) {
   const persisted = useRef(loadDebugState());
   const [open, setOpen] = useState(persisted.current.open ?? false);
   const [filter, setFilter] = useState('');
@@ -291,8 +299,8 @@ export function DebugPanel({ syncAndUpdate, modelRef, rendererRef, onOpenChange 
   }, [modelRef, rendererRef, syncAndUpdate]);
 
   const commands = useMemo(
-    () => buildCommands(modelRef, rendererRef, syncAndUpdate, regenerateWithSeed),
-    [modelRef, rendererRef, syncAndUpdate, regenerateWithSeed],
+    () => buildCommands(modelRef, rendererRef, syncAndUpdate, regenerateWithSeed, onShowDebugCleared),
+    [modelRef, rendererRef, syncAndUpdate, regenerateWithSeed, onShowDebugCleared],
   );
 
   // Filter commands by search text

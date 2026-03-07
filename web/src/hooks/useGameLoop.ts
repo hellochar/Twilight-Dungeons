@@ -853,6 +853,8 @@ export function useGameLoop() {
     let destroyed = false;
     let appReady = false;
     let pixiApp: Application | null = null;
+    let onContextLost: ((e: Event) => void) | null = null;
+    let onContextRestored: (() => void) | null = null;
     const audioUnsubs: (() => void)[] = [];
 
     async function init() {
@@ -980,6 +982,19 @@ export function useGameLoop() {
       };
       window.addEventListener('resize', resizeHandler);
 
+      // Handle WebGL context loss (e.g. mobile browser background tab)
+      onContextLost = (e: Event) => {
+        e.preventDefault(); // Allow context restoration
+        app.ticker.stop();
+      };
+      onContextRestored = () => {
+        app.ticker.start();
+        renderer.rebuildAll();
+        renderer.syncToModel();
+      };
+      app.canvas.addEventListener('webglcontextlost', onContextLost);
+      app.canvas.addEventListener('webglcontextrestored', onContextRestored);
+
       setGameState(readState());
       setReady(true);
       trackSessionStart(!!getLocalScore(`${localTodayStr()}-${difficulty}`), difficulty);
@@ -996,6 +1011,8 @@ export function useGameLoop() {
         if (resizeTimer) clearTimeout(resizeTimer);
       }
       if (pixiApp && appReady) {
+        if (onContextLost) pixiApp.canvas.removeEventListener('webglcontextlost', onContextLost);
+        if (onContextRestored) pixiApp.canvas.removeEventListener('webglcontextrestored', onContextRestored);
         pixiApp.destroy(true, { children: true });
       }
       modelRef.current = null;

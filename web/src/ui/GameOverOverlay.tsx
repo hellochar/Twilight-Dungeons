@@ -199,6 +199,7 @@ const secondaryButtonStyle: React.CSSProperties = {
 
 const BAR_WIDTH = 18;
 const BAR_GAP = 3;
+const BAR_MAX_HEIGHT = 64;
 
 function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playerTurns: number }) {
   if (buckets.length === 0) return null;
@@ -219,10 +220,10 @@ function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playe
         {' \u00b7 '}
         top {percentile}% with {playerTurns} turns
       </div>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: BAR_GAP, height: 80 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: BAR_GAP }}>
         {buckets.map(b => {
           const isPlayer = b.turns_taken === playerTurns;
-          const heightPct = (b.count / maxCount) * 100;
+          const barHeight = Math.max(3, Math.round((b.count / maxCount) * BAR_MAX_HEIGHT));
           return (
             <div key={b.turns_taken} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
               <span style={{
@@ -235,8 +236,7 @@ function Histogram({ buckets, playerTurns }: { buckets: HistogramBucket[]; playe
               <div
                 style={{
                   width: BAR_WIDTH,
-                  height: `${heightPct}%`,
-                  minHeight: 3,
+                  height: barHeight,
                   background: isPlayer ? '#4f4' : '#446',
                   borderRadius: 2,
                 }}

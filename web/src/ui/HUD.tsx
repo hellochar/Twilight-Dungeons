@@ -15,14 +15,6 @@ interface HUDProps {
   onRetry: () => void;
 }
 
-/**
- * Top HUD matching Unity layout:
- * - Top-left: Hearts (4 HP per heart, 5 fill states)
- * - Top-left below hearts: Status icons
- * - Top-center: Depth + Turn banner
- * - Below banner: Enemy counter text
- * - Bottom-right: Wait button; OnTopAction button above it when present
- */
 export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait, onRetry }: HUDProps) {
   const showButtons = !state.isPlayerDead && !state.isCleared;
   return (

@@ -45,7 +45,7 @@ function App() {
 
         {ready && (
           <>
-            {/* <HelpButton /> */}
+            <HelpButton />
             <HUD
               state={gameState}
               onTopAction={gameState.onTopAction}

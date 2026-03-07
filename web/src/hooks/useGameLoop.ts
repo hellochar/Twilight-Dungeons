@@ -1017,7 +1017,7 @@ function resolveIntent(
     case 'click': {
       const { tilePos } = intent;
       if (Vector2Int.equals(tilePos, player.pos)) {
-        return new WaitTask(player, 1);
+        return null;
       }
       if (Vector2Int.chebyshevDistance(player.pos, tilePos) === 1) {
         const bodyAtTarget = floor.bodies.get(tilePos);

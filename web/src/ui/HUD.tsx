@@ -20,7 +20,7 @@ export function HUD({ state, onTopAction, onExecuteOnTopAction, onWait, onRetry 
   return (
     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
       {/* Top-center: date · difficulty · turn */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 80px 0 6px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 80px 0 60px' }}>
         <Banner dateSeed={state.dateSeed} difficulty={state.difficulty} turn={state.turn} isCleared={state.isCleared} clearedOnTurn={state.clearedOnTurn} enemyCount={state.enemyCount} />
       </div>
 

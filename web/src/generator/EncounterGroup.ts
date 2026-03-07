@@ -260,9 +260,9 @@ function makeComplexEncounterGroup(E: Record<string, Encounter>): EncounterGroup
 
   complex.spice = new EncounterBag();
   complex.spice.add(1, E.fillWithViolets);
-  complex.spice.add(1, E.addCrabs);
+  // complex.spice.add(1, E.addCrabs);
   // complex.spice.add(1.0, mult(E.jackalPile, 4));
-  complex.spice.add(1, mult(E.addCrabs, 4));
+  complex.spice.add(0.5, mult(E.addCrabs, 3));
   complex.spice.add(1, E.addIronJelly);
   complex.spice.add(1, E.addBloodstone);
   // complex.spice.add(1, E.addTunnelroot4x);

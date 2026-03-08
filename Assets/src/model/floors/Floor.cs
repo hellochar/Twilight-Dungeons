@@ -125,6 +125,13 @@ public class Floor {
       nextDepth = depth + 1;
     }
     Serializer.SaveMainToCheckpoint();
+
+    // Check for between-floor narrative event
+    if (depth != 0 && GameModel.main.narrativeEvents.TryTriggerBetweenFloors(nextDepth)) {
+      // Event was presented — descent is deferred to the event's button callbacks
+      return;
+    }
+
     GameModel.main.PutPlayerAt(nextDepth);
   }
 

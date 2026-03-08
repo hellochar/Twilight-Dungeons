@@ -72,7 +72,13 @@ public static class Popups {
     // Add buttons
     var buttonsContainer = content.transform.Find("Actions");
     if (buttons != null && buttons.Count > 0) {
-      buttons.ForEach((b) => MakeButton(b.Item1, b.Item2, buttonsContainer, popup));
+      buttons.ForEach((b) => {
+        if (b.Item2 != null) {
+          MakeButton(b.Item1, b.Item2, buttonsContainer, popup);
+        } else {
+          MakeDisabledButton(b.Item1, buttonsContainer);
+        }
+      });
     } else {
       content.transform.Find("Space").gameObject.SetActive(false);
       buttonsContainer.gameObject.SetActive(false);
@@ -104,6 +110,17 @@ public static class Popups {
       })
     );
 
+    button.name = name;
+    return button;
+  }
+
+  private static GameObject MakeDisabledButton(string name, Transform parent) {
+    var button = UnityEngine.Object.Instantiate(PrefabCache.UI.GetPrefabFor("Action Button"), new Vector3(), Quaternion.identity, parent);
+    var text = button.GetComponentInChildren<TMPro.TMP_Text>();
+    text.text = name;
+    text.color = new Color(1, 1, 1, 0.35f);
+    var btn = button.GetComponent<Button>();
+    btn.interactable = false;
     button.name = name;
     return button;
   }
